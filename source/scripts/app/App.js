@@ -24,35 +24,43 @@ APP = (function(global, rootView) {
   function initGlobals() {
     _globals = {};
 
+    _globals.appConfig = APP_CONFIG_DATA;
+
+    // TODO Move to new browser detect util
     _globals.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
-    _globals.isIE8 = _globals.isIE && -1 < navigator.appVersion.indexOf("MSIE 8");
-    _globals.isIE9 = _globals.isIE && -1 < navigator.appVersion.indexOf("MSIE 9");
+    _globals.appVersion = navigator.appVersion;
+    _globals.userAgent = navigator.userAgent;
+    _globals.isIE6 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 6");
+    _globals.isIE7 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 7");
+    _globals.isIE8 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 8");
+    _globals.isIE9 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 9");
     _globals.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
     _globals.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
     _globals.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
     _globals.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
 
-    //http://www.abeautifulsite.net/detecting-mobile-devices-with-javascript/
+    _globals.notSupported = _globals.isIE6 || _globals.isIE7 || _globals.isIE8;
+
     _globals.hasTouch = 'ontouchstart' in document.documentElement;
     _globals.mobile = {
       Android: function() {
-        return navigator.userAgent.match(/Android/i);
+        return _globals.userAgent.match(/Android/i);
       },
       BlackBerry: function() {
-        return navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/BB10; Touch/);
+        return _globals.userAgent.match(/BlackBerry/i) || _globals.userAgent.match(/BB10; Touch/);
       },
       iOS: function() {
-        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        return _globals.userAgent.match(/iPhone|iPad|iPod/i);
       },
       Opera: function() {
-        return navigator.userAgent.match(/Opera Mini/i);
+        return _globals.userAgent.match(/Opera Mini/i);
       },
       Windows: function() {
-        return navigator.userAgent.match(/IEMobile/i);
+        return _globals.userAgent.match(/IEMobile/i);
       },
       any: function() {
         return (
-        _globals.mobile.Android()
+          _globals.mobile.Android()
           || _globals.mobile.BlackBerry()
           || _globals.mobile.iOS()
           || _globals.mobile.Opera()
@@ -84,8 +92,6 @@ APP = (function(global, rootView) {
   function run() {
     _self.AppController.run();
   }
-
-
 
   //http://www.kenneth-truyers.net/2013/04/27/javascript-namespaces-and-modules/
   function createNameSpace(ns_string) {

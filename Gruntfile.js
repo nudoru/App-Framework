@@ -1,18 +1,3 @@
-/*
-Check this out
- https://www.jetbrains.com/webstorm/help/using-grunt-task-runner.html
-
-
- http://www.html5rocks.com/en/tutorials/tooling/supercharging-your-gruntfile/
- https://www.npmjs.com/package/load-grunt-tasks
- http://www.sitepoint.com/writing-awesome-build-script-grunt/
- http://justinklemm.com/grunt-watch-livereload-javascript-less-sass-compilation/
-
-Auto prefixer?
-
-*/
-
-
 (function () {
   'use strict';
 }());
@@ -36,7 +21,6 @@ module.exports = function (grunt) {
           '!scripts/vendor/**/*.map',
           '!scripts/main.js',
           'scripts/config.js',
-          //'scripts/vendor/modernizr.custom.58197.js',
           'scripts/vendor/html5shiv.min.js'
 
         ],
@@ -73,7 +57,6 @@ module.exports = function (grunt) {
       }
     },
 
-    //https://github.com/gruntjs/grunt-contrib-jade
     jade: {
       compile: {
         options: {
@@ -89,7 +72,6 @@ module.exports = function (grunt) {
       }
     },
 
-    //https://github.com/gruntjs/grunt-contrib-concat#usage-examples
     concat: {
       options: {
         stripBanners: true,
@@ -145,7 +127,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // https://github.com/gruntjs/grunt-contrib-uglify/blob/master/docs/uglify-examples.md
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
@@ -160,7 +141,6 @@ module.exports = function (grunt) {
       }
     },
 
-    //https://github.com/gruntjs/grunt-contrib-jshint/blob/master/docs/jshint-examples.md
     jshint: {
       files: ['source/scripts/utils/*.js', 'source/scripts/app/**/*.js'],
       options: {
@@ -188,25 +168,10 @@ module.exports = function (grunt) {
       }
     },
 
-
-    //watch: {
-    //  files: ['source/scripts/app/*.js', 'source/scripts/utils/*.js', 'source/sass/**/*.sass', 'source/jade/**/*.jade'],
-    //  tasks: ['clean', 'copy', 'compass', 'jade', 'concat', 'uglify', 'jshint'],
-    //  options: {
-    //    livereload: true
-    //  }
-    //}
-
-    //https://github.com/gruntjs/grunt-contrib-watch/blob/master/docs/watch-examples.md
-    // http://draftingcode.com/2013/06/subtle-live-reloading-with-grunt-and-compass/
     watch: {
       options: {
         livereload: true
       },
-
-      // TODO, get build clean working
-      //files: ['**/*'],
-      //tasks: ['clean', 'copy'],
 
       html: {
         files: ['source/jade/**/*.jade'],
