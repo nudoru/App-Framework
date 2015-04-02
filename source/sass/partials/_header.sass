@@ -1,0 +1,62 @@
+#main-header
+  position: absolute
+  top: 0
+  left: 0
+  z-index: $z-index-main-header
+  width: 100%
+  height: $header-height
+  background: $color-bg-header
+  padding: 0 $double-base-line-height
+  background-color: #fff
+  text-shadow: none
+  .drawer-toggle
+    visibility: hidden
+    position: absolute
+    top: 0
+    left: 0
+    bottom: 0
+    button
+      border: 0
+      background-color: rgba(0,0,0,.15)
+      border-right: 1px solid rgba(0,0,0,.20)
+      padding: 13px $base-line-height $base-line-height $base-line-height
+      height: $mobile-header-height
+      min-height: $mobile-header-height
+      cursor: pointer
+      i.fa
+        font-size: 1.4rem
+        color: #fff
+      &:active, &:hover
+        color: $light-blue
+    +respond-to(max-width, $tablet-mobile-break)
+      visibility: visible
+  h1
+    float: left
+    margin: 0
+    padding: 0
+    height: $header-height
+    line-height: $header-height
+    color: $light-blue
+    font-size: 1.4rem
+    letter-spacing: -0.025em
+    em
+      color: $dark-blue
+      margin-right: $base-line-height
+      font-style: normal
+      font-weight: 400
+  +respond-to(max-width, $tablet-mobile-break)
+    text-align: center
+    height: $mobile-header-height
+    background-color: $dark-blue
+    text-shadow: 0 -1px 0 rgba(0,0,0,.35)
+    h1
+      display: block
+      width: 100%
+      font-size: 1.2rem
+      height: $mobile-header-height
+      line-height: $mobile-header-height
+      color: #fff
+      letter-spacing: 0
+      em
+        color: #fff
+

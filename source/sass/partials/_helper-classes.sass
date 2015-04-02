@@ -1,0 +1,141 @@
+%vertical-align
+  position: relative
+  top: 50%
+  -webkit-transform: translateY(-50%)
+  -ms-transform: translateY(-50%)
+  transform: translateY(-50%)
+
+%overflow-ellipsis
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+// Nicolash Gallagher Micro clearfix
+.group:before, .group:after 
+  content: ""
+  display: table
+
+.group:after 
+  clear: both
+
+// IE 6-7
+.group 
+  *zoom: 1
+
+.align-right
+  text-align: right
+
+.pull-left
+  float: left !important
+
+.pull-right
+  float: right !important
+
+.hidden 
+  display: none !important
+
+.visible 
+  display: block !important
+
+// Hide only visually, but have it available for screenreaders: h5bp.com/v
+.visuallyhidden 
+  border: 0
+  clip: rect(0 0 0 0)
+  height: 1px
+  margin: -1px
+  overflow: hidden
+  padding: 0
+  position: absolute
+  width: 1px
+
+// Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: h5bp.com/p 
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus 
+  clip: auto
+  height: auto
+  margin: 0
+  overflow: visible
+  position: static
+  width: auto
+
+.img-responsive
+  display: block
+  height: auto
+  max-width: 100%
+
+%img-thumbnail
+  display: inline-block
+  height: auto
+  max-width: 100%
+  padding: 4px
+  line-height: 1.428571429
+  background-color: #ffffff
+  border: 1px solid #dddddd
+  border-radius: 4px
+  -webkit-transition: all 0.2s ease-in-out
+    transition: all 0.2s ease-in-out
+
+.plain-list
+  list-style: none
+  padding-left: 0
+
+.plain-horizontal-list
+  @extend .plain-list
+  li
+    display: inline
+
+.comma-separated-list
+  @extend .plain-horizontal-list
+  li
+    &:after
+      content: ", "
+    &:last-of-type
+      &:after
+        content: ""
+
+.basic-tags
+  margin: 3px
+  @extend .plain-horizontal-list
+  li
+    white-space: nowrap
+    padding: 3px 5px
+    background-color: rgba(0,0,0,.1)
+    margin-right: 3px
+    line-height: 2rem
+    border-radius: 3px
+    text-shadow: 0 -1px 0px rgba(255,255,255,.75)
+
+.padding-full
+  padding: $padding-standard !important
+
+.padding-0
+  padding: 0 !important
+
+.padding-top-extra
+  padding-top: $padding-standard*2 !important
+
+.padding-top
+  padding-top: $padding-standard !important
+
+.padding-left-extra
+  padding-left: $padding-standard*2 !important
+
+.margin-full
+  margin: $padding-standard !important
+
+.margin-0
+  margin: 0 !important
+
+.margin-top-0
+  margin-top: 0 !important
+
+.margin-bottom-extra
+  margin-bottom: $padding-standard*2 !important
+
+.text-right
+  text-align: right !important
+
+.text-center
+  text-align: center !important
+
+.all-inline
+  display: inline !important

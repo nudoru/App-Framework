@@ -1,0 +1,69 @@
+// ONLY WORKS IF THE BODY FONT SIZE PCT IS 62.5
+=font-rem($sizeValue: 1.6)
+  font-size: ($sizeValue * 10) + px
+  font-size: $sizeValue + rem
+
+//http://kenneth.io/blog/2012/03/04/word-wrapping-hypernation-using-css/
+=force-break-all-words
+  -ms-word-break: break-all
+  word-break: break-all
+  word-break: break-word
+  -webkit-hyphens: auto
+  -moz-hyphens: auto
+  -ms-hyphens: auto
+  hyphens: auto
+
+// Optional hyphenation
+=hyphens($mode: auto)
+  word-wrap: break-word
+  -webkit-hyphens: $mode
+  -moz-hyphens: $mode
+  -ms-hyphens: $mode // IE10+
+  -o-hyphens: $mode
+  hyphens: $mode
+
+// Placeholder text
+=placeholder($color: $input-color-placeholder)
+  &:-moz-placeholder
+    color: $color
+  &::-moz-placeholder
+    color: $color
+  &:-ms-input-placeholder
+    color: $color
+  &::-webkit-input-placeholder
+    color: $color
+
+// Text overflow
+// Requires inline-block or block for proper styling
+=text-overflow()
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+// CSS image replacement
+// Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
+=hide-text()
+  font: "0/0" a
+  color: transparent
+  text-shadow: none
+  background-color: transparent
+  border: 0
+
+=text-size-100pct
+  -webkit-text-size-adjust: 100%
+  -moz-text-size-adjust: 100%
+  -ms-text-size-adjust: 100%
+  -o-text-size-adjust: 100%
+  text-size-adjust: 100%
+
+=smoothing ($action: antialiased)
+  -webkit-font-smoothing: $action
+  -moz-font-smoothing: $action
+  -ms-font-smoothing: $action
+  -o-font-smoothing: $action
+  font-smoothing: $action
+
+=text-truncate
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap

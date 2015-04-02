@@ -1,0 +1,194 @@
+@import "mixins-css-animation"
+@import "mixins-css-transform"
+@import "mixins-typography"
+@import "mixins-gradients"
+@import "mixins-shadows"
+
+=header-base($fontSize, $lineHeight: $double-base-line-height, $marginBottom: $base-line-height)
+  margin: 0
+  padding: 0
+  margin-bottom: $marginBottom
+  font-family: $font-header
+  font-size: $fontSize
+  font-weight: 400
+  line-height: $lineHeight
+  text-rendering: optimizeLegibility
+
+%header-1
+  +header-base(1.8rem)
+  padding-top: $half-base-line-height
+  padding-bottom: $double-base-line-height
+
+%header-2
+  +header-base(1.62rem)
+  padding-bottom: $double-base-line-height
+
+%header-3
+  +header-base(1.2rem)
+  padding-bottom: $double-base-line-height
+
+%header-4
+  +header-base(1rem)
+  padding-top: $half-base-line-height
+  padding-bottom: $base-line-height
+
+%header-5
+  +header-base(.69rem)
+  text-transform: uppercase
+  font-weight: 700
+  padding-bottom: $base-line-height
+
+%header-6
+  +header-base(.62rem)
+  text-transform: uppercase
+  font-weight: 700
+
+=paragraph-base($fontSize: $base-font-size, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
+  font-family: $font-content
+  font-size: $fontSize
+  line-height: $lineHeight
+  font-weight: 400
+  margin-top: 0
+  //margin-bottom: $marginBottom
+
+// TO-DO using $base-font-size here isn't working - why?
+%body-text
+  +paragraph-base(.9rem, $double-base-line-height+$half-base-line-height, $double-base-line-height)
+
+%body-text-small
+  +paragraph-base(.8rem, $triple-base-line-height, $double-base-line-height)
+
+%body-text-big
+  +paragraph-base(1rem, $triple-base-line-height, $double-base-line-height)
+
+%horizontal-list
+  ul
+    overflow: hidden
+    margin: 0
+    padding: 0
+    position: relative
+    li
+      list-style: none
+      float: left
+
+=nav-bar($height)
+  @extend %horizontal-list
+  ul
+    li
+      margin: 0
+    a
+      display: block
+      padding: 0 $double-base-line-height
+      height: $height
+      line-height: $height
+
+%relative-area
+  position: relative
+  overflow: hidden
+
+%main-area-padding
+  padding: $base-line-height $double-base-line-height
+
+%plain-list
+  margin: 0
+  padding: 0
+  list-style: none
+
+%prevent-text-selection
+  -webkit-touch-callout: none
+  -webkit-user-select: none
+  -khtml-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+
+.placeholder-image
+  background: #ccc
+  padding: 1em
+  font-size: 1.4em
+  color: #aaa
+  text-align: center
+  &:after
+    content: "Place holder"
+
+.photo-border
+  margin: .5em
+  border: 10px solid #ffffff
+  box-shadow: 2px 2px 10px 0px rgba(0,0,0,.15)
+
+.photo-border-small
+  margin: $half-base-line-height
+  border: 5px solid #ffffff
+  box-shadow: 2px 2px 10px 0px rgba(0,0,0,.15)
+
+=image-cover
+  -webkit-background-size: cover
+  -moz-background-size: cover
+  -o-background-size: cover
+  background-size: cover
+
+=background-cover-image($url)
+  background: url($url) no-repeat center center fixed
+  +image-cover
+  
+.img-responsive
+  display: block
+  height: auto
+  width: 100%
+
+%compressed-paragraph
+  display: inline
+  &:before
+    content: '\00b6'
+    color: rgba(0,0,0,.25)
+    margin-left: $base-line-height
+    margin-right: $half-base-line-height
+  &:first-of-type
+    &:before
+      margin-left: 0
+
+%menu-button
+  border: none
+  background: none
+  width: 100%
+
+=respond-to($type, $query)
+  @media ($type: $query)
+    @content
+
+=max-width($width: $screen-md)
+  @media screen and (max-width: #{$width}px)
+    @content
+
+// Based on Medium https://medium.com/designing-medium/crafting-link-underlines-on-medium-7c03a9274f9
+// http://codepen.io/ghepting/pen/tLnHK/
+
+//$background-color: #fff !default
+//$link-color: #333 !default
+//$link-color-active: #55abad !default
+//$link-underline-color: $link-color !default
+//$link-underline-color-active: $link-color-active !default
+
+
+//a.custom
+//  text-decoration: none
+//  position: relative
+//  @if $breaking-underlines
+//    text-shadow: -1px -1px 0 $background-color, 1px -1px 0 $background-color, -1px 1px 0 $background-color, 1px 1px 0 $background-color
+//  +underline($link-color)
+//  @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi)
+//    +underline($link-color, 0.5)
+//  &:hover, &:focus
+//    +underline($link-color-active)
+//    @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi)
+//      +underline($link-color-active, 0.5)
+
+$link-underline-width: 1px !default
+$link-underline-offset: 2px !default
+$breaking-underlines: true !default
+
+=breaking-underline($background: #fff)
+  text-shadow: -1px -1px 0 $background, 1px -1px 0 $background, -1px 1px 0 $background, 1px 1px 0 $background
+
+=underline($color: $color-link, $weight: $link-underline-width, $offset: $link-underline-offset)
+  background-image: linear-gradient(bottom, transparent, transparent $offset, $color $offset, $color ($offset + $weight), transparent ($offset + $weight))

@@ -1,0 +1,33 @@
+//http://codepen.io/sawmac/pen/qGudy
+
+// generic transform
+=transform($transforms) 
+  -moz-transform: $transforms
+  -o-transform: $transforms
+  -ms-transform: $transforms
+  -webkit-transform: $transforms
+  transform: $transforms
+
+// rotate
+=rotate ($deg) 
+  @include transform(rotate($degdeg))
+
+// scale
+=scale($scale) 
+  @include transform(scale($scale))
+
+// translate
+=translate ($x, $y) 
+  @include transform(translate($x, $y))
+
+// skew
+=skew ($x, $y) 
+  @include transform(skew($xdeg, $ydeg))
+
+//transform origin
+=transform-origin ($origin) 
+  moz-transform-origin: $origin
+  -o-transform-origin: $origin
+  -ms-transform-origin: $origin
+  -webkit-transform-origin: $origin
+  transform-origin: $origin

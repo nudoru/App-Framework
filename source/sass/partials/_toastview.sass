@@ -1,0 +1,49 @@
+//------------------------------------------------------------------------------
+//  Toast
+//------------------------------------------------------------------------------
+
+#toast-container
+  position: fixed
+  top: $base-line-height
+  right: $base-line-height
+  //pointer-events: auto
+  z-index: $z-index-toast-container
+
+.toast
+  @extend %panel
+  display: table
+  position: absolute
+  top: 0
+  right: 0
+  width: 250px
+  padding: 0
+  overflow: hidden
+  +one-edge-shadow-large
+  .content, .controls
+    padding: $base-line-height
+    display: table-cell
+    vertical-align: middle
+    text-align: left
+  .content
+    float: left
+    width: 190px
+  .controls
+    width: 55px
+    background-color: $color-white-grey-fill
+    //border-left: 1px solid $color-white-grey-line
+    text-align: center
+  h1, p
+    font-family: $font-content
+    color: $light-warm-grey
+    font-size: .8rem
+  h1, p
+    padding: 0
+    margin: 0
+    line-height: $base-line-height + $half-base-line-height
+  h1
+    font-size: .7rem
+    margin-bottom: $half-base-line-height
+  p
+    color: $dark-blue
+  button
+    @extend .icon-button

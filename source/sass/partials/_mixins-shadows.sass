@@ -1,0 +1,57 @@
+// from panels.scotch.io
+=slight-panel-shadow
+  box-shadow: 0 0 6px rgba(153,153,153,0.29)
+
+=one-edge-shadow
+  box-shadow: 0 10px 6px -6px rgba(0,0,0,.5)
+
+=one-edge-shadow-faint
+  box-shadow: 0 10px 10px -6px rgba(0,0,0,.2)
+
+=one-edge-shadow-large
+  box-shadow: 0 20px 15px -3px rgba(0,0,0,.25)
+
+=one-edge-shadow-hard
+  box-shadow: 0 2px 0px 0px rgba(0,0,0,.2)
+
+=shadow-faint
+  box-shadow: 0 4px 10px 0px rgba(0,0,0,.2)
+
+=light-on-dark-text
+  text-shadow: 1px 1px 10px rgba(0,0,0,.75)
+
+=one-px-black
+  text-shadow: 0 1px 0px rgba(0,0,0,.9)
+
+=one-px-white
+  text-shadow: 0 -1px 0px rgba(255,255,255,.9)
+
+=small-block($gapColor, $shadowColor)
+  text-shadow: 1px 1px 0px $gapColor, 3px 3px 0px $shadowColor
+
+=medium-block($gapColor, $shadowColor)
+  text-shadow: 2px 2px 0px $gapColor, 4px 3px 0px $shadowColor
+
+=drow-shadow-hard($foreColor: #ccc, $shadowColor: #777)
+  text-shadow: 1px 1px $foreColor, 2px 2px $shadowColor
+
+=box-shadow-exp($distance: 5px, $blur: 5px, $spread: 0px, $color: 0, $alpha: 0.03)
+  -webkit-box-shadow: $distance $distance $blur $spread rgba($color, $color, $color, $alpha)
+  -moz-box-shadow: $distance $distance $blur $spread rgba($color, $color, $color, $alpha)
+  box-shadow: $distance $distance $blur $spread rgba($color, $color, $color, $alpha)
+
+=box-shadow($shadow)
+  -webkit-box-shadow: $shadow // iOS <4.3 & Android <4.1
+  box-shadow: $shadow
+
+=standard-shadow
+  +box-shadow-exp(3px, 10px, 0px, 0, .25)
+
+=standard-soft-shadow
+  +box-shadow-exp(1px, 5px, 0px, 0, .1)
+
+=standard-text-shadow
+  text-shadow: 0px -1px 0px rgba(0,0,0,.3)
+
+=standard-text-shadow-light
+  text-shadow: 0px 1px 0px rgba(255,255,255,.4)

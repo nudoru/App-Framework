@@ -1,0 +1,117 @@
+*, *:after, *:before
+  -moz-box-sizing: border-box
+  -webkit-box-sizing: border-box
+  box-sizing: border-box
+
+*
+  -webkit-font-smoothing: antialiased
+
+html
+  -webkit-text-size-adjust: 100%
+  -ms-text-size-adjust: 100%
+  heigth: 100%
+
+body
+  margin: 0
+  padding: 0
+  font-size: 100%
+  line-height: $base-line-height
+  min-height: 100%
+  //font-size: 62.5%; // easier to reference em'partials as pixel equiviants - 1em = 10px
+  // prevent Safari from adjusting for readability
+  -webkit-text-size-adjust: none
+  font-family: $font-content
+  color: $text-color
+
+h1
+  @extend %header-1
+
+h2
+  @extend %header-2
+
+h3
+  @extend %header-3
+
+h4
+  @extend %header-4
+
+h5
+  @extend %header-5
+
+h6
+  @extend %header-6
+
+p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt
+  @extend %body-text
+
+//p:last-of-type
+//  margin-bottom: 0
+
+// indent first line of paragraph
+//p + p
+  text-indent: $indent-margin-standard
+  margin-top: -$base-line-height
+
+strong
+  font-weight: 700
+
+em
+  font-style: italic
+
+a
+  +transition-all
+  color: $color-link
+  outline: none
+  &:active, &:hover
+    color: $color-link-active
+  &:focus
+    outline: thin-dotted
+
+//ul, ol
+  //margin-left: -$double-base-line-height
+  //padding-left: $indent-margin-standard
+
+a.custom
+  +transition-all
+  color: $color-link
+  outline: none
+  text-decoration: none
+  +breaking-underline
+  +underline
+  @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx)
+    +underline($color-link, 0.5)
+  &:active, &:hover
+    color: $color-link-active
+    +underline($color-link-active)
+    outline: none
+    @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx)
+      +underline($color-link-active, 0.5)
+  &:focus
+    outline: thin-dotted
+
+ul
+  list-style: disc inside
+
+ol
+  list-style: decimal inside
+
+li
+  margin-bottom: 0rem
+
+ul ul, ol ol, ul ol, ol ul
+  margin: 0 0 0 $double-base-line-height
+
+ol ol
+  list-style: lower-alpha
+
+ol ol ol
+  list-style: lower-roman
+
+ul ul
+  list-style: circle
+
+svg:not(:root)
+  overflow: hidden
+
+img
+  vertical-align: middle

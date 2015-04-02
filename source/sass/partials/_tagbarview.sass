@@ -1,0 +1,79 @@
+//------------------------------------------------------------------------------
+//  Tags Generic
+//------------------------------------------------------------------------------
+
+.tag-listing-horizontal
+  @extend %horizontal-list
+  li
+    @extend %tag
+    margin-right: $half-base-line-height
+    margin-bottom: $half-base-line-height
+
+.tag-listing-right
+  @extend %horizontal-list
+  float: right
+  li
+    @extend %tag
+    margin-left: $half-base-line-height
+
+.tag
+  @extend %tag
+  display: inline-block
+  margin: 0 $base-line-height
+
+$tag-height: 28px
+$tag-color: scale-lightness($dark-orange, -20%)
+
+// http://cssglobe.com/pure-css3-post-tags/
+%tag
+  position: relative
+  margin-left: $tag-height / 2
+  padding: 0 $base-line-height
+  height: $tag-height
+  line-height: $tag-height
+  font-size: .8rem
+  background-color: $tag-color
+  color: #fff
+  border-radius: 0 5px 5px 0
+  text-shadow: -1px -1px 0 rgba(0,0,0,.2), 1px 1px 0 rgba(255,255,255,.1)
+  &:before
+    content: ""
+    position: absolute
+    left: -$tag-height/2
+    top: 0px
+    width: 0px
+    height: 0px
+    border-color: transparent $tag-color transparent transparent
+    border-style: solid
+    border-width: $tag-height/2 $tag-height/2 $tag-height/2 0
+  &:after
+    content: ""
+    position: absolute
+    top: ($tag-height/2) - 2
+    left: 0
+    float: left
+    width: 4px
+    height: 4px
+    border-radius: 2px
+    background: #fff
+    box-shadow: -1px -1px 2px rgba(0,0,0,.2)
+  a
+    padding-left: $base-line-height
+    color: #fff
+    &:hover, &:active
+      color: #fff
+
+
+//------------------------------------------------------------------------------
+// Tag Bar
+//------------------------------------------------------------------------------
+
+#tag-bar
+  @extend .tag-listing-horizontal
+  text-align: right
+  background-color: rgba(255,255,255,.75)
+  border-top: 1px solid $color-white-grey-line
+  padding: $half-base-line-height
+  ul
+    display: inline-block
+    text-align: center

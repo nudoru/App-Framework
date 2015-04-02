@@ -1,0 +1,57 @@
+doctype html
+html
+  head
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    meta(charset='utf-8')
+    meta(name='description', content='')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    //meta(name='viewport', content='user-scalable=0')
+    title Solutions Gallery
+    // Podkova, Playfair Display, PT Serif
+    link(href='http://fonts.googleapis.com/css?family=Podkova:400,700|Open+Sans:400,300,600,700' rel='stylesheet' type='text/css')
+    link(rel='stylesheet', type='text/css', href='css/app.css')
+    <!--[if lte IE 9]>
+    script(src='scripts/vendor/html5shiv.min.js')
+    <![endif]-->
+  body
+    #app-container
+      #drawer
+        nav#drawer-navigation
+      #app
+        header#main-header
+          .drawer-toggle
+            button
+              i.fa.fa-bars
+          h1
+            em Solutions
+            | Gallery
+          nav#main-navigation
+        .grid-iscroll-wrapper
+          section.grid-container
+            section.item-grid-header
+              h1 Please wait ...
+              .search-form
+                .search
+                  input(placeholder='Search titles and tags' size='25')
+                  i.fa.fa-search
+                button.basic-button#clearall-button
+                  i.fa.fa-remove
+                  em Clear All
+            #item-grid
+        footer#main-footer
+          #tag-bar
+    #initialization-cover
+      .initialization-message
+        h1 Please Wait ...
+    #modal-cover
+      .modal-background
+      .modal-close-button
+        i.fa.fa-remove
+      #item-details-box
+    #float-image-cover
+      .caption
+    #toast-container
+    script(src='scripts/config.js')
+    script(src='scripts/libs.min.js')
+    script(src='//localhost:35729/livereload.js')
+

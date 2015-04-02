@@ -1,0 +1,85 @@
+@import "compass"
+@import "compass/utilities/general/clearfix"
+@import "compass/css3/images"
+@import "compass/css3/opacity"
+@import "compass/reset"
+
+@import "vendor/font-awesome/font-awesome"
+
+// Measure test line
+// Lorem ipsum dolor sit amet, consectetuer adipiscing elit accumsan
+
+// http://modularscale.com/scale/?px1=16&px2=11&ra1=1.618&ra2=0
+
+@import "partials/variables"
+@import "partials/app-mixins"
+@import "partials/tags"
+
+@import "partials/components"
+@import "partials/itemgridview"
+@import "partials/itemdetailsview"
+@import "partials/tagbarview"
+@import "partials/toastview"
+@import "partials/floatimage"
+
+
+@import "partials/header"
+@import "partials/ddmainnavigation"
+@import "partials/footer"
+@import "partials/drawer"
+
+.ignore-pointer-events
+  pointer-events: none
+
+#initialization-cover
+  @extend %full-background-coverage
+  z-index: $z-index-full-screen
+  background-color: #eee
+
+.initialization-message
+  @extend %body-text-big
+  position: relative
+  overflow: hidden
+  text-align: center
+  width: 300px
+  heigth: 50px
+  margin: auto
+  top: 40%
+  padding: $double-base-line-height
+  background-color: #fff
+  +one-edge-shadow-large
+  h1
+    padding: 0
+    margin: 0
+    margin-bottom: $base-line-height
+    color: $dark-blue
+    font-size: 1.2em
+  .loader
+    display: inline-block
+
+body
+  overflow: hidden
+
+
+#app-container
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  overflow: hidden
+
+#app
+  position: absolute
+  min-width: 100%
+  min-height: 100%
+  bottom: 100%
+  top: 0
+  left: 0
+  background-color: $color-bg-content
+  overflow-y: scroll
+  overflow-x: hidden
+
+
+
+
