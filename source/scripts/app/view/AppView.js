@@ -84,7 +84,13 @@ APP.AppView = (function() {
     hideModalCover();
     positionUIElements();
 
+    updateAppTitle();
+
     _eventDispatcher.publish(APP.Events.VIEW_RENDERED);
+  }
+
+  function updateAppTitle() {
+    _mainHeaderEl.find('h1').html(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {

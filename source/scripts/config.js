@@ -3,13 +3,13 @@ Configuration data for the application
  */
 
 var APP_CONFIG_DATA = {
-  "title": "Solutions Gallery zz",
+  "title": "<em>Solutions</em> Gallery",
   "menu" : [
-    {"label": "Company Area z",
+    {"label": "Company Area",
       "filter": "companyArea"},
-    {"label": "Category z",
+    {"label": "Category",
       "filter": "categories"},
-    {"label": "Complexity z",
+    {"label": "Complexity",
       "filter": "complexity"}
   ]
-}
+};

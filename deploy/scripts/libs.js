@@ -847,6 +847,7 @@ ItemVO.prototype = {
 APP.AppModel = (function() {
   var _eventDispatcher,
       _self,
+      _appGlobals,
       _dataProvider,
       _data,
       _currentFreeTextFilter,
@@ -935,13 +936,9 @@ APP.AppModel = (function() {
   function initialize() {
     _self = this;
 
-    // Define the data that will be used to sort/filter the data
-    // filter is a property on the itemVO
-    _filterProperties = [
-      {label: 'Company Area', filter:'companyArea', data:[], menuData:[]},
-      {label: 'Category', filter:'categories', data:[], menuData:[]},
-      {label: 'Complexity', filter: 'complexity', data:[], menuData:[]}
-    ];
+    _appGlobals = APP.globals();
+
+    configureMenuProperties();
 
     _currentFreeTextFilter = '';
     _currentDataFilters = [];
@@ -950,6 +947,17 @@ APP.AppModel = (function() {
     _eventDispatcher = APP.EventDispatcher;
 
     _eventDispatcher.publish(APP.Events.MODEL_INITIALIZED);
+  }
+
+  function configureMenuProperties() {
+    // Define the data that will be used to sort/filter the data
+    // filter is a property on the itemVO
+
+    _filterProperties = _appGlobals.appConfig.menu.map(function(item) {
+      item.data = [];
+      item.menuData = [];
+      return item;
+    });
   }
 
   function loadModelData() {
@@ -1473,7 +1481,13 @@ APP.AppView = (function() {
     hideModalCover();
     positionUIElements();
 
+    updateAppTitle();
+
     _eventDispatcher.publish(APP.Events.VIEW_RENDERED);
+  }
+
+  function updateAppTitle() {
+    _mainHeaderEl.find('h1').html(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {
