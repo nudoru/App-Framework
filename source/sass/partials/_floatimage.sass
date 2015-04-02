@@ -2,10 +2,18 @@
 //  Float image
 //------------------------------------------------------------------------------
 
-.float-image
+#floatimage__cover
+  @extend %full-background-coverage
+  background-color: rgba(255,255,255,.95)
+  cursor: zoom-out
+  cursor: -webkit-zoom-out
+  cursor: -moz-zoom-out
+  z-index: $z-index-float-image-cover
+
+.floatimage__srcimage
   cursor: zoom-in
 
-.float-image-wrapper
+.floatimage__wrapper
   position: relative
   &:after
     position: absolute
@@ -30,15 +38,7 @@
       line-height: .5rem
       background-color: rgba(255,255,255,.75)
 
-#float-image-cover
-  @extend %full-background-coverage
-  background-color: rgba(255,255,255,.95)
-  cursor: zoom-out
-  cursor: -webkit-zoom-out
-  cursor: -moz-zoom-out
-  z-index: $z-index-float-image-cover
-
-.caption
+.floatimage__caption
   position: absolute
   width: 100%
   bottom: $base-line-height
@@ -51,7 +51,7 @@
     width: 75%
     text-shadow: 0 1px 0 #fff
 
-.zoomed-image
+.floatimage__zoomedimage
   position: fixed
   box-shadow: 5px 5px 30px rgba(0,0,0,.25)
   -webkit-background-size: cover

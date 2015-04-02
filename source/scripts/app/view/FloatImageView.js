@@ -9,44 +9,15 @@
   - jQuery
   - GSAP (TweenMax)
   - RxJS
-
-  SASS/CSS Required
-    #float-image-cover
-      background-color: rgba(255,255,255,.9)
-      cursor: zoom-out
-      cursor: -webkit-zoom-out
-      cursor: -moz-zoom-out
-      @extend %full-background-coverage
-      z-index: 9999999
-
-    .float-image
-      cursor: zoom-in
-
-    .float-image-wrapper
-      position: relative
-      &:after
-        position: absolute
-        top: 0px
-        right: 0px
-        width: 20px
-        height: 20px
-        padding: 5px
-        overflow: hidden
-        background-color: rgba(255,255,255,.75)
-        content: '\f002'
-        font-family: FontAwesome
-        font-size: .7rem
-        line-height: .7rem
-        color: #333
-        text-shadow: 0 1px 0 #fff
 */
 
 
 APP.createNameSpace('APP.AppView.FloatImageView');
 APP.AppView.FloatImageView = (function() {
 
-  var _coverDivID = '#float-image-cover',
-      _floatingImageClass = '.float-image',
+  var _coverDivID = '#floatimage__cover',
+      _floatingImageClass = '.floatimage__srcimage',
+      _zoomedImageClass = 'floatimage__zoomedimage',
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
@@ -59,7 +30,7 @@ APP.AppView.FloatImageView = (function() {
   function initialize() {
     _viewPortCoverEl = $(_coverDivID);
 
-    _captionEl = _viewPortCoverEl.find('.caption');
+    _captionEl = _viewPortCoverEl.find('.floatimage__caption');
 
     hideFloatImageCover();
 
@@ -75,7 +46,7 @@ APP.AppView.FloatImageView = (function() {
    */
   function apply(container) {
     getFloatingElementsInContainer(container).forEach(function(el) {
-      $(el).wrapInner('<div class="float-image-wrapper" />');
+      $(el).wrapInner('<div class="floatimage__wrapper" />');
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
     });
   }
@@ -133,7 +104,7 @@ APP.AppView.FloatImageView = (function() {
     imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
     imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = $('<div class="zoomed-image"></div>');
+    var zoomImage = $('<div class="'+_zoomedImageClass+'"></div>');
     zoomImage.css({ 'background-image': 'url("'+imgSrc+'")',
       'top': imgOriginY,
       'left': imgOriginX,
@@ -219,7 +190,7 @@ APP.AppView.FloatImageView = (function() {
    * The enlarged image is present during the cover fade out, remove it when that's completed
    */
   function hideFloatImageCoverComplete() {
-    _viewPortCoverEl.find('.zoomed-image').remove();
+    _viewPortCoverEl.find('.'+_zoomedImageClass).remove();
   }
 
   /**

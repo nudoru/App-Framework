@@ -1,11 +1,11 @@
-%item-details-box-row
+%deatils-row
   padding-left: $base-line-height * 10
   padding-right: $base-line-height * 5
   +respond-to(max-width, $tablet-mobile-break)
     padding-left: $double-base-line-height
     padding-right: $double-base-line-height
 
-#item-details-box
+#details
   position: absolute
   width: 80%
   max-width: 1000px
@@ -16,18 +16,7 @@
   background-color: rgb(255,255,255)
   box-shadow: 0 0 20px rgba(0,0,0,.5)
 
-
-
-  .small-image
-    display: none
-    position: absolute
-    left: 10px
-    top: 100px
-    width: 285px
-    @extend .photo-border
-    img
-      @extend .img-responsive
-  .content
+  .details__content
     position: relative
     width: 100%
     left: 0
@@ -37,7 +26,7 @@
     background-color: rgba(255,255,255,.9)
     overflow-y: scroll
     p
-      @extend %item-details-box-row
+      @extend %deatils-row
       margin-bottom: $double-base-line-height
       font-size: 1rem
       line-height: $double-base-line-height + $half-base-line-height
@@ -49,8 +38,8 @@
         line-height: $double-base-line-height + $base-line-height
     a
       @extend a.custom
-    .title
-      @extend %item-details-box-row
+    .details__content-title
+      @extend %deatils-row
       margin-bottom: $double-base-line-height
       h1
         margin: 0
@@ -62,22 +51,20 @@
         font-weight: 300
         line-height: $base-line-height * 4
 
-    .extras
+    .details__content-extras
       position: relative
       float: right
       padding-right: $double-base-line-height
       padding-top: $base-line-height
-
-    .share-button
+    .details__content-share-button
       display: inline-block
       margin-right: 0
       em
         font-style: normal
       i.fa
         padding-right: $half-base-line-height
-
-    .description-data
-      @extend %item-details-box-row
+    .details__content-description-data
+      @extend %deatils-row
       margin-bottom: $double-base-line-height
       ul
         @extend %plain-list
@@ -88,12 +75,12 @@
             font-style: normal
             font-weight: normal
             color: $dark-blue
-    .description-metadata
+    .details__content-description-metadata
       @extend .tag-listing-horizontal
-      @extend %item-details-box-row
+      @extend %deatils-row
       margin-top: $double-base-line-height
       margin-bottom: $double-base-line-height
-    .preview-images
+    .details__content-preview-images
       position: relative
       width: 100%
       padding: $base-line-height
@@ -122,16 +109,17 @@
             box-shadow: 2px 2px 10px 0px rgba(0,0,0,.15)
           &:last-of-type
             padding-right: 0
-    .content-links
-      @extend %item-details-box-row
+    .details__content-links
+      @extend %deatils-row
       margin-top: $double-base-line-height
       margin-bottom: $double-base-line-height
       ul
         @extend %plain-list
+
   +respond-to(max-width, $tablet-mobile-break)
-    .content
+    .details__content
       padding-top: $double-base-line-height
-      .title
+      .details__content-title
         h1
           font-size: 1.4rem
           line-height: 2rem

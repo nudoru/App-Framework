@@ -1,12 +1,11 @@
-.grid-container
+.grid
   @extend %relative-area
   margin-top: $header-height
   margin-bottom: $footer-height
   +respond-to(max-width, $tablet-mobile-break)
     margin-top: $mobile-header-height
 
-
-.item-grid-header
+.grid__header
   position: relative
   overflow: hidden
   padding: $double-base-line-height
@@ -19,13 +18,20 @@
     padding: 5px 0
     margin: 0
     +standard-text-shadow-light
-  .search-form
-    position: absolute
-    right: $double-base-line-height
-    top: $double-base-line-height
-  .search
-    @extend %input-icon-right-pair
-    display: inline-block
+  +respond-to(max-width, $tablet-mobile-break)
+    padding-top: $base-line-height
+    padding-bottom: $base-line-height
+    h1
+      font-size: 1rem
+      font-weight: 400
+  +respond-to(max-width, $phone-mobile-break)
+    h1
+      font-size: .8rem
+
+.grid__header-search-form
+  position: absolute
+  right: $double-base-line-height
+  top: $double-base-line-height
   button
     display: inline-block
     margin-right: 0
@@ -33,24 +39,22 @@
       font-style: normal
     i.fa
       padding-right: $half-base-line-height
+
+  .grid__header-search
+    @extend %input-icon-right-pair
+    display: inline-block
+
   +respond-to(max-width, $tablet-mobile-break)
-    padding-top: $base-line-height
-    padding-bottom: $base-line-height
-    h1
-      font-size: 1rem
-      font-weight: 400
-    .search-form
-      top: $base-line-height
+    top: $base-line-height
     button
       padding-left: $base-line-height
       padding-right: $base-line-height
-    .search
+    .grid__header-search
       display: none
-  +respond-to(max-width, $phone-mobile-break)
-    h1
-      font-size: .8rem
 
-#item-grid
+
+
+#grid__item-container
   overflow: hidden
   padding: $double-base-line-height
 
@@ -66,7 +70,7 @@ $mobile-phone-item-height: 200px
 .item
   display: inline-block
 
-.item-content
+.item__content
   @extend %plain-list
   @extend %prevent-text-selection
   +slight-panel-shadow
@@ -76,19 +80,19 @@ $mobile-phone-item-height: 200px
   border: 1px solid $color-white-grey-line
   border-bottom: 2px solid $light-warm-grey
   overflow: hidden
-  .image
+  .item__image
     display: block
     pointer-events: none
     overflow: hidden
     background-color: scale-lightness($light-warm-grey, 30%)
-    .image-wrapper
-      opacity: .65
-      width: $item-width
-      height: $item-height
+  .item__image-wrapper
+    opacity: .65
+    width: $item-width
+    height: $item-height
     img
       width: 100%
       height: 100%
-  .data
+  .item__data
     @extend %plain-list
     display: block
     width: $item-width
@@ -106,7 +110,7 @@ $mobile-phone-item-height: 200px
       padding: 0
     i.fa
       margin-right: $half-base-line-height
-    .title
+    .item__data-title
       overflow: hidden
       font-size: 1.2rem
       font-family: $font-content
@@ -114,7 +118,7 @@ $mobile-phone-item-height: 200px
       text-align: center
       font-weight: 400
       padding: $double-base-line-height 22px $double-base-line-height
-    .metadata
+    .item__data-metadata
       @extend %plain-list
       padding: $base-line-height 22px $base-line-height
       background-color: $color-white-grey-fill
@@ -129,132 +133,48 @@ $mobile-phone-item-height: 200px
         float: right
         text-align: right
         width: 50%
+
   +respond-to(max-width, $tablet-mobile-break)
     width: $mobile-item-width
-    .data
+    .item__data
       width: $mobile-item-width
-      .title
+      .item__data-title
         font-size: 1rem
         font-weight: 400
         padding-top: $base-line-height
         padding-bottom: $base-line-height
-    .image
-      .image-wrapper
+    .item__image
+      .item__image-wrapper
         width: $mobile-item-width
         height: $mobile-item-height
-    .metadata
+    .item__data-metadata
       display: none
+
   +respond-to(max-width, $phone-mobile-break)
     width: $mobile-phone-item-width
-    .data
+    .item__data
       width: $mobile-phone-item-width
-      .title
+      .item__data-title
         font-size: 1rem
         font-weight: 400
         padding-top: $base-line-height
         padding-bottom: $base-line-height
-    .image
-      .image-wrapper
+    .item__image
+      .item__image-wrapper
         width: $mobile-phone-item-width
         height: $mobile-phone-item-height
         opacity: .75
-    .metadata
+    .item__data-metadata
       display: none
 
-// wrapper
-//.item
-//  display: inline-block
-//
-//.item-content
-//  @extend %plain-list
-//  @extend %prevent-text-selection
-//  position: relative
-//  cursor: pointer
-//  width: $item-width
-//  height: auto //$item-height
-//  //overflow: hidden
-//  border-radius: 3px
-//  border-bottom: 1px solid $light-warm-grey
-//  .image
-//    position: absolute
-//    left: 0px
-//    top: 0px
-//    width: $item-width
-//    height: $item-height
-//    pointer-events: none
-//    opacity: .25
-//    img
-//      width: 100%
-//      height: 100%
-//  .data
-//    @extend %plain-list
-//    position: absolute
-//    bottom: 0
-//    left: 0
-//    width: $item-width
-//    margin: 0
-//    padding: $base-line-height 22px $base-line-height
-//    overflow: hidden
-//    background-color: rgba(255,255,255,.5)
-//    pointer-events: none
-//    box-shadow: 0px -10px 20px rgba(0,0,0,.15)
-//    text-shadow: 0 0 1px #fff
-//    li
-//      color: #333
-//      font-family: $font-header
-//      font-size: .7rem
-//      line-height: 1.1rem
-//      margin: 0
-//      padding: 0
-//    i.fa
-//      margin-right: $half-base-line-height
-//    .title
-//      overflow: hidden
-//      font-size: 1.2rem
-//      font-family: $font-content
-//      line-height: $double-base-line-height
-//      text-align: center
-//      font-weight: 400
-//      margin-bottom: $double-base-line-height
-//    .metadata
-//      @extend %plain-list
-//    .left
-//      float: left
-//      text-align: left
-//      width: 50%
-//    .right
-//      float: right
-//      text-align: right
-//      width: 50%
-//  +respond-to(max-width, $tablet-mobile-break)
-//    width: $mobile-item-width
-//    height: $mobile-item-height
-//    .data
-//      width: $mobile-item-width
-//      .title
-//        font-size: 1rem
-//        font-weight: 400
-//    .image
-//      width: $mobile-item-width
-//      height: $mobile-item-height
-//  +respond-to(max-width, $phone-mobile-break)
-//    width: $mobile-phone-item-width
-//    height: $mobile-phone-item-height
-//    .image
-//      width: $mobile-phone-item-width
-//      height: $mobile-phone-item-height
-//    .data
-//      width: $mobile-phone-item-width
-//      .title
-//        font-size: .8rem
-//        font-weight: 400
+
 
 =item-category($color)
   background-color: #fff
   border-bottom: 2px solid $color
-  .image
+  .item__image
     background-color: scale-lightness($color, 20%)
-  li.title
+  li.item__data-title
     color: $color
 
 .item-category1

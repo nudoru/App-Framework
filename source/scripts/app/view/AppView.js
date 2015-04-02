@@ -91,29 +91,30 @@ APP.AppView = (function() {
 
   function updateAppTitle() {
     _mainHeaderEl.find('h1').html(_appGlobals.appConfig.title);
+    document.title = StringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {
     // ui parts
-    _appContainerEl = $('#app-container');
-    _appEl = $('#app');
+    _appContainerEl = $('#app__container');
+    _appEl = $('#app__contents');
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = $('#drawer');
-    _drawerToggleButtonEl = $('.drawer-toggle button');
+    _drawerToggleButtonEl = $('.header__drawer-toggle button');
 
-    _mainHeaderEl = $('#main-header');
-    _mainFooterEl = $('#main-footer');
+    _mainHeaderEl = $('#header');
+    _mainFooterEl = $('#footer');
 
     // item grid header
-    _mainSearchInputEl = $('.item-grid-header .search input');
-    _searchHeaderEl = $('.item-grid-header h1');
+    _mainSearchInputEl = $('.grid__header .grid__header-search input');
+    _searchHeaderEl = $('.grid__header h1');
     _clearAllButtonEl = $('#clearall-button');
   }
 
   function initializeComponents() {
     _toastView = _self.ToastView;
-    _toastView.initialize('#toast-container');
+    _toastView.initialize('#toast__container');
 
     _modalCoverView = _self.ModalCoverView;
     _modalCoverView.initialize();
@@ -124,10 +125,10 @@ APP.AppView = (function() {
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
-    _itemDetailView.initialize('#item-details-box');
+    _itemDetailView.initialize('#details');
 
     _tagBarView = _self.TagBarView;
-    _tagBarView.initialize('#tag-bar');
+    _tagBarView.initialize('#tagbar__container');
 
     TweenMax.to(_drawerEl, 0, {x:_drawerWidth*-1});
   }
@@ -382,7 +383,7 @@ APP.AppView = (function() {
 
 
   function initializeGridView(data) {
-    _itemGridView.initialize('#item-grid', data);
+    _itemGridView.initialize('#grid__item-container', data);
   }
 
   function onGridViewLayoutComplete() {
@@ -437,12 +438,12 @@ APP.AppView = (function() {
   }
 
   function removeLoadingMessage() {
-    TweenMax.to($('#initialization-cover'), 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
-      $('#initialization-cover').remove();
+    TweenMax.to($('#initialization__cover'), 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
+      $('#initialization__cover').remove();
     }});
 
-    TweenMax.to($('.initialization-message'), 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
-      $('.initialization-message').remove();
+    TweenMax.to($('.initialization__message'), 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
+      $('.initialization__message').remove();
     }});
   }
 

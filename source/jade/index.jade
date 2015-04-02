@@ -14,41 +14,40 @@ html
     script(src='scripts/vendor/html5shiv.min.js')
     <![endif]-->
   body
-    #app-container
+    #app__container
       #drawer
         nav#drawer-navigation
-      #app
-        header#main-header
-          .drawer-toggle
+      #app__contents
+        header#header
+          .header__drawer-toggle
             button
               i.fa.fa-bars
           h1
           nav#main-navigation
-        .grid-iscroll-wrapper
-          section.grid-container
-            section.item-grid-header
-              h1 Please wait ...
-              .search-form
-                .search
-                  input(placeholder='Search titles and tags' size='25')
-                  i.fa.fa-search
-                button.basic-button#clearall-button
-                  i.fa.fa-remove
-                  em Clear All
-            #item-grid
-        footer#main-footer
-          #tag-bar
-    #initialization-cover
-      .initialization-message
+        section.grid
+          section.grid__header
+            h1 Please wait ...
+            .grid__header-search-form
+              .grid__header-search
+                input(placeholder='Search titles and tags' size='25')
+                i.fa.fa-search
+              button.basic-button#clearall-button
+                i.fa.fa-remove
+                em Clear All
+          #grid__item-container
+        footer#footer
+          #tagbar__container
+    #initialization__cover
+      .initialization__message
         h1 Please Wait ...
-    #modal-cover
-      .modal-background
-      .modal-close-button
+    #modal__cover
+      .modal__background
+      .modal__close-button
         i.fa.fa-remove
-      #item-details-box
-    #float-image-cover
-      .caption
-    #toast-container
+      #details
+    #floatimage__cover
+      .floatimage__caption
+    #toast__container
     script(src='scripts/config.js')
     script(src='scripts/libs.min.js')
     script(src='//localhost:35729/livereload.js')

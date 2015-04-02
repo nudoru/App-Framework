@@ -17,16 +17,16 @@ APP.AppView.ItemDetailView = (function() {
     _floatImageView.initialize();
 
     _itemDTemplateSrc = ''
-    +'<div class="content">'
+    +'<div class="details__content">'
 
-      +'<div class="title">'
+      +'<div class="details__content-title">'
        +'<h1><%= title %></h1>'
       +'</div>'
-      +'<div class="description">'
-          +'<div class="extras">'
-            +'<button id="item-details-share-button" class="basic-button share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
+      +'<div class="details__content-description">'
+          +'<div class="details__content-extras">'
+            +'<button id="details__content-share-button" class="basic-button share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
           +'</div>'
-          +'<div class="description-data">'
+          +'<div class="details__content-description-data">'
             +'<ul>'
               +'<li class="lob icon-left"><i class="fa fa-building"></i>Created for <em><%= companyArea %></em></li>'
               +'<li class="date icon-left"><i class="fa fa-calendar"></i>Completed on <em><%= dateCompleted %></em></li>'
@@ -35,15 +35,15 @@ APP.AppView.ItemDetailView = (function() {
             +'</ul>'
           +'</div>'
 
-        +'<div class="preview-images">'
+        +'<div class="details__content-preview-images">'
           +'<ul>'
           +'<% _.each(images, function(image) { %>'
-          +'<li><div class="float-image"><img src="<%= image %>" alt="<%= title %> preview image"></div></li>'
+          +'<li><div class="floatimage__srcimage"><img src="<%= image %>" alt="<%= title %> preview image"></div></li>'
           +'<% }); %>'
           +'</ul>'
         +'</div>'
         +'<%= description %>'
-        +'<div class="description-metadata">'
+        +'<div class="details__content-description-metadata">'
           +'<ul>'
           +'<% _.each(categories, function(cat) { %>'
           +'<li class="type icon-left"><i class="fa fa-cube"></i><%= cat %></li>'
@@ -53,7 +53,7 @@ APP.AppView.ItemDetailView = (function() {
           +'<% }); %>'
           +'</ul>'
         +'</div>'
-        +'<div class="content-links">'
+        +'<div class="details__content-links">'
           +'<ul>'
           +'<% _.each(links, function(link) { %>'
           +'<li class="icon-left"><a href="<%= link %>" target="_blank"><i class="fa fa-external-link"></i><%= link %></a></li>'
@@ -66,11 +66,11 @@ APP.AppView.ItemDetailView = (function() {
     _itemDTemplate = _.template(_itemDTemplateSrc);
 
     _messageTemplateSrc = ''
-      +'<div class="content">'
-      +'<div class="title">'
+      +'<div class="details__content">'
+      +'<div class="details__content-title">'
       +'<h1><%= title %></h1>'
       +'</div>'
-      +'<div class="description">'
+      +'<div class="details__content-description">'
       +'<%= description %>'
       +'</div>'
       +'</div>';
@@ -83,9 +83,9 @@ APP.AppView.ItemDetailView = (function() {
 
     _containerEl.html(_itemDTemplate(_currentItem));
 
-    _floatImageView.apply(_containerEl.find('.preview-images'));
+    _floatImageView.apply(_containerEl.find('.details__content-preview-images'));
 
-    _shareButtonEl = document.getElementById('item-details-share-button');
+    _shareButtonEl = document.getElementById('details__content-share-button');
     _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
@@ -97,7 +97,7 @@ APP.AppView.ItemDetailView = (function() {
       +'<a href="'+document.location.href+'">'+_currentItem.title+'</a><br><br>'
       +_currentItem.description;
     var shareWin = window.open(shareStr);
-    shareWin.close();
+    //shareWin.close();
   }
 
   function showMessage(obj) {

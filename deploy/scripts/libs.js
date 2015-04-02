@@ -370,6 +370,10 @@ var DOMUtils = {
 
   capitalizeFirstLetter: function(str) {
     return str.charAt(0).toUpperCase() + str.substring(1);
+  },
+
+  removeTags: function(str) {
+     return str.replace(/(<([^>]+)>)/ig, '');
   }
 
 };;var LOREM = (function(){
@@ -1488,29 +1492,30 @@ APP.AppView = (function() {
 
   function updateAppTitle() {
     _mainHeaderEl.find('h1').html(_appGlobals.appConfig.title);
+    document.title = StringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {
     // ui parts
-    _appContainerEl = $('#app-container');
-    _appEl = $('#app');
+    _appContainerEl = $('#app__container');
+    _appEl = $('#app__contents');
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = $('#drawer');
-    _drawerToggleButtonEl = $('.drawer-toggle button');
+    _drawerToggleButtonEl = $('.header__drawer-toggle button');
 
-    _mainHeaderEl = $('#main-header');
-    _mainFooterEl = $('#main-footer');
+    _mainHeaderEl = $('#header');
+    _mainFooterEl = $('#footer');
 
     // item grid header
-    _mainSearchInputEl = $('.item-grid-header .search input');
-    _searchHeaderEl = $('.item-grid-header h1');
+    _mainSearchInputEl = $('.grid__header .grid__header-search input');
+    _searchHeaderEl = $('.grid__header h1');
     _clearAllButtonEl = $('#clearall-button');
   }
 
   function initializeComponents() {
     _toastView = _self.ToastView;
-    _toastView.initialize('#toast-container');
+    _toastView.initialize('#toast__container');
 
     _modalCoverView = _self.ModalCoverView;
     _modalCoverView.initialize();
@@ -1521,10 +1526,10 @@ APP.AppView = (function() {
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
-    _itemDetailView.initialize('#item-details-box');
+    _itemDetailView.initialize('#details');
 
     _tagBarView = _self.TagBarView;
-    _tagBarView.initialize('#tag-bar');
+    _tagBarView.initialize('#tagbar__container');
 
     TweenMax.to(_drawerEl, 0, {x:_drawerWidth*-1});
   }
@@ -1779,7 +1784,7 @@ APP.AppView = (function() {
 
 
   function initializeGridView(data) {
-    _itemGridView.initialize('#item-grid', data);
+    _itemGridView.initialize('#grid__item-container', data);
   }
 
   function onGridViewLayoutComplete() {
@@ -1834,12 +1839,12 @@ APP.AppView = (function() {
   }
 
   function removeLoadingMessage() {
-    TweenMax.to($('#initialization-cover'), 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
-      $('#initialization-cover').remove();
+    TweenMax.to($('#initialization__cover'), 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
+      $('#initialization__cover').remove();
     }});
 
-    TweenMax.to($('.initialization-message'), 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
-      $('.initialization-message').remove();
+    TweenMax.to($('.initialization__message'), 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
+      $('.initialization__message').remove();
     }});
   }
 
@@ -1898,9 +1903,9 @@ APP.AppView.ModalCoverView = (function() {
 
     _isVisible = true;
 
-    _modalCoverEl = $('#modal-cover');
-    _modalBackgroundEl = $('.modal-background');
-    _modalCloseButtonEl = $('.modal-close-button');
+    _modalCoverEl = $('#modal__cover');
+    _modalBackgroundEl = $('.modal__background');
+    _modalCloseButtonEl = $('.modal__close-button');
 
     var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl[0], appGlobals.mouseClickEvtStr),
       modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl[0], appGlobals.mouseClickEvtStr);
@@ -1958,9 +1963,9 @@ APP.AppView.ToastView = (function(){
       _counter = 0,
       _defaultExpireDuration = 7000,
       _containerEl,
-      _templateToast = _.template('<div class="toast" id="<%= id %>">' +
-      '<div class="content"><h1><%= title %></h1><p><%= message %></p></div>' +
-      '<div class="controls"><button><i class="fa fa-close"></i></button></div></div>');
+      _templateToast = _.template('<div class="toast__item" id="<%= id %>">' +
+      '<div class="toast__item-content"><h1><%= title %></h1><p><%= message %></p></div>' +
+      '<div class="toast__item-controls"><button><i class="fa fa-close"></i></button></div></div>');
 
   function initialize(elID) {
     _containerEl = $(elID);
@@ -2776,7 +2781,7 @@ APP.AppView.ItemGridView = (function(){
     }
 
     // Need to traverse up the DOM for IE9
-    var el = getTargetElMatching(target, '.item-content');
+    var el = getTargetElMatching(target, '.item__content');
     if(el){
       return el.tagName.toLowerCase() === 'ul';
     }
@@ -2784,7 +2789,7 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function getMouseEventTargetID(evt) {
-    var target = getTargetElMatching(evt.target, '.item-content');
+    var target = getTargetElMatching(evt.target, '.item__content');
     return target.getAttribute('data-value');
   }
 
@@ -3076,11 +3081,11 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     },
 
     render: function() {
-      var templateHTML = '<div class="item"><ul class="item-content <%= categories[0] %>" data-value="<%= id %>">' +
-        '<li class="image"><div class="image-wrapper"><img src="<%= previewImage %>"></div></li>' +
-        '<ul class="data">' +
-        '<li class="title"><%= title %></li>' +
-        '<ul class="metadata">' +
+      var templateHTML = '<div class="item"><ul class="item__content <%= categories[0] %>" data-value="<%= id %>">' +
+        '<li class="item__image"><div class="item__image-wrapper"><img src="<%= previewImage %>"></div></li>' +
+        '<ul class="item__data">' +
+        '<li class="item__data-title"><%= title %></li>' +
+        '<ul class="item__data-metadata">' +
         '<li class="left">' +
         '<% _.each(categories, function(cat) { %>' +
         '<i class="fa fa-cube"></i><%= cat %>' +
@@ -3096,9 +3101,9 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.renderedHTML = this.template(this.data);
 
       this.element = $(this.renderedHTML);
-      this.elementContent = this.element.find('.item-content');
-      this.dataEl = this.element.find('.data');
-      this.imageEl = this.element.find('.image-wrapper');
+      this.elementContent = this.element.find('.item__content');
+      this.dataEl = this.element.find('.item__data');
+      this.imageEl = this.element.find('.item__image-wrapper');
     },
 
     /**
@@ -3232,16 +3237,16 @@ APP.AppView.ItemDetailView = (function() {
     _floatImageView.initialize();
 
     _itemDTemplateSrc = ''
-    +'<div class="content">'
+    +'<div class="details__content">'
 
-      +'<div class="title">'
+      +'<div class="details__content-title">'
        +'<h1><%= title %></h1>'
       +'</div>'
-      +'<div class="description">'
-          +'<div class="extras">'
-            +'<button id="item-details-share-button" class="basic-button share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
+      +'<div class="details__content-description">'
+          +'<div class="details__content-extras">'
+            +'<button id="details__content-share-button" class="basic-button share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
           +'</div>'
-          +'<div class="description-data">'
+          +'<div class="details__content-description-data">'
             +'<ul>'
               +'<li class="lob icon-left"><i class="fa fa-building"></i>Created for <em><%= companyArea %></em></li>'
               +'<li class="date icon-left"><i class="fa fa-calendar"></i>Completed on <em><%= dateCompleted %></em></li>'
@@ -3250,15 +3255,15 @@ APP.AppView.ItemDetailView = (function() {
             +'</ul>'
           +'</div>'
 
-        +'<div class="preview-images">'
+        +'<div class="details__content-preview-images">'
           +'<ul>'
           +'<% _.each(images, function(image) { %>'
-          +'<li><div class="float-image"><img src="<%= image %>" alt="<%= title %> preview image"></div></li>'
+          +'<li><div class="floatimage__srcimage"><img src="<%= image %>" alt="<%= title %> preview image"></div></li>'
           +'<% }); %>'
           +'</ul>'
         +'</div>'
         +'<%= description %>'
-        +'<div class="description-metadata">'
+        +'<div class="details__content-description-metadata">'
           +'<ul>'
           +'<% _.each(categories, function(cat) { %>'
           +'<li class="type icon-left"><i class="fa fa-cube"></i><%= cat %></li>'
@@ -3268,7 +3273,7 @@ APP.AppView.ItemDetailView = (function() {
           +'<% }); %>'
           +'</ul>'
         +'</div>'
-        +'<div class="content-links">'
+        +'<div class="details__content-links">'
           +'<ul>'
           +'<% _.each(links, function(link) { %>'
           +'<li class="icon-left"><a href="<%= link %>" target="_blank"><i class="fa fa-external-link"></i><%= link %></a></li>'
@@ -3281,11 +3286,11 @@ APP.AppView.ItemDetailView = (function() {
     _itemDTemplate = _.template(_itemDTemplateSrc);
 
     _messageTemplateSrc = ''
-      +'<div class="content">'
-      +'<div class="title">'
+      +'<div class="details__content">'
+      +'<div class="details__content-title">'
       +'<h1><%= title %></h1>'
       +'</div>'
-      +'<div class="description">'
+      +'<div class="details__content-description">'
       +'<%= description %>'
       +'</div>'
       +'</div>';
@@ -3298,9 +3303,9 @@ APP.AppView.ItemDetailView = (function() {
 
     _containerEl.html(_itemDTemplate(_currentItem));
 
-    _floatImageView.apply(_containerEl.find('.preview-images'));
+    _floatImageView.apply(_containerEl.find('.details__content-preview-images'));
 
-    _shareButtonEl = document.getElementById('item-details-share-button');
+    _shareButtonEl = document.getElementById('details__content-share-button');
     _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
@@ -3312,7 +3317,7 @@ APP.AppView.ItemDetailView = (function() {
       +'<a href="'+document.location.href+'">'+_currentItem.title+'</a><br><br>'
       +_currentItem.description;
     var shareWin = window.open(shareStr);
-    shareWin.close();
+    //shareWin.close();
   }
 
   function showMessage(obj) {
@@ -3344,8 +3349,9 @@ APP.AppView.ItemDetailView = (function() {
 }());;APP.createNameSpace('APP.AppView.FloatImageView');
 APP.AppView.FloatImageView = (function() {
 
-  var _coverDivID = '#float-image-cover',
-      _floatingImageClass = '.float-image',
+  var _coverDivID = '#floatimage__cover',
+      _floatingImageClass = '.floatimage__srcimage',
+      _zoomedImageClass = 'floatimage__zoomedimage',
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
@@ -3358,7 +3364,7 @@ APP.AppView.FloatImageView = (function() {
   function initialize() {
     _viewPortCoverEl = $(_coverDivID);
 
-    _captionEl = _viewPortCoverEl.find('.caption');
+    _captionEl = _viewPortCoverEl.find('.floatimage__caption');
 
     hideFloatImageCover();
 
@@ -3374,7 +3380,7 @@ APP.AppView.FloatImageView = (function() {
    */
   function apply(container) {
     getFloatingElementsInContainer(container).forEach(function(el) {
-      $(el).wrapInner('<div class="float-image-wrapper" />');
+      $(el).wrapInner('<div class="floatimage__wrapper" />');
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
     });
   }
@@ -3432,7 +3438,7 @@ APP.AppView.FloatImageView = (function() {
     imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
     imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = $('<div class="zoomed-image"></div>');
+    var zoomImage = $('<div class="'+_zoomedImageClass+'"></div>');
     zoomImage.css({ 'background-image': 'url("'+imgSrc+'")',
       'top': imgOriginY,
       'left': imgOriginX,
@@ -3518,7 +3524,7 @@ APP.AppView.FloatImageView = (function() {
    * The enlarged image is present during the cover fade out, remove it when that's completed
    */
   function hideFloatImageCoverComplete() {
-    _viewPortCoverEl.find('.zoomed-image').remove();
+    _viewPortCoverEl.find('.'+_zoomedImageClass).remove();
   }
 
   /**

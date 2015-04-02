@@ -185,7 +185,7 @@ APP.AppView.ItemGridView = (function(){
     }
 
     // Need to traverse up the DOM for IE9
-    var el = getTargetElMatching(target, '.item-content');
+    var el = getTargetElMatching(target, '.item__content');
     if(el){
       return el.tagName.toLowerCase() === 'ul';
     }
@@ -193,7 +193,7 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function getMouseEventTargetID(evt) {
-    var target = getTargetElMatching(evt.target, '.item-content');
+    var target = getTargetElMatching(evt.target, '.item__content');
     return target.getAttribute('data-value');
   }
 
@@ -485,11 +485,11 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     },
 
     render: function() {
-      var templateHTML = '<div class="item"><ul class="item-content <%= categories[0] %>" data-value="<%= id %>">' +
-        '<li class="image"><div class="image-wrapper"><img src="<%= previewImage %>"></div></li>' +
-        '<ul class="data">' +
-        '<li class="title"><%= title %></li>' +
-        '<ul class="metadata">' +
+      var templateHTML = '<div class="item"><ul class="item__content <%= categories[0] %>" data-value="<%= id %>">' +
+        '<li class="item__image"><div class="item__image-wrapper"><img src="<%= previewImage %>"></div></li>' +
+        '<ul class="item__data">' +
+        '<li class="item__data-title"><%= title %></li>' +
+        '<ul class="item__data-metadata">' +
         '<li class="left">' +
         '<% _.each(categories, function(cat) { %>' +
         '<i class="fa fa-cube"></i><%= cat %>' +
@@ -505,9 +505,9 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.renderedHTML = this.template(this.data);
 
       this.element = $(this.renderedHTML);
-      this.elementContent = this.element.find('.item-content');
-      this.dataEl = this.element.find('.data');
-      this.imageEl = this.element.find('.image-wrapper');
+      this.elementContent = this.element.find('.item__content');
+      this.dataEl = this.element.find('.item__data');
+      this.imageEl = this.element.find('.item__image-wrapper');
     },
 
     /**

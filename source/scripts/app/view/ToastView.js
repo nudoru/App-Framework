@@ -10,9 +10,9 @@ APP.AppView.ToastView = (function(){
       _counter = 0,
       _defaultExpireDuration = 7000,
       _containerEl,
-      _templateToast = _.template('<div class="toast" id="<%= id %>">' +
-      '<div class="content"><h1><%= title %></h1><p><%= message %></p></div>' +
-      '<div class="controls"><button><i class="fa fa-close"></i></button></div></div>');
+      _templateToast = _.template('<div class="toast__item" id="<%= id %>">' +
+      '<div class="toast__item-content"><h1><%= title %></h1><p><%= message %></p></div>' +
+      '<div class="toast__item-controls"><button><i class="fa fa-close"></i></button></div></div>');
 
   function initialize(elID) {
     _containerEl = $(elID);

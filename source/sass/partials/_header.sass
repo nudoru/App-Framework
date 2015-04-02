@@ -1,4 +1,4 @@
-#main-header
+#header
   position: absolute
   top: 0
   left: 0
@@ -9,27 +9,6 @@
   padding: 0 $double-base-line-height
   background-color: #fff
   text-shadow: none
-  .drawer-toggle
-    visibility: hidden
-    position: absolute
-    top: 0
-    left: 0
-    bottom: 0
-    button
-      border: 0
-      background-color: rgba(0,0,0,.15)
-      border-right: 1px solid rgba(0,0,0,.20)
-      padding: 13px $base-line-height $base-line-height $base-line-height
-      height: $mobile-header-height
-      min-height: $mobile-header-height
-      cursor: pointer
-      i.fa
-        font-size: 1.4rem
-        color: #fff
-      &:active, &:hover
-        color: $light-blue
-    +respond-to(max-width, $tablet-mobile-break)
-      visibility: visible
   h1
     float: left
     margin: 0
@@ -59,4 +38,27 @@
       letter-spacing: 0
       em
         color: #fff
+
+.header__drawer-toggle
+  visibility: hidden
+  position: absolute
+  top: 0
+  left: 0
+  bottom: 0
+  button
+    border: 0
+    background-color: rgba(0,0,0,.15)
+    border-right: 1px solid rgba(0,0,0,.20)
+    padding: 13px $base-line-height $base-line-height $base-line-height
+    height: $mobile-header-height
+    min-height: $mobile-header-height
+    cursor: pointer
+    i.fa
+      font-size: 1.4rem
+      color: #fff
+    &:active, &:hover
+      color: $light-blue
+  +respond-to(max-width, $tablet-mobile-break)
+    visibility: visible
+
 

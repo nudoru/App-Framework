@@ -13,51 +13,49 @@
     <script src="scripts/vendor/html5shiv.min.js"></script><![endif]-->
   </head>
   <body>
-    <div id="app-container">
+    <div id="app__container">
       <div id="drawer">
         <nav id="drawer-navigation"></nav>
       </div>
-      <div id="app">
-        <header id="main-header">
-          <div class="drawer-toggle">
+      <div id="app__contents">
+        <header id="header">
+          <div class="header__drawer-toggle">
             <button><i class="fa fa-bars"></i></button>
           </div>
           <h1></h1>
           <nav id="main-navigation"></nav>
         </header>
-        <div class="grid-iscroll-wrapper">
-          <section class="grid-container">
-            <section class="item-grid-header">
-              <h1>Please wait ...</h1>
-              <div class="search-form">
-                <div class="search">
-                  <input placeholder="Search titles and tags" size="25"><i class="fa fa-search"></i>
-                </div>
-                <button id="clearall-button" class="basic-button"><i class="fa fa-remove"></i><em>Clear All</em></button>
+        <section class="grid">
+          <section class="grid__header">
+            <h1>Please wait ...</h1>
+            <div class="grid__header-search-form">
+              <div class="grid__header-search">
+                <input placeholder="Search titles and tags" size="25"><i class="fa fa-search"></i>
               </div>
-            </section>
-            <div id="item-grid"></div>
+              <button id="clearall-button" class="basic-button"><i class="fa fa-remove"></i><em>Clear All</em></button>
+            </div>
           </section>
-        </div>
-        <footer id="main-footer">
-          <div id="tag-bar"></div>
+          <div id="grid__item-container"></div>
+        </section>
+        <footer id="footer">
+          <div id="tagbar__container"></div>
         </footer>
       </div>
     </div>
-    <div id="initialization-cover">
-      <div class="initialization-message">
+    <div id="initialization__cover">
+      <div class="initialization__message">
         <h1>Please Wait ...</h1>
       </div>
     </div>
-    <div id="modal-cover">
-      <div class="modal-background"></div>
-      <div class="modal-close-button"><i class="fa fa-remove"></i></div>
-      <div id="item-details-box"></div>
+    <div id="modal__cover">
+      <div class="modal__background"></div>
+      <div class="modal__close-button"><i class="fa fa-remove"></i></div>
+      <div id="details"></div>
     </div>
-    <div id="float-image-cover">
-      <div class="caption"></div>
+    <div id="floatimage__cover">
+      <div class="floatimage__caption"></div>
     </div>
-    <div id="toast-container"></div>
+    <div id="toast__container"></div>
     <script src="scripts/config.js"></script>
     <script src="scripts/libs.min.js"></script>
     <script src="//localhost:35729/livereload.js"></script>

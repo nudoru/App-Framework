@@ -2,14 +2,14 @@
 //  Toast
 //------------------------------------------------------------------------------
 
-#toast-container
+#toast__container
   position: fixed
   top: $base-line-height
   right: $base-line-height
   //pointer-events: auto
   z-index: $z-index-toast-container
 
-.toast
+.toast__item
   @extend %panel
   display: table
   position: absolute
@@ -19,19 +19,16 @@
   padding: 0
   overflow: hidden
   +one-edge-shadow-large
-  .content, .controls
-    padding: $base-line-height
-    display: table-cell
-    vertical-align: middle
-    text-align: left
-  .content
-    float: left
-    width: 190px
-  .controls
-    width: 55px
-    background-color: $color-white-grey-fill
-    //border-left: 1px solid $color-white-grey-line
-    text-align: center
+
+.toast__item-content, .toast__item-controls
+  padding: $base-line-height
+  display: table-cell
+  vertical-align: middle
+  text-align: left
+
+.toast__item-content
+  float: left
+  width: 190px
   h1, p
     font-family: $font-content
     color: $light-warm-grey
@@ -45,5 +42,11 @@
     margin-bottom: $half-base-line-height
   p
     color: $dark-blue
+
+.toast__item-controls
+  width: 55px
+  background-color: $color-white-grey-fill
+  //border-left: 1px solid $color-white-grey-line
+  text-align: center
   button
     @extend .icon-button

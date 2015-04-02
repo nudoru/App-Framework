@@ -15,9 +15,9 @@ APP.AppView.ModalCoverView = (function() {
 
     _isVisible = true;
 
-    _modalCoverEl = $('#modal-cover');
-    _modalBackgroundEl = $('.modal-background');
-    _modalCloseButtonEl = $('.modal-close-button');
+    _modalCoverEl = $('#modal__cover');
+    _modalBackgroundEl = $('.modal__background');
+    _modalCloseButtonEl = $('.modal__close-button');
 
     var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl[0], appGlobals.mouseClickEvtStr),
       modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl[0], appGlobals.mouseClickEvtStr);
