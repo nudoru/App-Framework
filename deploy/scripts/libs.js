@@ -3683,9 +3683,8 @@ APP.AppController.Router = function () {
     if(hash === _lastSetPath) {
       return;
     }
-    if(hash) {
-      _eventDispatcher.publish(APP.Events.URL_HASH_CHANGED, hash);
-    }
+
+    _eventDispatcher.publish(APP.Events.URL_HASH_CHANGED, hash);
   }
 
   /**
@@ -3701,8 +3700,6 @@ APP.AppController.Router = function () {
   }
 
   function updateURLHash(path) {
-    DEBUGGER.log('Update URL: '+path);
-
     _lastSetPath = path;
 
     window.location.hash = path;
@@ -3872,8 +3869,6 @@ APP.AppController.SearchInputCommand.execute = function(data) {
 };;APP.createNameSpace('APP.AppController.URLHashChangedCommand');
 APP.AppController.URLHashChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.URLHashChangedCommand.execute = function(data) {
-  DEBUGGER.log('URLHashChangedCommand: '+data);
-
   // Code also present in AppInitializedCommand
   if (data !== undefined) {
     this.appModel.parseFiltersFromUrl(data);

@@ -30,9 +30,8 @@ APP.AppController.Router = function () {
     if(hash === _lastSetPath) {
       return;
     }
-    if(hash) {
-      _eventDispatcher.publish(APP.Events.URL_HASH_CHANGED, hash);
-    }
+
+    _eventDispatcher.publish(APP.Events.URL_HASH_CHANGED, hash);
   }
 
   /**
@@ -48,8 +47,6 @@ APP.AppController.Router = function () {
   }
 
   function updateURLHash(path) {
-    DEBUGGER.log('Update URL: '+path);
-
     _lastSetPath = path;
 
     window.location.hash = path;
