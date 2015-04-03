@@ -45,8 +45,8 @@ APP.AppView.BasicMenuItemView = {
     },
 
     render: function() {
-      var noicon = '<li><button class="dd-menu-item" data-value="<%= value %>"><%= label %></button></li>',
-        icon = '<li class="dd-menu-item icon-left"><button class="dd-menu-item indent" data-value="<%= value %>">'+this.iconTemplate+'<%= label %></button></li>',
+      var noicon = '<li><button class="js__menu-item" data-value="<%= value %>"><%= label %></button></li>',
+        icon = '<li class="js__menu-item icon-left"><button class="js__menu-item menu__indent" data-value="<%= value %>">'+this.iconTemplate+'<%= label %></button></li>',
         templatehtml = noicon;
 
       if(this.toggle) {

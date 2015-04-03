@@ -2848,14 +2848,14 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
 }
 
 /* line 65, ../../source/sass/partials/_app-mixins.sass */
-.tag-listing-horizontal ul, #details .details__content .details__content-description-metadata ul, #tagbar__container ul, .tag-listing-right ul, #main-navigation ul, #drawer-navigation ul {
+.tag-listing-horizontal ul, #details .details__content .details__content-description-metadata ul, #tagbar__container ul, .tag-listing-right ul, #header__navigation ul, #drawer__navigation ul {
   overflow: hidden;
   margin: 0;
   padding: 0;
   position: relative;
 }
 /* line 70, ../../source/sass/partials/_app-mixins.sass */
-.tag-listing-horizontal ul li, #details .details__content .details__content-description-metadata ul li, #tagbar__container ul li, .tag-listing-right ul li, #main-navigation ul li, #drawer-navigation ul li {
+.tag-listing-horizontal ul li, #details .details__content .details__content-description-metadata ul li, #tagbar__container ul li, .tag-listing-right ul li, #header__navigation ul li, #drawer__navigation ul li {
   list-style: none;
   float: left;
 }
@@ -2874,7 +2874,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
 }
 
 /* line 97, ../../source/sass/partials/_app-mixins.sass */
-.item__content, #main-navigation, #drawer-navigation {
+.item__content, #header__navigation, #drawer__navigation {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -2918,7 +2918,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
 }
 
 /* line 150, ../../source/sass/partials/_app-mixins.sass */
-#main-navigation button, #main-navigation .menu button, #drawer-navigation button, #drawer-navigation .menu button {
+#header__navigation button, #header__navigation .menu button, #drawer__navigation button, #drawer__navigation .menu button {
   border: none;
   background: none;
   width: 100%;
@@ -4091,23 +4091,23 @@ input:focus, textarea:focus, button:focus {
 }
 
 /* line 1, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation {
+#header__navigation {
   background: white;
 }
 /* line 5, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation ul {
+#header__navigation ul {
   float: right;
   overflow: visible;
   margin: 0;
 }
 /* line 9, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation li {
+#header__navigation li {
   display: inline-block;
   min-width: 150px;
   max-width: 200px;
 }
 /* line 13, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation button {
+#header__navigation button {
   display: block;
   padding: 0 1.376rem;
   height: 75px;
@@ -4121,11 +4121,11 @@ input:focus, textarea:focus, button:focus {
   color: #005eb8;
 }
 /* line 26, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation button:hover, #main-navigation button:active {
+#header__navigation button:hover, #header__navigation button:active {
   color: #005eb8;
 }
 /* line 28, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation .menu {
+#header__navigation .menu {
   position: relative;
   float: none;
   margin-bottom: 10px;
@@ -4134,13 +4134,13 @@ input:focus, textarea:focus, button:focus {
   background-color: #005eb8;
 }
 /* line 35, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation .menu li {
+#header__navigation .menu li {
   position: relative;
   display: block;
   float: none;
 }
 /* line 39, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation .menu button {
+#header__navigation .menu button {
   color: #fff;
   text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
   height: auto;
@@ -4153,13 +4153,13 @@ input:focus, textarea:focus, button:focus {
   text-align: left;
 }
 /* line 51, ../../source/sass/partials/_ddmainnavigation.sass */
-#main-navigation .menu .indent {
+#header__navigation .menu .menu__indent {
   padding-left: 30px;
   text-indent: -8px;
 }
 @media (max-width: 750px) {
   /* line 1, ../../source/sass/partials/_ddmainnavigation.sass */
-  #main-navigation {
+  #header__navigation {
     visibility: hidden;
   }
 }
@@ -4187,18 +4187,18 @@ input:focus, textarea:focus, button:focus {
 }
 
 /* line 15, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation ul {
+#drawer__navigation ul {
   display: block;
   overflow: visible;
   margin: 0;
 }
 /* line 19, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation li {
+#drawer__navigation li {
   display: block;
   width: 250px;
 }
 /* line 22, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation button {
+#drawer__navigation button {
   display: block;
   padding: 0 0.688rem;
   height: 49.95px;
@@ -4212,11 +4212,11 @@ input:focus, textarea:focus, button:focus {
   color: #fff;
 }
 /* line 35, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation button:hover, #drawer-navigation button:active {
+#drawer__navigation button:hover, #drawer__navigation button:active {
   color: #fff;
 }
 /* line 37, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation .menu {
+#drawer__navigation .menu {
   position: relative;
   float: none;
   overflow: hidden;
@@ -4225,22 +4225,22 @@ input:focus, textarea:focus, button:focus {
   background-color: rgba(0, 0, 0, 0.1);
 }
 /* line 44, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation .menu:last-of-type {
+#drawer__navigation .menu:last-of-type {
   border-bottom: none;
 }
 /* line 46, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation .menu li {
+#drawer__navigation .menu li {
   position: relative;
   display: block;
   float: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 /* line 51, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation .menu li:last-of-type {
+#drawer__navigation .menu li:last-of-type {
   border-bottom: none;
 }
 /* line 53, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation .menu button {
+#drawer__navigation .menu button {
   -moz-transition: all 0.25s ease-out;
   -o-transition: all 0.25s ease-out;
   -webkit-transition: all 0.25s ease-out;
@@ -4259,7 +4259,7 @@ input:focus, textarea:focus, button:focus {
   cursor: pointer;
 }
 /* line 69, ../../source/sass/partials/_drawer.sass */
-#drawer-navigation .menu .indent {
+#drawer__navigation .menu .menu__indent {
   padding-left: 30px;
   text-indent: -8px;
 }

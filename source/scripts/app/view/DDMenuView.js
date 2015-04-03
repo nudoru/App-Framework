@@ -49,7 +49,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     render: function() {
-      var templateHTML = '<li><button class="dd-menu-item" data-value="<%= value %>"><%= label %></button><ul class="menu"></ul>';
+      var templateHTML = '<li><button class="js__menu-item" data-value="<%= value %>"><%= label %></button><ul class="menu"></ul>';
 
       this.template = _.template(templateHTML);
 
@@ -103,7 +103,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
       }
 
       // Need to traverse up the DOM for IE9
-      var el = this.getTargetElMatching(target, '.dd-menu-item');
+      var el = this.getTargetElMatching(target, '.js__menu-item');
       if(el){
         return el.tagName.toLowerCase() === 'button';
       }
@@ -111,7 +111,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     getMouseEventTargetValue: function(evt) {
-      var target = this.getTargetElMatching(evt.target, '.dd-menu-item');
+      var target = this.getTargetElMatching(evt.target, '.js__menu-item');
       return target.getAttribute('data-value');
     },
 

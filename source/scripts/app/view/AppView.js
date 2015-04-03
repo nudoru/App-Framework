@@ -135,7 +135,7 @@ APP.AppView = (function() {
 
   function configureUIEvents() {
     _eventDispatcher.subscribe(APP.Events.MODAL_COVER_HIDE, hideModalContent);
-    _eventDispatcher.subscribe(APP.Events.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
+    //_eventDispatcher.subscribe(APP.Events.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
   function configureUIStreams() {
@@ -357,8 +357,8 @@ APP.AppView = (function() {
   //----------------------------------------------------------------------------
 
   function initializeMenus(data) {
-    _ddMenuView.initialize('#main-navigation', data);
-    _drawerMenuView.initialize('#drawer-navigation', data, true);
+    _ddMenuView.initialize('#header__navigation', data);
+    _drawerMenuView.initialize('#drawer__navigation', data, true);
   }
 
   function updateMenuSelections(data) {
