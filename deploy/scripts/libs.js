@@ -1422,7 +1422,7 @@ APP.AppView = (function() {
       _drawerToggleButtonEl,
       _toastView,
       _modalCoverView,
-      _ddMenuView,
+      _headerMenuView,
       _drawerMenuView,
       _itemGridView,
       _itemDetailView,
@@ -1521,7 +1521,7 @@ APP.AppView = (function() {
     _modalCoverView.initialize();
 
     // init on these called later
-    _ddMenuView = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView); //_self.DDMenuBarView;
+    _headerMenuView = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView); //_self.DDMenuBarView;
     _drawerMenuView = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView);
     _itemGridView = _self.ItemGridView;
 
@@ -1758,12 +1758,20 @@ APP.AppView = (function() {
   //----------------------------------------------------------------------------
 
   function initializeMenus(data) {
-    _ddMenuView.initialize('#header__navigation', data);
+    _headerMenuView.initialize('#header__navigation', data);
     _drawerMenuView.initialize('#drawer__navigation', data, true);
   }
 
   function updateMenuSelections(data) {
-    _ddMenuView.setMenuSelections(data);
+    updateHeaderMenuSelections(data);
+    updateDrawerMenuSelections(data);
+  }
+
+  function updateHeaderMenuSelections(data) {
+    _headerMenuView.setMenuSelections(data);
+  }
+
+  function updateDrawerMenuSelections(data) {
     _drawerMenuView.setMenuSelections(data);
   }
 
@@ -1805,7 +1813,7 @@ APP.AppView = (function() {
 
   function clearAllFilters() {
     clearFreeTextFilter();
-    _ddMenuView.resetAllSelections();
+    _headerMenuView.resetAllSelections();
     _drawerMenuView.resetAllSelections();
     _tagBarView.update([]);
     showAllGridViewItems();
@@ -1884,6 +1892,8 @@ APP.AppView = (function() {
     updateGridItemVisibility:  updateGridItemVisibility,
     updateTagBarDisplay: updateTagBarDisplay,
     updateMenuSelections: updateMenuSelections,
+    updateHeaderMenuSelections: updateHeaderMenuSelections,
+    updateDrawerMenuSelections: updateDrawerMenuSelections,
     updateUIOnFilterChanges: updateUIOnFilterChanges
   };
 }());;APP.createNameSpace('APP.AppView.ModalCoverView');
@@ -3882,15 +3892,19 @@ APP.AppController.ViewChangedCommand.execute = function(data) {
 };;APP.createNameSpace('APP.AppController.ViewChangedToDesktopCommand');
 APP.AppController.ViewChangedToDesktopCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ViewChangedToDesktopCommand.execute = function(data) {
-  DEBUGGER.log('ViewChangedToDesktopCommand: '+data);
+  //DEBUGGER.log('ViewChangedToDesktopCommand: '+data);
+
+  this.appView.updateHeaderMenuSelections(this.appModel.getFiltersForTagBar());
 };;APP.createNameSpace('APP.AppController.ViewChangedToMobileCommand');
 APP.AppController.ViewChangedToMobileCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ViewChangedToMobileCommand.execute = function(data) {
-  DEBUGGER.log('ViewChangedToMobileCommand: '+data);
+  //DEBUGGER.log('ViewChangedToMobileCommand: '+data);
 
   // Searching isn't support in mobile views yet
   this.appModel.setCurrentFreeTextFilter('');
   this.appView.clearFreeTextFilter();
+
+  this.appView.updateDrawerMenuSelections(this.appModel.getFiltersForTagBar());
 };;//------------------------------------------------------------------------------
 //  Initialization
 //------------------------------------------------------------------------------
