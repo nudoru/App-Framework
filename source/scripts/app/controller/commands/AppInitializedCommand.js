@@ -1,6 +1,9 @@
 APP.createNameSpace('APP.AppController.AppInitializedCommand');
 APP.AppController.AppInitializedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.AppInitializedCommand.execute = function(data) {
+  var _appGlobals = APP.globals();
+
+
   this.appController.postIntialize();
 
 
@@ -16,11 +19,12 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
   //var initialRoute = 'Human_Resources/Information_Technology/item-category2/item-category4/High/1_hour(z)/paper_based';
 
   // Code also present in URLHashChangeCommand
-  if (initialRoute !== undefined) {
+  if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);
-
   } else {
-    //this.appView.showBigMessage('Welcome to the ALPHA BR&L Solutions Gallery', '<p>Here you will find a selection of the work produced by the Business Readiness and Learning team.</p><p>To get started, click anywhere in the blue area to the left and browse.</p><p><em>This is still a work in progress. For comments, please email Matt Perkins.</em></p>');
+    if(_appGlobals.appConfig.welcome.enabled === 'true') {
+      this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
+    }
   }
 
 };
