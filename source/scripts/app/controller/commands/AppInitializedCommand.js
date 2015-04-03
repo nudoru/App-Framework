@@ -14,11 +14,8 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
 
   var initialRoute = APP.AppController.Router.getRoute();
 
-  console.log('Initial route: '+initialRoute);
+  //console.log('Initial route: '+initialRoute);
 
-  //var initialRoute = 'Human_Resources/Information_Technology/item-category2/item-category4/High/1_hour(z)/paper_based';
-
-  // Code also present in URLHashChangeCommand
   if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);
   } else {

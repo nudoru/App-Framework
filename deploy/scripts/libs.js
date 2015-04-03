@@ -582,8 +582,7 @@ APP = (function(global, rootView) {
           || _globals.mobile.iOS()
           || _globals.mobile.Opera()
           || _globals.mobile.Windows()
-          || _globals.hasTouch
-        );
+        ) !== null;
       }
     };
 
@@ -2352,7 +2351,10 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
     handleMenuClick: function(data) {
       if(this.isHeaderObject(data)) {
-        // don't hide it here
+        // Toggle visibility on mobile/tablet
+        if(this.appGlobals.mobile.any()) {
+          this.toggleMenu();
+        }
       } else {
         this.eventDispatcher.publish(APP.Events.MENU_SELECT, data);
         var item = this.getItemByValue(data);
@@ -2363,6 +2365,18 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
     isHeaderObject: function(data) {
       return data === this.data.value;
+    },
+
+    toggleMenu: function() {
+      if(this.isKeepOpen) {
+        return;
+      }
+
+      if(this.visible) {
+        this.close();
+      } else {
+        this.open();
+      }
     },
 
     getAllItemElements: function() {
@@ -3199,7 +3213,7 @@ APP.AppView.ItemDetailView = (function() {
       +'</div>'
       +'<div class="details__content-description">'
           +'<div class="details__content-extras">'
-            +'<button id="details__content-share-button" class="basic-button share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
+            +'<button id="js__content-share-button" class="basic-button details__content-share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
           +'</div>'
           +'<div class="details__content-description-data">'
             +'<ul>'
@@ -3260,8 +3274,13 @@ APP.AppView.ItemDetailView = (function() {
 
     _floatImageView.apply(_containerEl.find('.details__content-preview-images'));
 
-    _shareButtonEl = document.getElementById('details__content-share-button');
-    _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
+    _shareButtonEl = document.getElementById('js__content-share-button');
+
+    if(!APP.globals().mobile.any()) {
+      _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
+    } else {
+      $(_shareButtonEl).hide();
+    }
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }
@@ -3772,11 +3791,8 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
 
   var initialRoute = APP.AppController.Router.getRoute();
 
-  console.log('Initial route: '+initialRoute);
+  //console.log('Initial route: '+initialRoute);
 
-  //var initialRoute = 'Human_Resources/Information_Technology/item-category2/item-category4/High/1_hour(z)/paper_based';
-
-  // Code also present in URLHashChangeCommand
   if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);
   } else {
@@ -3883,7 +3899,7 @@ APP.AppController.SearchInputCommand.execute = function(data) {
 };;APP.createNameSpace('APP.AppController.URLHashChangedCommand');
 APP.AppController.URLHashChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.URLHashChangedCommand.execute = function(data) {
-  // Code also present in AppInitializedCommand
+
   if (data !== undefined) {
     this.appModel.parseFiltersFromUrl(data);
     this.appView.updateMenuSelections(this.appModel.getFiltersForTagBar());

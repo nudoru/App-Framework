@@ -24,7 +24,7 @@ APP.AppView.ItemDetailView = (function() {
       +'</div>'
       +'<div class="details__content-description">'
           +'<div class="details__content-extras">'
-            +'<button id="details__content-share-button" class="basic-button share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
+            +'<button id="js__content-share-button" class="basic-button details__content-share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
           +'</div>'
           +'<div class="details__content-description-data">'
             +'<ul>'
@@ -85,8 +85,13 @@ APP.AppView.ItemDetailView = (function() {
 
     _floatImageView.apply(_containerEl.find('.details__content-preview-images'));
 
-    _shareButtonEl = document.getElementById('details__content-share-button');
-    _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
+    _shareButtonEl = document.getElementById('js__content-share-button');
+
+    if(!APP.globals().mobile.any()) {
+      _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
+    } else {
+      $(_shareButtonEl).hide();
+    }
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }

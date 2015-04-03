@@ -65,8 +65,7 @@ APP = (function(global, rootView) {
           || _globals.mobile.iOS()
           || _globals.mobile.Opera()
           || _globals.mobile.Windows()
-          || _globals.hasTouch
-        );
+        ) !== null;
       }
     };
 

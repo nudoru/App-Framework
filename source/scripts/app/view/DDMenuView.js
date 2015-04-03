@@ -184,7 +184,10 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
     handleMenuClick: function(data) {
       if(this.isHeaderObject(data)) {
-        // don't hide it here
+        // Toggle visibility on mobile/tablet
+        if(this.appGlobals.mobile.any()) {
+          this.toggleMenu();
+        }
       } else {
         this.eventDispatcher.publish(APP.Events.MENU_SELECT, data);
         var item = this.getItemByValue(data);
@@ -195,6 +198,18 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
     isHeaderObject: function(data) {
       return data === this.data.value;
+    },
+
+    toggleMenu: function() {
+      if(this.isKeepOpen) {
+        return;
+      }
+
+      if(this.visible) {
+        this.close();
+      } else {
+        this.open();
+      }
     },
 
     getAllItemElements: function() {
