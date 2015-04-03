@@ -33,7 +33,7 @@
 
 #initialization__cover
   @extend %full-background-coverage
-  z-index: $z-index-full-screen
+  z-index: $z-index-initialization
   background-color: #eee
 
 .initialization__message
@@ -44,7 +44,7 @@
   width: 300px
   heigth: 50px
   margin: auto
-  top: 40%
+  top: 200px
   padding: $double-base-line-height
   background-color: #fff
   +one-edge-shadow-large
@@ -56,6 +56,8 @@
     font-size: 1.2em
   .loader
     display: inline-block
+    width: 25px
+    height: 25px
 
 body
   overflow: hidden

@@ -4271,7 +4271,7 @@ input:focus, textarea:focus, button:focus {
 
 /* line 34, ../../source/sass/app.sass */
 #initialization__cover {
-  z-index: 10002;
+  z-index: 10010;
   background-color: #eee;
 }
 
@@ -4283,7 +4283,7 @@ input:focus, textarea:focus, button:focus {
   width: 300px;
   heigth: 50px;
   margin: auto;
-  top: 40%;
+  top: 200px;
   padding: 1.376rem;
   background-color: #fff;
   box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
@@ -4299,14 +4299,16 @@ input:focus, textarea:focus, button:focus {
 /* line 57, ../../source/sass/app.sass */
 .initialization__message .loader {
   display: inline-block;
+  width: 25px;
+  height: 25px;
 }
 
-/* line 60, ../../source/sass/app.sass */
+/* line 62, ../../source/sass/app.sass */
 body {
   overflow: hidden;
 }
 
-/* line 64, ../../source/sass/app.sass */
+/* line 66, ../../source/sass/app.sass */
 #app__container {
   position: fixed;
   top: 0;
@@ -4316,7 +4318,7 @@ body {
   overflow: hidden;
 }
 
-/* line 72, ../../source/sass/app.sass */
+/* line 74, ../../source/sass/app.sass */
 #app__contents {
   position: absolute;
   min-width: 100%;
