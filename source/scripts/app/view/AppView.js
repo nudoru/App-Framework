@@ -70,9 +70,11 @@ APP.AppView = (function() {
   }
 
   function render() {
+    defineViewElements();
+
     setCurrentViewPortSize();
     setCurrentViewPortScroll();
-    defineViewElements();
+
 
     initializeComponents();
 
@@ -90,26 +92,29 @@ APP.AppView = (function() {
   }
 
   function updateAppTitle() {
-    _mainHeaderEl.find('h1').html(_appGlobals.appConfig.title);
+    var apptitle = _mainHeaderEl.querySelector('h1');
+    apptitle.innerHTML = _appGlobals.appConfig.title;
+
     document.title = StringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {
     // ui parts
-    _appContainerEl = $('#app__container');
-    _appEl = $('#app__contents');
+    _appContainerEl = document.getElementById('app__container');
+    _appEl = document.getElementById('app__contents');
+
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
-    _drawerEl = $('#drawer');
-    _drawerToggleButtonEl = $('.header__drawer-toggle button');
+    _drawerEl = document.getElementById('drawer');
+    _drawerToggleButtonEl = document.querySelector('.header__drawer-toggle > button');
 
-    _mainHeaderEl = $('#header');
-    _mainFooterEl = $('#footer');
+    _mainHeaderEl = document.getElementById('header');
+    _mainFooterEl = document.getElementById('footer');
 
     // item grid header
-    _mainSearchInputEl = $('.grid__header .grid__header-search input');
-    _searchHeaderEl = $('.grid__header h1');
-    _clearAllButtonEl = $('#clearall-button');
+    _mainSearchInputEl = document.querySelector('.grid__header-search > input');
+    _searchHeaderEl = document.querySelector('.grid__header > h1');
+    _clearAllButtonEl = document.getElementById('clearall-button');
   }
 
   function initializeComponents() {
@@ -128,7 +133,7 @@ APP.AppView = (function() {
     _itemDetailView.initialize('#details');
 
     _tagBarView = _self.TagBarView;
-    _tagBarView.initialize('#tagbar__container');
+    _tagBarView.initialize('tagbar__container');
 
     TweenMax.to(_drawerEl, 0, {x:_drawerWidth*-1});
   }
@@ -140,7 +145,7 @@ APP.AppView = (function() {
 
   function configureUIStreams() {
     var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
-        uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl[0], 'scroll');
+        uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
     _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
       .throttle(25)
@@ -154,25 +159,25 @@ APP.AppView = (function() {
         handleViewPortResize();
       });
 
-    _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl[0], 'scroll')
+    _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll')
       .throttle(100)
       .subscribe(function() {
         handleViewPortScroll();
       });
 
-    _searchInputStream = Rx.Observable.fromEvent(_mainSearchInputEl[0], 'keyup')
+    _searchInputStream = Rx.Observable.fromEvent(_mainSearchInputEl, 'keyup')
       .throttle(150)
       .map(function (evt) { return evt.target.value; })
       .subscribe(function (value) {
         _eventDispatcher.publish(APP.Events.SEARCH_INPUT, value);
       });
 
-    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl[0], _appGlobals.mouseClickEvtStr)
+    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, _appGlobals.mouseClickEvtStr)
       .subscribe(function() {
         _eventDispatcher.publish(APP.Events.VIEW_ALL_FILTERS_CLEARED);
       });
 
-    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl[0], _appGlobals.mouseClickEvtStr)
+    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _appGlobals.mouseClickEvtStr)
       .subscribe(function() {
         toggleDrawer();
       });
@@ -195,13 +200,13 @@ APP.AppView = (function() {
       _disablePointerEventsOnScrollTimerStream.dispose();
     }
 
-    $('body').addClass('ignore-pointer-events');
+    DOMUtils.addClass(document.body, 'ignore-pointer-events');
 
     _disablePointerEventsOnScrollTimerStream = Rx.Observable.timer(250)
       .pluck('interval')
       .take(1)
       .subscribe(function() {
-        $('body').removeClass('ignore-pointer-events');
+        DOMUtils.removeClass(document.body, 'ignore-pointer-events');
       });
   }
 
@@ -223,15 +228,15 @@ APP.AppView = (function() {
    * Cache the current view port size in a var
    */
   function setCurrentViewPortSize() {
-    _currentViewPortSize = {width: $(window).width(), height: $(window).height()};
+    _currentViewPortSize = {width: window.innerWidth, height: window.innerHeight};
   }
 
   /**
    * Cache the current view port scroll in a var
    */
   function setCurrentViewPortScroll() {
-    var left = $(_mainScrollEl).scrollLeft(),
-        top =  $(_mainScrollEl).scrollTop();
+    var left = _mainScrollEl.scrollLeft,
+        top = _mainScrollEl.scrollTop;
 
     left = left ? left : 0;
     top = top ? top : 0;
@@ -255,7 +260,7 @@ APP.AppView = (function() {
    */
   function positionUIElements() {
     TweenMax.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
-    TweenMax.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.height()});
+    TweenMax.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
   }
 
   /**
@@ -407,7 +412,7 @@ APP.AppView = (function() {
    * @param message
    */
   function updateSearchHeader(message) {
-    _searchHeaderEl[0].innerHTML = message;
+    _searchHeaderEl.innerHTML = message;
   }
 
   function clearAllFilters() {
@@ -419,11 +424,11 @@ APP.AppView = (function() {
   }
 
   function clearFreeTextFilter() {
-    _mainSearchInputEl[0].value = '';
+    _mainSearchInputEl.value = '';
   }
 
   function setFreeTextFilterValue(str) {
-    _mainSearchInputEl[0].value = str;
+    _mainSearchInputEl.value = str;
     _eventDispatcher.publish(APP.Events.SEARCH_INPUT, str);
   }
 
@@ -446,12 +451,15 @@ APP.AppView = (function() {
   }
 
   function removeLoadingMessage() {
-    TweenMax.to($('#initialization__cover'), 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
-      $('#initialization__cover').remove();
+    var cover = document.getElementById('initialization__cover'),
+        message = document.getElementsByClassName('initialization__message')[0];
+
+    TweenMax.to(cover, 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
+      document.body.removeChild(cover);
     }});
 
-    TweenMax.to($('.initialization__message'), 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
-      $('.initialization__message').remove();
+    TweenMax.to(message, 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
+      cover.removeChild(message);
     }});
   }
 

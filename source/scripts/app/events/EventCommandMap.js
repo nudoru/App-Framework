@@ -1,6 +1,6 @@
 /*
 Matt Perkins, 1/3/15
-based on https://github.com/joelhooks/signals-extensions-CommandSignal/blob/master/src/org/robotlegs/base/SignalCommandMap.as
+With gentle nudges from Kevin Carmody
  */
 
 APP.createNameSpace('APP.EventCommandMap');

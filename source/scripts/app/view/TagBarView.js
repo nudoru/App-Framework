@@ -6,7 +6,7 @@ APP.AppView.TagBarView = (function() {
       _currentTags;
 
   function initialize(elID) {
-    _containerEl = $(elID);
+    _containerEl = document.getElementById(elID);
     _currentTags = [];
 
     _tagTemplate = _.template('<div class="tag"><%= tag %></div>');
