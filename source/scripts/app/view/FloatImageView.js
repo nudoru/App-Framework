@@ -15,26 +15,25 @@
 APP.createNameSpace('APP.AppView.FloatImageView');
 APP.AppView.FloatImageView = (function() {
 
-  var _coverDivID = '#floatimage__cover',
+  var _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',
       _zoomedImageClass = 'floatimage__zoomedimage',
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
-      _currentImageElement,
-      _window = $(window);
+      _currentImageElement;
 
   /**
    * Entry point, initialize elements and hide cover
    */
   function initialize() {
-    _viewPortCoverEl = $(_coverDivID);
+    _viewPortCoverEl = document.getElementById(_coverDivID);
 
-    _captionEl = _viewPortCoverEl.find('.floatimage__caption');
+    _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
 
     hideFloatImageCover();
 
-    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl[0], APP.globals().mouseClickEvtStr)
+    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, APP.globals().mouseClickEvtStr)
       .subscribe(function() {
         hideFloatImageCover();
       });
@@ -45,11 +44,17 @@ APP.AppView.FloatImageView = (function() {
    * @param container
    */
   function apply(container) {
-    getFloatingElementsInContainer(container).forEach(function(el) {
-      $(el).wrapInner('<div class="floatimage__wrapper" />');
+    getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+
+      //var elParent = el.parentNode;
+      //elParent.
+      DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
     });
   }
+
+
 
   /**
    * Show the image when the image element is clicked
@@ -66,24 +71,24 @@ APP.AppView.FloatImageView = (function() {
   function showImage(imageEl) {
     // Will happen if you click on the icon
     if(imageEl.tagName.toLowerCase() === 'div') {
-      _currentImageElement = $(imageEl).find('img');
+      _currentImageElement = imageEl.querySelector('img');
     } else {
-      _currentImageElement = $(imageEl);
+      _currentImageElement = imageEl;
     }
 
     // Calculations
     var vpFill = 0.75,
-        imgSrc = _currentImageElement.attr('src'),
-        imgAlt = _currentImageElement.attr('alt'),
-        imgWidth = _currentImageElement.width(),
-        imgHeight = _currentImageElement.height(),
-        imgPosition = _currentImageElement.offset(),
+        imgSrc = _currentImageElement.getAttribute('src'),
+        imgAlt = _currentImageElement.getAttribute('alt'),
+        imgWidth = _currentImageElement.clientWidth,
+        imgHeight = _currentImageElement.clientHeight,
+        imgPosition = DOMUtils.offset(_currentImageElement),
         imgRatio = imgWidth/imgHeight,
         imgTargetScale = 1,
-        vpWidth = _window.width(),
-        vpHeight = _window.height(),
-        vpScrollTop = _window.scrollTop(),
-        vpScrollLeft = _window.scrollLeft(),
+        vpWidth = window.innerWidth,
+        vpHeight = window.innerHeight,
+        vpScrollTop = document.body.scrollTop,
+        vpScrollLeft = document.body.scrollLeft,
         vpRatio = vpWidth / vpHeight,
         imgOriginX = imgPosition.left - vpScrollLeft,
         imgOriginY = imgPosition.top - vpScrollTop,
@@ -104,14 +109,15 @@ APP.AppView.FloatImageView = (function() {
     imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
     imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = $('<div class="'+_zoomedImageClass+'"></div>');
-    zoomImage.css({ 'background-image': 'url("'+imgSrc+'")',
-      'top': imgOriginY,
-      'left': imgOriginX,
-      'width': imgWidth,
-      'height': imgHeight });
+    var zoomImage = DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
 
-    _viewPortCoverEl.append(zoomImage);
+    zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
+    zoomImage.style.left = imgOriginX+'px';
+    zoomImage.style.top = imgOriginY+'px';
+    zoomImage.style.width = imgWidth+'px';
+    zoomImage.style.height = imgHeight+'px';
+
+    _viewPortCoverEl.appendChild(zoomImage);
 
     // Animate
     TweenMax.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
@@ -120,9 +126,9 @@ APP.AppView.FloatImageView = (function() {
 
     // Caption
     if(imgAlt.length >= 1) {
-      _captionEl.html('<p>'+imgAlt+'</p>');
+      _captionEl.innerHTML = '<p>'+imgAlt+'</p>';
     } else {
-      _captionEl.html('');
+      _captionEl.innerHTML = '';
     }
 
   }
@@ -137,34 +143,21 @@ APP.AppView.FloatImageView = (function() {
       return;
     }
 
-    getFloatingElementsInContainer(container).forEach(function(el) {
-      $(el).unwrap();
+    getFloatingElementsInContainerAsArray(container).forEach(function(el) {
       el.removeEventListener('click', onImageClick);
     });
   }
 
   /**
-   * Validate that the container is a jQuery object
+   * Get an array of elements in the container returned as Array instead of a Node list
    * @param container
    * @returns {*}
    */
-  function validateFloatingContainer(container) {
-    if(container instanceof jQuery) {
-      return container;
-    } else {
-      // TODO test for a string? etc?
-      console.log('[FloatingImagesView] Container is not a jQuery object');
-      return null;
+  function getFloatingElementsInContainerAsArray(container) {
+    if(!DOMUtils.isDomObj(container)) {
+      return [];
     }
-  }
-
-  /**
-   * Get array of a's to apply functionality to
-   * @param container
-   * @returns {*}
-   */
-  function getFloatingElementsInContainer(container) {
-    return validateFloatingContainer(container).find(_floatingImageClass).toArray();
+    return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
   }
 
   /**
@@ -190,7 +183,10 @@ APP.AppView.FloatImageView = (function() {
    * The enlarged image is present during the cover fade out, remove it when that's completed
    */
   function hideFloatImageCoverComplete() {
-    _viewPortCoverEl.find('.'+_zoomedImageClass).remove();
+    var zoomedImage = _viewPortCoverEl.querySelector('.'+_zoomedImageClass);
+    if(zoomedImage) {
+      _viewPortCoverEl.removeChild(zoomedImage);
+    }
   }
 
   /**

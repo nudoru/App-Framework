@@ -34,6 +34,49 @@ var DOMUtils = {
     return !!(obj.nodeType || (obj === window));
   },
 
+  position: function(el) {
+    return {
+      left: el.offsetLeft,
+      top: el.offsetTop
+    };
+  },
+
+  offset: function(el) {
+    //var rect = el.getBoundingClientRect();
+    //
+    //return {
+    //  top: rect.top + document.body.scrollTop,
+    //  left: rect.left + document.body.scrollLeft
+    //};
+    // from http://jsperf.com/jquery-offset-vs-offsetparent-loop
+    var ol = ot = 0;
+    if (el.offsetParent) {
+      do {
+        ol += el.offsetLeft;
+        ot += el.offsetTop;
+      } while (el = el.offsetParent);
+    }
+    return {
+      left: ol,
+      top: ot
+    };
+  },
+
+  //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
+  HTMLStrToNode: function (str) {
+    var temp = document.createElement('div');
+    temp.innerHTML = str;
+    return temp.firstChild;
+  },
+
+  wrapElement: function(wrapperStr, el) {
+    var wrapperEl = DOMUtils.HTMLStrToNode(wrapperStr),
+        elParent = el.parentNode;
+    wrapperEl.appendChild(el);
+    elParent.appendChild(wrapperEl);
+    return wrapperEl;
+  },
+
   hasClass: function(el, className) {
     if (el.classList) {
       el.classList.contains(className);

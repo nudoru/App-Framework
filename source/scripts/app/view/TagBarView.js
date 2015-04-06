@@ -52,13 +52,17 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var tagel = $(_tagTemplate({tag: tag}));
+    var taghtml = _tagTemplate({tag: tag}),
+        tagnode = DOMUtils.HTMLStrToNode(taghtml);
 
-    _containerEl.append(tagel);
-    _currentTags.push({label: tag, el: tagel});
+    _containerEl.appendChild(tagnode);
 
-    TweenMax.from(tagel,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
+    _currentTags.push({label: tag, el: tagnode});
+
+    TweenMax.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
   }
+
+
 
   function remove(tag) {
     var rmv = _currentTags.filter(function(tagobj) {
@@ -69,14 +73,14 @@ APP.AppView.TagBarView = (function() {
     })[0];
 
     if(rmv) {
-      rmv.el.remove();
+      _containerEl.removeChild(rmv.el);
       _currentTags.splice(_currentTags.indexOf(rmv),1);
     }
   }
 
   function removeAll() {
     _currentTags.forEach(function(tag) {
-      tag.el.remove();
+      _containerEl.removeChild(tag.el);
     });
     _currentTags = [];
   }

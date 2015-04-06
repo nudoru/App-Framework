@@ -119,7 +119,7 @@ APP.AppView = (function() {
 
   function initializeComponents() {
     _toastView = _self.ToastView;
-    _toastView.initialize('#toast__container');
+    _toastView.initialize('toast__container');
 
     _modalCoverView = _self.ModalCoverView;
     _modalCoverView.initialize();
@@ -130,7 +130,7 @@ APP.AppView = (function() {
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
-    _itemDetailView.initialize('#details');
+    _itemDetailView.initialize('details');
 
     _tagBarView = _self.TagBarView;
     _tagBarView.initialize('tagbar__container');
@@ -399,9 +399,9 @@ APP.AppView = (function() {
     _itemGridView.initialize('#grid__item-container', data);
   }
 
-  function onGridViewLayoutComplete() {
-    //console.log('gridview layout complete');
-  }
+  //function onGridViewLayoutComplete() {
+  //  console.log('gridview layout complete');
+  //}
 
   function  updateGridItemVisibility(data) {
     _itemGridView.updateItemVisibility(data);

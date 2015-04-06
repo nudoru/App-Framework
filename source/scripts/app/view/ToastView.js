@@ -15,22 +15,22 @@ APP.AppView.ToastView = (function(){
       '<div class="toast__item-controls"><button><i class="fa fa-close"></i></button></div></div>');
 
   function initialize(elID) {
-    _containerEl = $(elID);
+    _containerEl = document.getElementById(elID);
   }
 
   function add(title, message, button) {
     button = button || 'OK';
     var newToast = createToastObject(title, message, button);
 
-    $(_containerEl).prepend(newToast.html);
-
+    _containerEl.insertBefore(newToast.element, _containerEl.firstChild);
     newToast.index = _children.length;
-    newToast.element = $('#'+newToast.id);
-    newToast.height = newToast.element.innerHeight();
+    newToast.height = newToast.element.clientHeight;
 
-    newToast.closeBtnStream = Rx.Observable.fromEvent(newToast.element.find('button')[0], 'click');
-    newToast.expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
-    newToast.lifeTimeStream = Rx.Observable.merge(newToast.closeBtnStream, newToast.expireTimeStream).take(1)
+    var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
+        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, 'click'),
+        expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+
+    newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
       .subscribe(function() {
         remove(newToast.id);
       });
@@ -43,21 +43,22 @@ APP.AppView.ToastView = (function(){
   }
 
   function createToastObject(title,message,button) {
-    var id = 'toast' + (_counter++).toString();
-    return {
-      id: id,
-      index: -1,
-      title: title,
-      message: message,
-      buttonLabel: button,
-      status: 'new',
-      html: _templateToast({id: id, title: title, message: message}),
-      element: null,
-      height: 0,
-      closeBtnStream: null,
-      expireTimeStream: null,
-      lifeTimeStream: null
-    };
+    var id = 'toast' + (_counter++).toString(),
+        obj = {
+          id: id,
+          index: -1,
+          title: title,
+          message: message,
+          buttonLabel: button,
+          status: 'new',
+          html: _templateToast({id: id, title: title, message: message}),
+          element: null,
+          height: 0,
+          lifeTimeStream: null
+        };
+
+    obj.element = DOMUtils.HTMLStrToNode(obj.html);
+    return obj;
   }
 
   function transitionIn(el) {
@@ -73,10 +74,10 @@ APP.AppView.ToastView = (function(){
   }
 
   function onTransitionOutComplete(el) {
-    var toastIdx = getToastIndexByID(el.attr('id')),
+    var toastIdx = getToastIndexByID(el.getAttribute('id')),
       toast = _children[toastIdx];
 
-    el.remove();
+    _containerEl.removeChild(el);
 
     _children[toastIdx] = null;
 

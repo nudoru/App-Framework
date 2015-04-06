@@ -314,6 +314,49 @@ var DOMUtils = {
     return !!(obj.nodeType || (obj === window));
   },
 
+  position: function(el) {
+    return {
+      left: el.offsetLeft,
+      top: el.offsetTop
+    };
+  },
+
+  offset: function(el) {
+    //var rect = el.getBoundingClientRect();
+    //
+    //return {
+    //  top: rect.top + document.body.scrollTop,
+    //  left: rect.left + document.body.scrollLeft
+    //};
+    // from http://jsperf.com/jquery-offset-vs-offsetparent-loop
+    var ol = ot = 0;
+    if (el.offsetParent) {
+      do {
+        ol += el.offsetLeft;
+        ot += el.offsetTop;
+      } while (el = el.offsetParent);
+    }
+    return {
+      left: ol,
+      top: ot
+    };
+  },
+
+  //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
+  HTMLStrToNode: function (str) {
+    var temp = document.createElement('div');
+    temp.innerHTML = str;
+    return temp.firstChild;
+  },
+
+  wrapElement: function(wrapperStr, el) {
+    var wrapperEl = DOMUtils.HTMLStrToNode(wrapperStr),
+        elParent = el.parentNode;
+    wrapperEl.appendChild(el);
+    elParent.appendChild(wrapperEl);
+    return wrapperEl;
+  },
+
   hasClass: function(el, className) {
     if (el.classList) {
       el.classList.contains(className);
@@ -1541,7 +1584,7 @@ APP.AppView = (function() {
 
   function initializeComponents() {
     _toastView = _self.ToastView;
-    _toastView.initialize('#toast__container');
+    _toastView.initialize('toast__container');
 
     _modalCoverView = _self.ModalCoverView;
     _modalCoverView.initialize();
@@ -1552,7 +1595,7 @@ APP.AppView = (function() {
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
-    _itemDetailView.initialize('#details');
+    _itemDetailView.initialize('details');
 
     _tagBarView = _self.TagBarView;
     _tagBarView.initialize('tagbar__container');
@@ -1821,9 +1864,9 @@ APP.AppView = (function() {
     _itemGridView.initialize('#grid__item-container', data);
   }
 
-  function onGridViewLayoutComplete() {
-    //console.log('gridview layout complete');
-  }
+  //function onGridViewLayoutComplete() {
+  //  console.log('gridview layout complete');
+  //}
 
   function  updateGridItemVisibility(data) {
     _itemGridView.updateItemVisibility(data);
@@ -1942,12 +1985,12 @@ APP.AppView.ModalCoverView = (function() {
 
     _isVisible = true;
 
-    _modalCoverEl = $('#modal__cover');
-    _modalBackgroundEl = $('.modal__background');
-    _modalCloseButtonEl = $('.modal__close-button');
+    _modalCoverEl = document.getElementById('modal__cover');
+    _modalBackgroundEl = document.querySelector('.modal__background');
+    _modalCloseButtonEl = document.querySelector('.modal__close-button');
 
-    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl[0], appGlobals.mouseClickEvtStr),
-      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl[0], appGlobals.mouseClickEvtStr);
+    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, appGlobals.mouseClickEvtStr),
+      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, appGlobals.mouseClickEvtStr);
 
     _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
       .subscribe(function() {
@@ -2007,22 +2050,22 @@ APP.AppView.ToastView = (function(){
       '<div class="toast__item-controls"><button><i class="fa fa-close"></i></button></div></div>');
 
   function initialize(elID) {
-    _containerEl = $(elID);
+    _containerEl = document.getElementById(elID);
   }
 
   function add(title, message, button) {
     button = button || 'OK';
     var newToast = createToastObject(title, message, button);
 
-    $(_containerEl).prepend(newToast.html);
-
+    _containerEl.insertBefore(newToast.element, _containerEl.firstChild);
     newToast.index = _children.length;
-    newToast.element = $('#'+newToast.id);
-    newToast.height = newToast.element.innerHeight();
+    newToast.height = newToast.element.clientHeight;
 
-    newToast.closeBtnStream = Rx.Observable.fromEvent(newToast.element.find('button')[0], 'click');
-    newToast.expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
-    newToast.lifeTimeStream = Rx.Observable.merge(newToast.closeBtnStream, newToast.expireTimeStream).take(1)
+    var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
+        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, 'click'),
+        expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+
+    newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
       .subscribe(function() {
         remove(newToast.id);
       });
@@ -2035,21 +2078,22 @@ APP.AppView.ToastView = (function(){
   }
 
   function createToastObject(title,message,button) {
-    var id = 'toast' + (_counter++).toString();
-    return {
-      id: id,
-      index: -1,
-      title: title,
-      message: message,
-      buttonLabel: button,
-      status: 'new',
-      html: _templateToast({id: id, title: title, message: message}),
-      element: null,
-      height: 0,
-      closeBtnStream: null,
-      expireTimeStream: null,
-      lifeTimeStream: null
-    };
+    var id = 'toast' + (_counter++).toString(),
+        obj = {
+          id: id,
+          index: -1,
+          title: title,
+          message: message,
+          buttonLabel: button,
+          status: 'new',
+          html: _templateToast({id: id, title: title, message: message}),
+          element: null,
+          height: 0,
+          lifeTimeStream: null
+        };
+
+    obj.element = DOMUtils.HTMLStrToNode(obj.html);
+    return obj;
   }
 
   function transitionIn(el) {
@@ -2065,10 +2109,10 @@ APP.AppView.ToastView = (function(){
   }
 
   function onTransitionOutComplete(el) {
-    var toastIdx = getToastIndexByID(el.attr('id')),
+    var toastIdx = getToastIndexByID(el.getAttribute('id')),
       toast = _children[toastIdx];
 
-    el.remove();
+    _containerEl.removeChild(el);
 
     _children[toastIdx] = null;
 
@@ -3230,7 +3274,7 @@ APP.AppView.ItemDetailView = (function() {
       _currentItem;
 
   function initialize(elID) {
-    _containerEl = $(elID);
+    _containerEl = document.getElementById(elID);
 
     _floatImageView = APP.AppView.FloatImageView;
     _floatImageView.initialize();
@@ -3300,16 +3344,16 @@ APP.AppView.ItemDetailView = (function() {
   function showItem(item) {
     _currentItem = item;
 
-    _containerEl.html(_itemDTemplate(_currentItem));
+    _containerEl.innerHTML = _itemDTemplate(_currentItem);
 
-    _floatImageView.apply(_containerEl.find('.details__content-preview-images'));
+    _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
 
     _shareButtonEl = document.getElementById('js__content-share-button');
 
     if(!APP.globals().mobile.any()) {
       _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
     } else {
-      $(_shareButtonEl).hide();
+      DOMUtils.addClass(_shareButtonEl, 'hidden');
     }
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
@@ -3325,7 +3369,7 @@ APP.AppView.ItemDetailView = (function() {
   }
 
   function showMessage(obj) {
-    _containerEl.html(_messageTemplate(obj));
+    _containerEl.innerHTML = _messageTemplate(obj);
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }
@@ -3333,7 +3377,7 @@ APP.AppView.ItemDetailView = (function() {
   function hide() {
     _currentItem = null;
 
-    _floatImageView.remove(_containerEl.find('.preview-images'));
+    _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
 
     if(_shareButtonEl) {
       _shareButtonEl.removeEventListener(APP.globals().mouseClickEvtStr, doShareAction);
@@ -3353,26 +3397,25 @@ APP.AppView.ItemDetailView = (function() {
 }());;APP.createNameSpace('APP.AppView.FloatImageView');
 APP.AppView.FloatImageView = (function() {
 
-  var _coverDivID = '#floatimage__cover',
+  var _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',
       _zoomedImageClass = 'floatimage__zoomedimage',
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
-      _currentImageElement,
-      _window = $(window);
+      _currentImageElement;
 
   /**
    * Entry point, initialize elements and hide cover
    */
   function initialize() {
-    _viewPortCoverEl = $(_coverDivID);
+    _viewPortCoverEl = document.getElementById(_coverDivID);
 
-    _captionEl = _viewPortCoverEl.find('.floatimage__caption');
+    _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
 
     hideFloatImageCover();
 
-    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl[0], APP.globals().mouseClickEvtStr)
+    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, APP.globals().mouseClickEvtStr)
       .subscribe(function() {
         hideFloatImageCover();
       });
@@ -3383,11 +3426,17 @@ APP.AppView.FloatImageView = (function() {
    * @param container
    */
   function apply(container) {
-    getFloatingElementsInContainer(container).forEach(function(el) {
-      $(el).wrapInner('<div class="floatimage__wrapper" />');
+    getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+
+      //var elParent = el.parentNode;
+      //elParent.
+      DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
     });
   }
+
+
 
   /**
    * Show the image when the image element is clicked
@@ -3404,24 +3453,24 @@ APP.AppView.FloatImageView = (function() {
   function showImage(imageEl) {
     // Will happen if you click on the icon
     if(imageEl.tagName.toLowerCase() === 'div') {
-      _currentImageElement = $(imageEl).find('img');
+      _currentImageElement = imageEl.querySelector('img');
     } else {
-      _currentImageElement = $(imageEl);
+      _currentImageElement = imageEl;
     }
 
     // Calculations
     var vpFill = 0.75,
-        imgSrc = _currentImageElement.attr('src'),
-        imgAlt = _currentImageElement.attr('alt'),
-        imgWidth = _currentImageElement.width(),
-        imgHeight = _currentImageElement.height(),
-        imgPosition = _currentImageElement.offset(),
+        imgSrc = _currentImageElement.getAttribute('src'),
+        imgAlt = _currentImageElement.getAttribute('alt'),
+        imgWidth = _currentImageElement.clientWidth,
+        imgHeight = _currentImageElement.clientHeight,
+        imgPosition = DOMUtils.offset(_currentImageElement),
         imgRatio = imgWidth/imgHeight,
         imgTargetScale = 1,
-        vpWidth = _window.width(),
-        vpHeight = _window.height(),
-        vpScrollTop = _window.scrollTop(),
-        vpScrollLeft = _window.scrollLeft(),
+        vpWidth = window.innerWidth,
+        vpHeight = window.innerHeight,
+        vpScrollTop = document.body.scrollTop,
+        vpScrollLeft = document.body.scrollLeft,
         vpRatio = vpWidth / vpHeight,
         imgOriginX = imgPosition.left - vpScrollLeft,
         imgOriginY = imgPosition.top - vpScrollTop,
@@ -3442,14 +3491,15 @@ APP.AppView.FloatImageView = (function() {
     imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
     imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = $('<div class="'+_zoomedImageClass+'"></div>');
-    zoomImage.css({ 'background-image': 'url("'+imgSrc+'")',
-      'top': imgOriginY,
-      'left': imgOriginX,
-      'width': imgWidth,
-      'height': imgHeight });
+    var zoomImage = DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
 
-    _viewPortCoverEl.append(zoomImage);
+    zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
+    zoomImage.style.left = imgOriginX+'px';
+    zoomImage.style.top = imgOriginY+'px';
+    zoomImage.style.width = imgWidth+'px';
+    zoomImage.style.height = imgHeight+'px';
+
+    _viewPortCoverEl.appendChild(zoomImage);
 
     // Animate
     TweenMax.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
@@ -3458,9 +3508,9 @@ APP.AppView.FloatImageView = (function() {
 
     // Caption
     if(imgAlt.length >= 1) {
-      _captionEl.html('<p>'+imgAlt+'</p>');
+      _captionEl.innerHTML = '<p>'+imgAlt+'</p>';
     } else {
-      _captionEl.html('');
+      _captionEl.innerHTML = '';
     }
 
   }
@@ -3475,34 +3525,21 @@ APP.AppView.FloatImageView = (function() {
       return;
     }
 
-    getFloatingElementsInContainer(container).forEach(function(el) {
-      $(el).unwrap();
+    getFloatingElementsInContainerAsArray(container).forEach(function(el) {
       el.removeEventListener('click', onImageClick);
     });
   }
 
   /**
-   * Validate that the container is a jQuery object
+   * Get an array of elements in the container returned as Array instead of a Node list
    * @param container
    * @returns {*}
    */
-  function validateFloatingContainer(container) {
-    if(container instanceof jQuery) {
-      return container;
-    } else {
-      // TODO test for a string? etc?
-      console.log('[FloatingImagesView] Container is not a jQuery object');
-      return null;
+  function getFloatingElementsInContainerAsArray(container) {
+    if(!DOMUtils.isDomObj(container)) {
+      return [];
     }
-  }
-
-  /**
-   * Get array of a's to apply functionality to
-   * @param container
-   * @returns {*}
-   */
-  function getFloatingElementsInContainer(container) {
-    return validateFloatingContainer(container).find(_floatingImageClass).toArray();
+    return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
   }
 
   /**
@@ -3528,7 +3565,10 @@ APP.AppView.FloatImageView = (function() {
    * The enlarged image is present during the cover fade out, remove it when that's completed
    */
   function hideFloatImageCoverComplete() {
-    _viewPortCoverEl.find('.'+_zoomedImageClass).remove();
+    var zoomedImage = _viewPortCoverEl.querySelector('.'+_zoomedImageClass);
+    if(zoomedImage) {
+      _viewPortCoverEl.removeChild(zoomedImage);
+    }
   }
 
   /**
@@ -3594,13 +3634,17 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var tagel = $(_tagTemplate({tag: tag}));
+    var taghtml = _tagTemplate({tag: tag}),
+        tagnode = DOMUtils.HTMLStrToNode(taghtml);
 
-    _containerEl.append(tagel);
-    _currentTags.push({label: tag, el: tagel});
+    _containerEl.appendChild(tagnode);
 
-    TweenMax.from(tagel,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
+    _currentTags.push({label: tag, el: tagnode});
+
+    TweenMax.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
   }
+
+
 
   function remove(tag) {
     var rmv = _currentTags.filter(function(tagobj) {
@@ -3611,14 +3655,14 @@ APP.AppView.TagBarView = (function() {
     })[0];
 
     if(rmv) {
-      rmv.el.remove();
+      _containerEl.removeChild(rmv.el);
       _currentTags.splice(_currentTags.indexOf(rmv),1);
     }
   }
 
   function removeAll() {
     _currentTags.forEach(function(tag) {
-      tag.el.remove();
+      _containerEl.removeChild(tag.el);
     });
     _currentTags = [];
   }

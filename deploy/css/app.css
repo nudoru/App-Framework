@@ -3945,8 +3945,9 @@ input:focus, textarea:focus, button:focus {
 /* line 16, ../../source/sass/partials/_floatimage.sass */
 .floatimage__wrapper {
   position: relative;
+  cursor: zoom-in;
 }
-/* line 18, ../../source/sass/partials/_floatimage.sass */
+/* line 19, ../../source/sass/partials/_floatimage.sass */
 .floatimage__wrapper:after {
   position: absolute;
   bottom: 0px;
@@ -3964,7 +3965,7 @@ input:focus, textarea:focus, button:focus {
   text-shadow: 0 1px 0 #fff;
 }
 @media (max-width: 750px) {
-  /* line 18, ../../source/sass/partials/_floatimage.sass */
+  /* line 19, ../../source/sass/partials/_floatimage.sass */
   .floatimage__wrapper:after {
     width: 13px;
     height: 13px;
@@ -3975,14 +3976,14 @@ input:focus, textarea:focus, button:focus {
   }
 }
 
-/* line 41, ../../source/sass/partials/_floatimage.sass */
+/* line 42, ../../source/sass/partials/_floatimage.sass */
 .floatimage__caption {
   position: absolute;
   width: 100%;
   bottom: 0.688rem;
   text-align: center;
 }
-/* line 46, ../../source/sass/partials/_floatimage.sass */
+/* line 47, ../../source/sass/partials/_floatimage.sass */
 .floatimage__caption p {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
@@ -3991,7 +3992,7 @@ input:focus, textarea:focus, button:focus {
   text-shadow: 0 1px 0 #fff;
 }
 
-/* line 54, ../../source/sass/partials/_floatimage.sass */
+/* line 55, ../../source/sass/partials/_floatimage.sass */
 .floatimage__zoomedimage {
   position: fixed;
   box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.25);

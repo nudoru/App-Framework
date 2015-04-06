@@ -11,7 +11,7 @@ APP.AppView.ItemDetailView = (function() {
       _currentItem;
 
   function initialize(elID) {
-    _containerEl = $(elID);
+    _containerEl = document.getElementById(elID);
 
     _floatImageView = APP.AppView.FloatImageView;
     _floatImageView.initialize();
@@ -81,16 +81,16 @@ APP.AppView.ItemDetailView = (function() {
   function showItem(item) {
     _currentItem = item;
 
-    _containerEl.html(_itemDTemplate(_currentItem));
+    _containerEl.innerHTML = _itemDTemplate(_currentItem);
 
-    _floatImageView.apply(_containerEl.find('.details__content-preview-images'));
+    _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
 
     _shareButtonEl = document.getElementById('js__content-share-button');
 
     if(!APP.globals().mobile.any()) {
       _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
     } else {
-      $(_shareButtonEl).hide();
+      DOMUtils.addClass(_shareButtonEl, 'hidden');
     }
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
@@ -106,7 +106,7 @@ APP.AppView.ItemDetailView = (function() {
   }
 
   function showMessage(obj) {
-    _containerEl.html(_messageTemplate(obj));
+    _containerEl.innerHTML = _messageTemplate(obj);
 
     TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }
@@ -114,7 +114,7 @@ APP.AppView.ItemDetailView = (function() {
   function hide() {
     _currentItem = null;
 
-    _floatImageView.remove(_containerEl.find('.preview-images'));
+    _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
 
     if(_shareButtonEl) {
       _shareButtonEl.removeEventListener(APP.globals().mouseClickEvtStr, doShareAction);

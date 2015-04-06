@@ -15,12 +15,12 @@ APP.AppView.ModalCoverView = (function() {
 
     _isVisible = true;
 
-    _modalCoverEl = $('#modal__cover');
-    _modalBackgroundEl = $('.modal__background');
-    _modalCloseButtonEl = $('.modal__close-button');
+    _modalCoverEl = document.getElementById('modal__cover');
+    _modalBackgroundEl = document.querySelector('.modal__background');
+    _modalCloseButtonEl = document.querySelector('.modal__close-button');
 
-    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl[0], appGlobals.mouseClickEvtStr),
-      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl[0], appGlobals.mouseClickEvtStr);
+    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, appGlobals.mouseClickEvtStr),
+      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, appGlobals.mouseClickEvtStr);
 
     _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
       .subscribe(function() {
