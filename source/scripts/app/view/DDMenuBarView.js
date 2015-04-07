@@ -19,7 +19,7 @@ APP.AppView.DDMenuBarView = {
     initialize: function(elID, data, keep) {
       this.eventDispatcher = APP.EventDispatcher;
 
-      this.containerEl = $(elID);
+      this.containerEl = document.getElementById(elID);
       this.data = data;
 
       this.isKeepOpen = keep ? true : false;
@@ -33,19 +33,19 @@ APP.AppView.DDMenuBarView = {
 
       this.children = [];
 
-      this.barEl = $('<ul></ul>');
+      this.barEl = DOMUtils.HTMLStrToNode('<ul></ul>');
       for(; i<len; i++) {
         var menuobj = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
-        $(this.barEl).append(menuobj.element);
+        this.barEl.appendChild(menuobj.element);
         this.children.push(menuobj);
       }
 
-      this.containerEl.prepend(this.barEl);
+      this.containerEl.insertBefore(this.barEl, this.containerEl.firstChild);
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
       if(APP.globals().isIE) {
-        this.containerEl[0].onselectstart = function() {
+        this.containerEl.onselectstart = function() {
           return false;
         };
       }

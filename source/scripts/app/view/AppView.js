@@ -362,8 +362,8 @@ APP.AppView = (function() {
   //----------------------------------------------------------------------------
 
   function initializeMenus(data) {
-    _headerMenuView.initialize('#header__navigation', data);
-    _drawerMenuView.initialize('#drawer__navigation', data, true);
+    _headerMenuView.initialize('header__navigation', data);
+    _drawerMenuView.initialize('drawer__navigation', data, true);
   }
 
   function updateMenuSelections(data) {

@@ -55,9 +55,9 @@ APP.AppView.BasicMenuItemView = {
 
       this.template = _.template(templatehtml);
       this.renderedHTML = this.template(this.data);
-      this.element = $(this.renderedHTML);
-      this.iconElement = this.element.find('i');
-      this.anchorElement = this.element.find('a');
+      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+      this.iconElement = this.element.querySelector('i');
+      this.anchorElement = this.element.querySelector('button');
     },
 
     select: function() {
@@ -67,20 +67,20 @@ APP.AppView.BasicMenuItemView = {
       this.selected = true;
 
       if(this.toggle) {
-        this.iconElement.removeClass(this.iconDeselectedClass);
-        this.iconElement.addClass(this.iconSelectedClass);
+        DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
+        DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
       }
     },
 
     showOverEffect: function() {
       TweenMax.to(this.element, 0.25, {backgroundColor:'rgba(255,255,255,.25)', ease:Circ.easeOut});
-      TweenMax.to(this.anchorElement, 0.15, {boxShadow: "0px 0px 20px rgba(255,255,255,.25)", ease:Circ.easeOut});
+      //TweenMax.to(this.anchorElement, 0.15, {boxShadow: "0px 0px 20px rgba(255,255,255,.25)", ease:Circ.easeOut});
     },
 
     showOutEffect: function() {
-      TweenMax.killTweensOf(this.anchorElement);
+      //TweenMax.killTweensOf(this.anchorElement);
       TweenMax.to(this.element, 0.5, {backgroundColor:'rgba(255,255,255,0)', ease:Circ.easeIn});
-      TweenMax.to(this.anchorElement, 0.25, {boxShadow: "0px 0px 0px rgba(255,255,255,0)", ease:Circ.easeIn});
+      //TweenMax.to(this.anchorElement, 0.25, {boxShadow: "0px 0px 0px rgba(255,255,255,0)", ease:Circ.easeIn});
     },
 
     showDepressEffect: function() {
@@ -96,8 +96,8 @@ APP.AppView.BasicMenuItemView = {
       this.selected = false;
 
       if(this.toggle) {
-        this.iconElement.removeClass(this.iconSelectedClass);
-        this.iconElement.addClass(this.iconDeselectedClass);
+        DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
+        DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
       }
     },
 

@@ -343,6 +343,19 @@ var ArrayUtils = {
     return wrapperEl;
   },
 
+  // http://stackoverflow.com/questions/15329167/closest-ancestor-matching-selector-using-native-dom
+  closest: function(el, selector) {
+    var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
+    while (el) {
+      if (matchesSelector.bind(el)(selector)) {
+        return el;
+      } else {
+        el = el.parentElement;
+      }
+    }
+    return false;
+  },
+
   // from youmightnotneedjquery.com
   hasClass: function(el, className) {
     if (el.classList) {
@@ -1782,8 +1795,8 @@ APP.AppView = (function() {
   //----------------------------------------------------------------------------
 
   function initializeMenus(data) {
-    _headerMenuView.initialize('#header__navigation', data);
-    _drawerMenuView.initialize('#drawer__navigation', data, true);
+    _headerMenuView.initialize('header__navigation', data);
+    _drawerMenuView.initialize('drawer__navigation', data, true);
   }
 
   function updateMenuSelections(data) {
@@ -2145,7 +2158,7 @@ APP.AppView.DDMenuBarView = {
     initialize: function(elID, data, keep) {
       this.eventDispatcher = APP.EventDispatcher;
 
-      this.containerEl = $(elID);
+      this.containerEl = document.getElementById(elID);
       this.data = data;
 
       this.isKeepOpen = keep ? true : false;
@@ -2159,19 +2172,19 @@ APP.AppView.DDMenuBarView = {
 
       this.children = [];
 
-      this.barEl = $('<ul></ul>');
+      this.barEl = DOMUtils.HTMLStrToNode('<ul></ul>');
       for(; i<len; i++) {
         var menuobj = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
-        $(this.barEl).append(menuobj.element);
+        this.barEl.appendChild(menuobj.element);
         this.children.push(menuobj);
       }
 
-      this.containerEl.prepend(this.barEl);
+      this.containerEl.insertBefore(this.barEl, this.containerEl.firstChild);
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
       if(APP.globals().isIE) {
-        this.containerEl[0].onselectstart = function() {
+        this.containerEl.onselectstart = function() {
           return false;
         };
       }
@@ -2251,9 +2264,9 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
       this.renderedHTML = this.template(this.data);
 
-      this.element = $(this.renderedHTML);
-      this.ddMenuEl = $(this.element).find('ul');
-      this.anchorElement = $(this.element).find('button')[0];
+      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+      this.ddMenuEl = this.element.querySelector('ul');
+      this.anchorElement = this.element.querySelector('button');
 
       this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
 
@@ -2263,7 +2276,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
         this.visible = true;
       } else {
         this.visible = false;
-        this.ddMenuEl.height('0px');
+        this.ddMenuEl.style.height = '0px';
         TweenMax.to(this.ddMenuEl, 0, {autoAlpha: 0});
       }
     },
@@ -2271,22 +2284,22 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     buildMenuItems: function(item) {
       var menuitem = ObjectUtils.basicFactory(APP.AppView.BasicMenuItemView);
       menuitem.initialize(item);
-      this.ddMenuEl.append(menuitem.element);
+      this.ddMenuEl.appendChild(menuitem.element);
       this.items.push(menuitem);
     },
 
     configureStreams: function() {
-      this.menuOverStream = Rx.Observable.fromEvent(this.element[0], 'mouseover')
+      this.menuOverStream = Rx.Observable.fromEvent(this.element, 'mouseover')
         .filter(this.filterForMouseEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(this.handleMenuOver.bind(this));
 
-      this.menuOutStream = Rx.Observable.fromEvent(this.element[0], 'mouseout')
+      this.menuOutStream = Rx.Observable.fromEvent(this.element, 'mouseout')
         .filter(this.filterForMouseEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(this.handleMenuOut.bind(this));
 
-      this.menuClickStream = Rx.Observable.fromEvent(this.element[0], 'click')
+      this.menuClickStream = Rx.Observable.fromEvent(this.element, 'click')
         .filter(this.filterForMouseEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(this.handleMenuClick.bind(this));
@@ -2297,7 +2310,6 @@ APP.AppView.DDMenuBarView.DDMenuView = {
       if(target === null) {
         return false;
       }
-
       // Need to traverse up the DOM for IE9
       var el = this.getTargetElMatching(target, '.js__menu-item');
       if(el){
@@ -2312,7 +2324,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     getTargetElMatching: function(el, cls) {
-      return $(el).closest(cls)[0];
+      return DOMUtils.closest(el, cls);
     },
 
     /**
@@ -2326,12 +2338,12 @@ APP.AppView.DDMenuBarView.DDMenuView = {
      */
     configureMobileStreams: function() {
       // Note - had problems getting RxJS to work correctly here, used events
-      this.element[0].addEventListener('touchstart', (function(evt) {
+      this.element.addEventListener('touchstart', (function(evt) {
         this.firstTouchPosition = this.lastTouchPosition = TouchUtils.getCoords(evt);
         this.shouldProcessTouchEnd = false;
       }).bind(this), false);
 
-      this.element[0].addEventListener('touchmove', (function(evt) {
+      this.element.addEventListener('touchmove', (function(evt) {
         this.lastTouchPosition = TouchUtils.getCoords(evt);
       }).bind(this), false);
 
@@ -2341,7 +2353,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
         }
       };
 
-      this.menuClickStream = Rx.Observable.fromEvent(this.element[0], 'touchend')
+      this.menuClickStream = Rx.Observable.fromEvent(this.element, 'touchend')
         .filter(this.processTouchEndEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(touchPressFunction.bind(this));
@@ -2451,7 +2463,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
       this.visible = true;
 
-      this.ddMenuEl.height('auto');
+      this.ddMenuEl.style.height = 'auto';
 
       TweenMax.killTweensOf(this.anchorElement);
       TweenMax.killTweensOf(this.ddMenuEl);
@@ -2475,7 +2487,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     closeComplete: function() {
-      this.ddMenuEl.height('0px');
+      this.ddMenuEl.style.height = '0px';
       this.fadeOutComplete = true;
     }
 
@@ -2539,9 +2551,9 @@ APP.AppView.BasicMenuItemView = {
 
       this.template = _.template(templatehtml);
       this.renderedHTML = this.template(this.data);
-      this.element = $(this.renderedHTML);
-      this.iconElement = this.element.find('i');
-      this.anchorElement = this.element.find('a');
+      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+      this.iconElement = this.element.querySelector('i');
+      this.anchorElement = this.element.querySelector('button');
     },
 
     select: function() {
@@ -2551,20 +2563,20 @@ APP.AppView.BasicMenuItemView = {
       this.selected = true;
 
       if(this.toggle) {
-        this.iconElement.removeClass(this.iconDeselectedClass);
-        this.iconElement.addClass(this.iconSelectedClass);
+        DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
+        DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
       }
     },
 
     showOverEffect: function() {
       TweenMax.to(this.element, 0.25, {backgroundColor:'rgba(255,255,255,.25)', ease:Circ.easeOut});
-      TweenMax.to(this.anchorElement, 0.15, {boxShadow: "0px 0px 20px rgba(255,255,255,.25)", ease:Circ.easeOut});
+      //TweenMax.to(this.anchorElement, 0.15, {boxShadow: "0px 0px 20px rgba(255,255,255,.25)", ease:Circ.easeOut});
     },
 
     showOutEffect: function() {
-      TweenMax.killTweensOf(this.anchorElement);
+      //TweenMax.killTweensOf(this.anchorElement);
       TweenMax.to(this.element, 0.5, {backgroundColor:'rgba(255,255,255,0)', ease:Circ.easeIn});
-      TweenMax.to(this.anchorElement, 0.25, {boxShadow: "0px 0px 0px rgba(255,255,255,0)", ease:Circ.easeIn});
+      //TweenMax.to(this.anchorElement, 0.25, {boxShadow: "0px 0px 0px rgba(255,255,255,0)", ease:Circ.easeIn});
     },
 
     showDepressEffect: function() {
@@ -2580,8 +2592,8 @@ APP.AppView.BasicMenuItemView = {
       this.selected = false;
 
       if(this.toggle) {
-        this.iconElement.removeClass(this.iconSelectedClass);
-        this.iconElement.addClass(this.iconDeselectedClass);
+        DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
+        DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
       }
     },
 

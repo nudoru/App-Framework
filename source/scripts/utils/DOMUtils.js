@@ -63,6 +63,19 @@ var DOMUtils = {
     return wrapperEl;
   },
 
+  // http://stackoverflow.com/questions/15329167/closest-ancestor-matching-selector-using-native-dom
+  closest: function(el, selector) {
+    var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
+    while (el) {
+      if (matchesSelector.bind(el)(selector)) {
+        return el;
+      } else {
+        el = el.parentElement;
+      }
+    }
+    return false;
+  },
+
   // from youmightnotneedjquery.com
   hasClass: function(el, className) {
     if (el.classList) {

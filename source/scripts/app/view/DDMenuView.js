@@ -55,9 +55,9 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
       this.renderedHTML = this.template(this.data);
 
-      this.element = $(this.renderedHTML);
-      this.ddMenuEl = $(this.element).find('ul');
-      this.anchorElement = $(this.element).find('button')[0];
+      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+      this.ddMenuEl = this.element.querySelector('ul');
+      this.anchorElement = this.element.querySelector('button');
 
       this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
 
@@ -67,7 +67,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
         this.visible = true;
       } else {
         this.visible = false;
-        this.ddMenuEl.height('0px');
+        this.ddMenuEl.style.height = '0px';
         TweenMax.to(this.ddMenuEl, 0, {autoAlpha: 0});
       }
     },
@@ -75,22 +75,22 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     buildMenuItems: function(item) {
       var menuitem = ObjectUtils.basicFactory(APP.AppView.BasicMenuItemView);
       menuitem.initialize(item);
-      this.ddMenuEl.append(menuitem.element);
+      this.ddMenuEl.appendChild(menuitem.element);
       this.items.push(menuitem);
     },
 
     configureStreams: function() {
-      this.menuOverStream = Rx.Observable.fromEvent(this.element[0], 'mouseover')
+      this.menuOverStream = Rx.Observable.fromEvent(this.element, 'mouseover')
         .filter(this.filterForMouseEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(this.handleMenuOver.bind(this));
 
-      this.menuOutStream = Rx.Observable.fromEvent(this.element[0], 'mouseout')
+      this.menuOutStream = Rx.Observable.fromEvent(this.element, 'mouseout')
         .filter(this.filterForMouseEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(this.handleMenuOut.bind(this));
 
-      this.menuClickStream = Rx.Observable.fromEvent(this.element[0], 'click')
+      this.menuClickStream = Rx.Observable.fromEvent(this.element, 'click')
         .filter(this.filterForMouseEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(this.handleMenuClick.bind(this));
@@ -101,7 +101,6 @@ APP.AppView.DDMenuBarView.DDMenuView = {
       if(target === null) {
         return false;
       }
-
       // Need to traverse up the DOM for IE9
       var el = this.getTargetElMatching(target, '.js__menu-item');
       if(el){
@@ -116,7 +115,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     getTargetElMatching: function(el, cls) {
-      return $(el).closest(cls)[0];
+      return DOMUtils.closest(el, cls);
     },
 
     /**
@@ -130,12 +129,12 @@ APP.AppView.DDMenuBarView.DDMenuView = {
      */
     configureMobileStreams: function() {
       // Note - had problems getting RxJS to work correctly here, used events
-      this.element[0].addEventListener('touchstart', (function(evt) {
+      this.element.addEventListener('touchstart', (function(evt) {
         this.firstTouchPosition = this.lastTouchPosition = TouchUtils.getCoords(evt);
         this.shouldProcessTouchEnd = false;
       }).bind(this), false);
 
-      this.element[0].addEventListener('touchmove', (function(evt) {
+      this.element.addEventListener('touchmove', (function(evt) {
         this.lastTouchPosition = TouchUtils.getCoords(evt);
       }).bind(this), false);
 
@@ -145,7 +144,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
         }
       };
 
-      this.menuClickStream = Rx.Observable.fromEvent(this.element[0], 'touchend')
+      this.menuClickStream = Rx.Observable.fromEvent(this.element, 'touchend')
         .filter(this.processTouchEndEventsOnItems.bind(this))
         .map(this.getMouseEventTargetValue.bind(this))
         .subscribe(touchPressFunction.bind(this));
@@ -255,7 +254,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
       this.visible = true;
 
-      this.ddMenuEl.height('auto');
+      this.ddMenuEl.style.height = 'auto';
 
       TweenMax.killTweensOf(this.anchorElement);
       TweenMax.killTweensOf(this.ddMenuEl);
@@ -279,7 +278,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     closeComplete: function() {
-      this.ddMenuEl.height('0px');
+      this.ddMenuEl.style.height = '0px';
       this.fadeOutComplete = true;
     }
 
