@@ -473,7 +473,6 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     eventDispatcher: APP.EventDispatcher,
     data: null,
     template: '',
-    renderedHTML: null,
     element: null,
     elementContent: null,
     dataEl: null,
@@ -490,15 +489,13 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
     initialize: function(data) {
       this.data = data;
-      this.template = _.template(DOMUtils.getHTMLTemplate('template__item-tile'));
+      // Cache template
+      this.template = NTemplate.getTemplate('template__item-tile');
       this.render();
     },
 
     render: function() {
-      this.renderedHTML = this.template(this.data);
-
-      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
-
+      this.element = DOMUtils.HTMLStrToNode(this.template(this.data));
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');

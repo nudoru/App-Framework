@@ -13,8 +13,6 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     eventDispatcher: APP.EventDispatcher,
     data: null,
     items: null,
-    template: '',
-    renderedHTML: null,
     element: null,
     anchorElement: null,
     ddMenuEl: null,
@@ -49,11 +47,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     render: function() {
-      this.template = _.template(DOMUtils.getHTMLTemplate('template__menu-header'));
-
-      this.renderedHTML = this.template(this.data);
-
-      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+      this.element = NTemplate.asElement('template__menu-header', this.data);
       this.ddMenuEl = this.element.querySelector('ul');
       this.anchorElement = this.element.querySelector('button');
 

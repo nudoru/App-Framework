@@ -13,15 +13,12 @@ APP.AppView.BasicMenuItemView = {
     eventDispatcher: APP.EventDispatcher,
     data: null,
     label: '',
-    template: '',
-    renderedHTML: null,
     element: null,
     iconElement: null,
     anchorElement: null,
     labelOverStream: null,
     labelOutStream: null,
     labelSelectStream: null,
-    iconTemplate: null,
     iconDeselectedClass: null,
     iconSelectedClass: null,
     toggle: null,
@@ -37,23 +34,18 @@ APP.AppView.BasicMenuItemView = {
 
       this.label = data.label;
 
-      this.iconTemplate = '';
-
       this.render();
 
       this.selected = false;
     },
 
     render: function() {
-      var templatehtml = DOMUtils.getHTMLTemplate('template__menu-item');
-
       if(this.toggle) {
-        templatehtml = DOMUtils.getHTMLTemplate('template__menu-item-icon');
+        this.element = NTemplate.asElement('template__menu-item-icon', this.data);
+      } else {
+        this.element = NTemplate.asElement('template__menu-item', this.data);
       }
 
-      this.template = _.template(templatehtml);
-      this.renderedHTML = this.template(this.data);
-      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
       this.iconElement = this.element.querySelector('i');
       this.anchorElement = this.element.querySelector('button');
     },

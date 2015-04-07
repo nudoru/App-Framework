@@ -2,14 +2,11 @@ APP.createNameSpace('APP.AppView.TagBarView');
 
 APP.AppView.TagBarView = (function() {
   var _containerEl,
-      _tagTemplate,
       _currentTags;
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
     _currentTags = [];
-
-    _tagTemplate = _.template(DOMUtils.getHTMLTemplate('template__tag'));
 
     hideBar();
   }
@@ -52,17 +49,11 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var taghtml = _tagTemplate({tag: tag}),
-        tagnode = DOMUtils.HTMLStrToNode(taghtml);
-
+    var tagnode = NTemplate.asElemement('template__tag', {tag: tag});
     _containerEl.appendChild(tagnode);
-
     _currentTags.push({label: tag, el: tagnode});
-
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
   }
-
-
 
   function remove(tag) {
     var rmv = _currentTags.filter(function(tagobj) {

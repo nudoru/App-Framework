@@ -2,10 +2,6 @@ APP.createNameSpace('APP.AppView.ItemDetailView');
 
 APP.AppView.ItemDetailView = (function() {
   var _containerEl,
-      _itemDTemplate,
-      _itemDTemplateSrc,
-      _messageTemplate,
-      _messageTemplateSrc,
       _floatImageView,
       _shareButtonEl,
       _currentItem;
@@ -15,15 +11,12 @@ APP.AppView.ItemDetailView = (function() {
 
     _floatImageView = APP.AppView.FloatImageView;
     _floatImageView.initialize();
-
-    _itemDTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-item'));
-    _messageTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-message'));
   }
 
   function showItem(item) {
     _currentItem = item;
 
-    _containerEl.innerHTML = _itemDTemplate(_currentItem);
+    _containerEl.innerHTML = NTemplate.asHTML('template__detail-item', _currentItem);
 
     _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
 
@@ -48,7 +41,7 @@ APP.AppView.ItemDetailView = (function() {
   }
 
   function showMessage(obj) {
-    _containerEl.innerHTML = _messageTemplate(obj);
+    _containerEl.innerHTML = NTemplate.asHTML('template__detail-message', obj);
 
     TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }

@@ -455,17 +455,6 @@ var ArrayUtils = {
     } else {
       this.addClass(el, className);
     }
-  },
-
-  getHTMLTemplate: function(id) {
-    var src = document.getElementById(id),
-        srchtml = '<div></div>';
-
-    if(src) {
-      srchtml = src.innerHTML;
-    }
-
-    return StringUtils.sanitizeHTMLStr(srchtml);
   }
 
 };;var NumberUtils = {
@@ -487,14 +476,6 @@ var ArrayUtils = {
   removeTags: function(str) {
      return str.replace(/(<([^>]+)>)/ig, '');
   },
-
-  /**
-   * Created for cleaning up HTML templates from script tags
-   * Removes: new lines, tabs and spaces between tags
-   */
-  sanitizeHTMLStr: function(str) {
-    return str.toString().replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').trim();
-  }
 
 };;var LOREM = (function(){
   var _currentText = [],
@@ -635,7 +616,78 @@ var ArrayUtils = {
     }
   }
 
-};;var APP = APP || {};
+};;var NTemplate = (function() {
+
+  var cache = {};
+
+  /**
+   * Get thes template html from the script tag with id
+   * @param id
+   * @returns {*}
+   */
+  function getSource(id) {
+    var src = document.getElementById(id),
+        srchtml = '';
+
+    if(src) {
+      srchtml = src.innerHTML;
+    } else {
+      console.log('Template not found: "'+id+'"');
+    }
+
+    return sanitizeHTMLStr(srchtml);
+  }
+
+  /**
+   * Returns an underscore template
+   * @param id
+   * @returns {*}
+   */
+  function getTemplate(id) {
+    return _.template(getSource(id));
+  }
+
+  /**
+   * Processes the template and returns HTML
+   * @param id
+   * @param obj
+   * @returns {*}
+   */
+  function asHTML(id, obj) {
+    var temp = getTemplate(id);
+    return temp(obj);
+  }
+
+  /**
+   * Processes the template and returns an HTML Element
+   * @param id
+   * @param obj
+   * @returns {*}
+   */
+  function asElement(id, obj) {
+    return DOMUtils.HTMLStrToNode(asHTML(id, obj));
+  }
+
+  /**
+   * Created for cleaning up HTML templates from script tags
+   * Removes: new lines, tabs and spaces between tags
+   */
+  function sanitizeHTMLStr(str) {
+    return str.toString().replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').trim();
+  }
+
+  /**
+   * Public API
+   */
+  return {
+    getSource: getSource,
+    getTemplate: getTemplate,
+    asHTML: asHTML,
+    asElement: asElement
+  };
+
+}());
+;var APP = APP || {};
 
 APP = (function(global, rootView) {
   var _globalScope = global,
@@ -2314,8 +2366,6 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     eventDispatcher: APP.EventDispatcher,
     data: null,
     items: null,
-    template: '',
-    renderedHTML: null,
     element: null,
     anchorElement: null,
     ddMenuEl: null,
@@ -2350,11 +2400,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     render: function() {
-      this.template = _.template(DOMUtils.getHTMLTemplate('template__menu-header'));
-
-      this.renderedHTML = this.template(this.data);
-
-      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+      this.element = NTemplate.asElement('template__menu-header', this.data);
       this.ddMenuEl = this.element.querySelector('ul');
       this.anchorElement = this.element.querySelector('button');
 
@@ -2599,15 +2645,12 @@ APP.AppView.BasicMenuItemView = {
     eventDispatcher: APP.EventDispatcher,
     data: null,
     label: '',
-    template: '',
-    renderedHTML: null,
     element: null,
     iconElement: null,
     anchorElement: null,
     labelOverStream: null,
     labelOutStream: null,
     labelSelectStream: null,
-    iconTemplate: null,
     iconDeselectedClass: null,
     iconSelectedClass: null,
     toggle: null,
@@ -2623,23 +2666,18 @@ APP.AppView.BasicMenuItemView = {
 
       this.label = data.label;
 
-      this.iconTemplate = '';
-
       this.render();
 
       this.selected = false;
     },
 
     render: function() {
-      var templatehtml = DOMUtils.getHTMLTemplate('template__menu-item');
-
       if(this.toggle) {
-        templatehtml = DOMUtils.getHTMLTemplate('template__menu-item-icon');
+        this.element = NTemplate.asElement('template__menu-item-icon', this.data);
+      } else {
+        this.element = NTemplate.asElement('template__menu-item', this.data);
       }
 
-      this.template = _.template(templatehtml);
-      this.renderedHTML = this.template(this.data);
-      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
       this.iconElement = this.element.querySelector('i');
       this.anchorElement = this.element.querySelector('button');
     },
@@ -3164,7 +3202,6 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     eventDispatcher: APP.EventDispatcher,
     data: null,
     template: '',
-    renderedHTML: null,
     element: null,
     elementContent: null,
     dataEl: null,
@@ -3181,15 +3218,13 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
     initialize: function(data) {
       this.data = data;
-      this.template = _.template(DOMUtils.getHTMLTemplate('template__item-tile'));
+      // Cache template
+      this.template = NTemplate.getTemplate('template__item-tile');
       this.render();
     },
 
     render: function() {
-      this.renderedHTML = this.template(this.data);
-
-      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
-
+      this.element = DOMUtils.HTMLStrToNode(this.template(this.data));
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');
@@ -3306,10 +3341,6 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
 APP.AppView.ItemDetailView = (function() {
   var _containerEl,
-      _itemDTemplate,
-      _itemDTemplateSrc,
-      _messageTemplate,
-      _messageTemplateSrc,
       _floatImageView,
       _shareButtonEl,
       _currentItem;
@@ -3319,15 +3350,12 @@ APP.AppView.ItemDetailView = (function() {
 
     _floatImageView = APP.AppView.FloatImageView;
     _floatImageView.initialize();
-
-    _itemDTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-item'));
-    _messageTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-message'));
   }
 
   function showItem(item) {
     _currentItem = item;
 
-    _containerEl.innerHTML = _itemDTemplate(_currentItem);
+    _containerEl.innerHTML = NTemplate.asHTML('template__detail-item', _currentItem);
 
     _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
 
@@ -3352,7 +3380,7 @@ APP.AppView.ItemDetailView = (function() {
   }
 
   function showMessage(obj) {
-    _containerEl.innerHTML = _messageTemplate(obj);
+    _containerEl.innerHTML = NTemplate.asHTML('template__detail-message', obj);
 
     TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }
@@ -3566,14 +3594,11 @@ APP.AppView.FloatImageView = (function() {
 
 APP.AppView.TagBarView = (function() {
   var _containerEl,
-      _tagTemplate,
       _currentTags;
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
     _currentTags = [];
-
-    _tagTemplate = _.template(DOMUtils.getHTMLTemplate('template__tag'));
 
     hideBar();
   }
@@ -3616,17 +3641,11 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var taghtml = _tagTemplate({tag: tag}),
-        tagnode = DOMUtils.HTMLStrToNode(taghtml);
-
+    var tagnode = NTemplate.asElemement('template__tag', {tag: tag});
     _containerEl.appendChild(tagnode);
-
     _currentTags.push({label: tag, el: tagnode});
-
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
   }
-
-
 
   function remove(tag) {
     var rmv = _currentTags.filter(function(tagobj) {
