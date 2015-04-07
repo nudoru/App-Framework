@@ -42,8 +42,8 @@ APP.AppView.ModalCoverView = (function() {
     }
     _isVisible = true;
     var duration = animate ? 0.25 : 0;
-    TweenMax.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
-    TweenMax.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
+    TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
+    TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
 
     _eventDispatcher.publish(APP.Events.MODAL_COVER_SHOW);
   }
@@ -54,9 +54,9 @@ APP.AppView.ModalCoverView = (function() {
     }
     _isVisible = false;
     var duration = animate ? 0.25 : 0;
-    TweenMax.killDelayedCallsTo(_modalCloseButtonEl);
-    TweenMax.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
-    TweenMax.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
+    TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
+    TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
+    TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
 
     _eventDispatcher.publish(APP.Events.MODAL_COVER_HIDE);
   }

@@ -86,8 +86,10 @@ module.exports = function (grunt) {
       },
       dist: {
         src: [
-          'source/scripts/vendor/jquery-2.1.1.min.js',
-          'source/scripts/vendor/gsap/TweenMax.min.js',
+          'source/scripts/vendor/gsap/TweenLite.min.js',
+          'source/scripts/vendor/gsap/TimeLineLite.min.js',
+          'source/scripts/vendor/gsap/easing/EasePack.min.js',
+          'source/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
           'source/scripts/vendor/underscore-min.js',
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'source/scripts/vendor/packery.pkgd.min.js',

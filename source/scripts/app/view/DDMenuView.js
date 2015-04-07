@@ -68,7 +68,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
       } else {
         this.visible = false;
         this.ddMenuEl.style.height = '0px';
-        TweenMax.to(this.ddMenuEl, 0, {autoAlpha: 0});
+        TweenLite.to(this.ddMenuEl, 0, {autoAlpha: 0});
       }
     },
 
@@ -256,11 +256,11 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
       this.ddMenuEl.style.height = 'auto';
 
-      TweenMax.killTweensOf(this.anchorElement);
-      TweenMax.killTweensOf(this.ddMenuEl);
+      TweenLite.killTweensOf(this.anchorElement);
+      TweenLite.killTweensOf(this.ddMenuEl);
 
-      TweenMax.to(this.anchorElement, 0.25, {paddingTop:'5px', ease:Circ.easeOut});
-      TweenMax.to(this.ddMenuEl, 0.25, {autoAlpha: 1, top:'0', ease:Circ.easeOut});
+      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'5px', ease:Circ.easeOut});
+      TweenLite.to(this.ddMenuEl, 0.25, {autoAlpha: 1, top:'0', ease:Circ.easeOut});
     },
 
     close: function() {
@@ -273,8 +273,8 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 
       var closeCompleteFunc = this.closeComplete.bind(this);
 
-      TweenMax.to(this.anchorElement, 0.25, {paddingTop:'0px', ease:Circ.easeIn, delay:0.1});
-      TweenMax.to(this.ddMenuEl,0.1, {autoAlpha: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
+      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'0px', ease:Circ.easeIn, delay:0.1});
+      TweenLite.to(this.ddMenuEl,0.1, {autoAlpha: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
     },
 
     closeComplete: function() {

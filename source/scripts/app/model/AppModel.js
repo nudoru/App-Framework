@@ -221,7 +221,7 @@ APP.AppModel = (function() {
     });
 
     // Returns a clone of the item
-    return $.extend({}, items[0]);
+    return ObjectUtils.extend({}, items[0]);
   }
 
   function handledFiltersUpdated() {

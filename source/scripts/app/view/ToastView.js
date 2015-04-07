@@ -62,13 +62,13 @@ APP.AppView.ToastView = (function(){
   }
 
   function transitionIn(el) {
-    TweenMax.to(el,0,{alpha: 0});
-    TweenMax.to(el,1, {alpha: 1, ease: Quad.easeOut});
+    TweenLite.to(el,0,{alpha: 0});
+    TweenLite.to(el,1, {alpha: 1, ease: Quad.easeOut});
     rearrangeToasts();
   }
 
   function transitionOut(el) {
-    TweenMax.to(el, 0.25, {left: '+=300', ease: Quad.easeIn, onComplete: function() {
+    TweenLite.to(el, 0.25, {left: '+=300', ease: Quad.easeIn, onComplete: function() {
       onTransitionOutComplete(el);
     }});
   }
@@ -104,7 +104,7 @@ APP.AppView.ToastView = (function(){
         continue;
       }
       current = _children[i];
-      TweenMax.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
+      TweenLite.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
       y += 10 + current.height;
     }
   }

@@ -43,11 +43,11 @@ APP.AppView.TagBarView = (function() {
   }
 
   function showBar() {
-    TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
+    TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
   }
 
   function hideBar() {
-    TweenMax.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
+    TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
 
   }
 
@@ -59,7 +59,7 @@ APP.AppView.TagBarView = (function() {
 
     _currentTags.push({label: tag, el: tagnode});
 
-    TweenMax.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
+    TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
   }
 
 

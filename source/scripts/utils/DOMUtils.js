@@ -40,7 +40,7 @@ var DOMUtils = {
       do {
         ol += el.offsetLeft;
         ot += el.offsetTop;
-      } while (el = el.offsetParent);
+      } while (el = el.offsetParent); // Causes a JShint error, safe to ignore
     }
     return {
       left: ol,

@@ -50,7 +50,7 @@ APP.AppView.ItemGridView = (function(){
     _eventDispatcher = APP.EventDispatcher;
     _appGlobals = APP.globals();
     _containerElID = elID;
-    _containerEl = $(_containerElID);
+    _containerEl = document.getElementById(_containerElID);
     _data = data;
 
     _isLayingOut = false;
@@ -75,37 +75,37 @@ APP.AppView.ItemGridView = (function(){
     _data.forEach(function(item){
       var itemobj = ObjectUtils.basicFactory(APP.AppView.ItemGridView.AbstractGridItem);
       itemobj.initialize(item);
-      $(_containerEl).append(itemobj.element);
+      _containerEl.appendChild(itemobj.element);
       itemobj.postRender();
       _children.push(itemobj);
     });
 
     // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
     if(APP.globals().isIE) {
-      _containerEl[0].onselectstart = function() {
+      _containerEl.onselectstart = function() {
         return false;
       };
     }
 
     initPackery();
 
-    TweenMax.staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Circ.easeOut}, 0.15);
+    //TweenLite.staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Circ.easeOut}, 0.15);
   }
 
   /**
    * Images loaded control - not used yet
    * http://imagesloaded.desandro.com/
    */
-  function initImagesLoaded() {
-    _imagesLoaded = imagesLoaded(_containerElID, function(instance) {
-      console.log('[ItemGridView] All images loaded');
-    });
-
-    _imagesLoaded.on('fail', function(instance) {
-      console.log('[ItemGridView] All images loaded, with errors');
-      _eventDispatcher.publish(APP.Events.GRID_VIEW_IMAGE_LOAD_ERROR);
-    });
-  }
+  //function initImagesLoaded() {
+  //  _imagesLoaded = imagesLoaded(_containerElID, function(instance) {
+  //    console.log('[ItemGridView] All images loaded');
+  //  });
+  //
+  //  _imagesLoaded.on('fail', function(instance) {
+  //    console.log('[ItemGridView] All images loaded, with errors');
+  //    _eventDispatcher.publish(APP.Events.GRID_VIEW_IMAGE_LOAD_ERROR);
+  //  });
+  //}
 
   /**
    * Init Packery view for the grid
@@ -114,7 +114,7 @@ APP.AppView.ItemGridView = (function(){
     var packeryGutter = _appGlobals.mobile.any() ? 10 : 33,
         packeryTransDuration = _appGlobals.mobile.any() ? '0.5s' : '0.75s';
 
-    _packery = new Packery(_containerElID, {
+    _packery = new Packery('#'+_containerElID, {
       itemSelector: '.item',
       gutter: packeryGutter,
       transitionDuration: packeryTransDuration
@@ -142,7 +142,8 @@ APP.AppView.ItemGridView = (function(){
    * @returns {*}
    */
   function getPackeryItem(item) {
-    return item.element[0];
+    return item.element;
+    //return item.element[0];
   }
 
   /**
@@ -151,21 +152,21 @@ APP.AppView.ItemGridView = (function(){
    */
   function configureStreams() {
 
-    _itemOverStream = Rx.Observable.fromEvent(_containerEl[0], 'mouseover')
+    _itemOverStream = Rx.Observable.fromEvent(_containerEl, 'mouseover')
       .filter(filterForMouseEventsOnItems)
       .map(getMouseEventTargetID)
       .subscribe(function (id) {
         selectItemByID(id);
       });
 
-    _itemOutStream = Rx.Observable.fromEvent(_containerEl[0], 'mouseout')
+    _itemOutStream = Rx.Observable.fromEvent(_containerEl, 'mouseout')
       .filter(filterForMouseEventsOnItems)
       .map(getMouseEventTargetID)
       .subscribe(function (id) {
         deselectItemByID(id);
       });
 
-    _itemSelectStream = Rx.Observable.fromEvent(_containerEl[0], 'click')
+    _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'click')
       .filter(filterForMouseEventsOnItems)
       .map(getMouseEventTargetID)
       .subscribe(function(id) {
@@ -198,7 +199,7 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function getTargetElMatching(el, cls) {
-    return $(el).closest(cls)[0];
+    return DOMUtils.closest(el, cls);
   }
 
   /**
@@ -212,16 +213,16 @@ APP.AppView.ItemGridView = (function(){
    */
   function configureMobileStreams() {
     // Note - had problems getting RxJS to work correctly here, used events
-    _containerEl[0].addEventListener('touchstart', function(evt) {
+    _containerEl.addEventListener('touchstart', function(evt) {
       _firstTouchPosition = _lastTouchPosition = TouchUtils.getCoords(evt);
       _shouldProcessTouchEnd = false;
     }, false);
 
-    _containerEl[0].addEventListener('touchmove', function(evt) {
+    _containerEl.addEventListener('touchmove', function(evt) {
       _lastTouchPosition = TouchUtils.getCoords(evt);
     }, false);
 
-    _itemSelectStream = Rx.Observable.fromEvent(_containerEl[0], 'touchend')
+    _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'touchend')
       .filter(processTouchEndEventsOnItems)
       .map(getMouseEventTargetID)
       .subscribe(function(id) {
@@ -324,7 +325,7 @@ APP.AppView.ItemGridView = (function(){
    * @param element
    */
   function elementToTop(element) {
-    element.css({'z-index':++_highestZ});
+    element.style.zIndex = ++_highestZ;
   }
 
   //----------------------------------------------------------------------------
@@ -354,8 +355,8 @@ APP.AppView.ItemGridView = (function(){
     }
 
     var otheritems = getItemsInViewExcluding(itemel);
-    TweenMax.killDelayedCallsTo(otheritems);
-    TweenMax.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
+    TweenLite.killDelayedCallsTo(otheritems);
+    TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
   }
 
   // TODO merge this with unfade
@@ -365,8 +366,8 @@ APP.AppView.ItemGridView = (function(){
     }
 
     var otheritems = getItemsInViewExcluding(itemel);
-    TweenMax.killDelayedCallsTo(otheritems);
-    TweenMax.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut, onComplete: fadeOtherItems, onCompleteParams: [itemel]});
+    TweenLite.killDelayedCallsTo(otheritems);
+    TweenLite.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut, onComplete: fadeOtherItems, onCompleteParams: [itemel]});
   }
 
   function unfadeOtherItems(itemel) {
@@ -375,8 +376,8 @@ APP.AppView.ItemGridView = (function(){
     }
 
     var otheritems = getItemsInViewExcluding(itemel);
-    TweenMax.killDelayedCallsTo(otheritems);
-    TweenMax.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut});
+    TweenLite.killDelayedCallsTo(otheritems);
+    TweenLite.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut});
   }
 
   //----------------------------------------------------------------------------
@@ -504,26 +505,21 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
       this.renderedHTML = this.template(this.data);
 
-      this.element = $(this.renderedHTML);
-      this.elementContent = this.element.find('.item__content');
-      this.dataEl = this.element.find('.item__data');
-      this.imageEl = this.element.find('.item__image-wrapper');
+      this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+      this.elementContent = this.element.querySelector('.item__content');
+      this.dataEl = this.element.querySelector('.item__data');
+      this.imageEl = this.element.querySelector('.item__image-wrapper');
     },
 
     /**
      * Calculations needed after the items is added to the container is on the DOM
      */
     postRender: function() {
-      var titleHeight = this.dataEl.find('.title').height();
-      var dataHeight = this.dataEl.height();
-      this.dataBottomTarget = titleHeight - dataHeight;
-      this.dataEl.css({'bottom' : this.dataBottomTarget});
-
-      this.imageAlphaTarget = this.imageEl.css('opacity');
+      this.imageAlphaTarget = window.getComputedStyle(this.imageEl,null).getPropertyValue('opacity');
     },
 
     isInViewport: function() {
-      return DOMUtils.isElementInViewport(this.element[0]);
+      return DOMUtils.isElementInViewport(this.element);
     },
 
     show: function() {
@@ -533,9 +529,9 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.visible = true;
 
       if(this.isInViewport()) {
-        TweenMax.to(this.element, 0.25, { autoAlpha: 1, scale:1, ease: Circ.easeOut});
+        TweenLite.to(this.element, 0.25, { autoAlpha: 1, scale:1, ease: Circ.easeOut});
       } else {
-        TweenMax.to(this.element, 0, { autoAlpha: 1, scale: 1});
+        TweenLite.to(this.element, 0, { autoAlpha: 1, scale: 1});
       }
     },
 
@@ -546,9 +542,9 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.visible = false;
 
       if(this.isInViewport()) {
-        TweenMax.to(this.element, 1, {autoAlpha: 0, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+        TweenLite.to(this.element, 1, {autoAlpha: 0, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
       } else {
-        TweenMax.to(this.element, 0, {autoAlpha: 0, scale:0.25, onComplete:this.resetHiddenItemSize.bind(this)});
+        TweenLite.to(this.element, 0, {autoAlpha: 0, scale:0.25, onComplete:this.resetHiddenItemSize.bind(this)});
       }
 
     },
@@ -557,7 +553,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
      * Resetting the elements size prevents odd packery behavior as it tries to fit resizing items
      */
     resetHiddenItemSize: function() {
-      TweenMax.to(this.element, 0, { scale: 1});
+      TweenLite.to(this.element, 0, { scale: 1});
     },
 
     toggleVisibility: function() {
@@ -578,8 +574,8 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.selected = true;
 
       //boxShadow: "5px 5px 20px rgba(0,0,0,.25)",
-      TweenMax.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
-      TweenMax.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+      TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
+      TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
     },
 
     /**
@@ -590,11 +586,11 @@ APP.AppView.ItemGridView.AbstractGridItem = {
         return;
       }
 
-      var tl = new TimelineMax();
+      var tl = new TimelineLite();
       tl.to(this.element,0.1, {scale:0.8, ease: Quad.easeOut});
       tl.to(this.element,0.5, {scale:1, ease: Elastic.easeOut});
 
-      TweenMax.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
+      TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
     },
 
     /**
@@ -607,8 +603,8 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.selected = false;
 
       //boxShadow: "0px 0px 0px rgba(0,0,0,0)",
-      TweenMax.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
-      TweenMax.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
+      TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
+      TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
     },
 
     toggleSelect: function() {

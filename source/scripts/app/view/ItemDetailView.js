@@ -93,7 +93,7 @@ APP.AppView.ItemDetailView = (function() {
       DOMUtils.addClass(_shareButtonEl, 'hidden');
     }
 
-    TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
+    TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }
 
   function doShareAction() {
@@ -108,7 +108,7 @@ APP.AppView.ItemDetailView = (function() {
   function showMessage(obj) {
     _containerEl.innerHTML = _messageTemplate(obj);
 
-    TweenMax.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
+    TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }
 
   function hide() {
@@ -120,8 +120,8 @@ APP.AppView.ItemDetailView = (function() {
       _shareButtonEl.removeEventListener(APP.globals().mouseClickEvtStr, doShareAction);
     }
 
-    TweenMax.killDelayedCallsTo(_containerEl);
-    TweenMax.to(_containerEl, 0.25, {autoAlpha: 0, ease:Quad.easeOut, delay:0.1});
+    TweenLite.killDelayedCallsTo(_containerEl);
+    TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease:Quad.easeOut, delay:0.1});
   }
 
   return {

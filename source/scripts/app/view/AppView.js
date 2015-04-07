@@ -135,7 +135,7 @@ APP.AppView = (function() {
     _tagBarView = _self.TagBarView;
     _tagBarView.initialize('tagbar__container');
 
-    TweenMax.to(_drawerEl, 0, {x:_drawerWidth*-1});
+    TweenLite.to(_drawerEl, 0, {x:_drawerWidth*-1});
   }
 
   function configureUIEvents() {
@@ -259,15 +259,15 @@ APP.AppView = (function() {
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    TweenMax.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
-    TweenMax.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
+    TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
+    TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
   }
 
   /**
    * Update on filters changed
    */
   function updateUIOnFilterChanges() {
-    TweenMax.to(_mainScrollEl, 1, {scrollTop: 0, ease: Quad.easeIn});
+    TweenLite.to(_mainScrollEl, 1, {scrollTop: 0, ease: Quad.easeIn});
   }
 
   /**
@@ -289,8 +289,8 @@ APP.AppView = (function() {
    * Hide UI elements
    */
   function hideElementsOnScrollStart() {
-    TweenMax.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-    TweenMax.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+    TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+    TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
   }
 
   /**
@@ -299,8 +299,8 @@ APP.AppView = (function() {
   function showElementsOnScrollEnd() {
     positionUIElements();
 
-    TweenMax.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-    TweenMax.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+    TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+    TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
   }
 
   //----------------------------------------------------------------------------
@@ -347,14 +347,14 @@ APP.AppView = (function() {
 
   function openDrawer() {
     _isDrawerOpen = true;
-    TweenMax.to(_drawerEl, 0.5, {x:0, ease:Quad.easeOut});
-    TweenMax.to(_appEl, 0.5, {x: _drawerWidth, ease:Quad.easeOut});
+    TweenLite.to(_drawerEl, 0.5, {x:0, ease:Quad.easeOut});
+    TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease:Quad.easeOut});
   }
 
   function closeDrawer() {
     _isDrawerOpen = false;
-    TweenMax.to(_drawerEl, 0.5, {x:_drawerWidth*-1, ease:Quad.easeOut});
-    TweenMax.to(_appEl, 0.5, {x: 0, ease:Quad.easeOut});
+    TweenLite.to(_drawerEl, 0.5, {x:_drawerWidth*-1, ease:Quad.easeOut});
+    TweenLite.to(_appEl, 0.5, {x: 0, ease:Quad.easeOut});
   }
 
   //----------------------------------------------------------------------------
@@ -396,7 +396,7 @@ APP.AppView = (function() {
 
 
   function initializeGridView(data) {
-    _itemGridView.initialize('#grid__item-container', data);
+    _itemGridView.initialize('grid__item-container', data);
   }
 
   //function onGridViewLayoutComplete() {
@@ -454,11 +454,11 @@ APP.AppView = (function() {
     var cover = document.getElementById('initialization__cover'),
         message = document.getElementsByClassName('initialization__message')[0];
 
-    TweenMax.to(cover, 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
+    TweenLite.to(cover, 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
       document.body.removeChild(cover);
     }});
 
-    TweenMax.to(message, 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
+    TweenLite.to(message, 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
       cover.removeChild(message);
     }});
   }

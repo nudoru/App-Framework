@@ -81,7 +81,7 @@ APP = (function(global, rootView) {
    * @returns {void|*}
    */
   function globals() {
-    return $.extend({}, _globals);
+    return ObjectUtils.extend({}, _globals);
   }
 
   //----------------------------------------------------------------------------

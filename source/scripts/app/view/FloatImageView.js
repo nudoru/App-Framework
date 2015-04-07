@@ -7,7 +7,7 @@
 
  Dependencies
   - jQuery
-  - GSAP (TweenMax)
+  - GSAP (TweenLite)
   - RxJS
 */
 
@@ -120,8 +120,8 @@ APP.AppView.FloatImageView = (function() {
     _viewPortCoverEl.appendChild(zoomImage);
 
     // Animate
-    TweenMax.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
-    TweenMax.to(zoomImage, 0.5, {width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+    TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
+    TweenLite.to(zoomImage, 0.5, {width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
     showFloatImageCover();
 
     // Caption
@@ -139,7 +139,6 @@ APP.AppView.FloatImageView = (function() {
    */
   function remove(container) {
     if(!container) {
-      console.log('[FloatingImagesView] nothing to remove from');
       return;
     }
 
@@ -164,7 +163,7 @@ APP.AppView.FloatImageView = (function() {
    * Show the div covering the UI
    */
   function showFloatImageCover() {
-    TweenMax.to(_viewPortCoverEl,0.25, {autoAlpha: 1, ease:Circ.easeOut});
+    TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 1, ease:Circ.easeOut});
   }
 
   /**
@@ -172,11 +171,11 @@ APP.AppView.FloatImageView = (function() {
    */
   function hideFloatImageCover() {
     if(_currentImageElement) {
-      TweenMax.to(_currentImageElement, 0.1, {alpha:1, ease:Circ.easeOut});
+      TweenLite.to(_currentImageElement, 0.1, {alpha:1, ease:Circ.easeOut});
       _currentImageElement = null;
     }
 
-    TweenMax.to(_viewPortCoverEl,0.25, {autoAlpha: 0, ease:Circ.easeOut, onComplete:hideFloatImageCoverComplete});
+    TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 0, ease:Circ.easeOut, onComplete:hideFloatImageCoverComplete});
   }
 
   /**
