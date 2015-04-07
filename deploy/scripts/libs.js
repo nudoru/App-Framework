@@ -2638,13 +2638,10 @@ APP.AppView.BasicMenuItemView = {
 
     showOverEffect: function() {
       TweenLite.to(this.element, 0.1, {backgroundColor:'rgba(255,255,255,.25)', ease:Circ.easeOut});
-      //TweenLite.to(this.anchorElement, 0.15, {boxShadow: "0px 0px 20px rgba(255,255,255,.25)", ease:Circ.easeOut});
     },
 
     showOutEffect: function() {
-      //TweenLite.killTweensOf(this.anchorElement);
       TweenLite.to(this.element, 0.25, {backgroundColor:'rgba(255,255,255,0)', ease:Circ.easeIn});
-      //TweenLite.to(this.anchorElement, 0.25, {boxShadow: "0px 0px 0px rgba(255,255,255,0)", ease:Circ.easeIn});
     },
 
     showDepressEffect: function() {
@@ -2763,7 +2760,15 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    //TweenLite.staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Circ.easeOut}, 0.15);
+    staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Quad.easeOut}, 0.15);
+  }
+
+  function staggerFrom(elList, dur, props, interval) {
+    var i= 0,len=elList.length;
+    for(;i<len;i++) {
+      props.delay = (i+1) * interval;
+      TweenLite.from(elList[i], dur, props);
+    }
   }
 
   /**

@@ -89,7 +89,15 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    //TweenLite.staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Circ.easeOut}, 0.15);
+    staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Quad.easeOut}, 0.15);
+  }
+
+  function staggerFrom(elList, dur, props, interval) {
+    var i= 0,len=elList.length;
+    for(;i<len;i++) {
+      props.delay = (i+1) * interval;
+      TweenLite.from(elList[i], dur, props);
+    }
   }
 
   /**
