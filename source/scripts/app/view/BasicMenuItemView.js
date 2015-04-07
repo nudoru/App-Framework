@@ -37,7 +37,7 @@ APP.AppView.BasicMenuItemView = {
 
       this.label = data.label;
 
-      this.iconTemplate = '<i class="fa fa-circle-thin"></i>';
+      this.iconTemplate = '';
 
       this.render();
 
@@ -45,12 +45,10 @@ APP.AppView.BasicMenuItemView = {
     },
 
     render: function() {
-      var noicon = '<li><button class="js__menu-item" data-value="<%= value %>"><%= label %></button></li>',
-        icon = '<li class="js__menu-item icon-left"><button class="js__menu-item menu__indent" data-value="<%= value %>">'+this.iconTemplate+'<%= label %></button></li>',
-        templatehtml = noicon;
+      var templatehtml = DOMUtils.getHTMLTemplate('template__menu-item');
 
       if(this.toggle) {
-        templatehtml = icon;
+        templatehtml = DOMUtils.getHTMLTemplate('template__menu-item-icon');
       }
 
       this.template = _.template(templatehtml);

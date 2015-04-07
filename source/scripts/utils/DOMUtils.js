@@ -107,6 +107,17 @@ var DOMUtils = {
     } else {
       this.addClass(el, className);
     }
+  },
+
+  getHTMLTemplate: function(id) {
+    var src = document.getElementById(id),
+        srchtml = '<div></div>';
+
+    if(src) {
+      srchtml = src.innerHTML;
+    }
+
+    return StringUtils.sanitizeHTMLStr(srchtml);
   }
 
 };

@@ -148,7 +148,6 @@ APP.AppView = (function() {
         uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
     _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
-      .throttle(25)
       .subscribe(function() {
         positionUIElementsOnChange();
       });
@@ -190,25 +189,25 @@ APP.AppView = (function() {
   }
 
   function handleViewPortScroll() {
-    disablePointerEventsOnScroll();
+    //disablePointerEventsOnScroll();
     _eventDispatcher.publish(APP.Events.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
   // http://www.thecssninja.com/css/pointer-events-60fps
-  function disablePointerEventsOnScroll() {
-    if(_disablePointerEventsOnScrollTimerStream) {
-      _disablePointerEventsOnScrollTimerStream.dispose();
-    }
-
-    DOMUtils.addClass(document.body, 'ignore-pointer-events');
-
-    _disablePointerEventsOnScrollTimerStream = Rx.Observable.timer(250)
-      .pluck('interval')
-      .take(1)
-      .subscribe(function() {
-        DOMUtils.removeClass(document.body, 'ignore-pointer-events');
-      });
-  }
+  //function disablePointerEventsOnScroll() {
+  //  if(_disablePointerEventsOnScrollTimerStream) {
+  //    _disablePointerEventsOnScrollTimerStream.dispose();
+  //  }
+  //
+  //  DOMUtils.addClass(document.body, 'ignore-pointer-events');
+  //
+  //  _disablePointerEventsOnScrollTimerStream = Rx.Observable.timer(250)
+  //    .pluck('interval')
+  //    .take(1)
+  //    .subscribe(function() {
+  //      DOMUtils.removeClass(document.body, 'ignore-pointer-events');
+  //    });
+  //}
 
   /**
    * Display a notification "toast"
@@ -251,16 +250,22 @@ APP.AppView = (function() {
     setCurrentViewPortScroll();
     setCurrentViewPortSize();
 
-    startIsScrollingTimer();
-    hideElementsOnScrollStart();
+    positionUIElements();
+
+    //startIsScrollingTimer();
+    //hideElementsOnScrollStart();
   }
 
   /**
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
-    TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
+    //TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
+    //TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
+
+    _mainHeaderEl.style.top = _currentViewPortScroll.top+'px';
+    _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
+
   }
 
   /**
@@ -273,35 +278,35 @@ APP.AppView = (function() {
   /**
    * Start a timer monitor when scrolling stops
    */
-  function startIsScrollingTimer() {
-    if(_isScrollingTimerStream) {
-      _isScrollingTimerStream.dispose();
-    }
-
-    _isScrollingTimerStream = Rx.Observable.timer(500)
-      .pluck('interval')
-      .take(1)
-      .subscribe(showElementsOnScrollEnd);
-  }
+  //function startIsScrollingTimer() {
+  //  if(_isScrollingTimerStream) {
+  //    _isScrollingTimerStream.dispose();
+  //  }
+  //
+  //  _isScrollingTimerStream = Rx.Observable.timer(500)
+  //    .pluck('interval')
+  //    .take(1)
+  //    .subscribe(showElementsOnScrollEnd);
+  //}
 
 
   /**
    * Hide UI elements
    */
-  function hideElementsOnScrollStart() {
-    TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-    TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-  }
+  //function hideElementsOnScrollStart() {
+  //  TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+  //  TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+  //}
 
   /**
    * Show UI elements
    */
-  function showElementsOnScrollEnd() {
-    positionUIElements();
-
-    TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-    TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-  }
+  //function showElementsOnScrollEnd() {
+  //  positionUIElements();
+  //
+  //  TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+  //  TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+  //}
 
   //----------------------------------------------------------------------------
   //  Mobile

@@ -3244,28 +3244,29 @@ input:focus, textarea:focus, button:focus {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-size: 0.8rem;
+  line-height: 1.2rem;
   text-align: center;
   color: #6e6259;
   cursor: pointer;
   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4);
 }
-/* line 127, ../../source/sass/partials/_components.sass */
+/* line 128, ../../source/sass/partials/_components.sass */
 .basic-button:focus, .important-button:focus {
   border: 1px solid #00a9e0;
 }
-/* line 129, ../../source/sass/partials/_components.sass */
+/* line 130, ../../source/sass/partials/_components.sass */
 .basic-button:hover, .important-button:hover, .basic-button:active, .important-button:active {
   color: #005eb8;
   background-color: #fff;
   box-shadow: none;
 }
 
-/* line 137, ../../source/sass/partials/_components.sass */
+/* line 138, ../../source/sass/partials/_components.sass */
 .round-button {
   padding: 0.344rem 0.6192rem;
 }
 
-/* line 140, ../../source/sass/partials/_components.sass */
+/* line 141, ../../source/sass/partials/_components.sass */
 .important-button {
   font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.9rem;
@@ -3275,18 +3276,18 @@ input:focus, textarea:focus, button:focus {
   text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
 }
-/* line 149, ../../source/sass/partials/_components.sass */
+/* line 150, ../../source/sass/partials/_components.sass */
 .important-button:focus {
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
-/* line 151, ../../source/sass/partials/_components.sass */
+/* line 152, ../../source/sass/partials/_components.sass */
 .important-button:hover, .important-button:active {
   color: #fff;
   box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
   background-color: #6e6259;
 }
 
-/* line 156, ../../source/sass/partials/_components.sass */
+/* line 157, ../../source/sass/partials/_components.sass */
 .transparent-button {
   padding: 0.344rem 0;
   border-radius: 50px;
@@ -3305,18 +3306,18 @@ input:focus, textarea:focus, button:focus {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
 }
-/* line 169, ../../source/sass/partials/_components.sass */
+/* line 170, ../../source/sass/partials/_components.sass */
 .transparent-button:focus {
   border: 1px solid #00a9e0;
 }
-/* line 171, ../../source/sass/partials/_components.sass */
+/* line 172, ../../source/sass/partials/_components.sass */
 .transparent-button:hover, .transparent-button:active {
   color: #6e6259;
   border: 1px solid rgba(0, 0, 0, 0.05);
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-/* line 176, ../../source/sass/partials/_components.sass */
+/* line 177, ../../source/sass/partials/_components.sass */
 .icon-button, .toast__item-controls button {
   background-color: #eae8e6;
   border-radius: 50%;
@@ -3332,13 +3333,13 @@ input:focus, textarea:focus, button:focus {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
 }
-/* line 186, ../../source/sass/partials/_components.sass */
+/* line 187, ../../source/sass/partials/_components.sass */
 .icon-button:hover, .toast__item-controls button:hover, .icon-button:active, .toast__item-controls button:active {
   background-color: #00a9e0;
   color: #fff;
 }
 
-/* line 190, ../../source/sass/partials/_components.sass */
+/* line 191, ../../source/sass/partials/_components.sass */
 .icon-button-blue {
   background-color: #00a9e0;
   border-radius: 50%;
@@ -3355,7 +3356,7 @@ input:focus, textarea:focus, button:focus {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
 }
-/* line 201, ../../source/sass/partials/_components.sass */
+/* line 202, ../../source/sass/partials/_components.sass */
 .icon-button-blue:hover, .icon-button-blue:active {
   background-color: #005eb8;
 }

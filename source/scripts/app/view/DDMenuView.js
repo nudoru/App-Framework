@@ -49,9 +49,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     render: function() {
-      var templateHTML = '<li><button class="js__menu-item" data-value="<%= value %>"><%= label %></button><ul class="menu"></ul>';
-
-      this.template = _.template(templateHTML);
+      this.template = _.template(DOMUtils.getHTMLTemplate('template__menu-header'));
 
       this.renderedHTML = this.template(this.data);
 

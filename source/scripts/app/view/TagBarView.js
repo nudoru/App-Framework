@@ -9,7 +9,7 @@ APP.AppView.TagBarView = (function() {
     _containerEl = document.getElementById(elID);
     _currentTags = [];
 
-    _tagTemplate = _.template('<div class="tag"><%= tag %></div>');
+    _tagTemplate = _.template(DOMUtils.getHTMLTemplate('template__tag'));
 
     hideBar();
   }

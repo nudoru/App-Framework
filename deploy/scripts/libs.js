@@ -455,6 +455,17 @@ var ArrayUtils = {
     } else {
       this.addClass(el, className);
     }
+  },
+
+  getHTMLTemplate: function(id) {
+    var src = document.getElementById(id),
+        srchtml = '<div></div>';
+
+    if(src) {
+      srchtml = src.innerHTML;
+    }
+
+    return StringUtils.sanitizeHTMLStr(srchtml);
   }
 
 };;var NumberUtils = {
@@ -475,6 +486,14 @@ var ArrayUtils = {
 
   removeTags: function(str) {
      return str.replace(/(<([^>]+)>)/ig, '');
+  },
+
+  /**
+   * Created for cleaning up HTML templates from script tags
+   * Removes: new lines, tabs and spaces between tags
+   */
+  sanitizeHTMLStr: function(str) {
+    return str.toString().replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').trim();
   }
 
 };;var LOREM = (function(){
@@ -1649,7 +1668,6 @@ APP.AppView = (function() {
         uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
     _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
-      .throttle(25)
       .subscribe(function() {
         positionUIElementsOnChange();
       });
@@ -1691,25 +1709,25 @@ APP.AppView = (function() {
   }
 
   function handleViewPortScroll() {
-    disablePointerEventsOnScroll();
+    //disablePointerEventsOnScroll();
     _eventDispatcher.publish(APP.Events.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
   // http://www.thecssninja.com/css/pointer-events-60fps
-  function disablePointerEventsOnScroll() {
-    if(_disablePointerEventsOnScrollTimerStream) {
-      _disablePointerEventsOnScrollTimerStream.dispose();
-    }
-
-    DOMUtils.addClass(document.body, 'ignore-pointer-events');
-
-    _disablePointerEventsOnScrollTimerStream = Rx.Observable.timer(250)
-      .pluck('interval')
-      .take(1)
-      .subscribe(function() {
-        DOMUtils.removeClass(document.body, 'ignore-pointer-events');
-      });
-  }
+  //function disablePointerEventsOnScroll() {
+  //  if(_disablePointerEventsOnScrollTimerStream) {
+  //    _disablePointerEventsOnScrollTimerStream.dispose();
+  //  }
+  //
+  //  DOMUtils.addClass(document.body, 'ignore-pointer-events');
+  //
+  //  _disablePointerEventsOnScrollTimerStream = Rx.Observable.timer(250)
+  //    .pluck('interval')
+  //    .take(1)
+  //    .subscribe(function() {
+  //      DOMUtils.removeClass(document.body, 'ignore-pointer-events');
+  //    });
+  //}
 
   /**
    * Display a notification "toast"
@@ -1752,16 +1770,22 @@ APP.AppView = (function() {
     setCurrentViewPortScroll();
     setCurrentViewPortSize();
 
-    startIsScrollingTimer();
-    hideElementsOnScrollStart();
+    positionUIElements();
+
+    //startIsScrollingTimer();
+    //hideElementsOnScrollStart();
   }
 
   /**
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
-    TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
+    //TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
+    //TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
+
+    _mainHeaderEl.style.top = _currentViewPortScroll.top+'px';
+    _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
+
   }
 
   /**
@@ -1774,35 +1798,35 @@ APP.AppView = (function() {
   /**
    * Start a timer monitor when scrolling stops
    */
-  function startIsScrollingTimer() {
-    if(_isScrollingTimerStream) {
-      _isScrollingTimerStream.dispose();
-    }
-
-    _isScrollingTimerStream = Rx.Observable.timer(500)
-      .pluck('interval')
-      .take(1)
-      .subscribe(showElementsOnScrollEnd);
-  }
+  //function startIsScrollingTimer() {
+  //  if(_isScrollingTimerStream) {
+  //    _isScrollingTimerStream.dispose();
+  //  }
+  //
+  //  _isScrollingTimerStream = Rx.Observable.timer(500)
+  //    .pluck('interval')
+  //    .take(1)
+  //    .subscribe(showElementsOnScrollEnd);
+  //}
 
 
   /**
    * Hide UI elements
    */
-  function hideElementsOnScrollStart() {
-    TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-    TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-  }
+  //function hideElementsOnScrollStart() {
+  //  TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+  //  TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+  //}
 
   /**
    * Show UI elements
    */
-  function showElementsOnScrollEnd() {
-    positionUIElements();
-
-    TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-    TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-  }
+  //function showElementsOnScrollEnd() {
+  //  positionUIElements();
+  //
+  //  TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+  //  TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+  //}
 
   //----------------------------------------------------------------------------
   //  Mobile
@@ -2326,9 +2350,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     render: function() {
-      var templateHTML = '<li><button class="js__menu-item" data-value="<%= value %>"><%= label %></button><ul class="menu"></ul>';
-
-      this.template = _.template(templateHTML);
+      this.template = _.template(DOMUtils.getHTMLTemplate('template__menu-header'));
 
       this.renderedHTML = this.template(this.data);
 
@@ -2601,7 +2623,7 @@ APP.AppView.BasicMenuItemView = {
 
       this.label = data.label;
 
-      this.iconTemplate = '<i class="fa fa-circle-thin"></i>';
+      this.iconTemplate = '';
 
       this.render();
 
@@ -2609,12 +2631,10 @@ APP.AppView.BasicMenuItemView = {
     },
 
     render: function() {
-      var noicon = '<li><button class="js__menu-item" data-value="<%= value %>"><%= label %></button></li>',
-        icon = '<li class="js__menu-item icon-left"><button class="js__menu-item menu__indent" data-value="<%= value %>">'+this.iconTemplate+'<%= label %></button></li>',
-        templatehtml = noicon;
+      var templatehtml = DOMUtils.getHTMLTemplate('template__menu-item');
 
       if(this.toggle) {
-        templatehtml = icon;
+        templatehtml = DOMUtils.getHTMLTemplate('template__menu-item-icon');
       }
 
       this.template = _.template(templatehtml);
@@ -3161,30 +3181,15 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
     initialize: function(data) {
       this.data = data;
+      this.template = _.template(DOMUtils.getHTMLTemplate('template__item-tile'));
       this.render();
     },
 
     render: function() {
-      var templateHTML = '<div class="item"><ul class="item__content <%= categories[0] %>" data-value="<%= id %>">' +
-        '<li class="item__image"><div class="item__image-wrapper"><img src="<%= previewImage %>"></div></li>' +
-        '<ul class="item__data">' +
-        '<li class="item__data-title"><%= title %></li>' +
-        '<ul class="item__data-metadata">' +
-        '<li class="left">' +
-        '<% _.each(categories, function(cat) { %>' +
-        '<i class="fa fa-cube"></i><%= cat %>' +
-        '<% }); %>' +
-        '</li>' +
-        '<li class="right"><i class="fa fa-puzzle-piece"></i><%= complexity %></li>' +
-        '</ul>' +
-        '</ul>' +
-        '</li>' +
-        '</ul></div>';
-      this.template = _.template(templateHTML);
-
       this.renderedHTML = this.template(this.data);
 
       this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');
@@ -3315,66 +3320,8 @@ APP.AppView.ItemDetailView = (function() {
     _floatImageView = APP.AppView.FloatImageView;
     _floatImageView.initialize();
 
-    _itemDTemplateSrc = ''
-    +'<div class="details__content">'
-
-      +'<div class="details__content-title">'
-       +'<h1><%= title %></h1>'
-      +'</div>'
-      +'<div class="details__content-description">'
-          +'<div class="details__content-extras">'
-            +'<button id="js__content-share-button" class="basic-button details__content-share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
-          +'</div>'
-          +'<div class="details__content-description-data">'
-            +'<ul>'
-              +'<li class="lob icon-left"><i class="fa fa-building"></i>Created for <em><%= companyArea %></em></li>'
-              +'<li class="date icon-left"><i class="fa fa-calendar"></i>Completed on <em><%= dateCompleted %></em></li>'
-              +'<li class="duration icon-left"><i class="fa fa-clock-o"></i>The solution is <em><%= duration %></em> long</li>'
-              +'<li class="complexity icon-left"><i class="fa fa-puzzle-piece"></i><em><%= complexity %></em> complexity</li>'
-            +'</ul>'
-          +'</div>'
-
-        +'<div class="details__content-preview-images">'
-          +'<ul>'
-          +'<% _.each(images, function(image) { %>'
-          +'<li><div class="floatimage__srcimage"><img src="<%= image %>" alt="<%= title %> preview image"></div></li>'
-          +'<% }); %>'
-          +'</ul>'
-        +'</div>'
-        +'<%= description %>'
-        +'<div class="details__content-description-metadata">'
-          +'<ul>'
-          +'<% _.each(categories, function(cat) { %>'
-          +'<li class="type icon-left"><i class="fa fa-cube"></i><%= cat %></li>'
-          +'<% }); %>'
-          +'<% _.each(tags, function(tag) { %>'
-          +'<li class="type icon-left"><i class="fa fa-tag"></i><%= tag %></li>'
-          +'<% }); %>'
-          +'</ul>'
-        +'</div>'
-        +'<div class="details__content-links">'
-          +'<ul>'
-          +'<% _.each(links, function(link) { %>'
-          +'<li class="icon-left"><a href="<%= link %>" target="_blank"><i class="fa fa-external-link"></i><%= link %></a></li>'
-          +'<% }); %>'
-          +'</ul>'
-        +'</div>'
-      +'</div>'
-    +'</div>';
-
-    _itemDTemplate = _.template(_itemDTemplateSrc);
-
-    _messageTemplateSrc = ''
-      +'<div class="details__content">'
-      +'<div class="details__content-title">'
-      +'<h1><%= title %></h1>'
-      +'</div>'
-      +'<div class="details__content-description">'
-      +'<%= description %>'
-      +'</div>'
-      +'</div>';
-
-    _messageTemplate = _.template(_messageTemplateSrc);
+    _itemDTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-item'));
+    _messageTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-message'));
   }
 
   function showItem(item) {
@@ -3389,7 +3336,7 @@ APP.AppView.ItemDetailView = (function() {
     if(!APP.globals().mobile.any()) {
       _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
     } else {
-      DOMUtils.addClass(_shareButtonEl, 'hidden');
+      _shareButtonEl.style.display = 'none';
     }
 
     TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
@@ -3626,7 +3573,7 @@ APP.AppView.TagBarView = (function() {
     _containerEl = document.getElementById(elID);
     _currentTags = [];
 
-    _tagTemplate = _.template('<div class="tag"><%= tag %></div>');
+    _tagTemplate = _.template(DOMUtils.getHTMLTemplate('template__tag'));
 
     hideBar();
   }

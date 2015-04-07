@@ -16,66 +16,8 @@ APP.AppView.ItemDetailView = (function() {
     _floatImageView = APP.AppView.FloatImageView;
     _floatImageView.initialize();
 
-    _itemDTemplateSrc = ''
-    +'<div class="details__content">'
-
-      +'<div class="details__content-title">'
-       +'<h1><%= title %></h1>'
-      +'</div>'
-      +'<div class="details__content-description">'
-          +'<div class="details__content-extras">'
-            +'<button id="js__content-share-button" class="basic-button details__content-share-button"><i class="fa fa-share-alt"></i><em>Share</em></button>'
-          +'</div>'
-          +'<div class="details__content-description-data">'
-            +'<ul>'
-              +'<li class="lob icon-left"><i class="fa fa-building"></i>Created for <em><%= companyArea %></em></li>'
-              +'<li class="date icon-left"><i class="fa fa-calendar"></i>Completed on <em><%= dateCompleted %></em></li>'
-              +'<li class="duration icon-left"><i class="fa fa-clock-o"></i>The solution is <em><%= duration %></em> long</li>'
-              +'<li class="complexity icon-left"><i class="fa fa-puzzle-piece"></i><em><%= complexity %></em> complexity</li>'
-            +'</ul>'
-          +'</div>'
-
-        +'<div class="details__content-preview-images">'
-          +'<ul>'
-          +'<% _.each(images, function(image) { %>'
-          +'<li><div class="floatimage__srcimage"><img src="<%= image %>" alt="<%= title %> preview image"></div></li>'
-          +'<% }); %>'
-          +'</ul>'
-        +'</div>'
-        +'<%= description %>'
-        +'<div class="details__content-description-metadata">'
-          +'<ul>'
-          +'<% _.each(categories, function(cat) { %>'
-          +'<li class="type icon-left"><i class="fa fa-cube"></i><%= cat %></li>'
-          +'<% }); %>'
-          +'<% _.each(tags, function(tag) { %>'
-          +'<li class="type icon-left"><i class="fa fa-tag"></i><%= tag %></li>'
-          +'<% }); %>'
-          +'</ul>'
-        +'</div>'
-        +'<div class="details__content-links">'
-          +'<ul>'
-          +'<% _.each(links, function(link) { %>'
-          +'<li class="icon-left"><a href="<%= link %>" target="_blank"><i class="fa fa-external-link"></i><%= link %></a></li>'
-          +'<% }); %>'
-          +'</ul>'
-        +'</div>'
-      +'</div>'
-    +'</div>';
-
-    _itemDTemplate = _.template(_itemDTemplateSrc);
-
-    _messageTemplateSrc = ''
-      +'<div class="details__content">'
-      +'<div class="details__content-title">'
-      +'<h1><%= title %></h1>'
-      +'</div>'
-      +'<div class="details__content-description">'
-      +'<%= description %>'
-      +'</div>'
-      +'</div>';
-
-    _messageTemplate = _.template(_messageTemplateSrc);
+    _itemDTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-item'));
+    _messageTemplate = _.template(DOMUtils.getHTMLTemplate('template__detail-message'));
   }
 
   function showItem(item) {
@@ -90,7 +32,7 @@ APP.AppView.ItemDetailView = (function() {
     if(!APP.globals().mobile.any()) {
       _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
     } else {
-      DOMUtils.addClass(_shareButtonEl, 'hidden');
+      _shareButtonEl.style.display = 'none';
     }
 
     TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});

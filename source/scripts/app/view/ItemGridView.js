@@ -490,30 +490,15 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
     initialize: function(data) {
       this.data = data;
+      this.template = _.template(DOMUtils.getHTMLTemplate('template__item-tile'));
       this.render();
     },
 
     render: function() {
-      var templateHTML = '<div class="item"><ul class="item__content <%= categories[0] %>" data-value="<%= id %>">' +
-        '<li class="item__image"><div class="item__image-wrapper"><img src="<%= previewImage %>"></div></li>' +
-        '<ul class="item__data">' +
-        '<li class="item__data-title"><%= title %></li>' +
-        '<ul class="item__data-metadata">' +
-        '<li class="left">' +
-        '<% _.each(categories, function(cat) { %>' +
-        '<i class="fa fa-cube"></i><%= cat %>' +
-        '<% }); %>' +
-        '</li>' +
-        '<li class="right"><i class="fa fa-puzzle-piece"></i><%= complexity %></li>' +
-        '</ul>' +
-        '</ul>' +
-        '</li>' +
-        '</ul></div>';
-      this.template = _.template(templateHTML);
-
       this.renderedHTML = this.template(this.data);
 
       this.element = DOMUtils.HTMLStrToNode(this.renderedHTML);
+
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');
