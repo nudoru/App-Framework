@@ -24,5 +24,15 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
     }
   }
 
+  //console.log('Doing Perf ...');
+  //var iterations = 10000;
+  //var testObj = this.appModel.getData()[0];
+  //console.time('Method');
+  //for(var i = 0; i < iterations; i++) {
+  //  NTemplate.asElement('template__item-tile', testObj);
+  //  //NTemplate.getTemplate('template__item-tile');
+  //}
+  //console.timeEnd('Method')
+
 };
 
