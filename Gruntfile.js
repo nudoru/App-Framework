@@ -104,6 +104,7 @@ module.exports = function (grunt) {
           'source/scripts/utils/Lorem.js',
           'source/scripts/utils/TouchUtils.js',
           'source/scripts/utils/NTemplate.js',
+          'source/scripts/nudoru/utils/NNameSpace.js',
           'source/scripts/app/App.js',
           'source/scripts/app/events/Events.js',
           'source/scripts/app/events/EventDispatcher.js',
