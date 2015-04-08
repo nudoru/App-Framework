@@ -94,17 +94,23 @@ module.exports = function (grunt) {
           'source/scripts/vendor/underscore-min.js',
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'source/scripts/vendor/packery.pkgd.min.js',
-          'source/scripts/utils/utility.js',
-          'source/scripts/utils/Debugger.js',
-          'source/scripts/utils/ObjectUtils.js',
-          'source/scripts/utils/ArrayUtils.js',
-          'source/scripts/utils/DOMUtils.js',
-          'source/scripts/utils/NumberUtils.js',
-          'source/scripts/utils/StringUtils.js',
-          'source/scripts/utils/Lorem.js',
-          'source/scripts/utils/TouchUtils.js',
-          'source/scripts/utils/NTemplate.js',
+
+          'source/scripts/nudoru/utils/utility.js',
+
+          'source/scripts/nudoru/utils/PrototypeExtras.js',
+
+          'source/scripts/nudoru/utils/ObjectUtils.js',
+          'source/scripts/nudoru/utils/ArrayUtils.js',
+          'source/scripts/nudoru/utils/DOMUtils.js',
+          'source/scripts/nudoru/utils/NumberUtils.js',
+          'source/scripts/nudoru/utils/StringUtils.js',
+          'source/scripts/nudoru/utils/TouchUtils.js',
+
+          'source/scripts/nudoru/utils/NDebugger.js',
           'source/scripts/nudoru/utils/NNameSpace.js',
+          'source/scripts/nudoru/utils/NTemplate.js',
+          'source/scripts/nudoru/utils/NLorem.js',
+
           'source/scripts/app/App.js',
           'source/scripts/app/events/Events.js',
           'source/scripts/app/events/EventDispatcher.js',

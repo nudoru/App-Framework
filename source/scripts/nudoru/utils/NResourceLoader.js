@@ -1,4 +1,4 @@
-var ResourceLoader = (function() {
+var NResourceLoader = (function() {
   var resources = [],
     onProgressCallback,
     onCompletedCallback,
@@ -42,7 +42,7 @@ var ResourceLoader = (function() {
   }
 
   function attachScript(url) {
-    DEBUGGER.log('ResourceLoader - Attaching script: '+url);
+    NDebugger.log('ResourceLoader - Attaching script: '+url);
     $.ajax({
       type: 'GET',
       url: url,
@@ -54,7 +54,7 @@ var ResourceLoader = (function() {
   }
 
   function cacheImage(url) {
-    DEBUGGER.log('ResourceLoader - Caching image: '+url);
+    NDebugger.log('ResourceLoader - Caching image: '+url);
     var img = new Image();
     img.onload = onDependencyLoaded;
     img.src = url + "?" + Math.random();
@@ -66,7 +66,7 @@ var ResourceLoader = (function() {
   }
 
   function onDependencyLoadError(data, status, jqxhr) {
-    DEBUGGER.log('ResourceLoader - Failed to load dependency: '+status);
+    NDebugger.log('ResourceLoader - Failed to load dependency: '+status);
     onErrorCallback.call(currentResource);
   }
 

@@ -19,7 +19,7 @@ APP.AppController.AbstractCommand = {
     eventDispatcher: APP.EventDispatcher,
 
     execute: function(data) {
-      DEBUGGER.log('Abstract command executing with data: '+data);
+      NDebugger.log('Abstract command executing with data: '+data);
     }
   },
 

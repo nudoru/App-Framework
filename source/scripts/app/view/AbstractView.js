@@ -20,7 +20,7 @@ APP.AppView.AbstractView = {
       this.parent = parent;
       this.data = data;
       this.template = template;
-      DEBUGGER.log('['+this.id+'] initialize: ' + data);
+      NDebugger.log('['+this.id+'] initialize: ' + data);
     },
 
     render: function() {

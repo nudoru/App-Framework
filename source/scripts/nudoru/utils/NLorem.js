@@ -1,4 +1,4 @@
-var LOREM = (function(){
+var NLorem = (function(){
   var _currentText = [],
       _textSets = [],
       _maleFirstNames = [],

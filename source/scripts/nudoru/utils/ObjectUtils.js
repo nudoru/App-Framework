@@ -1,7 +1,7 @@
 var ObjectUtils = {
   describeObject: function (obj) {
     $.each(obj, function (index, value) {
-      DEBUGGER.log('DESCRIBE: '+index + ': ' + value);
+      NDebugger.log('DESCRIBE: '+index + ': ' + value);
     });
   },
 

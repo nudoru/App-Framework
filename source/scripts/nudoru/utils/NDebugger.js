@@ -1,5 +1,5 @@
 // Simple debugger, Matt Perkins
-var DEBUGGER = (function() {
+var NDebugger = (function() {
   var _messages = [],
     _broadcast = true;
 

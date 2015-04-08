@@ -34,7 +34,7 @@ APP.AppModel.DummyData = (function(){
     var i=0;
 
     for(i=0; i<20; i++) {
-      _possibleContributors.push(LOREM.getLFName());
+      _possibleContributors.push(NLorem.getLFName());
     }
 
     for(i=0; i<100; i++) {
@@ -52,14 +52,14 @@ APP.AppModel.DummyData = (function(){
         i = 0;
 
     for(;i<descriptionNumParas; i++) {
-      description += '<p>'+LOREM.getParagraph(3,7)+'</p>';
+      description += '<p>'+NLorem.getParagraph(3,7)+'</p>';
     }
 
     for(i=0;i<additionalNumImages; i++) {
       additionalImages.push('img/' + ArrayUtils.rndElement(_possiblePreviewImages));
     }
 
-    o.title = StringUtils.capitalizeFirstLetter(LOREM.getText(3,10));
+    o.title = StringUtils.capitalizeFirstLetter(NLorem.getText(3,10));
     o.shortTitle = o.title.substr(0, 10) + '...';
     o.description = description;
     o.images = additionalImages;

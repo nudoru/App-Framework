@@ -1,4 +1,4 @@
-var Cookie = {
+var NCookie = {
 
   create: function(name, value, days) {
     var expires = "", date;
