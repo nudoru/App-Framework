@@ -10,7 +10,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
   },
 
   methods: {
-    eventDispatcher: APP.EventDispatcher,
+    eventDispatcher: nudoru.events.EventDispatcher,
     data: null,
     items: null,
     element: null,

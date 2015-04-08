@@ -14,7 +14,7 @@ APP.AppController.Router = function () {
       _lastSetPath;
 
   function initialize() {
-    _eventDispatcher = APP.EventDispatcher;
+    _eventDispatcher = nudoru.events.EventDispatcher;
     _lastSetPath = '';
 
     configureStreams();

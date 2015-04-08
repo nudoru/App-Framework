@@ -95,6 +95,10 @@ module.exports = function (grunt) {
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'source/scripts/vendor/packery.pkgd.min.js',
 
+          'source/scripts/nudoru/utils/NNameSpace.js',
+
+          'source/scripts/nudoru/nudoru.js',
+
           'source/scripts/nudoru/utils/utility.js',
 
           'source/scripts/nudoru/utils/ObjectUtils.js',
@@ -105,27 +109,31 @@ module.exports = function (grunt) {
           'source/scripts/nudoru/utils/TouchUtils.js',
 
           'source/scripts/nudoru/utils/NDebugger.js',
-          'source/scripts/nudoru/utils/NNameSpace.js',
           'source/scripts/nudoru/utils/NTemplate.js',
           'source/scripts/nudoru/utils/NLorem.js',
 
+          'source/scripts/nudoru/events/EventDispatcher.js',
+          'source/scripts/nudoru/events/EventCommandMap.js',
+
+          'source/scripts/nudoru/components/FloatImageView.js',
+          'source/scripts/nudoru/components/ModalCoverView.js',
+          'source/scripts/nudoru/components/ToastView.js',
+
           'source/scripts/app/App.js',
           'source/scripts/app/events/Events.js',
-          'source/scripts/app/events/EventDispatcher.js',
-          'source/scripts/app/events/EventCommandMap.js',
+
           'source/scripts/app/model/AbstractModelVOs.js',
           'source/scripts/app/model/AppModel.js',
           'source/scripts/app/model/DummyData.js',
           'source/scripts/app/view/AppView.js',
-          'source/scripts/app/view/ModalCoverView.js',
-          'source/scripts/app/view/ToastView.js',
+
           'source/scripts/app/view/DDMenuBarView.js',
           'source/scripts/app/view/DDMenuView.js',
           'source/scripts/app/view/BasicMenuItemView.js',
           'source/scripts/app/view/ItemGridView.js',
           'source/scripts/app/view/ItemDetailView.js',
           'source/scripts/app/view/DetailedItemRenderer.js',
-          'source/scripts/app/view/FloatImageView.js',
+
           'source/scripts/app/view/TagBarView.js',
           'source/scripts/app/controller/AppController.js',
           'source/scripts/app/controller/Router.js',

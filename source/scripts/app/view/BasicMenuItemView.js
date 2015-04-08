@@ -10,7 +10,7 @@ APP.AppView.BasicMenuItemView = {
   },
 
   methods: {
-    eventDispatcher: APP.EventDispatcher,
+    eventDispatcher: nudoru.events.EventDispatcher,
     data: null,
     label: '',
     element: null,

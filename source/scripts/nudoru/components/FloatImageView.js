@@ -12,8 +12,8 @@
 */
 
 
-APP.createNameSpace('APP.AppView.FloatImageView');
-APP.AppView.FloatImageView = (function() {
+nudoru.createNameSpace('nudoru.components.FloatImageView');
+nudoru.components.FloatImageView = (function() {
 
   var _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',

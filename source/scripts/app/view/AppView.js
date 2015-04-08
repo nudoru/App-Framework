@@ -58,7 +58,7 @@ APP.AppView = (function() {
 
     _self = this;
     _appGlobals = APP.globals();
-    _eventDispatcher = APP.EventDispatcher;
+    _eventDispatcher = nudoru.events.EventDispatcher;
 
     _isMobile = false;
     _tabletBreakWidth = 750;
@@ -118,10 +118,10 @@ APP.AppView = (function() {
   }
 
   function initializeComponents() {
-    _toastView = _self.ToastView;
+    _toastView = nudoru.components.ToastView;
     _toastView.initialize('toast__container');
 
-    _modalCoverView = _self.ModalCoverView;
+    _modalCoverView = nudoru.components.ModalCoverView;
     _modalCoverView.initialize();
 
     // init on these called later

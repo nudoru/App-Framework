@@ -1,6 +1,6 @@
-APP.createNameSpace('APP.AppView.ModalCoverView');
+nudoru.createNameSpace('nudoru.components.ModalCoverView');
 
-APP.AppView.ModalCoverView = (function() {
+nudoru.components.ModalCoverView = (function() {
   var _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
@@ -11,7 +11,7 @@ APP.AppView.ModalCoverView = (function() {
   function initialize() {
     var appGlobals = APP.globals();
 
-    _eventDispatcher = APP.EventDispatcher;
+    _eventDispatcher = nudoru.events.EventDispatcher;
 
     _isVisible = true;
 

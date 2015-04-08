@@ -4,7 +4,7 @@ APP.AppView.AbstractView = {
 
   methods: {
 
-    eventDispatcher: APP.EventDispatcher,
+    eventDispatcher: nudoru.events.EventDispatcher,
     appView: APP.AppView,
     id: 'AbstractView',
     parent: undefined,

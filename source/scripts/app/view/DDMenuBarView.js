@@ -17,7 +17,7 @@ APP.AppView.DDMenuBarView = {
     isKeepOpen: false,
 
     initialize: function(elID, data, keep) {
-      this.eventDispatcher = APP.EventDispatcher;
+      this.eventDispatcher = nudoru.events.EventDispatcher;
 
       this.containerEl = document.getElementById(elID);
       this.data = data;

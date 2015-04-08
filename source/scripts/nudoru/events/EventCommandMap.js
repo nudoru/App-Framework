@@ -3,9 +3,9 @@ Matt Perkins, 1/3/15
 With gentle nudges from Kevin Carmody
  */
 
-APP.createNameSpace('APP.EventCommandMap');
-APP.EventCommandMap = (function(){
-  var _eventDispatcher = APP.EventDispatcher,
+nudoru.createNameSpace('nudoru.events.EventCommandMap');
+nudoru.events.EventCommandMap = (function(){
+  var _eventDispatcher = nudoru.events.EventDispatcher,
       _commandMap = {};
 
   function map(evt, command, once) {

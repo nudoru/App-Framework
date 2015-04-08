@@ -3,8 +3,8 @@
  * modified 3/12/15
  */
 
-APP.createNameSpace('APP.AppView.ToastView');
-APP.AppView.ToastView = (function(){
+nudoru.createNameSpace('nudoru.components.ToastView');
+nudoru.components.ToastView = (function(){
 
   var _children = [],
       _counter = 0,

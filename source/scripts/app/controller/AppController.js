@@ -23,7 +23,7 @@ APP.AppController = function () {
     _globalScope = global;
     _viewParent = viewParent;
     _self = this;
-    _eventDispatcher = APP.EventDispatcher;
+    _eventDispatcher = nudoru.events.EventDispatcher;
     _router = APP.AppController.Router;
 
     _router.initialize();
@@ -35,7 +35,7 @@ APP.AppController = function () {
 
   function mapCommand(evt, command, once) {
     once = once || false;
-    APP.EventCommandMap.map(evt, command, once);
+    nudoru.events.EventCommandMap.map(evt, command, once);
   }
 
   function initializeView() {

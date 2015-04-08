@@ -9,7 +9,7 @@ APP.AppView.ItemDetailView = (function() {
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
 
-    _floatImageView = APP.AppView.FloatImageView;
+    _floatImageView = nudoru.components.FloatImageView;
     _floatImageView.initialize();
   }
 

@@ -16,7 +16,7 @@ APP.AppController.AbstractCommand = {
     appController: APP.AppController,
     appModel: APP.AppModel,
     appView: APP.AppView,
-    eventDispatcher: APP.EventDispatcher,
+    eventDispatcher: nudoru.events.EventDispatcher,
 
     execute: function(data) {
       NDebugger.log('Abstract command executing with data: '+data);
