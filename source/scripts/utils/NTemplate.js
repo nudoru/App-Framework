@@ -3,28 +3,51 @@ Simple wrapper for Underscore / HTML templates
 
 Matt Perkins
 4/7/15
+
+Refer - http://ejohn.org/blog/javascript-micro-templating/
+
+Performance
+Before cache
+10000 x NTemplate.getTemplate('template__item-tile')          = 2218.643ms
+10000 x NTemplate.asElement('template__item-tile', testObj)   = 3294.082ms
+
+Template HTML Caching
+10000 x NTemplate.getTemplate('template__item-tile')          = 1904.079ms
+
+Template HTML and Template Caching
+10000 x NTemplate.getTemplate('template__item-tile')          = 0.3ms
+10000 x NTemplate.asElement('template__item-tile', testObj)   = 614.038ms
  */
 
 var NTemplate = (function() {
 
-  var cache = {};
+  var _templateHTMLCache = {},
+      _templateCache = {};
 
   /**
-   * Get thes template html from the script tag with id
+   * Get the template html from the script tag with id
    * @param id
    * @returns {*}
    */
   function getSource(id) {
+    if(_templateHTMLCache[id]) {
+      return _templateHTMLCache[id];
+    }
+
     var src = document.getElementById(id),
-        srchtml = '';
+        srchtml = '',
+        cleanhtml = '';
 
     if(src) {
       srchtml = src.innerHTML;
     } else {
       console.log('Template not found: "'+id+'"');
+      return '';
     }
 
-    return sanitizeHTMLStr(srchtml);
+    cleanhtml = cleanTemplateHTML(srchtml);
+    _templateHTMLCache[id] = cleanhtml;
+    return cleanhtml;
   }
 
   /**
@@ -33,7 +56,12 @@ var NTemplate = (function() {
    * @returns {*}
    */
   function getTemplate(id) {
-    return _.template(getSource(id));
+    if(_templateCache[id]) {
+      return _templateCache[id];
+    }
+    var templ = _.template(getSource(id));
+    _templateCache[id] = templ;
+    return templ;
   }
 
   /**
@@ -58,11 +86,11 @@ var NTemplate = (function() {
   }
 
   /**
-   * Created for cleaning up HTML templates from script tags
-   * Removes: new lines, tabs and spaces between tags
+   * Cleans template HTML
    */
-  function sanitizeHTMLStr(str) {
-    return str.toString().replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').trim();
+  function cleanTemplateHTML(str) {
+    //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
+    return str.trim();
   }
 
   /**

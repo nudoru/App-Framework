@@ -36,7 +36,6 @@ APP.AppView.TagBarView = (function() {
       removeAll();
       hideBar();
     }
-
   }
 
   function showBar() {
@@ -45,11 +44,10 @@ APP.AppView.TagBarView = (function() {
 
   function hideBar() {
     TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
-
   }
 
   function add(tag) {
-    var tagnode = NTemplate.asElemement('template__tag', {tag: tag});
+    var tagnode = NTemplate.asElement('template__tag', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});

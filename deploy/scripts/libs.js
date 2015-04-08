@@ -388,7 +388,7 @@ var ArrayUtils = {
       do {
         ol += el.offsetLeft;
         ot += el.offsetTop;
-      } while (el = el.offsetParent); // Causes a JShint error, safe to ignore
+      } while (el = el.offsetParent); // jshint ignore:line
     }
     return {
       left: ol,
@@ -618,24 +618,33 @@ var ArrayUtils = {
 
 };;var NTemplate = (function() {
 
-  var cache = {};
+  var _templateHTMLCache = {},
+      _templateCache = {};
 
   /**
-   * Get thes template html from the script tag with id
+   * Get the template html from the script tag with id
    * @param id
    * @returns {*}
    */
   function getSource(id) {
+    if(_templateHTMLCache[id]) {
+      return _templateHTMLCache[id];
+    }
+
     var src = document.getElementById(id),
-        srchtml = '';
+        srchtml = '',
+        cleanhtml = '';
 
     if(src) {
       srchtml = src.innerHTML;
     } else {
       console.log('Template not found: "'+id+'"');
+      return '';
     }
 
-    return sanitizeHTMLStr(srchtml);
+    cleanhtml = cleanTemplateHTML(srchtml);
+    _templateHTMLCache[id] = cleanhtml;
+    return cleanhtml;
   }
 
   /**
@@ -644,7 +653,12 @@ var ArrayUtils = {
    * @returns {*}
    */
   function getTemplate(id) {
-    return _.template(getSource(id));
+    if(_templateCache[id]) {
+      return _templateCache[id];
+    }
+    var templ = _.template(getSource(id));
+    _templateCache[id] = templ;
+    return templ;
   }
 
   /**
@@ -669,11 +683,11 @@ var ArrayUtils = {
   }
 
   /**
-   * Created for cleaning up HTML templates from script tags
-   * Removes: new lines, tabs and spaces between tags
+   * Cleans template HTML
    */
-  function sanitizeHTMLStr(str) {
-    return str.toString().replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').trim();
+  function cleanTemplateHTML(str) {
+    //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
+    return str.trim();
   }
 
   /**
@@ -3628,7 +3642,6 @@ APP.AppView.TagBarView = (function() {
       removeAll();
       hideBar();
     }
-
   }
 
   function showBar() {
@@ -3637,11 +3650,10 @@ APP.AppView.TagBarView = (function() {
 
   function hideBar() {
     TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
-
   }
 
   function add(tag) {
-    var tagnode = NTemplate.asElemement('template__tag', {tag: tag});
+    var tagnode = NTemplate.asElement('template__tag', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
@@ -3875,6 +3887,16 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
       this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
     }
   }
+
+  //console.log('Doing Perf ...');
+  //var iterations = 10000;
+  //var testObj = this.appModel.getData()[0];
+  //console.time('Method');
+  //for(var i = 0; i < iterations; i++) {
+  //  NTemplate.asElement('template__item-tile', testObj);
+  //  //NTemplate.getTemplate('template__item-tile');
+  //}
+  //console.timeEnd('Method')
 
 };
 
