@@ -134,8 +134,8 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
-        beautify: true,
-        mangle: false,
+        beautify: false,
+        mangle: true,
         sourceMap: ''
       },
       dist: {
