@@ -86,26 +86,6 @@ var debounce = function (func, threshold, execAsap) {
 
     timeout = setTimeout(delayed, threshold || 100);
   };
-};;//String.prototype.trim = function(){return this.replace(/^\s+|\s+$/g, "");};
-
-String.prototype.stripHTMLTags = function() {return this.replace(/<[^>]+>/gi,"");};
-String.prototype.ellipses = function(len) {return (this.length > len) ? this.substr(0, len) + "..." : this; };
-
-/**
- * Reference: http://jhusain.github.io/learnrx/index.html
- *
- * @return Array
- */
-Array.prototype.mergeAll = function() {
-  var results = [];
-
-  this.forEach(function(subArr) {
-    subArr.forEach(function(elm) {
-      results.push(elm);
-    });
-  });
-
-  return results;
 };;var ObjectUtils = {
   describeObject: function (obj) {
     $.each(obj, function (index, value) {
@@ -253,6 +233,19 @@ Array.prototype.mergeAll = function() {
 };;
 
 var ArrayUtils = {
+
+  // Reference: http://jhusain.github.io/learnrx/index.html
+  mergeAll: function() {
+    var results = [];
+
+    this.forEach(function(subArr) {
+      subArr.forEach(function(elm) {
+        results.push(elm);
+      });
+    });
+
+    return results;
+  },
 
   // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
   unique: function(arry) {
@@ -450,6 +443,14 @@ var ArrayUtils = {
   removeTags: function(str) {
      return str.replace(/(<([^>]+)>)/ig, '');
   },
+
+  stripHTMLTags: function() {
+    return this.replace(/<[^>]+>/gi,"");
+  },
+
+  ellipses: function(len) {
+    return (this.length > len) ? this.substr(0, len) + "..." : this;
+  }
 
 };;var TouchUtils = {
 

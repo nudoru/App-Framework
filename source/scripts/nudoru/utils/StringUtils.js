@@ -8,4 +8,12 @@ var StringUtils = {
      return str.replace(/(<([^>]+)>)/ig, '');
   },
 
+  stripHTMLTags: function() {
+    return this.replace(/<[^>]+>/gi,"");
+  },
+
+  ellipses: function(len) {
+    return (this.length > len) ? this.substr(0, len) + "..." : this;
+  }
+
 };

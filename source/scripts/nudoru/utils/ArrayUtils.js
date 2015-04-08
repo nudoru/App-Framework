@@ -2,6 +2,19 @@
 
 var ArrayUtils = {
 
+  // Reference: http://jhusain.github.io/learnrx/index.html
+  mergeAll: function() {
+    var results = [];
+
+    this.forEach(function(subArr) {
+      subArr.forEach(function(elm) {
+        results.push(elm);
+      });
+    });
+
+    return results;
+  },
+
   // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
   unique: function(arry) {
     var o = {},

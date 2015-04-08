@@ -97,8 +97,6 @@ module.exports = function (grunt) {
 
           'source/scripts/nudoru/utils/utility.js',
 
-          'source/scripts/nudoru/utils/PrototypeExtras.js',
-
           'source/scripts/nudoru/utils/ObjectUtils.js',
           'source/scripts/nudoru/utils/ArrayUtils.js',
           'source/scripts/nudoru/utils/DOMUtils.js',
