@@ -128,7 +128,7 @@ var ObjectUtils = {
   // https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
   basicFactory: function(prototype) {
     var proto = prototype,
-      obj = Object.create(proto.methods);
+        obj = Object.create(proto.methods);
 
     proto.closures.forEach(function(closure) {
       closure.call(obj);
@@ -139,7 +139,6 @@ var ObjectUtils = {
     }
 
     return obj;
-
   }
 
 };

@@ -2,8 +2,8 @@
 //  A menu
 //----------------------------------------------------------------------------
 
-APP.createNameSpace('APP.AppView.DDMenuBarView.DDMenuView');
-APP.AppView.DDMenuBarView.DDMenuView = {
+nudoru.createNameSpace('nudoru.components.DDMenuView');
+nudoru.components.DDMenuView = {
   state: {
     visible: false,
     selected: false
@@ -65,7 +65,7 @@ APP.AppView.DDMenuBarView.DDMenuView = {
     },
 
     buildMenuItems: function(item) {
-      var menuitem = ObjectUtils.basicFactory(APP.AppView.BasicMenuItemView);
+      var menuitem = ObjectUtils.basicFactory(nudoru.components.BasicMenuItemView);
       menuitem.initialize(item);
       this.ddMenuEl.appendChild(menuitem.element);
       this.items.push(menuitem);
@@ -283,8 +283,8 @@ APP.AppView.DDMenuBarView.DDMenuView = {
 //  A menu item
 //----------------------------------------------------------------------------
 
-APP.createNameSpace('APP.AppView.BasicMenuItemView');
-APP.AppView.BasicMenuItemView = {
+nudoru.createNameSpace('nudoru.components.BasicMenuItemView');
+nudoru.components.BasicMenuItemView = {
   state: {
     visible: true,
     selected: false

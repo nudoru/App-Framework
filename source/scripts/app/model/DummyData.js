@@ -1,5 +1,4 @@
 APP.createNameSpace('APP.Model.DummyData');
-
 APP.AppModel.DummyData = (function(){
 
   var _id = 1,
@@ -19,7 +18,6 @@ APP.AppModel.DummyData = (function(){
       ],
       _possibleContributors = [],
       _possibleLobs = ['Information Technology','Finance','Human Resources','Investment','Legal','Client Services','Risk Management','Marketing'],
-      //_possibleCategories = ['Online','Event','Test','Session','Material','Curriculum'],
       _possibleCategories = ['item-category1','item-category2','item-category3','item-category4','item-category5'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
@@ -44,7 +42,7 @@ APP.AppModel.DummyData = (function(){
   }
 
   function createItem() {
-    var o = Object.create(ItemVO.prototype),
+    var o = Object.create(APP.AppModel.ItemVO.properties),
         additionalImages = [],
         additionalNumImages = NumberUtils.rndNumber(1,10),
         description = '',

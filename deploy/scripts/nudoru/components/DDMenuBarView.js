@@ -3,8 +3,8 @@
  * Modified 3/13/15
  */
 
-APP.createNameSpace('APP.AppView.DDMenuBarView');
-APP.AppView.DDMenuBarView = {
+nudoru.createNameSpace('nudoru.components.DDMenuBarView');
+nudoru.components.DDMenuBarView = {
   state: {},
 
   methods: {
@@ -35,7 +35,7 @@ APP.AppView.DDMenuBarView = {
 
       this.barEl = DOMUtils.HTMLStrToNode('<ul></ul>');
       for(; i<len; i++) {
-        var menuobj = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView.DDMenuView);
+        var menuobj = ObjectUtils.basicFactory(nudoru.components.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
         this.barEl.appendChild(menuobj.element);
         this.children.push(menuobj);

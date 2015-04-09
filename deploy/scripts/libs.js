@@ -266,7 +266,7 @@ var debounce = function (func, threshold, execAsap) {
   // https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
   basicFactory: function(prototype) {
     var proto = prototype,
-      obj = Object.create(proto.methods);
+        obj = Object.create(proto.methods);
 
     proto.closures.forEach(function(closure) {
       closure.call(obj);
@@ -277,7 +277,6 @@ var debounce = function (func, threshold, execAsap) {
     }
 
     return obj;
-
   }
 
 };;
@@ -1855,48 +1854,6 @@ APP.Events = {
   GRID_VIEW_ITEMS_CHANGED: 'GRID_VIEW_ITEMS_CHANGED',
   GRID_VIEW_LAYOUT_COMPLETE: 'GRID_VIEW_LAYOUT_COMPLETE',
   GRID_VIEW_IMAGE_LOAD_ERROR: 'GRID_VIEW_IMAGE_LOAD_ERROR'
-};;function CategoryVO() {}
-CategoryVO.prototype = {
-  name: '',
-  icon: ''
-};
-
-function RoleVO() {}
-RoleVO.prototype = {
-  name: '',
-  icon: ''
-};
-
-function ContributorVO() {}
-ContributorVO.prototype = {
-  firstName: '',
-  lastName: '',
-  name: '',
-  title: '',
-  email: '',
-  picture: '',
-  roles: []
-};
-
-function ItemVO() {}
-ItemVO.prototype = {
-  title: '',
-  shortTitle: '',
-  description: '',
-  previewImage: '',
-  id: '',
-  dateStarted: '',
-  dateCompleted: '',
-  quarter: '',
-  duration: '',
-  contributors: [],
-  categories: [],
-  companyArea: '',
-  complexity: '',
-  links: [],
-  images: [],
-  tags: [],
-  metadata: []
 };;APP.createNameSpace('APP.AppModel');
 
 APP.AppModel = (function() {
@@ -1958,8 +1915,6 @@ APP.AppModel = (function() {
       }).join("/");
     }
 
-    //TODO optimize
-
     if(filters) {
       str += filters;
     }
@@ -1980,7 +1935,6 @@ APP.AppModel = (function() {
       str += 'item='+encodeURIComponent(_currentItem);
     }
 
-    //return filters + '?'+freeText +'&'+ currentItem;
     return str;
   }
 
@@ -2362,8 +2316,28 @@ APP.AppModel = (function() {
     getFiltersForTagBar: getFiltersForTagBar
   };
 
-}());;APP.createNameSpace('APP.Model.DummyData');
-
+}());;APP.createNameSpace('APP.AppModel.ItemVO');
+APP.AppModel.ItemVO = {
+  properties: {
+      title: '',
+      shortTitle: '',
+      description: '',
+      previewImage: '',
+      id: '',
+      dateStarted: '',
+      dateCompleted: '',
+      quarter: '',
+      duration: '',
+      contributors: [],
+      categories: [],
+      companyArea: '',
+      complexity: '',
+      links: [],
+      images: [],
+      tags: [],
+      metadata: []
+  },
+};;APP.createNameSpace('APP.Model.DummyData');
 APP.AppModel.DummyData = (function(){
 
   var _id = 1,
@@ -2383,7 +2357,6 @@ APP.AppModel.DummyData = (function(){
       ],
       _possibleContributors = [],
       _possibleLobs = ['Information Technology','Finance','Human Resources','Investment','Legal','Client Services','Risk Management','Marketing'],
-      //_possibleCategories = ['Online','Event','Test','Session','Material','Curriculum'],
       _possibleCategories = ['item-category1','item-category2','item-category3','item-category4','item-category5'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
@@ -2408,7 +2381,7 @@ APP.AppModel.DummyData = (function(){
   }
 
   function createItem() {
-    var o = Object.create(ItemVO.prototype),
+    var o = Object.create(APP.AppModel.ItemVO.properties),
         additionalImages = [],
         additionalNumImages = NumberUtils.rndNumber(1,10),
         description = '',

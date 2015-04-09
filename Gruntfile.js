@@ -96,45 +96,34 @@ module.exports = function (grunt) {
           'source/scripts/vendor/packery.pkgd.min.js',
 
           'source/scripts/nudoru/utils/NNameSpace.js',
-
           'source/scripts/nudoru/nudoru.js',
-
           'source/scripts/nudoru/utils/utility.js',
-
           'source/scripts/nudoru/utils/ObjectUtils.js',
           'source/scripts/nudoru/utils/ArrayUtils.js',
           'source/scripts/nudoru/utils/DOMUtils.js',
           'source/scripts/nudoru/utils/NumberUtils.js',
           'source/scripts/nudoru/utils/StringUtils.js',
           'source/scripts/nudoru/utils/TouchUtils.js',
-
           'source/scripts/nudoru/utils/NDebugger.js',
           'source/scripts/nudoru/utils/NTemplate.js',
           'source/scripts/nudoru/utils/NLorem.js',
-
           'source/scripts/nudoru/events/EventDispatcher.js',
           'source/scripts/nudoru/events/EventCommandMap.js',
-
           'source/scripts/nudoru/components/FloatImageView.js',
           'source/scripts/nudoru/components/ModalCoverView.js',
           'source/scripts/nudoru/components/ToastView.js',
-
           'source/scripts/nudoru/components/DDMenuBarView.js',
           'source/scripts/nudoru/components/DDMenuView.js',
 
           'source/scripts/app/App.js',
           'source/scripts/app/events/Events.js',
-
-          'source/scripts/app/model/AbstractModelVOs.js',
           'source/scripts/app/model/AppModel.js',
+          'source/scripts/app/model/ModelVOs.js',
           'source/scripts/app/model/DummyData.js',
           'source/scripts/app/view/AppView.js',
-
-
           'source/scripts/app/view/ItemGridView.js',
           'source/scripts/app/view/ItemDetailView.js',
           'source/scripts/app/view/DetailedItemRenderer.js',
-
           'source/scripts/app/view/TagBarView.js',
           'source/scripts/app/controller/AppController.js',
           'source/scripts/app/controller/Router.js',

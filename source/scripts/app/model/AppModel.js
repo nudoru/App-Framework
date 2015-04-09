@@ -75,8 +75,6 @@ APP.AppModel = (function() {
       }).join("/");
     }
 
-    //TODO optimize
-
     if(filters) {
       str += filters;
     }
@@ -97,7 +95,6 @@ APP.AppModel = (function() {
       str += 'item='+encodeURIComponent(_currentItem);
     }
 
-    //return filters + '?'+freeText +'&'+ currentItem;
     return str;
   }
 
