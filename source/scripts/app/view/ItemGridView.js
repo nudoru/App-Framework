@@ -89,7 +89,7 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Quad.easeOut}, 0.15);
+    staggerFrom(getItemsInView(), 0.5, {rotationY: -90, alpha: 0, ease:Quad.easeOut}, 0.25);
   }
 
   function staggerFrom(elList, dur, props, interval) {
@@ -505,6 +505,10 @@ APP.AppView.ItemGridView.AbstractGridItem = {
      */
     postRender: function() {
       this.imageAlphaTarget = window.getComputedStyle(this.imageEl,null).getPropertyValue('opacity');
+
+      if(this.fancyEffects) {
+        TweenLite.set(this.element, {css:{transformPerspective:400, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      }
     },
 
     isInViewport: function() {
@@ -518,7 +522,13 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.visible = true;
 
       if(this.isInViewport()) {
-        TweenLite.to(this.element, 0.25, { autoAlpha: 1, scale:1, ease: Circ.easeOut});
+
+        if(this.fancyEffects) {
+          TweenLite.to(this.element, 0.25, { autoAlpha: 1, rotationY:0, scale:1, ease: Circ.easeOut});
+        } else {
+          TweenLite.to(this.element, 0.25, { autoAlpha: 1, scale:1, ease: Circ.easeOut});
+        }
+
       } else {
         TweenLite.to(this.element, 0, { autoAlpha: 1, scale: 1});
       }
@@ -531,7 +541,14 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.visible = false;
 
       if(this.isInViewport()) {
-        TweenLite.to(this.element, 1, {autoAlpha: 0, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+
+        if(this.fancyEffects) {
+          TweenLite.to(this.element, 1, {autoAlpha: 0, rotationY:90, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+        } else {
+          TweenLite.to(this.element, 1, {autoAlpha: 0, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+        }
+
+
       } else {
         TweenLite.to(this.element, 0, {autoAlpha: 0, scale:0.25, onComplete:this.resetHiddenItemSize.bind(this)});
       }
@@ -562,9 +579,33 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       }
       this.selected = true;
 
-      //boxShadow: "5px 5px 20px rgba(0,0,0,.25)",
-      TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
-      TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+      if(this.fancyEffects) {
+        TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
+        TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+      } else {
+        TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
+        TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+      }
+
+    },
+
+    /**
+     * On item mouse out
+     */
+    deselect: function() {
+      if(!this.selected || this.element === undefined || !this.visible) {
+        return;
+      }
+      this.selected = false;
+
+      if(this.fancyEffects) {
+        TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
+        TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
+      } else {
+        TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
+        TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
+      }
+
     },
 
     /**
@@ -579,20 +620,6 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       tl.to(this.element,0.1, {scale:0.8, ease: Quad.easeOut});
       tl.to(this.element,0.5, {scale:1, ease: Elastic.easeOut});
 
-      TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
-    },
-
-    /**
-     * On item mouse out
-     */
-    deselect: function() {
-      if(!this.selected || this.element === undefined || !this.visible) {
-        return;
-      }
-      this.selected = false;
-
-      //boxShadow: "0px 0px 0px rgba(0,0,0,0)",
-      TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
       TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
     },
 

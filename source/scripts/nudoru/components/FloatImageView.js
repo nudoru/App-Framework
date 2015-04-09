@@ -21,15 +21,17 @@ nudoru.components.FloatImageView = (function() {
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
-      _currentImageElement;
+      _currentImageElement,
+      _fancyEffects = false;
 
   /**
    * Entry point, initialize elements and hide cover
    */
   function initialize() {
     _viewPortCoverEl = document.getElementById(_coverDivID);
-
     _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
+
+    _fancyEffects = !BrowserInfo.isIE;
 
     hideFloatImageCover();
 
@@ -117,11 +119,19 @@ nudoru.components.FloatImageView = (function() {
     zoomImage.style.width = imgWidth+'px';
     zoomImage.style.height = imgHeight+'px';
 
+    if(_fancyEffects) {
+      // further from the center, the greate the effect
+      var startingRot = ((imgPosition.left - (vpWidth / 2)) / 4).clamp(-75,75);
+
+      TweenLite.set(zoomImage, {css:{transformPerspective:600, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      TweenLite.to(zoomImage,0,{rotationY: startingRot});
+    }
+
     _viewPortCoverEl.appendChild(zoomImage);
 
     // Animate
     TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
-    TweenLite.to(zoomImage, 0.5, {width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+    TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
     showFloatImageCover();
 
     // Caption

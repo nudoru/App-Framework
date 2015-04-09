@@ -31,7 +31,6 @@ APP.AppView = (function() {
       _clearAllButtonStream,
       _browserScrollStream,
       _browserResizeStream,
-      _disablePointerEventsOnScrollTimerStream,
       _isScrollingTimerStream,
       _drawerToggleButtonStream,
       _isMobile,
@@ -189,27 +188,8 @@ APP.AppView = (function() {
   }
 
   function handleViewPortScroll() {
-    //disablePointerEventsOnScroll();
-    showNotification('Scroll', 'You scrolled!');
-
     _eventDispatcher.publish(APP.Events.BROWSER_SCROLLED, _currentViewPortScroll);
   }
-
-  // http://www.thecssninja.com/css/pointer-events-60fps
-  //function disablePointerEventsOnScroll() {
-  //  if(_disablePointerEventsOnScrollTimerStream) {
-  //    _disablePointerEventsOnScrollTimerStream.dispose();
-  //  }
-  //
-  //  DOMUtils.addClass(document.body, 'ignore-pointer-events');
-  //
-  //  _disablePointerEventsOnScrollTimerStream = Rx.Observable.timer(250)
-  //    .pluck('interval')
-  //    .take(1)
-  //    .subscribe(function() {
-  //      DOMUtils.removeClass(document.body, 'ignore-pointer-events');
-  //    });
-  //}
 
   /**
    * Display a notification "toast"

@@ -525,7 +525,6 @@ var ArrayUtils = {
   }
 
 };;var NumberUtils = {
-
   isInteger: function(str) {
     return (/^-?\d+$/.test(str));
   },
@@ -534,6 +533,21 @@ var ArrayUtils = {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+};
+
+/**
+ * Returns a number whose value is limited to the given range.
+ *
+ * Example: limit the output of this computation to between 0 and 255
+ * (x * 255).clamp(0, 255)
+ *
+ * @param {Number} min The lower boundary of the output range
+ * @param {Number} max The upper boundary of the output range
+ * @returns A number in the range [min, max]
+ * @type Number
+ */
+Number.prototype.clamp = function(min, max) {
+  return Math.min(Math.max(this, min), max);
 };;var StringUtils = {
 
   capitalizeFirstLetter: function(str) {
@@ -939,15 +953,17 @@ nudoru.components.FloatImageView = (function() {
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
-      _currentImageElement;
+      _currentImageElement,
+      _fancyEffects = false;
 
   /**
    * Entry point, initialize elements and hide cover
    */
   function initialize() {
     _viewPortCoverEl = document.getElementById(_coverDivID);
-
     _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
+
+    _fancyEffects = !BrowserInfo.isIE;
 
     hideFloatImageCover();
 
@@ -1035,11 +1051,19 @@ nudoru.components.FloatImageView = (function() {
     zoomImage.style.width = imgWidth+'px';
     zoomImage.style.height = imgHeight+'px';
 
+    if(_fancyEffects) {
+      // further from the center, the greate the effect
+      var startingRot = ((imgPosition.left - (vpWidth / 2)) / 4).clamp(-75,75);
+
+      TweenLite.set(zoomImage, {css:{transformPerspective:600, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      TweenLite.to(zoomImage,0,{rotationY: startingRot});
+    }
+
     _viewPortCoverEl.appendChild(zoomImage);
 
     // Animate
     TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
-    TweenLite.to(zoomImage, 0.5, {width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+    TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
     showFloatImageCover();
 
     // Caption
@@ -1792,7 +1816,7 @@ APP = (function(global, rootView) {
   function initGlobals() {
     _globals = ObjectUtils.extend(BrowserInfo, {});
     _globals.appConfig = APP_CONFIG_DATA;
-    _globals.enhanced = !_globals.mobile.any() && !_globals.isIE;
+    _globals.enhanced = !_globals.isIE; //!_globals.mobile.any() &&
     _globals.mouseDownEvtStr = _globals.mobile.any() ? "touchstart" : "mousedown";
     _globals.mouseUpEvtStr = _globals.mobile.any() ? "touchend" : "mouseup";
     _globals.mouseClickEvtStr = _globals.mobile.any() ? "touchend" : "click";
@@ -2506,7 +2530,6 @@ APP.AppView = (function() {
       _clearAllButtonStream,
       _browserScrollStream,
       _browserResizeStream,
-      _disablePointerEventsOnScrollTimerStream,
       _isScrollingTimerStream,
       _drawerToggleButtonStream,
       _isMobile,
@@ -2664,27 +2687,8 @@ APP.AppView = (function() {
   }
 
   function handleViewPortScroll() {
-    //disablePointerEventsOnScroll();
-    showNotification('Scroll', 'You scrolled!');
-
     _eventDispatcher.publish(APP.Events.BROWSER_SCROLLED, _currentViewPortScroll);
   }
-
-  // http://www.thecssninja.com/css/pointer-events-60fps
-  //function disablePointerEventsOnScroll() {
-  //  if(_disablePointerEventsOnScrollTimerStream) {
-  //    _disablePointerEventsOnScrollTimerStream.dispose();
-  //  }
-  //
-  //  DOMUtils.addClass(document.body, 'ignore-pointer-events');
-  //
-  //  _disablePointerEventsOnScrollTimerStream = Rx.Observable.timer(250)
-  //    .pluck('interval')
-  //    .take(1)
-  //    .subscribe(function() {
-  //      DOMUtils.removeClass(document.body, 'ignore-pointer-events');
-  //    });
-  //}
 
   /**
    * Display a notification "toast"
@@ -3072,7 +3076,7 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    staggerFrom(getItemsInView(), 0.5, {alpha: 0, ease:Quad.easeOut}, 0.15);
+    staggerFrom(getItemsInView(), 0.5, {rotationY: -90, alpha: 0, ease:Quad.easeOut}, 0.25);
   }
 
   function staggerFrom(elList, dur, props, interval) {
@@ -3488,6 +3492,10 @@ APP.AppView.ItemGridView.AbstractGridItem = {
      */
     postRender: function() {
       this.imageAlphaTarget = window.getComputedStyle(this.imageEl,null).getPropertyValue('opacity');
+
+      if(this.fancyEffects) {
+        TweenLite.set(this.element, {css:{transformPerspective:400, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      }
     },
 
     isInViewport: function() {
@@ -3501,7 +3509,13 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.visible = true;
 
       if(this.isInViewport()) {
-        TweenLite.to(this.element, 0.25, { autoAlpha: 1, scale:1, ease: Circ.easeOut});
+
+        if(this.fancyEffects) {
+          TweenLite.to(this.element, 0.25, { autoAlpha: 1, rotationY:0, scale:1, ease: Circ.easeOut});
+        } else {
+          TweenLite.to(this.element, 0.25, { autoAlpha: 1, scale:1, ease: Circ.easeOut});
+        }
+
       } else {
         TweenLite.to(this.element, 0, { autoAlpha: 1, scale: 1});
       }
@@ -3514,7 +3528,14 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.visible = false;
 
       if(this.isInViewport()) {
-        TweenLite.to(this.element, 1, {autoAlpha: 0, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+
+        if(this.fancyEffects) {
+          TweenLite.to(this.element, 1, {autoAlpha: 0, rotationY:90, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+        } else {
+          TweenLite.to(this.element, 1, {autoAlpha: 0, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+        }
+
+
       } else {
         TweenLite.to(this.element, 0, {autoAlpha: 0, scale:0.25, onComplete:this.resetHiddenItemSize.bind(this)});
       }
@@ -3545,9 +3566,33 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       }
       this.selected = true;
 
-      //boxShadow: "5px 5px 20px rgba(0,0,0,.25)",
-      TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
-      TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+      if(this.fancyEffects) {
+        TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
+        TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+      } else {
+        TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
+        TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+      }
+
+    },
+
+    /**
+     * On item mouse out
+     */
+    deselect: function() {
+      if(!this.selected || this.element === undefined || !this.visible) {
+        return;
+      }
+      this.selected = false;
+
+      if(this.fancyEffects) {
+        TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
+        TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
+      } else {
+        TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
+        TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
+      }
+
     },
 
     /**
@@ -3562,20 +3607,6 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       tl.to(this.element,0.1, {scale:0.8, ease: Quad.easeOut});
       tl.to(this.element,0.5, {scale:1, ease: Elastic.easeOut});
 
-      TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
-    },
-
-    /**
-     * On item mouse out
-     */
-    deselect: function() {
-      if(!this.selected || this.element === undefined || !this.visible) {
-        return;
-      }
-      this.selected = false;
-
-      //boxShadow: "0px 0px 0px rgba(0,0,0,0)",
-      TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
       TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
     },
 
