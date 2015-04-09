@@ -472,12 +472,12 @@ APP.AppView.ItemGridView.AbstractGridItem = {
   methods: {
     eventDispatcher: nudoru.events.EventDispatcher,
     data: null,
-    template: '',
     element: null,
     elementContent: null,
     dataEl: null,
     imageEl: null,
     imageAlphaTarget: 0.25,
+    fancyEffects: false,
 
     getID: function() {
       if(this.data) {
@@ -489,13 +489,12 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
     initialize: function(data) {
       this.data = data;
-      // Cache template
-      this.template = NTemplate.getTemplate('template__item-tile');
+      this.fancyEffects = APP.globals().enhanced;
       this.render();
     },
 
     render: function() {
-      this.element = DOMUtils.HTMLStrToNode(this.template(this.data));
+      this.element = NTemplate.asElement('template__item-tile', this.data);
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');

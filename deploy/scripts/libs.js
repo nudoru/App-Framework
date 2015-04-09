@@ -112,7 +112,58 @@ nudoru.components = (function() {
 }());
 
 
-;// debouncing function from John Hann
+;var BrowserInfo = {
+  appVersion:  navigator.appVersion,
+  userAgent:  navigator.userAgent,
+  isIE:  -1 < navigator.userAgent.indexOf("MSIE "),
+  isIE6:  this.isIE && -1 < navigator.appVersion.indexOf("MSIE 6"),
+  isIE7:  this.isIE && -1 < navigator.appVersion.indexOf("MSIE 7"),
+  isIE8: this.isIE && -1 < navigator.appVersion.indexOf("MSIE 8"),
+  isIE9:  this.isIE && -1 < navigator.appVersion.indexOf("MSIE 9"),
+  isFF:  -1 < navigator.userAgent.indexOf("Firefox/"),
+  isChrome:  -1 < navigator.userAgent.indexOf("Chrome/"),
+  isMac:  -1 < navigator.userAgent.indexOf("Macintosh;"),
+  isMacSafari:  -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome"),
+
+  hasTouch:  'ontouchstart' in document.documentElement,
+  notSupported: this.isIE6 || this.isIE7 || this.isIE8,
+
+  mobile: {
+    Android: function() {
+      return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+      return navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/BB10; Touch/);
+    },
+    iOS: function() {
+      return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+      return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+      return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function() {
+      return (
+      this.Android()
+        || this.BlackBerry()
+        || this.iOS()
+        || this.Opera()
+        || this.Windows()
+        ) !== null
+    }
+  }
+
+
+
+  //enhanced:  !this.mobile.any() && !this.isIE,
+  //mouseDownEvtStr: this.mobile.any() ? "touchstart" : "mousedown",
+  //mouseUpEvtStr: this.mobile.any() ? "touchend" : "mouseup",
+  //mouseClickEvtStr: this.mobile.any() ? "touchend" : "click",
+  //mouseMoveEvtStr: this.mobile.any() ? "touchmove" : "mousemove"
+
+};;// debouncing function from John Hann
 // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
 var debounce = function (func, threshold, execAsap) {
   var timeout;
@@ -1739,57 +1790,56 @@ APP = (function(global, rootView) {
    * Initialize the global vars
    */
   function initGlobals() {
-    _globals = {};
-
+    _globals = ObjectUtils.extend(BrowserInfo, {});
     _globals.appConfig = APP_CONFIG_DATA;
-
-    // TODO Move to new browser detect util
-    _globals.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
-    _globals.appVersion = navigator.appVersion;
-    _globals.userAgent = navigator.userAgent;
-    _globals.isIE6 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 6");
-    _globals.isIE7 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 7");
-    _globals.isIE8 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 8");
-    _globals.isIE9 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 9");
-    _globals.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
-    _globals.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
-    _globals.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
-    _globals.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
-
-    _globals.notSupported = _globals.isIE6 || _globals.isIE7 || _globals.isIE8;
-
-    _globals.hasTouch = 'ontouchstart' in document.documentElement;
-    _globals.mobile = {
-      Android: function() {
-        return _globals.userAgent.match(/Android/i);
-      },
-      BlackBerry: function() {
-        return _globals.userAgent.match(/BlackBerry/i) || _globals.userAgent.match(/BB10; Touch/);
-      },
-      iOS: function() {
-        return _globals.userAgent.match(/iPhone|iPad|iPod/i);
-      },
-      Opera: function() {
-        return _globals.userAgent.match(/Opera Mini/i);
-      },
-      Windows: function() {
-        return _globals.userAgent.match(/IEMobile/i);
-      },
-      any: function() {
-        return (
-          _globals.mobile.Android()
-          || _globals.mobile.BlackBerry()
-          || _globals.mobile.iOS()
-          || _globals.mobile.Opera()
-          || _globals.mobile.Windows()
-        ) !== null;
-      }
-    };
-
+    _globals.enhanced = !_globals.mobile.any() && !_globals.isIE;
     _globals.mouseDownEvtStr = _globals.mobile.any() ? "touchstart" : "mousedown";
     _globals.mouseUpEvtStr = _globals.mobile.any() ? "touchend" : "mouseup";
     _globals.mouseClickEvtStr = _globals.mobile.any() ? "touchend" : "click";
     _globals.mouseMoveEvtStr = _globals.mobile.any() ? "touchmove" : "mousemove";
+
+    // Moved to BrowserInfo
+    //_globals.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
+    //_globals.appVersion = navigator.appVersion;
+    //_globals.userAgent = navigator.userAgent;
+    //_globals.isIE6 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 6");
+    //_globals.isIE7 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 7");
+    //_globals.isIE8 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 8");
+    //_globals.isIE9 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 9");
+    //_globals.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
+    //_globals.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
+    //_globals.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
+    //_globals.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
+    //
+    //_globals.notSupported = _globals.isIE6 || _globals.isIE7 || _globals.isIE8;
+    //
+    //_globals.hasTouch = 'ontouchstart' in document.documentElement;
+    //_globals.mobile = {
+    //  Android: function() {
+    //    return _globals.userAgent.match(/Android/i);
+    //  },
+    //  BlackBerry: function() {
+    //    return _globals.userAgent.match(/BlackBerry/i) || _globals.userAgent.match(/BB10; Touch/);
+    //  },
+    //  iOS: function() {
+    //    return _globals.userAgent.match(/iPhone|iPad|iPod/i);
+    //  },
+    //  Opera: function() {
+    //    return _globals.userAgent.match(/Opera Mini/i);
+    //  },
+    //  Windows: function() {
+    //    return _globals.userAgent.match(/IEMobile/i);
+    //  },
+    //  any: function() {
+    //    return (
+    //      _globals.mobile.Android()
+    //      || _globals.mobile.BlackBerry()
+    //      || _globals.mobile.iOS()
+    //      || _globals.mobile.Opera()
+    //      || _globals.mobile.Windows()
+    //    ) !== null;
+    //  }
+    //};
 
   }
 
@@ -3405,12 +3455,12 @@ APP.AppView.ItemGridView.AbstractGridItem = {
   methods: {
     eventDispatcher: nudoru.events.EventDispatcher,
     data: null,
-    template: '',
     element: null,
     elementContent: null,
     dataEl: null,
     imageEl: null,
     imageAlphaTarget: 0.25,
+    fancyEffects: false,
 
     getID: function() {
       if(this.data) {
@@ -3422,13 +3472,12 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
     initialize: function(data) {
       this.data = data;
-      // Cache template
-      this.template = NTemplate.getTemplate('template__item-tile');
+      this.fancyEffects = APP.globals().enhanced;
       this.render();
     },
 
     render: function() {
-      this.element = DOMUtils.HTMLStrToNode(this.template(this.data));
+      this.element = NTemplate.asElement('template__item-tile', this.data);
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');

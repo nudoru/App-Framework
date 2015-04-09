@@ -97,6 +97,7 @@ module.exports = function (grunt) {
 
           'source/scripts/nudoru/utils/NNameSpace.js',
           'source/scripts/nudoru/nudoru.js',
+          'source/scripts/nudoru/utils/BrowserInfo.js',
           'source/scripts/nudoru/utils/utility.js',
           'source/scripts/nudoru/utils/ObjectUtils.js',
           'source/scripts/nudoru/utils/ArrayUtils.js',

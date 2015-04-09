@@ -3107,6 +3107,112 @@ img {
   vertical-align: middle;
 }
 
+/*
+http://codepen.io/HugoGiraudel/pen/qBgoh
+*/
+/**
+ * Default border for card effect
+ *
+ * @type List
+ */
+/**
+ * Clamp `$value` between `$min` and `$max`
+ *
+ * @param {Number} $value
+ * @param {Number} $min
+ * @param {Number} $max
+ *
+ * @return {Number}
+ */
+/**
+ * Return a paper bottom-shadow
+ *
+ * @param {Number} $level - depth level
+ *
+ * @return {List}
+ */
+/**
+ * Return a paper top-shadow
+ *
+ * @param {Number} $level - depth level
+ *
+ * @return {List}
+ */
+/**
+ * Define a paper-like shadow
+ *
+ * @param {Number} $level (0) - depth level
+ *
+ * @requires {function} clamp
+ * @requires {function} paper-shadow-top
+ * @requires {function} paper-shadow-bottom
+ */
+/**
+ * Define a paper border
+ *
+ * @param {List} $sides (())
+ *
+ * @requires {variable} $paper-card-border
+ */
+/**
+ * Create a card effect
+ *
+ * @param {Number} $level - depth level
+ * @param {List} $sides - border sides
+ */
+/**
+ * Size an element
+ *
+ * @param {Number} $width
+ * @param {Number} $height ($width)
+ */
+/**
+ * Example
+ */
+/* line 117, ../../source/sass/partials/_paper-shadows.scss */
+.card {
+  width: 15em;
+  height: 15em;
+  margin: 2em;
+  background: white;
+  display: inline-block;
+}
+
+/* line 124, ../../source/sass/partials/_paper-shadows.scss */
+.card--z-0 {
+  border: 1px solid #eee;
+}
+
+/* line 125, ../../source/sass/partials/_paper-shadows.scss */
+.card--z-1 {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 2px 5px rgba(0, 0, 0, 0.26);
+  border: 1px solid #eee;
+}
+
+/* line 126, ../../source/sass/partials/_paper-shadows.scss */
+.card--z-2 {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.19), 0 8px 17px rgba(0, 0, 0, 0.2);
+  border: 1px solid #eee;
+}
+
+/* line 127, ../../source/sass/partials/_paper-shadows.scss */
+.card--z-3 {
+  box-shadow: 0 17px 50px rgba(0, 0, 0, 0.19), 0 12px 15px rgba(0, 0, 0, 0.24);
+  border: 1px solid #eee;
+}
+
+/* line 128, ../../source/sass/partials/_paper-shadows.scss */
+.card--z-4 {
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.21), 0 16px 28px rgba(0, 0, 0, 0.22);
+  border: 1px solid #eee;
+}
+
+/* line 129, ../../source/sass/partials/_paper-shadows.scss */
+.card--z-5 {
+  box-shadow: 0 40px 77px rgba(0, 0, 0, 0.22), 0 27px 24px rgba(0, 0, 0, 0.2);
+  border: 1px solid #eee;
+}
+
 /* line 6, ../../source/sass/partials/_components.sass */
 input:focus, textarea:focus, button:focus {
   outline: 0;
@@ -4308,18 +4414,18 @@ input:focus, textarea:focus, button:focus {
   text-indent: -8px;
 }
 
-/* line 35, ../../source/sass/app.sass */
+/* line 36, ../../source/sass/app.sass */
 .ignore-pointer-events {
   pointer-events: none;
 }
 
-/* line 38, ../../source/sass/app.sass */
+/* line 39, ../../source/sass/app.sass */
 #initialization__cover {
   z-index: 10010;
   background-color: #eee;
 }
 
-/* line 43, ../../source/sass/app.sass */
+/* line 44, ../../source/sass/app.sass */
 .initialization__message {
   position: relative;
   overflow: hidden;
@@ -4332,7 +4438,7 @@ input:focus, textarea:focus, button:focus {
   background-color: #fff;
   box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
 }
-/* line 55, ../../source/sass/app.sass */
+/* line 56, ../../source/sass/app.sass */
 .initialization__message h1 {
   padding: 0;
   margin: 0;
@@ -4340,19 +4446,19 @@ input:focus, textarea:focus, button:focus {
   color: #005eb8;
   font-size: 1.2em;
 }
-/* line 61, ../../source/sass/app.sass */
+/* line 62, ../../source/sass/app.sass */
 .initialization__message .loader {
   display: inline-block;
   width: 25px;
   height: 25px;
 }
 
-/* line 66, ../../source/sass/app.sass */
+/* line 67, ../../source/sass/app.sass */
 body {
   overflow: hidden;
 }
 
-/* line 70, ../../source/sass/app.sass */
+/* line 71, ../../source/sass/app.sass */
 #app__container {
   position: fixed;
   top: 0;
@@ -4362,7 +4468,7 @@ body {
   overflow: hidden;
 }
 
-/* line 78, ../../source/sass/app.sass */
+/* line 79, ../../source/sass/app.sass */
 #app__contents {
   position: absolute;
   min-width: 100%;
