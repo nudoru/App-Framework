@@ -4,8 +4,8 @@ Based on
  https://github.com/michd/step-sequencer/blob/master/assets/js/eventdispatcher.js
  */
 
-APP.createNameSpace('APP.EventDispatcher');
-APP.EventDispatcher = function () {
+nudoru.createNameSpace('nudoru.events.EventDispatcher');
+nudoru.events.EventDispatcher = function () {
 
   var _eventMap = {};
 

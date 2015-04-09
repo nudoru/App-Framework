@@ -11,7 +11,7 @@ nudoru.components.ModalCoverView = (function() {
   function initialize() {
     var appGlobals = APP.globals();
 
-    _eventDispatcher = APP.EventDispatcher;
+    _eventDispatcher = nudoru.events.EventDispatcher;
 
     _isVisible = true;
 

@@ -125,8 +125,8 @@ APP.AppView = (function() {
     _modalCoverView.initialize();
 
     // init on these called later
-    _headerMenuView = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView); //_self.DDMenuBarView;
-    _drawerMenuView = ObjectUtils.basicFactory(APP.AppView.DDMenuBarView);
+    _headerMenuView = ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
+    _drawerMenuView = ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
@@ -190,6 +190,8 @@ APP.AppView = (function() {
 
   function handleViewPortScroll() {
     //disablePointerEventsOnScroll();
+    showNotification('Scroll', 'You scrolled!');
+
     _eventDispatcher.publish(APP.Events.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
