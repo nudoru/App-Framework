@@ -16,6 +16,7 @@ nudoru.components.DDMenuView = {
     element: null,
     anchorElement: null,
     ddMenuEl: null,
+    menuOpenHeight: 0,
     menuOverStream: null,
     menuOutStream: null,
     menuClickStream: null,
@@ -50,10 +51,22 @@ nudoru.components.DDMenuView = {
       this.element = NTemplate.asElement('template__menu-header', this.data);
       this.ddMenuEl = this.element.querySelector('ul');
       this.anchorElement = this.element.querySelector('button');
-
       this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
-
       this.fadeOutComplete = true;
+    },
+
+    postRender: function() {
+      // Need a little delay to get the height of the menu
+      setTimeout(this.setMenuState.bind(this), 1);
+    },
+
+    setMenuState: function() {
+      // not able to get the true height from CSS, 39px is the height of a single line item
+      var guessHeight = this.data.items.length * 39,
+          cssHeight = parseInt(window.getComputedStyle(this.ddMenuEl,null).getPropertyValue("height"), 10);
+
+      // use the highest measure
+      this.menuOpenHeight = Math.max(guessHeight, cssHeight);
 
       if(this.isKeepOpen) {
         this.visible = true;
@@ -246,13 +259,13 @@ nudoru.components.DDMenuView = {
 
       this.visible = true;
 
-      this.ddMenuEl.style.height = 'auto';
+      //this.ddMenuEl.style.height = 'auto';
 
       TweenLite.killTweensOf(this.anchorElement);
       TweenLite.killTweensOf(this.ddMenuEl);
 
-      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'5px', ease:Circ.easeOut});
-      TweenLite.to(this.ddMenuEl, 0.25, {autoAlpha: 1, top:'0', ease:Circ.easeOut});
+      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'10px', ease:Circ.easeOut});
+      TweenLite.to(this.ddMenuEl, 0.5, {autoAlpha: 1, height:this.menuOpenHeight, top:'0', ease:Circ.easeOut});
     },
 
     close: function() {
@@ -266,11 +279,11 @@ nudoru.components.DDMenuView = {
       var closeCompleteFunc = this.closeComplete.bind(this);
 
       TweenLite.to(this.anchorElement, 0.25, {paddingTop:'0px', ease:Circ.easeIn, delay:0.1});
-      TweenLite.to(this.ddMenuEl,0.1, {autoAlpha: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
+      TweenLite.to(this.ddMenuEl,0.1, {autoAlpha: 0, height: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
     },
 
     closeComplete: function() {
-      this.ddMenuEl.style.height = '0px';
+      //this.ddMenuEl.style.height = '0px';
       this.fadeOutComplete = true;
     }
 

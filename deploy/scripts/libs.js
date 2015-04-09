@@ -531,23 +531,12 @@ var ArrayUtils = {
 
   rndNumber: function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  },
+
+  clamp: function(val,min,max){
+    return Math.max(min,Math.min(max,val));
   }
 
-};
-
-/**
- * Returns a number whose value is limited to the given range.
- *
- * Example: limit the output of this computation to between 0 and 255
- * (x * 255).clamp(0, 255)
- *
- * @param {Number} min The lower boundary of the output range
- * @param {Number} max The upper boundary of the output range
- * @returns A number in the range [min, max]
- * @type Number
- */
-Number.prototype.clamp = function(min, max) {
-  return Math.min(Math.max(this, min), max);
 };;var StringUtils = {
 
   capitalizeFirstLetter: function(str) {
@@ -1053,9 +1042,9 @@ nudoru.components.FloatImageView = (function() {
 
     if(_fancyEffects) {
       // further from the center, the greate the effect
-      var startingRot = ((imgPosition.left - (vpWidth / 2)) / 4).clamp(-75,75);
+      var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75);
 
-      TweenLite.set(zoomImage, {css:{transformPerspective:600, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
       TweenLite.to(zoomImage,0,{rotationY: startingRot});
     }
 
@@ -1377,7 +1366,11 @@ nudoru.components.DDMenuBarView = {
       for(; i<len; i++) {
         var menuobj = ObjectUtils.basicFactory(nudoru.components.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
+
         this.barEl.appendChild(menuobj.element);
+
+        menuobj.postRender();
+
         this.children.push(menuobj);
       }
 
@@ -1426,6 +1419,7 @@ nudoru.components.DDMenuView = {
     element: null,
     anchorElement: null,
     ddMenuEl: null,
+    menuOpenHeight: 0,
     menuOverStream: null,
     menuOutStream: null,
     menuClickStream: null,
@@ -1460,10 +1454,22 @@ nudoru.components.DDMenuView = {
       this.element = NTemplate.asElement('template__menu-header', this.data);
       this.ddMenuEl = this.element.querySelector('ul');
       this.anchorElement = this.element.querySelector('button');
-
       this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
-
       this.fadeOutComplete = true;
+    },
+
+    postRender: function() {
+      // Need a little delay to get the height of the menu
+      setTimeout(this.setMenuState.bind(this), 1);
+    },
+
+    setMenuState: function() {
+      // not able to get the true height from CSS, 39px is the height of a single line item
+      var guessHeight = this.data.items.length * 39,
+          cssHeight = parseInt(window.getComputedStyle(this.ddMenuEl,null).getPropertyValue("height"), 10);
+
+      // use the highest measure
+      this.menuOpenHeight = Math.max(guessHeight, cssHeight);
 
       if(this.isKeepOpen) {
         this.visible = true;
@@ -1656,13 +1662,13 @@ nudoru.components.DDMenuView = {
 
       this.visible = true;
 
-      this.ddMenuEl.style.height = 'auto';
+      //this.ddMenuEl.style.height = 'auto';
 
       TweenLite.killTweensOf(this.anchorElement);
       TweenLite.killTweensOf(this.ddMenuEl);
 
-      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'5px', ease:Circ.easeOut});
-      TweenLite.to(this.ddMenuEl, 0.25, {autoAlpha: 1, top:'0', ease:Circ.easeOut});
+      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'10px', ease:Circ.easeOut});
+      TweenLite.to(this.ddMenuEl, 0.5, {autoAlpha: 1, height:this.menuOpenHeight, top:'0', ease:Circ.easeOut});
     },
 
     close: function() {
@@ -1676,11 +1682,11 @@ nudoru.components.DDMenuView = {
       var closeCompleteFunc = this.closeComplete.bind(this);
 
       TweenLite.to(this.anchorElement, 0.25, {paddingTop:'0px', ease:Circ.easeIn, delay:0.1});
-      TweenLite.to(this.ddMenuEl,0.1, {autoAlpha: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
+      TweenLite.to(this.ddMenuEl,0.1, {autoAlpha: 0, height: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
     },
 
     closeComplete: function() {
-      this.ddMenuEl.style.height = '0px';
+      //this.ddMenuEl.style.height = '0px';
       this.fadeOutComplete = true;
     }
 
@@ -3076,15 +3082,37 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    staggerFrom(getItemsInView(), 0.5, {rotationY: -90, alpha: 0, ease:Quad.easeOut}, 0.25);
+    staggerFrom(getItemsInView(), 0.5, 0.25);
   }
 
-  function staggerFrom(elList, dur, props, interval) {
-    var i= 0,len=elList.length;
+  /**
+   * Show a nice effect on load
+   * Disable mouse overs during this so that the tween doesn't get "stuck"
+   * @param elList
+   * @param dur
+   * @param interval
+   */
+  function staggerFrom(elList, dur, interval) {
+    var i= 0,
+        len=elList.length;
+
+    elList.forEach(function(item){
+      item.animating = true;
+    });
+
     for(;i<len;i++) {
-      props.delay = (i+1) * interval;
-      TweenLite.from(elList[i], dur, props);
+      TweenLite.from(elList[i].element, dur, {rotationY: -90,
+        alpha: 0,
+        ease:Quad.easeOut,
+        delay: (i+1) * interval,
+        onComplete: onStaggerInComplete,
+        onCompleteParams: [elList[i]]
+      });
     }
+  }
+
+  function onStaggerInComplete(item) {
+    item.animating = false;
   }
 
   /**
@@ -3253,7 +3281,7 @@ APP.AppView.ItemGridView = (function(){
         return item.visible;
       })
       .map(function(item) {
-        return item.element;
+        return item;
       });
   }
 
@@ -3277,12 +3305,27 @@ APP.AppView.ItemGridView = (function(){
     }
   }
 
+  function itemsInViewAnimating() {
+    var items = getItemsInView(),
+        i = 0,
+        len = items.length;
+
+    for(;i<len;i++) {
+      if(items[i].animating) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   function selectItemByID(id) {
-    if(_isLayingOut) {
+    if(_isLayingOut || itemsInViewAnimating()) {
       return;
     }
 
     var item = getItemByID(id);
+
     if(item !== null) {
       deselectAllItems();
       elementToTop(item.element);
@@ -3292,11 +3335,12 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function deselectItemByID(id) {
-    if(_isLayingOut) {
+    if(_isLayingOut || itemsInViewAnimating()) {
       return;
     }
 
     var item = getItemByID(id);
+
     if(item !== null) {
       item.deselect();
       unfadeOtherItems(item.element);
@@ -3304,7 +3348,7 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function depressItemByID(id) {
-    if(_isLayingOut) {
+    if(_isLayingOut || itemsInViewAnimating()) {
       return;
     }
 
@@ -3334,7 +3378,9 @@ APP.AppView.ItemGridView = (function(){
    * @returns {*}
    */
   function getItemsInViewExcluding(excluded) {
-    var items = getItemsInView(),
+    var items = getItemsInView().map(function(item) {
+        return item.element;
+      }),
       idx = items.indexOf(excluded);
 
     if(idx > -1) {
@@ -3354,25 +3400,22 @@ APP.AppView.ItemGridView = (function(){
     TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
   }
 
-  // TODO merge this with unfade
-  function resetOtherItems(itemel) {
+  function clearAndGetOtherItems(itemel) {
     if(_isLayingOut) {
-      return;
+      return null;
     }
 
     var otheritems = getItemsInViewExcluding(itemel);
     TweenLite.killDelayedCallsTo(otheritems);
-    TweenLite.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut, onComplete: fadeOtherItems, onCompleteParams: [itemel]});
+    return otheritems;
+  }
+
+  function resetOtherItems(itemel) {
+    TweenLite.to(clearAndGetOtherItems(itemel), 0.25, {scale:1, alpha:1, ease:Quad.easeOut, onComplete: fadeOtherItems, onCompleteParams: [itemel]});
   }
 
   function unfadeOtherItems(itemel) {
-    if(_isLayingOut) {
-      return;
-    }
-
-    var otheritems = getItemsInViewExcluding(itemel);
-    TweenLite.killDelayedCallsTo(otheritems);
-    TweenLite.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut});
+    TweenLite.to(clearAndGetOtherItems(itemel), 0.25, {scale:1, alpha:1, ease:Quad.easeOut});
   }
 
   //----------------------------------------------------------------------------
@@ -3465,6 +3508,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     imageEl: null,
     imageAlphaTarget: 0.25,
     fancyEffects: false,
+    animating: false,
 
     getID: function() {
       if(this.data) {
@@ -3561,7 +3605,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
      * On item mouse over
      */
     select: function() {
-      if(this.selected || this.element === undefined || !this.visible) {
+      if(this.selected || this.element === undefined || !this.visible || this.animating) {
         return;
       }
       this.selected = true;
@@ -3580,7 +3624,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
      * On item mouse out
      */
     deselect: function() {
-      if(!this.selected || this.element === undefined || !this.visible) {
+      if(!this.selected || this.element === undefined || !this.visible || this.animating) {
         return;
       }
       this.selected = false;

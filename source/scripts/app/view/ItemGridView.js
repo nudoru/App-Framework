@@ -89,15 +89,37 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    staggerFrom(getItemsInView(), 0.5, {rotationY: -90, alpha: 0, ease:Quad.easeOut}, 0.25);
+    staggerFrom(getItemsInView(), 0.5, 0.25);
   }
 
-  function staggerFrom(elList, dur, props, interval) {
-    var i= 0,len=elList.length;
+  /**
+   * Show a nice effect on load
+   * Disable mouse overs during this so that the tween doesn't get "stuck"
+   * @param elList
+   * @param dur
+   * @param interval
+   */
+  function staggerFrom(elList, dur, interval) {
+    var i= 0,
+        len=elList.length;
+
+    elList.forEach(function(item){
+      item.animating = true;
+    });
+
     for(;i<len;i++) {
-      props.delay = (i+1) * interval;
-      TweenLite.from(elList[i], dur, props);
+      TweenLite.from(elList[i].element, dur, {rotationY: -90,
+        alpha: 0,
+        ease:Quad.easeOut,
+        delay: (i+1) * interval,
+        onComplete: onStaggerInComplete,
+        onCompleteParams: [elList[i]]
+      });
     }
+  }
+
+  function onStaggerInComplete(item) {
+    item.animating = false;
   }
 
   /**
@@ -266,7 +288,7 @@ APP.AppView.ItemGridView = (function(){
         return item.visible;
       })
       .map(function(item) {
-        return item.element;
+        return item;
       });
   }
 
@@ -290,12 +312,27 @@ APP.AppView.ItemGridView = (function(){
     }
   }
 
+  function itemsInViewAnimating() {
+    var items = getItemsInView(),
+        i = 0,
+        len = items.length;
+
+    for(;i<len;i++) {
+      if(items[i].animating) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   function selectItemByID(id) {
-    if(_isLayingOut) {
+    if(_isLayingOut || itemsInViewAnimating()) {
       return;
     }
 
     var item = getItemByID(id);
+
     if(item !== null) {
       deselectAllItems();
       elementToTop(item.element);
@@ -305,11 +342,12 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function deselectItemByID(id) {
-    if(_isLayingOut) {
+    if(_isLayingOut || itemsInViewAnimating()) {
       return;
     }
 
     var item = getItemByID(id);
+
     if(item !== null) {
       item.deselect();
       unfadeOtherItems(item.element);
@@ -317,7 +355,7 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function depressItemByID(id) {
-    if(_isLayingOut) {
+    if(_isLayingOut || itemsInViewAnimating()) {
       return;
     }
 
@@ -347,7 +385,9 @@ APP.AppView.ItemGridView = (function(){
    * @returns {*}
    */
   function getItemsInViewExcluding(excluded) {
-    var items = getItemsInView(),
+    var items = getItemsInView().map(function(item) {
+        return item.element;
+      }),
       idx = items.indexOf(excluded);
 
     if(idx > -1) {
@@ -367,25 +407,22 @@ APP.AppView.ItemGridView = (function(){
     TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
   }
 
-  // TODO merge this with unfade
-  function resetOtherItems(itemel) {
+  function clearAndGetOtherItems(itemel) {
     if(_isLayingOut) {
-      return;
+      return null;
     }
 
     var otheritems = getItemsInViewExcluding(itemel);
     TweenLite.killDelayedCallsTo(otheritems);
-    TweenLite.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut, onComplete: fadeOtherItems, onCompleteParams: [itemel]});
+    return otheritems;
+  }
+
+  function resetOtherItems(itemel) {
+    TweenLite.to(clearAndGetOtherItems(itemel), 0.25, {scale:1, alpha:1, ease:Quad.easeOut, onComplete: fadeOtherItems, onCompleteParams: [itemel]});
   }
 
   function unfadeOtherItems(itemel) {
-    if(_isLayingOut) {
-      return;
-    }
-
-    var otheritems = getItemsInViewExcluding(itemel);
-    TweenLite.killDelayedCallsTo(otheritems);
-    TweenLite.to(otheritems, 0.25, {scale:1, alpha:1, ease:Quad.easeOut});
+    TweenLite.to(clearAndGetOtherItems(itemel), 0.25, {scale:1, alpha:1, ease:Quad.easeOut});
   }
 
   //----------------------------------------------------------------------------
@@ -478,6 +515,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     imageEl: null,
     imageAlphaTarget: 0.25,
     fancyEffects: false,
+    animating: false,
 
     getID: function() {
       if(this.data) {
@@ -574,7 +612,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
      * On item mouse over
      */
     select: function() {
-      if(this.selected || this.element === undefined || !this.visible) {
+      if(this.selected || this.element === undefined || !this.visible || this.animating) {
         return;
       }
       this.selected = true;
@@ -593,7 +631,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
      * On item mouse out
      */
     deselect: function() {
-      if(!this.selected || this.element === undefined || !this.visible) {
+      if(!this.selected || this.element === undefined || !this.visible || this.animating) {
         return;
       }
       this.selected = false;

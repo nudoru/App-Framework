@@ -121,9 +121,9 @@ nudoru.components.FloatImageView = (function() {
 
     if(_fancyEffects) {
       // further from the center, the greate the effect
-      var startingRot = ((imgPosition.left - (vpWidth / 2)) / 4).clamp(-75,75);
+      var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75);
 
-      TweenLite.set(zoomImage, {css:{transformPerspective:600, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
       TweenLite.to(zoomImage,0,{rotationY: startingRot});
     }
 

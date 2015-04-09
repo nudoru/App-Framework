@@ -37,7 +37,11 @@ nudoru.components.DDMenuBarView = {
       for(; i<len; i++) {
         var menuobj = ObjectUtils.basicFactory(nudoru.components.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
+
         this.barEl.appendChild(menuobj.element);
+
+        menuobj.postRender();
+
         this.children.push(menuobj);
       }
 
