@@ -22,6 +22,7 @@ nudoru.components.FloatImageView = (function() {
       _viewPortCoverClickStream,
       _captionEl,
       _currentImageElement,
+      _scrollingView = document.body,
       _fancyEffects = false;
 
   /**
@@ -53,10 +54,26 @@ nudoru.components.FloatImageView = (function() {
       DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
+
+      if(!BrowserInfo.mobile.any()) {
+        el.addEventListener('mouseover', onImageOver, false);
+        el.addEventListener('mouseout', onImageOut, false);
+      }
+
     });
   }
 
+  function setScrollingView(el) {
+    _scrollingView = el;
+  }
 
+  function onImageOver(evt) {
+    TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+  }
+
+  function onImageOut(evt) {
+    TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+  }
 
   /**
    * Show the image when the image element is clicked
@@ -89,8 +106,8 @@ nudoru.components.FloatImageView = (function() {
         imgTargetScale = 1,
         vpWidth = window.innerWidth,
         vpHeight = window.innerHeight,
-        vpScrollTop = document.body.scrollTop,
-        vpScrollLeft = document.body.scrollLeft,
+        vpScrollTop = _scrollingView.scrollTop,
+        vpScrollLeft = _scrollingView.scrollLeft,
         vpRatio = vpWidth / vpHeight,
         imgOriginX = imgPosition.left - vpScrollLeft,
         imgOriginY = imgPosition.top - vpScrollTop,
@@ -127,15 +144,22 @@ nudoru.components.FloatImageView = (function() {
     if(_fancyEffects) {
       // further from the center, the greate the effect
       var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
-          origin = startingRot < 0 ? 'left' : 'right';
+          origin;
+
+      if(startingRot <= 0) {
+        startingRot = Math.min(startingRot, -20);
+        origin = 'left top';
+      } else {
+        startingRot = Math.max(startingRot, 20);
+        origin = 'right top';
+      }
 
       TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
       //TweenLite.to(zoomImage,0,{rotationY: startingRot});
 
       var tl = new TimelineLite();
-      tl.to(zoomImage,0.25, {rotationY: startingRot, transformOrigin: origin, ease:Quad.easeIn});
-      //tl.to(zoomImage,0.5, {rotationY: startingRot, transformOrigin: origin, width: imgTargetWidth/4, height: imgTargetHeight/4, x: imgTargetX/4, y: imgTargetY/4, ease:Quad.easeIn});
-      tl.to(zoomImage,0.5, {rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
+      tl.to(zoomImage,0.5, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, ease:Back.easeInOut});
+      tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
 
     } else {
       TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
@@ -161,8 +185,14 @@ nudoru.components.FloatImageView = (function() {
       return;
     }
 
+    _scrollingView = document.body;
+
     getFloatingElementsInContainerAsArray(container).forEach(function(el) {
       el.removeEventListener('click', onImageClick);
+      if(!BrowserInfo.mobile.any()) {
+        el.removeEventListener('mouseover', onImageOver);
+        el.removeEventListener('mouseout', onImageOut);
+      }
     });
   }
 
@@ -213,6 +243,7 @@ nudoru.components.FloatImageView = (function() {
   return {
     initialize: initialize,
     apply: apply,
+    setScrollingView: setScrollingView,
     remove: remove
   };
 

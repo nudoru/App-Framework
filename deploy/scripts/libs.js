@@ -537,6 +537,10 @@ var ArrayUtils = {
     return Math.max(min,Math.min(max,val));
   },
 
+  inRange: function(val,min,max) {
+    return val > min && val < max
+  },
+
   distanceTL: function(point1, point2) {
     var xd = (point2.left - point1.left),
         yd = (point2.top - point1.top);
@@ -956,6 +960,7 @@ nudoru.components.FloatImageView = (function() {
       _viewPortCoverClickStream,
       _captionEl,
       _currentImageElement,
+      _scrollingView = document.body,
       _fancyEffects = false;
 
   /**
@@ -987,10 +992,26 @@ nudoru.components.FloatImageView = (function() {
       DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
+
+      if(!BrowserInfo.mobile.any()) {
+        el.addEventListener('mouseover', onImageOver, false);
+        el.addEventListener('mouseout', onImageOut, false);
+      }
+
     });
   }
 
+  function setScrollingView(el) {
+    _scrollingView = el;
+  }
 
+  function onImageOver(evt) {
+    TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+  }
+
+  function onImageOut(evt) {
+    TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+  }
 
   /**
    * Show the image when the image element is clicked
@@ -1023,8 +1044,8 @@ nudoru.components.FloatImageView = (function() {
         imgTargetScale = 1,
         vpWidth = window.innerWidth,
         vpHeight = window.innerHeight,
-        vpScrollTop = document.body.scrollTop,
-        vpScrollLeft = document.body.scrollLeft,
+        vpScrollTop = _scrollingView.scrollTop,
+        vpScrollLeft = _scrollingView.scrollLeft,
         vpRatio = vpWidth / vpHeight,
         imgOriginX = imgPosition.left - vpScrollLeft,
         imgOriginY = imgPosition.top - vpScrollTop,
@@ -1061,15 +1082,22 @@ nudoru.components.FloatImageView = (function() {
     if(_fancyEffects) {
       // further from the center, the greate the effect
       var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
-          origin = startingRot < 0 ? 'left' : 'right';
+          origin;
+
+      if(startingRot <= 0) {
+        startingRot = Math.min(startingRot, -20);
+        origin = 'left top';
+      } else {
+        startingRot = Math.max(startingRot, 20);
+        origin = 'right top';
+      }
 
       TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
       //TweenLite.to(zoomImage,0,{rotationY: startingRot});
 
       var tl = new TimelineLite();
-      tl.to(zoomImage,0.25, {rotationY: startingRot, transformOrigin: origin, ease:Quad.easeIn});
-      //tl.to(zoomImage,0.5, {rotationY: startingRot, transformOrigin: origin, width: imgTargetWidth/4, height: imgTargetHeight/4, x: imgTargetX/4, y: imgTargetY/4, ease:Quad.easeIn});
-      tl.to(zoomImage,0.5, {rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
+      tl.to(zoomImage,0.5, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, ease:Back.easeInOut});
+      tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
 
     } else {
       TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
@@ -1095,8 +1123,14 @@ nudoru.components.FloatImageView = (function() {
       return;
     }
 
+    _scrollingView = document.body;
+
     getFloatingElementsInContainerAsArray(container).forEach(function(el) {
       el.removeEventListener('click', onImageClick);
+      if(!BrowserInfo.mobile.any()) {
+        el.removeEventListener('mouseover', onImageOver);
+        el.removeEventListener('mouseout', onImageOut);
+      }
     });
   }
 
@@ -1147,6 +1181,7 @@ nudoru.components.FloatImageView = (function() {
   return {
     initialize: initialize,
     apply: apply,
+    setScrollingView: setScrollingView,
     remove: remove
   };
 
@@ -2462,8 +2497,8 @@ APP.AppModel.DummyData = (function(){
       ],
       _possibleContributors = [],
       _possibleLobs = ['Information Technology','Asset Management','Human Resources','Institutional','A&O','Client Services','Finance','Internal Audit','Marketing','Risk Management'],
-      _possibleCategories = ['synchronous','asynchronous','just-in-time'],
-      _possibleTypes = ['wbt','ilt','vilt','app','media','sharepoint','blended'],
+      _possibleCategories = ['Synchronous','Asynchronous','Just-In-Time'],
+      _possibleTypes = ['WBT','ILT','VILT','App','Multimedia','Sharepoint','Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
       _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'];
@@ -2574,8 +2609,8 @@ APP.AppView = (function() {
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getCurrentView() {
-    return _currentView;
+  function getMainScrollingView() {
+    return _mainScrollEl;
   }
 
   //----------------------------------------------------------------------------
@@ -3002,9 +3037,9 @@ APP.AppView = (function() {
     initialize: initialize,
     render: render,
     showNotification: showNotification,
-    currentView: getCurrentView,
     removeLoadingMessage: removeLoadingMessage,
     createView: ObjectUtils.basicFactory,
+    getMainScrollingView: getMainScrollingView,
     updateSearchHeader: updateSearchHeader,
     showBigMessage: showBigMessage,
     initializeMenus: initializeMenus,
@@ -3128,6 +3163,7 @@ APP.AppView.ItemGridView = (function(){
 
     for(;i<len;i++) {
       TweenLite.from(elList[i].element, dur, {rotationY: -90,
+        transformOrigin: 'left',
         alpha: 0,
         ease:Quad.easeOut,
         delay: (i+1) * interval,
@@ -3418,7 +3454,8 @@ APP.AppView.ItemGridView = (function(){
 
   /**
    * Scales the other items based on the distance from the target item
-   * The farther away, the smaller
+   * The farther away, the smaller\
+   * Possible change - base on middle of elements not top/left
    * @param itemel
    */
   function fadeOtherItems(itemel) {
@@ -3427,25 +3464,19 @@ APP.AppView.ItemGridView = (function(){
     }
 
     var otheritems = getItemsInViewExcluding(itemel),
-        targetScale = [],
         fromPos = DOMUtils.position(itemel),
-        vpW = window.innerWidth,
-        i = 0,
-        len = otheritems.length;
+        vpW = window.innerWidth;
+
+    TweenLite.killDelayedCallsTo(otheritems);
 
     otheritems.forEach(function(item) {
       var itemPos = DOMUtils.position(item),
-          dist = NumberUtils.distanceTL(fromPos, itemPos)/3,
-          calc = Math.max(1 - (dist / vpW), 0.35);
+        dist = NumberUtils.distanceTL(fromPos, itemPos)/3,
+        pct = Math.max(1 - (dist / vpW), 0.35);
 
-      targetScale.push(calc);
+      TweenLite.to(item, 3, {scale:pct, alpha:pct, ease:Quad.easeIn, delay: 1});
     });
 
-    TweenLite.killDelayedCallsTo(otheritems);
-    //TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
-    for(;i<len;i++) {
-      TweenLite.to(otheritems[i], 3, {scale:targetScale[i], alpha:targetScale[i], ease:Quad.easeIn, delay: 1});
-    }
   }
 
   function clearAndGetOtherItems(itemel) {
@@ -3586,7 +3617,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.imageAlphaTarget = window.getComputedStyle(this.imageEl,null).getPropertyValue('opacity');
 
       if(this.fancyEffects) {
-        TweenLite.set(this.element, {css:{transformPerspective:400, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+        TweenLite.set(this.element, {css:{transformPerspective:800, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
       }
     },
 
@@ -3603,7 +3634,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       if(this.isInViewport()) {
 
         if(this.fancyEffects) {
-          TweenLite.to(this.element, 0.25, { autoAlpha: 1, rotationY:0, scale:1, ease: Circ.easeOut});
+          TweenLite.to(this.element, 0.25, { autoAlpha: 1, rotationY:0, transformOrigin: 'right', scale:1, ease: Circ.easeOut});
         } else {
           TweenLite.to(this.element, 0.25, { autoAlpha: 1, scale:1, ease: Circ.easeOut});
         }
@@ -3622,7 +3653,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       if(this.isInViewport()) {
 
         if(this.fancyEffects) {
-          TweenLite.to(this.element, 1, {autoAlpha: 0, rotationY:90, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
+          TweenLite.to(this.element, 1, {autoAlpha: 0, rotationY:90, transformOrigin: 'right', scale:1, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
         } else {
           TweenLite.to(this.element, 1, {autoAlpha: 0, scale:0.25, ease: Expo.easeOut, onComplete:this.resetHiddenItemSize.bind(this)});
         }
@@ -3734,6 +3765,8 @@ APP.AppView.ItemDetailView = (function() {
     _containerEl.innerHTML = NTemplate.asHTML('template__detail-item', _currentItem);
 
     _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
+    _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
+
 
     _shareButtonEl = document.getElementById('js__content-share-button');
 

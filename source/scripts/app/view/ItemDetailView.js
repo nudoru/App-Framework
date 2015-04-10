@@ -19,6 +19,8 @@ APP.AppView.ItemDetailView = (function() {
     _containerEl.innerHTML = NTemplate.asHTML('template__detail-item', _currentItem);
 
     _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
+    _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
+
 
     _shareButtonEl = document.getElementById('js__content-share-button');
 

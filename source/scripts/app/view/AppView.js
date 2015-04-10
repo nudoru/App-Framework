@@ -43,8 +43,8 @@ APP.AppView = (function() {
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getCurrentView() {
-    return _currentView;
+  function getMainScrollingView() {
+    return _mainScrollEl;
   }
 
   //----------------------------------------------------------------------------
@@ -471,9 +471,9 @@ APP.AppView = (function() {
     initialize: initialize,
     render: render,
     showNotification: showNotification,
-    currentView: getCurrentView,
     removeLoadingMessage: removeLoadingMessage,
     createView: ObjectUtils.basicFactory,
+    getMainScrollingView: getMainScrollingView,
     updateSearchHeader: updateSearchHeader,
     showBigMessage: showBigMessage,
     initializeMenus: initializeMenus,

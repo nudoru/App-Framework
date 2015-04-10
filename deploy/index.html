@@ -101,12 +101,12 @@ BEGIN Templates for dynamic content
             </div>
             <div class="details__content-description-data">
                 <ul>
-                    <li class="lob icon-left"><i class="fa fa-building"></i>Created for <em><%= companyArea %></em>
-                    </li>
-                    <li class="date icon-left"><i class="fa fa-calendar"></i>Completed on <em><%= dateCompleted %></em>
-                    </li>
-                    <li class="duration icon-left"><i class="fa fa-clock-o"></i>The solution is <em><%= duration %></em> long</li>
-                    <li class="complexity icon-left"><i class="fa fa-puzzle-piece"></i><em><%= complexity %></em> complexity</li>
+                    <li class="icon-left"><i class="fa fa-building fa-fw"></i>Created for <em><%= companyArea %></em> on <em><%= dateCompleted %></em></li>
+                    <!--<li class="icon-left"><i class="fa fa-calendar fa-fw"></i>Completed on <em><%= dateCompleted %></em>--></li>
+                    <li class="icon-left"><i class="fa fa-clock-o fa-fw"></i>The solution is <em><%= duration %></em> long</li>
+                    <li class="icon-left"><i class="fa fa-cubes fa-fw"></i>The solution is a <em><%= complexity %></em> complexity <em><%= categories %></em></li>
+                    <!--<li class="icon-left"><i class="fa fa-cube fa-fw"></i>The consists of <em><%= types %></em></li>-->
+                    <!--<li class="icon-left"><i class="fa fa-puzzle-piece fa-fw"></i><em><%= complexity %></em> complexity</li>-->
                 </ul>
             </div>
 
@@ -123,9 +123,9 @@ BEGIN Templates for dynamic content
             <%= description %>
             <div class="details__content-description-metadata">
                 <ul>
-                    <% _.each(categories, function(cat) { %>
+                    <% _.each(types, function(type) { %>
                     <li class="type icon-left"><i class="fa fa-cube"></i>
-                        <%= cat %>
+                        <%= type %>
                     </li>
                     <% }); %>
                     <% _.each(tags, function(tag) { %>

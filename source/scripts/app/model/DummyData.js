@@ -18,8 +18,8 @@ APP.AppModel.DummyData = (function(){
       ],
       _possibleContributors = [],
       _possibleLobs = ['Information Technology','Asset Management','Human Resources','Institutional','A&O','Client Services','Finance','Internal Audit','Marketing','Risk Management'],
-      _possibleCategories = ['synchronous','asynchronous','just-in-time'],
-      _possibleTypes = ['wbt','ilt','vilt','app','media','sharepoint','blended'],
+      _possibleCategories = ['Synchronous','Asynchronous','Just-In-Time'],
+      _possibleTypes = ['WBT','ILT','VILT','App','Multimedia','Sharepoint','Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
       _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'];

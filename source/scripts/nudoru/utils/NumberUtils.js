@@ -11,6 +11,10 @@ var NumberUtils = {
     return Math.max(min,Math.min(max,val));
   },
 
+  inRange: function(val,min,max) {
+    return val > min && val < max
+  },
+
   distanceTL: function(point1, point2) {
     var xd = (point2.left - point1.left),
         yd = (point2.top - point1.top);
