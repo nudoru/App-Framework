@@ -535,12 +535,24 @@ var ArrayUtils = {
 
   clamp: function(val,min,max){
     return Math.max(min,Math.min(max,val));
-  }
+  },
 
+  distanceTL: function(point1, point2) {
+    var xd = (point2.left - point1.left),
+        yd = (point2.top - point1.top);
+
+    return Math.sqrt((xd*xd) + (yd*yd));
+  }
 };;var StringUtils = {
 
   capitalizeFirstLetter: function(str) {
     return str.charAt(0).toUpperCase() + str.substring(1);
+  },
+
+  toTitleCase: function(str) {
+    return str.replace(/\w\S*/g, function(txt){
+      return txt.charAt(0).toUpperCase() + txt.substr(1);
+    });
   },
 
   removeTags: function(str) {
@@ -554,6 +566,7 @@ var ArrayUtils = {
   ellipses: function(len) {
     return (this.length > len) ? this.substr(0, len) + "..." : this;
   }
+
 
 };;var TouchUtils = {
 
@@ -1040,19 +1053,28 @@ nudoru.components.FloatImageView = (function() {
     zoomImage.style.width = imgWidth+'px';
     zoomImage.style.height = imgHeight+'px';
 
-    if(_fancyEffects) {
-      // further from the center, the greate the effect
-      var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75);
-
-      TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
-      TweenLite.to(zoomImage,0,{rotationY: startingRot});
-    }
-
     _viewPortCoverEl.appendChild(zoomImage);
 
-    // Animate
+    // fade source image on screen
     TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
-    TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+
+    if(_fancyEffects) {
+      // further from the center, the greate the effect
+      var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
+          origin = startingRot < 0 ? 'left' : 'right';
+
+      TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      //TweenLite.to(zoomImage,0,{rotationY: startingRot});
+
+      var tl = new TimelineLite();
+      tl.to(zoomImage,0.25, {rotationY: startingRot, transformOrigin: origin, ease:Quad.easeIn});
+      //tl.to(zoomImage,0.5, {rotationY: startingRot, transformOrigin: origin, width: imgTargetWidth/4, height: imgTargetHeight/4, x: imgTargetX/4, y: imgTargetY/4, ease:Quad.easeIn});
+      tl.to(zoomImage,0.5, {rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
+
+    } else {
+      TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+    }
+
     showFloatImageCover();
 
     // Caption
@@ -1728,6 +1750,8 @@ nudoru.components.BasicMenuItemView = {
         this.iconSelectedClass = 'fa-check';
         this.iconDeselectedClass = 'fa-circle-thin';
       }
+
+      data.label = StringUtils.toTitleCase(data.label);
 
       this.label = data.label;
 
@@ -2410,6 +2434,7 @@ APP.AppModel.ItemVO = {
       duration: '',
       contributors: [],
       categories: [],
+      types: [],
       companyArea: '',
       complexity: '',
       links: [],
@@ -2436,8 +2461,9 @@ APP.AppModel.DummyData = (function(){
         'screenshots/screenshot12.png'
       ],
       _possibleContributors = [],
-      _possibleLobs = ['Information Technology','Finance','Human Resources','Investment','Legal','Client Services','Risk Management','Marketing'],
-      _possibleCategories = ['item-category1','item-category2','item-category3','item-category4','item-category5'],
+      _possibleLobs = ['Information Technology','Asset Management','Human Resources','Institutional','A&O','Client Services','Finance','Internal Audit','Marketing','Risk Management'],
+      _possibleCategories = ['synchronous','asynchronous','just-in-time'],
+      _possibleTypes = ['wbt','ilt','vilt','app','media','sharepoint','blended'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
       _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'];
@@ -2487,10 +2513,10 @@ APP.AppModel.DummyData = (function(){
     o.quarter = 'Q'+NumberUtils.rndNumber(1,4).toString();
     o.duration = NumberUtils.rndNumber(1,5).toString() + ' hour(s)';
     o.contributors = ArrayUtils.getRandomSetOfElements(_possibleContributors, 5);
-    o.categories = ArrayUtils.getRandomSetOfElements(_possibleCategories, 2);
+    o.categories = ArrayUtils.getRandomSetOfElements(_possibleCategories, 1);
+    o.types = ArrayUtils.getRandomSetOfElements(_possibleTypes, 3);
     o.companyArea = ArrayUtils.rndElement(_possibleLobs);
     o.complexity = ArrayUtils.rndElement(_possibleComplexity);
-    o.type = 'WBT';
     o.links = ArrayUtils.getRandomSetOfElements(_possibleLinks, 5);
     o.tags = ArrayUtils.getRandomSetOfElements(_possibleTags, 3);
     return o;
@@ -3082,7 +3108,7 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    staggerFrom(getItemsInView(), 0.5, 0.25);
+    staggerFrom(getItemsInView(), 0.25, 0.25);
   }
 
   /**
@@ -3390,14 +3416,36 @@ APP.AppView.ItemGridView = (function(){
     return items;
   }
 
+  /**
+   * Scales the other items based on the distance from the target item
+   * The farther away, the smaller
+   * @param itemel
+   */
   function fadeOtherItems(itemel) {
     if(_isLayingOut) {
       return;
     }
 
-    var otheritems = getItemsInViewExcluding(itemel);
+    var otheritems = getItemsInViewExcluding(itemel),
+        targetScale = [],
+        fromPos = DOMUtils.position(itemel),
+        vpW = window.innerWidth,
+        i = 0,
+        len = otheritems.length;
+
+    otheritems.forEach(function(item) {
+      var itemPos = DOMUtils.position(item),
+          dist = NumberUtils.distanceTL(fromPos, itemPos)/3,
+          calc = Math.max(1 - (dist / vpW), 0.35);
+
+      targetScale.push(calc);
+    });
+
     TweenLite.killDelayedCallsTo(otheritems);
-    TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
+    //TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
+    for(;i<len;i++) {
+      TweenLite.to(otheritems[i], 3, {scale:targetScale[i], alpha:targetScale[i], ease:Quad.easeIn, delay: 1});
+    }
   }
 
   function clearAndGetOtherItems(itemel) {
@@ -3630,7 +3678,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.selected = false;
 
       if(this.fancyEffects) {
-        TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
+        TweenLite.to(this.element,0.5, {rotationY:0, scale: 1, ease:Back.easeOut});
         TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
       } else {
         TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
@@ -3782,7 +3830,7 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var tagnode = NTemplate.asElement('template__tag', {tag: tag});
+    var tagnode = NTemplate.asElement('template__tag-bar', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});

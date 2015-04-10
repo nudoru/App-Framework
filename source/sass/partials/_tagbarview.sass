@@ -24,8 +24,29 @@
 $tag-height: 28px
 $tag-color: scale-lightness($dark-orange, -20%)
 
-// http://cssglobe.com/pure-css3-post-tags/
 %tag
+  position: relative
+  margin-left: $half-base-line-height
+  padding: 0 $base-line-height
+  height: $tag-height
+  line-height: $tag-height
+  font-size: .8rem
+  background-color: $tag-color
+  color: #fff
+  border-radius: 3px
+  text-shadow: -1px -1px 0 rgba(0,0,0,.2), 1px 1px 0 rgba(255,255,255,.1)
+  //&:before
+  //  content: "#"
+  //  position: relative
+  //  //left: -$tag-height/2
+  a
+    padding-left: $base-line-height
+    color: #fff
+    &:hover, &:active
+      color: #fff
+
+// http://cssglobe.com/pure-css3-post-tags/
+%tag-literal
   position: relative
   margin-left: $tag-height / 2
   padding: 0 $base-line-height

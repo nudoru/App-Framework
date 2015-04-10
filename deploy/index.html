@@ -28,6 +28,10 @@ BEGIN Templates for dynamic content
     <div class="tag"><%= tag %></div>
 </script>
 
+<script id="template__tag-bar" type="text/template">
+    <div class="tag">#<%= tag %></div>
+</script>
+
 <script id="template__menu-item" type="text/template">
     <li>
         <button class="js__menu-item" data-value="<%= value %>"><%= label %></button>
@@ -51,7 +55,7 @@ BEGIN Templates for dynamic content
 
 <script id="template__item-tile" type="text/template">
     <div class="item">
-        <ul class="item__content <%= categories[0] %>" data-value="<%= id %>">
+        <ul class="item__content item-<%= categories[0] %>" data-value="<%= id %>">
             <li class="item__image">
                 <div class="item__image-wrapper">
                     <img src="<%= previewImage %>">
@@ -187,7 +191,7 @@ END
     </div>
     <div id="initialization__cover">
       <div class="initialization__message">
-        <h1>Please Wait ...</h1><img src="img/loading_squares.gif" alt="Loading Spinner" class="loader">
+        <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading Spinner" class="loader">
       </div>
     </div>
     <div id="toast__container"></div>

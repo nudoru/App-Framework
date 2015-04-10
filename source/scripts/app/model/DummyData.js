@@ -17,8 +17,9 @@ APP.AppModel.DummyData = (function(){
         'screenshots/screenshot12.png'
       ],
       _possibleContributors = [],
-      _possibleLobs = ['Information Technology','Finance','Human Resources','Investment','Legal','Client Services','Risk Management','Marketing'],
-      _possibleCategories = ['item-category1','item-category2','item-category3','item-category4','item-category5'],
+      _possibleLobs = ['Information Technology','Asset Management','Human Resources','Institutional','A&O','Client Services','Finance','Internal Audit','Marketing','Risk Management'],
+      _possibleCategories = ['synchronous','asynchronous','just-in-time'],
+      _possibleTypes = ['wbt','ilt','vilt','app','media','sharepoint','blended'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
       _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'];
@@ -68,10 +69,10 @@ APP.AppModel.DummyData = (function(){
     o.quarter = 'Q'+NumberUtils.rndNumber(1,4).toString();
     o.duration = NumberUtils.rndNumber(1,5).toString() + ' hour(s)';
     o.contributors = ArrayUtils.getRandomSetOfElements(_possibleContributors, 5);
-    o.categories = ArrayUtils.getRandomSetOfElements(_possibleCategories, 2);
+    o.categories = ArrayUtils.getRandomSetOfElements(_possibleCategories, 1);
+    o.types = ArrayUtils.getRandomSetOfElements(_possibleTypes, 3);
     o.companyArea = ArrayUtils.rndElement(_possibleLobs);
     o.complexity = ArrayUtils.rndElement(_possibleComplexity);
-    o.type = 'WBT';
     o.links = ArrayUtils.getRandomSetOfElements(_possibleLinks, 5);
     o.tags = ArrayUtils.getRandomSetOfElements(_possibleTags, 3);
     return o;

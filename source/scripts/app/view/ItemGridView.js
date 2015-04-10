@@ -89,7 +89,7 @@ APP.AppView.ItemGridView = (function(){
 
     initPackery();
 
-    staggerFrom(getItemsInView(), 0.5, 0.25);
+    staggerFrom(getItemsInView(), 0.25, 0.25);
   }
 
   /**
@@ -397,14 +397,36 @@ APP.AppView.ItemGridView = (function(){
     return items;
   }
 
+  /**
+   * Scales the other items based on the distance from the target item
+   * The farther away, the smaller
+   * @param itemel
+   */
   function fadeOtherItems(itemel) {
     if(_isLayingOut) {
       return;
     }
 
-    var otheritems = getItemsInViewExcluding(itemel);
+    var otheritems = getItemsInViewExcluding(itemel),
+        targetScale = [],
+        fromPos = DOMUtils.position(itemel),
+        vpW = window.innerWidth,
+        i = 0,
+        len = otheritems.length;
+
+    otheritems.forEach(function(item) {
+      var itemPos = DOMUtils.position(item),
+          dist = NumberUtils.distanceTL(fromPos, itemPos)/3,
+          calc = Math.max(1 - (dist / vpW), 0.35);
+
+      targetScale.push(calc);
+    });
+
     TweenLite.killDelayedCallsTo(otheritems);
-    TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
+    //TweenLite.to(otheritems, 5, {scale:0.9, alpha:0.25, ease:Quad.easeIn, delay: 1});
+    for(;i<len;i++) {
+      TweenLite.to(otheritems[i], 3, {scale:targetScale[i], alpha:targetScale[i], ease:Quad.easeIn, delay: 1});
+    }
   }
 
   function clearAndGetOtherItems(itemel) {
@@ -637,7 +659,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       this.selected = false;
 
       if(this.fancyEffects) {
-        TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});
+        TweenLite.to(this.element,0.5, {rotationY:0, scale: 1, ease:Back.easeOut});
         TweenLite.to(this.imageEl,0.5, {alpha:this.imageAlphaTarget, scale: 1, ease:Circ.easeOut});
       } else {
         TweenLite.to(this.element,0.5, {scale: 1, ease:Back.easeOut});

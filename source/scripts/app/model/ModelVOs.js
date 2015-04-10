@@ -12,6 +12,7 @@ APP.AppModel.ItemVO = {
       duration: '',
       contributors: [],
       categories: [],
+      types: [],
       companyArea: '',
       complexity: '',
       links: [],

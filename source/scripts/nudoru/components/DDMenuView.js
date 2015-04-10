@@ -326,6 +326,8 @@ nudoru.components.BasicMenuItemView = {
         this.iconDeselectedClass = 'fa-circle-thin';
       }
 
+      data.label = StringUtils.toTitleCase(data.label);
+
       this.label = data.label;
 
       this.render();

@@ -2781,13 +2781,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-weight: 400;
   font-style: normal;
 }
-@font-face {
-  font-family: 'Museo Slab';
-  src: url("../fonts/museoslab/Museo_Slab_700-webfont.eot");
-  src: url("../fonts/museoslab/Museo_Slab_700-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/museoslab/Museo_Slab_700-webfont.woff2") format("woff2"), url("../fonts/museoslab/Museo_Slab_700-webfont.woff") format("woff"), url("../fonts/museoslab/Museo_Slab_700-webfont.ttf") format("truetype"), url("../fonts/museoslab/Museo_Slab_700-webfont.svg#museo_slab700") format("svg");
-  font-weight: 700;
-  font-style: normal;
-}
 /* line 17, ../../source/sass/partials/_app-mixins.sass */
 h1 {
   margin: 0;
@@ -3703,73 +3696,45 @@ input:focus, textarea:focus, button:focus {
 }
 
 /* line 180, ../../source/sass/partials/_itemgridview.sass */
-.item-category1 {
-  background-color: #fff;
-  border-bottom: 2px solid #007377;
-}
-/* line 175, ../../source/sass/partials/_itemgridview.sass */
-.item-category1 .item__image {
-  background-color: #00bfc5;
-}
-/* line 177, ../../source/sass/partials/_itemgridview.sass */
-.item-category1 li.item__data-title {
-  color: #007377;
-}
-
-/* line 183, ../../source/sass/partials/_itemgridview.sass */
-.item-category2 {
-  background-color: #fff;
-  border-bottom: 2px solid #76232f;
-}
-/* line 175, ../../source/sass/partials/_itemgridview.sass */
-.item-category2 .item__image {
-  background-color: #ad3345;
-}
-/* line 177, ../../source/sass/partials/_itemgridview.sass */
-.item-category2 li.item__data-title {
-  color: #76232f;
-}
-
-/* line 186, ../../source/sass/partials/_itemgridview.sass */
-.item-category3 {
+.item-synchronous {
   background-color: #fff;
   border-bottom: 2px solid #512d6d;
 }
 /* line 175, ../../source/sass/partials/_itemgridview.sass */
-.item-category3 .item__image {
+.item-synchronous .item__image {
   background-color: #76429f;
 }
 /* line 177, ../../source/sass/partials/_itemgridview.sass */
-.item-category3 li.item__data-title {
+.item-synchronous li.item__data-title {
   color: #512d6d;
 }
 
-/* line 189, ../../source/sass/partials/_itemgridview.sass */
-.item-category4 {
+/* line 183, ../../source/sass/partials/_itemgridview.sass */
+.item-asynchronous {
+  background-color: #fff;
+  border-bottom: 2px solid #76232f;
+}
+/* line 175, ../../source/sass/partials/_itemgridview.sass */
+.item-asynchronous .item__image {
+  background-color: #ad3345;
+}
+/* line 177, ../../source/sass/partials/_itemgridview.sass */
+.item-asynchronous li.item__data-title {
+  color: #76232f;
+}
+
+/* line 186, ../../source/sass/partials/_itemgridview.sass */
+.item-just-in-time {
   background-color: #fff;
   border-bottom: 2px solid #dc8633;
 }
 /* line 175, ../../source/sass/partials/_itemgridview.sass */
-.item-category4 .item__image {
+.item-just-in-time .item__image {
   background-color: #e39e5c;
 }
 /* line 177, ../../source/sass/partials/_itemgridview.sass */
-.item-category4 li.item__data-title {
+.item-just-in-time li.item__data-title {
   color: #dc8633;
-}
-
-/* line 192, ../../source/sass/partials/_itemgridview.sass */
-.item-category5 {
-  background-color: #fff;
-  border-bottom: 2px solid #9b945f;
-}
-/* line 175, ../../source/sass/partials/_itemgridview.sass */
-.item-category5 .item__image {
-  background-color: #b0aa7e;
-}
-/* line 177, ../../source/sass/partials/_itemgridview.sass */
-.item-category5 li.item__data-title {
-  color: #9b945f;
 }
 
 /* line 1, ../../source/sass/partials/_itemdetailsview.sass */
@@ -3954,62 +3919,37 @@ input:focus, textarea:focus, button:focus {
   margin: 0 0.688rem;
 }
 
-/* line 28, ../../source/sass/partials/_tagbarview.sass */
+/* line 27, ../../source/sass/partials/_tagbarview.sass */
 .tag-listing-horizontal li, #details .details__content .details__content-description-metadata li, #tagbar__container li, .tag-listing-right li, .tag {
   position: relative;
-  margin-left: 14px;
+  margin-left: 0.344rem;
   padding: 0 0.688rem;
   height: 28px;
   line-height: 28px;
   font-size: 0.8rem;
   background-color: #b96b20;
   color: #fff;
-  border-radius: 0 5px 5px 0;
+  border-radius: 3px;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
-/* line 39, ../../source/sass/partials/_tagbarview.sass */
-.tag-listing-horizontal li:before, #details .details__content .details__content-description-metadata li:before, #tagbar__container li:before, .tag-listing-right li:before, .tag:before {
-  content: "";
-  position: absolute;
-  left: -14px;
-  top: 0px;
-  width: 0px;
-  height: 0px;
-  border-color: transparent #b96b20 transparent transparent;
-  border-style: solid;
-  border-width: 14px 14px 14px 0;
-}
-/* line 49, ../../source/sass/partials/_tagbarview.sass */
-.tag-listing-horizontal li:after, #details .details__content .details__content-description-metadata li:after, #tagbar__container li:after, .tag-listing-right li:after, .tag:after {
-  content: "";
-  position: absolute;
-  top: 12px;
-  left: 0;
-  float: left;
-  width: 4px;
-  height: 4px;
-  border-radius: 2px;
-  background: #fff;
-  box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.2);
-}
-/* line 60, ../../source/sass/partials/_tagbarview.sass */
+/* line 42, ../../source/sass/partials/_tagbarview.sass */
 .tag-listing-horizontal li a, #details .details__content .details__content-description-metadata li a, #tagbar__container li a, .tag-listing-right li a, .tag a {
   padding-left: 0.688rem;
   color: #fff;
 }
-/* line 63, ../../source/sass/partials/_tagbarview.sass */
+/* line 45, ../../source/sass/partials/_tagbarview.sass */
 .tag-listing-horizontal li a:hover, #details .details__content .details__content-description-metadata li a:hover, #tagbar__container li a:hover, .tag-listing-right li a:hover, .tag a:hover, .tag-listing-horizontal li a:active, #details .details__content .details__content-description-metadata li a:active, #tagbar__container li a:active, .tag-listing-right li a:active, .tag a:active {
   color: #fff;
 }
 
-/* line 71, ../../source/sass/partials/_tagbarview.sass */
+/* line 92, ../../source/sass/partials/_tagbarview.sass */
 #tagbar__container {
   text-align: right;
   background-color: rgba(255, 255, 255, 0.75);
   border-top: 1px solid #eae8e6;
   padding: 0.344rem;
 }
-/* line 77, ../../source/sass/partials/_tagbarview.sass */
+/* line 98, ../../source/sass/partials/_tagbarview.sass */
 #tagbar__container ul {
   display: inline-block;
   text-align: center;

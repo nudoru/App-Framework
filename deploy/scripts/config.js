@@ -14,6 +14,8 @@ var APP_CONFIG_DATA = {
       "filter": "companyArea"},
     {"label": "Category",
       "filter": "categories"},
+    {"label": "Type",
+      "filter": "types"},
     {"label": "Complexity",
       "filter": "complexity"}
   ]

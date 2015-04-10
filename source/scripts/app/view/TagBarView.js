@@ -47,7 +47,7 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var tagnode = NTemplate.asElement('template__tag', {tag: tag});
+    var tagnode = NTemplate.asElement('template__tag-bar', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});

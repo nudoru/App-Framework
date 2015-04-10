@@ -119,19 +119,28 @@ nudoru.components.FloatImageView = (function() {
     zoomImage.style.width = imgWidth+'px';
     zoomImage.style.height = imgHeight+'px';
 
-    if(_fancyEffects) {
-      // further from the center, the greate the effect
-      var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75);
-
-      TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
-      TweenLite.to(zoomImage,0,{rotationY: startingRot});
-    }
-
     _viewPortCoverEl.appendChild(zoomImage);
 
-    // Animate
+    // fade source image on screen
     TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
-    TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+
+    if(_fancyEffects) {
+      // further from the center, the greate the effect
+      var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
+          origin = startingRot < 0 ? 'left' : 'right';
+
+      TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      //TweenLite.to(zoomImage,0,{rotationY: startingRot});
+
+      var tl = new TimelineLite();
+      tl.to(zoomImage,0.25, {rotationY: startingRot, transformOrigin: origin, ease:Quad.easeIn});
+      //tl.to(zoomImage,0.5, {rotationY: startingRot, transformOrigin: origin, width: imgTargetWidth/4, height: imgTargetHeight/4, x: imgTargetX/4, y: imgTargetY/4, ease:Quad.easeIn});
+      tl.to(zoomImage,0.5, {rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
+
+    } else {
+      TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+    }
+
     showFloatImageCover();
 
     // Caption

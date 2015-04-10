@@ -9,6 +9,12 @@ var NumberUtils = {
 
   clamp: function(val,min,max){
     return Math.max(min,Math.min(max,val));
-  }
+  },
 
+  distanceTL: function(point1, point2) {
+    var xd = (point2.left - point1.left),
+        yd = (point2.top - point1.top);
+
+    return Math.sqrt((xd*xd) + (yd*yd));
+  }
 };
