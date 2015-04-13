@@ -19,7 +19,13 @@ html
       #app__contents
         header#header
           .header__drawer-toggle
-            button
+            .drawer__menu-spinner-button
+              input(type="checkbox")#spinner-form
+              label(for="spinner-form").spinner-spin
+                .spinner.diagonal.part-1
+                .spinner.horizontal
+                .spinner.diagonal.part-2
+            //button
               i.fa.fa-bars
           h1
           nav#header__navigation

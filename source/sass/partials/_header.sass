@@ -45,19 +45,25 @@
   top: 0
   left: 0
   bottom: 0
-  button
-    border: 0
-    background-color: rgba(0,0,0,.15)
-    border-right: 1px solid rgba(0,0,0,.20)
-    padding: 13px $base-line-height $base-line-height $base-line-height
-    height: $mobile-header-height
-    min-height: $mobile-header-height
-    cursor: pointer
-    i.fa
-      font-size: 1.4rem
-      color: #fff
-    &:active, &:hover
-      color: $light-blue
+  border: 0
+  background-color: rgba(0,0,0,.15)
+  border-right: 1px solid rgba(0,0,0,.20)
+  padding: 13px $base-line-height $base-line-height $base-line-height
+  height: $mobile-header-height
+  min-height: $mobile-header-height
+  //button
+  //  border: 0
+  //  background-color: rgba(0,0,0,.15)
+  //  border-right: 1px solid rgba(0,0,0,.20)
+  //  padding: 13px $base-line-height $base-line-height $base-line-height
+  //  height: $mobile-header-height
+  //  min-height: $mobile-header-height
+  //  cursor: pointer
+  //  i.fa
+  //    font-size: 1.4rem
+  //    color: #fff
+  //  &:active, &:hover
+  //    color: $light-blue
   +respond-to(max-width, $tablet-mobile-break)
     visibility: visible
 

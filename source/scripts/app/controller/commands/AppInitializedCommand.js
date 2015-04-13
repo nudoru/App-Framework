@@ -12,9 +12,7 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
   this.appView.initializeMenus(this.appModel.getMenuData());
   this.appView.initializeGridView(this.appModel.getData());
 
-  var initialRoute = APP.AppController.Router.getRoute();
-
-  //console.log('Initial route: '+initialRoute);
+  var initialRoute = nudoru.components.URLRouter.getRoute();
 
   if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);

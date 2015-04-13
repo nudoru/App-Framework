@@ -117,6 +117,7 @@ module.exports = function (grunt) {
           'source/scripts/nudoru/components/ToastView.js',
           'source/scripts/nudoru/components/DDMenuBarView.js',
           'source/scripts/nudoru/components/DDMenuView.js',
+          'source/scripts/nudoru/components/URLRouter.js',
 
           'source/scripts/app/App.js',
           'source/scripts/app/events/AppEvents.js',
@@ -129,7 +130,7 @@ module.exports = function (grunt) {
           'source/scripts/app/view/DetailedItemRenderer.js',
           'source/scripts/app/view/TagBarView.js',
           'source/scripts/app/controller/AppController.js',
-          'source/scripts/app/controller/Router.js',
+
           'source/scripts/app/controller/commands/*.js',
           'source/scripts/main.js'
         ],
@@ -152,7 +153,7 @@ module.exports = function (grunt) {
     },
 
     jshint: {
-      files: ['source/scripts/utils/*.js', 'source/scripts/app/**/*.js'],
+      files: ['source/scripts/nudoru/*.js', 'source/scripts/app/**/*.js'],
       options: {
         '-W014': true,
         force: true,
@@ -191,7 +192,7 @@ module.exports = function (grunt) {
         }
       },
       css: {
-        files: ['source/sass/**/*.sass'],
+        files: ['source/sass/**/*.sass', 'source/sass/**/*.scss'],
         tasks: ['compass'],
         options: {
           spawn: false

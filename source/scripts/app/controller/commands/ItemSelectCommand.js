@@ -16,5 +16,5 @@ APP.AppController.ItemSelectCommand.execute = function(data) {
     this.appModel.setCurrentItem('');
   }
 
-  APP.AppController.Router.setRoute(this.appModel.getFiltersForURL());
+  nudoru.components.URLRouter.setRoute(this.appModel.getFiltersForURL());
 };

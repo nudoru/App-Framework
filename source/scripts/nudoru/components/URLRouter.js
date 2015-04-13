@@ -1,15 +1,10 @@
 /*
 Simple router, IE9 needs to be supported so using hashes
-Based on some of this
-http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
-
- monitorEvents(window, "hashchange")
-
  */
 
 
-APP.createNameSpace('APP.AppController.Router');
-APP.AppController.Router = function () {
+nudoru.createNameSpace('nudoru.components.URLRouter');
+nudoru.components.URLRouter = function () {
   var _eventDispatcher,
       _lastSetPath;
 

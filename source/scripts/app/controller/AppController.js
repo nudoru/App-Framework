@@ -24,7 +24,7 @@ APP.AppController = function () {
     _viewParent = viewParent;
     _self = this;
     _eventDispatcher = nudoru.events.EventDispatcher;
-    _router = APP.AppController.Router;
+    _router = nudoru.components.URLRouter;
 
     _router.initialize();
 

@@ -4095,6 +4095,85 @@ input:focus, textarea:focus, button:focus {
   background-size: cover;
 }
 
+/* line 3, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button * {
+  transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+/* line 9, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button {
+  position: relative;
+  height: 25px;
+  width: 25px;
+}
+
+/* line 15, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button input[type=checkbox] {
+  display: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 21, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button label {
+  cursor: pointer;
+  position: absolute;
+  z-index: 99;
+  height: 100%;
+  width: 100%;
+  top: 3px;
+  left: 0;
+}
+
+/* line 31, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button .spinner {
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background-color: #fff;
+}
+
+/* line 38, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button .diagonal.part-1 {
+  position: relative;
+  float: left;
+}
+
+/* line 43, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button .horizontal {
+  position: relative;
+  float: left;
+  margin-top: 6px;
+}
+
+/* line 49, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button .diagonal.part-2 {
+  position: relative;
+  float: left;
+  margin-top: 6px;
+}
+
+/* line 55, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button input[type=checkbox]:checked ~ .spinner-spin > .horizontal {
+  opacity: 0;
+}
+
+/* line 59, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button input[type=checkbox]:checked ~ .spinner-spin > .diagonal.part-1 {
+  transform: rotate(405deg);
+  -webkit-transform: rotate(405deg);
+  margin-top: 7px;
+}
+
+/* line 65, ../../source/sass/partials/drawer-spinner-menu.scss */
+.drawer__menu-spinner-button input[type=checkbox]:checked ~ .spinner-spin > .diagonal.part-2 {
+  transform: rotate(-405deg);
+  -webkit-transform: rotate(-405deg);
+  margin-top: -10px;
+}
+
 /* line 1, ../../source/sass/partials/_header.sass */
 #header {
   position: absolute;
@@ -4157,25 +4236,12 @@ input:focus, textarea:focus, button:focus {
   top: 0;
   left: 0;
   bottom: 0;
-}
-/* line 48, ../../source/sass/partials/_header.sass */
-.header__drawer-toggle button {
   border: 0;
   background-color: rgba(0, 0, 0, 0.15);
   border-right: 1px solid rgba(0, 0, 0, 0.2);
   padding: 13px 0.688rem 0.688rem 0.688rem;
   height: 49.95px;
   min-height: 49.95px;
-  cursor: pointer;
-}
-/* line 56, ../../source/sass/partials/_header.sass */
-.header__drawer-toggle button i.fa {
-  font-size: 1.4rem;
-  color: #fff;
-}
-/* line 59, ../../source/sass/partials/_header.sass */
-.header__drawer-toggle button:active, .header__drawer-toggle button:hover {
-  color: #00a9e0;
 }
 @media (max-width: 750px) {
   /* line 42, ../../source/sass/partials/_header.sass */

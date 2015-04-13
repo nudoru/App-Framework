@@ -105,7 +105,7 @@ APP.AppView = (function() {
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = document.getElementById('drawer');
-    _drawerToggleButtonEl = document.querySelector('.header__drawer-toggle > button');
+    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');

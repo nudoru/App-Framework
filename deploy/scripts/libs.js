@@ -1880,7 +1880,55 @@ nudoru.components.BasicMenuItemView = {
     }
 
   }
-};;var APP = APP || {};
+};;nudoru.createNameSpace('nudoru.components.URLRouter');
+nudoru.components.URLRouter = function () {
+  var _eventDispatcher,
+      _lastSetPath;
+
+  function initialize() {
+    _eventDispatcher = nudoru.events.EventDispatcher;
+    _lastSetPath = '';
+
+    configureStreams();
+  }
+
+  function configureStreams() {
+    window.addEventListener('hashchange', onHashChange, false);
+  }
+
+  function onHashChange(evt) {
+    var hash = getURLHash();
+    if(hash === _lastSetPath) {
+      return;
+    }
+
+    _eventDispatcher.publish(nudoru.events.BrowserEvents.URL_HASH_CHANGED, hash);
+  }
+
+  /**
+   * Returns everything after the 'whatever.html#' in the URL
+   * Leading and trailing slashes are removed
+   * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
+   *
+   * @returns {string}
+   */
+  function getURLHash() {
+    var hash = location.hash.slice(1);
+    return hash.toString().replace(/\/$/, '').replace(/^\//, '');
+  }
+
+  function updateURLHash(path) {
+    _lastSetPath = path;
+    window.location.hash = path;
+  }
+
+  return {
+    initialize: initialize,
+    getRoute: getURLHash,
+    setRoute: updateURLHash
+  };
+
+}();;var APP = APP || {};
 
 APP = (function(global, rootView) {
   var _globalScope = global,
@@ -2648,7 +2696,7 @@ APP.AppView = (function() {
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = document.getElementById('drawer');
-    _drawerToggleButtonEl = document.querySelector('.header__drawer-toggle > button');
+    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
@@ -3897,7 +3945,7 @@ APP.AppController = function () {
     _viewParent = viewParent;
     _self = this;
     _eventDispatcher = nudoru.events.EventDispatcher;
-    _router = APP.AppController.Router;
+    _router = nudoru.components.URLRouter;
 
     _router.initialize();
 
@@ -3972,54 +4020,6 @@ APP.AppController = function () {
     createCommand: ObjectUtils.basicFactory
   };
 
-}();;APP.createNameSpace('APP.AppController.Router');
-APP.AppController.Router = function () {
-  var _eventDispatcher,
-      _lastSetPath;
-
-  function initialize() {
-    _eventDispatcher = nudoru.events.EventDispatcher;
-    _lastSetPath = '';
-
-    configureStreams();
-  }
-
-  function configureStreams() {
-    window.addEventListener('hashchange', onHashChange, false);
-  }
-
-  function onHashChange(evt) {
-    var hash = getURLHash();
-    if(hash === _lastSetPath) {
-      return;
-    }
-
-    _eventDispatcher.publish(nudoru.events.BrowserEvents.URL_HASH_CHANGED, hash);
-  }
-
-  /**
-   * Returns everything after the 'whatever.html#' in the URL
-   * Leading and trailing slashes are removed
-   * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
-   *
-   * @returns {string}
-   */
-  function getURLHash() {
-    var hash = location.hash.slice(1);
-    return hash.toString().replace(/\/$/, '').replace(/^\//, '');
-  }
-
-  function updateURLHash(path) {
-    _lastSetPath = path;
-    window.location.hash = path;
-  }
-
-  return {
-    initialize: initialize,
-    getRoute: getURLHash,
-    setRoute: updateURLHash
-  };
-
 }();;APP.createNameSpace('APP.AppController.AbstractCommand');
 
 /*
@@ -4065,9 +4065,7 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
   this.appView.initializeMenus(this.appModel.getMenuData());
   this.appView.initializeGridView(this.appModel.getData());
 
-  var initialRoute = APP.AppController.Router.getRoute();
-
-  //console.log('Initial route: '+initialRoute);
+  var initialRoute = nudoru.components.URLRouter.getRoute();
 
   if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);
@@ -4114,7 +4112,7 @@ APP.AppController.DataFiltersChangedCommand.execute = function(data) {
   this.appView.updateTagBarDisplay(filterList);
   this.appView.updateGridItemVisibility(this.appModel.getDataMatchingFilters());
 
-  APP.AppController.Router.setRoute(this.appModel.getFiltersForURL());
+  nudoru.components.URLRouter.setRoute(this.appModel.getFiltersForURL());
 };;APP.createNameSpace('APP.AppController.GridViewItemsVisibleChangedCommand');
 APP.AppController.GridViewItemsVisibleChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.GridViewItemsVisibleChangedCommand.execute = function(data) {
@@ -4138,7 +4136,7 @@ APP.AppController.ItemSelectCommand.execute = function(data) {
     this.appModel.setCurrentItem('');
   }
 
-  APP.AppController.Router.setRoute(this.appModel.getFiltersForURL());
+  nudoru.components.URLRouter.setRoute(this.appModel.getFiltersForURL());
 };;APP.createNameSpace('APP.AppController.MenuSelectionCommand');
 APP.AppController.MenuSelectionCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.MenuSelectionCommand.execute = function(data) {
