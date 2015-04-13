@@ -25,13 +25,12 @@ APP.AppController.Router = function () {
   }
 
   function onHashChange(evt) {
-    evt.preventDefault();
     var hash = getURLHash();
     if(hash === _lastSetPath) {
       return;
     }
 
-    _eventDispatcher.publish(APP.Events.URL_HASH_CHANGED, hash);
+    _eventDispatcher.publish(nudoru.events.BrowserEvents.URL_HASH_CHANGED, hash);
   }
 
   /**
@@ -48,7 +47,6 @@ APP.AppController.Router = function () {
 
   function updateURLHash(path) {
     _lastSetPath = path;
-
     window.location.hash = path;
   }
 

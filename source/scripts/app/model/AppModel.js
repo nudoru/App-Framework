@@ -115,7 +115,7 @@ APP.AppModel = (function() {
 
     _eventDispatcher = nudoru.events.EventDispatcher;
 
-    _eventDispatcher.publish(APP.Events.MODEL_INITIALIZED);
+    _eventDispatcher.publish(APP.AppEvents.MODEL_INITIALIZED);
   }
 
   function configureMenuProperties() {
@@ -145,7 +145,7 @@ APP.AppModel = (function() {
   function onModelDataLoaded() {
     filterProperties();
 
-    _eventDispatcher.publish(APP.Events.MODEL_DATA_LOADED);
+    _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_LOADED);
   }
 
 
@@ -222,7 +222,7 @@ APP.AppModel = (function() {
   }
 
   function handledFiltersUpdated() {
-    _eventDispatcher.publish(APP.Events.DATA_FILTER_CHANGED);
+    _eventDispatcher.publish(APP.AppEvents.DATA_FILTER_CHANGED);
   }
 
   /**
@@ -427,7 +427,7 @@ APP.AppModel = (function() {
     //setCurrentFreeTextFilter(search);
     //setCurrentItem(item);
 
-    _eventDispatcher.publish(APP.Events.RESUME_FROM_MODEL_STATE,{filters: filterArry, search: search, item: item});
+    _eventDispatcher.publish(APP.AppEvents.RESUME_FROM_MODEL_STATE,{filters: filterArry, search: search, item: item});
   }
 
   function getURLSearchParameterByName(name, str) {

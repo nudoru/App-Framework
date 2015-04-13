@@ -5,8 +5,6 @@
 
 nudoru.createNameSpace('nudoru.components.DDMenuBarView');
 nudoru.components.DDMenuBarView = {
-  state: {},
-
   methods: {
 
     eventDispatcher: null,
@@ -48,7 +46,7 @@ nudoru.components.DDMenuBarView = {
       this.containerEl.insertBefore(this.barEl, this.containerEl.firstChild);
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
-      if(APP.globals().isIE) {
+      if(BrowserInfo.isIE) {
         this.containerEl.onselectstart = function() {
           return false;
         };
@@ -68,7 +66,5 @@ nudoru.components.DDMenuBarView = {
       });
     }
 
-  },
-
-  closures: []
+  }
 };

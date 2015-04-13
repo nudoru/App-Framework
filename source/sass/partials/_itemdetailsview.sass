@@ -9,7 +9,7 @@
   position: absolute
   width: 80%
   max-width: 1000px
-  right: 0
+  right: 50px
   top: 0
   bottom: 0
   overflow: hidden
@@ -117,6 +117,7 @@
         @extend %plain-list
 
   +respond-to(max-width, $tablet-mobile-break)
+    right: 0
     .details__content
       padding-top: $double-base-line-height
       .details__content-title

@@ -28,7 +28,7 @@ APP.AppController = function () {
 
     _router.initialize();
 
-    mapCommand(APP.Events.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+    mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
 
     initializeView();
   }
@@ -40,8 +40,8 @@ APP.AppController = function () {
 
   function initializeView() {
     _view = APP.AppView;
-    _eventDispatcher.subscribe(APP.Events.VIEW_INITIALIZED, onViewInitalized, true);
-    _eventDispatcher.subscribe(APP.Events.VIEW_RENDERED, onViewRendered, true);
+    _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
+    _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
     _view.initialize(_appScope, _viewParent);
   }
 
@@ -55,8 +55,8 @@ APP.AppController = function () {
 
   function initializeModel() {
     _model = APP.AppModel;
-    _eventDispatcher.subscribe(APP.Events.MODEL_INITIALIZED, onModelInitialized, true);
-    _eventDispatcher.subscribe(APP.Events.MODEL_DATA_LOADED, onModelDataLoaded, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_INITIALIZED, onModelInitialized, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_LOADED, onModelDataLoaded, true);
     _model.initialize();
   }
 
@@ -65,28 +65,32 @@ APP.AppController = function () {
   }
 
   function onModelDataLoaded() {
-    _eventDispatcher.publish(APP.Events.CONTROLLER_INITIALIZED);
+    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
 
     //AppInitializedCommand takes over here
   }
 
   function postInitialize() {
-    mapCommand(APP.Events.URL_HASH_CHANGED, _self.URLHashChangedCommand);
-    //mapCommand(APP.Events.VIEW_CHANGED, _self.ViewChangedCommand);
-    mapCommand(APP.Events.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
-    mapCommand(APP.Events.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+    // Browser events
+    mapCommand(nudoru.events.BrowserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
+    mapCommand(nudoru.events.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    mapCommand(nudoru.events.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
-    mapCommand(APP.Events.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapCommand(APP.Events.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    // Component events
+    mapCommand(nudoru.events.ComponentEvents.MENU_SELECT, _self.MenuSelectionCommand);
 
-    mapCommand(APP.Events.SEARCH_INPUT, _self.SearchInputCommand);
-    mapCommand(APP.Events.GRID_VIEW_ITEMS_CHANGED, _self.GridViewItemsVisibleChangedCommand);
-    mapCommand(APP.Events.ITEM_SELECT, _self.ItemSelectCommand);
-    mapCommand(APP.Events.MENU_SELECT, _self.MenuSelectionCommand);
-    mapCommand(APP.Events.VIEW_ALL_FILTERS_CLEARED, _self.ClearAllFiltersCommand);
-    mapCommand(APP.Events.DATA_FILTER_CHANGED, _self.DataFiltersChangedCommand);
+    // App events
+    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
+    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
 
-    mapCommand(APP.Events.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
+    mapCommand(APP.AppEvents.SEARCH_INPUT, _self.SearchInputCommand);
+    mapCommand(APP.AppEvents.GRID_VIEW_ITEMS_CHANGED, _self.GridViewItemsVisibleChangedCommand);
+    mapCommand(APP.AppEvents.ITEM_SELECT, _self.ItemSelectCommand);
+
+    mapCommand(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED, _self.ClearAllFiltersCommand);
+    mapCommand(APP.AppEvents.DATA_FILTER_CHANGED, _self.DataFiltersChangedCommand);
+
+    mapCommand(APP.AppEvents.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
   }
 
   return {

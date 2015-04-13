@@ -55,6 +55,8 @@ nudoru.components.FloatImageView = (function() {
 
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
 
+      //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+
       if(!BrowserInfo.mobile.any()) {
         el.addEventListener('mouseover', onImageOver, false);
         el.addEventListener('mouseout', onImageOut, false);
@@ -68,11 +70,21 @@ nudoru.components.FloatImageView = (function() {
   }
 
   function onImageOver(evt) {
-    TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+    if(_fancyEffects) {
+      TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+    } else {
+      TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+
+    }
   }
 
   function onImageOut(evt) {
-    TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+    if(_fancyEffects) {
+      TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+    } else {
+      TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+    }
+
   }
 
   /**
@@ -155,10 +167,9 @@ nudoru.components.FloatImageView = (function() {
       }
 
       TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
-      //TweenLite.to(zoomImage,0,{rotationY: startingRot});
 
       var tl = new TimelineLite();
-      tl.to(zoomImage,0.5, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, ease:Back.easeInOut});
+      tl.to(zoomImage,0.25, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, y:'+50', ease:Back.easeInOut});
       tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
 
     } else {

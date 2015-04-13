@@ -8,8 +8,6 @@ From
  */
 
 APP.AppController.AbstractCommand = {
-  state: {},
-
   methods: {
 
     app: APP,
@@ -21,9 +19,7 @@ APP.AppController.AbstractCommand = {
     execute: function(data) {
       NDebugger.log('Abstract command executing with data: '+data);
     }
-  },
-
-  closures: []
+  }
 };
 
 // Template

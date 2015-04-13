@@ -313,18 +313,31 @@ var debounce = function (func, threshold, execAsap) {
     return $.extend.apply(undefined, args);
   },
 
-  // Simplified implementation of Stamps - http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
-  // https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
+  /**
+   * Simplified implementation of Stamps - http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
+   * https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
+   *
+   * Prototype object requires a methods object, private closures and state is optional
+   *
+   * @param prototype
+   * @returns New object using prototype.methods as source
+   */
+  //
+  //
   basicFactory: function(prototype) {
     var proto = prototype,
         obj = Object.create(proto.methods);
 
-    proto.closures.forEach(function(closure) {
-      closure.call(obj);
-    });
+    if(proto.hasOwnProperty('closure')) {
+      proto.closures.forEach(function(closure) {
+        closure.call(obj);
+      });
+    }
 
-    for(var key in proto.state) {
-      obj[key] = proto.state[key];
+    if(proto.hasOwnProperty('state')) {
+      for(var key in proto.state) {
+        obj[key] = proto.state[key];
+      }
     }
 
     return obj;
@@ -950,7 +963,18 @@ nudoru.events.EventCommandMap = (function(){
     unmap: unmap
   };
 
-}());;nudoru.createNameSpace('nudoru.components.FloatImageView');
+}());;nudoru.createNameSpace('nudoru.events.BrowserEvents');
+nudoru.events.BrowserEvents = {
+  URL_HASH_CHANGED: 'URL_HASH_CHANGED',
+  BROWSER_RESIZED: 'BROWSER_RESIZED',
+  BROWSER_SCROLLED: 'BROWSER_SCROLLED'
+};;nudoru.createNameSpace('nudoru.events.ComponentEvents');
+nudoru.events.ComponentEvents = {
+  MODAL_COVER_SHOW: 'MODAL_COVER_SHOW',
+  MODAL_COVER_HIDE: 'MODAL_COVER_HIDE',
+
+  MENU_SELECT: 'MENU_SELECT'
+};;nudoru.createNameSpace('nudoru.components.FloatImageView');
 nudoru.components.FloatImageView = (function() {
 
   var _coverDivID = 'floatimage__cover',
@@ -993,6 +1017,8 @@ nudoru.components.FloatImageView = (function() {
 
       el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
 
+      //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+
       if(!BrowserInfo.mobile.any()) {
         el.addEventListener('mouseover', onImageOver, false);
         el.addEventListener('mouseout', onImageOut, false);
@@ -1006,11 +1032,21 @@ nudoru.components.FloatImageView = (function() {
   }
 
   function onImageOver(evt) {
-    TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+    if(_fancyEffects) {
+      TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+    } else {
+      TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+
+    }
   }
 
   function onImageOut(evt) {
-    TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+    if(_fancyEffects) {
+      TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+    } else {
+      TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+    }
+
   }
 
   /**
@@ -1093,10 +1129,9 @@ nudoru.components.FloatImageView = (function() {
       }
 
       TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
-      //TweenLite.to(zoomImage,0,{rotationY: startingRot});
 
       var tl = new TimelineLite();
-      tl.to(zoomImage,0.5, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, ease:Back.easeInOut});
+      tl.to(zoomImage,0.25, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, y:'+50', ease:Back.easeInOut});
       tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
 
     } else {
@@ -1232,7 +1267,7 @@ nudoru.components.ModalCoverView = (function() {
     TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
     TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
 
-    _eventDispatcher.publish(APP.Events.MODAL_COVER_SHOW);
+    _eventDispatcher.publish(nudoru.events.ComponentEvents.MODAL_COVER_SHOW);
   }
 
   function hide(animate) {
@@ -1245,7 +1280,7 @@ nudoru.components.ModalCoverView = (function() {
     TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
     TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
 
-    _eventDispatcher.publish(APP.Events.MODAL_COVER_HIDE);
+    _eventDispatcher.publish(nudoru.events.ComponentEvents.MODAL_COVER_HIDE);
   }
 
   return {
@@ -1391,8 +1426,6 @@ nudoru.components.ToastView = (function(){
 
 }());;nudoru.createNameSpace('nudoru.components.DDMenuBarView');
 nudoru.components.DDMenuBarView = {
-  state: {},
-
   methods: {
 
     eventDispatcher: null,
@@ -1434,7 +1467,7 @@ nudoru.components.DDMenuBarView = {
       this.containerEl.insertBefore(this.barEl, this.containerEl.firstChild);
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
-      if(APP.globals().isIE) {
+      if(BrowserInfo.isIE) {
         this.containerEl.onselectstart = function() {
           return false;
         };
@@ -1454,9 +1487,7 @@ nudoru.components.DDMenuBarView = {
       });
     }
 
-  },
-
-  closures: []
+  }
 };
 ;//----------------------------------------------------------------------------
 //  A menu
@@ -1482,14 +1513,12 @@ nudoru.components.DDMenuView = {
     menuClickStream: null,
     fadeOutComplete: null,
     isKeepOpen: false,
-    appGlobals: null,
     firstTouchPosition: [],
     lastTouchPosition: [],
     touchDeltaTolerance: 10,
     shouldProcessTouchEnd: false,
 
     initialize: function(data, keep) {
-      this.appGlobals = APP.globals();
 
       this.data = data;
       this.data.value = this.data.value || this.data.label.split(' ').join('_').toLowerCase();
@@ -1500,7 +1529,7 @@ nudoru.components.DDMenuView = {
 
       this.render();
 
-      if(this.appGlobals.mobile.any()) {
+      if(BrowserInfo.mobile.any()) {
         this.configureMobileStreams();
       } else {
         this.configureStreams();
@@ -1649,14 +1678,14 @@ nudoru.components.DDMenuView = {
     handleMenuClick: function(data) {
       if(this.isHeaderObject(data)) {
         // Toggle visibility on mobile/tablet
-        if(this.appGlobals.mobile.any()) {
+        if(BrowserInfo.mobile.any()) {
           this.toggleMenu();
         }
       } else {
-        this.eventDispatcher.publish(APP.Events.MENU_SELECT, data);
         var item = this.getItemByValue(data);
         item.toggleSelect();
         item.showDepressEffect();
+        this.eventDispatcher.publish(nudoru.events.ComponentEvents.MENU_SELECT, data);
       }
     },
 
@@ -1747,9 +1776,7 @@ nudoru.components.DDMenuView = {
       this.fadeOutComplete = true;
     }
 
-  },
-
-  closures: []
+  }
 };
 
 //----------------------------------------------------------------------------
@@ -1852,9 +1879,7 @@ nudoru.components.BasicMenuItemView = {
       }
     }
 
-  },
-
-  closures: []
+  }
 };;var APP = APP || {};
 
 APP = (function(global, rootView) {
@@ -1880,56 +1905,14 @@ APP = (function(global, rootView) {
    */
   function initGlobals() {
     _globals = ObjectUtils.extend(BrowserInfo, {});
+
     _globals.appConfig = APP_CONFIG_DATA;
-    _globals.enhanced = !_globals.isIE; //!_globals.mobile.any() &&
-    _globals.mouseDownEvtStr = _globals.mobile.any() ? "touchstart" : "mousedown";
-    _globals.mouseUpEvtStr = _globals.mobile.any() ? "touchend" : "mouseup";
-    _globals.mouseClickEvtStr = _globals.mobile.any() ? "touchend" : "click";
-    _globals.mouseMoveEvtStr = _globals.mobile.any() ? "touchmove" : "mousemove";
 
-    // Moved to BrowserInfo
-    //_globals.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
-    //_globals.appVersion = navigator.appVersion;
-    //_globals.userAgent = navigator.userAgent;
-    //_globals.isIE6 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 6");
-    //_globals.isIE7 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 7");
-    //_globals.isIE8 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 8");
-    //_globals.isIE9 = _globals.isIE && -1 < _globals.appVersion.indexOf("MSIE 9");
-    //_globals.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
-    //_globals.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
-    //_globals.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
-    //_globals.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
-    //
-    //_globals.notSupported = _globals.isIE6 || _globals.isIE7 || _globals.isIE8;
-    //
-    //_globals.hasTouch = 'ontouchstart' in document.documentElement;
-    //_globals.mobile = {
-    //  Android: function() {
-    //    return _globals.userAgent.match(/Android/i);
-    //  },
-    //  BlackBerry: function() {
-    //    return _globals.userAgent.match(/BlackBerry/i) || _globals.userAgent.match(/BB10; Touch/);
-    //  },
-    //  iOS: function() {
-    //    return _globals.userAgent.match(/iPhone|iPad|iPod/i);
-    //  },
-    //  Opera: function() {
-    //    return _globals.userAgent.match(/Opera Mini/i);
-    //  },
-    //  Windows: function() {
-    //    return _globals.userAgent.match(/IEMobile/i);
-    //  },
-    //  any: function() {
-    //    return (
-    //      _globals.mobile.Android()
-    //      || _globals.mobile.BlackBerry()
-    //      || _globals.mobile.iOS()
-    //      || _globals.mobile.Opera()
-    //      || _globals.mobile.Windows()
-    //    ) !== null;
-    //  }
-    //};
-
+    _globals.enhanced = !BrowserInfo.isIE && !BrowserInfo.mobile.any();
+    _globals.mouseDownEvtStr = BrowserInfo.mobile.any() ? "touchstart" : "mousedown";
+    _globals.mouseUpEvtStr = BrowserInfo.mobile.any() ? "touchend" : "mouseup";
+    _globals.mouseClickEvtStr = BrowserInfo.mobile.any() ? "touchend" : "click";
+    _globals.mouseMoveEvtStr = BrowserInfo.mobile.any() ? "touchmove" : "mousemove";
   }
 
   /**
@@ -1959,11 +1942,10 @@ APP = (function(global, rootView) {
     globals: globals
   };
 
-}(this, document));;APP.createNameSpace('APP.Events');
-APP.Events = {
+}(this, document));;APP.createNameSpace('APP.AppEvents');
+APP.AppEvents = {
 
   CONTROLLER_INITIALIZED: 'CONTROLLER_INITIALIZED',
-  URL_HASH_CHANGED: 'URL_HASH_CHANGED',
 
   MODEL_INITIALIZED: 'MODEL_INITIALIZED',
   MODEL_DATA_LOADED: 'MODEL_DATA_LOADED',
@@ -1975,14 +1957,9 @@ APP.Events = {
   VIEW_CHANGED: 'VIEW_CHANGED',
   VIEW_ALL_FILTERS_CLEARED: 'VIEW_ALL_FILTERS_CLEARED',
 
-  MODAL_COVER_SHOW: 'MODAL_COVER_SHOW',
-  MODAL_COVER_HIDE: 'MODAL_COVER_HIDE',
-
-  BROWSER_RESIZED: 'BROWSER_RESIZED',
-  BROWSER_SCROLLED: 'BROWSER_SCROLLED',
   SEARCH_INPUT: 'SEARCH_INPUT',
   ITEM_SELECT: 'ITEM_SELECT',
-  MENU_SELECT: 'MENU_SELECT',
+
   DATA_FILTER_CHANGED: 'DATA_FILTERS_CHANGED',
 
   VIEW_CHANGE_TO_MOBILE: 'VIEW_CHANGE_TO_MOBILE',
@@ -2094,7 +2071,7 @@ APP.AppModel = (function() {
 
     _eventDispatcher = nudoru.events.EventDispatcher;
 
-    _eventDispatcher.publish(APP.Events.MODEL_INITIALIZED);
+    _eventDispatcher.publish(APP.AppEvents.MODEL_INITIALIZED);
   }
 
   function configureMenuProperties() {
@@ -2124,7 +2101,7 @@ APP.AppModel = (function() {
   function onModelDataLoaded() {
     filterProperties();
 
-    _eventDispatcher.publish(APP.Events.MODEL_DATA_LOADED);
+    _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_LOADED);
   }
 
 
@@ -2201,7 +2178,7 @@ APP.AppModel = (function() {
   }
 
   function handledFiltersUpdated() {
-    _eventDispatcher.publish(APP.Events.DATA_FILTER_CHANGED);
+    _eventDispatcher.publish(APP.AppEvents.DATA_FILTER_CHANGED);
   }
 
   /**
@@ -2406,7 +2383,7 @@ APP.AppModel = (function() {
     //setCurrentFreeTextFilter(search);
     //setCurrentItem(item);
 
-    _eventDispatcher.publish(APP.Events.RESUME_FROM_MODEL_STATE,{filters: filterArry, search: search, item: item});
+    _eventDispatcher.publish(APP.AppEvents.RESUME_FROM_MODEL_STATE,{filters: filterArry, search: search, item: item});
   }
 
   function getURLSearchParameterByName(name, str) {
@@ -2631,7 +2608,7 @@ APP.AppView = (function() {
     _drawerWidth = 250;
     _isDrawerOpen = false;
 
-    _eventDispatcher.publish(APP.Events.VIEW_INITIALIZED);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
   }
 
   function render() {
@@ -2653,7 +2630,7 @@ APP.AppView = (function() {
 
     updateAppTitle();
 
-    _eventDispatcher.publish(APP.Events.VIEW_RENDERED);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
   }
 
   function updateAppTitle() {
@@ -2704,8 +2681,8 @@ APP.AppView = (function() {
   }
 
   function configureUIEvents() {
-    _eventDispatcher.subscribe(APP.Events.MODAL_COVER_HIDE, hideModalContent);
-    //_eventDispatcher.subscribe(APP.Events.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
+    _eventDispatcher.subscribe(nudoru.events.ComponentEvents.MODAL_COVER_HIDE, hideModalContent);
+    //_eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
   function configureUIStreams() {
@@ -2733,12 +2710,12 @@ APP.AppView = (function() {
       .throttle(150)
       .map(function (evt) { return evt.target.value; })
       .subscribe(function (value) {
-        _eventDispatcher.publish(APP.Events.SEARCH_INPUT, value);
+        _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, value);
       });
 
     _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, _appGlobals.mouseClickEvtStr)
       .subscribe(function() {
-        _eventDispatcher.publish(APP.Events.VIEW_ALL_FILTERS_CLEARED);
+        _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
       });
 
     _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _appGlobals.mouseClickEvtStr)
@@ -2750,11 +2727,11 @@ APP.AppView = (function() {
 
   function handleViewPortResize() {
     checkForMobile();
-    _eventDispatcher.publish(APP.Events.BROWSER_RESIZED, _currentViewPortSize);
+    _eventDispatcher.publish(nudoru.events.BrowserEvents.BROWSER_RESIZED, _currentViewPortSize);
   }
 
   function handleViewPortScroll() {
-    _eventDispatcher.publish(APP.Events.BROWSER_SCROLLED, _currentViewPortScroll);
+    _eventDispatcher.publish(nudoru.events.BrowserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
   /**
@@ -2877,7 +2854,7 @@ APP.AppView = (function() {
     }
 
     _isMobile = true;
-    _eventDispatcher.publish(APP.Events.VIEW_CHANGE_TO_MOBILE);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
   }
 
   function switchToDesktopView() {
@@ -2887,7 +2864,7 @@ APP.AppView = (function() {
 
     _isMobile = false;
     closeDrawer();
-    _eventDispatcher.publish(APP.Events.VIEW_CHANGE_TO_DESKTOP);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
   }
 
   function toggleDrawer() {
@@ -2982,7 +2959,7 @@ APP.AppView = (function() {
 
   function setFreeTextFilterValue(str) {
     _mainSearchInputEl.value = str;
-    _eventDispatcher.publish(APP.Events.SEARCH_INPUT, str);
+    _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, str);
   }
 
   function showAllGridViewItems() {
@@ -2992,6 +2969,11 @@ APP.AppView = (function() {
   function showItemDetailView(item) {
     _itemDetailView.showItem(item);
     showModalCover(true);
+  }
+
+  function hideItemDetailView() {
+    hideModalCover(true);
+    hideModalContent();
   }
 
   //----------------------------------------------------------------------------
@@ -3026,7 +3008,7 @@ APP.AppView = (function() {
 
   function hideModalContent() {
     _itemDetailView.hide();
-    _eventDispatcher.publish(APP.Events.ITEM_SELECT,'');
+    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT,'');
   }
 
   //----------------------------------------------------------------------------
@@ -3045,6 +3027,7 @@ APP.AppView = (function() {
     initializeMenus: initializeMenus,
     initializeGridView: initializeGridView,
     showItemDetailView: showItemDetailView,
+    hideItemDetailView: hideItemDetailView,
     clearAllFilters: clearAllFilters,
     clearFreeTextFilter: clearFreeTextFilter,
     setFreeTextFilterValue: setFreeTextFilterValue,
@@ -3092,7 +3075,7 @@ APP.AppView.ItemGridView = (function(){
       return;
     }
     _numItemsVisible = number;
-    _eventDispatcher.publish(APP.Events.GRID_VIEW_ITEMS_CHANGED, _numItemsVisible);
+    _eventDispatcher.publish(APP.AppEvents.GRID_VIEW_ITEMS_CHANGED, _numItemsVisible);
   }
 
   //----------------------------------------------------------------------------
@@ -3188,7 +3171,7 @@ APP.AppView.ItemGridView = (function(){
   //
   //  _imagesLoaded.on('fail', function(instance) {
   //    console.log('[ItemGridView] All images loaded, with errors');
-  //    _eventDispatcher.publish(APP.Events.GRID_VIEW_IMAGE_LOAD_ERROR);
+  //    _eventDispatcher.publish(APP.AppEvents.GRID_VIEW_IMAGE_LOAD_ERROR);
   //  });
   //}
 
@@ -3218,7 +3201,7 @@ APP.AppView.ItemGridView = (function(){
   function onPackeryLayoutComplete(packery, items) {
     _isLayingOut = false;
 
-    _eventDispatcher.publish(APP.Events.GRID_VIEW_LAYOUT_COMPLETE);
+    _eventDispatcher.publish(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE);
   }
 
   /**
@@ -3256,7 +3239,7 @@ APP.AppView.ItemGridView = (function(){
       .map(getMouseEventTargetID)
       .subscribe(function(id) {
         depressItemByID(id);
-        _eventDispatcher.publish(APP.Events.ITEM_SELECT, id);
+        _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, id);
       });
 
   }
@@ -3313,7 +3296,7 @@ APP.AppView.ItemGridView = (function(){
       .subscribe(function(id) {
         if(_shouldProcessTouchEnd) {
           depressItemByID(id);
-          _eventDispatcher.publish(APP.Events.ITEM_SELECT, id);
+          _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, id);
         }
       });
 
@@ -3741,9 +3724,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       }
     }
 
-  },
-
-  closures: []
+  }
 };;APP.createNameSpace('APP.AppView.ItemDetailView');
 
 APP.AppView.ItemDetailView = (function() {
@@ -3920,7 +3901,7 @@ APP.AppController = function () {
 
     _router.initialize();
 
-    mapCommand(APP.Events.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+    mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
 
     initializeView();
   }
@@ -3932,8 +3913,8 @@ APP.AppController = function () {
 
   function initializeView() {
     _view = APP.AppView;
-    _eventDispatcher.subscribe(APP.Events.VIEW_INITIALIZED, onViewInitalized, true);
-    _eventDispatcher.subscribe(APP.Events.VIEW_RENDERED, onViewRendered, true);
+    _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
+    _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
     _view.initialize(_appScope, _viewParent);
   }
 
@@ -3947,8 +3928,8 @@ APP.AppController = function () {
 
   function initializeModel() {
     _model = APP.AppModel;
-    _eventDispatcher.subscribe(APP.Events.MODEL_INITIALIZED, onModelInitialized, true);
-    _eventDispatcher.subscribe(APP.Events.MODEL_DATA_LOADED, onModelDataLoaded, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_INITIALIZED, onModelInitialized, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_LOADED, onModelDataLoaded, true);
     _model.initialize();
   }
 
@@ -3957,28 +3938,32 @@ APP.AppController = function () {
   }
 
   function onModelDataLoaded() {
-    _eventDispatcher.publish(APP.Events.CONTROLLER_INITIALIZED);
+    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
 
     //AppInitializedCommand takes over here
   }
 
   function postInitialize() {
-    mapCommand(APP.Events.URL_HASH_CHANGED, _self.URLHashChangedCommand);
-    //mapCommand(APP.Events.VIEW_CHANGED, _self.ViewChangedCommand);
-    mapCommand(APP.Events.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
-    mapCommand(APP.Events.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+    // Browser events
+    mapCommand(nudoru.events.BrowserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
+    mapCommand(nudoru.events.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    mapCommand(nudoru.events.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
-    mapCommand(APP.Events.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapCommand(APP.Events.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    // Component events
+    mapCommand(nudoru.events.ComponentEvents.MENU_SELECT, _self.MenuSelectionCommand);
 
-    mapCommand(APP.Events.SEARCH_INPUT, _self.SearchInputCommand);
-    mapCommand(APP.Events.GRID_VIEW_ITEMS_CHANGED, _self.GridViewItemsVisibleChangedCommand);
-    mapCommand(APP.Events.ITEM_SELECT, _self.ItemSelectCommand);
-    mapCommand(APP.Events.MENU_SELECT, _self.MenuSelectionCommand);
-    mapCommand(APP.Events.VIEW_ALL_FILTERS_CLEARED, _self.ClearAllFiltersCommand);
-    mapCommand(APP.Events.DATA_FILTER_CHANGED, _self.DataFiltersChangedCommand);
+    // App events
+    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
+    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
 
-    mapCommand(APP.Events.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
+    mapCommand(APP.AppEvents.SEARCH_INPUT, _self.SearchInputCommand);
+    mapCommand(APP.AppEvents.GRID_VIEW_ITEMS_CHANGED, _self.GridViewItemsVisibleChangedCommand);
+    mapCommand(APP.AppEvents.ITEM_SELECT, _self.ItemSelectCommand);
+
+    mapCommand(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED, _self.ClearAllFiltersCommand);
+    mapCommand(APP.AppEvents.DATA_FILTER_CHANGED, _self.DataFiltersChangedCommand);
+
+    mapCommand(APP.AppEvents.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
   }
 
   return {
@@ -4004,13 +3989,12 @@ APP.AppController.Router = function () {
   }
 
   function onHashChange(evt) {
-    evt.preventDefault();
     var hash = getURLHash();
     if(hash === _lastSetPath) {
       return;
     }
 
-    _eventDispatcher.publish(APP.Events.URL_HASH_CHANGED, hash);
+    _eventDispatcher.publish(nudoru.events.BrowserEvents.URL_HASH_CHANGED, hash);
   }
 
   /**
@@ -4027,7 +4011,6 @@ APP.AppController.Router = function () {
 
   function updateURLHash(path) {
     _lastSetPath = path;
-
     window.location.hash = path;
   }
 
@@ -4047,8 +4030,6 @@ From
  */
 
 APP.AppController.AbstractCommand = {
-  state: {},
-
   methods: {
 
     app: APP,
@@ -4060,9 +4041,7 @@ APP.AppController.AbstractCommand = {
     execute: function(data) {
       NDebugger.log('Abstract command executing with data: '+data);
     }
-  },
-
-  closures: []
+  }
 };
 
 // Template
@@ -4185,7 +4164,10 @@ APP.AppController.ResumeFromModelStateCommand.execute = function(data) {
   }
 
   if(item) {
-    nudoru.events.EventDispatcher.publish(APP.Events.ITEM_SELECT, item);
+    nudoru.events.EventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
+  } else {
+    this.appModel.setCurrentItem('');
+    this.appView.hideItemDetailView();
   }
 
 };
@@ -4206,7 +4188,6 @@ APP.AppController.SearchInputCommand.execute = function(data) {
 };;APP.createNameSpace('APP.AppController.URLHashChangedCommand');
 APP.AppController.URLHashChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.URLHashChangedCommand.execute = function(data) {
-
   if (data !== undefined) {
     this.appModel.parseFiltersFromUrl(data);
     this.appView.updateMenuSelections(this.appModel.getFiltersForTagBar());

@@ -22,14 +22,12 @@ nudoru.components.DDMenuView = {
     menuClickStream: null,
     fadeOutComplete: null,
     isKeepOpen: false,
-    appGlobals: null,
     firstTouchPosition: [],
     lastTouchPosition: [],
     touchDeltaTolerance: 10,
     shouldProcessTouchEnd: false,
 
     initialize: function(data, keep) {
-      this.appGlobals = APP.globals();
 
       this.data = data;
       this.data.value = this.data.value || this.data.label.split(' ').join('_').toLowerCase();
@@ -40,7 +38,7 @@ nudoru.components.DDMenuView = {
 
       this.render();
 
-      if(this.appGlobals.mobile.any()) {
+      if(BrowserInfo.mobile.any()) {
         this.configureMobileStreams();
       } else {
         this.configureStreams();
@@ -189,14 +187,14 @@ nudoru.components.DDMenuView = {
     handleMenuClick: function(data) {
       if(this.isHeaderObject(data)) {
         // Toggle visibility on mobile/tablet
-        if(this.appGlobals.mobile.any()) {
+        if(BrowserInfo.mobile.any()) {
           this.toggleMenu();
         }
       } else {
-        this.eventDispatcher.publish(APP.Events.MENU_SELECT, data);
         var item = this.getItemByValue(data);
         item.toggleSelect();
         item.showDepressEffect();
+        this.eventDispatcher.publish(nudoru.events.ComponentEvents.MENU_SELECT, data);
       }
     },
 
@@ -287,9 +285,7 @@ nudoru.components.DDMenuView = {
       this.fadeOutComplete = true;
     }
 
-  },
-
-  closures: []
+  }
 };
 
 //----------------------------------------------------------------------------
@@ -392,7 +388,5 @@ nudoru.components.BasicMenuItemView = {
       }
     }
 
-  },
-
-  closures: []
+  }
 };

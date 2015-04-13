@@ -18,7 +18,10 @@ APP.AppController.ResumeFromModelStateCommand.execute = function(data) {
   }
 
   if(item) {
-    nudoru.events.EventDispatcher.publish(APP.Events.ITEM_SELECT, item);
+    nudoru.events.EventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
+  } else {
+    this.appModel.setCurrentItem('');
+    this.appView.hideItemDetailView();
   }
 
 };

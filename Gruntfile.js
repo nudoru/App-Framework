@@ -110,6 +110,8 @@ module.exports = function (grunt) {
           'source/scripts/nudoru/utils/NLorem.js',
           'source/scripts/nudoru/events/EventDispatcher.js',
           'source/scripts/nudoru/events/EventCommandMap.js',
+          'source/scripts/nudoru/events/BrowserEvents.js',
+          'source/scripts/nudoru/events/ComponentEvents.js',
           'source/scripts/nudoru/components/FloatImageView.js',
           'source/scripts/nudoru/components/ModalCoverView.js',
           'source/scripts/nudoru/components/ToastView.js',
@@ -117,7 +119,7 @@ module.exports = function (grunt) {
           'source/scripts/nudoru/components/DDMenuView.js',
 
           'source/scripts/app/App.js',
-          'source/scripts/app/events/Events.js',
+          'source/scripts/app/events/AppEvents.js',
           'source/scripts/app/model/AppModel.js',
           'source/scripts/app/model/ModelVOs.js',
           'source/scripts/app/model/DummyData.js',

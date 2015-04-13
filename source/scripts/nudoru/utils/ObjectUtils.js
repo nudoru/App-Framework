@@ -124,18 +124,31 @@ var ObjectUtils = {
     return $.extend.apply(undefined, args);
   },
 
-  // Simplified implementation of Stamps - http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
-  // https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
+  /**
+   * Simplified implementation of Stamps - http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
+   * https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
+   *
+   * Prototype object requires a methods object, private closures and state is optional
+   *
+   * @param prototype
+   * @returns New object using prototype.methods as source
+   */
+  //
+  //
   basicFactory: function(prototype) {
     var proto = prototype,
         obj = Object.create(proto.methods);
 
-    proto.closures.forEach(function(closure) {
-      closure.call(obj);
-    });
+    if(proto.hasOwnProperty('closure')) {
+      proto.closures.forEach(function(closure) {
+        closure.call(obj);
+      });
+    }
 
-    for(var key in proto.state) {
-      obj[key] = proto.state[key];
+    if(proto.hasOwnProperty('state')) {
+      for(var key in proto.state) {
+        obj[key] = proto.state[key];
+      }
     }
 
     return obj;

@@ -3755,7 +3755,7 @@ input:focus, textarea:focus, button:focus {
   position: absolute;
   width: 80%;
   max-width: 1000px;
-  right: 0;
+  right: 50px;
   top: 0;
   bottom: 0;
   overflow: hidden;
@@ -3887,11 +3887,15 @@ input:focus, textarea:focus, button:focus {
   margin-bottom: 1.376rem;
 }
 @media (max-width: 750px) {
-  /* line 120, ../../source/sass/partials/_itemdetailsview.sass */
+  /* line 8, ../../source/sass/partials/_itemdetailsview.sass */
+  #details {
+    right: 0;
+  }
+  /* line 121, ../../source/sass/partials/_itemdetailsview.sass */
   #details .details__content {
     padding-top: 1.376rem;
   }
-  /* line 123, ../../source/sass/partials/_itemdetailsview.sass */
+  /* line 124, ../../source/sass/partials/_itemdetailsview.sass */
   #details .details__content .details__content-title h1 {
     font-size: 1.4rem;
     line-height: 2rem;

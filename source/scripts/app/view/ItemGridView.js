@@ -38,7 +38,7 @@ APP.AppView.ItemGridView = (function(){
       return;
     }
     _numItemsVisible = number;
-    _eventDispatcher.publish(APP.Events.GRID_VIEW_ITEMS_CHANGED, _numItemsVisible);
+    _eventDispatcher.publish(APP.AppEvents.GRID_VIEW_ITEMS_CHANGED, _numItemsVisible);
   }
 
   //----------------------------------------------------------------------------
@@ -134,7 +134,7 @@ APP.AppView.ItemGridView = (function(){
   //
   //  _imagesLoaded.on('fail', function(instance) {
   //    console.log('[ItemGridView] All images loaded, with errors');
-  //    _eventDispatcher.publish(APP.Events.GRID_VIEW_IMAGE_LOAD_ERROR);
+  //    _eventDispatcher.publish(APP.AppEvents.GRID_VIEW_IMAGE_LOAD_ERROR);
   //  });
   //}
 
@@ -164,7 +164,7 @@ APP.AppView.ItemGridView = (function(){
   function onPackeryLayoutComplete(packery, items) {
     _isLayingOut = false;
 
-    _eventDispatcher.publish(APP.Events.GRID_VIEW_LAYOUT_COMPLETE);
+    _eventDispatcher.publish(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE);
   }
 
   /**
@@ -202,7 +202,7 @@ APP.AppView.ItemGridView = (function(){
       .map(getMouseEventTargetID)
       .subscribe(function(id) {
         depressItemByID(id);
-        _eventDispatcher.publish(APP.Events.ITEM_SELECT, id);
+        _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, id);
       });
 
   }
@@ -259,7 +259,7 @@ APP.AppView.ItemGridView = (function(){
       .subscribe(function(id) {
         if(_shouldProcessTouchEnd) {
           depressItemByID(id);
-          _eventDispatcher.publish(APP.Events.ITEM_SELECT, id);
+          _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, id);
         }
       });
 
@@ -687,7 +687,5 @@ APP.AppView.ItemGridView.AbstractGridItem = {
       }
     }
 
-  },
-
-  closures: []
+  }
 };

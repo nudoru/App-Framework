@@ -45,7 +45,7 @@ nudoru.components.ModalCoverView = (function() {
     TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
     TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
 
-    _eventDispatcher.publish(APP.Events.MODAL_COVER_SHOW);
+    _eventDispatcher.publish(nudoru.events.ComponentEvents.MODAL_COVER_SHOW);
   }
 
   function hide(animate) {
@@ -58,7 +58,7 @@ nudoru.components.ModalCoverView = (function() {
     TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
     TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
 
-    _eventDispatcher.publish(APP.Events.MODAL_COVER_HIDE);
+    _eventDispatcher.publish(nudoru.events.ComponentEvents.MODAL_COVER_HIDE);
   }
 
   return {

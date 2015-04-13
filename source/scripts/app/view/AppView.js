@@ -65,7 +65,7 @@ APP.AppView = (function() {
     _drawerWidth = 250;
     _isDrawerOpen = false;
 
-    _eventDispatcher.publish(APP.Events.VIEW_INITIALIZED);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
   }
 
   function render() {
@@ -87,7 +87,7 @@ APP.AppView = (function() {
 
     updateAppTitle();
 
-    _eventDispatcher.publish(APP.Events.VIEW_RENDERED);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
   }
 
   function updateAppTitle() {
@@ -138,8 +138,8 @@ APP.AppView = (function() {
   }
 
   function configureUIEvents() {
-    _eventDispatcher.subscribe(APP.Events.MODAL_COVER_HIDE, hideModalContent);
-    //_eventDispatcher.subscribe(APP.Events.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
+    _eventDispatcher.subscribe(nudoru.events.ComponentEvents.MODAL_COVER_HIDE, hideModalContent);
+    //_eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
   function configureUIStreams() {
@@ -167,12 +167,12 @@ APP.AppView = (function() {
       .throttle(150)
       .map(function (evt) { return evt.target.value; })
       .subscribe(function (value) {
-        _eventDispatcher.publish(APP.Events.SEARCH_INPUT, value);
+        _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, value);
       });
 
     _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, _appGlobals.mouseClickEvtStr)
       .subscribe(function() {
-        _eventDispatcher.publish(APP.Events.VIEW_ALL_FILTERS_CLEARED);
+        _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
       });
 
     _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _appGlobals.mouseClickEvtStr)
@@ -184,11 +184,11 @@ APP.AppView = (function() {
 
   function handleViewPortResize() {
     checkForMobile();
-    _eventDispatcher.publish(APP.Events.BROWSER_RESIZED, _currentViewPortSize);
+    _eventDispatcher.publish(nudoru.events.BrowserEvents.BROWSER_RESIZED, _currentViewPortSize);
   }
 
   function handleViewPortScroll() {
-    _eventDispatcher.publish(APP.Events.BROWSER_SCROLLED, _currentViewPortScroll);
+    _eventDispatcher.publish(nudoru.events.BrowserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
   /**
@@ -311,7 +311,7 @@ APP.AppView = (function() {
     }
 
     _isMobile = true;
-    _eventDispatcher.publish(APP.Events.VIEW_CHANGE_TO_MOBILE);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
   }
 
   function switchToDesktopView() {
@@ -321,7 +321,7 @@ APP.AppView = (function() {
 
     _isMobile = false;
     closeDrawer();
-    _eventDispatcher.publish(APP.Events.VIEW_CHANGE_TO_DESKTOP);
+    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
   }
 
   function toggleDrawer() {
@@ -416,7 +416,7 @@ APP.AppView = (function() {
 
   function setFreeTextFilterValue(str) {
     _mainSearchInputEl.value = str;
-    _eventDispatcher.publish(APP.Events.SEARCH_INPUT, str);
+    _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, str);
   }
 
   function showAllGridViewItems() {
@@ -426,6 +426,11 @@ APP.AppView = (function() {
   function showItemDetailView(item) {
     _itemDetailView.showItem(item);
     showModalCover(true);
+  }
+
+  function hideItemDetailView() {
+    hideModalCover(true);
+    hideModalContent();
   }
 
   //----------------------------------------------------------------------------
@@ -460,7 +465,7 @@ APP.AppView = (function() {
 
   function hideModalContent() {
     _itemDetailView.hide();
-    _eventDispatcher.publish(APP.Events.ITEM_SELECT,'');
+    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT,'');
   }
 
   //----------------------------------------------------------------------------
@@ -479,6 +484,7 @@ APP.AppView = (function() {
     initializeMenus: initializeMenus,
     initializeGridView: initializeGridView,
     showItemDetailView: showItemDetailView,
+    hideItemDetailView: hideItemDetailView,
     clearAllFilters: clearAllFilters,
     clearFreeTextFilter: clearFreeTextFilter,
     setFreeTextFilterValue: setFreeTextFilterValue,
