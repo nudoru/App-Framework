@@ -81,7 +81,7 @@ APP.AppView.ItemGridView = (function(){
     });
 
     // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
-    if(APP.globals().isIE) {
+    if(BrowserInfo.isIE) {
       _containerEl.onselectstart = function() {
         return false;
       };

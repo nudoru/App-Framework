@@ -39,14 +39,23 @@ var BrowserInfo = {
         || this.Windows()
         ) !== null
     }
+
+  },
+
+  mouseDownEvtStr: function() {
+    return this.mobile.any() ? "touchstart" : "mousedown";
+  },
+
+  mouseUpEvtStr: function() {
+    return this.mobile.any() ? "touchend" : "mouseup";
+  },
+
+  mouseClickEvtStr: function() {
+    return this.mobile.any() ? "touchend" : "click";
+  },
+
+  mouseMoveEvtStr: function() {
+    return this.mobile.any() ? "touchmove" : "mousemove";
   }
-
-
-
-  //enhanced:  !this.mobile.any() && !this.isIE,
-  //mouseDownEvtStr: this.mobile.any() ? "touchstart" : "mousedown",
-  //mouseUpEvtStr: this.mobile.any() ? "touchend" : "mouseup",
-  //mouseClickEvtStr: this.mobile.any() ? "touchend" : "click",
-  //mouseMoveEvtStr: this.mobile.any() ? "touchmove" : "mousemove"
 
 };

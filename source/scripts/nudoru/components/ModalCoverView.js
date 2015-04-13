@@ -9,8 +9,6 @@ nudoru.components.ModalCoverView = (function() {
       _eventDispatcher;
 
   function initialize() {
-    var appGlobals = APP.globals();
-
     _eventDispatcher = nudoru.events.EventDispatcher;
 
     _isVisible = true;
@@ -19,8 +17,8 @@ nudoru.components.ModalCoverView = (function() {
     _modalBackgroundEl = document.querySelector('.modal__background');
     _modalCloseButtonEl = document.querySelector('.modal__close-button');
 
-    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, appGlobals.mouseClickEvtStr),
-      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, appGlobals.mouseClickEvtStr);
+    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, BrowserInfo.mouseClickEvtStr()),
+      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, BrowserInfo.mouseClickEvtStr());
 
     _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
       .subscribe(function() {

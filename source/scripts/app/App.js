@@ -27,10 +27,6 @@ APP = (function(global, rootView) {
     _globals.appConfig = APP_CONFIG_DATA;
 
     _globals.enhanced = !BrowserInfo.isIE && !BrowserInfo.mobile.any();
-    _globals.mouseDownEvtStr = BrowserInfo.mobile.any() ? "touchstart" : "mousedown";
-    _globals.mouseUpEvtStr = BrowserInfo.mobile.any() ? "touchend" : "mouseup";
-    _globals.mouseClickEvtStr = BrowserInfo.mobile.any() ? "touchend" : "click";
-    _globals.mouseMoveEvtStr = BrowserInfo.mobile.any() ? "touchmove" : "mousemove";
   }
 
   /**

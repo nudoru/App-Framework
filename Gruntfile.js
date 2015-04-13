@@ -219,5 +219,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.registerTask('default', ['clean', 'copy', 'compass', 'csslint', 'jade', 'concat', 'uglify', 'jshint', 'connect', 'watch']);
+  grunt.registerTask('default', ['clean', 'copy', 'compass', 'jade', 'concat', 'uglify', 'jshint', 'connect', 'watch']);
 };

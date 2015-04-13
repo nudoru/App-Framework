@@ -153,15 +153,24 @@ nudoru.components = (function() {
         || this.Windows()
         ) !== null
     }
+
+  },
+
+  mouseDownEvtStr: function() {
+    return this.mobile.any() ? "touchstart" : "mousedown";
+  },
+
+  mouseUpEvtStr: function() {
+    return this.mobile.any() ? "touchend" : "mouseup";
+  },
+
+  mouseClickEvtStr: function() {
+    return this.mobile.any() ? "touchend" : "click";
+  },
+
+  mouseMoveEvtStr: function() {
+    return this.mobile.any() ? "touchmove" : "mousemove";
   }
-
-
-
-  //enhanced:  !this.mobile.any() && !this.isIE,
-  //mouseDownEvtStr: this.mobile.any() ? "touchstart" : "mousedown",
-  //mouseUpEvtStr: this.mobile.any() ? "touchend" : "mouseup",
-  //mouseClickEvtStr: this.mobile.any() ? "touchend" : "click",
-  //mouseMoveEvtStr: this.mobile.any() ? "touchmove" : "mousemove"
 
 };;// debouncing function from John Hann
 // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
@@ -998,7 +1007,7 @@ nudoru.components.FloatImageView = (function() {
 
     hideFloatImageCover();
 
-    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, APP.globals().mouseClickEvtStr)
+    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, BrowserInfo.mouseClickEvtStr())
       .subscribe(function() {
         hideFloatImageCover();
       });
@@ -1015,7 +1024,7 @@ nudoru.components.FloatImageView = (function() {
       //elParent.
       DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
-      el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
+      el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
 
       //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
 
@@ -1231,8 +1240,6 @@ nudoru.components.ModalCoverView = (function() {
       _eventDispatcher;
 
   function initialize() {
-    var appGlobals = APP.globals();
-
     _eventDispatcher = nudoru.events.EventDispatcher;
 
     _isVisible = true;
@@ -1241,8 +1248,8 @@ nudoru.components.ModalCoverView = (function() {
     _modalBackgroundEl = document.querySelector('.modal__background');
     _modalCloseButtonEl = document.querySelector('.modal__close-button');
 
-    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, appGlobals.mouseClickEvtStr),
-      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, appGlobals.mouseClickEvtStr);
+    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, BrowserInfo.mouseClickEvtStr()),
+      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, BrowserInfo.mouseClickEvtStr());
 
     _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
       .subscribe(function() {
@@ -1312,7 +1319,7 @@ nudoru.components.ToastView = (function(){
     newToast.height = newToast.element.clientHeight;
 
     var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, 'click'),
+        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, BrowserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
     newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
@@ -1957,10 +1964,6 @@ APP = (function(global, rootView) {
     _globals.appConfig = APP_CONFIG_DATA;
 
     _globals.enhanced = !BrowserInfo.isIE && !BrowserInfo.mobile.any();
-    _globals.mouseDownEvtStr = BrowserInfo.mobile.any() ? "touchstart" : "mousedown";
-    _globals.mouseUpEvtStr = BrowserInfo.mobile.any() ? "touchend" : "mouseup";
-    _globals.mouseClickEvtStr = BrowserInfo.mobile.any() ? "touchend" : "click";
-    _globals.mouseMoveEvtStr = BrowserInfo.mobile.any() ? "touchmove" : "mousemove";
   }
 
   /**
@@ -2696,7 +2699,7 @@ APP.AppView = (function() {
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = document.getElementById('drawer');
-    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
+    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > label');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
@@ -2761,12 +2764,12 @@ APP.AppView = (function() {
         _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, value);
       });
 
-    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, _appGlobals.mouseClickEvtStr)
+    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, BrowserInfo.mouseClickEvtStr())
       .subscribe(function() {
         _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
       });
 
-    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _appGlobals.mouseClickEvtStr)
+    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, BrowserInfo.mouseClickEvtStr())
       .subscribe(function() {
         toggleDrawer();
       });
@@ -3166,7 +3169,7 @@ APP.AppView.ItemGridView = (function(){
     });
 
     // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
-    if(APP.globals().isIE) {
+    if(BrowserInfo.isIE) {
       _containerEl.onselectstart = function() {
         return false;
       };
@@ -3799,8 +3802,8 @@ APP.AppView.ItemDetailView = (function() {
 
     _shareButtonEl = document.getElementById('js__content-share-button');
 
-    if(!APP.globals().mobile.any()) {
-      _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
+    if(!BrowserInfo.mobile.any()) {
+      _shareButtonEl.addEventListener(BrowserInfo.mouseClickEvtStr(), doShareAction, false);
     } else {
       _shareButtonEl.style.display = 'none';
     }
@@ -3829,7 +3832,7 @@ APP.AppView.ItemDetailView = (function() {
     _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
 
     if(_shareButtonEl) {
-      _shareButtonEl.removeEventListener(APP.globals().mouseClickEvtStr, doShareAction);
+      _shareButtonEl.removeEventListener(BrowserInfo.mouseClickEvtStr(), doShareAction);
     }
 
     TweenLite.killDelayedCallsTo(_containerEl);

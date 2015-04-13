@@ -25,7 +25,7 @@ nudoru.components.ToastView = (function(){
     newToast.height = newToast.element.clientHeight;
 
     var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, 'click'),
+        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, BrowserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
     newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)

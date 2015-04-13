@@ -36,7 +36,7 @@ nudoru.components.FloatImageView = (function() {
 
     hideFloatImageCover();
 
-    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, APP.globals().mouseClickEvtStr)
+    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, BrowserInfo.mouseClickEvtStr())
       .subscribe(function() {
         hideFloatImageCover();
       });
@@ -53,7 +53,7 @@ nudoru.components.FloatImageView = (function() {
       //elParent.
       DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
-      el.addEventListener(APP.globals().mouseClickEvtStr, onImageClick, false);
+      el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
 
       //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
 

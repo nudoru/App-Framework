@@ -105,7 +105,7 @@ APP.AppView = (function() {
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = document.getElementById('drawer');
-    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
+    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > label');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
@@ -170,12 +170,12 @@ APP.AppView = (function() {
         _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, value);
       });
 
-    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, _appGlobals.mouseClickEvtStr)
+    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, BrowserInfo.mouseClickEvtStr())
       .subscribe(function() {
         _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
       });
 
-    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _appGlobals.mouseClickEvtStr)
+    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, BrowserInfo.mouseClickEvtStr())
       .subscribe(function() {
         toggleDrawer();
       });

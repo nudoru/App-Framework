@@ -24,8 +24,8 @@ APP.AppView.ItemDetailView = (function() {
 
     _shareButtonEl = document.getElementById('js__content-share-button');
 
-    if(!APP.globals().mobile.any()) {
-      _shareButtonEl.addEventListener(APP.globals().mouseClickEvtStr, doShareAction, false);
+    if(!BrowserInfo.mobile.any()) {
+      _shareButtonEl.addEventListener(BrowserInfo.mouseClickEvtStr(), doShareAction, false);
     } else {
       _shareButtonEl.style.display = 'none';
     }
@@ -54,7 +54,7 @@ APP.AppView.ItemDetailView = (function() {
     _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
 
     if(_shareButtonEl) {
-      _shareButtonEl.removeEventListener(APP.globals().mouseClickEvtStr, doShareAction);
+      _shareButtonEl.removeEventListener(BrowserInfo.mouseClickEvtStr(), doShareAction);
     }
 
     TweenLite.killDelayedCallsTo(_containerEl);
