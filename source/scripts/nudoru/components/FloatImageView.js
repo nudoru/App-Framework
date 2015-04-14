@@ -51,7 +51,7 @@ nudoru.components.FloatImageView = (function() {
 
       //var elParent = el.parentNode;
       //elParent.
-      DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+      nudoru.utils.DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
       el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
 
@@ -113,7 +113,7 @@ nudoru.components.FloatImageView = (function() {
         imgAlt = _currentImageElement.getAttribute('alt'),
         imgWidth = _currentImageElement.clientWidth,
         imgHeight = _currentImageElement.clientHeight,
-        imgPosition = DOMUtils.offset(_currentImageElement),
+        imgPosition = nudoru.utils.DOMUtils.offset(_currentImageElement),
         imgRatio = imgWidth/imgHeight,
         imgTargetScale = 1,
         vpWidth = window.innerWidth,
@@ -140,7 +140,7 @@ nudoru.components.FloatImageView = (function() {
     imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
     imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
+    var zoomImage = nudoru.utils.DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
 
     zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
     zoomImage.style.left = imgOriginX+'px';
@@ -155,7 +155,7 @@ nudoru.components.FloatImageView = (function() {
 
     if(_fancyEffects) {
       // further from the center, the greate the effect
-      var startingRot = NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
+      var startingRot = nudoru.utils.NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
       if(startingRot <= 0) {
@@ -213,7 +213,7 @@ nudoru.components.FloatImageView = (function() {
    * @returns {*}
    */
   function getFloatingElementsInContainerAsArray(container) {
-    if(!DOMUtils.isDomObj(container)) {
+    if(!nudoru.utils.DOMUtils.isDomObj(container)) {
       return [];
     }
     return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));

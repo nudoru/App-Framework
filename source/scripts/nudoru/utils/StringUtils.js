@@ -1,4 +1,5 @@
-var StringUtils = {
+nudoru.createNameSpace('nudoru.utils.StringUtils');
+nudoru.utils.StringUtils = {
 
   capitalizeFirstLetter: function(str) {
     return str.charAt(0).toUpperCase() + str.substring(1);

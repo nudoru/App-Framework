@@ -46,7 +46,7 @@ nudoru.components.DDMenuView = {
     },
 
     render: function() {
-      this.element = NTemplate.asElement('template__menu-header', this.data);
+      this.element = nudoru.utils.NTemplate.asElement('template__menu-header', this.data);
       this.ddMenuEl = this.element.querySelector('ul');
       this.anchorElement = this.element.querySelector('button');
       this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
@@ -76,7 +76,7 @@ nudoru.components.DDMenuView = {
     },
 
     buildMenuItems: function(item) {
-      var menuitem = ObjectUtils.basicFactory(nudoru.components.BasicMenuItemView);
+      var menuitem = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.BasicMenuItemView);
       menuitem.initialize(item);
       this.ddMenuEl.appendChild(menuitem.element);
       this.items.push(menuitem);
@@ -118,7 +118,7 @@ nudoru.components.DDMenuView = {
     },
 
     getTargetElMatching: function(el, cls) {
-      return DOMUtils.closest(el, cls);
+      return nudoru.utils.DOMUtils.closest(el, cls);
     },
 
     /**
@@ -133,12 +133,12 @@ nudoru.components.DDMenuView = {
     configureMobileStreams: function() {
       // Note - had problems getting RxJS to work correctly here, used events
       this.element.addEventListener('touchstart', (function(evt) {
-        this.firstTouchPosition = this.lastTouchPosition = TouchUtils.getCoords(evt);
+        this.firstTouchPosition = this.lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
         this.shouldProcessTouchEnd = false;
       }).bind(this), false);
 
       this.element.addEventListener('touchmove', (function(evt) {
-        this.lastTouchPosition = TouchUtils.getCoords(evt);
+        this.lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
       }).bind(this), false);
 
       var touchPressFunction = function(arg) {
@@ -322,7 +322,7 @@ nudoru.components.BasicMenuItemView = {
         this.iconDeselectedClass = 'fa-circle-thin';
       }
 
-      data.label = StringUtils.toTitleCase(data.label);
+      data.label = nudoru.utils.StringUtils.toTitleCase(data.label);
 
       this.label = data.label;
 
@@ -333,9 +333,9 @@ nudoru.components.BasicMenuItemView = {
 
     render: function() {
       if(this.toggle) {
-        this.element = NTemplate.asElement('template__menu-item-icon', this.data);
+        this.element = nudoru.utils.NTemplate.asElement('template__menu-item-icon', this.data);
       } else {
-        this.element = NTemplate.asElement('template__menu-item', this.data);
+        this.element = nudoru.utils.NTemplate.asElement('template__menu-item', this.data);
       }
 
       this.iconElement = this.element.querySelector('i');
@@ -349,8 +349,8 @@ nudoru.components.BasicMenuItemView = {
       this.selected = true;
 
       if(this.toggle) {
-        DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
-        DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
+        nudoru.utils.DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
+        nudoru.utils.DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
       }
     },
 
@@ -375,8 +375,8 @@ nudoru.components.BasicMenuItemView = {
       this.selected = false;
 
       if(this.toggle) {
-        DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
-        DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
+        nudoru.utils.DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
+        nudoru.utils.DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
       }
     },
 

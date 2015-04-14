@@ -18,8 +18,8 @@ Template HTML and Template Caching
 10000 x NTemplate.getTemplate('template__item-tile')          = 0.3ms
 10000 x NTemplate.asElement('template__item-tile', testObj)   = 614.038ms
  */
-
-var NTemplate = (function() {
+nudoru.createNameSpace('nudoru.utils.NTemplate');
+nudoru.utils.NTemplate = (function() {
 
   var _templateHTMLCache = {},
       _templateCache = {};
@@ -82,7 +82,7 @@ var NTemplate = (function() {
    * @returns {*}
    */
   function asElement(id, obj) {
-    return DOMUtils.HTMLStrToNode(asHTML(id, obj));
+    return nudoru.utils.DOMUtils.HTMLStrToNode(asHTML(id, obj));
   }
 
   /**

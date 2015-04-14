@@ -94,7 +94,7 @@ APP.AppView = (function() {
     var apptitle = _mainHeaderEl.querySelector('h1');
     apptitle.innerHTML = _appGlobals.appConfig.title;
 
-    document.title = StringUtils.removeTags(_appGlobals.appConfig.title);
+    document.title = nudoru.utils.StringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {
@@ -124,8 +124,8 @@ APP.AppView = (function() {
     _modalCoverView.initialize();
 
     // init on these called later
-    _headerMenuView = ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
-    _drawerMenuView = ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
+    _headerMenuView = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
+    _drawerMenuView = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
@@ -477,7 +477,7 @@ APP.AppView = (function() {
     render: render,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-    createView: ObjectUtils.basicFactory,
+    createView: nudoru.utils.ObjectUtils.basicFactory,
     getMainScrollingView: getMainScrollingView,
     updateSearchHeader: updateSearchHeader,
     showBigMessage: showBigMessage,

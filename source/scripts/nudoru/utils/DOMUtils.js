@@ -1,4 +1,5 @@
-var DOMUtils = {
+nudoru.createNameSpace('nudoru.utils.DOMUtils');
+nudoru.utils.DOMUtils = {
 
   // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
   // element must be entirely on screen
@@ -56,7 +57,7 @@ var DOMUtils = {
   },
 
   wrapElement: function(wrapperStr, el) {
-    var wrapperEl = DOMUtils.HTMLStrToNode(wrapperStr),
+    var wrapperEl = this.HTMLStrToNode(wrapperStr),
         elParent = el.parentNode;
     wrapperEl.appendChild(el);
     elParent.appendChild(wrapperEl);

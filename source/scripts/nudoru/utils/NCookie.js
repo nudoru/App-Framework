@@ -1,4 +1,5 @@
-var NCookie = {
+nudoru.createNameSpace('nudoru.utils.NCookie');
+nudoru.utils.NCookie = {
 
   create: function(name, value, days) {
     var expires = "", date;

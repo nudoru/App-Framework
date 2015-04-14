@@ -1,4 +1,5 @@
-var NumberUtils = {
+nudoru.createNameSpace('nudoru.utils.NumberUtils');
+nudoru.utils.NumberUtils = {
   isInteger: function(str) {
     return (/^-?\d+$/.test(str));
   },

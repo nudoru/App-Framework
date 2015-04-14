@@ -1,6 +1,5 @@
-
-
-var ArrayUtils = {
+nudoru.createNameSpace('nudoru.utils.ArrayUtils');
+nudoru.utils.ArrayUtils = {
 
   // Reference: http://jhusain.github.io/learnrx/index.html
   mergeAll: function() {
@@ -42,16 +41,16 @@ var ArrayUtils = {
   },
 
   rndElement: function(arry) {
-    return arry[NumberUtils.rndNumber(0,arry.length-1)];
+    return arry[nudoru.utils.NumberUtils.rndNumber(0,arry.length-1)];
   },
 
   getRandomSetOfElements: function(srcarry, max) {
     var arry = [],
       i = 0,
-      len = NumberUtils.rndNumber(1,max);
+      len = nudoru.utils.NumberUtils.rndNumber(1,max);
 
     for(;i<len;i++) {
-      arry.push(ArrayUtils.rndElement(srcarry));
+      arry.push(this.rndElement(srcarry));
     }
 
     return arry;

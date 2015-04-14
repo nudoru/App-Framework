@@ -22,7 +22,7 @@ APP = (function(global, rootView) {
    * Initialize the global vars
    */
   function initGlobals() {
-    _globals = ObjectUtils.extend(BrowserInfo, {});
+    _globals = nudoru.utils.ObjectUtils.extend(BrowserInfo, {});
 
     _globals.appConfig = APP_CONFIG_DATA;
 
@@ -34,7 +34,7 @@ APP = (function(global, rootView) {
    * @returns {void|*}
    */
   function globals() {
-    return ObjectUtils.extend({}, _globals);
+    return nudoru.utils.ObjectUtils.extend({}, _globals);
   }
 
   //----------------------------------------------------------------------------

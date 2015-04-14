@@ -24,13 +24,13 @@
   z-index: 99;
   height: 100%;
   width: 100%;
-  top: 3px;
+  top: 2px;
   left: 0;
 }
 
 .drawer__menu-spinner-button .spinner {
   position: absolute;
-  height: 2px;
+  height: 3px;
   width: 100%;
   background-color: #fff;
 }
@@ -59,11 +59,11 @@
 .drawer__menu-spinner-button input[type=checkbox]:checked ~ .spinner-spin > .diagonal.part-1 {
   transform: rotate(405deg);
   -webkit-transform: rotate(405deg);
-  margin-top: 7px;
+  margin-top: 9px;
 }
 
 .drawer__menu-spinner-button input[type=checkbox]:checked ~ .spinner-spin > .diagonal.part-2 {
   transform: rotate(-405deg);
   -webkit-transform: rotate(-405deg);
-  margin-top: -10px;
+  margin-top: -12px;
 }

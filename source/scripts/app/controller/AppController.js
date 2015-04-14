@@ -96,7 +96,7 @@ APP.AppController = function () {
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: ObjectUtils.basicFactory
+    createCommand: nudoru.utils.ObjectUtils.basicFactory
   };
 
 }();

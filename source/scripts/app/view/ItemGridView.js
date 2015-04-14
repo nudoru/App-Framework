@@ -73,7 +73,7 @@ APP.AppView.ItemGridView = (function(){
     //initImagesLoaded();
 
     _data.forEach(function(item){
-      var itemobj = ObjectUtils.basicFactory(APP.AppView.ItemGridView.AbstractGridItem);
+      var itemobj = nudoru.utils.ObjectUtils.basicFactory(APP.AppView.ItemGridView.AbstractGridItem);
       itemobj.initialize(item);
       _containerEl.appendChild(itemobj.element);
       itemobj.postRender();
@@ -230,7 +230,7 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function getTargetElMatching(el, cls) {
-    return DOMUtils.closest(el, cls);
+    return nudoru.utils.DOMUtils.closest(el, cls);
   }
 
   /**
@@ -245,12 +245,12 @@ APP.AppView.ItemGridView = (function(){
   function configureMobileStreams() {
     // Note - had problems getting RxJS to work correctly here, used events
     _containerEl.addEventListener('touchstart', function(evt) {
-      _firstTouchPosition = _lastTouchPosition = TouchUtils.getCoords(evt);
+      _firstTouchPosition = _lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
       _shouldProcessTouchEnd = false;
     }, false);
 
     _containerEl.addEventListener('touchmove', function(evt) {
-      _lastTouchPosition = TouchUtils.getCoords(evt);
+      _lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
     }, false);
 
     _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'touchend')
@@ -410,14 +410,14 @@ APP.AppView.ItemGridView = (function(){
     }
 
     var otheritems = getItemsInViewExcluding(itemel),
-        fromPos = DOMUtils.position(itemel),
+        fromPos = nudoru.utils.DOMUtils.position(itemel),
         vpW = window.innerWidth;
 
     TweenLite.killDelayedCallsTo(otheritems);
 
     otheritems.forEach(function(item) {
-      var itemPos = DOMUtils.position(item),
-        dist = NumberUtils.distanceTL(fromPos, itemPos)/3,
+      var itemPos = nudoru.utils.DOMUtils.position(item),
+        dist = nudoru.utils.NumberUtils.distanceTL(fromPos, itemPos)/3,
         pct = Math.max(1 - (dist / vpW), 0.35);
 
       TweenLite.to(item, 3, {scale:pct, alpha:pct, ease:Quad.easeIn, delay: 1});
@@ -550,7 +550,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     },
 
     render: function() {
-      this.element = NTemplate.asElement('template__item-tile', this.data);
+      this.element = nudoru.utils.NTemplate.asElement('template__item-tile', this.data);
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');
@@ -568,7 +568,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     },
 
     isInViewport: function() {
-      return DOMUtils.isElementInViewport(this.element);
+      return nudoru.utils.DOMUtils.isElementInViewport(this.element);
     },
 
     show: function() {

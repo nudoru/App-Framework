@@ -1,4 +1,5 @@
-var TouchUtils = {
+nudoru.createNameSpace('nudoru.utils.TouchUtils');
+nudoru.utils.TouchUtils = {
 
   // https://github.com/filamentgroup/tappy/blob/master/tappy.js
   getCoords: function( evt ){

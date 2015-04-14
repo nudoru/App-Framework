@@ -1,4 +1,5 @@
-var NLorem = (function(){
+nudoru.createNameSpace('nudoru.utils.NLorem');
+nudoru.utils.NLorem = (function(){
   var _currentText = [],
       _textSets = [],
       _maleFirstNames = [],
@@ -40,13 +41,13 @@ var NLorem = (function(){
 
   function getSentence(min,max) {
     var sentence = getText(min, max);
-    return StringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
+    return nudoru.utils.StringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
   }
 
   function getParagraph(min, max) {
     var str = "",
       delim = " ",
-      len = NumberUtils.rndNumber(min, max),
+      len = nudoru.utils.NumberUtils.rndNumber(min, max),
       i= 0;
 
     for(; i<len; i++) {
@@ -64,7 +65,7 @@ var NLorem = (function(){
 
     var str = "",
         delim = " ",
-        len = NumberUtils.rndNumber(min, max),
+        len = nudoru.utils.NumberUtils.rndNumber(min, max),
         i= 0;
 
     for(; i<len; i++) {
@@ -80,11 +81,11 @@ var NLorem = (function(){
   function getRandomItem(arry) {
     var min = 0;
     var max = arry.length-1;
-    return arry[NumberUtils.rndNumber(min, max)];
+    return arry[nudoru.utils.NumberUtils.rndNumber(min, max)];
   }
 
   function getFirstName() {
-    return NumberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
+    return nudoru.utils.NumberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
   }
 
   function getLastName() {
@@ -100,16 +101,16 @@ var NLorem = (function(){
   }
 
   function getDate() {
-    var month = NumberUtils.rndNumber(0,11),
-        wkday = NumberUtils.rndNumber(0,4);
+    var month = nudoru.utils.NumberUtils.rndNumber(0,11),
+        wkday = nudoru.utils.NumberUtils.rndNumber(0,4);
 
     return {
       monthNumber: month + 1,
       monthName: _months[month],
-      monthDay: NumberUtils.rndNumber(1,28),
+      monthDay: nudoru.utils.NumberUtils.rndNumber(1,28),
       weekDayNumber: wkday + 1,
       weekDay: _days[wkday],
-      year: ArrayUtils.rndElement(['2010','2011','2012','2013','2014'])
+      year: nudoru.utils.ArrayUtils.rndElement(['2010','2011','2012','2013','2014'])
     };
   }
 

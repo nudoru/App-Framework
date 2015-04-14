@@ -16,7 +16,7 @@ APP.AppView.ItemDetailView = (function() {
   function showItem(item) {
     _currentItem = item;
 
-    _containerEl.innerHTML = NTemplate.asHTML('template__detail-item', _currentItem);
+    _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-item', _currentItem);
 
     _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
     _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
@@ -43,7 +43,7 @@ APP.AppView.ItemDetailView = (function() {
   }
 
   function showMessage(obj) {
-    _containerEl.innerHTML = NTemplate.asHTML('template__detail-message', obj);
+    _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
 
     TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
   }

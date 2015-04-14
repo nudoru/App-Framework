@@ -1,4 +1,5 @@
-var NResourceLoader = (function() {
+nudoru.createNameSpace('nudoru.utils.NResourceLoader');
+nudoru.utils.NResourceLoader = (function() {
   var resources = [],
     onProgressCallback,
     onCompletedCallback,

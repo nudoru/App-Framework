@@ -31,9 +31,9 @@ nudoru.components.DDMenuBarView = {
 
       this.children = [];
 
-      this.barEl = DOMUtils.HTMLStrToNode('<ul></ul>');
+      this.barEl = nudoru.utils.DOMUtils.HTMLStrToNode('<ul></ul>');
       for(; i<len; i++) {
-        var menuobj = ObjectUtils.basicFactory(nudoru.components.DDMenuView);
+        var menuobj = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
 
         this.barEl.appendChild(menuobj.element);

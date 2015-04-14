@@ -19,8 +19,8 @@ APP.AppView.TagBarView = (function() {
     if(newTags.length) {
 
       var currenttags = _currentTags.map(function(tag) { return tag.label; }),
-          tagsToAdd = ArrayUtils.getDifferences(newTags, currenttags),
-          tagsToRemove = ArrayUtils.getDifferences(currenttags, newTags);
+          tagsToAdd = nudoru.utils.ArrayUtils.getDifferences(newTags, currenttags),
+          tagsToRemove = nudoru.utils.ArrayUtils.getDifferences(currenttags, newTags);
 
       tagsToRemove.forEach(function (tag) {
         remove(tag);
@@ -47,7 +47,7 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var tagnode = NTemplate.asElement('template__tag-bar', {tag: tag});
+    var tagnode = nudoru.utils.NTemplate.asElement('template__tag-bar', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});

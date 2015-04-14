@@ -33,7 +33,7 @@ APP.AppModel.DummyData = (function(){
     var i=0;
 
     for(i=0; i<20; i++) {
-      _possibleContributors.push(NLorem.getLFName());
+      _possibleContributors.push(nudoru.utils.NLorem.getLFName());
     }
 
     for(i=0; i<100; i++) {
@@ -45,20 +45,20 @@ APP.AppModel.DummyData = (function(){
   function createItem() {
     var o = Object.create(APP.AppModel.ItemVO.properties),
         additionalImages = [],
-        additionalNumImages = NumberUtils.rndNumber(1,10),
+        additionalNumImages = nudoru.utils.NumberUtils.rndNumber(1,10),
         description = '',
-        descriptionNumParas = NumberUtils.rndNumber(1,5),
+        descriptionNumParas = nudoru.utils.NumberUtils.rndNumber(1,5),
         i = 0;
 
     for(;i<descriptionNumParas; i++) {
-      description += '<p>'+NLorem.getParagraph(3,7)+'</p>';
+      description += '<p>'+nudoru.utils.NLorem.getParagraph(3,7)+'</p>';
     }
 
     for(i=0;i<additionalNumImages; i++) {
-      additionalImages.push('img/' + ArrayUtils.rndElement(_possiblePreviewImages));
+      additionalImages.push('img/' + nudoru.utils.ArrayUtils.rndElement(_possiblePreviewImages));
     }
 
-    o.title = StringUtils.capitalizeFirstLetter(NLorem.getText(3,10));
+    o.title = nudoru.utils.StringUtils.capitalizeFirstLetter(nudoru.utils.NLorem.getText(3,10));
     o.shortTitle = o.title.substr(0, 10) + '...';
     o.description = description;
     o.images = additionalImages;
@@ -66,15 +66,15 @@ APP.AppModel.DummyData = (function(){
     o.id = ''+_id++;
     o.dateStarted = 'January 1, 2010';
     o.dateCompleted = 'December 31, 2014';
-    o.quarter = 'Q'+NumberUtils.rndNumber(1,4).toString();
-    o.duration = NumberUtils.rndNumber(1,5).toString() + ' hour(s)';
-    o.contributors = ArrayUtils.getRandomSetOfElements(_possibleContributors, 5);
-    o.categories = ArrayUtils.getRandomSetOfElements(_possibleCategories, 1);
-    o.types = ArrayUtils.getRandomSetOfElements(_possibleTypes, 3);
-    o.companyArea = ArrayUtils.rndElement(_possibleLobs);
-    o.complexity = ArrayUtils.rndElement(_possibleComplexity);
-    o.links = ArrayUtils.getRandomSetOfElements(_possibleLinks, 5);
-    o.tags = ArrayUtils.getRandomSetOfElements(_possibleTags, 3);
+    o.quarter = 'Q'+nudoru.utils.NumberUtils.rndNumber(1,4).toString();
+    o.duration = nudoru.utils.NumberUtils.rndNumber(1,5).toString() + ' hour(s)';
+    o.contributors = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleContributors, 5);
+    o.categories = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleCategories, 1);
+    o.types = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleTypes, 3);
+    o.companyArea = nudoru.utils.ArrayUtils.rndElement(_possibleLobs);
+    o.complexity = nudoru.utils.ArrayUtils.rndElement(_possibleComplexity);
+    o.links = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleLinks, 5);
+    o.tags = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleTags, 3);
     return o;
   }
 

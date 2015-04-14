@@ -171,7 +171,7 @@ APP.AppModel = (function() {
           }
         }
       });
-      filter.data = ArrayUtils.unique(props).sort();
+      filter.data = nudoru.utils.ArrayUtils.unique(props).sort();
       filter.menuData = getDataFormattedForMenu(filter.data);
     });
   }
@@ -218,7 +218,7 @@ APP.AppModel = (function() {
     });
 
     // Returns a clone of the item
-    return ObjectUtils.extend({}, items[0]);
+    return nudoru.utils.ObjectUtils.extend({}, items[0]);
   }
 
   function handledFiltersUpdated() {
