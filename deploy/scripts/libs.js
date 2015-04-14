@@ -3731,10 +3731,10 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
       if(this.fancyEffects) {
         TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
-        TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+        TweenLite.to(this.imageEl,0.5, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
       } else {
         TweenLite.to(this.element,0.25, {scale: 1.05, ease:Back.easeOut});
-        TweenLite.to(this.imageEl, 1, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
+        TweenLite.to(this.imageEl,0.5, {alpha: 1, scale: 1.25, ease:Circ.easeOut});
       }
 
     },
