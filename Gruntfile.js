@@ -96,6 +96,7 @@ module.exports = function (grunt) {
           'source/scripts/vendor/packery.pkgd.min.js',
 
           'source/scripts/nudoru/utils/NNameSpace.js',
+          'source/scripts/nudoru/utils/NImport.js',
           'source/scripts/nudoru/nudoru.js',
           'source/scripts/nudoru/utils/BrowserInfo.js',
           'source/scripts/nudoru/utils/utility.js',
@@ -156,6 +157,7 @@ module.exports = function (grunt) {
       files: ['source/scripts/nudoru/*.js', 'source/scripts/app/**/*.js'],
       options: {
         '-W014': true,
+        '-W061': true,
         force: true,
         curly: true,
         eqeqeq: true,
