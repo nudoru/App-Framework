@@ -1,6 +1,5 @@
 /**
  * Created by matt on 1/15/15
- * Modified 3/13/15
  */
 
 nudoru.createNameSpace('nudoru.components.DDMenuBarView');
@@ -13,6 +12,8 @@ nudoru.components.DDMenuBarView = {
     data: null,
     children: null,
     isKeepOpen: false,
+    DOMUtils: require('nudoru.utils.DOMUtils'),
+    objectUtils: require('nudoru.utils.ObjectUtils'),
 
     initialize: function(elID, data, keep) {
       this.eventDispatcher = nudoru.events.EventDispatcher;
@@ -31,9 +32,9 @@ nudoru.components.DDMenuBarView = {
 
       this.children = [];
 
-      this.barEl = nudoru.utils.DOMUtils.HTMLStrToNode('<ul></ul>');
+      this.barEl = this.DOMUtils.HTMLStrToNode('<ul></ul>');
       for(; i<len; i++) {
-        var menuobj = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.DDMenuView);
+        var menuobj = this.objectUtils.basicFactory(nudoru.components.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
 
         this.barEl.appendChild(menuobj.element);

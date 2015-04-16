@@ -7,7 +7,11 @@ nudoru.utils.NLorem = (function(){
       _lastNames = [],
       _punctuation = [],
       _months,
-      _days;
+      _days,
+      _initialized = false,
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _stringUtils = require('nudoru.utils.StringUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
 
   _textSets = [
     "Lorem ipsum dolor sit amet consectetur adipiscing elit Donec libero urna vehicula in odio quis pharetra pharetra magna Quisque pharetra elit in eros volutpat fringilla Nunc vitae nunc mattis rhoncus augue sit amet tempus magna Suspendisse interdum urna eu consectetur vestibulum lorem ligula scelerisque tortor a tincidunt eros odio et lectus Fusce a quam erat Aliquam quis libero sed orci porta congue Mauris ultricies porttitor sem at lacinia Morbi mattis urna ac sapien vehicula interdum Pellentesque commodo nisi id lacus laoreet maximus Ut eget posuere leo sit amet molestie augue Nullam volutpat nulla sit amet convallis tempus tellus lorem fermentum quam eget vestibulum orci est id ex Sed fermentum justo et augue pulvinar vehicula Nullam malesuada justo euismod molestie justo ut finibus quam Nullam pharetra erat nec hendrerit volutpat",
@@ -27,11 +31,10 @@ nudoru.utils.NLorem = (function(){
 
   _days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
 
-  function init() {
-    if(_currentText.length) {
-      return;
-    }
+  function initialize() {
+    if(_initialized) return;
     setCurrentTextSet(1);
+    _initialized = true;
   }
 
   function setCurrentTextSet(index) {
@@ -41,13 +44,14 @@ nudoru.utils.NLorem = (function(){
 
   function getSentence(min,max) {
     var sentence = getText(min, max);
-    return nudoru.utils.StringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
+
+    return _stringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
   }
 
   function getParagraph(min, max) {
     var str = "",
       delim = " ",
-      len = nudoru.utils.NumberUtils.rndNumber(min, max),
+      len = _numberUtils.rndNumber(min, max),
       i= 0;
 
     for(; i<len; i++) {
@@ -61,11 +65,9 @@ nudoru.utils.NLorem = (function(){
   }
 
   function getText(min, max) {
-    init();
-
     var str = "",
         delim = " ",
-        len = nudoru.utils.NumberUtils.rndNumber(min, max),
+        len = _numberUtils.rndNumber(min, max),
         i= 0;
 
     for(; i<len; i++) {
@@ -81,11 +83,11 @@ nudoru.utils.NLorem = (function(){
   function getRandomItem(arry) {
     var min = 0;
     var max = arry.length-1;
-    return arry[nudoru.utils.NumberUtils.rndNumber(min, max)];
+    return arry[_numberUtils.rndNumber(min, max)];
   }
 
   function getFirstName() {
-    return nudoru.utils.NumberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
+    return _numberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
   }
 
   function getLastName() {
@@ -101,20 +103,21 @@ nudoru.utils.NLorem = (function(){
   }
 
   function getDate() {
-    var month = nudoru.utils.NumberUtils.rndNumber(0,11),
-        wkday = nudoru.utils.NumberUtils.rndNumber(0,4);
+    var month = _numberUtils.rndNumber(0,11),
+        wkday = _numberUtils.rndNumber(0,4);
 
     return {
       monthNumber: month + 1,
       monthName: _months[month],
-      monthDay: nudoru.utils.NumberUtils.rndNumber(1,28),
+      monthDay: _numberUtils.rndNumber(1,28),
       weekDayNumber: wkday + 1,
       weekDay: _days[wkday],
-      year: nudoru.utils.ArrayUtils.rndElement(['2010','2011','2012','2013','2014'])
+      year: _arrayUtils.rndElement(['2010','2011','2012','2013','2014'])
     };
   }
 
   return {
+    initialize: initialize,
     getText: getText,
     getSentence: getSentence,
     getParagraph: getParagraph,

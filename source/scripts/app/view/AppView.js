@@ -37,7 +37,11 @@ APP.AppView = (function() {
       _tabletBreakWidth,
       _phoneBreakWidth,
       _drawerWidth,
-      _isDrawerOpen;
+      _isDrawerOpen,
+      _browserEvents = require('nudoru.events.BrowserEvents'),
+      _componentEvents = require('nudoru.events.ComponentEvents'),
+      _objectUtils = require('nudoru.utils.ObjectUtils'),
+      _stringUtils = require('nudoru.utils.StringUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -64,13 +68,6 @@ APP.AppView = (function() {
     _phoneBreakWidth = 475;
     _drawerWidth = 250;
     _isDrawerOpen = false;
-
-    NImport(this, [
-      'nudoru.utils.StringUtils',
-      'nudoru.utils.ObjectUtils',
-      'nudoru.events.ComponentEvents',
-      'nudoru.events.BrowserEvents'
-    ]);
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
   }
@@ -101,7 +98,7 @@ APP.AppView = (function() {
     var apptitle = _mainHeaderEl.querySelector('h1');
     apptitle.innerHTML = _appGlobals.appConfig.title;
 
-    document.title = _self.StringUtils.removeTags(_appGlobals.appConfig.title);
+    document.title = _stringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {
@@ -132,8 +129,8 @@ APP.AppView = (function() {
     _modalCoverView.initialize();
 
     // init on these called later
-    _headerMenuView = _self.ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
-    _drawerMenuView = _self.ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
+    _headerMenuView = _objectUtils.basicFactory(nudoru.components.DDMenuBarView);
+    _drawerMenuView = _objectUtils.basicFactory(nudoru.components.DDMenuBarView);
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
@@ -146,7 +143,7 @@ APP.AppView = (function() {
   }
 
   function configureUIEvents() {
-    _eventDispatcher.subscribe(_self.ComponentEvents.MODAL_COVER_HIDE, hideModalContent);
+    _eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
     //_eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
@@ -192,11 +189,11 @@ APP.AppView = (function() {
 
   function handleViewPortResize() {
     checkForMobile();
-    _eventDispatcher.publish(_self.BrowserEvents.BROWSER_RESIZED, _currentViewPortSize);
+    _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
   }
 
   function handleViewPortScroll() {
-    _eventDispatcher.publish(_self.BrowserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+    _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
   /**
@@ -491,7 +488,7 @@ APP.AppView = (function() {
     render: render,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-    createView: nudoru.utils.ObjectUtils.basicFactory,
+
     getMainScrollingView: getMainScrollingView,
     updateSearchHeader: updateSearchHeader,
     showBigMessage: showBigMessage,

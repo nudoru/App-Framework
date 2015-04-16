@@ -43,7 +43,7 @@ nudoru.utils.NResourceLoader = (function() {
   }
 
   function attachScript(url) {
-    NDebugger.log('ResourceLoader - Attaching script: '+url);
+    console.log('ResourceLoader - Attaching script: '+url);
     $.ajax({
       type: 'GET',
       url: url,
@@ -55,7 +55,7 @@ nudoru.utils.NResourceLoader = (function() {
   }
 
   function cacheImage(url) {
-    NDebugger.log('ResourceLoader - Caching image: '+url);
+    console.log('ResourceLoader - Caching image: '+url);
     var img = new Image();
     img.onload = onDependencyLoaded;
     img.src = url + "?" + Math.random();
@@ -67,7 +67,7 @@ nudoru.utils.NResourceLoader = (function() {
   }
 
   function onDependencyLoadError(data, status, jqxhr) {
-    NDebugger.log('ResourceLoader - Failed to load dependency: '+status);
+    console.log('ResourceLoader - Failed to load dependency: '+status);
     onErrorCallback.call(currentResource);
   }
 

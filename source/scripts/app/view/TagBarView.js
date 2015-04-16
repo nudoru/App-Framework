@@ -2,7 +2,8 @@ APP.createNameSpace('APP.AppView.TagBarView');
 
 APP.AppView.TagBarView = (function() {
   var _containerEl,
-      _currentTags;
+      _currentTags,
+      _arrayUtils = require('nudoru.utils.ArrayUtils');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -19,8 +20,8 @@ APP.AppView.TagBarView = (function() {
     if(newTags.length) {
 
       var currenttags = _currentTags.map(function(tag) { return tag.label; }),
-          tagsToAdd = nudoru.utils.ArrayUtils.getDifferences(newTags, currenttags),
-          tagsToRemove = nudoru.utils.ArrayUtils.getDifferences(currenttags, newTags);
+          tagsToAdd = _arrayUtils.getDifferences(newTags, currenttags),
+          tagsToRemove = _arrayUtils.getDifferences(currenttags, newTags);
 
       tagsToRemove.forEach(function (tag) {
         remove(tag);

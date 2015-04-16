@@ -6,7 +6,7 @@ With gentle nudges from Kevin Carmody
 nudoru.createNameSpace('nudoru.events.EventCommandMap');
 nudoru.events.EventCommandMap = (function(){
   var _eventDispatcher = nudoru.events.EventDispatcher,
-      _commandMap = {};
+      _commandMap = Object.create(null);
 
   function map(evt, command, once) {
     if(hasCommand(evt, command)) {

@@ -22,7 +22,8 @@ nudoru.createNameSpace('nudoru.utils.NTemplate');
 nudoru.utils.NTemplate = (function() {
 
   var _templateHTMLCache = {},
-      _templateCache = {};
+      _templateCache = {},
+      _DOMUtils = require('nudoru.utils.DOMUtils');
 
   /**
    * Get the template html from the script tag with id
@@ -82,7 +83,7 @@ nudoru.utils.NTemplate = (function() {
    * @returns {*}
    */
   function asElement(id, obj) {
-    return nudoru.utils.DOMUtils.HTMLStrToNode(asHTML(id, obj));
+    return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
   }
 
   /**

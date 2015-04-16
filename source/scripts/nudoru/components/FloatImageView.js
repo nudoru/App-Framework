@@ -23,7 +23,9 @@ nudoru.components.FloatImageView = (function() {
       _captionEl,
       _currentImageElement,
       _scrollingView = document.body,
-      _fancyEffects = false;
+      _fancyEffects = false,
+      _DOMUtils = require('nudoru.utils.DOMUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
 
   /**
    * Entry point, initialize elements and hide cover
@@ -49,9 +51,7 @@ nudoru.components.FloatImageView = (function() {
   function apply(container) {
     getFloatingElementsInContainerAsArray(container).forEach(function(el) {
 
-      //var elParent = el.parentNode;
-      //elParent.
-      nudoru.utils.DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+      _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
       el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
 
@@ -113,7 +113,7 @@ nudoru.components.FloatImageView = (function() {
         imgAlt = _currentImageElement.getAttribute('alt'),
         imgWidth = _currentImageElement.clientWidth,
         imgHeight = _currentImageElement.clientHeight,
-        imgPosition = nudoru.utils.DOMUtils.offset(_currentImageElement),
+        imgPosition = _DOMUtils.offset(_currentImageElement),
         imgRatio = imgWidth/imgHeight,
         imgTargetScale = 1,
         vpWidth = window.innerWidth,
@@ -140,7 +140,7 @@ nudoru.components.FloatImageView = (function() {
     imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
     imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = nudoru.utils.DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
+    var zoomImage = _DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
 
     zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
     zoomImage.style.left = imgOriginX+'px';
@@ -155,7 +155,7 @@ nudoru.components.FloatImageView = (function() {
 
     if(_fancyEffects) {
       // further from the center, the greate the effect
-      var startingRot = nudoru.utils.NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
+      var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
       if(startingRot <= 0) {
@@ -213,7 +213,7 @@ nudoru.components.FloatImageView = (function() {
    * @returns {*}
    */
   function getFloatingElementsInContainerAsArray(container) {
-    if(!nudoru.utils.DOMUtils.isDomObj(container)) {
+    if(!_DOMUtils.isDomObj(container)) {
       return [];
     }
     return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));

@@ -10,7 +10,8 @@ nudoru.components.ToastView = (function(){
       _counter = 0,
       _defaultExpireDuration = 7000,
       _containerEl,
-      _templateToast = nudoru.utils.NTemplate.getTemplate('template__component--toast');
+      _templateToast = nudoru.utils.NTemplate.getTemplate('template__component--toast'),
+      _DOMUtils = require('nudoru.utils.DOMUtils');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -55,7 +56,7 @@ nudoru.components.ToastView = (function(){
           lifeTimeStream: null
         };
 
-    obj.element = nudoru.utils.DOMUtils.HTMLStrToNode(obj.html);
+    obj.element = _DOMUtils.HTMLStrToNode(obj.html);
     return obj;
   }
 

@@ -96,12 +96,85 @@ bb(f)&&(f=Lc(f)),g.setDisposable(f.subscribe(function(a){k[b]=a,d(b)},c.onError.
  * @param context object to add the property to
  * @param libArry array of name spaced objects
  ******************************************************************************/
-
 function NImport(context, libArry) {
   libArry.forEach(function(lib) {
     var parts = lib.split('.'),
       obj = parts[parts.length-1];
     context[obj] = eval(lib);
+  });
+}
+
+/*******************************************************************************
+ * Module management. Inspired by CommonJS and AMD
+ *
+ * Based on
+ * http://eloquentjavascript.net/10_modules.html
+ * http://benclinkinbeard.com/posts/how-browserify-works/
+ *
+ ******************************************************************************/
+
+/**
+ * Typically modules would be in separate files and smushed together with a build
+ * tools like Webpack or Browserify. I'm maintaining my own concat with Grunt so
+ * all of the modules will be in a file already.
+ * This establishes a object map and look up system.
+ *
+ * Example:
+ *  define('moduleID',
+ *    function(require, module, exports){
+ *       exports.method = function(str) {
+ *         //
+ *       };
+  *  });
+ *
+ *
+ * @param id
+ * @param moduleCode
+ */
+function define(id, moduleCode) {
+  if(id in define.cache) {
+    return;
+  }
+  define.cache[id] = moduleCode;
+}
+define.cache = Object.create(null);
+
+
+/**
+ * To require, it must have been mapped in the module map
+ *
+ * Refer to this later
+ * https://github.com/substack/browser-pack/blob/d29fddc8a9207d5f967664935073b50971aff708/prelude.js
+ *
+ * @param id
+ * @returns {*}
+ */
+function require(id) {
+  if (id in require.cache) {
+    return require.cache[id];
+  }
+
+  var moduleCode = define.cache[id],
+      exports = {},
+      module = {exports: exports};
+
+  if(!moduleCode) {
+    console.log('Require: module not found: "'+id+'"');
+    return;
+  }
+
+  // set scope to exports instead of moduleCode? browserify does ...
+  moduleCode.call(moduleCode, require, module, exports);
+  require.cache[id] = module.exports;
+  return module.exports;
+}
+require.cache = Object.create(null);
+
+function NImportNSModules(context, libArry) {
+  libArry.forEach(function(lib) {
+    var parts = lib.split('.'),
+      obj = parts[parts.length-1];
+    context[obj] = require(lib);
   });
 }
 
@@ -197,537 +270,376 @@ nudoru.components = (function() {
     return this.mobile.any() ? "touchmove" : "mousemove";
   }
 
-};;// debouncing function from John Hann
-// http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
-var debounce = function (func, threshold, execAsap) {
-  var timeout;
+};;define('nudoru.utils.ObjectUtils',
+  function(require, module, exports) {
 
-  return function debounced() {
-    var obj = this, args = arguments;
-
-    function delayed() {
-      if (!execAsap) {
-        func.apply(obj, args);
-      }
-      timeout = null;
-    }
-
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    else if (execAsap){
-      func.apply(obj, args);
-    }
-
-    timeout = setTimeout(delayed, threshold || 100);
-  };
-};;nudoru.createNameSpace('nudoru.utils.ObjectUtils');
-nudoru.utils.ObjectUtils = {
-  dynamicSort: function (property) {
-    return function (a, b) {
-      return a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+    exports.dynamicSort = function (property) {
+      return function (a, b) {
+        return a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      };
     };
-  },
 
-  searchObjects: function(obj, key, val) {
-    var objects = [];
-    for (var i in obj) {
-      if (typeof obj[i] === 'object') {
-        objects = objects.concat(searchObjects(obj[i], key, val));
-      } else if (i === key && obj[key] === val) {
-        objects.push(obj);
-      }
-    }
-    return objects;
-  },
-
-  getObjectIndexFromId: function (obj, id) {
-    if (typeof obj === "object") {
-      for (var i = 0; i < obj.length; i++) {
-        if (typeof obj[i] !== "undefined" && typeof obj[i].id !== "undefined" && obj[i].id === id) {
-          return i;
+    exports.searchObjects = function(obj, key, val) {
+      var objects = [];
+      for (var i in obj) {
+        if (typeof obj[i] === 'object') {
+          objects = objects.concat(searchObjects(obj[i], key, val));
+        } else if (i === key && obj[key] === val) {
+          objects.push(obj);
         }
       }
-    }
-    return false;
-  },
+      return objects;
+    };
 
-  // extend and deep extend from http://youmightnotneedjquery.com/
-  extend: function(out) {
-    out = out || {};
-
-    for (var i = 1; i < arguments.length; i++) {
-      if (!arguments[i]) {
-        continue;
-      }
-
-      for (var key in arguments[i]) {
-        if (arguments[i].hasOwnProperty(key)) {
-          out[key] = arguments[i][key];
-        }
-      }
-    }
-
-    return out;
-  },
-
-  deepExtend: function(out) {
-    out = out || {};
-
-    for (var i = 1; i < arguments.length; i++) {
-      var obj = arguments[i];
-
-      if (!obj) {
-        continue;
-      }
-
-      for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          if (typeof obj[key] === 'object') {
-            deepExtend(out[key], obj[key]);
-          } else {
-            out[key] = obj[key];
+    exports.getObjectIndexFromId = function (obj, id) {
+      if (typeof obj === "object") {
+        for (var i = 0; i < obj.length; i++) {
+          if (typeof obj[i] !== "undefined" && typeof obj[i].id !== "undefined" && obj[i].id === id) {
+            return i;
           }
         }
       }
-    }
+      return false;
+    };
 
-    return out;
-  },
+    // extend and deep extend from http://youmightnotneedjquery.com/
+    exports.extend = function(out) {
+      out = out || {};
 
-  // From flightjs
-  // returns new object representing multiple objects merged together
-  // optional final argument is boolean which specifies if merge is recursive
-  // original objects are unmodified
-  //
-  // usage:
-  //   var base = {a:2, b:6};
-  //   var extra = {b:3, c:4};
-  //   merge(base, extra); //{a:2, b:3, c:4}
-  //   base; //{a:2, b:6}
-  //
-  //   var base = {a:2, b:6};
-  //   var extra = {b:3, c:4};
-  //   var extraExtra = {a:4, d:9};
-  //   merge(base, extra, extraExtra); //{a:4, b:3, c:4. d: 9}
-  //   base; //{a:2, b:6}
-  //
-  //   var base = {a:2, b:{bb:4, cc:5}};
-  //   var extra = {a:4, b:{cc:7, dd:1}};
-  //   merge(base, extra, true); //{a:4, b:{bb:4, cc:7, dd:1}}
-  //   base; //{a:2, b:6}
+      for (var i = 1; i < arguments.length; i++) {
+        if (!arguments[i]) {
+          continue;
+        }
 
-  merge: function(/*obj1, obj2,....deepCopy*/) {
-    // unpacking arguments by hand benchmarked faster
-    var l = arguments.length,
-      args = new Array(l + 1);
-
-    if (l === 0) {
-      return {};
-    }
-
-    for (var i = 0; i < l; i++) {
-      args[i + 1] = arguments[i];
-    }
-
-    //start with empty object so a copy is created
-    args[0] = {};
-
-    if (args[args.length - 1] === true) {
-      //jquery extend requires deep copy as first arg
-      args.pop();
-      args.unshift(true);
-    }
-
-    return $.extend.apply(undefined, args);
-  },
-
-  /**
-   * Simplified implementation of Stamps - http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
-   * https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
-   *
-   * Prototype object requires a methods object, private closures and state is optional
-   *
-   * @param prototype
-   * @returns New object using prototype.methods as source
-   */
-  //
-  //
-  basicFactory: function(prototype) {
-    var proto = prototype,
-        obj = Object.create(proto.methods);
-
-    if(proto.hasOwnProperty('closure')) {
-      proto.closures.forEach(function(closure) {
-        closure.call(obj);
-      });
-    }
-
-    if(proto.hasOwnProperty('state')) {
-      for(var key in proto.state) {
-        obj[key] = proto.state[key];
-      }
-    }
-
-    return obj;
-  }
-
-};;nudoru.createNameSpace('nudoru.utils.ArrayUtils');
-nudoru.utils.ArrayUtils = {
-
-  // Reference: http://jhusain.github.io/learnrx/index.html
-  mergeAll: function() {
-    var results = [];
-
-    this.forEach(function(subArr) {
-      subArr.forEach(function(elm) {
-        results.push(elm);
-      });
-    });
-
-    return results;
-  },
-
-  // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
-  unique: function(arry) {
-    var o = {},
-        i,
-        l = arry.length,
-        r = [];
-    for(i=0; i<l;i+=1) {
-      o[arry[i]] = arry[i];
-    }
-    for(i in o) {
-      r.push(o[i]);
-    }
-    return r;
-  },
-
-  removeIndex: function(arr, idx) {
-    return arr.splice(idx,1);
-  },
-
-  removeItem: function(arr, item) {
-    var idx = arr.indexOf(item);
-    if(idx > -1) {
-      arr.splice(idx, 1);
-    }
-  },
-
-  rndElement: function(arry) {
-    return arry[nudoru.utils.NumberUtils.rndNumber(0,arry.length-1)];
-  },
-
-  getRandomSetOfElements: function(srcarry, max) {
-    var arry = [],
-      i = 0,
-      len = nudoru.utils.NumberUtils.rndNumber(1,max);
-
-    for(;i<len;i++) {
-      arry.push(this.rndElement(srcarry));
-    }
-
-    return arry;
-  },
-
-  getDifferences: function(arr1, arr2) {
-    var dif = [];
-
-    arr1.forEach(function(value) {
-      var present = false,
-        i = 0,
-        len = arr2.length;
-
-      for(; i<len; i++) {
-        if(value === arr2[i]) {
-          present = true;
-          break;
+        for (var key in arguments[i]) {
+          if (arguments[i].hasOwnProperty(key)) {
+            out[key] = arguments[i][key];
+          }
         }
       }
 
-      if(!present) {
-        dif.push(value);
+      return out;
+    };
+
+    exports.deepExtend = function(out) {
+      out = out || {};
+
+      for (var i = 1; i < arguments.length; i++) {
+        var obj = arguments[i];
+
+        if (!obj) {
+          continue;
+        }
+
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            if (typeof obj[key] === 'object') {
+              deepExtend(out[key], obj[key]);
+            } else {
+              out[key] = obj[key];
+            }
+          }
+        }
       }
 
-    });
+      return out;
+    };
 
-    return dif;
-  }
+    /**
+     * Simplified implementation of Stamps - http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
+     * https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
+     *
+     * Prototype object requires a methods object, private closures and state is optional
+     *
+     * @param prototype
+     * @returns New object using prototype.methods as source
+     */
+    exports.basicFactory = function(prototype) {
+      var proto = prototype,
+        obj = Object.create(proto.methods);
 
-};;nudoru.createNameSpace('nudoru.utils.DOMUtils');
-nudoru.utils.DOMUtils = {
+      if(proto.hasOwnProperty('closure')) {
+        proto.closures.forEach(function(closure) {
+          closure.call(obj);
+        });
+      }
 
-  // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
-  // element must be entirely on screen
-  isElementEntirelyInViewport: function (el) {
-    var rect = el.getBoundingClientRect();
-    return (
+      if(proto.hasOwnProperty('state')) {
+        for(var key in proto.state) {
+          obj[key] = proto.state[key];
+        }
+      }
+
+      return obj;
+    };
+
+  });
+;define('nudoru.utils.ArrayUtils',
+  function (require, module, exports) {
+
+    var _numberUtils = require('nudoru.utils.NumberUtils');
+
+    // Reference: http://jhusain.github.io/learnrx/index.html
+    exports.mergeAll = function () {
+      var results = [];
+
+      this.forEach(function (subArr) {
+        subArr.forEach(function (elm) {
+          results.push(elm);
+        });
+      });
+
+      return results;
+    };
+
+    // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
+    exports.unique = function (arry) {
+      var o = {},
+        i,
+        l = arry.length,
+        r = [];
+      for (i = 0; i < l; i += 1) {
+        o[arry[i]] = arry[i];
+      }
+      for (i in o) {
+        r.push(o[i]);
+      }
+      return r;
+    };
+
+    exports.removeIndex = function (arr, idx) {
+      return arr.splice(idx, 1);
+    };
+
+    exports.removeItem = function (arr, item) {
+      var idx = arr.indexOf(item);
+      if (idx > -1) {
+        arr.splice(idx, 1);
+      }
+    };
+
+    exports.rndElement = function (arry) {
+      return arry[_numberUtils.rndNumber(0, arry.length - 1)];
+    };
+
+    exports.getRandomSetOfElements = function (srcarry, max) {
+      var arry = [],
+        i = 0,
+        len = _numberUtils.rndNumber(1, max);
+
+      for (; i < len; i++) {
+        arry.push(this.rndElement(srcarry));
+      }
+
+      return arry;
+    };
+
+    exports.getDifferences = function (arr1, arr2) {
+      var dif = [];
+
+      arr1.forEach(function (value) {
+        var present = false,
+          i = 0,
+          len = arr2.length;
+
+        for (; i < len; i++) {
+          if (value === arr2[i]) {
+            present = true;
+            break;
+          }
+        }
+
+        if (!present) {
+          dif.push(value);
+        }
+
+      });
+
+      return dif;
+    };
+
+  });;define('nudoru.utils.DOMUtils',
+  function(require, module, exports) {
+    // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
+    // element must be entirely on screen
+    exports.isElementEntirelyInViewport = function (el) {
+      var rect = el.getBoundingClientRect();
+      return (
       rect.top >= 0 &&
       rect.left >= 0 &&
       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-  },
-
-  // element may be partialy on screen
-  isElementInViewport: function (el) {
-    var rect = el.getBoundingClientRect();
-    return rect.bottom > 0 &&
-      rect.right > 0 &&
-      rect.left < (window.innerWidth || document.documentElement.clientWidth)  &&
-      rect.top < (window.innerHeight || document.documentElement.clientHeight);
-  },
-
-  isDomObj: function(obj) {
-    return !!(obj.nodeType || (obj === window));
-  },
-
-  position: function(el) {
-    return {
-      left: el.offsetLeft,
-      top: el.offsetTop
+      );
     };
-  },
 
-  // from http://jsperf.com/jquery-offset-vs-offsetparent-loop
-  offset: function(el) {
-    var ol = 0,
+    // element may be partialy on screen
+    exports.isElementInViewport = function (el) {
+      var rect = el.getBoundingClientRect();
+      return rect.bottom > 0 &&
+        rect.right > 0 &&
+        rect.left < (window.innerWidth || document.documentElement.clientWidth)  &&
+        rect.top < (window.innerHeight || document.documentElement.clientHeight);
+    };
+
+    exports.isDomObj = function(obj) {
+      return !!(obj.nodeType || (obj === window));
+    };
+
+    exports.position = function(el) {
+      return {
+        left: el.offsetLeft,
+        top: el.offsetTop
+      };
+    };
+
+    // from http://jsperf.com/jquery-offset-vs-offsetparent-loop
+    exports.offset = function(el) {
+      var ol = 0,
         ot = 0;
-    if (el.offsetParent) {
-      do {
-        ol += el.offsetLeft;
-        ot += el.offsetTop;
-      } while (el = el.offsetParent); // jshint ignore:line
-    }
-    return {
-      left: ol,
-      top: ot
-    };
-  },
-
-  //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
-  HTMLStrToNode: function (str) {
-    var temp = document.createElement('div');
-    temp.innerHTML = str;
-    return temp.firstChild;
-  },
-
-  wrapElement: function(wrapperStr, el) {
-    var wrapperEl = this.HTMLStrToNode(wrapperStr),
-        elParent = el.parentNode;
-    wrapperEl.appendChild(el);
-    elParent.appendChild(wrapperEl);
-    return wrapperEl;
-  },
-
-  // http://stackoverflow.com/questions/15329167/closest-ancestor-matching-selector-using-native-dom
-  closest: function(el, selector) {
-    var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
-    while (el) {
-      if (matchesSelector.bind(el)(selector)) {
-        return el;
-      } else {
-        el = el.parentElement;
+      if (el.offsetParent) {
+        do {
+          ol += el.offsetLeft;
+          ot += el.offsetTop;
+        } while (el = el.offsetParent); // jshint ignore:line
       }
-    }
-    return false;
-  },
+      return {
+        left: ol,
+        top: ot
+      };
+    };
 
-  // from youmightnotneedjquery.com
-  hasClass: function(el, className) {
-    if (el.classList) {
-      el.classList.contains(className);
-    } else {
-      new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
-    }
-  },
+    //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
+    exports.HTMLStrToNode = function (str) {
+      var temp = document.createElement('div');
+      temp.innerHTML = str;
+      return temp.firstChild;
+    };
 
-  addClass: function(el, className) {
-    if (el.classList) {
-      el.classList.add(className);
-    } else {
-      el.className += ' ' + className;
-    }
-  },
+    exports.wrapElement = function(wrapperStr, el) {
+      var wrapperEl = this.HTMLStrToNode(wrapperStr),
+        elParent = el.parentNode;
 
-  removeClass: function(el, className) {
-    if (el.classList) {
-      el.classList.remove(className);
-    } else {
-      el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-    }
-  },
+      wrapperEl.appendChild(el);
+      elParent.appendChild(wrapperEl);
+      return wrapperEl;
+    };
 
-  toggleClass: function(el, className) {
-    if(this.hasClass(el, className)) {
-      this.removeClass(el, className);
-    } else {
-      this.addClass(el, className);
-    }
-  }
+    // http://stackoverflow.com/questions/15329167/closest-ancestor-matching-selector-using-native-dom
+    exports.closest = function(el, selector) {
+      var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
+      while (el) {
+        if (matchesSelector.bind(el)(selector)) {
+          return el;
+        } else {
+          el = el.parentElement;
+        }
+      }
+      return false;
+    };
 
-};;nudoru.createNameSpace('nudoru.utils.NumberUtils');
-nudoru.utils.NumberUtils = {
-  isInteger: function(str) {
-    return (/^-?\d+$/.test(str));
-  },
+    // from youmightnotneedjquery.com
+    exports.hasClass = function(el, className) {
+      if (el.classList) {
+        el.classList.contains(className);
+      } else {
+        new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+      }
+    };
 
-  rndNumber: function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  },
+    exports.addClass = function(el, className) {
+      if (el.classList) {
+        el.classList.add(className);
+      } else {
+        el.className += ' ' + className;
+      }
+    };
 
-  clamp: function(val,min,max){
-    return Math.max(min,Math.min(max,val));
-  },
+    exports.removeClass = function(el, className) {
+      if (el.classList) {
+        el.classList.remove(className);
+      } else {
+        el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+      }
+    };
 
-  inRange: function(val,min,max) {
-    return val > min && val < max
-  },
+    exports.toggleClass = function(el, className) {
+      if(this.hasClass(el, className)) {
+        this.removeClass(el, className);
+      } else {
+        this.addClass(el, className);
+      }
+    };
 
-  distanceTL: function(point1, point2) {
-    var xd = (point2.left - point1.left),
+  });;define('nudoru.utils.NumberUtils',
+  function (require, module, exports) {
+
+    exports.isInteger = function (str) {
+      return (/^-?\d+$/.test(str));
+    };
+
+    exports.rndNumber = function (min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    exports.clamp = function (val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    };
+
+    exports.inRange = function (val, min, max) {
+      return val > min && val < max
+    };
+
+    exports.distanceTL = function (point1, point2) {
+      var xd = (point2.left - point1.left),
         yd = (point2.top - point1.top);
 
-    return Math.sqrt((xd*xd) + (yd*yd));
-  }
-};;//nudoru.createNameSpace('nudoru.utils.StringUtils');
-//nudoru.utils.StringUtils = {
-//
-//  capitalizeFirstLetter: function(str) {
-//    return str.charAt(0).toUpperCase() + str.substring(1);
-//  },
-//
-//  toTitleCase: function(str) {
-//    return str.replace(/\w\S*/g, function(txt){
-//      return txt.charAt(0).toUpperCase() + txt.substr(1);
-//    });
-//  },
-//
-//  removeTags: function(str) {
-//     return str.replace(/(<([^>]+)>)/ig, '');
-//  },
-//
-//  stripHTMLTags: function() {
-//    return this.replace(/<[^>]+>/gi,"");
-//  },
-//
-//  ellipses: function(len) {
-//    return (this.length > len) ? this.substr(0, len) + "..." : this;
-//  }
-//
-//
-//};
+      return Math.sqrt((xd * xd) + (yd * yd));
+    };
 
-//http://eloquentjavascript.net/10_modules.html
-function require(name) {
-  if (name in require.cache) {
-    return require.cache[name];
-  }
+  });;define('nudoru.utils.StringUtils',
+  function(require, module, exports){
 
-  var code = new Function("exports, module", readFile(name));
-  var exports = {}, module = {exports: exports};
-  code(exports, module);
+    exports.capitalizeFirstLetter = function(str) {
+      return str.charAt(0).toUpperCase() + str.substring(1);
+    };
 
-  require.cache[name] = module.exports;
-  return module.exports;
-}
-require.cache = Object.create(null);
+    exports.toTitleCase = function(str) {
+      return str.replace(/\w\S*/g, function(txt){
+        return txt.charAt(0).toUpperCase() + txt.substr(1);
+      });
+    };
 
+    exports.removeTags = function(str) {
+      return str.replace(/(<([^>]+)>)/ig, '');
+    };
 
+    exports.ellipses = function(len) {
+      return (this.length > len) ? this.substr(0, len) + "..." : this;
+    };
 
+  });;define('nudoru.utils.TouchUtils',
+  function(require, module, exports) {
 
-nudoru.createNameSpace('nudoru.utils.StringUtils');
-nudoru.utils.StringUtils = {};
-
-(function(require, module, exports){
-  exports.capitalizeFirstLetter = function(str) {
-    return str.charAt(0).toUpperCase() + str.substring(1);
-  };
-
-  exports.toTitleCase = function(str) {
-    return str.replace(/\w\S*/g, function(txt){
-      return txt.charAt(0).toUpperCase() + txt.substr(1);
-    });
-  };
-
-  exports.removeTags = function(str) {
-    return str.replace(/(<([^>]+)>)/ig, '');
-  };
-
-  exports.stripHTMLTags = function() {
-    return this.replace(/<[^>]+>/gi,"");
-  };
-
-  exports.ellipses = function(len) {
-    return (this.length > len) ? this.substr(0, len) + "..." : this;
-  };
-
-})(null, null, nudoru.utils.StringUtils);;nudoru.createNameSpace('nudoru.utils.TouchUtils');
-nudoru.utils.TouchUtils = {
-
-  // https://github.com/filamentgroup/tappy/blob/master/tappy.js
-  getCoords: function( evt ){
-    var ev = evt.originalEvent || evt,
+    // https://github.com/filamentgroup/tappy/blob/master/tappy.js
+    exports.getCoords = function( evt ){
+      var ev = evt.originalEvent || evt,
         touches = ev.touches || ev.targetTouches;
 
-    if( touches ){
-      return [ touches[ 0 ].pageX, touches[ 0 ].pageY ];
-    }
-    else {
-      return null;
-    }
-  }
+      if( touches ){
+        return [ touches[ 0 ].pageX, touches[ 0 ].pageY ];
+      }
+      else {
+        return null;
+      }
+    };
 
-};
-
-//nudoru.createNameSpace('nudoru.utils.TouchUtils');
-//nudoru.utils.TouchUtils = {};
-//
-//(function(exports){
-//
-//  // https://github.com/filamentgroup/tappy/blob/master/tappy.js
-//  exports.getCoords = function( evt ){
-//    var ev = evt.originalEvent || evt,
-//      touches = ev.touches || ev.targetTouches;
-//
-//    if( touches ){
-//      return [ touches[ 0 ].pageX, touches[ 0 ].pageY ];
-//    }
-//    else {
-//      return null;
-//    }
-//  };
-//
-//})(nudoru.utils.TouchUtils);
-;// Simple debugger, Matt Perkins
-var NDebugger = (function() {
-  var _messages = [],
-    _broadcast = true;
-
-  function log(text, source) {
-    _messages.push({
-      source: source,
-      text: text
-    });
-
-    if(_broadcast) {
-      console.log(createLogOutputString(_messages[_messages.length-1]));
-    }
-  }
-
-  function createLogOutputString(entry) {
-    return '> '+entry.text;
-  }
-
-  return {
-    log: log
-  };
-
-}());;nudoru.createNameSpace('nudoru.utils.NTemplate');
+  });
+;nudoru.createNameSpace('nudoru.utils.NTemplate');
 nudoru.utils.NTemplate = (function() {
 
   var _templateHTMLCache = {},
-      _templateCache = {};
+      _templateCache = {},
+      _DOMUtils = require('nudoru.utils.DOMUtils');
 
   /**
    * Get the template html from the script tag with id
@@ -787,7 +699,7 @@ nudoru.utils.NTemplate = (function() {
    * @returns {*}
    */
   function asElement(id, obj) {
-    return nudoru.utils.DOMUtils.HTMLStrToNode(asHTML(id, obj));
+    return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
   }
 
   /**
@@ -818,7 +730,11 @@ nudoru.utils.NLorem = (function(){
       _lastNames = [],
       _punctuation = [],
       _months,
-      _days;
+      _days,
+      _initialized = false,
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _stringUtils = require('nudoru.utils.StringUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
 
   _textSets = [
     "Lorem ipsum dolor sit amet consectetur adipiscing elit Donec libero urna vehicula in odio quis pharetra pharetra magna Quisque pharetra elit in eros volutpat fringilla Nunc vitae nunc mattis rhoncus augue sit amet tempus magna Suspendisse interdum urna eu consectetur vestibulum lorem ligula scelerisque tortor a tincidunt eros odio et lectus Fusce a quam erat Aliquam quis libero sed orci porta congue Mauris ultricies porttitor sem at lacinia Morbi mattis urna ac sapien vehicula interdum Pellentesque commodo nisi id lacus laoreet maximus Ut eget posuere leo sit amet molestie augue Nullam volutpat nulla sit amet convallis tempus tellus lorem fermentum quam eget vestibulum orci est id ex Sed fermentum justo et augue pulvinar vehicula Nullam malesuada justo euismod molestie justo ut finibus quam Nullam pharetra erat nec hendrerit volutpat",
@@ -838,11 +754,10 @@ nudoru.utils.NLorem = (function(){
 
   _days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
 
-  function init() {
-    if(_currentText.length) {
-      return;
-    }
+  function initialize() {
+    if(_initialized) return;
     setCurrentTextSet(1);
+    _initialized = true;
   }
 
   function setCurrentTextSet(index) {
@@ -852,13 +767,14 @@ nudoru.utils.NLorem = (function(){
 
   function getSentence(min,max) {
     var sentence = getText(min, max);
-    return nudoru.utils.StringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
+
+    return _stringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
   }
 
   function getParagraph(min, max) {
     var str = "",
       delim = " ",
-      len = nudoru.utils.NumberUtils.rndNumber(min, max),
+      len = _numberUtils.rndNumber(min, max),
       i= 0;
 
     for(; i<len; i++) {
@@ -872,11 +788,9 @@ nudoru.utils.NLorem = (function(){
   }
 
   function getText(min, max) {
-    init();
-
     var str = "",
         delim = " ",
-        len = nudoru.utils.NumberUtils.rndNumber(min, max),
+        len = _numberUtils.rndNumber(min, max),
         i= 0;
 
     for(; i<len; i++) {
@@ -892,11 +806,11 @@ nudoru.utils.NLorem = (function(){
   function getRandomItem(arry) {
     var min = 0;
     var max = arry.length-1;
-    return arry[nudoru.utils.NumberUtils.rndNumber(min, max)];
+    return arry[_numberUtils.rndNumber(min, max)];
   }
 
   function getFirstName() {
-    return nudoru.utils.NumberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
+    return _numberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
   }
 
   function getLastName() {
@@ -912,20 +826,21 @@ nudoru.utils.NLorem = (function(){
   }
 
   function getDate() {
-    var month = nudoru.utils.NumberUtils.rndNumber(0,11),
-        wkday = nudoru.utils.NumberUtils.rndNumber(0,4);
+    var month = _numberUtils.rndNumber(0,11),
+        wkday = _numberUtils.rndNumber(0,4);
 
     return {
       monthNumber: month + 1,
       monthName: _months[month],
-      monthDay: nudoru.utils.NumberUtils.rndNumber(1,28),
+      monthDay: _numberUtils.rndNumber(1,28),
       weekDayNumber: wkday + 1,
       weekDay: _days[wkday],
-      year: nudoru.utils.ArrayUtils.rndElement(['2010','2011','2012','2013','2014'])
+      year: _arrayUtils.rndElement(['2010','2011','2012','2013','2014'])
     };
   }
 
   return {
+    initialize: initialize,
     getText: getText,
     getSentence: getSentence,
     getParagraph: getParagraph,
@@ -937,7 +852,7 @@ nudoru.utils.NLorem = (function(){
 }());;nudoru.createNameSpace('nudoru.events.EventDispatcher');
 nudoru.events.EventDispatcher = function () {
 
-  var _eventMap = {};
+  var _eventMap = Object.create(null);
 
   function subscribe(evtString, callback, once) {
     if(_eventMap[evtString] === undefined) {
@@ -1009,7 +924,7 @@ nudoru.events.EventDispatcher = function () {
 }();;nudoru.createNameSpace('nudoru.events.EventCommandMap');
 nudoru.events.EventCommandMap = (function(){
   var _eventDispatcher = nudoru.events.EventDispatcher,
-      _commandMap = {};
+      _commandMap = Object.create(null);
 
   function map(evt, command, once) {
     if(hasCommand(evt, command)) {
@@ -1063,18 +978,17 @@ nudoru.events.EventCommandMap = (function(){
     unmap: unmap
   };
 
-}());;nudoru.createNameSpace('nudoru.events.BrowserEvents');
-nudoru.events.BrowserEvents = {
-  URL_HASH_CHANGED: 'URL_HASH_CHANGED',
-  BROWSER_RESIZED: 'BROWSER_RESIZED',
-  BROWSER_SCROLLED: 'BROWSER_SCROLLED'
-};;nudoru.createNameSpace('nudoru.events.ComponentEvents');
-nudoru.events.ComponentEvents = {
-  MODAL_COVER_SHOW: 'MODAL_COVER_SHOW',
-  MODAL_COVER_HIDE: 'MODAL_COVER_HIDE',
-
-  MENU_SELECT: 'MENU_SELECT'
-};;nudoru.createNameSpace('nudoru.components.FloatImageView');
+}());;define('nudoru.events.BrowserEvents',
+  function(require, module, exports) {
+    exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
+    exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
+    exports.BROWSER_SCROLLED = 'BROWSER_SCROLLED';
+  });;define('nudoru.events.ComponentEvents',
+  function(require, module, exports) {
+    exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
+    exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
+    exports.MENU_SELECT = 'MENU_SELECT';
+  });;nudoru.createNameSpace('nudoru.components.FloatImageView');
 nudoru.components.FloatImageView = (function() {
 
   var _coverDivID = 'floatimage__cover',
@@ -1085,7 +999,9 @@ nudoru.components.FloatImageView = (function() {
       _captionEl,
       _currentImageElement,
       _scrollingView = document.body,
-      _fancyEffects = false;
+      _fancyEffects = false,
+      _DOMUtils = require('nudoru.utils.DOMUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
 
   /**
    * Entry point, initialize elements and hide cover
@@ -1111,9 +1027,7 @@ nudoru.components.FloatImageView = (function() {
   function apply(container) {
     getFloatingElementsInContainerAsArray(container).forEach(function(el) {
 
-      //var elParent = el.parentNode;
-      //elParent.
-      nudoru.utils.DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+      _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
       el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
 
@@ -1175,7 +1089,7 @@ nudoru.components.FloatImageView = (function() {
         imgAlt = _currentImageElement.getAttribute('alt'),
         imgWidth = _currentImageElement.clientWidth,
         imgHeight = _currentImageElement.clientHeight,
-        imgPosition = nudoru.utils.DOMUtils.offset(_currentImageElement),
+        imgPosition = _DOMUtils.offset(_currentImageElement),
         imgRatio = imgWidth/imgHeight,
         imgTargetScale = 1,
         vpWidth = window.innerWidth,
@@ -1202,7 +1116,7 @@ nudoru.components.FloatImageView = (function() {
     imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
     imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = nudoru.utils.DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
+    var zoomImage = _DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
 
     zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
     zoomImage.style.left = imgOriginX+'px';
@@ -1217,7 +1131,7 @@ nudoru.components.FloatImageView = (function() {
 
     if(_fancyEffects) {
       // further from the center, the greate the effect
-      var startingRot = nudoru.utils.NumberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
+      var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
       if(startingRot <= 0) {
@@ -1275,7 +1189,7 @@ nudoru.components.FloatImageView = (function() {
    * @returns {*}
    */
   function getFloatingElementsInContainerAsArray(container) {
-    if(!nudoru.utils.DOMUtils.isDomObj(container)) {
+    if(!_DOMUtils.isDomObj(container)) {
       return [];
     }
     return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
@@ -1328,7 +1242,8 @@ nudoru.components.ModalCoverView = (function() {
       _modalCloseButtonEl,
       _modalClickStream,
       _isVisible,
-      _eventDispatcher;
+      _eventDispatcher,
+      _componentEvents = require('nudoru.events.ComponentEvents');
 
   function initialize() {
     _eventDispatcher = nudoru.events.EventDispatcher;
@@ -1365,7 +1280,7 @@ nudoru.components.ModalCoverView = (function() {
     TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
     TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
 
-    _eventDispatcher.publish(nudoru.events.ComponentEvents.MODAL_COVER_SHOW);
+    _eventDispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
   }
 
   function hide(animate) {
@@ -1378,7 +1293,7 @@ nudoru.components.ModalCoverView = (function() {
     TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
     TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
 
-    _eventDispatcher.publish(nudoru.events.ComponentEvents.MODAL_COVER_HIDE);
+    _eventDispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
   }
 
   return {
@@ -1395,7 +1310,8 @@ nudoru.components.ToastView = (function(){
       _counter = 0,
       _defaultExpireDuration = 7000,
       _containerEl,
-      _templateToast = nudoru.utils.NTemplate.getTemplate('template__component--toast');
+      _templateToast = nudoru.utils.NTemplate.getTemplate('template__component--toast'),
+      _DOMUtils = require('nudoru.utils.DOMUtils');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -1440,7 +1356,7 @@ nudoru.components.ToastView = (function(){
           lifeTimeStream: null
         };
 
-    obj.element = nudoru.utils.DOMUtils.HTMLStrToNode(obj.html);
+    obj.element = _DOMUtils.HTMLStrToNode(obj.html);
     return obj;
   }
 
@@ -1532,6 +1448,8 @@ nudoru.components.DDMenuBarView = {
     data: null,
     children: null,
     isKeepOpen: false,
+    DOMUtils: require('nudoru.utils.DOMUtils'),
+    objectUtils: require('nudoru.utils.ObjectUtils'),
 
     initialize: function(elID, data, keep) {
       this.eventDispatcher = nudoru.events.EventDispatcher;
@@ -1550,9 +1468,9 @@ nudoru.components.DDMenuBarView = {
 
       this.children = [];
 
-      this.barEl = nudoru.utils.DOMUtils.HTMLStrToNode('<ul></ul>');
+      this.barEl = this.DOMUtils.HTMLStrToNode('<ul></ul>');
       for(; i<len; i++) {
-        var menuobj = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.DDMenuView);
+        var menuobj = this.objectUtils.basicFactory(nudoru.components.DDMenuView);
         menuobj.initialize(this.data[i], this.isKeepOpen);
 
         this.barEl.appendChild(menuobj.element);
@@ -1615,6 +1533,10 @@ nudoru.components.DDMenuView = {
     lastTouchPosition: [],
     touchDeltaTolerance: 10,
     shouldProcessTouchEnd: false,
+    objectUtils: require('nudoru.utils.ObjectUtils'),
+    DOMUtils: require('nudoru.utils.DOMUtils'),
+    touchUtils: require('nudoru.utils.TouchUtils'),
+    componentEvents: require('nudoru.events.ComponentEvents'),
 
     initialize: function(data, keep) {
 
@@ -1665,7 +1587,7 @@ nudoru.components.DDMenuView = {
     },
 
     buildMenuItems: function(item) {
-      var menuitem = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.BasicMenuItemView);
+      var menuitem = this.objectUtils.basicFactory(nudoru.components.BasicMenuItemView);
       menuitem.initialize(item);
       this.ddMenuEl.appendChild(menuitem.element);
       this.items.push(menuitem);
@@ -1707,7 +1629,7 @@ nudoru.components.DDMenuView = {
     },
 
     getTargetElMatching: function(el, cls) {
-      return nudoru.utils.DOMUtils.closest(el, cls);
+      return this.DOMUtils.closest(el, cls);
     },
 
     /**
@@ -1722,12 +1644,12 @@ nudoru.components.DDMenuView = {
     configureMobileStreams: function() {
       // Note - had problems getting RxJS to work correctly here, used events
       this.element.addEventListener('touchstart', (function(evt) {
-        this.firstTouchPosition = this.lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
+        this.firstTouchPosition = this.lastTouchPosition = this.touchUtils.getCoords(evt);
         this.shouldProcessTouchEnd = false;
       }).bind(this), false);
 
       this.element.addEventListener('touchmove', (function(evt) {
-        this.lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
+        this.lastTouchPosition = this.touchUtils.getCoords(evt);
       }).bind(this), false);
 
       var touchPressFunction = function(arg) {
@@ -1783,7 +1705,7 @@ nudoru.components.DDMenuView = {
         var item = this.getItemByValue(data);
         item.toggleSelect();
         item.showDepressEffect();
-        this.eventDispatcher.publish(nudoru.events.ComponentEvents.MENU_SELECT, data);
+        this.eventDispatcher.publish(this.componentEvents.MENU_SELECT, data);
       }
     },
 
@@ -1813,11 +1735,12 @@ nudoru.components.DDMenuView = {
 
     getItemByValue: function(value) {
       return this.items.filter(function(item) {
-        if(item.data.value === value) {
-          return true;
-        } else {
-          return false;
-        }
+        return (item.data.value === value);
+        //if(item.data.value === value) {
+        //  return true;
+        //} else {
+        //  return false;
+        //}
       })[0];
     },
 
@@ -1901,6 +1824,9 @@ nudoru.components.BasicMenuItemView = {
     iconDeselectedClass: null,
     iconSelectedClass: null,
     toggle: null,
+    stringUtils: require('nudoru.utils.StringUtils'),
+    DOMUtils: require('nudoru.utils.DOMUtils'),
+
 
     initialize: function(data) {
       this.data = data;
@@ -1911,7 +1837,7 @@ nudoru.components.BasicMenuItemView = {
         this.iconDeselectedClass = 'fa-circle-thin';
       }
 
-      data.label = nudoru.utils.StringUtils.toTitleCase(data.label);
+      data.label = this.stringUtils.toTitleCase(data.label);
 
       this.label = data.label;
 
@@ -1938,8 +1864,8 @@ nudoru.components.BasicMenuItemView = {
       this.selected = true;
 
       if(this.toggle) {
-        nudoru.utils.DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
-        nudoru.utils.DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
+        this.DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
+        this.DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
       }
     },
 
@@ -1964,8 +1890,8 @@ nudoru.components.BasicMenuItemView = {
       this.selected = false;
 
       if(this.toggle) {
-        nudoru.utils.DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
-        nudoru.utils.DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
+        this.DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
+        this.DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
       }
     },
 
@@ -1981,7 +1907,8 @@ nudoru.components.BasicMenuItemView = {
 };;nudoru.createNameSpace('nudoru.components.URLRouter');
 nudoru.components.URLRouter = function () {
   var _eventDispatcher,
-      _lastSetPath;
+      _lastSetPath,
+      _browserEvents = require('nudoru.events.BrowserEvents');
 
   function initialize() {
     _eventDispatcher = nudoru.events.EventDispatcher;
@@ -2000,7 +1927,7 @@ nudoru.components.URLRouter = function () {
       return;
     }
 
-    _eventDispatcher.publish(nudoru.events.BrowserEvents.URL_HASH_CHANGED, hash);
+    _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, hash);
   }
 
   /**
@@ -2032,7 +1959,8 @@ APP = (function(global, rootView) {
   var _globalScope = global,
       _rootView = rootView,
       _self,
-      _globals;
+      _globals,
+      _objectUtils = require('nudoru.utils.ObjectUtils');
 
   //----------------------------------------------------------------------------
   //  Initialize
@@ -2050,7 +1978,7 @@ APP = (function(global, rootView) {
    * Initialize the global vars
    */
   function initGlobals() {
-    _globals = nudoru.utils.ObjectUtils.extend(BrowserInfo, {});
+    _globals = _objectUtils.extend(BrowserInfo, {});
 
     _globals.appConfig = APP_CONFIG_DATA;
 
@@ -2062,7 +1990,7 @@ APP = (function(global, rootView) {
    * @returns {void|*}
    */
   function globals() {
-    return nudoru.utils.ObjectUtils.extend({}, _globals);
+    return _objectUtils.extend({}, _globals);
   }
 
   //----------------------------------------------------------------------------
@@ -2123,7 +2051,9 @@ APP.AppModel = (function() {
       _currentFreeTextFilter,
       _currentDataFilters,
       _currentItem,
-      _filterProperties;
+      _filterProperties,
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _objectUtils = require('nudoru.utils.ObjectUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -2269,7 +2199,7 @@ APP.AppModel = (function() {
           }
         }
       });
-      filter.data = nudoru.utils.ArrayUtils.unique(props).sort();
+      filter.data = _arrayUtils.unique(props).sort();
       filter.menuData = getDataFormattedForMenu(filter.data);
     });
   }
@@ -2316,7 +2246,7 @@ APP.AppModel = (function() {
     });
 
     // Returns a clone of the item
-    return nudoru.utils.ObjectUtils.extend({}, items[0]);
+    return _objectUtils.extend({}, items[0]);
   }
 
   function handledFiltersUpdated() {
@@ -2516,15 +2446,6 @@ APP.AppModel = (function() {
             return false;
           });
 
-    //console.log('filters: '+filters);
-    //console.log('query: '+query);
-    //console.log('search: '+search);
-    //console.log('item: '+item);
-
-    //setMultipleFilters(filterArry);
-    //setCurrentFreeTextFilter(search);
-    //setCurrentItem(item);
-
     _eventDispatcher.publish(APP.AppEvents.RESUME_FROM_MODEL_STATE,{filters: filterArry, search: search, item: item});
   }
 
@@ -2620,8 +2541,11 @@ APP.AppModel.DummyData = (function(){
       _possibleTypes = ['WBT','ILT','VILT','App','Multimedia','Sharepoint','Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
-      _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'];
-      _items = [];
+      _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
+      _items = [],
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _stringUtils = require('nudoru.utils.StringUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
 
   function getItems() {
     return _items;
@@ -2629,6 +2553,8 @@ APP.AppModel.DummyData = (function(){
 
   function initialize() {
     var i=0;
+
+    nudoru.utils.NLorem.initialize();
 
     for(i=0; i<20; i++) {
       _possibleContributors.push(nudoru.utils.NLorem.getLFName());
@@ -2643,9 +2569,9 @@ APP.AppModel.DummyData = (function(){
   function createItem() {
     var o = Object.create(APP.AppModel.ItemVO.properties),
         additionalImages = [],
-        additionalNumImages = nudoru.utils.NumberUtils.rndNumber(1,10),
+        additionalNumImages = _numberUtils.rndNumber(1,10),
         description = '',
-        descriptionNumParas = nudoru.utils.NumberUtils.rndNumber(1,5),
+        descriptionNumParas = _numberUtils.rndNumber(1,5),
         i = 0;
 
     for(;i<descriptionNumParas; i++) {
@@ -2653,10 +2579,10 @@ APP.AppModel.DummyData = (function(){
     }
 
     for(i=0;i<additionalNumImages; i++) {
-      additionalImages.push('img/' + nudoru.utils.ArrayUtils.rndElement(_possiblePreviewImages));
+      additionalImages.push('img/' + _arrayUtils.rndElement(_possiblePreviewImages));
     }
 
-    o.title = nudoru.utils.StringUtils.capitalizeFirstLetter(nudoru.utils.NLorem.getText(3,10));
+    o.title = _stringUtils.capitalizeFirstLetter(nudoru.utils.NLorem.getText(3,10));
     o.shortTitle = o.title.substr(0, 10) + '...';
     o.description = description;
     o.images = additionalImages;
@@ -2664,15 +2590,15 @@ APP.AppModel.DummyData = (function(){
     o.id = ''+_id++;
     o.dateStarted = 'January 1, 2010';
     o.dateCompleted = 'December 31, 2014';
-    o.quarter = 'Q'+nudoru.utils.NumberUtils.rndNumber(1,4).toString();
-    o.duration = nudoru.utils.NumberUtils.rndNumber(1,5).toString() + ' hour(s)';
-    o.contributors = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleContributors, 5);
-    o.categories = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleCategories, 1);
-    o.types = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleTypes, 3);
-    o.companyArea = nudoru.utils.ArrayUtils.rndElement(_possibleLobs);
-    o.complexity = nudoru.utils.ArrayUtils.rndElement(_possibleComplexity);
-    o.links = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleLinks, 5);
-    o.tags = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleTags, 3);
+    o.quarter = 'Q'+_numberUtils.rndNumber(1,4).toString();
+    o.duration = _numberUtils.rndNumber(1,5).toString() + ' hour(s)';
+    o.contributors = _arrayUtils.getRandomSetOfElements(_possibleContributors, 5);
+    o.categories = _arrayUtils.getRandomSetOfElements(_possibleCategories, 1);
+    o.types = _arrayUtils.getRandomSetOfElements(_possibleTypes, 3);
+    o.companyArea = _arrayUtils.rndElement(_possibleLobs);
+    o.complexity = _arrayUtils.rndElement(_possibleComplexity);
+    o.links = _arrayUtils.getRandomSetOfElements(_possibleLinks, 5);
+    o.tags = _arrayUtils.getRandomSetOfElements(_possibleTags, 3);
     return o;
   }
 
@@ -2722,7 +2648,11 @@ APP.AppView = (function() {
       _tabletBreakWidth,
       _phoneBreakWidth,
       _drawerWidth,
-      _isDrawerOpen;
+      _isDrawerOpen,
+      _browserEvents = require('nudoru.events.BrowserEvents'),
+      _componentEvents = require('nudoru.events.ComponentEvents'),
+      _objectUtils = require('nudoru.utils.ObjectUtils'),
+      _stringUtils = require('nudoru.utils.StringUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -2749,13 +2679,6 @@ APP.AppView = (function() {
     _phoneBreakWidth = 475;
     _drawerWidth = 250;
     _isDrawerOpen = false;
-
-    NImport(this, [
-      'nudoru.utils.StringUtils',
-      'nudoru.utils.ObjectUtils',
-      'nudoru.events.ComponentEvents',
-      'nudoru.events.BrowserEvents'
-    ]);
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
   }
@@ -2786,7 +2709,7 @@ APP.AppView = (function() {
     var apptitle = _mainHeaderEl.querySelector('h1');
     apptitle.innerHTML = _appGlobals.appConfig.title;
 
-    document.title = _self.StringUtils.removeTags(_appGlobals.appConfig.title);
+    document.title = _stringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
   function defineViewElements() {
@@ -2817,8 +2740,8 @@ APP.AppView = (function() {
     _modalCoverView.initialize();
 
     // init on these called later
-    _headerMenuView = _self.ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
-    _drawerMenuView = _self.ObjectUtils.basicFactory(nudoru.components.DDMenuBarView);
+    _headerMenuView = _objectUtils.basicFactory(nudoru.components.DDMenuBarView);
+    _drawerMenuView = _objectUtils.basicFactory(nudoru.components.DDMenuBarView);
     _itemGridView = _self.ItemGridView;
 
     _itemDetailView = _self.ItemDetailView;
@@ -2831,7 +2754,7 @@ APP.AppView = (function() {
   }
 
   function configureUIEvents() {
-    _eventDispatcher.subscribe(_self.ComponentEvents.MODAL_COVER_HIDE, hideModalContent);
+    _eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
     //_eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
@@ -2877,11 +2800,11 @@ APP.AppView = (function() {
 
   function handleViewPortResize() {
     checkForMobile();
-    _eventDispatcher.publish(_self.BrowserEvents.BROWSER_RESIZED, _currentViewPortSize);
+    _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
   }
 
   function handleViewPortScroll() {
-    _eventDispatcher.publish(_self.BrowserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+    _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
   /**
@@ -3176,7 +3099,7 @@ APP.AppView = (function() {
     render: render,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-    createView: nudoru.utils.ObjectUtils.basicFactory,
+
     getMainScrollingView: getMainScrollingView,
     updateSearchHeader: updateSearchHeader,
     showBigMessage: showBigMessage,
@@ -3216,7 +3139,11 @@ APP.AppView.ItemGridView = (function(){
       _firstTouchPosition = [],
       _lastTouchPosition = [],
       _touchDeltaTolerance = 10,
-      _shouldProcessTouchEnd;
+      _shouldProcessTouchEnd,
+      _DOMUtils = require('nudoru.utils.DOMUtils'),
+      _objectUtils = require('nudoru.utils.ObjectUtils'),
+      _touchUtils = require('nudoru.utils.TouchUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -3266,7 +3193,7 @@ APP.AppView.ItemGridView = (function(){
     //initImagesLoaded();
 
     _data.forEach(function(item){
-      var itemobj = nudoru.utils.ObjectUtils.basicFactory(APP.AppView.ItemGridView.AbstractGridItem);
+      var itemobj = _objectUtils.basicFactory(APP.AppView.ItemGridView.AbstractGridItem);
       itemobj.initialize(item);
       _containerEl.appendChild(itemobj.element);
       itemobj.postRender();
@@ -3423,7 +3350,7 @@ APP.AppView.ItemGridView = (function(){
   }
 
   function getTargetElMatching(el, cls) {
-    return nudoru.utils.DOMUtils.closest(el, cls);
+    return _DOMUtils.closest(el, cls);
   }
 
   /**
@@ -3438,12 +3365,12 @@ APP.AppView.ItemGridView = (function(){
   function configureMobileStreams() {
     // Note - had problems getting RxJS to work correctly here, used events
     _containerEl.addEventListener('touchstart', function(evt) {
-      _firstTouchPosition = _lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
+      _firstTouchPosition = _lastTouchPosition = _touchUtils.getCoords(evt);
       _shouldProcessTouchEnd = false;
     }, false);
 
     _containerEl.addEventListener('touchmove', function(evt) {
-      _lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
+      _lastTouchPosition = _touchUtils.getCoords(evt);
     }, false);
 
     _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'touchend')
@@ -3603,14 +3530,14 @@ APP.AppView.ItemGridView = (function(){
     }
 
     var otheritems = getItemsInViewExcluding(itemel),
-        fromPos = nudoru.utils.DOMUtils.position(itemel),
+        fromPos = _DOMUtils.position(itemel),
         vpW = window.innerWidth;
 
     TweenLite.killDelayedCallsTo(otheritems);
 
     otheritems.forEach(function(item) {
-      var itemPos = nudoru.utils.DOMUtils.position(item),
-        dist = nudoru.utils.NumberUtils.distanceTL(fromPos, itemPos)/2,
+      var itemPos = _DOMUtils.position(item),
+        dist = _numberUtils.distanceTL(fromPos, itemPos)/2,
         pct = Math.max(1 - (dist / vpW), 0.35);
 
       TweenLite.to(item, 2, {scale:pct, alpha:pct, ease:Quad.easeIn, delay: 1});
@@ -3727,6 +3654,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     imageAlphaTarget: 0.25,
     fancyEffects: false,
     animating: false,
+    DOMUtils: require('nudoru.utils.DOMUtils'),
 
     getID: function() {
       if(this.data) {
@@ -3761,7 +3689,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     },
 
     isInViewport: function() {
-      return nudoru.utils.DOMUtils.isElementInViewport(this.element);
+      return this.DOMUtils.isElementInViewport(this.element);
     },
 
     show: function() {
@@ -3956,7 +3884,8 @@ APP.AppView.ItemDetailView = (function() {
 
 APP.AppView.TagBarView = (function() {
   var _containerEl,
-      _currentTags;
+      _currentTags,
+      _arrayUtils = require('nudoru.utils.ArrayUtils');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -3973,8 +3902,8 @@ APP.AppView.TagBarView = (function() {
     if(newTags.length) {
 
       var currenttags = _currentTags.map(function(tag) { return tag.label; }),
-          tagsToAdd = nudoru.utils.ArrayUtils.getDifferences(newTags, currenttags),
-          tagsToRemove = nudoru.utils.ArrayUtils.getDifferences(currenttags, newTags);
+          tagsToAdd = _arrayUtils.getDifferences(newTags, currenttags),
+          tagsToRemove = _arrayUtils.getDifferences(currenttags, newTags);
 
       tagsToRemove.forEach(function (tag) {
         remove(tag);
@@ -4042,9 +3971,10 @@ APP.AppController = function () {
       _view,
       _eventDispatcher,
       _router,
-      _self;
-
-
+      _self,
+      _objectUtils = require('nudoru.utils.ObjectUtils'),
+      _browserEvents = require('nudoru.events.BrowserEvents'),
+      _componentEvents = require('nudoru.events.ComponentEvents');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -4104,12 +4034,12 @@ APP.AppController = function () {
 
   function postInitialize() {
     // Browser events
-    mapCommand(nudoru.events.BrowserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
-    mapCommand(nudoru.events.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapCommand(nudoru.events.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    mapCommand(_browserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
+    mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
     // Component events
-    mapCommand(nudoru.events.ComponentEvents.MENU_SELECT, _self.MenuSelectionCommand);
+    mapCommand(_componentEvents.MENU_SELECT, _self.MenuSelectionCommand);
 
     // App events
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
@@ -4125,10 +4055,15 @@ APP.AppController = function () {
     mapCommand(APP.AppEvents.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
   }
 
+  function createCommand(proto) {
+    return Object.create(proto.methods);
+    //_objectUtils.basicFactory(proto);
+  }
+
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: nudoru.utils.ObjectUtils.basicFactory
+    createCommand: createCommand
   };
 
 }();;APP.createNameSpace('APP.AppController.AbstractCommand');
@@ -4150,7 +4085,7 @@ APP.AppController.AbstractCommand = {
     eventDispatcher: nudoru.events.EventDispatcher,
 
     execute: function(data) {
-      NDebugger.log('Abstract command executing with data: '+data);
+      console.log('Abstract command executing with data: '+data);
     }
   }
 };
@@ -4201,11 +4136,11 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
 ;APP.createNameSpace('APP.AppController.BrowserResizedCommand');
 APP.AppController.BrowserResizedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.BrowserResizedCommand.execute = function(data) {
-  //NDebugger.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
+  //console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
 };;APP.createNameSpace('APP.AppController.BrowserScrolledCommand');
 APP.AppController.BrowserScrolledCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.BrowserScrolledCommand.execute = function(data) {
-  //NDebugger.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
+  //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
 };;APP.createNameSpace('APP.AppController.ClearAllFiltersCommand');
 APP.AppController.ClearAllFiltersCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ClearAllFiltersCommand.execute = function(data) {
@@ -4232,7 +4167,7 @@ APP.AppController.GridViewItemsVisibleChangedCommand.execute = function(data) {
 };;APP.createNameSpace('APP.AppController.ItemSelectCommand');
 APP.AppController.ItemSelectCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ItemSelectCommand.execute = function(data) {
-  //NDebugger.log('ItemSelectCommand: '+data);
+  //console.log('ItemSelectCommand: '+data);
 
   if(data) {
     var itemObject = this.appModel.getItemObjectForID(data);
@@ -4241,7 +4176,7 @@ APP.AppController.ItemSelectCommand.execute = function(data) {
       this.appModel.setCurrentItem(itemObject.id);
       this.appView.showItemDetailView(itemObject);
     } else {
-      NDebugger.log('[ItemSelectCommand] Cannot show details for item id "'+data+'", not found.');
+      console.log('[ItemSelectCommand] Cannot show details for item id "'+data+'", not found.');
     }
   } else {
     this.appModel.setCurrentItem('');
@@ -4251,7 +4186,7 @@ APP.AppController.ItemSelectCommand.execute = function(data) {
 };;APP.createNameSpace('APP.AppController.MenuSelectionCommand');
 APP.AppController.MenuSelectionCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.MenuSelectionCommand.execute = function(data) {
-  //NDebugger.log('MenuSelectionCommand: '+data);
+  //console.log('MenuSelectionCommand: '+data);
   this.appModel.toggleFilter(data);
 };;APP.createNameSpace('APP.AppController.ResumeFromModelStateCommand');
 APP.AppController.ResumeFromModelStateCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
@@ -4305,17 +4240,17 @@ APP.AppController.URLHashChangedCommand.execute = function(data) {
 };;APP.createNameSpace('APP.AppController.ViewChangedCommand');
 APP.AppController.ViewChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ViewChangedCommand.execute = function(data) {
-  NDebugger.log('ViewChangedCommand: '+data);
+  console.log('ViewChangedCommand: '+data);
 };;APP.createNameSpace('APP.AppController.ViewChangedToDesktopCommand');
 APP.AppController.ViewChangedToDesktopCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ViewChangedToDesktopCommand.execute = function(data) {
-  //NDebugger.log('ViewChangedToDesktopCommand: '+data);
+  //console.log('ViewChangedToDesktopCommand: '+data);
 
   this.appView.updateHeaderMenuSelections(this.appModel.getFiltersForTagBar());
 };;APP.createNameSpace('APP.AppController.ViewChangedToMobileCommand');
 APP.AppController.ViewChangedToMobileCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ViewChangedToMobileCommand.execute = function(data) {
-  //NDebugger.log('ViewChangedToMobileCommand: '+data);
+  //console.log('ViewChangedToMobileCommand: '+data);
 
   // Searching isn't support in mobile views yet
   this.appModel.setCurrentFreeTextFilter('');

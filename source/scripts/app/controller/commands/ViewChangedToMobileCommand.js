@@ -1,7 +1,7 @@
 APP.createNameSpace('APP.AppController.ViewChangedToMobileCommand');
 APP.AppController.ViewChangedToMobileCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.ViewChangedToMobileCommand.execute = function(data) {
-  //NDebugger.log('ViewChangedToMobileCommand: '+data);
+  //console.log('ViewChangedToMobileCommand: '+data);
 
   // Searching isn't support in mobile views yet
   this.appModel.setCurrentFreeTextFilter('');

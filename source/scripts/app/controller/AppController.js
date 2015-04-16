@@ -12,9 +12,10 @@ APP.AppController = function () {
       _view,
       _eventDispatcher,
       _router,
-      _self;
-
-
+      _self,
+      _objectUtils = require('nudoru.utils.ObjectUtils'),
+      _browserEvents = require('nudoru.events.BrowserEvents'),
+      _componentEvents = require('nudoru.events.ComponentEvents');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -74,12 +75,12 @@ APP.AppController = function () {
 
   function postInitialize() {
     // Browser events
-    mapCommand(nudoru.events.BrowserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
-    mapCommand(nudoru.events.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapCommand(nudoru.events.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    mapCommand(_browserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
+    mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
     // Component events
-    mapCommand(nudoru.events.ComponentEvents.MENU_SELECT, _self.MenuSelectionCommand);
+    mapCommand(_componentEvents.MENU_SELECT, _self.MenuSelectionCommand);
 
     // App events
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
@@ -95,10 +96,15 @@ APP.AppController = function () {
     mapCommand(APP.AppEvents.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
   }
 
+  function createCommand(proto) {
+    return Object.create(proto.methods);
+    //_objectUtils.basicFactory(proto);
+  }
+
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: nudoru.utils.ObjectUtils.basicFactory
+    createCommand: createCommand
   };
 
 }();

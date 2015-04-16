@@ -7,7 +7,7 @@ Based on
 nudoru.createNameSpace('nudoru.events.EventDispatcher');
 nudoru.events.EventDispatcher = function () {
 
-  var _eventMap = {};
+  var _eventMap = Object.create(null);
 
   function subscribe(evtString, callback, once) {
     if(_eventMap[evtString] === undefined) {

@@ -4,7 +4,8 @@ APP = (function(global, rootView) {
   var _globalScope = global,
       _rootView = rootView,
       _self,
-      _globals;
+      _globals,
+      _objectUtils = require('nudoru.utils.ObjectUtils');
 
   //----------------------------------------------------------------------------
   //  Initialize
@@ -22,7 +23,7 @@ APP = (function(global, rootView) {
    * Initialize the global vars
    */
   function initGlobals() {
-    _globals = nudoru.utils.ObjectUtils.extend(BrowserInfo, {});
+    _globals = _objectUtils.extend(BrowserInfo, {});
 
     _globals.appConfig = APP_CONFIG_DATA;
 
@@ -34,7 +35,7 @@ APP = (function(global, rootView) {
    * @returns {void|*}
    */
   function globals() {
-    return nudoru.utils.ObjectUtils.extend({}, _globals);
+    return _objectUtils.extend({}, _globals);
   }
 
   //----------------------------------------------------------------------------

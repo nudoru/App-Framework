@@ -17,7 +17,7 @@ APP.AppController.AbstractCommand = {
     eventDispatcher: nudoru.events.EventDispatcher,
 
     execute: function(data) {
-      NDebugger.log('Abstract command executing with data: '+data);
+      console.log('Abstract command executing with data: '+data);
     }
   }
 };

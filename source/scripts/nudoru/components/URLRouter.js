@@ -6,7 +6,8 @@ Simple router, IE9 needs to be supported so using hashes
 nudoru.createNameSpace('nudoru.components.URLRouter');
 nudoru.components.URLRouter = function () {
   var _eventDispatcher,
-      _lastSetPath;
+      _lastSetPath,
+      _browserEvents = require('nudoru.events.BrowserEvents');
 
   function initialize() {
     _eventDispatcher = nudoru.events.EventDispatcher;
@@ -25,7 +26,7 @@ nudoru.components.URLRouter = function () {
       return;
     }
 
-    _eventDispatcher.publish(nudoru.events.BrowserEvents.URL_HASH_CHANGED, hash);
+    _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, hash);
   }
 
   /**

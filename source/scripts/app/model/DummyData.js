@@ -22,8 +22,11 @@ APP.AppModel.DummyData = (function(){
       _possibleTypes = ['WBT','ILT','VILT','App','Multimedia','Sharepoint','Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
       _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
       _possibleComplexity = ['High','Medium','Low'],
-      _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'];
-      _items = [];
+      _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
+      _items = [],
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _stringUtils = require('nudoru.utils.StringUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
 
   function getItems() {
     return _items;
@@ -31,6 +34,8 @@ APP.AppModel.DummyData = (function(){
 
   function initialize() {
     var i=0;
+
+    nudoru.utils.NLorem.initialize();
 
     for(i=0; i<20; i++) {
       _possibleContributors.push(nudoru.utils.NLorem.getLFName());
@@ -45,9 +50,9 @@ APP.AppModel.DummyData = (function(){
   function createItem() {
     var o = Object.create(APP.AppModel.ItemVO.properties),
         additionalImages = [],
-        additionalNumImages = nudoru.utils.NumberUtils.rndNumber(1,10),
+        additionalNumImages = _numberUtils.rndNumber(1,10),
         description = '',
-        descriptionNumParas = nudoru.utils.NumberUtils.rndNumber(1,5),
+        descriptionNumParas = _numberUtils.rndNumber(1,5),
         i = 0;
 
     for(;i<descriptionNumParas; i++) {
@@ -55,10 +60,10 @@ APP.AppModel.DummyData = (function(){
     }
 
     for(i=0;i<additionalNumImages; i++) {
-      additionalImages.push('img/' + nudoru.utils.ArrayUtils.rndElement(_possiblePreviewImages));
+      additionalImages.push('img/' + _arrayUtils.rndElement(_possiblePreviewImages));
     }
 
-    o.title = nudoru.utils.StringUtils.capitalizeFirstLetter(nudoru.utils.NLorem.getText(3,10));
+    o.title = _stringUtils.capitalizeFirstLetter(nudoru.utils.NLorem.getText(3,10));
     o.shortTitle = o.title.substr(0, 10) + '...';
     o.description = description;
     o.images = additionalImages;
@@ -66,15 +71,15 @@ APP.AppModel.DummyData = (function(){
     o.id = ''+_id++;
     o.dateStarted = 'January 1, 2010';
     o.dateCompleted = 'December 31, 2014';
-    o.quarter = 'Q'+nudoru.utils.NumberUtils.rndNumber(1,4).toString();
-    o.duration = nudoru.utils.NumberUtils.rndNumber(1,5).toString() + ' hour(s)';
-    o.contributors = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleContributors, 5);
-    o.categories = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleCategories, 1);
-    o.types = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleTypes, 3);
-    o.companyArea = nudoru.utils.ArrayUtils.rndElement(_possibleLobs);
-    o.complexity = nudoru.utils.ArrayUtils.rndElement(_possibleComplexity);
-    o.links = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleLinks, 5);
-    o.tags = nudoru.utils.ArrayUtils.getRandomSetOfElements(_possibleTags, 3);
+    o.quarter = 'Q'+_numberUtils.rndNumber(1,4).toString();
+    o.duration = _numberUtils.rndNumber(1,5).toString() + ' hour(s)';
+    o.contributors = _arrayUtils.getRandomSetOfElements(_possibleContributors, 5);
+    o.categories = _arrayUtils.getRandomSetOfElements(_possibleCategories, 1);
+    o.types = _arrayUtils.getRandomSetOfElements(_possibleTypes, 3);
+    o.companyArea = _arrayUtils.rndElement(_possibleLobs);
+    o.complexity = _arrayUtils.rndElement(_possibleComplexity);
+    o.links = _arrayUtils.getRandomSetOfElements(_possibleLinks, 5);
+    o.tags = _arrayUtils.getRandomSetOfElements(_possibleTags, 3);
     return o;
   }
 

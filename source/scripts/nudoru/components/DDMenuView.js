@@ -26,6 +26,10 @@ nudoru.components.DDMenuView = {
     lastTouchPosition: [],
     touchDeltaTolerance: 10,
     shouldProcessTouchEnd: false,
+    objectUtils: require('nudoru.utils.ObjectUtils'),
+    DOMUtils: require('nudoru.utils.DOMUtils'),
+    touchUtils: require('nudoru.utils.TouchUtils'),
+    componentEvents: require('nudoru.events.ComponentEvents'),
 
     initialize: function(data, keep) {
 
@@ -76,7 +80,7 @@ nudoru.components.DDMenuView = {
     },
 
     buildMenuItems: function(item) {
-      var menuitem = nudoru.utils.ObjectUtils.basicFactory(nudoru.components.BasicMenuItemView);
+      var menuitem = this.objectUtils.basicFactory(nudoru.components.BasicMenuItemView);
       menuitem.initialize(item);
       this.ddMenuEl.appendChild(menuitem.element);
       this.items.push(menuitem);
@@ -118,7 +122,7 @@ nudoru.components.DDMenuView = {
     },
 
     getTargetElMatching: function(el, cls) {
-      return nudoru.utils.DOMUtils.closest(el, cls);
+      return this.DOMUtils.closest(el, cls);
     },
 
     /**
@@ -133,12 +137,12 @@ nudoru.components.DDMenuView = {
     configureMobileStreams: function() {
       // Note - had problems getting RxJS to work correctly here, used events
       this.element.addEventListener('touchstart', (function(evt) {
-        this.firstTouchPosition = this.lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
+        this.firstTouchPosition = this.lastTouchPosition = this.touchUtils.getCoords(evt);
         this.shouldProcessTouchEnd = false;
       }).bind(this), false);
 
       this.element.addEventListener('touchmove', (function(evt) {
-        this.lastTouchPosition = nudoru.utils.TouchUtils.getCoords(evt);
+        this.lastTouchPosition = this.touchUtils.getCoords(evt);
       }).bind(this), false);
 
       var touchPressFunction = function(arg) {
@@ -194,7 +198,7 @@ nudoru.components.DDMenuView = {
         var item = this.getItemByValue(data);
         item.toggleSelect();
         item.showDepressEffect();
-        this.eventDispatcher.publish(nudoru.events.ComponentEvents.MENU_SELECT, data);
+        this.eventDispatcher.publish(this.componentEvents.MENU_SELECT, data);
       }
     },
 
@@ -224,11 +228,12 @@ nudoru.components.DDMenuView = {
 
     getItemByValue: function(value) {
       return this.items.filter(function(item) {
-        if(item.data.value === value) {
-          return true;
-        } else {
-          return false;
-        }
+        return (item.data.value === value);
+        //if(item.data.value === value) {
+        //  return true;
+        //} else {
+        //  return false;
+        //}
       })[0];
     },
 
@@ -312,6 +317,9 @@ nudoru.components.BasicMenuItemView = {
     iconDeselectedClass: null,
     iconSelectedClass: null,
     toggle: null,
+    stringUtils: require('nudoru.utils.StringUtils'),
+    DOMUtils: require('nudoru.utils.DOMUtils'),
+
 
     initialize: function(data) {
       this.data = data;
@@ -322,7 +330,7 @@ nudoru.components.BasicMenuItemView = {
         this.iconDeselectedClass = 'fa-circle-thin';
       }
 
-      data.label = nudoru.utils.StringUtils.toTitleCase(data.label);
+      data.label = this.stringUtils.toTitleCase(data.label);
 
       this.label = data.label;
 
@@ -349,8 +357,8 @@ nudoru.components.BasicMenuItemView = {
       this.selected = true;
 
       if(this.toggle) {
-        nudoru.utils.DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
-        nudoru.utils.DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
+        this.DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
+        this.DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
       }
     },
 
@@ -375,8 +383,8 @@ nudoru.components.BasicMenuItemView = {
       this.selected = false;
 
       if(this.toggle) {
-        nudoru.utils.DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
-        nudoru.utils.DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
+        this.DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
+        this.DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
       }
     },
 

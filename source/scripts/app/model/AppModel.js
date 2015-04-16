@@ -25,7 +25,9 @@ APP.AppModel = (function() {
       _currentFreeTextFilter,
       _currentDataFilters,
       _currentItem,
-      _filterProperties;
+      _filterProperties,
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _objectUtils = require('nudoru.utils.ObjectUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -171,7 +173,7 @@ APP.AppModel = (function() {
           }
         }
       });
-      filter.data = nudoru.utils.ArrayUtils.unique(props).sort();
+      filter.data = _arrayUtils.unique(props).sort();
       filter.menuData = getDataFormattedForMenu(filter.data);
     });
   }
@@ -218,7 +220,7 @@ APP.AppModel = (function() {
     });
 
     // Returns a clone of the item
-    return nudoru.utils.ObjectUtils.extend({}, items[0]);
+    return _objectUtils.extend({}, items[0]);
   }
 
   function handledFiltersUpdated() {
@@ -417,15 +419,6 @@ APP.AppModel = (function() {
             }
             return false;
           });
-
-    //console.log('filters: '+filters);
-    //console.log('query: '+query);
-    //console.log('search: '+search);
-    //console.log('item: '+item);
-
-    //setMultipleFilters(filterArry);
-    //setCurrentFreeTextFilter(search);
-    //setCurrentItem(item);
 
     _eventDispatcher.publish(APP.AppEvents.RESUME_FROM_MODEL_STATE,{filters: filterArry, search: search, item: item});
   }
