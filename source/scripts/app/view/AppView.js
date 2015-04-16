@@ -6,7 +6,6 @@ APP.AppView = (function() {
       _self,
       _appGlobals,
       _eventDispatcher,
-      _currentView,
       _currentViewPortSize,
       _currentViewPortScroll,
       _mainScrollEl,
@@ -19,6 +18,7 @@ APP.AppView = (function() {
       _mainHeaderEl,
       _mainFooterEl,
       _drawerToggleButtonEl,
+      _drawerToggleButtonInputEl,
       _toastView,
       _modalCoverView,
       _headerMenuView,
@@ -113,6 +113,7 @@ APP.AppView = (function() {
     _mainScrollEl = _appEl;
     _drawerEl = document.getElementById('drawer');
     _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > label');
+    _drawerToggleButtonInputEl = document.querySelector('.drawer__menu-spinner-button > input');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
@@ -341,12 +342,18 @@ APP.AppView = (function() {
 
   function openDrawer() {
     _isDrawerOpen = true;
+
+    _drawerToggleButtonInputEl.checked = false;
+
     TweenLite.to(_drawerEl, 0.5, {x:0, ease:Quad.easeOut});
     TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease:Quad.easeOut});
   }
 
   function closeDrawer() {
     _isDrawerOpen = false;
+
+    _drawerToggleButtonInputEl.checked = true;
+
     TweenLite.to(_drawerEl, 0.5, {x:_drawerWidth*-1, ease:Quad.easeOut});
     TweenLite.to(_appEl, 0.5, {x: 0, ease:Quad.easeOut});
   }

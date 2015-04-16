@@ -5,7 +5,6 @@ var NDebugger = (function() {
 
   function log(text, source) {
     _messages.push({
-      time: $.now(),
       source: source,
       text: text
     });

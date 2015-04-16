@@ -417,10 +417,10 @@ APP.AppView.ItemGridView = (function(){
 
     otheritems.forEach(function(item) {
       var itemPos = nudoru.utils.DOMUtils.position(item),
-        dist = nudoru.utils.NumberUtils.distanceTL(fromPos, itemPos)/3,
+        dist = nudoru.utils.NumberUtils.distanceTL(fromPos, itemPos)/2,
         pct = Math.max(1 - (dist / vpW), 0.35);
 
-      TweenLite.to(item, 3, {scale:pct, alpha:pct, ease:Quad.easeIn, delay: 1});
+      TweenLite.to(item, 2, {scale:pct, alpha:pct, ease:Quad.easeIn, delay: 1});
     });
 
   }

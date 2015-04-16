@@ -35,8 +35,9 @@ APP.AppView.ItemDetailView = (function() {
 
   function doShareAction() {
     var shareStr = 'mailto:?subject=I\'m sharing: '
-      +_currentItem.title+'&body=I thought you would like this ... <br><br>'
-      +'<a href="'+document.location.href+'">'+_currentItem.title+'</a><br><br>'
+      +_currentItem.title+'&body=I thought you would like this ... \n\n'
+      //+'<a href="'+document.location.href+'">'+_currentItem.title+'</a>\n\n'
+      +document.location.href+'\n\n'
       +_currentItem.description;
     var shareWin = window.open(shareStr);
     //shareWin.close();

@@ -1,11 +1,5 @@
 nudoru.createNameSpace('nudoru.utils.ObjectUtils');
 nudoru.utils.ObjectUtils = {
-  describeObject: function (obj) {
-    $.each(obj, function (index, value) {
-      NDebugger.log('DESCRIBE: '+index + ': ' + value);
-    });
-  },
-
   dynamicSort: function (property) {
     return function (a, b) {
       return a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;

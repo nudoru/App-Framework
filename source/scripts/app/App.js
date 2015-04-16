@@ -1,4 +1,4 @@
-var APP = APP || {};
+var APP = {};
 
 APP = (function(global, rootView) {
   var _globalScope = global,

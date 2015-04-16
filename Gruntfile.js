@@ -95,8 +95,6 @@ module.exports = function (grunt) {
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'source/scripts/vendor/packery.pkgd.min.js',
 
-          'source/scripts/nudoru/utils/NNameSpace.js',
-          'source/scripts/nudoru/utils/NImport.js',
           'source/scripts/nudoru/nudoru.js',
           'source/scripts/nudoru/utils/BrowserInfo.js',
           'source/scripts/nudoru/utils/utility.js',
