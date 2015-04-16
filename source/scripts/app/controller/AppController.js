@@ -11,11 +11,11 @@ APP.AppController = function () {
       _model,
       _view,
       _eventDispatcher,
-      _router,
       _self,
       _objectUtils = require('nudoru.utils.ObjectUtils'),
       _browserEvents = require('nudoru.events.BrowserEvents'),
-      _componentEvents = require('nudoru.events.ComponentEvents');
+      _componentEvents = require('nudoru.events.ComponentEvents'),
+      _URLRouter = require('nudoru.utils.URLRouter');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -27,9 +27,8 @@ APP.AppController = function () {
     _viewParent = viewParent;
     _self = this;
     _eventDispatcher = nudoru.events.EventDispatcher;
-    _router = nudoru.components.URLRouter;
 
-    _router.initialize();
+    _URLRouter.initialize();
 
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
 
@@ -97,8 +96,7 @@ APP.AppController = function () {
   }
 
   function createCommand(proto) {
-    return Object.create(proto.methods);
-    //_objectUtils.basicFactory(proto);
+    return _objectUtils.basicFactory(proto);
   }
 
   return {

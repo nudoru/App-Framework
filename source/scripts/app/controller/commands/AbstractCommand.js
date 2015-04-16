@@ -15,6 +15,7 @@ APP.AppController.AbstractCommand = {
     appModel: APP.AppModel,
     appView: APP.AppView,
     eventDispatcher: nudoru.events.EventDispatcher,
+    urlRouter: require('nudoru.utils.URLRouter'),
 
     execute: function(data) {
       console.log('Abstract command executing with data: '+data);

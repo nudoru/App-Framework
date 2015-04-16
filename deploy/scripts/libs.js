@@ -159,8 +159,7 @@ function require(id) {
       module = {exports: exports};
 
   if(!moduleCode) {
-    console.log('Require: module not found: "'+id+'"');
-    return;
+    throw new Error('Require: module not found: "'+id+'"');
   }
 
   // set scope to exports instead of moduleCode? browserify does ...
@@ -634,96 +633,93 @@ nudoru.components = (function() {
     };
 
   });
-;nudoru.createNameSpace('nudoru.utils.NTemplate');
-nudoru.utils.NTemplate = (function() {
+;define('nudoru.utils.NTemplate',
+  function(require, module, exports) {
 
-  var _templateHTMLCache = {},
+    var _templateHTMLCache = {},
       _templateCache = {},
       _DOMUtils = require('nudoru.utils.DOMUtils');
 
-  /**
-   * Get the template html from the script tag with id
-   * @param id
-   * @returns {*}
-   */
-  function getSource(id) {
-    if(_templateHTMLCache[id]) {
-      return _templateHTMLCache[id];
-    }
+    /**
+     * Get the template html from the script tag with id
+     * @param id
+     * @returns {*}
+     */
+    function getSource(id) {
+      if(_templateHTMLCache[id]) {
+        return _templateHTMLCache[id];
+      }
 
-    var src = document.getElementById(id),
+      var src = document.getElementById(id),
         srchtml = '',
         cleanhtml = '';
 
-    if(src) {
-      srchtml = src.innerHTML;
-    } else {
-      console.log('Template not found: "'+id+'"');
-      return '';
+      if(src) {
+        srchtml = src.innerHTML;
+      } else {
+        console.log('Template not found: "'+id+'"');
+        return '';
+      }
+
+      cleanhtml = cleanTemplateHTML(srchtml);
+      _templateHTMLCache[id] = cleanhtml;
+      return cleanhtml;
     }
 
-    cleanhtml = cleanTemplateHTML(srchtml);
-    _templateHTMLCache[id] = cleanhtml;
-    return cleanhtml;
-  }
-
-  /**
-   * Returns an underscore template
-   * @param id
-   * @returns {*}
-   */
-  function getTemplate(id) {
-    if(_templateCache[id]) {
-      return _templateCache[id];
+    /**
+     * Returns an underscore template
+     * @param id
+     * @returns {*}
+     */
+    function getTemplate(id) {
+      if(_templateCache[id]) {
+        return _templateCache[id];
+      }
+      var templ = _.template(getSource(id));
+      _templateCache[id] = templ;
+      return templ;
     }
-    var templ = _.template(getSource(id));
-    _templateCache[id] = templ;
-    return templ;
-  }
 
-  /**
-   * Processes the template and returns HTML
-   * @param id
-   * @param obj
-   * @returns {*}
-   */
-  function asHTML(id, obj) {
-    var temp = getTemplate(id);
-    return temp(obj);
-  }
+    /**
+     * Processes the template and returns HTML
+     * @param id
+     * @param obj
+     * @returns {*}
+     */
+    function asHTML(id, obj) {
+      var temp = getTemplate(id);
+      return temp(obj);
+    }
 
-  /**
-   * Processes the template and returns an HTML Element
-   * @param id
-   * @param obj
-   * @returns {*}
-   */
-  function asElement(id, obj) {
-    return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
-  }
+    /**
+     * Processes the template and returns an HTML Element
+     * @param id
+     * @param obj
+     * @returns {*}
+     */
+    function asElement(id, obj) {
+      return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
+    }
 
-  /**
-   * Cleans template HTML
-   */
-  function cleanTemplateHTML(str) {
-    //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
-    return str.trim();
-  }
+    /**
+     * Cleans template HTML
+     */
+    function cleanTemplateHTML(str) {
+      //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
+      return str.trim();
+    }
 
-  /**
-   * Public API
-   */
-  return {
-    getSource: getSource,
-    getTemplate: getTemplate,
-    asHTML: asHTML,
-    asElement: asElement
-  };
 
-}());
-;nudoru.createNameSpace('nudoru.utils.NLorem');
-nudoru.utils.NLorem = (function(){
-  var _currentText = [],
+    exports.getSource = getSource;
+    exports.getTemplate = getTemplate;
+    exports.asHTML = asHTML;
+    exports.asElement = asElement;
+
+  });
+;define('nudoru.utils.NLorem',
+  function(require, module, exports) {
+
+    var _currentText = [],
       _textSets = [],
       _maleFirstNames = [],
       _femaleFirstNames = [],
@@ -736,120 +732,164 @@ nudoru.utils.NLorem = (function(){
       _stringUtils = require('nudoru.utils.StringUtils'),
       _numberUtils = require('nudoru.utils.NumberUtils');
 
-  _textSets = [
-    "Lorem ipsum dolor sit amet consectetur adipiscing elit Donec libero urna vehicula in odio quis pharetra pharetra magna Quisque pharetra elit in eros volutpat fringilla Nunc vitae nunc mattis rhoncus augue sit amet tempus magna Suspendisse interdum urna eu consectetur vestibulum lorem ligula scelerisque tortor a tincidunt eros odio et lectus Fusce a quam erat Aliquam quis libero sed orci porta congue Mauris ultricies porttitor sem at lacinia Morbi mattis urna ac sapien vehicula interdum Pellentesque commodo nisi id lacus laoreet maximus Ut eget posuere leo sit amet molestie augue Nullam volutpat nulla sit amet convallis tempus tellus lorem fermentum quam eget vestibulum orci est id ex Sed fermentum justo et augue pulvinar vehicula Nullam malesuada justo euismod molestie justo ut finibus quam Nullam pharetra erat nec hendrerit volutpat",
-    "Perhaps a re-engineering of your current world view will re-energize your online nomenclature to enable a new holistic interactive enterprise internet communication solution Upscaling the resurgent networking exchange solutions, achieving a breakaway systemic electronic data interchange system synchronization, thereby exploiting technical environments for mission critical broad based capacity constrained systems Fundamentally transforming well designed actionable information whose semantic content is virtually null To more fully clarify the current exchange, a few aggregate issues will require addressing to facilitate this distributed communication venue In integrating non-aligned structures into existing legacy systems, a holistic gateway blueprint is a backward compatible packaging tangible of immeasurable strategic value in right-sizing conceptual frameworks when thinking outside the box This being said, the ownership issues inherent in dominant thematic implementations cannot be understated vis-a vis document distribution on a real operating system consisting primarily of elements regarded as outdated and therefore impelling as a integrated out sourcing avenue to facilitate multi-level name value pairing in static components In order to properly merge and articulate these core assets, an acquisition statement outlining the information architecture, leading to a ratcheting up of convergence across the organic platform is an opportunity without precedent in current applicability transactional modeling Implementing these goals requires a careful examination to encompass an increasing complex out sourcing disbursement to ensure the extant parameters are not exceeded while focusing on infrastructure cohesion Dynamic demand forecasting indicates that a mainstream approach may establish a basis for leading-edge information processing to insure the diversity of granularity in encompassing expansion of content provided within the multimedia framework under examination Empowerment in information design literacy demands the immediate and complete disregard of the entire contents of this cyberspace communication"
+    _textSets = [
+      "Perhaps a re-engineering of your current world view will re-energize your online nomenclature to enable a new holistic interactive enterprise internet communication solution Upscaling the resurgent networking exchange solutions, achieving a breakaway systemic electronic data interchange system synchronization, thereby exploiting technical environments for mission critical broad based capacity constrained systems Fundamentally transforming well designed actionable information whose semantic content is virtually null To more fully clarify the current exchange, a few aggregate issues will require addressing to facilitate this distributed communication venue In integrating non-aligned structures into existing legacy systems, a holistic gateway blueprint is a backward compatible packaging tangible"
+    ];
 
-  ];
+    _lastNames = 'Smith Johnson Williams Jones Brown Davis Miller Wilson Moore Taylor Anderson Thomas Jackson White Harris Martin Thompson Garcia Martinez Robinson Clark Rodriguez Lewis Lee Walker Hall Allen Young Hernandez King Wright Lopez Hill Scott Green Adams Baker Gonzalez Nelson Carter Mitchell Perez Roberts Turner Phillips Campbell Parker Evans Edwards Collins Stewart Sanchez Morris Rogers Reed Cook Morgan Bell Murphy'.split(' ');
 
-  _lastNames = 'Smith Johnson Williams Jones Brown Davis Miller Wilson Moore Taylor Anderson Thomas Jackson White Harris Martin Thompson Garcia Martinez Robinson Clark Rodriguez Lewis Lee Walker Hall Allen Young Hernandez King Wright Lopez Hill Scott Green Adams Baker Gonzalez Nelson Carter Mitchell Perez Roberts Turner Phillips Campbell Parker Evans Edwards Collins Stewart Sanchez Morris Rogers Reed Cook Morgan Bell Murphy Bailey Rivera Cooper Richardson Cox Howard Ward Torres Peterson Gray Ramirez James Watson Brooks Kelly Sanders Price Bennett Wood Barnes Ross Henderson Coleman Jenkins Perry Powell Long Patterson Hughes Flores Washington Butler Simmons Foster Gonzales Bryant Alexander Russell Griffin Diaz Hayes'.split(' ');
+    _maleFirstNames = 'Thomas Arthur Lewis Clarence Leonard Albert Paul Carl Ralph Roy Earl Samuel Howard Richard Francis Laurence Herbert Elmer Ernest Theodore David Alfred Donald Russell Eugene Andrew Kenneth Herman Jesse Lester Floyd Michael Edwin Clifford Benjamin Clyde Glen Oscar Daniel'.split(' ');
 
-  _maleFirstNames = 'Thomas Arthur Lewis Clarence Leonard Albert Paul Carl Ralph Roy Earl Samuel Howard Richard Francis Laurence Herbert Elmer Ernest Theodore David Alfred Donald Russell Eugene Andrew Kenneth Herman Jesse Lester Floyd Michael Edwin Clifford Benjamin Clyde Glen Oscar Daniel'.split(' ');
+    _femaleFirstNames = 'Elizabeth Ann Helen Margaret Ellen Catherine Lily Florence Ada Lou Ethel Emily Ruth Rose Frances Alice Bertha Clara Mabel Minnie Grace Jane Evelyn Gertrude Edna Pearl Laura Hazel Edith Esther Harriet Sarah May Matilda Martha Myrtle Josephin Maud Agnes Keri Julia Irene Mildred Cora'.split(' ');
 
-  _femaleFirstNames = 'Elizabeth Ann Helen Margaret Ellen Catherine Lily Florence Ada Lou Ethel Emily Ruth Rose Frances Alice Bertha Clara Mabel Minnie Grace Jane Evelyn Gertrude Edna Pearl Laura Hazel Edith Esther Harriet Sarah May Matilda Martha Myrtle Josephin Maud Agnes Keri Julia Irene Mildred Cora'.split(' ');
+    _punctuation = ['.','.','.','.','?','!'];
 
-  _punctuation = ['.','.','.','.','?','!'];
+    _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-  _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    _days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
 
-  _days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-
-  function initialize() {
-    if(_initialized) return;
-    setCurrentTextSet(1);
-    _initialized = true;
-  }
-
-  function setCurrentTextSet(index) {
-    var _current = _textSets[index].toLowerCase();
-    _currentText= _current.split(' ');
-  }
-
-  function getSentence(min,max) {
-    var sentence = getText(min, max);
-
-    return _stringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
-  }
-
-  function getParagraph(min, max) {
-    var str = "",
-      delim = " ",
-      len = _numberUtils.rndNumber(min, max),
-      i= 0;
-
-    for(; i<len; i++) {
-      if(i === len-1) {
-        delim = "";
-      }
-      str += getSentence(1,10) + delim;
+    function initialize() {
+      if(_initialized) return;
+      setCurrentTextSet(0);
+      _initialized = true;
     }
 
-    return str;
-  }
+    function setCurrentTextSet(index) {
+      var _current = _textSets[index].toLowerCase();
+      _currentText= _current.split(' ');
+    }
 
-  function getText(min, max) {
-    var str = "",
+    function getSentence(min,max) {
+      var sentence = getText(min, max);
+
+      return _stringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
+    }
+
+    function getParagraph(min, max) {
+      var str = "",
         delim = " ",
         len = _numberUtils.rndNumber(min, max),
         i= 0;
 
-    for(; i<len; i++) {
-      if(i === len-1) {
-        delim = "";
+      for(; i<len; i++) {
+        if(i === len-1) {
+          delim = "";
+        }
+        str += getSentence(1,10) + delim;
       }
-      str += getRandomItem(_currentText) + delim;
+
+      return str;
     }
 
-    return str;
-  }
+    function getText(min, max) {
+      var str = "",
+        delim = " ",
+        len = _numberUtils.rndNumber(min, max),
+        i= 0;
 
-  function getRandomItem(arry) {
-    var min = 0;
-    var max = arry.length-1;
-    return arry[_numberUtils.rndNumber(min, max)];
-  }
+      for(; i<len; i++) {
+        if(i === len-1) {
+          delim = "";
+        }
+        str += getRandomItem(_currentText) + delim;
+      }
 
-  function getFirstName() {
-    return _numberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
-  }
+      return str;
+    }
 
-  function getLastName() {
-    return getRandomItem(_lastNames);
-  }
+    function getRandomItem(arry) {
+      var min = 0;
+      var max = arry.length-1;
+      return arry[_numberUtils.rndNumber(min, max)];
+    }
 
-  function getFLName() {
-    return getFirstName() + " " + getLastName();
-  }
+    function getFirstName() {
+      return _numberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
+    }
 
-  function getLFName() {
-    return getLastName() + ", " + getFirstName();
-  }
+    function getLastName() {
+      return getRandomItem(_lastNames);
+    }
 
-  function getDate() {
-    var month = _numberUtils.rndNumber(0,11),
+    function getFLName() {
+      return getFirstName() + " " + getLastName();
+    }
+
+    function getLFName() {
+      return getLastName() + ", " + getFirstName();
+    }
+
+    function getDate() {
+      var month = _numberUtils.rndNumber(0,11),
         wkday = _numberUtils.rndNumber(0,4);
 
-    return {
-      monthNumber: month + 1,
-      monthName: _months[month],
-      monthDay: _numberUtils.rndNumber(1,28),
-      weekDayNumber: wkday + 1,
-      weekDay: _days[wkday],
-      year: _arrayUtils.rndElement(['2010','2011','2012','2013','2014'])
-    };
-  }
+      return {
+        monthNumber: month + 1,
+        monthName: _months[month],
+        monthDay: _numberUtils.rndNumber(1,28),
+        weekDayNumber: wkday + 1,
+        weekDay: _days[wkday],
+        year: _arrayUtils.rndElement(['2010','2011','2012','2013','2014'])
+      };
+    }
 
-  return {
-    initialize: initialize,
-    getText: getText,
-    getSentence: getSentence,
-    getParagraph: getParagraph,
-    getFLName: getFLName,
-    getLFName: getLFName,
-    getDate: getDate
-  };
+    exports.initialize = initialize;
+    exports.getText = getText;
+    exports.getSentence = getSentence;
+    exports.getParagraph = getParagraph;
+    exports.getFLName = getFLName;
+    exports.getLFName = getLFName;
+    exports.getDate = getDate;
 
-}());;nudoru.createNameSpace('nudoru.events.EventDispatcher');
+  });;define('nudoru.utils.URLRouter',
+  function(require, module, exports) {
+
+    var _eventDispatcher,
+      _lastSetPath,
+      _browserEvents = require('nudoru.events.BrowserEvents');
+
+    function initialize() {
+      _eventDispatcher = nudoru.events.EventDispatcher;
+      _lastSetPath = '';
+
+      configureStreams();
+    }
+
+    function configureStreams() {
+      window.addEventListener('hashchange', onHashChange, false);
+    }
+
+    function onHashChange(evt) {
+      var hash = getURLHash();
+      if(hash === _lastSetPath) {
+        return;
+      }
+
+      _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, hash);
+    }
+
+    /**
+     * Returns everything after the 'whatever.html#' in the URL
+     * Leading and trailing slashes are removed
+     * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
+     *
+     * @returns {string}
+     */
+    function getURLHash() {
+      var hash = location.hash.slice(1);
+      return hash.toString().replace(/\/$/, '').replace(/^\//, '');
+    }
+
+    function updateURLHash(path) {
+      _lastSetPath = path;
+      window.location.hash = path;
+    }
+
+    exports.initialize = initialize;
+    exports.getRoute = getURLHash;
+    exports.setRoute = updateURLHash;
+
+  });;nudoru.createNameSpace('nudoru.events.EventDispatcher');
 nudoru.events.EventDispatcher = function () {
 
   var _eventMap = Object.create(null);
@@ -988,10 +1028,10 @@ nudoru.events.EventCommandMap = (function(){
     exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
     exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
     exports.MENU_SELECT = 'MENU_SELECT';
-  });;nudoru.createNameSpace('nudoru.components.FloatImageView');
-nudoru.components.FloatImageView = (function() {
+  });;define('nudoru.components.FloatImageView',
+  function(require, module, exports) {
 
-  var _coverDivID = 'floatimage__cover',
+    var _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',
       _zoomedImageClass = 'floatimage__zoomedimage',
       _viewPortCoverEl,
@@ -1003,88 +1043,88 @@ nudoru.components.FloatImageView = (function() {
       _DOMUtils = require('nudoru.utils.DOMUtils'),
       _numberUtils = require('nudoru.utils.NumberUtils');
 
-  /**
-   * Entry point, initialize elements and hide cover
-   */
-  function initialize() {
-    _viewPortCoverEl = document.getElementById(_coverDivID);
-    _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
+    /**
+     * Entry point, initialize elements and hide cover
+     */
+    function initialize() {
+      _viewPortCoverEl = document.getElementById(_coverDivID);
+      _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
 
-    _fancyEffects = !BrowserInfo.isIE;
+      _fancyEffects = !BrowserInfo.isIE;
 
-    hideFloatImageCover();
+      hideFloatImageCover();
 
-    _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, BrowserInfo.mouseClickEvtStr())
-      .subscribe(function() {
-        hideFloatImageCover();
+      _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, BrowserInfo.mouseClickEvtStr())
+        .subscribe(function() {
+          hideFloatImageCover();
+        });
+    }
+
+    /**
+     * Apply functionality to div/container of div>img 's
+     * @param container
+     */
+    function apply(container) {
+      getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+
+        _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+
+        el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
+
+        //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+
+        if(!BrowserInfo.mobile.any()) {
+          el.addEventListener('mouseover', onImageOver, false);
+          el.addEventListener('mouseout', onImageOut, false);
+        }
+
       });
-  }
+    }
 
-  /**
-   * Apply functionality to div/container of div>img 's
-   * @param container
-   */
-  function apply(container) {
-    getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+    function setScrollingView(el) {
+      _scrollingView = el;
+    }
 
-      _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+    function onImageOver(evt) {
+      if(_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+      } else {
+        TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
 
-      el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
+      }
+    }
 
-      //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
-
-      if(!BrowserInfo.mobile.any()) {
-        el.addEventListener('mouseover', onImageOver, false);
-        el.addEventListener('mouseout', onImageOut, false);
+    function onImageOut(evt) {
+      if(_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+      } else {
+        TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
       }
 
-    });
-  }
-
-  function setScrollingView(el) {
-    _scrollingView = el;
-  }
-
-  function onImageOver(evt) {
-    if(_fancyEffects) {
-      TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
-    } else {
-      TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
-
-    }
-  }
-
-  function onImageOut(evt) {
-    if(_fancyEffects) {
-      TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
-    } else {
-      TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
     }
 
-  }
-
-  /**
-   * Show the image when the image element is clicked
-   * @param evt
-   */
-  function onImageClick(evt) {
-    showImage(evt.target);
-  }
-
-  /**
-   * Present the image that was clicked
-   * @param imageEl
-   */
-  function showImage(imageEl) {
-    // Will happen if you click on the icon
-    if(imageEl.tagName.toLowerCase() === 'div') {
-      _currentImageElement = imageEl.querySelector('img');
-    } else {
-      _currentImageElement = imageEl;
+    /**
+     * Show the image when the image element is clicked
+     * @param evt
+     */
+    function onImageClick(evt) {
+      showImage(evt.target);
     }
 
-    // Calculations
-    var vpFill = 0.75,
+    /**
+     * Present the image that was clicked
+     * @param imageEl
+     */
+    function showImage(imageEl) {
+      // Will happen if you click on the icon
+      if(imageEl.tagName.toLowerCase() === 'div') {
+        _currentImageElement = imageEl.querySelector('img');
+      } else {
+        _currentImageElement = imageEl;
+      }
+
+      // Calculations
+      var vpFill = 0.75,
         imgSrc = _currentImageElement.getAttribute('src'),
         imgAlt = _currentImageElement.getAttribute('alt'),
         imgWidth = _currentImageElement.clientWidth,
@@ -1104,140 +1144,138 @@ nudoru.components.FloatImageView = (function() {
         imgTargetWidth,
         imgTargetHeight;
 
-    if(vpRatio > imgRatio) {
-      imgTargetScale = vpHeight * vpFill / imgHeight;
-    } else {
-      imgTargetScale = vpWidth * vpFill / imgWidth;
-    }
+      if(vpRatio > imgRatio) {
+        imgTargetScale = vpHeight * vpFill / imgHeight;
+      } else {
+        imgTargetScale = vpWidth * vpFill / imgWidth;
+      }
 
-    imgTargetWidth = imgWidth * imgTargetScale;
-    imgTargetHeight = imgHeight * imgTargetScale;
+      imgTargetWidth = imgWidth * imgTargetScale;
+      imgTargetHeight = imgHeight * imgTargetScale;
 
-    imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
-    imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
+      imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
+      imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
 
-    var zoomImage = _DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
+      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
 
-    zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
-    zoomImage.style.left = imgOriginX+'px';
-    zoomImage.style.top = imgOriginY+'px';
-    zoomImage.style.width = imgWidth+'px';
-    zoomImage.style.height = imgHeight+'px';
+      zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
+      zoomImage.style.left = imgOriginX+'px';
+      zoomImage.style.top = imgOriginY+'px';
+      zoomImage.style.width = imgWidth+'px';
+      zoomImage.style.height = imgHeight+'px';
 
-    _viewPortCoverEl.appendChild(zoomImage);
+      _viewPortCoverEl.appendChild(zoomImage);
 
-    // fade source image on screen
-    TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
+      // fade source image on screen
+      TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
 
-    if(_fancyEffects) {
-      // further from the center, the greate the effect
-      var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
+      if(_fancyEffects) {
+        // further from the center, the greate the effect
+        var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
-      if(startingRot <= 0) {
-        startingRot = Math.min(startingRot, -20);
-        origin = 'left top';
+        if(startingRot <= 0) {
+          startingRot = Math.min(startingRot, -20);
+          origin = 'left top';
+        } else {
+          startingRot = Math.max(startingRot, 20);
+          origin = 'right top';
+        }
+
+        TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+
+        var tl = new TimelineLite();
+        tl.to(zoomImage,0.25, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, y:'+50', ease:Back.easeInOut});
+        tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
+
       } else {
-        startingRot = Math.max(startingRot, 20);
-        origin = 'right top';
+        TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
       }
 
-      TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+      showFloatImageCover();
 
-      var tl = new TimelineLite();
-      tl.to(zoomImage,0.25, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, y:'+50', ease:Back.easeInOut});
-      tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
-
-    } else {
-      TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
-    }
-
-    showFloatImageCover();
-
-    // Caption
-    if(imgAlt.length >= 1) {
-      _captionEl.innerHTML = '<p>'+imgAlt+'</p>';
-    } else {
-      _captionEl.innerHTML = '';
-    }
-
-  }
-
-  /**
-   * Remove functionality to div/container of div>img 's
-   * @param container
-   */
-  function remove(container) {
-    if(!container) {
-      return;
-    }
-
-    _scrollingView = document.body;
-
-    getFloatingElementsInContainerAsArray(container).forEach(function(el) {
-      el.removeEventListener('click', onImageClick);
-      if(!BrowserInfo.mobile.any()) {
-        el.removeEventListener('mouseover', onImageOver);
-        el.removeEventListener('mouseout', onImageOut);
+      // Caption
+      if(imgAlt.length >= 1) {
+        _captionEl.innerHTML = '<p>'+imgAlt+'</p>';
+      } else {
+        _captionEl.innerHTML = '';
       }
-    });
-  }
 
-  /**
-   * Get an array of elements in the container returned as Array instead of a Node list
-   * @param container
-   * @returns {*}
-   */
-  function getFloatingElementsInContainerAsArray(container) {
-    if(!_DOMUtils.isDomObj(container)) {
-      return [];
-    }
-    return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
-  }
-
-  /**
-   * Show the div covering the UI
-   */
-  function showFloatImageCover() {
-    TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 1, ease:Circ.easeOut});
-  }
-
-  /**
-   * Hide the div covering the UI
-   */
-  function hideFloatImageCover() {
-    if(_currentImageElement) {
-      TweenLite.to(_currentImageElement, 0.1, {alpha:1, ease:Circ.easeOut});
-      _currentImageElement = null;
     }
 
-    TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 0, ease:Circ.easeOut, onComplete:hideFloatImageCoverComplete});
-  }
+    /**
+     * Remove functionality to div/container of div>img 's
+     * @param container
+     */
+    function remove(container) {
+      if(!container) {
+        return;
+      }
 
-  /**
-   * The enlarged image is present during the cover fade out, remove it when that's completed
-   */
-  function hideFloatImageCoverComplete() {
-    var zoomedImage = _viewPortCoverEl.querySelector('.'+_zoomedImageClass);
-    if(zoomedImage) {
-      _viewPortCoverEl.removeChild(zoomedImage);
+      _scrollingView = document.body;
+
+      getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+        el.removeEventListener('click', onImageClick);
+        if(!BrowserInfo.mobile.any()) {
+          el.removeEventListener('mouseover', onImageOver);
+          el.removeEventListener('mouseout', onImageOut);
+        }
+      });
     }
-  }
 
-  /**
-   * Public API
-   */
-  return {
-    initialize: initialize,
-    apply: apply,
-    setScrollingView: setScrollingView,
-    remove: remove
-  };
+    /**
+     * Get an array of elements in the container returned as Array instead of a Node list
+     * @param container
+     * @returns {*}
+     */
+    function getFloatingElementsInContainerAsArray(container) {
+      if(!_DOMUtils.isDomObj(container)) {
+        return [];
+      }
+      return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
+    }
 
-}());;nudoru.createNameSpace('nudoru.components.ModalCoverView');
+    /**
+     * Show the div covering the UI
+     */
+    function showFloatImageCover() {
+      TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 1, ease:Circ.easeOut});
+    }
 
-nudoru.components.ModalCoverView = (function() {
-  var _modalCoverEl,
+    /**
+     * Hide the div covering the UI
+     */
+    function hideFloatImageCover() {
+      if(_currentImageElement) {
+        TweenLite.to(_currentImageElement, 0.1, {alpha:1, ease:Circ.easeOut});
+        _currentImageElement = null;
+      }
+
+      TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 0, ease:Circ.easeOut, onComplete:hideFloatImageCoverComplete});
+    }
+
+    /**
+     * The enlarged image is present during the cover fade out, remove it when that's completed
+     */
+    function hideFloatImageCoverComplete() {
+      var zoomedImage = _viewPortCoverEl.querySelector('.'+_zoomedImageClass);
+      if(zoomedImage) {
+        _viewPortCoverEl.removeChild(zoomedImage);
+      }
+    }
+
+    /**
+     * Public API
+     */
+    exports.initialize = initialize;
+    exports.apply = apply;
+    exports.setScrollingView = setScrollingView;
+    exports.remove = remove;
+
+
+  });;define('nudoru.components.ModalCoverView',
+  function(require, module, exports) {
+    var _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
       _modalClickStream,
@@ -1245,104 +1283,106 @@ nudoru.components.ModalCoverView = (function() {
       _eventDispatcher,
       _componentEvents = require('nudoru.events.ComponentEvents');
 
-  function initialize() {
-    _eventDispatcher = nudoru.events.EventDispatcher;
+    function initialize() {
+      _eventDispatcher = nudoru.events.EventDispatcher;
 
-    _isVisible = true;
+      _isVisible = true;
 
-    _modalCoverEl = document.getElementById('modal__cover');
-    _modalBackgroundEl = document.querySelector('.modal__background');
-    _modalCloseButtonEl = document.querySelector('.modal__close-button');
+      _modalCoverEl = document.getElementById('modal__cover');
+      _modalBackgroundEl = document.querySelector('.modal__background');
+      _modalCloseButtonEl = document.querySelector('.modal__close-button');
 
-    var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, BrowserInfo.mouseClickEvtStr()),
-      modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, BrowserInfo.mouseClickEvtStr());
+      var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, BrowserInfo.mouseClickEvtStr()),
+        modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, BrowserInfo.mouseClickEvtStr());
 
-    _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
-      .subscribe(function() {
-        onModalClick();
-      });
-  }
-
-  function getIsVisible() {
-    return _isVisible;
-  }
-
-  function onModalClick() {
-    hide(true);
-  }
-
-  function show(animate) {
-    if(_isVisible) {
-      return;
+      _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
+        .subscribe(function() {
+          onModalClick();
+        });
     }
-    _isVisible = true;
-    var duration = animate ? 0.25 : 0;
-    TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
-    TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
 
-    _eventDispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
-  }
-
-  function hide(animate) {
-    if(!_isVisible) {
-      return;
+    function getIsVisible() {
+      return _isVisible;
     }
-    _isVisible = false;
-    var duration = animate ? 0.25 : 0;
-    TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
-    TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
-    TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
 
-    _eventDispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
-  }
+    function onModalClick() {
+      hide(true);
+    }
 
-  return {
-    initialize: initialize,
-    show: show,
-    hide: hide,
-    visible: getIsVisible
-  };
+    function show(animate) {
+      if(_isVisible) {
+        return;
+      }
+      _isVisible = true;
+      var duration = animate ? 0.25 : 0;
+      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
+      TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
 
-}());;nudoru.createNameSpace('nudoru.components.ToastView');
-nudoru.components.ToastView = (function(){
+      _eventDispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
+    }
 
-  var _children = [],
+    function hide(animate) {
+      if(!_isVisible) {
+        return;
+      }
+      _isVisible = false;
+      var duration = animate ? 0.25 : 0;
+      TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
+      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
+      TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
+
+      _eventDispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
+    }
+
+    exports.initialize = initialize;
+    exports.show = show;
+    exports.hide = hide;
+    exports.visible = getIsVisible;
+
+  });;define('nudoru.components.ToastView',
+  function(require, module, exports) {
+
+    var _children = [],
       _counter = 0,
       _defaultExpireDuration = 7000,
       _containerEl,
-      _templateToast = nudoru.utils.NTemplate.getTemplate('template__component--toast'),
+      _templateToast,
+      _template = require('nudoru.utils.NTemplate'),
       _DOMUtils = require('nudoru.utils.DOMUtils');
 
-  function initialize(elID) {
-    _containerEl = document.getElementById(elID);
-  }
+    function initialize(elID) {
+      _containerEl = document.getElementById(elID);
+      _templateToast = _template.getTemplate('template__component--toast');
+    }
 
-  function add(title, message, button) {
-    button = button || 'OK';
-    var newToast = createToastObject(title, message, button);
+    function add(title, message, button) {
+      button = button || 'OK';
 
-    _containerEl.insertBefore(newToast.element, _containerEl.firstChild);
-    newToast.index = _children.length;
-    newToast.height = newToast.element.clientHeight;
+      var newToast = createToastObject(title, message, button);
 
-    var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
+      _containerEl.insertBefore(newToast.element, _containerEl.firstChild);
+
+      newToast.index = _children.length;
+      newToast.height = newToast.element.clientHeight;
+
+      var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
         closeBtnSteam = Rx.Observable.fromEvent(closeBtn, BrowserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
-    newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
-      .subscribe(function() {
-        remove(newToast.id);
-      });
+      newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+        .subscribe(function() {
+          remove(newToast.id);
+        });
 
-    _children.push(newToast);
+      _children.push(newToast);
 
-    transitionIn(newToast.element);
+      transitionIn(newToast.element);
 
-    return newToast.id;
-  }
+      return newToast.id;
+    }
 
-  function createToastObject(title,message,button) {
-    var id = 'toast' + (_counter++).toString(),
+    function createToastObject(title,message,button) {
+      var id = 'toast' + (_counter++).toString(),
         obj = {
           id: id,
           index: -1,
@@ -1356,89 +1396,87 @@ nudoru.components.ToastView = (function(){
           lifeTimeStream: null
         };
 
-    obj.element = _DOMUtils.HTMLStrToNode(obj.html);
-    return obj;
-  }
-
-  function transitionIn(el) {
-    TweenLite.to(el,0,{alpha: 0});
-    TweenLite.to(el,1, {alpha: 1, ease: Quad.easeOut});
-    rearrangeToasts();
-  }
-
-  function transitionOut(el) {
-    TweenLite.to(el, 0.25, {left: '+=300', ease: Quad.easeIn, onComplete: function() {
-      onTransitionOutComplete(el);
-    }});
-  }
-
-  function onTransitionOutComplete(el) {
-    var toastIdx = getToastIndexByID(el.getAttribute('id')),
-      toast = _children[toastIdx];
-
-    _containerEl.removeChild(el);
-
-    _children[toastIdx] = null;
-
-    _children.splice(toast.index, 1);
-    reindex();
-  }
-
-  function reindex() {
-    var i = 0,
-      len=_children.length;
-
-    for(; i<len; i++) {
-      _children[i].index = i;
+      obj.element = _DOMUtils.HTMLStrToNode(obj.html);
+      return obj;
     }
-  }
 
-  function rearrangeToasts(ignore) {
-    var i = _children.length - 1,
-      current,
-      y = 0;
-
-    for(;i>-1; i--) {
-      if(i === ignore) {
-        continue;
-      }
-      current = _children[i];
-      TweenLite.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
-      y += 10 + current.height;
+    function transitionIn(el) {
+      TweenLite.to(el,0,{alpha: 0});
+      TweenLite.to(el,1, {alpha: 1, ease: Quad.easeOut});
+      rearrangeToasts();
     }
-  }
 
-  function getToastIndexByID(id) {
-    var len = _children.length,
-      i = 0;
+    function transitionOut(el) {
+      TweenLite.to(el, 0.25, {left: '+=300', ease: Quad.easeIn, onComplete: function() {
+        onTransitionOutComplete(el);
+      }});
+    }
 
-    for(; i<len; i++) {
-      if(_children[i].id === id) {
-        return i;
+    function onTransitionOutComplete(el) {
+      var toastIdx = getToastIndexByID(el.getAttribute('id')),
+        toast = _children[toastIdx];
+
+      _containerEl.removeChild(el);
+
+      _children[toastIdx] = null;
+
+      _children.splice(toast.index, 1);
+      reindex();
+    }
+
+    function reindex() {
+      var i = 0,
+        len=_children.length;
+
+      for(; i<len; i++) {
+        _children[i].index = i;
       }
     }
 
-    return -1;
-  }
+    function rearrangeToasts(ignore) {
+      var i = _children.length - 1,
+        current,
+        y = 0;
 
-  function remove(id) {
-    var toastIndex = getToastIndexByID(id),
-      toast;
-
-    if(toastIndex > -1) {
-      toast = _children[toastIndex];
-      transitionOut(toast.element);
-      rearrangeToasts(toast.index);
+      for(;i>-1; i--) {
+        if(i === ignore) {
+          continue;
+        }
+        current = _children[i];
+        TweenLite.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
+        y += 10 + current.height;
+      }
     }
-  }
 
-  return {
-    initialize: initialize,
-    add: add,
-    remove: remove
-  };
+    function getToastIndexByID(id) {
+      var len = _children.length,
+        i = 0;
 
-}());;nudoru.createNameSpace('nudoru.components.DDMenuBarView');
+      for(; i<len; i++) {
+        if(_children[i].id === id) {
+          return i;
+        }
+      }
+
+      return -1;
+    }
+
+    function remove(id) {
+      var toastIndex = getToastIndexByID(id),
+        toast;
+
+      if(toastIndex > -1) {
+        toast = _children[toastIndex];
+        transitionOut(toast.element);
+        rearrangeToasts(toast.index);
+      }
+    }
+
+    exports.initialize = initialize;
+    exports.add = add;
+    exports.remove = remove;
+
+  });;nudoru.createNameSpace('nudoru.components.DDMenuBarView');
 nudoru.components.DDMenuBarView = {
   methods: {
 
@@ -1537,6 +1575,7 @@ nudoru.components.DDMenuView = {
     DOMUtils: require('nudoru.utils.DOMUtils'),
     touchUtils: require('nudoru.utils.TouchUtils'),
     componentEvents: require('nudoru.events.ComponentEvents'),
+    template: require('nudoru.utils.NTemplate'),
 
     initialize: function(data, keep) {
 
@@ -1557,7 +1596,7 @@ nudoru.components.DDMenuView = {
     },
 
     render: function() {
-      this.element = nudoru.utils.NTemplate.asElement('template__menu-header', this.data);
+      this.element = this.template.asElement('template__menu-header', this.data);
       this.ddMenuEl = this.element.querySelector('ul');
       this.anchorElement = this.element.querySelector('button');
       this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
@@ -1826,7 +1865,7 @@ nudoru.components.BasicMenuItemView = {
     toggle: null,
     stringUtils: require('nudoru.utils.StringUtils'),
     DOMUtils: require('nudoru.utils.DOMUtils'),
-
+    template: require('nudoru.utils.NTemplate'),
 
     initialize: function(data) {
       this.data = data;
@@ -1848,9 +1887,9 @@ nudoru.components.BasicMenuItemView = {
 
     render: function() {
       if(this.toggle) {
-        this.element = nudoru.utils.NTemplate.asElement('template__menu-item-icon', this.data);
+        this.element = this.template.asElement('template__menu-item-icon', this.data);
       } else {
-        this.element = nudoru.utils.NTemplate.asElement('template__menu-item', this.data);
+        this.element = this.template.asElement('template__menu-item', this.data);
       }
 
       this.iconElement = this.element.querySelector('i');
@@ -1904,56 +1943,7 @@ nudoru.components.BasicMenuItemView = {
     }
 
   }
-};;nudoru.createNameSpace('nudoru.components.URLRouter');
-nudoru.components.URLRouter = function () {
-  var _eventDispatcher,
-      _lastSetPath,
-      _browserEvents = require('nudoru.events.BrowserEvents');
-
-  function initialize() {
-    _eventDispatcher = nudoru.events.EventDispatcher;
-    _lastSetPath = '';
-
-    configureStreams();
-  }
-
-  function configureStreams() {
-    window.addEventListener('hashchange', onHashChange, false);
-  }
-
-  function onHashChange(evt) {
-    var hash = getURLHash();
-    if(hash === _lastSetPath) {
-      return;
-    }
-
-    _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, hash);
-  }
-
-  /**
-   * Returns everything after the 'whatever.html#' in the URL
-   * Leading and trailing slashes are removed
-   * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
-   *
-   * @returns {string}
-   */
-  function getURLHash() {
-    var hash = location.hash.slice(1);
-    return hash.toString().replace(/\/$/, '').replace(/^\//, '');
-  }
-
-  function updateURLHash(path) {
-    _lastSetPath = path;
-    window.location.hash = path;
-  }
-
-  return {
-    initialize: initialize,
-    getRoute: getURLHash,
-    setRoute: updateURLHash
-  };
-
-}();;var APP = {};
+};;var APP = {};
 
 APP = (function(global, rootView) {
   var _globalScope = global,
@@ -2543,6 +2533,7 @@ APP.AppModel.DummyData = (function(){
       _possibleComplexity = ['High','Medium','Low'],
       _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
       _items = [],
+      _lorem = require('nudoru.utils.NLorem'),
       _arrayUtils = require('nudoru.utils.ArrayUtils'),
       _stringUtils = require('nudoru.utils.StringUtils'),
       _numberUtils = require('nudoru.utils.NumberUtils');
@@ -2554,10 +2545,10 @@ APP.AppModel.DummyData = (function(){
   function initialize() {
     var i=0;
 
-    nudoru.utils.NLorem.initialize();
+    _lorem.initialize();
 
     for(i=0; i<20; i++) {
-      _possibleContributors.push(nudoru.utils.NLorem.getLFName());
+      _possibleContributors.push(_lorem.getLFName());
     }
 
     for(i=0; i<100; i++) {
@@ -2575,14 +2566,14 @@ APP.AppModel.DummyData = (function(){
         i = 0;
 
     for(;i<descriptionNumParas; i++) {
-      description += '<p>'+nudoru.utils.NLorem.getParagraph(3,7)+'</p>';
+      description += '<p>'+_lorem.getParagraph(3,7)+'</p>';
     }
 
     for(i=0;i<additionalNumImages; i++) {
       additionalImages.push('img/' + _arrayUtils.rndElement(_possiblePreviewImages));
     }
 
-    o.title = _stringUtils.capitalizeFirstLetter(nudoru.utils.NLorem.getText(3,10));
+    o.title = _stringUtils.capitalizeFirstLetter(_lorem.getText(3,10));
     o.shortTitle = o.title.substr(0, 10) + '...';
     o.description = description;
     o.images = additionalImages;
@@ -2601,8 +2592,6 @@ APP.AppModel.DummyData = (function(){
     o.tags = _arrayUtils.getRandomSetOfElements(_possibleTags, 3);
     return o;
   }
-
-
 
   return {
     initialize: initialize,
@@ -2630,8 +2619,6 @@ APP.AppView = (function() {
       _mainFooterEl,
       _drawerToggleButtonEl,
       _drawerToggleButtonInputEl,
-      _toastView,
-      _modalCoverView,
       _headerMenuView,
       _drawerMenuView,
       _itemGridView,
@@ -2649,6 +2636,8 @@ APP.AppView = (function() {
       _phoneBreakWidth,
       _drawerWidth,
       _isDrawerOpen,
+      _toastView = require('nudoru.components.ToastView'),
+      _modalCoverView = require('nudoru.components.ModalCoverView'),
       _browserEvents = require('nudoru.events.BrowserEvents'),
       _componentEvents = require('nudoru.events.ComponentEvents'),
       _objectUtils = require('nudoru.utils.ObjectUtils'),
@@ -2733,10 +2722,8 @@ APP.AppView = (function() {
   }
 
   function initializeComponents() {
-    _toastView = nudoru.components.ToastView;
     _toastView.initialize('toast__container');
 
-    _modalCoverView = nudoru.components.ModalCoverView;
     _modalCoverView.initialize();
 
     // init on these called later
@@ -3655,6 +3642,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     fancyEffects: false,
     animating: false,
     DOMUtils: require('nudoru.utils.DOMUtils'),
+    template: require('nudoru.utils.NTemplate'),
 
     getID: function() {
       if(this.data) {
@@ -3671,7 +3659,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     },
 
     render: function() {
-      this.element = nudoru.utils.NTemplate.asElement('template__item-tile', this.data);
+      this.element = this.template.asElement('template__item-tile', this.data);
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');
@@ -3813,21 +3801,21 @@ APP.AppView.ItemGridView.AbstractGridItem = {
 
 APP.AppView.ItemDetailView = (function() {
   var _containerEl,
-      _floatImageView,
       _shareButtonEl,
-      _currentItem;
+      _currentItem,
+      _template = require('nudoru.utils.NTemplate'),
+      _floatImageView = require('nudoru.components.FloatImageView');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
 
-    _floatImageView = nudoru.components.FloatImageView;
     _floatImageView.initialize();
   }
 
   function showItem(item) {
     _currentItem = item;
 
-    _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-item', _currentItem);
+    _containerEl.innerHTML = _template.asHTML('template__detail-item', _currentItem);
 
     _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
     _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
@@ -3885,7 +3873,8 @@ APP.AppView.ItemDetailView = (function() {
 APP.AppView.TagBarView = (function() {
   var _containerEl,
       _currentTags,
-      _arrayUtils = require('nudoru.utils.ArrayUtils');
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _template = require('nudoru.utils.NTemplate');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -3930,7 +3919,7 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var tagnode = nudoru.utils.NTemplate.asElement('template__tag-bar', {tag: tag});
+    var tagnode = _template.asElement('template__tag-bar', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
@@ -3970,11 +3959,11 @@ APP.AppController = function () {
       _model,
       _view,
       _eventDispatcher,
-      _router,
       _self,
       _objectUtils = require('nudoru.utils.ObjectUtils'),
       _browserEvents = require('nudoru.events.BrowserEvents'),
-      _componentEvents = require('nudoru.events.ComponentEvents');
+      _componentEvents = require('nudoru.events.ComponentEvents'),
+      _URLRouter = require('nudoru.utils.URLRouter');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -3986,9 +3975,8 @@ APP.AppController = function () {
     _viewParent = viewParent;
     _self = this;
     _eventDispatcher = nudoru.events.EventDispatcher;
-    _router = nudoru.components.URLRouter;
 
-    _router.initialize();
+    _URLRouter.initialize();
 
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
 
@@ -4056,8 +4044,7 @@ APP.AppController = function () {
   }
 
   function createCommand(proto) {
-    return Object.create(proto.methods);
-    //_objectUtils.basicFactory(proto);
+    return _objectUtils.basicFactory(proto);
   }
 
   return {
@@ -4083,6 +4070,7 @@ APP.AppController.AbstractCommand = {
     appModel: APP.AppModel,
     appView: APP.AppView,
     eventDispatcher: nudoru.events.EventDispatcher,
+    urlRouter: require('nudoru.utils.URLRouter'),
 
     execute: function(data) {
       console.log('Abstract command executing with data: '+data);
@@ -4111,7 +4099,7 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
   this.appView.initializeMenus(this.appModel.getMenuData());
   this.appView.initializeGridView(this.appModel.getData());
 
-  var initialRoute = nudoru.components.URLRouter.getRoute();
+  var initialRoute = this.urlRouter.getRoute();
 
   if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);
@@ -4158,7 +4146,7 @@ APP.AppController.DataFiltersChangedCommand.execute = function(data) {
   this.appView.updateTagBarDisplay(filterList);
   this.appView.updateGridItemVisibility(this.appModel.getDataMatchingFilters());
 
-  nudoru.components.URLRouter.setRoute(this.appModel.getFiltersForURL());
+  this.urlRouter.setRoute(this.appModel.getFiltersForURL());
 };;APP.createNameSpace('APP.AppController.GridViewItemsVisibleChangedCommand');
 APP.AppController.GridViewItemsVisibleChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.GridViewItemsVisibleChangedCommand.execute = function(data) {
@@ -4182,7 +4170,7 @@ APP.AppController.ItemSelectCommand.execute = function(data) {
     this.appModel.setCurrentItem('');
   }
 
-  nudoru.components.URLRouter.setRoute(this.appModel.getFiltersForURL());
+  this.urlRouter.setRoute(this.appModel.getFiltersForURL());
 };;APP.createNameSpace('APP.AppController.MenuSelectionCommand');
 APP.AppController.MenuSelectionCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
 APP.AppController.MenuSelectionCommand.execute = function(data) {

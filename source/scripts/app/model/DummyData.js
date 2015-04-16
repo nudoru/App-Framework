@@ -24,6 +24,7 @@ APP.AppModel.DummyData = (function(){
       _possibleComplexity = ['High','Medium','Low'],
       _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
       _items = [],
+      _lorem = require('nudoru.utils.NLorem'),
       _arrayUtils = require('nudoru.utils.ArrayUtils'),
       _stringUtils = require('nudoru.utils.StringUtils'),
       _numberUtils = require('nudoru.utils.NumberUtils');
@@ -35,10 +36,10 @@ APP.AppModel.DummyData = (function(){
   function initialize() {
     var i=0;
 
-    nudoru.utils.NLorem.initialize();
+    _lorem.initialize();
 
     for(i=0; i<20; i++) {
-      _possibleContributors.push(nudoru.utils.NLorem.getLFName());
+      _possibleContributors.push(_lorem.getLFName());
     }
 
     for(i=0; i<100; i++) {
@@ -56,14 +57,14 @@ APP.AppModel.DummyData = (function(){
         i = 0;
 
     for(;i<descriptionNumParas; i++) {
-      description += '<p>'+nudoru.utils.NLorem.getParagraph(3,7)+'</p>';
+      description += '<p>'+_lorem.getParagraph(3,7)+'</p>';
     }
 
     for(i=0;i<additionalNumImages; i++) {
       additionalImages.push('img/' + _arrayUtils.rndElement(_possiblePreviewImages));
     }
 
-    o.title = _stringUtils.capitalizeFirstLetter(nudoru.utils.NLorem.getText(3,10));
+    o.title = _stringUtils.capitalizeFirstLetter(_lorem.getText(3,10));
     o.shortTitle = o.title.substr(0, 10) + '...';
     o.description = description;
     o.images = additionalImages;
@@ -82,8 +83,6 @@ APP.AppModel.DummyData = (function(){
     o.tags = _arrayUtils.getRandomSetOfElements(_possibleTags, 3);
     return o;
   }
-
-
 
   return {
     initialize: initialize,

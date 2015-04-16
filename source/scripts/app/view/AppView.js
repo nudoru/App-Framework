@@ -19,8 +19,6 @@ APP.AppView = (function() {
       _mainFooterEl,
       _drawerToggleButtonEl,
       _drawerToggleButtonInputEl,
-      _toastView,
-      _modalCoverView,
       _headerMenuView,
       _drawerMenuView,
       _itemGridView,
@@ -38,6 +36,8 @@ APP.AppView = (function() {
       _phoneBreakWidth,
       _drawerWidth,
       _isDrawerOpen,
+      _toastView = require('nudoru.components.ToastView'),
+      _modalCoverView = require('nudoru.components.ModalCoverView'),
       _browserEvents = require('nudoru.events.BrowserEvents'),
       _componentEvents = require('nudoru.events.ComponentEvents'),
       _objectUtils = require('nudoru.utils.ObjectUtils'),
@@ -122,10 +122,8 @@ APP.AppView = (function() {
   }
 
   function initializeComponents() {
-    _toastView = nudoru.components.ToastView;
     _toastView.initialize('toast__container');
 
-    _modalCoverView = nudoru.components.ModalCoverView;
     _modalCoverView.initialize();
 
     // init on these called later

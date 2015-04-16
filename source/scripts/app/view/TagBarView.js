@@ -3,7 +3,8 @@ APP.createNameSpace('APP.AppView.TagBarView');
 APP.AppView.TagBarView = (function() {
   var _containerEl,
       _currentTags,
-      _arrayUtils = require('nudoru.utils.ArrayUtils');
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _template = require('nudoru.utils.NTemplate');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -48,7 +49,7 @@ APP.AppView.TagBarView = (function() {
   }
 
   function add(tag) {
-    var tagnode = nudoru.utils.NTemplate.asElement('template__tag-bar', {tag: tag});
+    var tagnode = _template.asElement('template__tag-bar', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
     TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});

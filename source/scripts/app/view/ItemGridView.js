@@ -539,6 +539,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     fancyEffects: false,
     animating: false,
     DOMUtils: require('nudoru.utils.DOMUtils'),
+    template: require('nudoru.utils.NTemplate'),
 
     getID: function() {
       if(this.data) {
@@ -555,7 +556,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     },
 
     render: function() {
-      this.element = nudoru.utils.NTemplate.asElement('template__item-tile', this.data);
+      this.element = this.template.asElement('template__item-tile', this.data);
       this.elementContent = this.element.querySelector('.item__content');
       this.dataEl = this.element.querySelector('.item__data');
       this.imageEl = this.element.querySelector('.item__image-wrapper');

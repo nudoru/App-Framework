@@ -30,6 +30,7 @@ nudoru.components.DDMenuView = {
     DOMUtils: require('nudoru.utils.DOMUtils'),
     touchUtils: require('nudoru.utils.TouchUtils'),
     componentEvents: require('nudoru.events.ComponentEvents'),
+    template: require('nudoru.utils.NTemplate'),
 
     initialize: function(data, keep) {
 
@@ -50,7 +51,7 @@ nudoru.components.DDMenuView = {
     },
 
     render: function() {
-      this.element = nudoru.utils.NTemplate.asElement('template__menu-header', this.data);
+      this.element = this.template.asElement('template__menu-header', this.data);
       this.ddMenuEl = this.element.querySelector('ul');
       this.anchorElement = this.element.querySelector('button');
       this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
@@ -319,7 +320,7 @@ nudoru.components.BasicMenuItemView = {
     toggle: null,
     stringUtils: require('nudoru.utils.StringUtils'),
     DOMUtils: require('nudoru.utils.DOMUtils'),
-
+    template: require('nudoru.utils.NTemplate'),
 
     initialize: function(data) {
       this.data = data;
@@ -341,9 +342,9 @@ nudoru.components.BasicMenuItemView = {
 
     render: function() {
       if(this.toggle) {
-        this.element = nudoru.utils.NTemplate.asElement('template__menu-item-icon', this.data);
+        this.element = this.template.asElement('template__menu-item-icon', this.data);
       } else {
-        this.element = nudoru.utils.NTemplate.asElement('template__menu-item', this.data);
+        this.element = this.template.asElement('template__menu-item', this.data);
       }
 
       this.iconElement = this.element.querySelector('i');

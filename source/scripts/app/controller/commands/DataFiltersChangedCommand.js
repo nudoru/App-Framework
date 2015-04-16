@@ -10,5 +10,5 @@ APP.AppController.DataFiltersChangedCommand.execute = function(data) {
   this.appView.updateTagBarDisplay(filterList);
   this.appView.updateGridItemVisibility(this.appModel.getDataMatchingFilters());
 
-  nudoru.components.URLRouter.setRoute(this.appModel.getFiltersForURL());
+  this.urlRouter.setRoute(this.appModel.getFiltersForURL());
 };

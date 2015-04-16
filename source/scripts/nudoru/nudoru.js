@@ -103,8 +103,7 @@ function require(id) {
       module = {exports: exports};
 
   if(!moduleCode) {
-    console.log('Require: module not found: "'+id+'"');
-    return;
+    throw new Error('Require: module not found: "'+id+'"');
   }
 
   // set scope to exports instead of moduleCode? browserify does ...

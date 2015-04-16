@@ -2,21 +2,21 @@ APP.createNameSpace('APP.AppView.ItemDetailView');
 
 APP.AppView.ItemDetailView = (function() {
   var _containerEl,
-      _floatImageView,
       _shareButtonEl,
-      _currentItem;
+      _currentItem,
+      _template = require('nudoru.utils.NTemplate'),
+      _floatImageView = require('nudoru.components.FloatImageView');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
 
-    _floatImageView = nudoru.components.FloatImageView;
     _floatImageView.initialize();
   }
 
   function showItem(item) {
     _currentItem = item;
 
-    _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-item', _currentItem);
+    _containerEl.innerHTML = _template.asHTML('template__detail-item', _currentItem);
 
     _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
     _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
