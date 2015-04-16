@@ -85,7 +85,7 @@ bb(f)&&(f=Lc(f)),g.setDisposable(f.subscribe(function(a){k[b]=a,d(b)},c.onError.
   }
 };
 
-/*******************************************************************************
+/**
  * Simplify usage of namespaced code but creating local vars. Eval is use for
  * simplicity.
  *
@@ -95,14 +95,14 @@ bb(f)&&(f=Lc(f)),g.setDisposable(f.subscribe(function(a){k[b]=a,d(b)},c.onError.
  *
  * @param context object to add the property to
  * @param libArry array of name spaced objects
- ******************************************************************************/
-function NImport(context, libArry) {
-  libArry.forEach(function(lib) {
-    var parts = lib.split('.'),
-      obj = parts[parts.length-1];
-    context[obj] = eval(lib);
-  });
-}
+ */
+//function NImport(context, libArry) {
+//  libArry.forEach(function(lib) {
+//    var parts = lib.split('.'),
+//      obj = parts[parts.length-1];
+//    context[obj] = eval(lib);
+//  });
+//}
 
 /*******************************************************************************
  * Module management. Inspired by CommonJS and AMD
@@ -162,20 +162,27 @@ function require(id) {
     throw new Error('Require: module not found: "'+id+'"');
   }
 
-  // set scope to exports instead of moduleCode? browserify does ...
+  // TODO set scope to exports instead of moduleCode?
   moduleCode.call(moduleCode, require, module, exports);
   require.cache[id] = module.exports;
   return module.exports;
 }
 require.cache = Object.create(null);
 
-function NImportNSModules(context, libArry) {
-  libArry.forEach(function(lib) {
-    var parts = lib.split('.'),
-      obj = parts[parts.length-1];
-    context[obj] = require(lib);
-  });
-}
+/**
+ * Automates the require and creation of local vars
+ *
+ * @param context
+ * @param libArry
+ * @constructor
+ */
+//function NImportNSModules(context, libArry) {
+//  libArry.forEach(function(lib) {
+//    var parts = lib.split('.'),
+//      obj = parts[parts.length-1];
+//    context[obj] = require(lib);
+//  });
+//}
 
 /*******************************************************************************
  * Establish the nudoru namespace
