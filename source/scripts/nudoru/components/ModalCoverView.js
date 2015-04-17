@@ -1,5 +1,5 @@
 define('nudoru.components.ModalCoverView',
-  function(require, module, exports) {
+  function (require, module, exports) {
     var _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
@@ -21,7 +21,7 @@ define('nudoru.components.ModalCoverView',
         modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
 
       _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
-        .subscribe(function() {
+        .subscribe(function () {
           onModalClick();
         });
     }
@@ -35,26 +35,35 @@ define('nudoru.components.ModalCoverView',
     }
 
     function show(animate) {
-      if(_isVisible) {
+      if (_isVisible) {
         return;
       }
       _isVisible = true;
       var duration = animate ? 0.25 : 0;
-      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
-      TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
+      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease: Quad.easeOut});
+      TweenLite.to(_modalCloseButtonEl, duration * 2, {
+        autoAlpha: 1,
+        top: 22,
+        ease: Back.easeOut,
+        delay: 2
+      });
 
       _eventDispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
     }
 
     function hide(animate) {
-      if(!_isVisible) {
+      if (!_isVisible) {
         return;
       }
       _isVisible = false;
       var duration = animate ? 0.25 : 0;
       TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
-      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
-      TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
+      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease: Quad.easeOut});
+      TweenLite.to(_modalCloseButtonEl, duration / 2, {
+        autoAlpha: 0,
+        top: -50,
+        ease: Quad.easeOut
+      });
 
       _eventDispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
     }

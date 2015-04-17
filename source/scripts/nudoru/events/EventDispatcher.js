@@ -5,11 +5,17 @@
  */
 
 define('nudoru.events.EventDispatcher',
-  function(require, module, exports) {
+  function (require, module, exports) {
     var _eventMap = Object.create(null);
 
+    /**
+     * Subscribe a function to an event string
+     * @param evtString String for the event
+     * @param callback  Callback function
+     * @param once  Unsubscript after the first fire
+     */
     function subscribe(evtString, callback, once) {
-      if(_eventMap[evtString] === undefined) {
+      if (_eventMap[evtString] === undefined) {
         _eventMap[evtString] = [];
       }
 
@@ -21,33 +27,44 @@ define('nudoru.events.EventDispatcher',
       });
     }
 
+    /**
+     * Stop listening to the event
+     * @param evtString
+     * @param callback
+     */
     function unsubscribe(evtString, callback) {
-      if(_eventMap[evtString] === undefined) {
+      if (_eventMap[evtString] === undefined) {
         return;
       }
 
       var listeners = _eventMap[evtString],
         callbackIdx = -1;
 
-      for(var i= 0, len=listeners.length; i<len; i++) {
-        if(listeners[i].callback === callback) {
+      for (var i = 0, len = listeners.length; i < len; i++) {
+        if (listeners[i].callback === callback) {
           callbackIdx = i;
         }
       }
 
-      if(callbackIdx === -1) {
+      if (callbackIdx === -1) {
         return;
       }
 
       listeners.splice(callbackIdx, 1);
 
-      if(listeners.length === 0) {
+      if (listeners.length === 0) {
         delete _eventMap[evtString];
       }
     }
 
+    /**
+     * Fire an event to all registered listeners
+     * @param evtString
+     * @param data
+     * @param context
+     */
     function publish(evtString, data, context) {
-      if(_eventMap[evtString] === undefined) {
+      if (_eventMap[evtString] === undefined) {
         return;
       }
 
@@ -56,18 +73,19 @@ define('nudoru.events.EventDispatcher',
 
       data = (data instanceof Array) ? data : [data];
 
-      while(i--) {
+      while (i--) {
 
         var listenerObj = listeners[i];
 
         var cnxt = context || listenerObj.callback;
         listenerObj.callback.apply(cnxt, data);
-        if(listenerObj.once) {
+        if (listenerObj.once) {
           unsubscribe(listenerObj.evtstring, listenerObj.callback);
         }
 
       }
     }
+
     exports.subscribe = subscribe;
     exports.unsubscribe = unsubscribe;
     exports.publish = publish;

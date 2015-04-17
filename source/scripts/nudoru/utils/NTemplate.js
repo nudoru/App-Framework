@@ -94,7 +94,6 @@ define('nudoru.utils.NTemplate',
       return str.trim();
     }
 
-
     exports.getSource = getSource;
     exports.getTemplate = getTemplate;
     exports.asHTML = asHTML;

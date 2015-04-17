@@ -22,8 +22,6 @@ APP.AppController = function () {
   //  Initialization
   //----------------------------------------------------------------------------
 
-
-
   function initialize(app, global, viewParent) {
     _appScope = app;
     _globalScope = global;

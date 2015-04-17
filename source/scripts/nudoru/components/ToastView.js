@@ -3,7 +3,7 @@
  */
 
 define('nudoru.components.ToastView',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _children = [],
       _counter = 0,
@@ -33,7 +33,7 @@ define('nudoru.components.ToastView',
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
       newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
-        .subscribe(function() {
+        .subscribe(function () {
           remove(newToast.id);
         });
 
@@ -44,7 +44,7 @@ define('nudoru.components.ToastView',
       return newToast.id;
     }
 
-    function createToastObject(title,message,button) {
+    function createToastObject(title, message, button) {
       var id = 'toast' + (_counter++).toString(),
         obj = {
           id: id,
@@ -64,15 +64,17 @@ define('nudoru.components.ToastView',
     }
 
     function transitionIn(el) {
-      TweenLite.to(el,0,{alpha: 0});
-      TweenLite.to(el,1, {alpha: 1, ease: Quad.easeOut});
+      TweenLite.to(el, 0, {alpha: 0});
+      TweenLite.to(el, 1, {alpha: 1, ease: Quad.easeOut});
       rearrangeToasts();
     }
 
     function transitionOut(el) {
-      TweenLite.to(el, 0.25, {left: '+=300', ease: Quad.easeIn, onComplete: function() {
-        onTransitionOutComplete(el);
-      }});
+      TweenLite.to(el, 0.25, {
+        left: '+=300', ease: Quad.easeIn, onComplete: function () {
+          onTransitionOutComplete(el);
+        }
+      });
     }
 
     function onTransitionOutComplete(el) {
@@ -89,9 +91,9 @@ define('nudoru.components.ToastView',
 
     function reindex() {
       var i = 0,
-        len=_children.length;
+        len = _children.length;
 
-      for(; i<len; i++) {
+      for (; i < len; i++) {
         _children[i].index = i;
       }
     }
@@ -101,8 +103,8 @@ define('nudoru.components.ToastView',
         current,
         y = 0;
 
-      for(;i>-1; i--) {
-        if(i === ignore) {
+      for (; i > -1; i--) {
+        if (i === ignore) {
           continue;
         }
         current = _children[i];
@@ -115,8 +117,8 @@ define('nudoru.components.ToastView',
       var len = _children.length,
         i = 0;
 
-      for(; i<len; i++) {
-        if(_children[i].id === id) {
+      for (; i < len; i++) {
+        if (_children[i].id === id) {
           return i;
         }
       }
@@ -128,7 +130,7 @@ define('nudoru.components.ToastView',
       var toastIndex = getToastIndexByID(id),
         toast;
 
-      if(toastIndex > -1) {
+      if (toastIndex > -1) {
         toast = _children[toastIndex];
         transitionOut(toast.element);
         rearrangeToasts(toast.index);

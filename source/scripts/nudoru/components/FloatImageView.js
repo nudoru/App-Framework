@@ -11,7 +11,7 @@
  */
 
 define('nudoru.components.FloatImageView',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',
@@ -38,7 +38,7 @@ define('nudoru.components.FloatImageView',
       hideFloatImageCover();
 
       _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, _browserInfo.mouseClickEvtStr())
-        .subscribe(function() {
+        .subscribe(function () {
           hideFloatImageCover();
         });
     }
@@ -48,7 +48,7 @@ define('nudoru.components.FloatImageView',
      * @param container
      */
     function apply(container) {
-      getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
 
         _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
@@ -56,7 +56,7 @@ define('nudoru.components.FloatImageView',
 
         //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
 
-        if(!_browserInfo.mobile.any()) {
+        if (!_browserInfo.mobile.any()) {
           el.addEventListener('mouseover', onImageOver, false);
           el.addEventListener('mouseout', onImageOut, false);
         }
@@ -69,19 +69,31 @@ define('nudoru.components.FloatImageView',
     }
 
     function onImageOver(evt) {
-      if(_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+      if (_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
+          scale: 1.10,
+          ease: Circ.easeOut
+        });
       } else {
-        TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
+          scale: 1.10,
+          ease: Circ.easeOut
+        });
 
       }
     }
 
     function onImageOut(evt) {
-      if(_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+      if (_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
+          scale: 1,
+          ease: Circ.easeOut
+        });
       } else {
-        TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
+          scale: 1,
+          ease: Circ.easeOut
+        });
       }
 
     }
@@ -100,7 +112,7 @@ define('nudoru.components.FloatImageView',
      */
     function showImage(imageEl) {
       // Will happen if you click on the icon
-      if(imageEl.tagName.toLowerCase() === 'div') {
+      if (imageEl.tagName.toLowerCase() === 'div') {
         _currentImageElement = imageEl.querySelector('img');
       } else {
         _currentImageElement = imageEl;
@@ -113,7 +125,7 @@ define('nudoru.components.FloatImageView',
         imgWidth = _currentImageElement.clientWidth,
         imgHeight = _currentImageElement.clientHeight,
         imgPosition = _DOMUtils.offset(_currentImageElement),
-        imgRatio = imgWidth/imgHeight,
+        imgRatio = imgWidth / imgHeight,
         imgTargetScale = 1,
         vpWidth = window.innerWidth,
         vpHeight = window.innerHeight,
@@ -127,7 +139,7 @@ define('nudoru.components.FloatImageView',
         imgTargetWidth,
         imgTargetHeight;
 
-      if(vpRatio > imgRatio) {
+      if (vpRatio > imgRatio) {
         imgTargetScale = vpHeight * vpFill / imgHeight;
       } else {
         imgTargetScale = vpWidth * vpFill / imgWidth;
@@ -136,28 +148,28 @@ define('nudoru.components.FloatImageView',
       imgTargetWidth = imgWidth * imgTargetScale;
       imgTargetHeight = imgHeight * imgTargetScale;
 
-      imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
-      imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
+      imgTargetX = (vpWidth / 2) - (imgTargetWidth / 2) - imgPosition.left + vpScrollLeft;
+      imgTargetY = (vpHeight / 2) - (imgTargetHeight / 2) - imgPosition.top + vpScrollTop;
 
-      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
+      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="' + _zoomedImageClass + '"></div>');
 
-      zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
-      zoomImage.style.left = imgOriginX+'px';
-      zoomImage.style.top = imgOriginY+'px';
-      zoomImage.style.width = imgWidth+'px';
-      zoomImage.style.height = imgHeight+'px';
+      zoomImage.style.backgroundImage = 'url("' + imgSrc + '")';
+      zoomImage.style.left = imgOriginX + 'px';
+      zoomImage.style.top = imgOriginY + 'px';
+      zoomImage.style.width = imgWidth + 'px';
+      zoomImage.style.height = imgHeight + 'px';
 
       _viewPortCoverEl.appendChild(zoomImage);
 
       // fade source image on screen
-      TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
+      TweenLite.to(_currentImageElement, 0.25, {alpha: 0, ease: Circ.easeOut});
 
-      if(_fancyEffects) {
+      if (_fancyEffects) {
         // further from the center, the greate the effect
         var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
-        if(startingRot <= 0) {
+        if (startingRot <= 0) {
           startingRot = Math.min(startingRot, -20);
           origin = 'left top';
         } else {
@@ -165,21 +177,49 @@ define('nudoru.components.FloatImageView',
           origin = 'right top';
         }
 
-        TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+        TweenLite.set(zoomImage, {
+          css: {
+            transformPerspective: 1000,
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden"
+          }
+        });
 
         var tl = new TimelineLite();
-        tl.to(zoomImage,0.25, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, y:'+50', ease:Back.easeInOut});
-        tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
+        tl.to(zoomImage, 0.25, {
+          rotationZ: -15,
+          rotationY: startingRot,
+          transformOrigin: origin,
+          y: '+50',
+          ease: Back.easeInOut
+        });
+        tl.to(zoomImage, 0.5, {
+          rotationZ: 0,
+          rotationY: 0,
+          transformOrigin: origin,
+          width: imgTargetWidth,
+          height: imgTargetHeight,
+          x: imgTargetX,
+          y: imgTargetY,
+          ease: Quad.easeOut
+        });
 
       } else {
-        TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+        TweenLite.to(zoomImage, 0.5, {
+          rotationY: 0,
+          width: imgTargetWidth,
+          height: imgTargetHeight,
+          x: imgTargetX,
+          y: imgTargetY,
+          ease: Circ.easeOut
+        });
       }
 
       showFloatImageCover();
 
       // Caption
-      if(imgAlt.length >= 1) {
-        _captionEl.innerHTML = '<p>'+imgAlt+'</p>';
+      if (imgAlt.length >= 1) {
+        _captionEl.innerHTML = '<p>' + imgAlt + '</p>';
       } else {
         _captionEl.innerHTML = '';
       }
@@ -191,15 +231,15 @@ define('nudoru.components.FloatImageView',
      * @param container
      */
     function remove(container) {
-      if(!container) {
+      if (!container) {
         return;
       }
 
       _scrollingView = document.body;
 
-      getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
         el.removeEventListener('click', onImageClick);
-        if(!_browserInfo.mobile.any()) {
+        if (!_browserInfo.mobile.any()) {
           el.removeEventListener('mouseover', onImageOver);
           el.removeEventListener('mouseout', onImageOut);
         }
@@ -212,7 +252,7 @@ define('nudoru.components.FloatImageView',
      * @returns {*}
      */
     function getFloatingElementsInContainerAsArray(container) {
-      if(!_DOMUtils.isDomObj(container)) {
+      if (!_DOMUtils.isDomObj(container)) {
         return [];
       }
       return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
@@ -222,27 +262,31 @@ define('nudoru.components.FloatImageView',
      * Show the div covering the UI
      */
     function showFloatImageCover() {
-      TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 1, ease:Circ.easeOut});
+      TweenLite.to(_viewPortCoverEl, 0.25, {autoAlpha: 1, ease: Circ.easeOut});
     }
 
     /**
      * Hide the div covering the UI
      */
     function hideFloatImageCover() {
-      if(_currentImageElement) {
-        TweenLite.to(_currentImageElement, 0.1, {alpha:1, ease:Circ.easeOut});
+      if (_currentImageElement) {
+        TweenLite.to(_currentImageElement, 0.1, {alpha: 1, ease: Circ.easeOut});
         _currentImageElement = null;
       }
 
-      TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 0, ease:Circ.easeOut, onComplete:hideFloatImageCoverComplete});
+      TweenLite.to(_viewPortCoverEl, 0.25, {
+        autoAlpha: 0,
+        ease: Circ.easeOut,
+        onComplete: hideFloatImageCoverComplete
+      });
     }
 
     /**
      * The enlarged image is present during the cover fade out, remove it when that's completed
      */
     function hideFloatImageCoverComplete() {
-      var zoomedImage = _viewPortCoverEl.querySelector('.'+_zoomedImageClass);
-      if(zoomedImage) {
+      var zoomedImage = _viewPortCoverEl.querySelector('.' + _zoomedImageClass);
+      if (zoomedImage) {
         _viewPortCoverEl.removeChild(zoomedImage);
       }
     }

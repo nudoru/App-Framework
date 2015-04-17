@@ -4,24 +4,30 @@
  */
 
 define('nudoru.events.EventCommandMap',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _commandMap = Object.create(null);
 
+    /**
+     * Register the event to a command
+     * @param evt Event string
+     * @param command Command class
+     * @param once  Umap after the first event publish
+     */
     function map(evt, command, once) {
 
-      if(hasCommand(evt, command)) {
+      if (hasCommand(evt, command)) {
         return;
       }
 
-      if(_commandMap[evt] === undefined) {
+      if (_commandMap[evt] === undefined) {
         _commandMap[evt] = {};
       }
 
       var evtCommandMap = _commandMap[evt];
 
-      var callback = function(args) {
+      var callback = function (args) {
         routeToCommand(evt, command, args, once);
       };
 
@@ -30,17 +36,29 @@ define('nudoru.events.EventCommandMap',
       _eventDispatcher.subscribe(evt, callback);
     }
 
+    /**
+     * Routes the event to the command
+     * @param evt
+     * @param command
+     * @param args
+     * @param once
+     */
     function routeToCommand(evt, command, args, once) {
       var cmd = command;
       cmd.execute.apply(command, [args]);
       cmd = null;
-      if(once) {
+      if (once) {
         unmap(evt, command);
       }
     }
 
+    /**
+     * Unregister a command from an event
+     * @param evt
+     * @param command
+     */
     function unmap(evt, command) {
-      if(hasCommand(evt, command)) {
+      if (hasCommand(evt, command)) {
         var callbacksByCommand = _commandMap[evt],
           callback = callbacksByCommand[command];
         _eventDispatcher.unsubscribe(evt, callback);
@@ -48,9 +66,15 @@ define('nudoru.events.EventCommandMap',
       }
     }
 
+    /**
+     * Determine if a command has been mapped to an event
+     * @param evt
+     * @param command
+     * @returns {boolean}
+     */
     function hasCommand(evt, command) {
       var callbacksByCommand = _commandMap[evt];
-      if(callbacksByCommand === undefined) {
+      if (callbacksByCommand === undefined) {
         return false;
       }
       var callback = callbacksByCommand[command];

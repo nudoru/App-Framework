@@ -30,7 +30,7 @@ define('nudoru.utils.NCookie',
     };
 
     exports.remove = function(name) {
-      //makeCookie(name, '', -1);
+      exports.create(name, '', -1);
     };
 
   });

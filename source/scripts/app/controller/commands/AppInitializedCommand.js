@@ -1,6 +1,6 @@
 APP.createNameSpace('APP.AppController.AppInitializedCommand');
 APP.AppController.AppInitializedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.AppInitializedCommand.execute = function(data) {
+APP.AppController.AppInitializedCommand.execute = function (data) {
   var _appGlobals = APP.globals();
 
 
@@ -17,7 +17,7 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
   if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);
   } else {
-    if(_appGlobals.appConfig.welcome.enabled === 'true') {
+    if (_appGlobals.appConfig.welcome.enabled === 'true') {
       this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
     }
   }

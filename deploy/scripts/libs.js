@@ -736,7 +736,6 @@ nudoru.components = (function() {
       return str.trim();
     }
 
-
     exports.getSource = getSource;
     exports.getTemplate = getTemplate;
     exports.asHTML = asHTML;
@@ -920,11 +919,17 @@ nudoru.components = (function() {
     exports.setRoute = updateURLHash;
 
   });;define('nudoru.events.EventDispatcher',
-  function(require, module, exports) {
+  function (require, module, exports) {
     var _eventMap = Object.create(null);
 
+    /**
+     * Subscribe a function to an event string
+     * @param evtString String for the event
+     * @param callback  Callback function
+     * @param once  Unsubscript after the first fire
+     */
     function subscribe(evtString, callback, once) {
-      if(_eventMap[evtString] === undefined) {
+      if (_eventMap[evtString] === undefined) {
         _eventMap[evtString] = [];
       }
 
@@ -936,33 +941,44 @@ nudoru.components = (function() {
       });
     }
 
+    /**
+     * Stop listening to the event
+     * @param evtString
+     * @param callback
+     */
     function unsubscribe(evtString, callback) {
-      if(_eventMap[evtString] === undefined) {
+      if (_eventMap[evtString] === undefined) {
         return;
       }
 
       var listeners = _eventMap[evtString],
         callbackIdx = -1;
 
-      for(var i= 0, len=listeners.length; i<len; i++) {
-        if(listeners[i].callback === callback) {
+      for (var i = 0, len = listeners.length; i < len; i++) {
+        if (listeners[i].callback === callback) {
           callbackIdx = i;
         }
       }
 
-      if(callbackIdx === -1) {
+      if (callbackIdx === -1) {
         return;
       }
 
       listeners.splice(callbackIdx, 1);
 
-      if(listeners.length === 0) {
+      if (listeners.length === 0) {
         delete _eventMap[evtString];
       }
     }
 
+    /**
+     * Fire an event to all registered listeners
+     * @param evtString
+     * @param data
+     * @param context
+     */
     function publish(evtString, data, context) {
-      if(_eventMap[evtString] === undefined) {
+      if (_eventMap[evtString] === undefined) {
         return;
       }
 
@@ -971,41 +987,48 @@ nudoru.components = (function() {
 
       data = (data instanceof Array) ? data : [data];
 
-      while(i--) {
+      while (i--) {
 
         var listenerObj = listeners[i];
 
         var cnxt = context || listenerObj.callback;
         listenerObj.callback.apply(cnxt, data);
-        if(listenerObj.once) {
+        if (listenerObj.once) {
           unsubscribe(listenerObj.evtstring, listenerObj.callback);
         }
 
       }
     }
+
     exports.subscribe = subscribe;
     exports.unsubscribe = unsubscribe;
     exports.publish = publish;
 
   });;define('nudoru.events.EventCommandMap',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _commandMap = Object.create(null);
 
+    /**
+     * Register the event to a command
+     * @param evt Event string
+     * @param command Command class
+     * @param once  Umap after the first event publish
+     */
     function map(evt, command, once) {
 
-      if(hasCommand(evt, command)) {
+      if (hasCommand(evt, command)) {
         return;
       }
 
-      if(_commandMap[evt] === undefined) {
+      if (_commandMap[evt] === undefined) {
         _commandMap[evt] = {};
       }
 
       var evtCommandMap = _commandMap[evt];
 
-      var callback = function(args) {
+      var callback = function (args) {
         routeToCommand(evt, command, args, once);
       };
 
@@ -1014,17 +1037,29 @@ nudoru.components = (function() {
       _eventDispatcher.subscribe(evt, callback);
     }
 
+    /**
+     * Routes the event to the command
+     * @param evt
+     * @param command
+     * @param args
+     * @param once
+     */
     function routeToCommand(evt, command, args, once) {
       var cmd = command;
       cmd.execute.apply(command, [args]);
       cmd = null;
-      if(once) {
+      if (once) {
         unmap(evt, command);
       }
     }
 
+    /**
+     * Unregister a command from an event
+     * @param evt
+     * @param command
+     */
     function unmap(evt, command) {
-      if(hasCommand(evt, command)) {
+      if (hasCommand(evt, command)) {
         var callbacksByCommand = _commandMap[evt],
           callback = callbacksByCommand[command];
         _eventDispatcher.unsubscribe(evt, callback);
@@ -1032,9 +1067,15 @@ nudoru.components = (function() {
       }
     }
 
+    /**
+     * Determine if a command has been mapped to an event
+     * @param evt
+     * @param command
+     * @returns {boolean}
+     */
     function hasCommand(evt, command) {
       var callbacksByCommand = _commandMap[evt];
-      if(callbacksByCommand === undefined) {
+      if (callbacksByCommand === undefined) {
         return false;
       }
       var callback = callbacksByCommand[command];
@@ -1055,7 +1096,7 @@ nudoru.components = (function() {
     exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
     exports.MENU_SELECT = 'MENU_SELECT';
   });;define('nudoru.components.FloatImageView',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',
@@ -1082,7 +1123,7 @@ nudoru.components = (function() {
       hideFloatImageCover();
 
       _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, _browserInfo.mouseClickEvtStr())
-        .subscribe(function() {
+        .subscribe(function () {
           hideFloatImageCover();
         });
     }
@@ -1092,7 +1133,7 @@ nudoru.components = (function() {
      * @param container
      */
     function apply(container) {
-      getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
 
         _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
@@ -1100,7 +1141,7 @@ nudoru.components = (function() {
 
         //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
 
-        if(!_browserInfo.mobile.any()) {
+        if (!_browserInfo.mobile.any()) {
           el.addEventListener('mouseover', onImageOver, false);
           el.addEventListener('mouseout', onImageOut, false);
         }
@@ -1113,19 +1154,31 @@ nudoru.components = (function() {
     }
 
     function onImageOver(evt) {
-      if(_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+      if (_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
+          scale: 1.10,
+          ease: Circ.easeOut
+        });
       } else {
-        TweenLite.to(evt.target.parentNode.parentNode,0.25,{scale:1.10, ease:Circ.easeOut});
+        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
+          scale: 1.10,
+          ease: Circ.easeOut
+        });
 
       }
     }
 
     function onImageOut(evt) {
-      if(_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+      if (_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
+          scale: 1,
+          ease: Circ.easeOut
+        });
       } else {
-        TweenLite.to(evt.target.parentNode.parentNode,0.5,{scale:1, ease:Circ.easeOut});
+        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
+          scale: 1,
+          ease: Circ.easeOut
+        });
       }
 
     }
@@ -1144,7 +1197,7 @@ nudoru.components = (function() {
      */
     function showImage(imageEl) {
       // Will happen if you click on the icon
-      if(imageEl.tagName.toLowerCase() === 'div') {
+      if (imageEl.tagName.toLowerCase() === 'div') {
         _currentImageElement = imageEl.querySelector('img');
       } else {
         _currentImageElement = imageEl;
@@ -1157,7 +1210,7 @@ nudoru.components = (function() {
         imgWidth = _currentImageElement.clientWidth,
         imgHeight = _currentImageElement.clientHeight,
         imgPosition = _DOMUtils.offset(_currentImageElement),
-        imgRatio = imgWidth/imgHeight,
+        imgRatio = imgWidth / imgHeight,
         imgTargetScale = 1,
         vpWidth = window.innerWidth,
         vpHeight = window.innerHeight,
@@ -1171,7 +1224,7 @@ nudoru.components = (function() {
         imgTargetWidth,
         imgTargetHeight;
 
-      if(vpRatio > imgRatio) {
+      if (vpRatio > imgRatio) {
         imgTargetScale = vpHeight * vpFill / imgHeight;
       } else {
         imgTargetScale = vpWidth * vpFill / imgWidth;
@@ -1180,28 +1233,28 @@ nudoru.components = (function() {
       imgTargetWidth = imgWidth * imgTargetScale;
       imgTargetHeight = imgHeight * imgTargetScale;
 
-      imgTargetX = (vpWidth / 2) - (imgTargetWidth/2) - imgPosition.left + vpScrollLeft;
-      imgTargetY = (vpHeight / 2) - (imgTargetHeight/2) - imgPosition.top + vpScrollTop;
+      imgTargetX = (vpWidth / 2) - (imgTargetWidth / 2) - imgPosition.left + vpScrollLeft;
+      imgTargetY = (vpHeight / 2) - (imgTargetHeight / 2) - imgPosition.top + vpScrollTop;
 
-      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="'+_zoomedImageClass+'"></div>');
+      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="' + _zoomedImageClass + '"></div>');
 
-      zoomImage.style.backgroundImage = 'url("'+imgSrc+'")';
-      zoomImage.style.left = imgOriginX+'px';
-      zoomImage.style.top = imgOriginY+'px';
-      zoomImage.style.width = imgWidth+'px';
-      zoomImage.style.height = imgHeight+'px';
+      zoomImage.style.backgroundImage = 'url("' + imgSrc + '")';
+      zoomImage.style.left = imgOriginX + 'px';
+      zoomImage.style.top = imgOriginY + 'px';
+      zoomImage.style.width = imgWidth + 'px';
+      zoomImage.style.height = imgHeight + 'px';
 
       _viewPortCoverEl.appendChild(zoomImage);
 
       // fade source image on screen
-      TweenLite.to(_currentImageElement, 0.25, {alpha:0, ease:Circ.easeOut});
+      TweenLite.to(_currentImageElement, 0.25, {alpha: 0, ease: Circ.easeOut});
 
-      if(_fancyEffects) {
+      if (_fancyEffects) {
         // further from the center, the greate the effect
         var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
-        if(startingRot <= 0) {
+        if (startingRot <= 0) {
           startingRot = Math.min(startingRot, -20);
           origin = 'left top';
         } else {
@@ -1209,21 +1262,49 @@ nudoru.components = (function() {
           origin = 'right top';
         }
 
-        TweenLite.set(zoomImage, {css:{transformPerspective:1000, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+        TweenLite.set(zoomImage, {
+          css: {
+            transformPerspective: 1000,
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden"
+          }
+        });
 
         var tl = new TimelineLite();
-        tl.to(zoomImage,0.25, {rotationZ: -15, rotationY: startingRot, transformOrigin: origin, y:'+50', ease:Back.easeInOut});
-        tl.to(zoomImage,0.5, {rotationZ: 0, rotationY: 0, transformOrigin: origin, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Quad.easeOut});
+        tl.to(zoomImage, 0.25, {
+          rotationZ: -15,
+          rotationY: startingRot,
+          transformOrigin: origin,
+          y: '+50',
+          ease: Back.easeInOut
+        });
+        tl.to(zoomImage, 0.5, {
+          rotationZ: 0,
+          rotationY: 0,
+          transformOrigin: origin,
+          width: imgTargetWidth,
+          height: imgTargetHeight,
+          x: imgTargetX,
+          y: imgTargetY,
+          ease: Quad.easeOut
+        });
 
       } else {
-        TweenLite.to(zoomImage, 0.5, {rotationY: 0, width: imgTargetWidth, height: imgTargetHeight, x: imgTargetX, y: imgTargetY, ease:Circ.easeOut});
+        TweenLite.to(zoomImage, 0.5, {
+          rotationY: 0,
+          width: imgTargetWidth,
+          height: imgTargetHeight,
+          x: imgTargetX,
+          y: imgTargetY,
+          ease: Circ.easeOut
+        });
       }
 
       showFloatImageCover();
 
       // Caption
-      if(imgAlt.length >= 1) {
-        _captionEl.innerHTML = '<p>'+imgAlt+'</p>';
+      if (imgAlt.length >= 1) {
+        _captionEl.innerHTML = '<p>' + imgAlt + '</p>';
       } else {
         _captionEl.innerHTML = '';
       }
@@ -1235,15 +1316,15 @@ nudoru.components = (function() {
      * @param container
      */
     function remove(container) {
-      if(!container) {
+      if (!container) {
         return;
       }
 
       _scrollingView = document.body;
 
-      getFloatingElementsInContainerAsArray(container).forEach(function(el) {
+      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
         el.removeEventListener('click', onImageClick);
-        if(!_browserInfo.mobile.any()) {
+        if (!_browserInfo.mobile.any()) {
           el.removeEventListener('mouseover', onImageOver);
           el.removeEventListener('mouseout', onImageOut);
         }
@@ -1256,7 +1337,7 @@ nudoru.components = (function() {
      * @returns {*}
      */
     function getFloatingElementsInContainerAsArray(container) {
-      if(!_DOMUtils.isDomObj(container)) {
+      if (!_DOMUtils.isDomObj(container)) {
         return [];
       }
       return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
@@ -1266,27 +1347,31 @@ nudoru.components = (function() {
      * Show the div covering the UI
      */
     function showFloatImageCover() {
-      TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 1, ease:Circ.easeOut});
+      TweenLite.to(_viewPortCoverEl, 0.25, {autoAlpha: 1, ease: Circ.easeOut});
     }
 
     /**
      * Hide the div covering the UI
      */
     function hideFloatImageCover() {
-      if(_currentImageElement) {
-        TweenLite.to(_currentImageElement, 0.1, {alpha:1, ease:Circ.easeOut});
+      if (_currentImageElement) {
+        TweenLite.to(_currentImageElement, 0.1, {alpha: 1, ease: Circ.easeOut});
         _currentImageElement = null;
       }
 
-      TweenLite.to(_viewPortCoverEl,0.25, {autoAlpha: 0, ease:Circ.easeOut, onComplete:hideFloatImageCoverComplete});
+      TweenLite.to(_viewPortCoverEl, 0.25, {
+        autoAlpha: 0,
+        ease: Circ.easeOut,
+        onComplete: hideFloatImageCoverComplete
+      });
     }
 
     /**
      * The enlarged image is present during the cover fade out, remove it when that's completed
      */
     function hideFloatImageCoverComplete() {
-      var zoomedImage = _viewPortCoverEl.querySelector('.'+_zoomedImageClass);
-      if(zoomedImage) {
+      var zoomedImage = _viewPortCoverEl.querySelector('.' + _zoomedImageClass);
+      if (zoomedImage) {
         _viewPortCoverEl.removeChild(zoomedImage);
       }
     }
@@ -1301,7 +1386,7 @@ nudoru.components = (function() {
 
 
   });;define('nudoru.components.ModalCoverView',
-  function(require, module, exports) {
+  function (require, module, exports) {
     var _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
@@ -1323,7 +1408,7 @@ nudoru.components = (function() {
         modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
 
       _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
-        .subscribe(function() {
+        .subscribe(function () {
           onModalClick();
         });
     }
@@ -1337,26 +1422,35 @@ nudoru.components = (function() {
     }
 
     function show(animate) {
-      if(_isVisible) {
+      if (_isVisible) {
         return;
       }
       _isVisible = true;
       var duration = animate ? 0.25 : 0;
-      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease:Quad.easeOut});
-      TweenLite.to(_modalCloseButtonEl, duration*2, {autoAlpha: 1, top: 22, ease:Back.easeOut, delay: 2});
+      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease: Quad.easeOut});
+      TweenLite.to(_modalCloseButtonEl, duration * 2, {
+        autoAlpha: 1,
+        top: 22,
+        ease: Back.easeOut,
+        delay: 2
+      });
 
       _eventDispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
     }
 
     function hide(animate) {
-      if(!_isVisible) {
+      if (!_isVisible) {
         return;
       }
       _isVisible = false;
       var duration = animate ? 0.25 : 0;
       TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
-      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease:Quad.easeOut});
-      TweenLite.to(_modalCloseButtonEl, duration/2, {autoAlpha: 0, top: -50, ease:Quad.easeOut});
+      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease: Quad.easeOut});
+      TweenLite.to(_modalCloseButtonEl, duration / 2, {
+        autoAlpha: 0,
+        top: -50,
+        ease: Quad.easeOut
+      });
 
       _eventDispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
     }
@@ -1367,7 +1461,7 @@ nudoru.components = (function() {
     exports.visible = getIsVisible;
 
   });;define('nudoru.components.ToastView',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _children = [],
       _counter = 0,
@@ -1397,7 +1491,7 @@ nudoru.components = (function() {
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
       newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
-        .subscribe(function() {
+        .subscribe(function () {
           remove(newToast.id);
         });
 
@@ -1408,7 +1502,7 @@ nudoru.components = (function() {
       return newToast.id;
     }
 
-    function createToastObject(title,message,button) {
+    function createToastObject(title, message, button) {
       var id = 'toast' + (_counter++).toString(),
         obj = {
           id: id,
@@ -1428,15 +1522,17 @@ nudoru.components = (function() {
     }
 
     function transitionIn(el) {
-      TweenLite.to(el,0,{alpha: 0});
-      TweenLite.to(el,1, {alpha: 1, ease: Quad.easeOut});
+      TweenLite.to(el, 0, {alpha: 0});
+      TweenLite.to(el, 1, {alpha: 1, ease: Quad.easeOut});
       rearrangeToasts();
     }
 
     function transitionOut(el) {
-      TweenLite.to(el, 0.25, {left: '+=300', ease: Quad.easeIn, onComplete: function() {
-        onTransitionOutComplete(el);
-      }});
+      TweenLite.to(el, 0.25, {
+        left: '+=300', ease: Quad.easeIn, onComplete: function () {
+          onTransitionOutComplete(el);
+        }
+      });
     }
 
     function onTransitionOutComplete(el) {
@@ -1453,9 +1549,9 @@ nudoru.components = (function() {
 
     function reindex() {
       var i = 0,
-        len=_children.length;
+        len = _children.length;
 
-      for(; i<len; i++) {
+      for (; i < len; i++) {
         _children[i].index = i;
       }
     }
@@ -1465,8 +1561,8 @@ nudoru.components = (function() {
         current,
         y = 0;
 
-      for(;i>-1; i--) {
-        if(i === ignore) {
+      for (; i > -1; i--) {
+        if (i === ignore) {
           continue;
         }
         current = _children[i];
@@ -1479,8 +1575,8 @@ nudoru.components = (function() {
       var len = _children.length,
         i = 0;
 
-      for(; i<len; i++) {
-        if(_children[i].id === id) {
+      for (; i < len; i++) {
+        if (_children[i].id === id) {
           return i;
         }
       }
@@ -1492,7 +1588,7 @@ nudoru.components = (function() {
       var toastIndex = getToastIndexByID(id),
         toast;
 
-      if(toastIndex > -1) {
+      if (toastIndex > -1) {
         toast = _children[toastIndex];
         transitionOut(toast.element);
         rearrangeToasts(toast.index);
@@ -2588,50 +2684,50 @@ APP.AppModel.ItemVO = {
       metadata: []
   },
 };;APP.createNameSpace('APP.Model.DummyData');
-APP.AppModel.DummyData = (function(){
+APP.AppModel.DummyData = (function () {
 
   var _id = 1,
-      _possibleYears = ['2010','2011','2012','2013','2014'],
-      _possiblePreviewImages = [
-        'screenshots/screenshot1.png',
-        'screenshots/screenshot2.png',
-        'screenshots/screenshot3.png',
-        'screenshots/screenshot4.png',
-        'screenshots/screenshot5.jpg',
-        'screenshots/screenshot6.jpg',
-        'screenshots/screenshot7.jpg',
-        'screenshots/screenshot8.png',
-        'screenshots/screenshot9.png',
-        'screenshots/screenshot11.png',
-        'screenshots/screenshot12.png'
-      ],
-      _possibleContributors = [],
-      _possibleLobs = ['Information Technology','Asset Management','Human Resources','Institutional','A&O','Client Services','Finance','Internal Audit','Marketing','Risk Management'],
-      _possibleCategories = ['Synchronous','Asynchronous','Just-In-Time'],
-      _possibleTypes = ['WBT','ILT','VILT','App','Multimedia','Sharepoint','Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
-      _possibleTags = ['template','storyline','social','game','mobile','sharepoint','html','system','ilt','paper based','application','show me','simulation'],
-      _possibleComplexity = ['High','Medium','Low'],
-      _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
-      _items = [],
-      _lorem = require('nudoru.utils.NLorem'),
-      _arrayUtils = require('nudoru.utils.ArrayUtils'),
-      _stringUtils = require('nudoru.utils.StringUtils'),
-      _numberUtils = require('nudoru.utils.NumberUtils');
+    _possibleYears = ['2010', '2011', '2012', '2013', '2014'],
+    _possiblePreviewImages = [
+      'screenshots/screenshot1.png',
+      'screenshots/screenshot2.png',
+      'screenshots/screenshot3.png',
+      'screenshots/screenshot4.png',
+      'screenshots/screenshot5.jpg',
+      'screenshots/screenshot6.jpg',
+      'screenshots/screenshot7.jpg',
+      'screenshots/screenshot8.png',
+      'screenshots/screenshot9.png',
+      'screenshots/screenshot11.png',
+      'screenshots/screenshot12.png'
+    ],
+    _possibleContributors = [],
+    _possibleLobs = ['Information Technology', 'Asset Management', 'Human Resources', 'Institutional', 'A&O', 'Client Services', 'Finance', 'Internal Audit', 'Marketing', 'Risk Management'],
+    _possibleCategories = ['Synchronous', 'Asynchronous', 'Just-In-Time'],
+    _possibleTypes = ['WBT', 'ILT', 'VILT', 'App', 'Multimedia', 'Sharepoint', 'Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
+    _possibleTags = ['template', 'storyline', 'social', 'game', 'mobile', 'sharepoint', 'html', 'system', 'ilt', 'paper based', 'application', 'show me', 'simulation'],
+    _possibleComplexity = ['High', 'Medium', 'Low'],
+    _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
+    _items = [],
+    _lorem = require('nudoru.utils.NLorem'),
+    _arrayUtils = require('nudoru.utils.ArrayUtils'),
+    _stringUtils = require('nudoru.utils.StringUtils'),
+    _numberUtils = require('nudoru.utils.NumberUtils');
 
   function getItems() {
     return _items;
   }
 
   function initialize() {
-    var i=0;
+    var i = 0;
 
     _lorem.initialize();
 
-    for(i=0; i<20; i++) {
+    for (i = 0; i < 20; i++) {
       _possibleContributors.push(_lorem.getLFName());
     }
 
-    for(i=0; i<100; i++) {
+    for (i = 0; i < 100; i++) {
       _items.push(createItem());
     }
 
@@ -2639,30 +2735,30 @@ APP.AppModel.DummyData = (function(){
 
   function createItem() {
     var o = Object.create(APP.AppModel.ItemVO.properties),
-        additionalImages = [],
-        additionalNumImages = _numberUtils.rndNumber(1,10),
-        description = '',
-        descriptionNumParas = _numberUtils.rndNumber(1,5),
-        i = 0;
+      additionalImages = [],
+      additionalNumImages = _numberUtils.rndNumber(1, 10),
+      description = '',
+      descriptionNumParas = _numberUtils.rndNumber(1, 5),
+      i = 0;
 
-    for(;i<descriptionNumParas; i++) {
-      description += '<p>'+_lorem.getParagraph(3,7)+'</p>';
+    for (; i < descriptionNumParas; i++) {
+      description += '<p>' + _lorem.getParagraph(3, 7) + '</p>';
     }
 
-    for(i=0;i<additionalNumImages; i++) {
+    for (i = 0; i < additionalNumImages; i++) {
       additionalImages.push('img/' + _arrayUtils.rndElement(_possiblePreviewImages));
     }
 
-    o.title = _stringUtils.capitalizeFirstLetter(_lorem.getText(3,10));
+    o.title = _stringUtils.capitalizeFirstLetter(_lorem.getText(3, 10));
     o.shortTitle = o.title.substr(0, 10) + '...';
     o.description = description;
     o.images = additionalImages;
     o.previewImage = additionalImages[0];
-    o.id = ''+_id++;
+    o.id = '' + _id++;
     o.dateStarted = 'January 1, 2010';
     o.dateCompleted = 'December 31, 2014';
-    o.quarter = 'Q'+_numberUtils.rndNumber(1,4).toString();
-    o.duration = _numberUtils.rndNumber(1,5).toString() + ' hour(s)';
+    o.quarter = 'Q' + _numberUtils.rndNumber(1, 4).toString();
+    o.duration = _numberUtils.rndNumber(1, 5).toString() + ' hour(s)';
     o.contributors = _arrayUtils.getRandomSetOfElements(_possibleContributors, 5);
     o.categories = _arrayUtils.getRandomSetOfElements(_possibleCategories, 1);
     o.types = _arrayUtils.getRandomSetOfElements(_possibleTypes, 3);
@@ -4028,11 +4124,11 @@ APP.AppView.ItemDetailView = (function () {
 
 }());;APP.createNameSpace('APP.AppView.TagBarView');
 
-APP.AppView.TagBarView = (function() {
+APP.AppView.TagBarView = (function () {
   var _containerEl,
-      _currentTags,
-      _arrayUtils = require('nudoru.utils.ArrayUtils'),
-      _template = require('nudoru.utils.NTemplate');
+    _currentTags,
+    _arrayUtils = require('nudoru.utils.ArrayUtils'),
+    _template = require('nudoru.utils.NTemplate');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -4046,11 +4142,13 @@ APP.AppView.TagBarView = (function() {
    * @param newTags
    */
   function update(newTags) {
-    if(newTags.length) {
+    if (newTags.length) {
 
-      var currenttags = _currentTags.map(function(tag) { return tag.label; }),
-          tagsToAdd = _arrayUtils.getDifferences(newTags, currenttags),
-          tagsToRemove = _arrayUtils.getDifferences(currenttags, newTags);
+      var currenttags = _currentTags.map(function (tag) {
+          return tag.label;
+        }),
+        tagsToAdd = _arrayUtils.getDifferences(newTags, currenttags),
+        tagsToRemove = _arrayUtils.getDifferences(currenttags, newTags);
 
       tagsToRemove.forEach(function (tag) {
         remove(tag);
@@ -4080,25 +4178,25 @@ APP.AppView.TagBarView = (function() {
     var tagnode = _template.asElement('template__tag-bar', {tag: tag});
     _containerEl.appendChild(tagnode);
     _currentTags.push({label: tag, el: tagnode});
-    TweenLite.from(tagnode,0.5,{alpha:0, y:'15px', ease:Quad.easeOut});
+    TweenLite.from(tagnode, 0.5, {alpha: 0, y: '15px', ease: Quad.easeOut});
   }
 
   function remove(tag) {
-    var rmv = _currentTags.filter(function(tagobj) {
-      if(tagobj.label === tag) {
+    var rmv = _currentTags.filter(function (tagobj) {
+      if (tagobj.label === tag) {
         return true;
       }
       return false;
     })[0];
 
-    if(rmv) {
+    if (rmv) {
       _containerEl.removeChild(rmv.el);
-      _currentTags.splice(_currentTags.indexOf(rmv),1);
+      _currentTags.splice(_currentTags.indexOf(rmv), 1);
     }
   }
 
   function removeAll() {
-    _currentTags.forEach(function(tag) {
+    _currentTags.forEach(function (tag) {
       _containerEl.removeChild(tag.el);
     });
     _currentTags = [];
@@ -4127,8 +4225,6 @@ APP.AppController = function () {
   //----------------------------------------------------------------------------
   //  Initialization
   //----------------------------------------------------------------------------
-
-
 
   function initialize(app, global, viewParent) {
     _appScope = app;
@@ -4216,10 +4312,10 @@ APP.AppController = function () {
 }();;APP.createNameSpace('APP.AppController.AbstractCommand');
 
 /*
-Simplified implementation of Stamps
-  http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
-From
-  https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
+ Simplified implementation of Stamps
+ http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
+ From
+ https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
  */
 
 APP.AppController.AbstractCommand = {
@@ -4232,22 +4328,22 @@ APP.AppController.AbstractCommand = {
     eventDispatcher: require('nudoru.events.EventDispatcher'),
     urlRouter: require('nudoru.utils.URLRouter'),
 
-    execute: function(data) {
-      console.log('Abstract command executing with data: '+data);
+    execute: function (data) {
+      console.log('Abstract command executing with data: ' + data);
     }
   }
 };
 
 // Template
-
+/*
 APP.createNameSpace('APP.AppController.TestingTestingCommand');
 APP.AppController.TestingTestingCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.TestingTestingCommand.execute = function(data) {
-  console.log('!!! TestingTestingCommand with data "'+data+'"');
+APP.AppController.TestingTestingCommand.execute = function (data) {
+  console.log('!!! TestingTestingCommand with data "' + data + '"');
 };
-;APP.createNameSpace('APP.AppController.AppInitializedCommand');
+*/;APP.createNameSpace('APP.AppController.AppInitializedCommand');
 APP.AppController.AppInitializedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.AppInitializedCommand.execute = function(data) {
+APP.AppController.AppInitializedCommand.execute = function (data) {
   var _appGlobals = APP.globals();
 
 
@@ -4264,7 +4360,7 @@ APP.AppController.AppInitializedCommand.execute = function(data) {
   if (initialRoute.length > 0) {
     this.appModel.parseFiltersFromUrl(initialRoute);
   } else {
-    if(_appGlobals.appConfig.welcome.enabled === 'true') {
+    if (_appGlobals.appConfig.welcome.enabled === 'true') {
       this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
     }
   }
@@ -4314,17 +4410,17 @@ APP.AppController.GridViewItemsVisibleChangedCommand.execute = function(data) {
   this.appView.updateSearchHeader(message);
 };;APP.createNameSpace('APP.AppController.ItemSelectCommand');
 APP.AppController.ItemSelectCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ItemSelectCommand.execute = function(data) {
+APP.AppController.ItemSelectCommand.execute = function (data) {
   //console.log('ItemSelectCommand: '+data);
 
-  if(data) {
+  if (data) {
     var itemObject = this.appModel.getItemObjectForID(data);
 
-    if(itemObject !== null) {
+    if (itemObject !== null) {
       this.appModel.setCurrentItem(itemObject.id);
       this.appView.showItemDetailView(itemObject);
     } else {
-      console.log('[ItemSelectCommand] Cannot show details for item id "'+data+'", not found.');
+      console.log('[ItemSelectCommand] Cannot show details for item id "' + data + '", not found.');
     }
   } else {
     this.appModel.setCurrentItem('');
@@ -4338,24 +4434,24 @@ APP.AppController.MenuSelectionCommand.execute = function(data) {
   this.appModel.toggleFilter(data);
 };;APP.createNameSpace('APP.AppController.ResumeFromModelStateCommand');
 APP.AppController.ResumeFromModelStateCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ResumeFromModelStateCommand.execute = function(data) {
+APP.AppController.ResumeFromModelStateCommand.execute = function (data) {
 
   var filters = data.filters,
-      search = data.search,
-      item = data.item;
+    search = data.search,
+    item = data.item;
 
-  console.log('ResumeFromModel State, filters: '+filters+', search: '+search+', item: '+item);
+  console.log('ResumeFromModel State, filters: ' + filters + ', search: ' + search + ', item: ' + item);
 
-  if(filters) {
+  if (filters) {
     this.appModel.setMultipleFilters(filters);
     this.appView.updateMenuSelections(this.appModel.getFiltersForTagBar());
   }
 
-  if(search) {
+  if (search) {
     this.appView.setFreeTextFilterValue(search);
   }
 
-  if(item) {
+  if (item) {
     nudoru.events.EventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
   } else {
     this.appModel.setCurrentItem('');
