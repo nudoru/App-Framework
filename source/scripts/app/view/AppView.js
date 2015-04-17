@@ -19,8 +19,6 @@ APP.AppView = (function() {
       _mainFooterEl,
       _drawerToggleButtonEl,
       _drawerToggleButtonInputEl,
-      _headerMenuView,
-      _drawerMenuView,
       _itemGridView,
       _itemDetailView,
       _tagBarView,
@@ -36,6 +34,8 @@ APP.AppView = (function() {
       _phoneBreakWidth,
       _drawerWidth,
       _isDrawerOpen,
+      _headerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
+      _drawerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
       _toastView = require('nudoru.components.ToastView'),
       _modalCoverView = require('nudoru.components.ModalCoverView'),
       _browserEvents = require('nudoru.events.BrowserEvents'),
@@ -74,22 +74,17 @@ APP.AppView = (function() {
 
   function render() {
     defineViewElements();
-
     setCurrentViewPortSize();
     setCurrentViewPortScroll();
-
-
     initializeComponents();
-
     configureUIStreams();
-
     configureUIEvents();
-
     checkForMobile();
     hideModalCover();
     positionUIElements();
-
     updateAppTitle();
+
+    TweenLite.to(_drawerEl, 0, {x:_drawerWidth*-1});
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
   }
@@ -123,21 +118,12 @@ APP.AppView = (function() {
 
   function initializeComponents() {
     _toastView.initialize('toast__container');
-
     _modalCoverView.initialize();
-
-    // init on these called later
-    _headerMenuView = _objectUtils.basicFactory(nudoru.components.DDMenuBarView);
-    _drawerMenuView = _objectUtils.basicFactory(nudoru.components.DDMenuBarView);
     _itemGridView = _self.ItemGridView;
-
     _itemDetailView = _self.ItemDetailView;
     _itemDetailView.initialize('details');
-
     _tagBarView = _self.TagBarView;
     _tagBarView.initialize('tagbar__container');
-
-    TweenLite.to(_drawerEl, 0, {x:_drawerWidth*-1});
   }
 
   function configureUIEvents() {

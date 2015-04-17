@@ -2,127 +2,130 @@
 //  A menu
 //----------------------------------------------------------------------------
 
-nudoru.createNameSpace('nudoru.components.DDMenuView');
-nudoru.components.DDMenuView = {
+define('nudoru.components.DDMenuView',
+  function(require, module, exports) {
 
-  methods: {
-    visible: false,
-    selected: false,
-    data: null,
-    items: null,
-    element: null,
-    anchorElement: null,
-    ddMenuEl: null,
-    menuOpenHeight: 0,
-    menuOverStream: null,
-    menuOutStream: null,
-    menuClickStream: null,
-    fadeOutComplete: null,
-    isKeepOpen: false,
-    firstTouchPosition: [],
-    lastTouchPosition: [],
-    touchDeltaTolerance: 10,
-    shouldProcessTouchEnd: false,
-    eventDispatcher: require('nudoru.events.EventDispatcher'),
-    objectUtils: require('nudoru.utils.ObjectUtils'),
-    DOMUtils: require('nudoru.utils.DOMUtils'),
-    touchUtils: require('nudoru.utils.TouchUtils'),
-    componentEvents: require('nudoru.events.ComponentEvents'),
-    template: require('nudoru.utils.NTemplate'),
+    var _visible = false,
+      _data = null,
+      _items = [],
+      _element = null,
+      _anchorElement = null,
+      _ddMenuEl = null,
+      _menuOpenHeight = 0,
+      _menuOverStream = null,
+      _menuOutStream = null,
+      _menuClickStream = null,
+      _fadeOutComplete = null,
+      _isKeepOpen = false,
+      _firstTouchPosition = [],
+      _lastTouchPosition = [],
+      _touchDeltaTolerance = 10,
+      _shouldProcessTouchEnd = false,
+      _eventDispatcher = require('nudoru.events.EventDispatcher'),
+      _DOMUtils = require('nudoru.utils.DOMUtils'),
+      _touchUtils = require('nudoru.utils.TouchUtils'),
+      _componentEvents = require('nudoru.events.ComponentEvents'),
+      _template = require('nudoru.utils.NTemplate');
 
-    initialize: function(data, keep) {
-
-      this.data = data;
-      this.data.value = this.data.value || this.data.label.split(' ').join('_').toLowerCase();
-      this.items = [];
+    function initialize(idata, keep) {
+      _data = idata;
+      _data.value = _data.value || _data.label.split(' ').join('_').toLowerCase();
 
       // Should the menu ever collapse or remain open always?
-      this.isKeepOpen = keep ? true : false;
+      _isKeepOpen = keep ? true : false;
 
-      this.render();
+      render();
 
       if(BrowserInfo.mobile.any()) {
-        this.configureMobileStreams();
+        configureMobileStreams();
       } else {
-        this.configureStreams();
+        configureStreams();
       }
-    },
+    }
 
-    render: function() {
-      this.element = this.template.asElement('template__menu-header', this.data);
-      this.ddMenuEl = this.element.querySelector('ul');
-      this.anchorElement = this.element.querySelector('button');
-      this.data.items.forEach(this.buildMenuItems.bind(this));  // ensure proper scope!
-      this.fadeOutComplete = true;
-    },
+    function render() {
+      _element = _template.asElement('template__menu-header', _data);
+      _ddMenuEl = _element.querySelector('ul');
+      _anchorElement = _element.querySelector('button');
 
-    postRender: function() {
+      _data.items.forEach(buildMenuItems);
+
+      _fadeOutComplete = true;
+
       // Need a little delay to get the height of the menu
-      setTimeout(this.setMenuState.bind(this), 1);
-    },
+      setTimeout(setMenuState, 1);
+    }
 
-    setMenuState: function() {
+    function buildMenuItems(item) {
+      var menuitem = requireCopy('nudoru.components.BasicMenuItemView');
+      menuitem.initialize(item);
+      _ddMenuEl.appendChild(menuitem.getElement());
+      _items.push(menuitem);
+    }
+
+    function getElement() {
+      return _element;
+    }
+
+    function getValue() {
+      return _data.value;
+    }
+
+    function setMenuState() {
       // not able to get the true height from CSS, 39px is the height of a single line item
-      var guessHeight = this.data.items.length * 39,
-          cssHeight = parseInt(window.getComputedStyle(this.ddMenuEl,null).getPropertyValue("height"), 10);
+      var guessHeight = _data.items.length * 39,
+        cssHeight = parseInt(window.getComputedStyle(_ddMenuEl,null).getPropertyValue("height"), 10);
 
       // use the highest measure
-      this.menuOpenHeight = Math.max(guessHeight, cssHeight);
+      _menuOpenHeight = Math.max(guessHeight, cssHeight);
 
-      if(this.isKeepOpen) {
-        this.visible = true;
+      if(_isKeepOpen) {
+        _visible = true;
       } else {
-        this.visible = false;
-        this.ddMenuEl.style.height = '0px';
-        TweenLite.to(this.ddMenuEl, 0, {autoAlpha: 0});
+        _visible = false;
+        _ddMenuEl.style.height = '0px';
+        TweenLite.to(_ddMenuEl, 0, {autoAlpha: 0});
       }
-    },
+    }
 
-    buildMenuItems: function(item) {
-      var menuitem = this.objectUtils.basicFactory(nudoru.components.BasicMenuItemView);
-      menuitem.initialize(item);
-      this.ddMenuEl.appendChild(menuitem.element);
-      this.items.push(menuitem);
-    },
+    function configureStreams() {
+      _menuOverStream = Rx.Observable.fromEvent(_element, 'mouseover')
+        .filter(filterForMouseEventsOnItems)
+        .map(getMouseEventTargetValue)
+        .subscribe(handleMenuOver);
 
-    configureStreams: function() {
-      this.menuOverStream = Rx.Observable.fromEvent(this.element, 'mouseover')
-        .filter(this.filterForMouseEventsOnItems.bind(this))
-        .map(this.getMouseEventTargetValue.bind(this))
-        .subscribe(this.handleMenuOver.bind(this));
+      _menuOutStream = Rx.Observable.fromEvent(_element, 'mouseout')
+        .filter(filterForMouseEventsOnItems)
+        .map(getMouseEventTargetValue)
+        .subscribe(handleMenuOut);
 
-      this.menuOutStream = Rx.Observable.fromEvent(this.element, 'mouseout')
-        .filter(this.filterForMouseEventsOnItems.bind(this))
-        .map(this.getMouseEventTargetValue.bind(this))
-        .subscribe(this.handleMenuOut.bind(this));
+      _menuClickStream = Rx.Observable.fromEvent(_element, 'click')
+        .filter(filterForMouseEventsOnItems)
+        .map(getMouseEventTargetValue)
+        .subscribe(handleMenuClick);
+    }
 
-      this.menuClickStream = Rx.Observable.fromEvent(this.element, 'click')
-        .filter(this.filterForMouseEventsOnItems.bind(this))
-        .map(this.getMouseEventTargetValue.bind(this))
-        .subscribe(this.handleMenuClick.bind(this));
-    },
-
-    filterForMouseEventsOnItems: function(evt) {
+    function filterForMouseEventsOnItems(evt) {
       var target = evt.target;
       if(target === null) {
         return false;
       }
       // Need to traverse up the DOM for IE9
-      var el = this.getTargetElMatching(target, '.js__menu-item');
+      var el = getTargetElMatching(target, '.js__menu-item');
       if(el){
         return el.tagName.toLowerCase() === 'button';
       }
       return false;
-    },
+    }
 
-    getMouseEventTargetValue: function(evt) {
-      var target = this.getTargetElMatching(evt.target, '.js__menu-item');
+    function getMouseEventTargetValue(evt) {
+      var target = getTargetElMatching(evt.target, '.js__menu-item');
       return target.getAttribute('data-value');
-    },
+    }
 
-    getTargetElMatching: function(el, cls) {
-      return this.DOMUtils.closest(el, cls);
-    },
+    function getTargetElMatching(el, cls) {
+      return _DOMUtils.closest(el, cls);
+    }
 
     /**
      * The rationale here
@@ -133,264 +136,271 @@ nudoru.components.DDMenuView = {
      * 5. if not, then it was probably a drag/scroll and ignore it
      * based on https://github.com/filamentgroup/tappy/blob/master/tappy.js
      */
-    configureMobileStreams: function() {
+    function configureMobileStreams() {
       // Note - had problems getting RxJS to work correctly here, used events
-      this.element.addEventListener('touchstart', (function(evt) {
-        this.firstTouchPosition = this.lastTouchPosition = this.touchUtils.getCoords(evt);
-        this.shouldProcessTouchEnd = false;
-      }).bind(this), false);
+      _element.addEventListener('touchstart', (function(evt) {
+        _firstTouchPosition = _lastTouchPosition = _touchUtils.getCoords(evt);
+        _shouldProcessTouchEnd = false;
+      }), false);
 
-      this.element.addEventListener('touchmove', (function(evt) {
-        this.lastTouchPosition = this.touchUtils.getCoords(evt);
-      }).bind(this), false);
+      _element.addEventListener('touchmove', (function(evt) {
+        _lastTouchPosition = _touchUtils.getCoords(evt);
+      }), false);
 
       var touchPressFunction = function(arg) {
-        if(this.shouldProcessTouchEnd) {
-          this.handleMenuClick(arg);
+        if(_shouldProcessTouchEnd) {
+          handleMenuClick(arg);
         }
       };
 
-      this.menuClickStream = Rx.Observable.fromEvent(this.element, 'touchend')
-        .filter(this.processTouchEndEventsOnItems.bind(this))
-        .map(this.getMouseEventTargetValue.bind(this))
-        .subscribe(touchPressFunction.bind(this));
-    },
+      _menuClickStream = Rx.Observable.fromEvent(_element, 'touchend')
+        .filter(processTouchEndEventsOnItems)
+        .map(getMouseEventTargetValue)
+        .subscribe(touchPressFunction);
+    }
 
-    processTouchEndEventsOnItems: function(evt) {
-      var deltaX = Math.abs(this.lastTouchPosition[0] - this.firstTouchPosition[0]),
-          deltaY = Math.abs(this.lastTouchPosition[1] - this.firstTouchPosition[1]);
+    function processTouchEndEventsOnItems(evt) {
+      var deltaX = Math.abs(_lastTouchPosition[0] - _firstTouchPosition[0]),
+        deltaY = Math.abs(_lastTouchPosition[1] - _firstTouchPosition[1]);
 
-      if(deltaX <= this.touchDeltaTolerance && deltaY <= this.touchDeltaTolerance) {
-        this.shouldProcessTouchEnd = true;
+      if(deltaX <= _touchDeltaTolerance && deltaY <= _touchDeltaTolerance) {
+        _shouldProcessTouchEnd = true;
       }
 
-      return this.filterForMouseEventsOnItems(evt);
-    },
+      return filterForMouseEventsOnItems(evt);
+    }
 
-    handleMenuOver: function(data) {
-      this.open();
-      if(this.isHeaderObject(data)) {
+    function handleMenuOver(data) {
+      open();
+      if(isHeaderObject(data)) {
         // nothing on header
       } else {
-        var item = this.getItemByValue(data);
+        var item = getItemByValue(data);
         item.showOverEffect();
       }
-    },
+    }
 
-    handleMenuOut: function(data) {
-      this.close();
-      if(this.isHeaderObject(data)) {
+    function handleMenuOut(data) {
+      close();
+      if(isHeaderObject(data)) {
         // nothing on header
       } else {
-        var item = this.getItemByValue(data);
+        var item = getItemByValue(data);
         item.showOutEffect();
       }
-    },
+    }
 
-    handleMenuClick: function(data) {
-      if(this.isHeaderObject(data)) {
+    function handleMenuClick(data) {
+      if(isHeaderObject(data)) {
         // Toggle visibility on mobile/tablet
         if(BrowserInfo.mobile.any()) {
-          this.toggleMenu();
+          toggleMenu();
         }
       } else {
-        var item = this.getItemByValue(data);
+        var item = getItemByValue(data);
         item.toggleSelect();
         item.showDepressEffect();
-        this.eventDispatcher.publish(this.componentEvents.MENU_SELECT, data);
+        _eventDispatcher.publish(_componentEvents.MENU_SELECT, data);
       }
-    },
+    }
 
-    isHeaderObject: function(data) {
-      return data === this.data.value;
-    },
+    function isHeaderObject(data) {
+      return data === _data.value;
+    }
 
-    toggleMenu: function() {
-      if(this.isKeepOpen) {
+    function toggleMenu() {
+      if(_isKeepOpen) {
         return;
       }
 
-      if(this.visible) {
-        this.close();
+      if(_visible) {
+        close();
       } else {
-        this.open();
+        open();
       }
-    },
+    }
 
-    getAllItemElements: function() {
-      var itemsarry = [];
-      this.items.forEach(function(item) {
-        itemsarry.push(item.element);
-      });
-      return itemsarry;
-    },
-
-    getItemByValue: function(value) {
-      return this.items.filter(function(item) {
-        return (item.data.value === value);
-        //if(item.data.value === value) {
-        //  return true;
-        //} else {
-        //  return false;
-        //}
+    function getItemByValue(value) {
+      return _items.filter(function(item) {
+        return (item.getValue() === value);
       })[0];
-    },
+    }
 
-    deselectAllItems: function() {
-      this.items.forEach(function(item) {
+    function deselectAllItems() {
+      _items.forEach(function(item) {
         item.deselect();
       });
-    },
+    }
 
-    setSelections: function(data) {
-      this.deselectAllItems();
+    function setSelections(data) {
+      deselectAllItems();
 
-      this.items.forEach(function(item) {
+      _items.forEach(function(item) {
         data.forEach(function(selection) {
-          if(item.label === selection) {
+          if(item.getLabel() === selection) {
             item.select();
           }
         });
       });
-    },
-
-    open: function() {
-      if(this.visible || this.element === undefined || this.isKeepOpen) {
-        return;
-      }
-
-      this.visible = true;
-
-      //this.ddMenuEl.style.height = 'auto';
-
-      TweenLite.killTweensOf(this.anchorElement);
-      TweenLite.killTweensOf(this.ddMenuEl);
-
-      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'10px', ease:Circ.easeOut});
-      TweenLite.to(this.ddMenuEl, 0.5, {autoAlpha: 1, height:this.menuOpenHeight, top:'0', ease:Circ.easeOut});
-    },
-
-    close: function() {
-      if(!this.visible || this.element === undefined || this.isKeepOpen) {
-        return;
-      }
-      this.visible = false;
-
-      this.fadeOutComplete = false;
-
-      var closeCompleteFunc = this.closeComplete.bind(this);
-
-      TweenLite.to(this.anchorElement, 0.25, {paddingTop:'0px', ease:Circ.easeIn, delay:0.1});
-      TweenLite.to(this.ddMenuEl,0.1, {autoAlpha: 0, height: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
-    },
-
-    closeComplete: function() {
-      //this.ddMenuEl.style.height = '0px';
-      this.fadeOutComplete = true;
     }
 
-  }
-};
+    function open() {
+      if(_visible || _element === undefined || _isKeepOpen) {
+        return;
+      }
+
+      _visible = true;
+
+      TweenLite.killTweensOf(_anchorElement);
+      TweenLite.killTweensOf(_ddMenuEl);
+
+      TweenLite.to(_anchorElement, 0.25, {paddingTop:'10px', ease:Circ.easeOut});
+      TweenLite.to(_ddMenuEl, 0.5, {autoAlpha: 1, height:_menuOpenHeight, top:'0', ease:Circ.easeOut});
+    }
+
+    function close() {
+      if(!_visible || _element === undefined || _isKeepOpen) {
+        return;
+      }
+      _visible = false;
+
+      _fadeOutComplete = false;
+
+      var closeCompleteFunc = closeComplete;
+
+      TweenLite.to(_anchorElement, 0.25, {paddingTop:'0px', ease:Circ.easeIn, delay:0.1});
+      TweenLite.to(_ddMenuEl,0.1, {autoAlpha: 0, height: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
+    }
+
+    function closeComplete() {
+      _fadeOutComplete = true;
+    }
+
+    exports.initialize = initialize;
+    exports.getElement = getElement;
+    exports.getValue = getValue;
+    exports.open = open;
+    exports.close = close;
+    exports.toggleMenu = toggleMenu;
+    exports.setSelections = setSelections;
+    exports.deselectAllItems = deselectAllItems;
+
+  });
+
 
 //----------------------------------------------------------------------------
 //  A menu item
 //----------------------------------------------------------------------------
 
-nudoru.createNameSpace('nudoru.components.BasicMenuItemView');
-nudoru.components.BasicMenuItemView = {
+define('nudoru.components.BasicMenuItemView',
+  function(require, module, exports) {
 
-  methods: {
-    visible: true,
-    selected: false,
-    data: null,
-    label: '',
-    element: null,
-    iconElement: null,
-    anchorElement: null,
-    labelOverStream: null,
-    labelOutStream: null,
-    labelSelectStream: null,
-    iconDeselectedClass: null,
-    iconSelectedClass: null,
-    toggle: null,
-    stringUtils: require('nudoru.utils.StringUtils'),
-    DOMUtils: require('nudoru.utils.DOMUtils'),
-    template: require('nudoru.utils.NTemplate'),
+    var _selected = false,
+      _data = null,
+      _element = null,
+      _iconElement = null,
+      _anchorElement = null,
+      _iconDeselectedClass = null,
+      _iconSelectedClass = null,
+      _toggle = null,
+      _stringUtils = require('nudoru.utils.StringUtils'),
+      _DOMUtils = require('nudoru.utils.DOMUtils'),
+      _template = require('nudoru.utils.NTemplate');
 
-    initialize: function(data) {
-      this.data = data;
+    function initialize(idata) {
+      _data = idata;
 
-      if(this.data.toggle) {
-        this.toggle = true;
-        this.iconSelectedClass = 'fa-check';
-        this.iconDeselectedClass = 'fa-circle-thin';
+      if(_data.toggle) {
+        _toggle = true;
+        _iconSelectedClass = 'fa-check';
+        _iconDeselectedClass = 'fa-circle-thin';
       }
 
-      data.label = this.stringUtils.toTitleCase(data.label);
+      _data.label = _stringUtils.toTitleCase(_data.label);
 
-      this.label = data.label;
+      render();
 
-      this.render();
+      _selected = false;
+    }
 
-      this.selected = false;
-    },
-
-    render: function() {
-      if(this.toggle) {
-        this.element = this.template.asElement('template__menu-item-icon', this.data);
+    function render() {
+      if(_toggle) {
+        _element = _template.asElement('template__menu-item-icon', _data);
       } else {
-        this.element = this.template.asElement('template__menu-item', this.data);
+        _element = _template.asElement('template__menu-item', _data);
       }
 
-      this.iconElement = this.element.querySelector('i');
-      this.anchorElement = this.element.querySelector('button');
-    },
+      _iconElement = _element.querySelector('i');
+      _anchorElement = _element.querySelector('button');
+    }
 
-    select: function() {
-      if(this.selected || this.element === undefined) {
+    function getElement() {
+      return _element;
+    }
+
+    function getLabel() {
+      return _data.label;
+    }
+
+    function getValue() {
+      return _data.value;
+    }
+
+    function select() {
+      if(_selected || _element === undefined) {
         return;
       }
-      this.selected = true;
+      _selected = true;
 
-      if(this.toggle) {
-        this.DOMUtils.removeClass(this.iconElement, this.iconDeselectedClass);
-        this.DOMUtils.addClass(this.iconElement, this.iconSelectedClass);
-      }
-    },
-
-    showOverEffect: function() {
-      TweenLite.to(this.element, 0.1, {backgroundColor:'rgba(255,255,255,.25)', ease:Circ.easeOut});
-    },
-
-    showOutEffect: function() {
-      TweenLite.to(this.element, 0.25, {backgroundColor:'rgba(255,255,255,0)', ease:Circ.easeIn});
-    },
-
-    showDepressEffect: function() {
-      var tl = new TimelineLite();
-      tl.to(this.element,0.1, {scale:0.9, ease: Quad.easeOut});
-      tl.to(this.element,0.5, {scale:1, ease: Elastic.easeOut});
-    },
-
-    deselect: function() {
-      if(!this.selected || this.element === undefined) {
-        return;
-      }
-      this.selected = false;
-
-      if(this.toggle) {
-        this.DOMUtils.removeClass(this.iconElement, this.iconSelectedClass);
-        this.DOMUtils.addClass(this.iconElement, this.iconDeselectedClass);
-      }
-    },
-
-    toggleSelect: function() {
-      if(this.selected) {
-        this.deselect();
-      } else {
-        this.select();
+      if(_toggle) {
+        _DOMUtils.removeClass(_iconElement, _iconDeselectedClass);
+        _DOMUtils.addClass(_iconElement, _iconSelectedClass);
       }
     }
 
-  }
-};
+    function showOverEffect() {
+      TweenLite.to(_element, 0.1, {backgroundColor:'rgba(255,255,255,.25)', ease:Circ.easeOut});
+    }
+
+    function showOutEffect() {
+      TweenLite.to(_element, 0.25, {backgroundColor:'rgba(255,255,255,0)', ease:Circ.easeIn});
+    }
+
+    function showDepressEffect() {
+      var tl = new TimelineLite();
+      tl.to(_element,0.1, {scale:0.9, ease: Quad.easeOut});
+      tl.to(_element,0.5, {scale:1, ease: Elastic.easeOut});
+    }
+
+    function deselect() {
+      if(!_selected || _element === undefined) {
+        return;
+      }
+      _selected = false;
+
+      if(_toggle) {
+        _DOMUtils.removeClass(_iconElement, _iconSelectedClass);
+        _DOMUtils.addClass(_iconElement, _iconDeselectedClass);
+      }
+    }
+
+    function toggleSelect() {
+      if(_selected) {
+        deselect();
+      } else {
+        select();
+      }
+    }
+
+    exports.initialize = initialize;
+    exports.getElement = getElement;
+    exports.getLabel = getLabel;
+    exports.getValue = getValue;
+    exports.select = select;
+    exports.showOverEffect = showOverEffect;
+    exports.showOutEffect = showOutEffect;
+    exports.showDepressEffect = showDepressEffect;
+    exports.deselect = deselect;
+    exports.toggleSelect = toggleSelect;
+
+  });

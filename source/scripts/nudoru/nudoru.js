@@ -111,6 +111,24 @@ function require(id) {
 }
 require.cache = Object.create(null);
 
+// Gets a new copy
+function requireCopy(id) {
+  var moduleCode = define.cache[id],
+    exports = {},
+    module = {exports: exports};
+
+  if(!moduleCode) {
+    throw new Error('requireCopy: module not found: "'+id+'"');
+  }
+
+  // testing an idea
+  //var moduleBody = srcModuleCode.toString().match(/function[^{]+\{([\s\S]*)\}$/)[1],
+  //newModuleCode = new Function('require, module, exports', moduleBody);
+
+  moduleCode.call(moduleCode, require, module, exports);
+  return module.exports;
+}
+
 /**
  * Automates the require and creation of local vars
  *
