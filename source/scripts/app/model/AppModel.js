@@ -115,7 +115,7 @@ APP.AppModel = (function() {
     _currentDataFilters = [];
     _currentItem = '';
 
-    _eventDispatcher = nudoru.events.EventDispatcher;
+    _eventDispatcher = APP.AppController.getEventDispatcher();
 
     _eventDispatcher.publish(APP.AppEvents.MODEL_INITIALIZED);
   }

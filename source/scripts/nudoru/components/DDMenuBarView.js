@@ -5,8 +5,6 @@
 nudoru.createNameSpace('nudoru.components.DDMenuBarView');
 nudoru.components.DDMenuBarView = {
   methods: {
-
-    eventDispatcher: null,
     containerEl: null,
     barEl: null,
     data: null,
@@ -16,8 +14,6 @@ nudoru.components.DDMenuBarView = {
     objectUtils: require('nudoru.utils.ObjectUtils'),
 
     initialize: function(elID, data, keep) {
-      this.eventDispatcher = nudoru.events.EventDispatcher;
-
       this.containerEl = document.getElementById(elID);
       this.data = data;
 

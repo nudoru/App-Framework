@@ -5,12 +5,11 @@
 define('nudoru.utils.URLRouter',
   function(require, module, exports) {
 
-    var _eventDispatcher,
-      _lastSetPath,
+    var _lastSetPath,
+      _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
-    function initialize() {
-      _eventDispatcher = nudoru.events.EventDispatcher;
+    function initialize(evtDispatcher) {
       _lastSetPath = '';
 
       configureStreams();
@@ -24,6 +23,10 @@ define('nudoru.utils.URLRouter',
       var hash = getURLHash();
       if(hash === _lastSetPath) {
         return;
+      }
+
+      if(!_eventDispatcher) {
+        throw new Error('URLRouter: must set event dispatcher');
       }
 
       _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, hash);

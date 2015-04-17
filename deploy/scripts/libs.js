@@ -851,12 +851,11 @@ nudoru.components = (function() {
   });;define('nudoru.utils.URLRouter',
   function(require, module, exports) {
 
-    var _eventDispatcher,
-      _lastSetPath,
+    var _lastSetPath,
+      _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
-    function initialize() {
-      _eventDispatcher = nudoru.events.EventDispatcher;
+    function initialize(evtDispatcher) {
       _lastSetPath = '';
 
       configureStreams();
@@ -870,6 +869,10 @@ nudoru.components = (function() {
       var hash = getURLHash();
       if(hash === _lastSetPath) {
         return;
+      }
+
+      if(!_eventDispatcher) {
+        throw new Error('URLRouter: must set event dispatcher');
       }
 
       _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, hash);
@@ -896,136 +899,132 @@ nudoru.components = (function() {
     exports.getRoute = getURLHash;
     exports.setRoute = updateURLHash;
 
-  });;nudoru.createNameSpace('nudoru.events.EventDispatcher');
-nudoru.events.EventDispatcher = function () {
+  });;define('nudoru.events.EventDispatcher',
+  function(require, module, exports) {
+    var _eventMap = Object.create(null);
 
-  var _eventMap = Object.create(null);
+    function subscribe(evtString, callback, once) {
+      if(_eventMap[evtString] === undefined) {
+        _eventMap[evtString] = [];
+      }
 
-  function subscribe(evtString, callback, once) {
-    if(_eventMap[evtString] === undefined) {
-      _eventMap[evtString] = [];
+      _eventMap[evtString].push({
+        evtstring: evtString,
+        callback: callback,
+        once: once,
+        priority: 0
+      });
     }
 
-    _eventMap[evtString].push({
-      evtstring: evtString,
-      callback: callback,
-      once: once,
-      priority: 0
-    });
-  }
+    function unsubscribe(evtString, callback) {
+      if(_eventMap[evtString] === undefined) {
+        return;
+      }
 
-  function unsubscribe(evtString, callback) {
-    if(_eventMap[evtString] === undefined) {
-      return;
-    }
-
-    var listeners = _eventMap[evtString],
+      var listeners = _eventMap[evtString],
         callbackIdx = -1;
 
-    for(var i= 0, len=listeners.length; i<len; i++) {
-      if(listeners[i].callback === callback) {
-        callbackIdx = i;
+      for(var i= 0, len=listeners.length; i<len; i++) {
+        if(listeners[i].callback === callback) {
+          callbackIdx = i;
+        }
+      }
+
+      if(callbackIdx === -1) {
+        return;
+      }
+
+      listeners.splice(callbackIdx, 1);
+
+      if(listeners.length === 0) {
+        delete _eventMap[evtString];
       }
     }
 
-    if(callbackIdx === -1) {
-      return;
-    }
+    function publish(evtString, data, context) {
+      if(_eventMap[evtString] === undefined) {
+        return;
+      }
 
-    listeners.splice(callbackIdx, 1);
-
-    if(listeners.length === 0) {
-      delete _eventMap[evtString];
-    }
-  }
-
-  function publish(evtString, data, context) {
-    if(_eventMap[evtString] === undefined) {
-      return;
-    }
-
-    var listeners = _eventMap[evtString],
+      var listeners = _eventMap[evtString],
         i = listeners.length;
 
-    data = (data instanceof Array) ? data : [data];
+      data = (data instanceof Array) ? data : [data];
 
-    while(i--) {
+      while(i--) {
 
-      var listenerObj = listeners[i];
+        var listenerObj = listeners[i];
 
-      var cnxt = context || listenerObj.callback;
-      listenerObj.callback.apply(cnxt, data);
-      if(listenerObj.once) {
-        unsubscribe(listenerObj.evtstring, listenerObj.callback);
+        var cnxt = context || listenerObj.callback;
+        listenerObj.callback.apply(cnxt, data);
+        if(listenerObj.once) {
+          unsubscribe(listenerObj.evtstring, listenerObj.callback);
+        }
+
       }
-
     }
-  }
+    exports.subscribe = subscribe;
+    exports.unsubscribe = unsubscribe;
+    exports.publish = publish;
 
-  return {
-    subscribe: subscribe,
-    unsubscribe: unsubscribe,
-    publish: publish
-  };
+  });;define('nudoru.events.EventCommandMap',
+  function(require, module, exports) {
 
-}();;nudoru.createNameSpace('nudoru.events.EventCommandMap');
-nudoru.events.EventCommandMap = (function(){
-  var _eventDispatcher = nudoru.events.EventDispatcher,
+    var _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _commandMap = Object.create(null);
 
-  function map(evt, command, once) {
-    if(hasCommand(evt, command)) {
-      return;
+    function map(evt, command, once) {
+
+      if(hasCommand(evt, command)) {
+        return;
+      }
+
+      if(_commandMap[evt] === undefined) {
+        _commandMap[evt] = {};
+      }
+
+      var evtCommandMap = _commandMap[evt];
+
+      var callback = function(args) {
+        routeToCommand(evt, command, args, once);
+      };
+
+      evtCommandMap[command] = callback;
+
+      _eventDispatcher.subscribe(evt, callback);
     }
 
-    if(_commandMap[evt] === undefined) {
-      _commandMap[evt] = {};
+    function routeToCommand(evt, command, args, once) {
+      var cmd = command;
+      cmd.execute.apply(command, [args]);
+      cmd = null;
+      if(once) {
+        unmap(evt, command);
+      }
     }
 
-    var evtCommandMap = _commandMap[evt];
-
-    var callback = function(args) {
-      routeToCommand(evt, command, args, once);
-    };
-
-    evtCommandMap[command] = callback;
-
-    _eventDispatcher.subscribe(evt, callback);
-  }
-
-  function routeToCommand(evt, command, args, once) {
-    var cmd = command;
-    cmd.execute.apply(command, [args]);
-    cmd = null;
-    if(once) {
-      unmap(evt, command);
-    }
-  }
-
-  function unmap(evt, command) {
-    if(hasCommand(evt, command)) {
-      var callbacksByCommand = _commandMap[evt],
+    function unmap(evt, command) {
+      if(hasCommand(evt, command)) {
+        var callbacksByCommand = _commandMap[evt],
           callback = callbacksByCommand[command];
-      _eventDispatcher.unsubscribe(evt, callback);
-      delete callbacksByCommand[command];
+        _eventDispatcher.unsubscribe(evt, callback);
+        delete callbacksByCommand[command];
+      }
     }
-  }
 
-  function hasCommand(evt, command) {
-    var callbacksByCommand = _commandMap[evt];
-    if(callbacksByCommand === undefined) {
-      return false;
+    function hasCommand(evt, command) {
+      var callbacksByCommand = _commandMap[evt];
+      if(callbacksByCommand === undefined) {
+        return false;
+      }
+      var callback = callbacksByCommand[command];
+      return callback !== undefined;
     }
-    var callback = callbacksByCommand[command];
-    return callback !== undefined;
-  }
 
-  return {
-    map: map,
-    unmap: unmap
-  };
+    exports.map = map;
+    exports.unmap = unmap;
 
-}());;define('nudoru.events.BrowserEvents',
+  });;define('nudoru.events.BrowserEvents',
   function(require, module, exports) {
     exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
     exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
@@ -1287,11 +1286,10 @@ nudoru.events.EventCommandMap = (function(){
       _modalCloseButtonEl,
       _modalClickStream,
       _isVisible,
-      _eventDispatcher,
+      _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _componentEvents = require('nudoru.events.ComponentEvents');
 
     function initialize() {
-      _eventDispatcher = nudoru.events.EventDispatcher;
 
       _isVisible = true;
 
@@ -1486,8 +1484,6 @@ nudoru.events.EventCommandMap = (function(){
   });;nudoru.createNameSpace('nudoru.components.DDMenuBarView');
 nudoru.components.DDMenuBarView = {
   methods: {
-
-    eventDispatcher: null,
     containerEl: null,
     barEl: null,
     data: null,
@@ -1497,8 +1493,6 @@ nudoru.components.DDMenuBarView = {
     objectUtils: require('nudoru.utils.ObjectUtils'),
 
     initialize: function(elID, data, keep) {
-      this.eventDispatcher = nudoru.events.EventDispatcher;
-
       this.containerEl = document.getElementById(elID);
       this.data = data;
 
@@ -1556,13 +1550,10 @@ nudoru.components.DDMenuBarView = {
 
 nudoru.createNameSpace('nudoru.components.DDMenuView');
 nudoru.components.DDMenuView = {
-  state: {
-    visible: false,
-    selected: false
-  },
 
   methods: {
-    eventDispatcher: nudoru.events.EventDispatcher,
+    visible: false,
+    selected: false,
     data: null,
     items: null,
     element: null,
@@ -1578,6 +1569,7 @@ nudoru.components.DDMenuView = {
     lastTouchPosition: [],
     touchDeltaTolerance: 10,
     shouldProcessTouchEnd: false,
+    eventDispatcher: require('nudoru.events.EventDispatcher'),
     objectUtils: require('nudoru.utils.ObjectUtils'),
     DOMUtils: require('nudoru.utils.DOMUtils'),
     touchUtils: require('nudoru.utils.TouchUtils'),
@@ -1852,13 +1844,10 @@ nudoru.components.DDMenuView = {
 
 nudoru.createNameSpace('nudoru.components.BasicMenuItemView');
 nudoru.components.BasicMenuItemView = {
-  state: {
-    visible: true,
-    selected: false
-  },
 
   methods: {
-    eventDispatcher: nudoru.events.EventDispatcher,
+    visible: true,
+    selected: false,
     data: null,
     label: '',
     element: null,
@@ -2138,7 +2127,7 @@ APP.AppModel = (function() {
     _currentDataFilters = [];
     _currentItem = '';
 
-    _eventDispatcher = nudoru.events.EventDispatcher;
+    _eventDispatcher = APP.AppController.getEventDispatcher();
 
     _eventDispatcher.publish(APP.AppEvents.MODEL_INITIALIZED);
   }
@@ -2668,7 +2657,7 @@ APP.AppView = (function() {
 
     _self = this;
     _appGlobals = APP.globals();
-    _eventDispatcher = nudoru.events.EventDispatcher;
+    _eventDispatcher = APP.AppController.getEventDispatcher();
 
     _isMobile = false;
     _tabletBreakWidth = 750;
@@ -3161,7 +3150,7 @@ APP.AppView.ItemGridView = (function(){
 
   function initialize(elID, data) {
     _self = this;
-    _eventDispatcher = nudoru.events.EventDispatcher;
+    _eventDispatcher = APP.AppController.getEventDispatcher();
     _appGlobals = APP.globals();
     _containerElID = elID;
     _containerEl = document.getElementById(_containerElID);
@@ -3639,7 +3628,6 @@ APP.AppView.ItemGridView.AbstractGridItem = {
   },
 
   methods: {
-    eventDispatcher: nudoru.events.EventDispatcher,
     data: null,
     element: null,
     elementContent: null,
@@ -3961,29 +3949,31 @@ APP.AppView.TagBarView = (function() {
 }());;APP.createNameSpace('APP.AppController');
 APP.AppController = function () {
   var _appScope,
-      _globalScope,
-      _viewParent,
-      _model,
-      _view,
-      _eventDispatcher,
-      _self,
-      _objectUtils = require('nudoru.utils.ObjectUtils'),
-      _browserEvents = require('nudoru.events.BrowserEvents'),
-      _componentEvents = require('nudoru.events.ComponentEvents'),
-      _URLRouter = require('nudoru.utils.URLRouter');
+    _globalScope,
+    _viewParent,
+    _model,
+    _view,
+    _self,
+    _eventDispatcher = require('nudoru.events.EventDispatcher'),
+    _eventCommandMap = require('nudoru.events.EventCommandMap'),
+    _objectUtils = require('nudoru.utils.ObjectUtils'),
+    _browserEvents = require('nudoru.events.BrowserEvents'),
+    _componentEvents = require('nudoru.events.ComponentEvents'),
+    _URLRouter = require('nudoru.utils.URLRouter');
 
   //----------------------------------------------------------------------------
   //  Initialization
   //----------------------------------------------------------------------------
+
+
 
   function initialize(app, global, viewParent) {
     _appScope = app;
     _globalScope = global;
     _viewParent = viewParent;
     _self = this;
-    _eventDispatcher = nudoru.events.EventDispatcher;
 
-    _URLRouter.initialize();
+    _URLRouter.initialize(_eventDispatcher);
 
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
 
@@ -3992,7 +3982,11 @@ APP.AppController = function () {
 
   function mapCommand(evt, command, once) {
     once = once || false;
-    nudoru.events.EventCommandMap.map(evt, command, once);
+    _eventCommandMap.map(evt, command, once);
+  }
+
+  function getEventDispatcher() {
+    return _eventDispatcher;
   }
 
   function initializeView() {
@@ -4057,7 +4051,8 @@ APP.AppController = function () {
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: createCommand
+    createCommand: createCommand,
+    getEventDispatcher: getEventDispatcher
   };
 
 }();;APP.createNameSpace('APP.AppController.AbstractCommand');
@@ -4076,7 +4071,7 @@ APP.AppController.AbstractCommand = {
     appController: APP.AppController,
     appModel: APP.AppModel,
     appView: APP.AppView,
-    eventDispatcher: nudoru.events.EventDispatcher,
+    eventDispatcher: require('nudoru.events.EventDispatcher'),
     urlRouter: require('nudoru.utils.URLRouter'),
 
     execute: function(data) {

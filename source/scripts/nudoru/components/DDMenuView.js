@@ -4,13 +4,10 @@
 
 nudoru.createNameSpace('nudoru.components.DDMenuView');
 nudoru.components.DDMenuView = {
-  state: {
-    visible: false,
-    selected: false
-  },
 
   methods: {
-    eventDispatcher: nudoru.events.EventDispatcher,
+    visible: false,
+    selected: false,
     data: null,
     items: null,
     element: null,
@@ -26,6 +23,7 @@ nudoru.components.DDMenuView = {
     lastTouchPosition: [],
     touchDeltaTolerance: 10,
     shouldProcessTouchEnd: false,
+    eventDispatcher: require('nudoru.events.EventDispatcher'),
     objectUtils: require('nudoru.utils.ObjectUtils'),
     DOMUtils: require('nudoru.utils.DOMUtils'),
     touchUtils: require('nudoru.utils.TouchUtils'),
@@ -300,13 +298,10 @@ nudoru.components.DDMenuView = {
 
 nudoru.createNameSpace('nudoru.components.BasicMenuItemView');
 nudoru.components.BasicMenuItemView = {
-  state: {
-    visible: true,
-    selected: false
-  },
 
   methods: {
-    eventDispatcher: nudoru.events.EventDispatcher,
+    visible: true,
+    selected: false,
     data: null,
     label: '',
     element: null,

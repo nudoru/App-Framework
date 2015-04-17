@@ -1,34 +1,36 @@
 /*
-Commands used for most controller functionality.
+ Commands used for most controller functionality.
  */
 
 
 APP.createNameSpace('APP.AppController');
 APP.AppController = function () {
   var _appScope,
-      _globalScope,
-      _viewParent,
-      _model,
-      _view,
-      _eventDispatcher,
-      _self,
-      _objectUtils = require('nudoru.utils.ObjectUtils'),
-      _browserEvents = require('nudoru.events.BrowserEvents'),
-      _componentEvents = require('nudoru.events.ComponentEvents'),
-      _URLRouter = require('nudoru.utils.URLRouter');
+    _globalScope,
+    _viewParent,
+    _model,
+    _view,
+    _self,
+    _eventDispatcher = require('nudoru.events.EventDispatcher'),
+    _eventCommandMap = require('nudoru.events.EventCommandMap'),
+    _objectUtils = require('nudoru.utils.ObjectUtils'),
+    _browserEvents = require('nudoru.events.BrowserEvents'),
+    _componentEvents = require('nudoru.events.ComponentEvents'),
+    _URLRouter = require('nudoru.utils.URLRouter');
 
   //----------------------------------------------------------------------------
   //  Initialization
   //----------------------------------------------------------------------------
+
+
 
   function initialize(app, global, viewParent) {
     _appScope = app;
     _globalScope = global;
     _viewParent = viewParent;
     _self = this;
-    _eventDispatcher = nudoru.events.EventDispatcher;
 
-    _URLRouter.initialize();
+    _URLRouter.initialize(_eventDispatcher);
 
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
 
@@ -37,7 +39,11 @@ APP.AppController = function () {
 
   function mapCommand(evt, command, once) {
     once = once || false;
-    nudoru.events.EventCommandMap.map(evt, command, once);
+    _eventCommandMap.map(evt, command, once);
+  }
+
+  function getEventDispatcher() {
+    return _eventDispatcher;
   }
 
   function initializeView() {
@@ -102,7 +108,8 @@ APP.AppController = function () {
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: createCommand
+    createCommand: createCommand,
+    getEventDispatcher: getEventDispatcher
   };
 
 }();

@@ -61,7 +61,7 @@ APP.AppView = (function() {
 
     _self = this;
     _appGlobals = APP.globals();
-    _eventDispatcher = nudoru.events.EventDispatcher;
+    _eventDispatcher = APP.AppController.getEventDispatcher();
 
     _isMobile = false;
     _tabletBreakWidth = 750;

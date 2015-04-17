@@ -5,11 +5,10 @@ define('nudoru.components.ModalCoverView',
       _modalCloseButtonEl,
       _modalClickStream,
       _isVisible,
-      _eventDispatcher,
+      _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _componentEvents = require('nudoru.events.ComponentEvents');
 
     function initialize() {
-      _eventDispatcher = nudoru.events.EventDispatcher;
 
       _isVisible = true;
 

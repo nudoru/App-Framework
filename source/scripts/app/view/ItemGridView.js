@@ -51,7 +51,7 @@ APP.AppView.ItemGridView = (function(){
 
   function initialize(elID, data) {
     _self = this;
-    _eventDispatcher = nudoru.events.EventDispatcher;
+    _eventDispatcher = APP.AppController.getEventDispatcher();
     _appGlobals = APP.globals();
     _containerElID = elID;
     _containerEl = document.getElementById(_containerElID);
@@ -529,7 +529,6 @@ APP.AppView.ItemGridView.AbstractGridItem = {
   },
 
   methods: {
-    eventDispatcher: nudoru.events.EventDispatcher,
     data: null,
     element: null,
     elementContent: null,
