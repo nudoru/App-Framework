@@ -23,7 +23,8 @@ define('nudoru.components.FloatImageView',
       _scrollingView = document.body,
       _fancyEffects = false,
       _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _numberUtils = require('nudoru.utils.NumberUtils');
+      _numberUtils = require('nudoru.utils.NumberUtils'),
+      _browserInfo = require('nudoru.utils.BrowserInfo');
 
     /**
      * Entry point, initialize elements and hide cover
@@ -32,11 +33,11 @@ define('nudoru.components.FloatImageView',
       _viewPortCoverEl = document.getElementById(_coverDivID);
       _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
 
-      _fancyEffects = !BrowserInfo.isIE;
+      _fancyEffects = !_browserInfo.isIE && !_browserInfo.mobile.any();
 
       hideFloatImageCover();
 
-      _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, BrowserInfo.mouseClickEvtStr())
+      _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, _browserInfo.mouseClickEvtStr())
         .subscribe(function() {
           hideFloatImageCover();
         });
@@ -51,11 +52,11 @@ define('nudoru.components.FloatImageView',
 
         _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
 
-        el.addEventListener(BrowserInfo.mouseClickEvtStr(), onImageClick, false);
+        el.addEventListener(_browserInfo.mouseClickEvtStr(), onImageClick, false);
 
         //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
 
-        if(!BrowserInfo.mobile.any()) {
+        if(!_browserInfo.mobile.any()) {
           el.addEventListener('mouseover', onImageOver, false);
           el.addEventListener('mouseout', onImageOut, false);
         }
@@ -198,7 +199,7 @@ define('nudoru.components.FloatImageView',
 
       getFloatingElementsInContainerAsArray(container).forEach(function(el) {
         el.removeEventListener('click', onImageClick);
-        if(!BrowserInfo.mobile.any()) {
+        if(!_browserInfo.mobile.any()) {
           el.removeEventListener('mouseover', onImageOver);
           el.removeEventListener('mouseout', onImageOut);
         }

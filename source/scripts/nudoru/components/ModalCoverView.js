@@ -6,7 +6,8 @@ define('nudoru.components.ModalCoverView',
       _modalClickStream,
       _isVisible,
       _eventDispatcher = require('nudoru.events.EventDispatcher'),
-      _componentEvents = require('nudoru.events.ComponentEvents');
+      _componentEvents = require('nudoru.events.ComponentEvents'),
+      _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize() {
 
@@ -16,8 +17,8 @@ define('nudoru.components.ModalCoverView',
       _modalBackgroundEl = document.querySelector('.modal__background');
       _modalCloseButtonEl = document.querySelector('.modal__close-button');
 
-      var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, BrowserInfo.mouseClickEvtStr()),
-        modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, BrowserInfo.mouseClickEvtStr());
+      var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
+        modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
 
       _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
         .subscribe(function() {

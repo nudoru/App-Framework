@@ -1,47 +1,47 @@
 APP.createNameSpace('APP.AppView');
 
-APP.AppView = (function() {
+APP.AppView = (function () {
   var _appScope,
-      _viewRoot,
-      _self,
-      _appGlobals,
-      _eventDispatcher,
-      _currentViewPortSize,
-      _currentViewPortScroll,
-      _mainScrollEl,
-      _mainSearchInputEl,
-      _searchHeaderEl,
-      _clearAllButtonEl,
-      _appContainerEl,
-      _appEl,
-      _drawerEl,
-      _mainHeaderEl,
-      _mainFooterEl,
-      _drawerToggleButtonEl,
-      _drawerToggleButtonInputEl,
-      _itemGridView,
-      _itemDetailView,
-      _tagBarView,
-      _uiUpdateLayoutStream,
-      _searchInputStream,
-      _clearAllButtonStream,
-      _browserScrollStream,
-      _browserResizeStream,
-      _isScrollingTimerStream,
-      _drawerToggleButtonStream,
-      _isMobile,
-      _tabletBreakWidth,
-      _phoneBreakWidth,
-      _drawerWidth,
-      _isDrawerOpen,
-      _headerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
-      _drawerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
-      _toastView = require('nudoru.components.ToastView'),
-      _modalCoverView = require('nudoru.components.ModalCoverView'),
-      _browserEvents = require('nudoru.events.BrowserEvents'),
-      _componentEvents = require('nudoru.events.ComponentEvents'),
-      _objectUtils = require('nudoru.utils.ObjectUtils'),
-      _stringUtils = require('nudoru.utils.StringUtils');
+    _viewRoot,
+    _self,
+    _appGlobals,
+    _currentViewPortSize,
+    _currentViewPortScroll,
+    _mainScrollEl,
+    _mainSearchInputEl,
+    _searchHeaderEl,
+    _clearAllButtonEl,
+    _appContainerEl,
+    _appEl,
+    _drawerEl,
+    _mainHeaderEl,
+    _mainFooterEl,
+    _drawerToggleButtonEl,
+    _drawerToggleButtonInputEl,
+    _itemGridView,
+    _itemDetailView,
+    _tagBarView,
+    _uiUpdateLayoutStream,
+    _searchInputStream,
+    _clearAllButtonStream,
+    _browserScrollStream,
+    _browserResizeStream,
+    _isScrollingTimerStream,
+    _drawerToggleButtonStream,
+    _isMobile,
+    _tabletBreakWidth,
+    _phoneBreakWidth,
+    _drawerWidth,
+    _isDrawerOpen,
+    _eventDispatcher = require('nudoru.events.EventDispatcher'),
+    _headerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
+    _drawerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
+    _toastView = require('nudoru.components.ToastView'),
+    _modalCoverView = require('nudoru.components.ModalCoverView'),
+    _browserEvents = require('nudoru.events.BrowserEvents'),
+    _componentEvents = require('nudoru.events.ComponentEvents'),
+    _stringUtils = require('nudoru.utils.StringUtils'),
+    _browserInfo = require('nudoru.utils.BrowserInfo');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -61,7 +61,6 @@ APP.AppView = (function() {
 
     _self = this;
     _appGlobals = APP.globals();
-    _eventDispatcher = APP.AppController.getEventDispatcher();
 
     _isMobile = false;
     _tabletBreakWidth = 750;
@@ -84,7 +83,7 @@ APP.AppView = (function() {
     positionUIElements();
     updateAppTitle();
 
-    TweenLite.to(_drawerEl, 0, {x:_drawerWidth*-1});
+    TweenLite.to(_drawerEl, 0, {x: _drawerWidth * -1});
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
   }
@@ -133,39 +132,41 @@ APP.AppView = (function() {
 
   function configureUIStreams() {
     var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
-        uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
+      uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
     _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
-      .subscribe(function() {
+      .subscribe(function () {
         positionUIElementsOnChange();
       });
 
     _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
       .throttle(100)
-      .subscribe(function() {
+      .subscribe(function () {
         handleViewPortResize();
       });
 
     _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll')
       .throttle(100)
-      .subscribe(function() {
+      .subscribe(function () {
         handleViewPortScroll();
       });
 
     _searchInputStream = Rx.Observable.fromEvent(_mainSearchInputEl, 'keyup')
       .throttle(150)
-      .map(function (evt) { return evt.target.value; })
+      .map(function (evt) {
+        return evt.target.value;
+      })
       .subscribe(function (value) {
         _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, value);
       });
 
-    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, BrowserInfo.mouseClickEvtStr())
-      .subscribe(function() {
+    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, _browserInfo.mouseClickEvtStr())
+      .subscribe(function () {
         _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
       });
 
-    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, BrowserInfo.mouseClickEvtStr())
-      .subscribe(function() {
+    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _browserInfo.mouseClickEvtStr())
+      .subscribe(function () {
         toggleDrawer();
       });
 
@@ -198,7 +199,10 @@ APP.AppView = (function() {
    * Cache the current view port size in a var
    */
   function setCurrentViewPortSize() {
-    _currentViewPortSize = {width: window.innerWidth, height: window.innerHeight};
+    _currentViewPortSize = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
   }
 
   /**
@@ -206,12 +210,12 @@ APP.AppView = (function() {
    */
   function setCurrentViewPortScroll() {
     var left = _mainScrollEl.scrollLeft,
-        top = _mainScrollEl.scrollTop;
+      top = _mainScrollEl.scrollTop;
 
     left = left ? left : 0;
     top = top ? top : 0;
 
-    _currentViewPortScroll = {left:left, top:top};
+    _currentViewPortScroll = {left: left, top: top};
   }
 
   /**
@@ -234,7 +238,7 @@ APP.AppView = (function() {
     //TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
     //TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
 
-    _mainHeaderEl.style.top = _currentViewPortScroll.top+'px';
+    _mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
     _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
 
   }
@@ -287,15 +291,15 @@ APP.AppView = (function() {
    * Usually on resize, check to see if we're in mobile
    */
   function checkForMobile() {
-    if(_currentViewPortSize.width <= _tabletBreakWidth || _appGlobals.mobile.any()) {
+    if (_currentViewPortSize.width <= _tabletBreakWidth || _browserInfo.mobile.any()) {
       switchToMobileView();
-    } else if(_currentViewPortSize.width > _tabletBreakWidth) {
+    } else if (_currentViewPortSize.width > _tabletBreakWidth) {
       switchToDesktopView();
     }
   }
 
   function switchToMobileView() {
-    if(_isMobile) {
+    if (_isMobile) {
       return;
     }
 
@@ -304,7 +308,7 @@ APP.AppView = (function() {
   }
 
   function switchToDesktopView() {
-    if(!_isMobile) {
+    if (!_isMobile) {
       return;
     }
 
@@ -314,7 +318,7 @@ APP.AppView = (function() {
   }
 
   function toggleDrawer() {
-    if(_isDrawerOpen) {
+    if (_isDrawerOpen) {
       closeDrawer();
     } else {
       openDrawer();
@@ -326,8 +330,8 @@ APP.AppView = (function() {
 
     _drawerToggleButtonInputEl.checked = false;
 
-    TweenLite.to(_drawerEl, 0.5, {x:0, ease:Quad.easeOut});
-    TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease:Quad.easeOut});
+    TweenLite.to(_drawerEl, 0.5, {x: 0, ease: Quad.easeOut});
+    TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease: Quad.easeOut});
   }
 
   function closeDrawer() {
@@ -335,8 +339,8 @@ APP.AppView = (function() {
 
     _drawerToggleButtonInputEl.checked = true;
 
-    TweenLite.to(_drawerEl, 0.5, {x:_drawerWidth*-1, ease:Quad.easeOut});
-    TweenLite.to(_appEl, 0.5, {x: 0, ease:Quad.easeOut});
+    TweenLite.to(_drawerEl, 0.5, {x: _drawerWidth * -1, ease: Quad.easeOut});
+    TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
   }
 
   //----------------------------------------------------------------------------
@@ -385,7 +389,7 @@ APP.AppView = (function() {
   //  console.log('gridview layout complete');
   //}
 
-  function  updateGridItemVisibility(data) {
+  function updateGridItemVisibility(data) {
     _itemGridView.updateItemVisibility(data);
   }
 
@@ -439,15 +443,19 @@ APP.AppView = (function() {
 
   function removeLoadingMessage() {
     var cover = document.getElementById('initialization__cover'),
-        message = document.getElementsByClassName('initialization__message')[0];
+      message = document.getElementsByClassName('initialization__message')[0];
 
-    TweenLite.to(cover, 1, {alpha: 0, ease: Quad.easeOut, onComplete: function() {
-      document.body.removeChild(cover);
-    }});
+    TweenLite.to(cover, 1, {
+      alpha: 0, ease: Quad.easeOut, onComplete: function () {
+        document.body.removeChild(cover);
+      }
+    });
 
-    TweenLite.to(message, 2, {top:"+=50px", ease: Quad.easeIn, onComplete: function() {
-      cover.removeChild(message);
-    }});
+    TweenLite.to(message, 2, {
+      top: "+=50px", ease: Quad.easeIn, onComplete: function () {
+        cover.removeChild(message);
+      }
+    });
   }
 
   function showModalCover(animate) {
@@ -460,7 +468,7 @@ APP.AppView = (function() {
 
   function hideModalContent() {
     _itemDetailView.hide();
-    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT,'');
+    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, '');
   }
 
   //----------------------------------------------------------------------------
@@ -484,7 +492,7 @@ APP.AppView = (function() {
     clearFreeTextFilter: clearFreeTextFilter,
     setFreeTextFilterValue: setFreeTextFilterValue,
     showAllGridViewItems: showAllGridViewItems,
-    updateGridItemVisibility:  updateGridItemVisibility,
+    updateGridItemVisibility: updateGridItemVisibility,
     updateTagBarDisplay: updateTagBarDisplay,
     updateMenuSelections: updateMenuSelections,
     updateHeaderMenuSelections: updateHeaderMenuSelections,

@@ -1,33 +1,33 @@
 /*
-Filters:
-  free text: title
-  selected from menu
+ Filters:
+ free text: title
+ selected from menu
 
-When the free text changes
-  on event from view -
-    run search input command runs getDataMatchingFreeText(data)
+ When the free text changes
+ on event from view -
+ run search input command runs getDataMatchingFreeText(data)
 
-When a menu selection changes
-  on event from
+ When a menu selection changes
+ on event from
 
-ViewFilterChangedCommand fired from ItemGridView when the items are updated setNumItemsVisible
+ ViewFilterChangedCommand fired from ItemGridView when the items are updated setNumItemsVisible
 
  */
 
 APP.createNameSpace('APP.AppModel');
 
-APP.AppModel = (function() {
-  var _eventDispatcher,
-      _self,
-      _appGlobals,
-      _dataProvider,
-      _data,
-      _currentFreeTextFilter,
-      _currentDataFilters,
-      _currentItem,
-      _filterProperties,
-      _arrayUtils = require('nudoru.utils.ArrayUtils'),
-      _objectUtils = require('nudoru.utils.ObjectUtils');
+APP.AppModel = (function () {
+  var _self,
+    _appGlobals,
+    _dataProvider,
+    _data,
+    _currentFreeTextFilter,
+    _currentDataFilters,
+    _currentItem,
+    _filterProperties,
+    _eventDispatcher = require('nudoru.events.EventDispatcher'),
+    _arrayUtils = require('nudoru.utils.ArrayUtils'),
+    _objectUtils = require('nudoru.utils.ObjectUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -47,7 +47,7 @@ APP.AppModel = (function() {
   }
 
   function setCurrentFreeTextFilter(filter) {
-    if(filter === _currentFreeTextFilter) {
+    if (filter === _currentFreeTextFilter) {
       return;
     }
     updateFreeTextFilter(filter);
@@ -67,34 +67,34 @@ APP.AppModel = (function() {
 
   function getFiltersForURL() {
     var filters = '',
-      //freeText = 'search='+encodeURIComponent(_currentFreeTextFilter),
-      //currentItem = 'item='+encodeURIComponent(_currentItem),
+    //freeText = 'search='+encodeURIComponent(_currentFreeTextFilter),
+    //currentItem = 'item='+encodeURIComponent(_currentItem),
       str = '';
 
-    if(_currentDataFilters) {
-      filters = _currentDataFilters.map(function(filter) {
+    if (_currentDataFilters) {
+      filters = _currentDataFilters.map(function (filter) {
         return encodeURIComponent(filter.split(' ').join('_'));
       }).join("/");
     }
 
-    if(filters) {
+    if (filters) {
       str += filters;
     }
 
-    if(_currentFreeTextFilter || _currentItem) {
+    if (_currentFreeTextFilter || _currentItem) {
       str += '?';
     }
 
-    if(_currentFreeTextFilter) {
-      str += 'search='+encodeURIComponent(_currentFreeTextFilter);
+    if (_currentFreeTextFilter) {
+      str += 'search=' + encodeURIComponent(_currentFreeTextFilter);
     }
 
-    if(_currentFreeTextFilter && _currentItem) {
+    if (_currentFreeTextFilter && _currentItem) {
       str += '&';
     }
 
-    if(_currentItem) {
-      str += 'item='+encodeURIComponent(_currentItem);
+    if (_currentItem) {
+      str += 'item=' + encodeURIComponent(_currentItem);
     }
 
     return str;
@@ -115,8 +115,6 @@ APP.AppModel = (function() {
     _currentDataFilters = [];
     _currentItem = '';
 
-    _eventDispatcher = APP.AppController.getEventDispatcher();
-
     _eventDispatcher.publish(APP.AppEvents.MODEL_INITIALIZED);
   }
 
@@ -124,7 +122,7 @@ APP.AppModel = (function() {
     // Define the data that will be used to sort/filter the data
     // filter is a property on the itemVO
 
-    _filterProperties = _appGlobals.appConfig.menu.map(function(item) {
+    _filterProperties = _appGlobals.appConfig.menu.map(function (item) {
       item.data = [];
       item.menuData = [];
       return item;
@@ -151,7 +149,6 @@ APP.AppModel = (function() {
   }
 
 
-
   //----------------------------------------------------------------------------
   //  Data
   //----------------------------------------------------------------------------
@@ -161,14 +158,14 @@ APP.AppModel = (function() {
    * the data
    */
   function filterProperties() {
-    _filterProperties.forEach(function(filter) {
+    _filterProperties.forEach(function (filter) {
       var props = [];
-      _data.forEach(function(item) {
-        if(item.hasOwnProperty(filter.filter)) {
+      _data.forEach(function (item) {
+        if (item.hasOwnProperty(filter.filter)) {
           var itemPropVal = item[filter.filter];
-          if(typeof itemPropVal === 'string') {
+          if (typeof itemPropVal === 'string') {
             props.push(itemPropVal);
-          } else if(itemPropVal instanceof Array) {
+          } else if (itemPropVal instanceof Array) {
             props = props.concat(itemPropVal);
           }
         }
@@ -185,8 +182,8 @@ APP.AppModel = (function() {
    */
   function getDataFormattedForMenu(data) {
     var arry = [];
-    data.forEach(function(item) {
-      arry.push({label:item, value:item, toggle: true});
+    data.forEach(function (item) {
+      arry.push({label: item, value: item, toggle: true});
     });
     return arry;
   }
@@ -194,7 +191,7 @@ APP.AppModel = (function() {
   function getMenuData() {
     var data = [];
 
-    _filterProperties.forEach(function(filter) {
+    _filterProperties.forEach(function (filter) {
       data.push({
         label: filter.label,
         items: filter.menuData
@@ -211,12 +208,8 @@ APP.AppModel = (function() {
    * @returns {void|*}
    */
   function getItemObjectForID(itemid) {
-    var items = _data.filter(function(item) {
-      if(item.id === itemid) {
-        return true;
-      } else {
-        return false;
-      }
+    var items = _data.filter(function (item) {
+      return (item.id === itemid);
     });
 
     // Returns a clone of the item
@@ -251,7 +244,7 @@ APP.AppModel = (function() {
    */
   function removeFilter(filter) {
     var idx = _currentDataFilters.indexOf(filter);
-    if(idx > -1) {
+    if (idx > -1) {
       _currentDataFilters.splice(idx, 1);
 
       handledFiltersUpdated();
@@ -263,7 +256,7 @@ APP.AppModel = (function() {
    * @param filter
    */
   function toggleFilter(filter) {
-    if(hasCurrentFilter(filter)) {
+    if (hasCurrentFilter(filter)) {
       removeFilter(filter);
     } else {
       addFilter(filter);
@@ -295,10 +288,10 @@ APP.AppModel = (function() {
 
   function getDataMatchingFilters() {
     var data = getDataMatchingFreeText(),
-        filteredData = [];
+      filteredData = [];
 
-    if(_currentDataFilters.length) {
-      filteredData = data.filter(function(item) {
+    if (_currentDataFilters.length) {
+      filteredData = data.filter(function (item) {
         return doesItemMatchFilters(item);
       });
     } else {
@@ -311,9 +304,9 @@ APP.AppModel = (function() {
   function doesItemMatchFilters(item) {
     var matched = true;
 
-    _currentDataFilters.forEach(function(filter) {
+    _currentDataFilters.forEach(function (filter) {
       var propFilter = _filterProperties[getFilterPropIndexForFilter(filter)],
-          itemPropVal = item[propFilter.filter];
+        itemPropVal = item[propFilter.filter];
 
       matched = matched && (itemPropVal.indexOf(filter) >= 0);
     });
@@ -329,10 +322,10 @@ APP.AppModel = (function() {
    */
   function getFilterPropIndexForFilter(filter) {
     var i = 0,
-        len = _filterProperties.length;
+      len = _filterProperties.length;
 
-    for(;i<len;i++) {
-      if(_filterProperties[i].data.indexOf(filter) >= 0) {
+    for (; i < len; i++) {
+      if (_filterProperties[i].data.indexOf(filter) >= 0) {
         return i;
       }
     }
@@ -341,18 +334,15 @@ APP.AppModel = (function() {
   }
 
   function doesItemTitleMatchFreeText(item) {
-    if(item.title.toLowerCase().indexOf(_currentFreeTextFilter) !== -1) {
-      return true;
-    }
-    return false;
+    return (item.title.toLowerCase().indexOf(_currentFreeTextFilter) !== -1);
   }
 
   function doesItemTagMatchFreeText(item) {
     var i = 0,
-        len = item.tags.length;
+      len = item.tags.length;
 
-    for(;i<len; i++) {
-      if(item.tags[i].toLowerCase().indexOf(_currentFreeTextFilter) !== -1) {
+    for (; i < len; i++) {
+      if (item.tags[i].toLowerCase().indexOf(_currentFreeTextFilter) !== -1) {
         return true;
       }
     }
@@ -361,7 +351,7 @@ APP.AppModel = (function() {
   }
 
   function getDataMatchingFreeText() {
-    if(_currentFreeTextFilter === '') {
+    if (_currentFreeTextFilter === '') {
       return _data;
     }
 
@@ -378,10 +368,7 @@ APP.AppModel = (function() {
   }
 
   function anyFiltersApplied() {
-    if(_currentFreeTextFilter !== '' || _currentDataFilters.length > 0) {
-      return true;
-    }
-    return false;
+    return (_currentFreeTextFilter !== '' || _currentDataFilters.length > 0);
   }
 
   /**
@@ -404,23 +391,24 @@ APP.AppModel = (function() {
 
   function parseFiltersFromURL(urlFilters) {
     var fragments = urlFilters.split('?'),
-        filters = fragments[0],
-        query = '?'+fragments[1],
-        search = getURLSearchParameterByName('search', query),
-        item = getURLSearchParameterByName('item',query),
-        filterArry = filters
-          .split('/')
-          .map(function(filter) {
-            return decodeURIComponent(filter.split('_').join(' '));
-          })
-          .filter(function(filter){
-            if(isValidFilter(filter)) {
-              return true;
-            }
-            return false;
-          });
+      filters = fragments[0],
+      query = '?' + fragments[1],
+      search = getURLSearchParameterByName('search', query),
+      item = getURLSearchParameterByName('item', query),
+      filterArry = filters
+        .split('/')
+        .map(function (filter) {
+          return decodeURIComponent(filter.split('_').join(' '));
+        })
+        .filter(function (filter) {
+          return (isValidFilter(filter));
+        });
 
-    _eventDispatcher.publish(APP.AppEvents.RESUME_FROM_MODEL_STATE,{filters: filterArry, search: search, item: item});
+    _eventDispatcher.publish(APP.AppEvents.RESUME_FROM_MODEL_STATE, {
+      filters: filterArry,
+      search: search,
+      item: item
+    });
   }
 
   function getURLSearchParameterByName(name, str) {
@@ -432,8 +420,8 @@ APP.AppModel = (function() {
     var i = 0,
       len = _filterProperties.length;
 
-    for(;i<len;i++) {
-      if(_filterProperties[i].data.indexOf(filter) >= 0) {
+    for (; i < len; i++) {
+      if (_filterProperties[i].data.indexOf(filter) >= 0) {
         return true;
       }
     }

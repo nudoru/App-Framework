@@ -1,11 +1,12 @@
 APP.createNameSpace('APP.AppView.ItemDetailView');
 
-APP.AppView.ItemDetailView = (function() {
+APP.AppView.ItemDetailView = (function () {
   var _containerEl,
-      _shareButtonEl,
-      _currentItem,
-      _template = require('nudoru.utils.NTemplate'),
-      _floatImageView = require('nudoru.components.FloatImageView');
+    _shareButtonEl,
+    _currentItem,
+    _template = require('nudoru.utils.NTemplate'),
+    _floatImageView = require('nudoru.components.FloatImageView'),
+    _browserInfo = require('nudoru.utils.BrowserInfo');
 
   function initialize(elID) {
     _containerEl = document.getElementById(elID);
@@ -24,21 +25,25 @@ APP.AppView.ItemDetailView = (function() {
 
     _shareButtonEl = document.getElementById('js__content-share-button');
 
-    if(!BrowserInfo.mobile.any()) {
-      _shareButtonEl.addEventListener(BrowserInfo.mouseClickEvtStr(), doShareAction, false);
+    if (!_browserInfo.mobile.any()) {
+      _shareButtonEl.addEventListener(_browserInfo.mouseClickEvtStr(), doShareAction, false);
     } else {
       _shareButtonEl.style.display = 'none';
     }
 
-    TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
+    TweenLite.to(_containerEl, 0.25, {
+      autoAlpha: 1,
+      ease: Quad.easeOut,
+      delay: 0.1
+    });
   }
 
   function doShareAction() {
     var shareStr = 'mailto:?subject=I\'m sharing: '
-      +_currentItem.title+'&body=I thought you would like this ... \n\n'
-      //+'<a href="'+document.location.href+'">'+_currentItem.title+'</a>\n\n'
-      +document.location.href+'\n\n'
-      +_currentItem.description;
+      + _currentItem.title + '&body=I thought you would like this ... \n\n'
+        //+'<a href="'+document.location.href+'">'+_currentItem.title+'</a>\n\n'
+      + document.location.href + '\n\n'
+      + _currentItem.description;
     var shareWin = window.open(shareStr);
     //shareWin.close();
   }
@@ -46,7 +51,11 @@ APP.AppView.ItemDetailView = (function() {
   function showMessage(obj) {
     _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
 
-    TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease:Quad.easeOut, delay:0.1});
+    TweenLite.to(_containerEl, 0.25, {
+      autoAlpha: 1,
+      ease: Quad.easeOut,
+      delay: 0.1
+    });
   }
 
   function hide() {
@@ -54,12 +63,16 @@ APP.AppView.ItemDetailView = (function() {
 
     _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
 
-    if(_shareButtonEl) {
-      _shareButtonEl.removeEventListener(BrowserInfo.mouseClickEvtStr(), doShareAction);
+    if (_shareButtonEl) {
+      _shareButtonEl.removeEventListener(_browserInfo.mouseClickEvtStr(), doShareAction);
     }
 
     TweenLite.killDelayedCallsTo(_containerEl);
-    TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease:Quad.easeOut, delay:0.1});
+    TweenLite.to(_containerEl, 0.25, {
+      autoAlpha: 0,
+      ease: Quad.easeOut,
+      delay: 0.1
+    });
   }
 
   return {

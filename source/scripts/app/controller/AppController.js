@@ -42,10 +42,6 @@ APP.AppController = function () {
     _eventCommandMap.map(evt, command, once);
   }
 
-  function getEventDispatcher() {
-    return _eventDispatcher;
-  }
-
   function initializeView() {
     _view = APP.AppView;
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
@@ -108,8 +104,7 @@ APP.AppController = function () {
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: createCommand,
-    getEventDispatcher: getEventDispatcher
+    createCommand: createCommand
   };
 
 }();

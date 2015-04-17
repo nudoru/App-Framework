@@ -25,7 +25,8 @@ define('nudoru.components.DDMenuView',
       _DOMUtils = require('nudoru.utils.DOMUtils'),
       _touchUtils = require('nudoru.utils.TouchUtils'),
       _componentEvents = require('nudoru.events.ComponentEvents'),
-      _template = require('nudoru.utils.NTemplate');
+      _template = require('nudoru.utils.NTemplate'),
+      _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize(idata, keep) {
       _data = idata;
@@ -36,7 +37,7 @@ define('nudoru.components.DDMenuView',
 
       render();
 
-      if(BrowserInfo.mobile.any()) {
+      if(_browserInfo.mobile.any()) {
         configureMobileStreams();
       } else {
         configureStreams();
@@ -193,7 +194,7 @@ define('nudoru.components.DDMenuView',
     function handleMenuClick(data) {
       if(isHeaderObject(data)) {
         // Toggle visibility on mobile/tablet
-        if(BrowserInfo.mobile.any()) {
+        if(_browserInfo.mobile.any()) {
           toggleMenu();
         }
       } else {

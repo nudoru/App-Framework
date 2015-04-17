@@ -1,11 +1,12 @@
 var APP = {};
 
-APP = (function(global, rootView) {
+APP = (function (global, rootView) {
   var _globalScope = global,
-      _rootView = rootView,
-      _self,
-      _globals,
-      _objectUtils = require('nudoru.utils.ObjectUtils');
+    _rootView = rootView,
+    _self,
+    _globals,
+    _objectUtils = require('nudoru.utils.ObjectUtils'),
+    _browserInfo = require('nudoru.utils.BrowserInfo');
 
   //----------------------------------------------------------------------------
   //  Initialize
@@ -23,11 +24,11 @@ APP = (function(global, rootView) {
    * Initialize the global vars
    */
   function initGlobals() {
-    _globals = _objectUtils.extend(BrowserInfo, {});
+    _globals = {};
 
     _globals.appConfig = APP_CONFIG_DATA;
 
-    _globals.enhanced = !BrowserInfo.isIE && !BrowserInfo.mobile.any();
+    _globals.enhanced = !_browserInfo.isIE && !_browserInfo.mobile.any();
   }
 
   /**

@@ -12,7 +12,7 @@ define('nudoru.components.DDMenuBarView',
       _children = null,
       _isKeepOpen = false,
       _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _objectUtils = require('nudoru.utils.ObjectUtils');
+      _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize(elID, idata, keep) {
       _containerEl = document.getElementById(elID);
@@ -41,7 +41,7 @@ define('nudoru.components.DDMenuBarView',
       _containerEl.insertBefore(_barEl, _containerEl.firstChild);
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
-      if (BrowserInfo.isIE) {
+      if (_browserInfo.isIE) {
         _containerEl.onselectstart = function () {
           return false;
         };
