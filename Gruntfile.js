@@ -119,16 +119,18 @@ module.exports = function (grunt) {
 
           'source/scripts/app/App.js',
           'source/scripts/app/events/AppEvents.js',
+
           'source/scripts/app/model/AppModel.js',
           'source/scripts/app/model/ModelVOs.js',
           'source/scripts/app/model/modules/DummyData.js',
+
           'source/scripts/app/view/AppView.js',
           'source/scripts/app/view/modules/ItemGridView.js',
           'source/scripts/app/view/modules/ItemDetailView.js',
           'source/scripts/app/view/modules/DetailedItemRenderer.js',
           'source/scripts/app/view/modules/TagBarView.js',
-          'source/scripts/app/controller/AppController.js',
 
+          'source/scripts/app/controller/AppController.js',
           'source/scripts/app/controller/commands/*.js',
           'source/scripts/main.js'
         ],

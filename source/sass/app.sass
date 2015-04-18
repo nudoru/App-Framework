@@ -6,9 +6,9 @@
 
 @import "vendor/font-awesome/font-awesome"
 
-@import "partials/opensans"
+@import "foundation/opensans"
 //@import "partials/titillium"
-@import "partials/museoslab"
+@import "foundation/museoslab"
 
 
 // Measure test line
@@ -16,23 +16,26 @@
 
 // http://modularscale.com/scale/?px1=16&px2=11&ra1=1.618&ra2=0
 
-@import "partials/variables"
-@import "partials/app-mixins"
-@import "partials/tags"
-@import "partials/paper-shadows"
+@import "foundation/variables"
+@import "foundation/app-mixins"
 
-@import "partials/components"
-@import "partials/itemgridview"
-@import "partials/itemdetailsview"
-@import "partials/tagbarview"
-@import "partials/toastview"
-@import "partials/floatimage"
-@import "partials/drawer-spinner-menu"
+@import "foundation/paper-shadows"
 
-@import "partials/header"
-@import "partials/ddmainnavigation"
-@import "partials/footer"
-@import "partials/drawer"
+@import "foundation/components"
+
+@import "nudoru/components/toastview"
+@import "nudoru/components/floatimage"
+@import "nudoru/components/ddmainnavigation"
+
+@import "app/view/tags"
+@import "app/view/itemgridview"
+@import "app/view/itemdetailsview"
+@import "app/view/tagbarview"
+
+@import "app/view/drawer-spinner-menu"
+@import "app/view/header"
+@import "app/view/footer"
+@import "app/view/drawer"
 
 .ignore-pointer-events
   pointer-events: none
