@@ -1950,9 +1950,7 @@ define('nudoru.components.DDMenuView',
     exports.deselectAllItems = deselectAllItems;
 
   });
-
-
-//----------------------------------------------------------------------------
+;//----------------------------------------------------------------------------
 //  A menu item
 //----------------------------------------------------------------------------
 
@@ -2067,7 +2065,8 @@ define('nudoru.components.BasicMenuItemView',
     exports.deselect = deselect;
     exports.toggleSelect = toggleSelect;
 
-  });;var APP = {};
+  });
+;var APP = {};
 
 APP = (function () {
   var _self,

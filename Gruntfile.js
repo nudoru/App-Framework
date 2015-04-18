@@ -116,6 +116,7 @@ module.exports = function (grunt) {
           'source/scripts/nudoru/components/ToastView.js',
           'source/scripts/nudoru/components/DDMenuBarView.js',
           'source/scripts/nudoru/components/DDMenuView.js',
+          'source/scripts/nudoru/components/BasicMenuItemView.js',
 
           'source/scripts/app/App.js',
           'source/scripts/app/events/AppEvents.js',
