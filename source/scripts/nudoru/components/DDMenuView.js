@@ -58,7 +58,7 @@ define('nudoru.components.DDMenuView',
     }
 
     function buildMenuItems(item) {
-      var menuitem = requireCopy('nudoru.components.BasicMenuItemView');
+      var menuitem = requireUnique('nudoru.components.BasicMenuItemView');
       menuitem.initialize(item);
       _ddMenuEl.appendChild(menuitem.getElement());
       _items.push(menuitem);

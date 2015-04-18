@@ -170,13 +170,13 @@ function require(id) {
 require.cache = Object.create(null);
 
 // Gets a new copy
-function requireCopy(id) {
+function requireUnique(id) {
   var moduleCode = define.cache[id],
     exports = {},
     module = {exports: exports};
 
   if(!moduleCode) {
-    throw new Error('requireCopy: module not found: "'+id+'"');
+    throw new Error('requireUnique: module not found: "'+id+'"');
   }
 
   // testing an idea
@@ -1627,7 +1627,7 @@ nudoru.components = (function() {
 
       _barEl = _DOMUtils.HTMLStrToNode('<ul></ul>');
       for (; i < len; i++) {
-        var menuobj = requireCopy('nudoru.components.DDMenuView');
+        var menuobj = requireUnique('nudoru.components.DDMenuView');
         menuobj.initialize(_data[i], _isKeepOpen);
 
         _barEl.appendChild(menuobj.getElement());
@@ -1661,70 +1661,7 @@ nudoru.components = (function() {
     exports.resetAllSelections = resetAllSelections;
     exports.setMenuSelections = setMenuSelections;
 
-  });
-
-
-//nudoru.createNameSpace('nudoru.components.DDMenuBarView');
-//nudoru.components.DDMenuBarView = {
-//  methods: {
-//    containerEl: null,
-//    barEl: null,
-//    data: null,
-//    children: null,
-//    isKeepOpen: false,
-//    DOMUtils: require('nudoru.utils.DOMUtils'),
-//    objectUtils: require('nudoru.utils.ObjectUtils'),
-//
-//    initialize: function(elID, data, keep) {
-//      this.containerEl = document.getElementById(elID);
-//      this.data = data;
-//
-//      this.isKeepOpen = keep ? true : false;
-//
-//      this.render();
-//    },
-//
-//    render: function() {
-//      var i = 0,
-//          len = this.data.length;
-//
-//      this.children = [];
-//
-//      this.barEl = this.DOMUtils.HTMLStrToNode('<ul></ul>');
-//      for(; i<len; i++) {
-//        var menuobj = requireCopy('nudoru.components.DDMenuView');
-//        menuobj.initialize(this.data[i], this.isKeepOpen);
-//
-//        this.barEl.appendChild(menuobj.getElement());
-//        this.children.push(menuobj);
-//      }
-//
-//      this.containerEl.insertBefore(this.barEl, this.containerEl.firstChild);
-//
-//      // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
-//      if(BrowserInfo.isIE) {
-//        this.containerEl.onselectstart = function() {
-//          return false;
-//        };
-//      }
-//
-//    },
-//
-//    resetAllSelections: function() {
-//      this.children.forEach(function(menu) {
-//        menu.deselectAllItems();
-//      });
-//    },
-//
-//    setMenuSelections: function(data) {
-//      this.children.forEach(function(menu) {
-//        menu.setSelections(data);
-//      });
-//    }
-//
-//  }
-//};
-;//----------------------------------------------------------------------------
+  });;//----------------------------------------------------------------------------
 //  A menu
 //----------------------------------------------------------------------------
 
@@ -1784,7 +1721,7 @@ define('nudoru.components.DDMenuView',
     }
 
     function buildMenuItems(item) {
-      var menuitem = requireCopy('nudoru.components.BasicMenuItemView');
+      var menuitem = requireUnique('nudoru.components.BasicMenuItemView');
       menuitem.initialize(item);
       _ddMenuEl.appendChild(menuitem.getElement());
       _items.push(menuitem);
@@ -2132,10 +2069,8 @@ define('nudoru.components.BasicMenuItemView',
 
   });;var APP = {};
 
-APP = (function (global, rootView) {
-  var _globalScope = global,
-    _rootView = rootView,
-    _self,
+APP = (function () {
+  var _self,
     _globals,
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _browserInfo = require('nudoru.utils.BrowserInfo');
@@ -2146,10 +2081,8 @@ APP = (function (global, rootView) {
 
   function initialize() {
     _self = this;
-
     initGlobals();
-
-    this.AppController.initialize(this, _globalScope, _rootView);
+    this.AppController.initialize();
   }
 
   /**
@@ -2157,9 +2090,7 @@ APP = (function (global, rootView) {
    */
   function initGlobals() {
     _globals = {};
-
     _globals.appConfig = APP_CONFIG_DATA;
-
     _globals.enhanced = !_browserInfo.isIE && !_browserInfo.mobile.any();
   }
 
@@ -2190,7 +2121,7 @@ APP = (function (global, rootView) {
     globals: globals
   };
 
-}(this, document));;APP.createNameSpace('APP.AppEvents');
+}());;APP.createNameSpace('APP.AppEvents');
 APP.AppEvents = {
 
   CONTROLLER_INITIALIZED: 'CONTROLLER_INITIALIZED',
@@ -2777,9 +2708,7 @@ APP.AppModel.DummyData = (function () {
 }());;APP.createNameSpace('APP.AppView');
 
 APP.AppView = (function () {
-  var _appScope,
-    _viewRoot,
-    _self,
+  var _self,
     _appGlobals,
     _currentViewPortSize,
     _currentViewPortScroll,
@@ -2810,8 +2739,8 @@ APP.AppView = (function () {
     _drawerWidth,
     _isDrawerOpen,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
-    _headerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
-    _drawerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
+    _headerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
+    _drawerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
     _toastView = require('nudoru.components.ToastView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
@@ -2831,10 +2760,7 @@ APP.AppView = (function () {
   //  Initialization
   //----------------------------------------------------------------------------
 
-  function initialize(appScope, viewRoot) {
-    _appScope = appScope;
-    _viewRoot = viewRoot;
-
+  function initialize() {
     _self = this;
     _appGlobals = APP.globals();
 
@@ -4209,10 +4135,7 @@ APP.AppView.TagBarView = (function () {
 
 }());;APP.createNameSpace('APP.AppController');
 APP.AppController = function () {
-  var _appScope,
-    _globalScope,
-    _viewParent,
-    _model,
+  var _model,
     _view,
     _self,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
@@ -4226,16 +4149,10 @@ APP.AppController = function () {
   //  Initialization
   //----------------------------------------------------------------------------
 
-  function initialize(app, global, viewParent) {
-    _appScope = app;
-    _globalScope = global;
-    _viewParent = viewParent;
+  function initialize() {
     _self = this;
-
     _URLRouter.initialize(_eventDispatcher);
-
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
-
     initializeView();
   }
 
@@ -4248,7 +4165,7 @@ APP.AppController = function () {
     _view = APP.AppView;
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
-    _view.initialize(_appScope, _viewParent);
+    _view.initialize();
   }
 
   function onViewInitalized() {

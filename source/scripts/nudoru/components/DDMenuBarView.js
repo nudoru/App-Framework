@@ -31,7 +31,7 @@ define('nudoru.components.DDMenuBarView',
 
       _barEl = _DOMUtils.HTMLStrToNode('<ul></ul>');
       for (; i < len; i++) {
-        var menuobj = requireCopy('nudoru.components.DDMenuView');
+        var menuobj = requireUnique('nudoru.components.DDMenuView');
         menuobj.initialize(_data[i], _isKeepOpen);
 
         _barEl.appendChild(menuobj.getElement());

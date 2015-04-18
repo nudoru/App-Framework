@@ -1,9 +1,7 @@
 var APP = {};
 
-APP = (function (global, rootView) {
-  var _globalScope = global,
-    _rootView = rootView,
-    _self,
+APP = (function () {
+  var _self,
     _globals,
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _browserInfo = require('nudoru.utils.BrowserInfo');
@@ -14,10 +12,8 @@ APP = (function (global, rootView) {
 
   function initialize() {
     _self = this;
-
     initGlobals();
-
-    this.AppController.initialize(this, _globalScope, _rootView);
+    this.AppController.initialize();
   }
 
   /**
@@ -25,9 +21,7 @@ APP = (function (global, rootView) {
    */
   function initGlobals() {
     _globals = {};
-
     _globals.appConfig = APP_CONFIG_DATA;
-
     _globals.enhanced = !_browserInfo.isIE && !_browserInfo.mobile.any();
   }
 
@@ -58,4 +52,4 @@ APP = (function (global, rootView) {
     globals: globals
   };
 
-}(this, document));
+}());

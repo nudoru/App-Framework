@@ -1,9 +1,7 @@
 APP.createNameSpace('APP.AppView');
 
 APP.AppView = (function () {
-  var _appScope,
-    _viewRoot,
-    _self,
+  var _self,
     _appGlobals,
     _currentViewPortSize,
     _currentViewPortScroll,
@@ -34,8 +32,8 @@ APP.AppView = (function () {
     _drawerWidth,
     _isDrawerOpen,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
-    _headerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
-    _drawerMenuView = requireCopy('nudoru.components.DDMenuBarView'),
+    _headerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
+    _drawerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
     _toastView = require('nudoru.components.ToastView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
@@ -55,10 +53,7 @@ APP.AppView = (function () {
   //  Initialization
   //----------------------------------------------------------------------------
 
-  function initialize(appScope, viewRoot) {
-    _appScope = appScope;
-    _viewRoot = viewRoot;
-
+  function initialize() {
     _self = this;
     _appGlobals = APP.globals();
 

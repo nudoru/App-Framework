@@ -5,10 +5,7 @@
 
 APP.createNameSpace('APP.AppController');
 APP.AppController = function () {
-  var _appScope,
-    _globalScope,
-    _viewParent,
-    _model,
+  var _model,
     _view,
     _self,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
@@ -22,16 +19,10 @@ APP.AppController = function () {
   //  Initialization
   //----------------------------------------------------------------------------
 
-  function initialize(app, global, viewParent) {
-    _appScope = app;
-    _globalScope = global;
-    _viewParent = viewParent;
+  function initialize() {
     _self = this;
-
     _URLRouter.initialize(_eventDispatcher);
-
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
-
     initializeView();
   }
 
@@ -44,7 +35,7 @@ APP.AppController = function () {
     _view = APP.AppView;
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
-    _view.initialize(_appScope, _viewParent);
+    _view.initialize();
   }
 
   function onViewInitalized() {
