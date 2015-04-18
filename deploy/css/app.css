@@ -2781,7 +2781,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-weight: 400;
   font-style: normal;
 }
-/* line 17, ../../source/sass/foundation/_app-mixins.sass */
+/* line 17, ../../source/sass/foundation/mixins/_mixins.sass */
 h1 {
   margin: 0;
   padding: 0;
@@ -2795,7 +2795,7 @@ h1 {
   padding-bottom: 1.376rem;
 }
 
-/* line 22, ../../source/sass/foundation/_app-mixins.sass */
+/* line 22, ../../source/sass/foundation/mixins/_mixins.sass */
 h2 {
   margin: 0;
   padding: 0;
@@ -2808,7 +2808,7 @@ h2 {
   padding-bottom: 1.376rem;
 }
 
-/* line 26, ../../source/sass/foundation/_app-mixins.sass */
+/* line 26, ../../source/sass/foundation/mixins/_mixins.sass */
 h3 {
   margin: 0;
   padding: 0;
@@ -2821,7 +2821,7 @@ h3 {
   padding-bottom: 1.376rem;
 }
 
-/* line 30, ../../source/sass/foundation/_app-mixins.sass */
+/* line 30, ../../source/sass/foundation/mixins/_mixins.sass */
 .floatimage__caption p, h4 {
   margin: 0;
   padding: 0;
@@ -2835,7 +2835,7 @@ h3 {
   padding-bottom: 0.688rem;
 }
 
-/* line 35, ../../source/sass/foundation/_app-mixins.sass */
+/* line 35, ../../source/sass/foundation/mixins/_mixins.sass */
 h5 {
   margin: 0;
   padding: 0;
@@ -2850,7 +2850,7 @@ h5 {
   padding-bottom: 0.688rem;
 }
 
-/* line 41, ../../source/sass/foundation/_app-mixins.sass */
+/* line 41, ../../source/sass/foundation/mixins/_mixins.sass */
 h6 {
   margin: 0;
   padding: 0;
@@ -2864,7 +2864,7 @@ h6 {
   font-weight: 700;
 }
 
-/* line 55, ../../source/sass/foundation/_app-mixins.sass */
+/* line 55, ../../source/sass/foundation/mixins/_mixins.sass */
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.9rem;
@@ -2873,7 +2873,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   margin-top: 0;
 }
 
-/* line 61, ../../source/sass/foundation/_app-mixins.sass */
+/* line 61, ../../source/sass/foundation/mixins/_mixins.sass */
 .initialization__message {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
@@ -2882,33 +2882,33 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   margin-top: 0;
 }
 
-/* line 65, ../../source/sass/foundation/_app-mixins.sass */
+/* line 65, ../../source/sass/foundation/mixins/_mixins.sass */
 #header__navigation ul, .tag-listing-horizontal ul, #details .details__content .details__content-description-metadata ul, #tagbar__container ul, .tag-listing-right ul, #drawer__navigation ul {
   overflow: hidden;
   margin: 0;
   padding: 0;
   position: relative;
 }
-/* line 70, ../../source/sass/foundation/_app-mixins.sass */
+/* line 70, ../../source/sass/foundation/mixins/_mixins.sass */
 #header__navigation ul li, .tag-listing-horizontal ul li, #details .details__content .details__content-description-metadata ul li, #tagbar__container ul li, .tag-listing-right ul li, #drawer__navigation ul li {
   list-style: none;
   float: left;
 }
 
-/* line 85, ../../source/sass/foundation/_app-mixins.sass */
+/* line 85, ../../source/sass/foundation/mixins/_mixins.sass */
 .grid {
   position: relative;
   overflow: hidden;
 }
 
-/* line 92, ../../source/sass/foundation/_app-mixins.sass */
+/* line 92, ../../source/sass/foundation/mixins/_mixins.sass */
 .item__content, .item__content .item__data, .item__content .item__data .item__data-metadata, #details .details__content .details__content-description-data ul, #details .details__content .details__content-preview-images ul, #details .details__content .details__content-links ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* line 97, ../../source/sass/foundation/_app-mixins.sass */
+/* line 97, ../../source/sass/foundation/mixins/_mixins.sass */
 #header__navigation, .item__content, #drawer__navigation {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -2918,7 +2918,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   user-select: none;
 }
 
-/* line 105, ../../source/sass/foundation/_app-mixins.sass */
+/* line 105, ../../source/sass/foundation/mixins/_mixins.sass */
 .placeholder-image {
   background: #ccc;
   padding: 1em;
@@ -2926,33 +2926,33 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   color: #aaa;
   text-align: center;
 }
-/* line 111, ../../source/sass/foundation/_app-mixins.sass */
+/* line 111, ../../source/sass/foundation/mixins/_mixins.sass */
 .placeholder-image:after {
   content: "Place holder";
 }
 
-/* line 114, ../../source/sass/foundation/_app-mixins.sass */
+/* line 114, ../../source/sass/foundation/mixins/_mixins.sass */
 .photo-border {
   margin: 0.5em;
   border: 10px solid #ffffff;
   box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.15);
 }
 
-/* line 119, ../../source/sass/foundation/_app-mixins.sass */
+/* line 119, ../../source/sass/foundation/mixins/_mixins.sass */
 .photo-border-small {
   margin: 0.344rem;
   border: 5px solid #ffffff;
   box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.15);
 }
 
-/* line 134, ../../source/sass/foundation/_app-mixins.sass */
+/* line 134, ../../source/sass/foundation/mixins/_mixins.sass */
 .img-responsive, #details .details__content .details__content-preview-images ul li img {
   display: block;
   height: auto;
   width: 100%;
 }
 
-/* line 150, ../../source/sass/foundation/_app-mixins.sass */
+/* line 150, ../../source/sass/foundation/mixins/_mixins.sass */
 #header__navigation button, #header__navigation .menu button, #drawer__navigation button, #drawer__navigation .menu button {
   border: none;
   background: none;
@@ -4424,18 +4424,18 @@ img {
   text-indent: -8px;
 }
 
-/* line 40, ../../source/sass/app.sass */
+/* line 38, ../../source/sass/app.sass */
 .ignore-pointer-events {
   pointer-events: none;
 }
 
-/* line 43, ../../source/sass/app.sass */
+/* line 41, ../../source/sass/app.sass */
 #initialization__cover {
   z-index: 10010;
   background-color: #eee;
 }
 
-/* line 48, ../../source/sass/app.sass */
+/* line 46, ../../source/sass/app.sass */
 .initialization__message {
   position: relative;
   overflow: hidden;
@@ -4448,7 +4448,7 @@ img {
   background-color: #fff;
   box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
 }
-/* line 60, ../../source/sass/app.sass */
+/* line 58, ../../source/sass/app.sass */
 .initialization__message h1 {
   padding: 0;
   margin: 0;
@@ -4456,19 +4456,19 @@ img {
   color: #005eb8;
   font-size: 1.2em;
 }
-/* line 66, ../../source/sass/app.sass */
+/* line 64, ../../source/sass/app.sass */
 .initialization__message .loader {
   display: inline-block;
   width: 25px;
   height: 25px;
 }
 
-/* line 71, ../../source/sass/app.sass */
+/* line 69, ../../source/sass/app.sass */
 body {
   overflow: hidden;
 }
 
-/* line 75, ../../source/sass/app.sass */
+/* line 73, ../../source/sass/app.sass */
 #app__container {
   position: fixed;
   top: 0;
@@ -4478,7 +4478,7 @@ body {
   overflow: hidden;
 }
 
-/* line 83, ../../source/sass/app.sass */
+/* line 81, ../../source/sass/app.sass */
 #app__contents {
   position: absolute;
   min-width: 100%;
