@@ -34,9 +34,7 @@ APP.AppView = (function () {
     _toastView = require('nudoru.components.ToastView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
     _tagBarView = require('APP.AppView.TagBarView'),
-
-    _itemGridView,
-
+    _itemGridView = require('APP.AppView.ItemGridView'),
     _itemDetailView = require('APP.AppView.ItemDetailView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
@@ -115,7 +113,6 @@ APP.AppView = (function () {
   function initializeComponents() {
     _toastView.initialize('toast__container');
     _modalCoverView.initialize();
-    _itemGridView = _self.ItemGridView;
     _itemDetailView.initialize('details');
     _tagBarView.initialize('tagbar__container');
   }

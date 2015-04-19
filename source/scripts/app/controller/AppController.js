@@ -87,7 +87,7 @@ APP.AppController = function () {
   }
 
   function createCommand(proto) {
-    return _objectUtils.basicFactory(proto);
+    return Object.create(proto.methods);
   }
 
   return {

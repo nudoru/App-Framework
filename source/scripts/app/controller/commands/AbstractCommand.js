@@ -1,12 +1,8 @@
-APP.createNameSpace('APP.AppController.AbstractCommand');
-
-/*
- Simplified implementation of Stamps
- http://ericleads.com/2014/02/prototypal-inheritance-with-stamps/
- From
- https://www.barkweb.co.uk/blog/object-composition-and-prototypical-inheritance-in-javascript
+/**
+ * Extended by creating new object using methods as prototype
  */
 
+APP.createNameSpace('APP.AppController.AbstractCommand');
 APP.AppController.AbstractCommand = {
   methods: {
 

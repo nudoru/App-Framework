@@ -125,14 +125,11 @@ module.exports = function (grunt) {
           'source/scripts/app/model/AppModel.js',
           'source/scripts/app/model/ModelVOs.js',
 
-
           'source/scripts/app/view/modules/ItemDetailView.js',
           'source/scripts/app/view/modules/TagBarView.js',
-
-          'source/scripts/app/view/AppView.js',
-
           'source/scripts/app/view/modules/ItemGridView.js',
           'source/scripts/app/view/modules/GridViewItem.js',
+          'source/scripts/app/view/AppView.js',
 
           'source/scripts/app/controller/AppController.js',
           'source/scripts/app/controller/commands/*.js',
