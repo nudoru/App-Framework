@@ -3402,9 +3402,11 @@ APP.AppView.ItemGridView = (function () {
     //initImagesLoaded();
 
     _data.forEach(function (item) {
-      var itemobj = _objectUtils.basicFactory(APP.AppView.ItemGridView.GridViewItem);
+      var itemobj = requireUnique('APP.AppView.ItemGridView.GridViewItem');
       itemobj.initialize(item);
-      _containerEl.appendChild(itemobj.element);
+      _containerEl.appendChild(itemobj.getElement());
+
+      // gets item props (image alpha) that can only be retrieved after adding to dom
       itemobj.postRender();
       _children.push(itemobj);
     });
@@ -3433,11 +3435,11 @@ APP.AppView.ItemGridView = (function () {
       len = elList.length;
 
     elList.forEach(function (item) {
-      item.animating = true;
+      item.setIsAnimating(true);
     });
 
     for (; i < len; i++) {
-      TweenLite.from(elList[i].element, dur, {
+      TweenLite.from(elList[i].getElement(), dur, {
         rotationY: -90,
         transformOrigin: 'left',
         alpha: 0,
@@ -3450,7 +3452,7 @@ APP.AppView.ItemGridView = (function () {
   }
 
   function onStaggerInComplete(item) {
-    item.animating = false;
+    item.setIsAnimating(false);
   }
 
   /**
@@ -3503,7 +3505,7 @@ APP.AppView.ItemGridView = (function () {
    * @returns {*}
    */
   function getPackeryItem(item) {
-    return item.element;
+    return item.getElement();
     //return item.element[0];
   }
 
@@ -3616,7 +3618,7 @@ APP.AppView.ItemGridView = (function () {
         return item.isInViewport();
       })
       .filter(function (item) {
-        return item.visible;
+        return item.isVisible();
       })
       .map(function (item) {
         return item;
@@ -3649,7 +3651,7 @@ APP.AppView.ItemGridView = (function () {
       len = items.length;
 
     for (; i < len; i++) {
-      if (items[i].animating) {
+      if (items[i].getIsAnimating()) {
         return true;
       }
     }
@@ -3666,9 +3668,9 @@ APP.AppView.ItemGridView = (function () {
 
     if (item !== null) {
       deselectAllItems();
-      elementToTop(item.element);
+      elementToTop(item.getElement());
       item.select();
-      resetOtherItems(item.element);
+      resetOtherItems(item.getElement());
     }
   }
 
@@ -3681,7 +3683,7 @@ APP.AppView.ItemGridView = (function () {
 
     if (item !== null) {
       item.deselect();
-      unfadeOtherItems(item.element);
+      unfadeOtherItems(item.getElement());
     }
   }
 
@@ -3693,7 +3695,7 @@ APP.AppView.ItemGridView = (function () {
     var item = getItemByID(id);
     if (item !== null) {
       item.depress();
-      unfadeOtherItems(item.element);
+      unfadeOtherItems(item.getElement());
     }
   }
 
@@ -3712,14 +3714,14 @@ APP.AppView.ItemGridView = (function () {
   /**
    * Gets a list of all items in the viewport excluding a certain one.
    * Used to fade other items on mouse over
-   * @param excluded
+   * @param excludedel
    * @returns {*}
    */
-  function getItemsInViewExcluding(excluded) {
+  function getItemElementsInViewExcluding(excludedel) {
     var items = getItemsInView().map(function (item) {
-        return item.element;
+        return item.getElement();
       }),
-      idx = items.indexOf(excluded);
+      idx = items.indexOf(excludedel);
 
     if (idx > -1) {
       items.splice(idx, 1);
@@ -3739,7 +3741,7 @@ APP.AppView.ItemGridView = (function () {
       return;
     }
 
-    var otheritems = getItemsInViewExcluding(itemel),
+    var otheritems = getItemElementsInViewExcluding(itemel),
       fromPos = _DOMUtils.position(itemel),
       vpW = window.innerWidth;
 
@@ -3765,7 +3767,7 @@ APP.AppView.ItemGridView = (function () {
       return null;
     }
 
-    var otheritems = getItemsInViewExcluding(itemel);
+    var otheritems = getItemElementsInViewExcluding(itemel);
     TweenLite.killDelayedCallsTo(otheritems);
     return otheritems;
   }
@@ -3833,7 +3835,7 @@ APP.AppView.ItemGridView = (function () {
 
   function hideItem(item) {
     // Raised to top so that the fade out animation is visible over shown items
-    elementToTop(item.element);
+    elementToTop(item.getElement());
     _packery.ignore(getPackeryItem(item));
     item.hide();
   }
@@ -3864,51 +3866,66 @@ APP.AppView.ItemGridView = (function () {
 //  Grid Items
 //----------------------------------------------------------------------------
 
-APP.createNameSpace('APP.AppView.ItemGridView.GridViewItem');
-APP.AppView.ItemGridView.GridViewItem = {
-  methods: {
-    visible: true,
-    selected: false,
-    data: null,
-    element: null,
-    elementContent: null,
-    dataEl: null,
-    imageEl: null,
-    imageAlphaTarget: 0.25,
-    fancyEffects: false,
-    animating: false,
-    DOMUtils: require('nudoru.utils.DOMUtils'),
-    template: require('nudoru.utils.NTemplate'),
+define('APP.AppView.ItemGridView.GridViewItem',
+  function(require, module, exports) {
+    var _visible = true,
+      _selected = false,
+      _fancyEffects = false,
+      _animating = false,
+      _data = null,
+      _element = null,
+      _elementContent = null,
+      _dataEl = null,
+      _imageEl = null,
+      _imageAlphaTarget = 0.25,
+      _DOMUtils = require('nudoru.utils.DOMUtils'),
+      _template = require('nudoru.utils.NTemplate');
 
-    getID: function () {
-      if (this.data) {
-        return this.data.id;
+    function initialize(idata) {
+      _data = idata;
+      _fancyEffects = APP.globals().enhanced;
+      render();
+    }
+
+    function render() {
+      _element = _template.asElement('template__item-tile', _data);
+      _elementContent = _element.querySelector('.item__content');
+      _dataEl = _element.querySelector('.item__data');
+      _imageEl = _element.querySelector('.item__image-wrapper');
+    }
+
+    function getID() {
+      if (_data) {
+        return _data.id;
       }
 
       return null;
-    },
+    }
 
-    initialize: function (data) {
-      this.data = data;
-      this.fancyEffects = APP.globals().enhanced;
-      this.render();
-    },
+    function getElement() {
+      return _element;
+    }
 
-    render: function () {
-      this.element = this.template.asElement('template__item-tile', this.data);
-      this.elementContent = this.element.querySelector('.item__content');
-      this.dataEl = this.element.querySelector('.item__data');
-      this.imageEl = this.element.querySelector('.item__image-wrapper');
-    },
+    function isVisible() {
+      return _visible;
+    }
+
+    function setIsAnimating(state) {
+      _animating = state;
+    }
+
+    function getIsAnimating() {
+      return _animating;
+    }
 
     /**
      * Calculations needed after the items is added to the container is on the DOM
      */
-    postRender: function () {
-      this.imageAlphaTarget = window.getComputedStyle(this.imageEl, null).getPropertyValue('opacity');
+    function postRender() {
+      _imageAlphaTarget = window.getComputedStyle(_imageEl, null).getPropertyValue('opacity');
 
-      if (this.fancyEffects) {
-        TweenLite.set(this.element, {
+      if (_fancyEffects) {
+        TweenLite.set(_element, {
           css: {
             transformPerspective: 800,
             transformStyle: "preserve-3d",
@@ -3916,22 +3933,22 @@ APP.AppView.ItemGridView.GridViewItem = {
           }
         });
       }
-    },
+    }
 
-    isInViewport: function () {
-      return this.DOMUtils.isElementInViewport(this.element);
-    },
+    function isInViewport() {
+      return _DOMUtils.isElementInViewport(_element);
+    }
 
-    show: function () {
-      if (this.visible || this.element === undefined) {
+    function show() {
+      if (_visible || _element === undefined) {
         return;
       }
-      this.visible = true;
+      _visible = true;
 
-      if (this.isInViewport()) {
+      if (isInViewport()) {
 
-        if (this.fancyEffects) {
-          TweenLite.to(this.element, 0.25, {
+        if (_fancyEffects) {
+          TweenLite.to(_element, 0.25, {
             autoAlpha: 1,
             rotationY: 0,
             transformOrigin: 'right',
@@ -3939,7 +3956,7 @@ APP.AppView.ItemGridView.GridViewItem = {
             ease: Circ.easeOut
           });
         } else {
-          TweenLite.to(this.element, 0.25, {
+          TweenLite.to(_element, 0.25, {
             autoAlpha: 1,
             scale: 1,
             ease: Circ.easeOut
@@ -3947,149 +3964,147 @@ APP.AppView.ItemGridView.GridViewItem = {
         }
 
       } else {
-        TweenLite.to(this.element, 0, {autoAlpha: 1, scale: 1});
+        TweenLite.to(_element, 0, {autoAlpha: 1, scale: 1});
       }
-    },
+    }
 
-    hide: function () {
-      if (!this.visible || this.element === undefined) {
+    function hide() {
+      if (!_visible || _element === undefined) {
         return;
       }
-      this.visible = false;
+      _visible = false;
 
-      if (this.isInViewport()) {
+      if (isInViewport()) {
 
-        if (this.fancyEffects) {
-          TweenLite.to(this.element, 1, {
+        if (_fancyEffects) {
+          TweenLite.to(_element, 1, {
             autoAlpha: 0,
             rotationY: 90,
             transformOrigin: 'right',
             scale: 1,
             ease: Expo.easeOut,
-            onComplete: this.resetHiddenItemSize.bind(this)
+            onComplete: resetHiddenItemSize.bind(this)
           });
         } else {
-          TweenLite.to(this.element, 1, {
+          TweenLite.to(_element, 1, {
             autoAlpha: 0,
             scale: 0.25,
             ease: Expo.easeOut,
-            onComplete: this.resetHiddenItemSize.bind(this)
+            onComplete: resetHiddenItemSize.bind(this)
           });
         }
 
 
       } else {
-        TweenLite.to(this.element, 0, {
+        TweenLite.to(_element, 0, {
           autoAlpha: 0,
           scale: 0.25,
-          onComplete: this.resetHiddenItemSize.bind(this)
+          onComplete: resetHiddenItemSize.bind(this)
         });
       }
 
-    },
+    }
 
     /**
      * Resetting the elements size prevents odd packery behavior as it tries to fit resizing items
      */
-    resetHiddenItemSize: function () {
-      TweenLite.to(this.element, 0, {scale: 1});
-    },
-
-    toggleVisibility: function () {
-      if (this.visible) {
-        this.hide();
-      } else {
-        this.show();
-      }
-    },
+    function resetHiddenItemSize() {
+      TweenLite.to(_element, 0, {scale: 1});
+    }
 
     /**
      * On item mouse over
      */
-    select: function () {
-      if (this.selected || this.element === undefined || !this.visible || this.animating) {
+    function select() {
+      if (_selected || _element === undefined || !_visible || _animating) {
         return;
       }
-      this.selected = true;
+      _selected = true;
 
-      if (this.fancyEffects) {
-        TweenLite.to(this.element, 0.25, {scale: 1.05, ease: Back.easeOut});
-        TweenLite.to(this.imageEl, 0.5, {
+      if (_fancyEffects) {
+        TweenLite.to(_element, 0.25, {scale: 1.05, ease: Back.easeOut});
+        TweenLite.to(_imageEl, 0.5, {
           alpha: 1,
           scale: 1.25,
           ease: Circ.easeOut
         });
       } else {
-        TweenLite.to(this.element, 0.25, {scale: 1.05, ease: Back.easeOut});
-        TweenLite.to(this.imageEl, 0.5, {
+        TweenLite.to(_element, 0.25, {scale: 1.05, ease: Back.easeOut});
+        TweenLite.to(_imageEl, 0.5, {
           alpha: 1,
           scale: 1.25,
           ease: Circ.easeOut
         });
       }
 
-    },
+    }
 
     /**
      * On item mouse out
      */
-    deselect: function () {
-      if (!this.selected || this.element === undefined || !this.visible || this.animating) {
+    function deselect() {
+      if (!_selected || _element === undefined || !_visible || _animating) {
         return;
       }
-      this.selected = false;
+      _selected = false;
 
-      if (this.fancyEffects) {
-        TweenLite.to(this.element, 0.5, {
+      if (_fancyEffects) {
+        TweenLite.to(_element, 0.5, {
           rotationY: 0,
           scale: 1,
           ease: Back.easeOut
         });
-        TweenLite.to(this.imageEl, 0.5, {
-          alpha: this.imageAlphaTarget,
+        TweenLite.to(_imageEl, 0.5, {
+          alpha: _imageAlphaTarget,
           scale: 1,
           ease: Circ.easeOut
         });
       } else {
-        TweenLite.to(this.element, 0.5, {scale: 1, ease: Back.easeOut});
-        TweenLite.to(this.imageEl, 0.5, {
-          alpha: this.imageAlphaTarget,
+        TweenLite.to(_element, 0.5, {scale: 1, ease: Back.easeOut});
+        TweenLite.to(_imageEl, 0.5, {
+          alpha: _imageAlphaTarget,
           scale: 1,
           ease: Circ.easeOut
         });
       }
 
-    },
+    }
 
     /**
      * On item click / tap
      */
-    depress: function () {
-      if (this.element === undefined || !this.visible) {
+    function depress() {
+      if (_element === undefined || !_visible) {
         return;
       }
 
       var tl = new TimelineLite();
-      tl.to(this.element, 0.1, {scale: 0.8, ease: Quad.easeOut});
-      tl.to(this.element, 0.5, {scale: 1, ease: Elastic.easeOut});
+      tl.to(_element, 0.1, {scale: 0.8, ease: Quad.easeOut});
+      tl.to(_element, 0.5, {scale: 1, ease: Elastic.easeOut});
 
-      TweenLite.to(this.imageEl, 0.5, {
-        alpha: this.imageAlphaTarget,
+      TweenLite.to(_imageEl, 0.5, {
+        alpha: _imageAlphaTarget,
         scale: 1,
         ease: Circ.easeOut
       });
-    },
-
-    toggleSelect: function () {
-      if (this.selected) {
-        this.deselect();
-      } else {
-        this.select();
-      }
     }
 
-  }
-};;APP.createNameSpace('APP.AppController');
+    exports.initialize = initialize;
+    exports.render = render;
+    exports.postRender = postRender;
+    exports.getElement = getElement;
+    exports.getID = getID;
+    exports.isVisible = isVisible;
+    exports.isInViewport = isInViewport;
+    exports.getIsAnimating = getIsAnimating;
+    exports.setIsAnimating = setIsAnimating;
+    exports.show = show;
+    exports.hide = hide;
+    exports.select = select;
+    exports.deselect = deselect;
+    exports.depress = depress;
+
+  });;APP.createNameSpace('APP.AppController');
 APP.AppController = function () {
   var _model,
     _view,

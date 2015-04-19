@@ -77,9 +77,11 @@ APP.AppView.ItemGridView = (function () {
     //initImagesLoaded();
 
     _data.forEach(function (item) {
-      var itemobj = _objectUtils.basicFactory(APP.AppView.ItemGridView.GridViewItem);
+      var itemobj = requireUnique('APP.AppView.ItemGridView.GridViewItem');
       itemobj.initialize(item);
-      _containerEl.appendChild(itemobj.element);
+      _containerEl.appendChild(itemobj.getElement());
+
+      // gets item props (image alpha) that can only be retrieved after adding to dom
       itemobj.postRender();
       _children.push(itemobj);
     });
@@ -108,11 +110,11 @@ APP.AppView.ItemGridView = (function () {
       len = elList.length;
 
     elList.forEach(function (item) {
-      item.animating = true;
+      item.setIsAnimating(true);
     });
 
     for (; i < len; i++) {
-      TweenLite.from(elList[i].element, dur, {
+      TweenLite.from(elList[i].getElement(), dur, {
         rotationY: -90,
         transformOrigin: 'left',
         alpha: 0,
@@ -125,7 +127,7 @@ APP.AppView.ItemGridView = (function () {
   }
 
   function onStaggerInComplete(item) {
-    item.animating = false;
+    item.setIsAnimating(false);
   }
 
   /**
@@ -178,7 +180,7 @@ APP.AppView.ItemGridView = (function () {
    * @returns {*}
    */
   function getPackeryItem(item) {
-    return item.element;
+    return item.getElement();
     //return item.element[0];
   }
 
@@ -291,7 +293,7 @@ APP.AppView.ItemGridView = (function () {
         return item.isInViewport();
       })
       .filter(function (item) {
-        return item.visible;
+        return item.isVisible();
       })
       .map(function (item) {
         return item;
@@ -324,7 +326,7 @@ APP.AppView.ItemGridView = (function () {
       len = items.length;
 
     for (; i < len; i++) {
-      if (items[i].animating) {
+      if (items[i].getIsAnimating()) {
         return true;
       }
     }
@@ -341,9 +343,9 @@ APP.AppView.ItemGridView = (function () {
 
     if (item !== null) {
       deselectAllItems();
-      elementToTop(item.element);
+      elementToTop(item.getElement());
       item.select();
-      resetOtherItems(item.element);
+      resetOtherItems(item.getElement());
     }
   }
 
@@ -356,7 +358,7 @@ APP.AppView.ItemGridView = (function () {
 
     if (item !== null) {
       item.deselect();
-      unfadeOtherItems(item.element);
+      unfadeOtherItems(item.getElement());
     }
   }
 
@@ -368,7 +370,7 @@ APP.AppView.ItemGridView = (function () {
     var item = getItemByID(id);
     if (item !== null) {
       item.depress();
-      unfadeOtherItems(item.element);
+      unfadeOtherItems(item.getElement());
     }
   }
 
@@ -387,14 +389,14 @@ APP.AppView.ItemGridView = (function () {
   /**
    * Gets a list of all items in the viewport excluding a certain one.
    * Used to fade other items on mouse over
-   * @param excluded
+   * @param excludedel
    * @returns {*}
    */
-  function getItemsInViewExcluding(excluded) {
+  function getItemElementsInViewExcluding(excludedel) {
     var items = getItemsInView().map(function (item) {
-        return item.element;
+        return item.getElement();
       }),
-      idx = items.indexOf(excluded);
+      idx = items.indexOf(excludedel);
 
     if (idx > -1) {
       items.splice(idx, 1);
@@ -414,7 +416,7 @@ APP.AppView.ItemGridView = (function () {
       return;
     }
 
-    var otheritems = getItemsInViewExcluding(itemel),
+    var otheritems = getItemElementsInViewExcluding(itemel),
       fromPos = _DOMUtils.position(itemel),
       vpW = window.innerWidth;
 
@@ -440,7 +442,7 @@ APP.AppView.ItemGridView = (function () {
       return null;
     }
 
-    var otheritems = getItemsInViewExcluding(itemel);
+    var otheritems = getItemElementsInViewExcluding(itemel);
     TweenLite.killDelayedCallsTo(otheritems);
     return otheritems;
   }
@@ -508,7 +510,7 @@ APP.AppView.ItemGridView = (function () {
 
   function hideItem(item) {
     // Raised to top so that the fade out animation is visible over shown items
-    elementToTop(item.element);
+    elementToTop(item.getElement());
     _packery.ignore(getPackeryItem(item));
     item.hide();
   }
