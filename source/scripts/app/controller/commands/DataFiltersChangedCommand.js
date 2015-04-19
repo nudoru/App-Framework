@@ -1,14 +1,13 @@
-APP.createNameSpace('APP.AppController.DataFiltersChangedCommand');
-APP.AppController.DataFiltersChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.DataFiltersChangedCommand.execute = function(data) {
+APP.AppController.initializeCommand('APP.AppController.DataFiltersChangedCommand',
+  function execute(data) {
 
-  //console.log('Filters: '+this.appModel.getFiltersForTagBar());
+    //console.log('Filters: '+this.appModel.getFiltersForTagBar());
 
-  var filterList = this.appModel.getFiltersForTagBar();
+    var filterList = this.appModel.getFiltersForTagBar();
 
-  this.appView.updateUIOnFilterChanges();
-  this.appView.updateTagBarDisplay(filterList);
-  this.appView.updateGridItemVisibility(this.appModel.getDataMatchingFilters());
+    this.appView.updateUIOnFilterChanges();
+    this.appView.updateTagBarDisplay(filterList);
+    this.appView.updateGridItemVisibility(this.appModel.getDataMatchingFilters());
 
-  this.urlRouter.setRoute(this.appModel.getFiltersForURL());
-};
+    this.urlRouter.setRoute(this.appModel.getFiltersForURL());
+  });

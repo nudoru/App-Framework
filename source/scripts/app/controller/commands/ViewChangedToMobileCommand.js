@@ -1,6 +1,5 @@
-APP.createNameSpace('APP.AppController.ViewChangedToMobileCommand');
-APP.AppController.ViewChangedToMobileCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ViewChangedToMobileCommand.execute = function(data) {
+APP.AppController.initializeCommand('APP.AppController.ViewChangedToMobileCommand',
+  function(data) {
   //console.log('ViewChangedToMobileCommand: '+data);
 
   // Searching isn't support in mobile views yet
@@ -8,4 +7,4 @@ APP.AppController.ViewChangedToMobileCommand.execute = function(data) {
   this.appView.clearFreeTextFilter();
 
   this.appView.updateDrawerMenuSelections(this.appModel.getFiltersForTagBar());
-};
+});

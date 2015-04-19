@@ -10,7 +10,6 @@ APP.AppController = function () {
     _self,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _eventCommandMap = require('nudoru.events.EventCommandMap'),
-    _objectUtils = require('nudoru.utils.ObjectUtils'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
     _URLRouter = require('nudoru.utils.URLRouter');
@@ -21,6 +20,10 @@ APP.AppController = function () {
 
   function initialize() {
     _self = this;
+
+    _model = APP.AppModel;
+    _view = APP.AppView;
+
     _URLRouter.initialize(_eventDispatcher);
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
     initializeView();
@@ -32,7 +35,6 @@ APP.AppController = function () {
   }
 
   function initializeView() {
-    _view = APP.AppView;
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
     _view.initialize();
@@ -47,7 +49,6 @@ APP.AppController = function () {
   }
 
   function initializeModel() {
-    _model = APP.AppModel;
     _eventDispatcher.subscribe(APP.AppEvents.MODEL_INITIALIZED, onModelInitialized, true);
     _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_LOADED, onModelDataLoaded, true);
     _model.initialize();
@@ -58,11 +59,12 @@ APP.AppController = function () {
   }
 
   function onModelDataLoaded() {
-    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
-
-    //AppInitializedCommand takes over here
+    postInitialize();
   }
 
+  /**
+   * After the application is loaded, wire events/command and start it going
+   */
   function postInitialize() {
     // Browser events
     mapCommand(_browserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
@@ -84,16 +86,40 @@ APP.AppController = function () {
     mapCommand(APP.AppEvents.DATA_FILTER_CHANGED, _self.DataFiltersChangedCommand);
 
     mapCommand(APP.AppEvents.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
+
+    //AppInitializedCommand takes over when this fires
+    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
   }
 
-  function createCommand(proto) {
-    return Object.create(proto.methods);
+  /**
+   * Utility function
+   *  1. Create the namespace
+   *  2. Picks the last segment of the namespace
+   *  3. Sets that to the command class w/ new execute()
+   * @param nsStr
+   * @param execCode
+   */
+  function initializeCommand(nsStr, execCode) {
+    var parts = nsStr.split('.');
+    APP.createNameSpace(nsStr);
+    APP.AppController[parts[parts.length-1]] = createAndExtendCommand(execCode);
+  }
+
+  /**
+   * Instatiate the command object and set exececute() function
+   * @param execCode
+   * @returns {APP.AppController.AbstractCommand.methods}
+   */
+  function createAndExtendCommand(execCode) {
+    var cmd = Object.create(APP.AppController.AbstractCommand.methods);
+    cmd.execute = execCode;
+    return cmd;
   }
 
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: createCommand
+    initializeCommand: initializeCommand
   };
 
 }();

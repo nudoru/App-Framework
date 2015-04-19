@@ -280,6 +280,17 @@ function requireUnique(id) {
       return objects;
     };
 
+    exports.getObjectFromString = function (obj, str) {
+      var i = 0,
+        path = str.split('.'),
+        len = path.length;
+
+      for (; i < len; i++) {
+        obj = obj[path[i]];
+      }
+      return obj;
+    };
+
     exports.getObjectIndexFromId = function (obj, id) {
       if (typeof obj === "object") {
         for (var i = 0; i < obj.length; i++) {
@@ -323,7 +334,7 @@ function requireUnique(id) {
         for (var key in obj) {
           if (obj.hasOwnProperty(key)) {
             if (typeof obj[key] === 'object') {
-              deepExtend(out[key], obj[key]);
+              exports.deepExtend(out[key], obj[key]);
             } else {
               out[key] = obj[key];
             }
@@ -4105,7 +4116,6 @@ APP.AppController = function () {
     _self,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _eventCommandMap = require('nudoru.events.EventCommandMap'),
-    _objectUtils = require('nudoru.utils.ObjectUtils'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
     _URLRouter = require('nudoru.utils.URLRouter');
@@ -4116,6 +4126,10 @@ APP.AppController = function () {
 
   function initialize() {
     _self = this;
+
+    _model = APP.AppModel;
+    _view = APP.AppView;
+
     _URLRouter.initialize(_eventDispatcher);
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
     initializeView();
@@ -4127,7 +4141,6 @@ APP.AppController = function () {
   }
 
   function initializeView() {
-    _view = APP.AppView;
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
     _view.initialize();
@@ -4142,7 +4155,6 @@ APP.AppController = function () {
   }
 
   function initializeModel() {
-    _model = APP.AppModel;
     _eventDispatcher.subscribe(APP.AppEvents.MODEL_INITIALIZED, onModelInitialized, true);
     _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_LOADED, onModelDataLoaded, true);
     _model.initialize();
@@ -4153,11 +4165,12 @@ APP.AppController = function () {
   }
 
   function onModelDataLoaded() {
-    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
-
-    //AppInitializedCommand takes over here
+    postInitialize();
   }
 
+  /**
+   * After the application is loaded, wire events/command and start it going
+   */
   function postInitialize() {
     // Browser events
     mapCommand(_browserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
@@ -4179,195 +4192,248 @@ APP.AppController = function () {
     mapCommand(APP.AppEvents.DATA_FILTER_CHANGED, _self.DataFiltersChangedCommand);
 
     mapCommand(APP.AppEvents.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
+
+    //AppInitializedCommand takes over when this fires
+    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
   }
 
-  function createCommand(proto) {
-    return Object.create(proto.methods);
+  /**
+   * Utility function
+   *  1. Create the namespace
+   *  2. Picks the last segment of the namespace
+   *  3. Sets that to the command class w/ new execute()
+   * @param nsStr
+   * @param execCode
+   */
+  function initializeCommand(nsStr, execCode) {
+    var parts = nsStr.split('.');
+    APP.createNameSpace(nsStr);
+    APP.AppController[parts[parts.length-1]] = createAndExtendCommand(execCode);
+  }
+
+  /**
+   * Instatiate the command object and set exececute() function
+   * @param execCode
+   * @returns {APP.AppController.AbstractCommand.methods}
+   */
+  function createAndExtendCommand(execCode) {
+    var cmd = Object.create(APP.AppController.AbstractCommand.methods);
+    cmd.execute = execCode;
+    return cmd;
   }
 
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    createCommand: createCommand
+    initializeCommand: initializeCommand
   };
 
 }();;APP.createNameSpace('APP.AppController.AbstractCommand');
 APP.AppController.AbstractCommand = {
   methods: {
-
     app: APP,
     appController: APP.AppController,
     appModel: APP.AppModel,
     appView: APP.AppView,
     eventDispatcher: require('nudoru.events.EventDispatcher'),
     urlRouter: require('nudoru.utils.URLRouter'),
-
     execute: function (data) {
-      console.log('Abstract command executing with data: ' + data);
+      throw new Error('AbstractCommand: Must subclass and override execute()');
     }
   }
-};
+};;APP.AppController.initializeCommand('APP.AppController.AppInitializedCommand',
+  function execute(data) {
+    var _appGlobals = APP.globals();
 
-// Template
-/*
-APP.createNameSpace('APP.AppController.TestingTestingCommand');
-APP.AppController.TestingTestingCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.TestingTestingCommand.execute = function (data) {
-  console.log('!!! TestingTestingCommand with data "' + data + '"');
-};
-*/;APP.createNameSpace('APP.AppController.AppInitializedCommand');
-APP.AppController.AppInitializedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.AppInitializedCommand.execute = function (data) {
-  var _appGlobals = APP.globals();
+    this.appView.removeLoadingMessage();
+    this.appView.initializeMenus(this.appModel.getMenuData());
+    this.appView.initializeGridView(this.appModel.getData());
 
+    var initialRoute = this.urlRouter.getRoute();
 
-  this.appController.postIntialize();
-
-
-  this.appView.removeLoadingMessage();
-
-  this.appView.initializeMenus(this.appModel.getMenuData());
-  this.appView.initializeGridView(this.appModel.getData());
-
-  var initialRoute = this.urlRouter.getRoute();
-
-  if (initialRoute.length > 0) {
-    this.appModel.parseFiltersFromUrl(initialRoute);
-  } else {
-    if (_appGlobals.appConfig.welcome.enabled === 'true') {
-      this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
-    }
-  }
-
-  //console.log('Doing Perf ...');
-  //var iterations = 10000;
-  //var testObj = this.appModel.getData()[0];
-  //console.time('Method');
-  //for(var i = 0; i < iterations; i++) {
-  //  nudoru.utils.NTemplate.asElement('template__item-tile', testObj);
-  //  //nudoru.utils.NTemplate.getTemplate('template__item-tile');
-  //}
-  //console.timeEnd('Method')
-
-};
-
-;APP.createNameSpace('APP.AppController.BrowserResizedCommand');
-APP.AppController.BrowserResizedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.BrowserResizedCommand.execute = function(data) {
-  //console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
-};;APP.createNameSpace('APP.AppController.BrowserScrolledCommand');
-APP.AppController.BrowserScrolledCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.BrowserScrolledCommand.execute = function(data) {
-  //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
-};;APP.createNameSpace('APP.AppController.ClearAllFiltersCommand');
-APP.AppController.ClearAllFiltersCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ClearAllFiltersCommand.execute = function(data) {
-  this.appModel.removeAllFilters();
-  this.appView.clearAllFilters();
-};;APP.createNameSpace('APP.AppController.DataFiltersChangedCommand');
-APP.AppController.DataFiltersChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.DataFiltersChangedCommand.execute = function(data) {
-
-  //console.log('Filters: '+this.appModel.getFiltersForTagBar());
-
-  var filterList = this.appModel.getFiltersForTagBar();
-
-  this.appView.updateUIOnFilterChanges();
-  this.appView.updateTagBarDisplay(filterList);
-  this.appView.updateGridItemVisibility(this.appModel.getDataMatchingFilters());
-
-  this.urlRouter.setRoute(this.appModel.getFiltersForURL());
-};;APP.createNameSpace('APP.AppController.GridViewItemsVisibleChangedCommand');
-APP.AppController.GridViewItemsVisibleChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.GridViewItemsVisibleChangedCommand.execute = function(data) {
-  var message = data ? 'Showing '+data+' matches' : 'No matches found';
-  this.appView.updateSearchHeader(message);
-};;APP.createNameSpace('APP.AppController.ItemSelectCommand');
-APP.AppController.ItemSelectCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ItemSelectCommand.execute = function (data) {
-  //console.log('ItemSelectCommand: '+data);
-
-  if (data) {
-    var itemObject = this.appModel.getItemObjectForID(data);
-
-    if (itemObject !== null) {
-      this.appModel.setCurrentItem(itemObject.id);
-      this.appView.showItemDetailView(itemObject);
+    if (initialRoute.length > 0) {
+      this.appModel.parseFiltersFromUrl(initialRoute);
     } else {
-      console.log('[ItemSelectCommand] Cannot show details for item id "' + data + '", not found.');
+      if (_appGlobals.appConfig.welcome.enabled === 'true') {
+        this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
+      }
     }
-  } else {
-    this.appModel.setCurrentItem('');
-  }
+  });
 
-  this.urlRouter.setRoute(this.appModel.getFiltersForURL());
-};;APP.createNameSpace('APP.AppController.MenuSelectionCommand');
-APP.AppController.MenuSelectionCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.MenuSelectionCommand.execute = function(data) {
-  //console.log('MenuSelectionCommand: '+data);
-  this.appModel.toggleFilter(data);
-};;APP.createNameSpace('APP.AppController.ResumeFromModelStateCommand');
-APP.AppController.ResumeFromModelStateCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ResumeFromModelStateCommand.execute = function (data) {
+//APP.AppController.AppInitializedCommand.execute = function (data) {
+//  var _appGlobals = APP.globals();
+//
+//  console.log(this.appController);
+//
+//  this.appController.postIntialize();
+//
+//
+//  this.appView.removeLoadingMessage();
+//
+//  this.appView.initializeMenus(this.appModel.getMenuData());
+//  this.appView.initializeGridView(this.appModel.getData());
+//
+//  var initialRoute = this.urlRouter.getRoute();
+//
+//  if (initialRoute.length > 0) {
+//    this.appModel.parseFiltersFromUrl(initialRoute);
+//  } else {
+//    if (_appGlobals.appConfig.welcome.enabled === 'true') {
+//      this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
+//    }
+//  }
+//
+//};
 
-  var filters = data.filters,
-    search = data.search,
-    item = data.item;
 
-  console.log('ResumeFromModel State, filters: ' + filters + ', search: ' + search + ', item: ' + item);
 
-  if (filters) {
-    this.appModel.setMultipleFilters(filters);
-    this.appView.updateMenuSelections(this.appModel.getFiltersForTagBar());
-  }
 
-  if (search) {
-    this.appView.setFreeTextFilterValue(search);
-  }
 
-  if (item) {
-    nudoru.events.EventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
-  } else {
-    this.appModel.setCurrentItem('');
-    this.appView.hideItemDetailView();
-  }
+//APP.createNameSpace('APP.AppController.AppInitializedCommand');
+//APP.AppController.AppInitializedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
+//APP.AppController.AppInitializedCommand.execute = function (data) {
+//  var _appGlobals = APP.globals();
+//
+//
+//  this.appController.postIntialize();
+//
+//
+//  this.appView.removeLoadingMessage();
+//
+//  this.appView.initializeMenus(this.appModel.getMenuData());
+//  this.appView.initializeGridView(this.appModel.getData());
+//
+//  var initialRoute = this.urlRouter.getRoute();
+//
+//  if (initialRoute.length > 0) {
+//    this.appModel.parseFiltersFromUrl(initialRoute);
+//  } else {
+//    if (_appGlobals.appConfig.welcome.enabled === 'true') {
+//      this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
+//    }
+//  }
+//
+//};
 
-};
+//console.log('Doing Perf ...');
+//var iterations = 10000;
+//var testObj = this.appModel.getData()[0];
+//console.time('Method');
+//for(var i = 0; i < iterations; i++) {
+//  nudoru.utils.NTemplate.asElement('template__item-tile', testObj);
+//  //nudoru.utils.NTemplate.getTemplate('template__item-tile');
+//}
+//console.timeEnd('Method')
 
-;APP.createNameSpace('APP.AppController.SearchInputCommand');
-APP.AppController.SearchInputCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.SearchInputCommand.execute = function(data) {
 
-  this.appModel.setCurrentFreeTextFilter(data);
+;APP.AppController.initializeCommand('APP.AppController.BrowserResizedCommand',
+  function execute(data) {
 
-  //if(data.length > 2) {
-  //  var filteredData = this.appModel.getDataMatchingFreeText(data);
-  //  this.appView.updateGridItemVisibility(filteredData);
-  //} else {
-  //  this.appView.removeFreeTextFilter();
-  //}
+    //console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
+  });;APP.AppController.initializeCommand('APP.AppController.BrowserScrolledCommand',
+  function execute(data) {
+    //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
+  });;APP.AppController.initializeCommand('APP.AppController.ClearAllFiltersCommand',
+  function execute(data) {
+    this.appModel.removeAllFilters();
+    this.appView.clearAllFilters();
+  });;APP.AppController.initializeCommand('APP.AppController.DataFiltersChangedCommand',
+  function execute(data) {
 
-};;APP.createNameSpace('APP.AppController.URLHashChangedCommand');
-APP.AppController.URLHashChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.URLHashChangedCommand.execute = function(data) {
-  if (data !== undefined) {
-    this.appModel.parseFiltersFromUrl(data);
-    this.appView.updateMenuSelections(this.appModel.getFiltersForTagBar());
-  }
+    //console.log('Filters: '+this.appModel.getFiltersForTagBar());
 
-};;APP.createNameSpace('APP.AppController.ViewChangedCommand');
-APP.AppController.ViewChangedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ViewChangedCommand.execute = function(data) {
-  console.log('ViewChangedCommand: '+data);
-};;APP.createNameSpace('APP.AppController.ViewChangedToDesktopCommand');
-APP.AppController.ViewChangedToDesktopCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ViewChangedToDesktopCommand.execute = function(data) {
+    var filterList = this.appModel.getFiltersForTagBar();
+
+    this.appView.updateUIOnFilterChanges();
+    this.appView.updateTagBarDisplay(filterList);
+    this.appView.updateGridItemVisibility(this.appModel.getDataMatchingFilters());
+
+    this.urlRouter.setRoute(this.appModel.getFiltersForURL());
+  });;APP.AppController.initializeCommand('APP.AppController..GridViewItemsVisibleChangedCommand',
+  function execute(data) {
+
+    var message = data ? 'Showing '+data+' matches' : 'No matches found';
+    this.appView.updateSearchHeader(message);
+  });;APP.AppController.initializeCommand('APP.AppController.ItemSelectCommand',
+  function execute(data) {
+
+    //console.log('ItemSelectCommand: '+data);
+
+    if (data) {
+      var itemObject = this.appModel.getItemObjectForID(data);
+
+      if (itemObject !== null) {
+        this.appModel.setCurrentItem(itemObject.id);
+        this.appView.showItemDetailView(itemObject);
+      } else {
+        console.log('[ItemSelectCommand] Cannot show details for item id "' + data + '", not found.');
+      }
+    } else {
+      this.appModel.setCurrentItem('');
+    }
+
+    this.urlRouter.setRoute(this.appModel.getFiltersForURL());
+  });;APP.AppController.initializeCommand('APP.AppController.MenuSelectionCommand',
+  function execute(data) {
+
+    //console.log('MenuSelectionCommand: '+data);
+    this.appModel.toggleFilter(data);
+  });;APP.AppController.initializeCommand('APP.AppController.ResumeFromModelStateCommand',
+  function execute(data) {
+
+    var filters = data.filters,
+      search = data.search,
+      item = data.item;
+
+    console.log('ResumeFromModel State, filters: ' + filters + ', search: ' + search + ', item: ' + item);
+
+    if (filters) {
+      this.appModel.setMultipleFilters(filters);
+      this.appView.updateMenuSelections(this.appModel.getFiltersForTagBar());
+    }
+
+    if (search) {
+      this.appView.setFreeTextFilterValue(search);
+    }
+
+    if (item) {
+      nudoru.events.EventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
+    } else {
+      this.appModel.setCurrentItem('');
+      this.appView.hideItemDetailView();
+    }
+
+  });
+
+;APP.AppController.initializeCommand('APP.AppController.SearchInputCommand',
+  function execute(data) {
+
+    this.appModel.setCurrentFreeTextFilter(data);
+
+    //if(data.length > 2) {
+    //  var filteredData = this.appModel.getDataMatchingFreeText(data);
+    //  this.appView.updateGridItemVisibility(filteredData);
+    //} else {
+    //  this.appView.removeFreeTextFilter();
+    //}
+
+  });;APP.AppController.initializeCommand('APP.AppController.URLHashChangedCommand',
+  function execute(data) {
+
+    if (data !== undefined) {
+      this.appModel.parseFiltersFromUrl(data);
+      this.appView.updateMenuSelections(this.appModel.getFiltersForTagBar());
+    }
+
+  });;APP.AppController.initializeCommand('APP.AppController.ViewChangedCommand',
+  function execute(data) {
+    console.log('ViewChangedCommand: '+data);
+});;APP.AppController.initializeCommand('APP.AppController.ViewChangedToDesktopCommand',
+  function execute(data) {
   //console.log('ViewChangedToDesktopCommand: '+data);
-
   this.appView.updateHeaderMenuSelections(this.appModel.getFiltersForTagBar());
-};;APP.createNameSpace('APP.AppController.ViewChangedToMobileCommand');
-APP.AppController.ViewChangedToMobileCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.ViewChangedToMobileCommand.execute = function(data) {
+});;APP.AppController.initializeCommand('APP.AppController.ViewChangedToMobileCommand',
+  function(data) {
   //console.log('ViewChangedToMobileCommand: '+data);
 
   // Searching isn't support in mobile views yet
@@ -4375,7 +4441,7 @@ APP.AppController.ViewChangedToMobileCommand.execute = function(data) {
   this.appView.clearFreeTextFilter();
 
   this.appView.updateDrawerMenuSelections(this.appModel.getFiltersForTagBar());
-};;//------------------------------------------------------------------------------
+});;//------------------------------------------------------------------------------
 //  Initialization
 //------------------------------------------------------------------------------
 

@@ -19,6 +19,17 @@ define('nudoru.utils.ObjectUtils',
       return objects;
     };
 
+    exports.getObjectFromString = function (obj, str) {
+      var i = 0,
+        path = str.split('.'),
+        len = path.length;
+
+      for (; i < len; i++) {
+        obj = obj[path[i]];
+      }
+      return obj;
+    };
+
     exports.getObjectIndexFromId = function (obj, id) {
       if (typeof obj === "object") {
         for (var i = 0; i < obj.length; i++) {
@@ -62,7 +73,7 @@ define('nudoru.utils.ObjectUtils',
         for (var key in obj) {
           if (obj.hasOwnProperty(key)) {
             if (typeof obj[key] === 'object') {
-              deepExtend(out[key], obj[key]);
+              exports.deepExtend(out[key], obj[key]);
             } else {
               out[key] = obj[key];
             }

@@ -1,6 +1,6 @@
-APP.createNameSpace('APP.AppController.MenuSelectionCommand');
-APP.AppController.MenuSelectionCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.MenuSelectionCommand.execute = function(data) {
-  //console.log('MenuSelectionCommand: '+data);
-  this.appModel.toggleFilter(data);
-};
+APP.AppController.initializeCommand('APP.AppController.MenuSelectionCommand',
+  function execute(data) {
+
+    //console.log('MenuSelectionCommand: '+data);
+    this.appModel.toggleFilter(data);
+  });

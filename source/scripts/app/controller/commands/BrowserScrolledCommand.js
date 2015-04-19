@@ -1,5 +1,4 @@
-APP.createNameSpace('APP.AppController.BrowserScrolledCommand');
-APP.AppController.BrowserScrolledCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-APP.AppController.BrowserScrolledCommand.execute = function(data) {
-  //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
-};
+APP.AppController.initializeCommand('APP.AppController.BrowserScrolledCommand',
+  function execute(data) {
+    //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
+  });
