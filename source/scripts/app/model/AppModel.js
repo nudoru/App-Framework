@@ -134,7 +134,7 @@ APP.AppModel = (function () {
   }
 
   function createTestData() {
-    _dataProvider = APP.AppModel.DummyData;
+    _dataProvider = require('APP.AppModel.DummyData');
     _dataProvider.initialize();
 
     _data = _dataProvider.getItems();

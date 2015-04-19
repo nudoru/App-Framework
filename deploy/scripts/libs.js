@@ -179,10 +179,6 @@ function requireUnique(id) {
     throw new Error('requireUnique: module not found: "'+id+'"');
   }
 
-  // testing an idea
-  //var moduleBody = srcModuleCode.toString().match(/function[^{]+\{([\s\S]*)\}$/)[1],
-  //newModuleCode = new Function('require, module, exports', moduleBody);
-
   moduleCode.call(moduleCode, require, module, exports);
   return module.exports;
 }
@@ -201,39 +197,6 @@ function requireUnique(id) {
 //    context[obj] = require(lib);
 //  });
 //}
-
-/*******************************************************************************
- * Establish the nudoru namespace
- ******************************************************************************/
-
-var nudoru = {};
-
-nudoru = (function() {
-  function createNameSpace(str) {
-    return NNameSpace.createNameSpace(str, nudoru, 'nudoru');
-  }
-
-  return {
-    createNameSpace: createNameSpace
-  };
-}());
-
-nudoru.createNameSpace('nudoru.events');
-nudoru.events = (function() {
-  //
-}());
-
-nudoru.createNameSpace('nudoru.utils');
-nudoru.utils = (function() {
-  //
-}());
-
-nudoru.createNameSpace('nudoru.components');
-nudoru.components = (function() {
-  //
-}());
-
-
 ;define('nudoru.utils.BrowserInfo',
   function (require, module, exports) {
 
@@ -2148,7 +2111,97 @@ APP.AppEvents = {
   GRID_VIEW_ITEMS_CHANGED: 'GRID_VIEW_ITEMS_CHANGED',
   GRID_VIEW_LAYOUT_COMPLETE: 'GRID_VIEW_LAYOUT_COMPLETE',
   GRID_VIEW_IMAGE_LOAD_ERROR: 'GRID_VIEW_IMAGE_LOAD_ERROR'
-};;APP.createNameSpace('APP.AppModel');
+};;define('APP.AppModel.DummyData',
+
+  function(require, module, exports) {
+
+    var _id = 1,
+      _possibleYears = ['2010', '2011', '2012', '2013', '2014'],
+      _possiblePreviewImages = [
+        'screenshots/screenshot1.png',
+        'screenshots/screenshot2.png',
+        'screenshots/screenshot3.png',
+        'screenshots/screenshot4.png',
+        'screenshots/screenshot5.jpg',
+        'screenshots/screenshot6.jpg',
+        'screenshots/screenshot7.jpg',
+        'screenshots/screenshot8.png',
+        'screenshots/screenshot9.png',
+        'screenshots/screenshot11.png',
+        'screenshots/screenshot12.png'
+      ],
+      _possibleContributors = [],
+      _possibleLobs = ['Information Technology', 'Asset Management', 'Human Resources', 'Institutional', 'A&O', 'Client Services', 'Finance', 'Internal Audit', 'Marketing', 'Risk Management'],
+      _possibleCategories = ['Synchronous', 'Asynchronous', 'Just-In-Time'],
+      _possibleTypes = ['WBT', 'ILT', 'VILT', 'App', 'Multimedia', 'Sharepoint', 'Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
+      _possibleTags = ['template', 'storyline', 'social', 'game', 'mobile', 'sharepoint', 'html', 'system', 'ilt', 'paper based', 'application', 'show me', 'simulation'],
+      _possibleComplexity = ['High', 'Medium', 'Low'],
+      _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
+      _items = [],
+      _lorem = require('nudoru.utils.NLorem'),
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _stringUtils = require('nudoru.utils.StringUtils'),
+      _numberUtils = require('nudoru.utils.NumberUtils');
+
+    function getItems() {
+      return _items;
+    }
+
+    function initialize() {
+      var i = 0;
+
+      _lorem.initialize();
+
+      for (i = 0; i < 20; i++) {
+        _possibleContributors.push(_lorem.getLFName());
+      }
+
+      for (i = 0; i < 100; i++) {
+        _items.push(createItem());
+      }
+
+    }
+
+    function createItem() {
+      var o = Object.create(APP.AppModel.ItemVO.properties),
+        additionalImages = [],
+        additionalNumImages = _numberUtils.rndNumber(1, 10),
+        description = '',
+        descriptionNumParas = _numberUtils.rndNumber(1, 5),
+        i = 0;
+
+      for (; i < descriptionNumParas; i++) {
+        description += '<p>' + _lorem.getParagraph(3, 7) + '</p>';
+      }
+
+      for (i = 0; i < additionalNumImages; i++) {
+        additionalImages.push('img/' + _arrayUtils.rndElement(_possiblePreviewImages));
+      }
+
+      o.title = _stringUtils.capitalizeFirstLetter(_lorem.getText(3, 10));
+      o.shortTitle = o.title.substr(0, 10) + '...';
+      o.description = description;
+      o.images = additionalImages;
+      o.previewImage = additionalImages[0];
+      o.id = '' + _id++;
+      o.dateStarted = 'January 1, 2010';
+      o.dateCompleted = 'December 31, 2014';
+      o.quarter = 'Q' + _numberUtils.rndNumber(1, 4).toString();
+      o.duration = _numberUtils.rndNumber(1, 5).toString() + ' hour(s)';
+      o.contributors = _arrayUtils.getRandomSetOfElements(_possibleContributors, 5);
+      o.categories = _arrayUtils.getRandomSetOfElements(_possibleCategories, 1);
+      o.types = _arrayUtils.getRandomSetOfElements(_possibleTypes, 3);
+      o.companyArea = _arrayUtils.rndElement(_possibleLobs);
+      o.complexity = _arrayUtils.rndElement(_possibleComplexity);
+      o.links = _arrayUtils.getRandomSetOfElements(_possibleLinks, 5);
+      o.tags = _arrayUtils.getRandomSetOfElements(_possibleTags, 3);
+      return o;
+    }
+
+    exports.initialize = initialize;
+    exports.getItems = getItems;
+
+  });;APP.createNameSpace('APP.AppModel');
 
 APP.AppModel = (function () {
   var _self,
@@ -2268,7 +2321,7 @@ APP.AppModel = (function () {
   }
 
   function createTestData() {
-    _dataProvider = APP.AppModel.DummyData;
+    _dataProvider = require('APP.AppModel.DummyData');
     _dataProvider.initialize();
 
     _data = _dataProvider.getItems();
@@ -2613,98 +2666,172 @@ APP.AppModel.ItemVO = {
       tags: [],
       metadata: []
   },
-};;APP.createNameSpace('APP.Model.DummyData');
-APP.AppModel.DummyData = (function () {
+};;define('APP.AppView.ItemDetailView',
+  function(require, module, exports) {
 
-  var _id = 1,
-    _possibleYears = ['2010', '2011', '2012', '2013', '2014'],
-    _possiblePreviewImages = [
-      'screenshots/screenshot1.png',
-      'screenshots/screenshot2.png',
-      'screenshots/screenshot3.png',
-      'screenshots/screenshot4.png',
-      'screenshots/screenshot5.jpg',
-      'screenshots/screenshot6.jpg',
-      'screenshots/screenshot7.jpg',
-      'screenshots/screenshot8.png',
-      'screenshots/screenshot9.png',
-      'screenshots/screenshot11.png',
-      'screenshots/screenshot12.png'
-    ],
-    _possibleContributors = [],
-    _possibleLobs = ['Information Technology', 'Asset Management', 'Human Resources', 'Institutional', 'A&O', 'Client Services', 'Finance', 'Internal Audit', 'Marketing', 'Risk Management'],
-    _possibleCategories = ['Synchronous', 'Asynchronous', 'Just-In-Time'],
-    _possibleTypes = ['WBT', 'ILT', 'VILT', 'App', 'Multimedia', 'Sharepoint', 'Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
-    _possibleTags = ['template', 'storyline', 'social', 'game', 'mobile', 'sharepoint', 'html', 'system', 'ilt', 'paper based', 'application', 'show me', 'simulation'],
-    _possibleComplexity = ['High', 'Medium', 'Low'],
-    _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
-    _items = [],
-    _lorem = require('nudoru.utils.NLorem'),
-    _arrayUtils = require('nudoru.utils.ArrayUtils'),
-    _stringUtils = require('nudoru.utils.StringUtils'),
-    _numberUtils = require('nudoru.utils.NumberUtils');
+    var _containerEl,
+      _shareButtonEl,
+      _currentItem,
+      _template = require('nudoru.utils.NTemplate'),
+      _floatImageView = require('nudoru.components.FloatImageView'),
+      _browserInfo = require('nudoru.utils.BrowserInfo');
 
-  function getItems() {
-    return _items;
-  }
+    function initialize(elID) {
+      _containerEl = document.getElementById(elID);
 
-  function initialize() {
-    var i = 0;
-
-    _lorem.initialize();
-
-    for (i = 0; i < 20; i++) {
-      _possibleContributors.push(_lorem.getLFName());
+      _floatImageView.initialize();
     }
 
-    for (i = 0; i < 100; i++) {
-      _items.push(createItem());
+    function showItem(item) {
+      _currentItem = item;
+
+      _containerEl.innerHTML = _template.asHTML('template__detail-item', _currentItem);
+
+      _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
+      _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
+
+
+      _shareButtonEl = document.getElementById('js__content-share-button');
+
+      if (!_browserInfo.mobile.any()) {
+        _shareButtonEl.addEventListener(_browserInfo.mouseClickEvtStr(), doShareAction, false);
+      } else {
+        _shareButtonEl.style.display = 'none';
+      }
+
+      TweenLite.to(_containerEl, 0.25, {
+        autoAlpha: 1,
+        ease: Quad.easeOut,
+        delay: 0.1
+      });
     }
 
-  }
-
-  function createItem() {
-    var o = Object.create(APP.AppModel.ItemVO.properties),
-      additionalImages = [],
-      additionalNumImages = _numberUtils.rndNumber(1, 10),
-      description = '',
-      descriptionNumParas = _numberUtils.rndNumber(1, 5),
-      i = 0;
-
-    for (; i < descriptionNumParas; i++) {
-      description += '<p>' + _lorem.getParagraph(3, 7) + '</p>';
+    function doShareAction() {
+      var shareStr = 'mailto:?subject=I\'m sharing: '
+        + _currentItem.title + '&body=I thought you would like this ... \n\n'
+          //+'<a href="'+document.location.href+'">'+_currentItem.title+'</a>\n\n'
+        + document.location.href + '\n\n'
+        + _currentItem.description;
+      var shareWin = window.open(shareStr);
+      //shareWin.close();
     }
 
-    for (i = 0; i < additionalNumImages; i++) {
-      additionalImages.push('img/' + _arrayUtils.rndElement(_possiblePreviewImages));
+    function showMessage(obj) {
+      _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
+
+      TweenLite.to(_containerEl, 0.25, {
+        autoAlpha: 1,
+        ease: Quad.easeOut,
+        delay: 0.1
+      });
     }
 
-    o.title = _stringUtils.capitalizeFirstLetter(_lorem.getText(3, 10));
-    o.shortTitle = o.title.substr(0, 10) + '...';
-    o.description = description;
-    o.images = additionalImages;
-    o.previewImage = additionalImages[0];
-    o.id = '' + _id++;
-    o.dateStarted = 'January 1, 2010';
-    o.dateCompleted = 'December 31, 2014';
-    o.quarter = 'Q' + _numberUtils.rndNumber(1, 4).toString();
-    o.duration = _numberUtils.rndNumber(1, 5).toString() + ' hour(s)';
-    o.contributors = _arrayUtils.getRandomSetOfElements(_possibleContributors, 5);
-    o.categories = _arrayUtils.getRandomSetOfElements(_possibleCategories, 1);
-    o.types = _arrayUtils.getRandomSetOfElements(_possibleTypes, 3);
-    o.companyArea = _arrayUtils.rndElement(_possibleLobs);
-    o.complexity = _arrayUtils.rndElement(_possibleComplexity);
-    o.links = _arrayUtils.getRandomSetOfElements(_possibleLinks, 5);
-    o.tags = _arrayUtils.getRandomSetOfElements(_possibleTags, 3);
-    return o;
-  }
+    function hide() {
+      _currentItem = null;
 
-  return {
-    initialize: initialize,
-    getItems: getItems
-  };
+      _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
 
-}());;APP.createNameSpace('APP.AppView');
+      if (_shareButtonEl) {
+        _shareButtonEl.removeEventListener(_browserInfo.mouseClickEvtStr(), doShareAction);
+      }
+
+      TweenLite.killDelayedCallsTo(_containerEl);
+      TweenLite.to(_containerEl, 0.25, {
+        autoAlpha: 0,
+        ease: Quad.easeOut,
+        delay: 0.1
+      });
+    }
+
+    exports.initialize = initialize;
+    exports.showItem = showItem;
+    exports.showMessage = showMessage;
+    exports.hide = hide;
+
+  });;define('APP.AppView.TagBarView',
+  function(require, module, exports) {
+
+    var _containerEl,
+      _currentTags,
+      _arrayUtils = require('nudoru.utils.ArrayUtils'),
+      _template = require('nudoru.utils.NTemplate');
+
+    function initialize(elID) {
+      _containerEl = document.getElementById(elID);
+      _currentTags = [];
+
+      hideBar();
+    }
+
+    /**
+     * add or removes as necessary
+     * @param newTags
+     */
+    function update(newTags) {
+      if (newTags.length) {
+
+        var currenttags = _currentTags.map(function (tag) {
+            return tag.label;
+          }),
+          tagsToAdd = _arrayUtils.getDifferences(newTags, currenttags),
+          tagsToRemove = _arrayUtils.getDifferences(currenttags, newTags);
+
+        tagsToRemove.forEach(function (tag) {
+          remove(tag);
+        });
+
+        tagsToAdd.forEach(function (tag) {
+          add(tag);
+        });
+
+        showBar();
+
+      } else {
+        removeAll();
+        hideBar();
+      }
+    }
+
+    function showBar() {
+      TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
+    }
+
+    function hideBar() {
+      TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
+    }
+
+    function add(tag) {
+      var tagnode = _template.asElement('template__tag-bar', {tag: tag});
+      _containerEl.appendChild(tagnode);
+      _currentTags.push({label: tag, el: tagnode});
+      TweenLite.from(tagnode, 0.5, {alpha: 0, y: '15px', ease: Quad.easeOut});
+    }
+
+    function remove(tag) {
+      var rmv = _currentTags.filter(function (tagobj) {
+        if (tagobj.label === tag) {
+          return true;
+        }
+        return false;
+      })[0];
+
+      if (rmv) {
+        _containerEl.removeChild(rmv.el);
+        _currentTags.splice(_currentTags.indexOf(rmv), 1);
+      }
+    }
+
+    function removeAll() {
+      _currentTags.forEach(function (tag) {
+        _containerEl.removeChild(tag.el);
+      });
+      _currentTags = [];
+    }
+
+    exports.initialize = initialize;
+    exports.update =update;
+
+  });;APP.createNameSpace('APP.AppView');
 
 APP.AppView = (function () {
   var _self,
@@ -2722,9 +2849,6 @@ APP.AppView = (function () {
     _mainFooterEl,
     _drawerToggleButtonEl,
     _drawerToggleButtonInputEl,
-    _itemGridView,
-    _itemDetailView,
-    _tagBarView,
     _uiUpdateLayoutStream,
     _searchInputStream,
     _clearAllButtonStream,
@@ -2742,6 +2866,11 @@ APP.AppView = (function () {
     _drawerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
     _toastView = require('nudoru.components.ToastView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
+    _tagBarView = require('APP.AppView.TagBarView'),
+
+    _itemGridView,
+
+    _itemDetailView = require('APP.AppView.ItemDetailView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
     _stringUtils = require('nudoru.utils.StringUtils'),
@@ -2820,9 +2949,7 @@ APP.AppView = (function () {
     _toastView.initialize('toast__container');
     _modalCoverView.initialize();
     _itemGridView = _self.ItemGridView;
-    _itemDetailView = _self.ItemDetailView;
     _itemDetailView.initialize('details');
-    _tagBarView = _self.TagBarView;
     _tagBarView.initialize('tagbar__container');
   }
 
@@ -3275,7 +3402,7 @@ APP.AppView.ItemGridView = (function () {
     //initImagesLoaded();
 
     _data.forEach(function (item) {
-      var itemobj = _objectUtils.basicFactory(APP.AppView.ItemGridView.AbstractGridItem);
+      var itemobj = _objectUtils.basicFactory(APP.AppView.ItemGridView.GridViewItem);
       itemobj.initialize(item);
       _containerEl.appendChild(itemobj.element);
       itemobj.postRender();
@@ -3731,18 +3858,17 @@ APP.AppView.ItemGridView = (function () {
 
 }());
 
-//----------------------------------------------------------------------------
+
+
+;//----------------------------------------------------------------------------
 //  Grid Items
 //----------------------------------------------------------------------------
 
-APP.createNameSpace('APP.AppView.ItemGridView.AbstractGridItem');
-APP.AppView.ItemGridView.AbstractGridItem = {
-  state: {
-    visible: true,
-    selected: false
-  },
-
+APP.createNameSpace('APP.AppView.ItemGridView.GridViewItem');
+APP.AppView.ItemGridView.GridViewItem = {
   methods: {
+    visible: true,
+    selected: false,
     data: null,
     element: null,
     elementContent: null,
@@ -3963,176 +4089,7 @@ APP.AppView.ItemGridView.AbstractGridItem = {
     }
 
   }
-};;APP.createNameSpace('APP.AppView.ItemDetailView');
-
-APP.AppView.ItemDetailView = (function () {
-  var _containerEl,
-    _shareButtonEl,
-    _currentItem,
-    _template = require('nudoru.utils.NTemplate'),
-    _floatImageView = require('nudoru.components.FloatImageView'),
-    _browserInfo = require('nudoru.utils.BrowserInfo');
-
-  function initialize(elID) {
-    _containerEl = document.getElementById(elID);
-
-    _floatImageView.initialize();
-  }
-
-  function showItem(item) {
-    _currentItem = item;
-
-    _containerEl.innerHTML = _template.asHTML('template__detail-item', _currentItem);
-
-    _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
-    _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
-
-
-    _shareButtonEl = document.getElementById('js__content-share-button');
-
-    if (!_browserInfo.mobile.any()) {
-      _shareButtonEl.addEventListener(_browserInfo.mouseClickEvtStr(), doShareAction, false);
-    } else {
-      _shareButtonEl.style.display = 'none';
-    }
-
-    TweenLite.to(_containerEl, 0.25, {
-      autoAlpha: 1,
-      ease: Quad.easeOut,
-      delay: 0.1
-    });
-  }
-
-  function doShareAction() {
-    var shareStr = 'mailto:?subject=I\'m sharing: '
-      + _currentItem.title + '&body=I thought you would like this ... \n\n'
-        //+'<a href="'+document.location.href+'">'+_currentItem.title+'</a>\n\n'
-      + document.location.href + '\n\n'
-      + _currentItem.description;
-    var shareWin = window.open(shareStr);
-    //shareWin.close();
-  }
-
-  function showMessage(obj) {
-    _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
-
-    TweenLite.to(_containerEl, 0.25, {
-      autoAlpha: 1,
-      ease: Quad.easeOut,
-      delay: 0.1
-    });
-  }
-
-  function hide() {
-    _currentItem = null;
-
-    _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
-
-    if (_shareButtonEl) {
-      _shareButtonEl.removeEventListener(_browserInfo.mouseClickEvtStr(), doShareAction);
-    }
-
-    TweenLite.killDelayedCallsTo(_containerEl);
-    TweenLite.to(_containerEl, 0.25, {
-      autoAlpha: 0,
-      ease: Quad.easeOut,
-      delay: 0.1
-    });
-  }
-
-  return {
-    initialize: initialize,
-    showItem: showItem,
-    showMessage: showMessage,
-    hide: hide
-  };
-
-}());;APP.createNameSpace('APP.AppView.TagBarView');
-
-APP.AppView.TagBarView = (function () {
-  var _containerEl,
-    _currentTags,
-    _arrayUtils = require('nudoru.utils.ArrayUtils'),
-    _template = require('nudoru.utils.NTemplate');
-
-  function initialize(elID) {
-    _containerEl = document.getElementById(elID);
-    _currentTags = [];
-
-    hideBar();
-  }
-
-  /**
-   * add or removes as necessary
-   * @param newTags
-   */
-  function update(newTags) {
-    if (newTags.length) {
-
-      var currenttags = _currentTags.map(function (tag) {
-          return tag.label;
-        }),
-        tagsToAdd = _arrayUtils.getDifferences(newTags, currenttags),
-        tagsToRemove = _arrayUtils.getDifferences(currenttags, newTags);
-
-      tagsToRemove.forEach(function (tag) {
-        remove(tag);
-      });
-
-      tagsToAdd.forEach(function (tag) {
-        add(tag);
-      });
-
-      showBar();
-
-    } else {
-      removeAll();
-      hideBar();
-    }
-  }
-
-  function showBar() {
-    TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
-  }
-
-  function hideBar() {
-    TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
-  }
-
-  function add(tag) {
-    var tagnode = _template.asElement('template__tag-bar', {tag: tag});
-    _containerEl.appendChild(tagnode);
-    _currentTags.push({label: tag, el: tagnode});
-    TweenLite.from(tagnode, 0.5, {alpha: 0, y: '15px', ease: Quad.easeOut});
-  }
-
-  function remove(tag) {
-    var rmv = _currentTags.filter(function (tagobj) {
-      if (tagobj.label === tag) {
-        return true;
-      }
-      return false;
-    })[0];
-
-    if (rmv) {
-      _containerEl.removeChild(rmv.el);
-      _currentTags.splice(_currentTags.indexOf(rmv), 1);
-    }
-  }
-
-  function removeAll() {
-    _currentTags.forEach(function (tag) {
-      _containerEl.removeChild(tag.el);
-    });
-    _currentTags = [];
-  }
-
-  return {
-    initialize: initialize,
-    update: update
-  };
-
-}());;APP.createNameSpace('APP.AppController');
+};;APP.createNameSpace('APP.AppController');
 APP.AppController = function () {
   var _model,
     _view,

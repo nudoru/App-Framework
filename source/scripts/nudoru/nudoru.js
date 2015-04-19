@@ -121,10 +121,6 @@ function requireUnique(id) {
     throw new Error('requireUnique: module not found: "'+id+'"');
   }
 
-  // testing an idea
-  //var moduleBody = srcModuleCode.toString().match(/function[^{]+\{([\s\S]*)\}$/)[1],
-  //newModuleCode = new Function('require, module, exports', moduleBody);
-
   moduleCode.call(moduleCode, require, module, exports);
   return module.exports;
 }
@@ -143,36 +139,3 @@ function requireUnique(id) {
 //    context[obj] = require(lib);
 //  });
 //}
-
-/*******************************************************************************
- * Establish the nudoru namespace
- ******************************************************************************/
-
-var nudoru = {};
-
-nudoru = (function() {
-  function createNameSpace(str) {
-    return NNameSpace.createNameSpace(str, nudoru, 'nudoru');
-  }
-
-  return {
-    createNameSpace: createNameSpace
-  };
-}());
-
-nudoru.createNameSpace('nudoru.events');
-nudoru.events = (function() {
-  //
-}());
-
-nudoru.createNameSpace('nudoru.utils');
-nudoru.utils = (function() {
-  //
-}());
-
-nudoru.createNameSpace('nudoru.components');
-nudoru.components = (function() {
-  //
-}());
-
-

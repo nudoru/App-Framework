@@ -16,9 +16,6 @@ APP.AppView = (function () {
     _mainFooterEl,
     _drawerToggleButtonEl,
     _drawerToggleButtonInputEl,
-    _itemGridView,
-    _itemDetailView,
-    _tagBarView,
     _uiUpdateLayoutStream,
     _searchInputStream,
     _clearAllButtonStream,
@@ -36,6 +33,11 @@ APP.AppView = (function () {
     _drawerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
     _toastView = require('nudoru.components.ToastView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
+    _tagBarView = require('APP.AppView.TagBarView'),
+
+    _itemGridView,
+
+    _itemDetailView = require('APP.AppView.ItemDetailView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
     _stringUtils = require('nudoru.utils.StringUtils'),
@@ -114,9 +116,7 @@ APP.AppView = (function () {
     _toastView.initialize('toast__container');
     _modalCoverView.initialize();
     _itemGridView = _self.ItemGridView;
-    _itemDetailView = _self.ItemDetailView;
     _itemDetailView.initialize('details');
-    _tagBarView = _self.TagBarView;
     _tagBarView.initialize('tagbar__container');
   }
 
