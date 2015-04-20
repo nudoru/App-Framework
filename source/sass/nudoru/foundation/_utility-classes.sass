@@ -1,3 +1,10 @@
+%full-background-coverage
+  position: fixed
+  top: 0
+  left: 0
+  bottom: 0
+  right: 0
+
 %vertical-align
   position: relative
   top: 50%
@@ -9,18 +16,6 @@
   white-space: nowrap
   overflow: hidden
   text-overflow: ellipsis
-
-// Nicolash Gallagher Micro clearfix
-.group:before, .group:after 
-  content: ""
-  display: table
-
-.group:after 
-  clear: both
-
-// IE 6-7
-.group 
-  *zoom: 1
 
 .align-right
   text-align: right
@@ -62,18 +57,6 @@
   height: auto
   max-width: 100%
 
-%img-thumbnail
-  display: inline-block
-  height: auto
-  max-width: 100%
-  padding: 4px
-  line-height: 1.428571429
-  background-color: #ffffff
-  border: 1px solid #dddddd
-  border-radius: 4px
-  -webkit-transition: all 0.2s ease-in-out
-    transition: all 0.2s ease-in-out
-
 .plain-list
   list-style: none
   padding-left: 0
@@ -91,45 +74,6 @@
     &:last-of-type
       &:after
         content: ""
-
-.basic-tags
-  margin: 3px
-  @extend .plain-horizontal-list
-  li
-    white-space: nowrap
-    padding: 3px 5px
-    background-color: rgba(0,0,0,.1)
-    margin-right: 3px
-    line-height: 2rem
-    border-radius: 3px
-    text-shadow: 0 -1px 0px rgba(255,255,255,.75)
-
-.padding-full
-  padding: $padding-standard !important
-
-.padding-0
-  padding: 0 !important
-
-.padding-top-extra
-  padding-top: $padding-standard*2 !important
-
-.padding-top
-  padding-top: $padding-standard !important
-
-.padding-left-extra
-  padding-left: $padding-standard*2 !important
-
-.margin-full
-  margin: $padding-standard !important
-
-.margin-0
-  margin: 0 !important
-
-.margin-top-0
-  margin-top: 0 !important
-
-.margin-bottom-extra
-  margin-bottom: $padding-standard*2 !important
 
 .text-right
   text-align: right !important

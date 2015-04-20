@@ -3,8 +3,7 @@
 //  GENERIC 'TAGS' ARE IN TAGBARVIEW
 //------------------------------------------------------------------------------
 
-input:focus, textarea:focus, button:focus
-  outline: 0
+
 
 //------------------------------------------------------------------------------
 //  General
@@ -23,49 +22,10 @@ input:focus, textarea:focus, button:focus
   +white-gray-component-border
 
 //------------------------------------------------------------------------------
-//  Full screen
-//------------------------------------------------------------------------------
-
-%full-background-coverage
-  position: fixed
-  top: 0
-  left: 0
-  bottom: 0
-  right: 0
-
-#modal__cover
-  @extend %full-background-coverage
-  z-index: $z-index-modal-cover
-
-.modal__background
-  @extend %full-background-coverage
-  background-color: $dark-blue
-  opacity: .8
-  cursor: pointer
-
-.modal__close-button
-  position: absolute
-  top: $double-base-line-height
-  left: $double-base-line-height
-  width: 40px
-  height: 40px
-  font-size: 2rem
-  //border-radius: 50%
-  //background-color: #fff
-  //text-align: center
-  color: rgba(255,255,255,.75)
-  //padding-left: 1px
-  //padding-top: 9px
-  cursor: pointer
-  &:hover
-    color: rgba(255,255,255,1)
-  +respond-to(max-width, $tablet-mobile-break)
-    left: $base-line-height
-
-
-//------------------------------------------------------------------------------
 //  Forms
 //------------------------------------------------------------------------------
+
+
 
 %input-icon-right-pair
   position: relative
@@ -201,4 +161,3 @@ input:focus, textarea:focus, button:focus
   +transition-all()
   &:hover, &:active
     background-color: $dark-blue
-

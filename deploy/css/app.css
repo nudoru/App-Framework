@@ -2781,7 +2781,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-weight: 400;
   font-style: normal;
 }
-/* line 17, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 17, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 h1 {
   margin: 0;
   padding: 0;
@@ -2795,7 +2795,7 @@ h1 {
   padding-bottom: 1.376rem;
 }
 
-/* line 22, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 22, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 h2 {
   margin: 0;
   padding: 0;
@@ -2808,7 +2808,7 @@ h2 {
   padding-bottom: 1.376rem;
 }
 
-/* line 26, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 26, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 h3 {
   margin: 0;
   padding: 0;
@@ -2821,8 +2821,8 @@ h3 {
   padding-bottom: 1.376rem;
 }
 
-/* line 30, ../../source/sass/foundation/mixins/_mixins.sass */
-.floatimage__caption p, h4 {
+/* line 30, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
+h4, .floatimage__caption p {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2835,7 +2835,7 @@ h3 {
   padding-bottom: 0.688rem;
 }
 
-/* line 35, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 35, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 h5 {
   margin: 0;
   padding: 0;
@@ -2850,7 +2850,7 @@ h5 {
   padding-bottom: 0.688rem;
 }
 
-/* line 41, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 41, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 h6 {
   margin: 0;
   padding: 0;
@@ -2864,7 +2864,7 @@ h6 {
   font-weight: 700;
 }
 
-/* line 55, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 55, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.9rem;
@@ -2873,7 +2873,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   margin-top: 0;
 }
 
-/* line 61, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 61, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .initialization__message {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
@@ -2882,33 +2882,33 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   margin-top: 0;
 }
 
-/* line 65, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 65, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 #header__navigation ul, .tag-listing-horizontal ul, #details .details__content .details__content-description-metadata ul, #tagbar__container ul, .tag-listing-right ul, #drawer__navigation ul {
   overflow: hidden;
   margin: 0;
   padding: 0;
   position: relative;
 }
-/* line 70, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 70, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 #header__navigation ul li, .tag-listing-horizontal ul li, #details .details__content .details__content-description-metadata ul li, #tagbar__container ul li, .tag-listing-right ul li, #drawer__navigation ul li {
   list-style: none;
   float: left;
 }
 
-/* line 85, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 85, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .grid {
   position: relative;
   overflow: hidden;
 }
 
-/* line 92, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 92, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .item__content, .item__content .item__data, .item__content .item__data .item__data-metadata, #details .details__content .details__content-description-data ul, #details .details__content .details__content-preview-images ul, #details .details__content .details__content-links ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* line 97, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 97, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 #header__navigation, .item__content, #drawer__navigation {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -2918,7 +2918,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   user-select: none;
 }
 
-/* line 105, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 105, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .placeholder-image {
   background: #ccc;
   padding: 1em;
@@ -2926,37 +2926,281 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   color: #aaa;
   text-align: center;
 }
-/* line 111, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 111, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .placeholder-image:after {
   content: "Place holder";
 }
 
-/* line 114, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 114, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .photo-border {
   margin: 0.5em;
   border: 10px solid #ffffff;
   box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.15);
 }
 
-/* line 119, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 119, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .photo-border-small {
   margin: 0.344rem;
   border: 5px solid #ffffff;
   box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.15);
 }
 
-/* line 134, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 134, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 .img-responsive, #details .details__content .details__content-preview-images ul li img {
   display: block;
   height: auto;
   width: 100%;
 }
 
-/* line 150, ../../source/sass/foundation/mixins/_mixins.sass */
+/* line 150, ../../source/sass/nudoru/foundation/mixins/_mixins.sass */
 #header__navigation button, #header__navigation .menu button, #drawer__navigation button, #drawer__navigation .menu button {
   border: none;
   background: none;
   width: 100%;
+}
+
+/* line 1, ../../source/sass/nudoru/foundation/_tags.sass */
+*, *:after, *:before {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 6, ../../source/sass/nudoru/foundation/_tags.sass */
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* line 9, ../../source/sass/nudoru/foundation/_tags.sass */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  heigth: 100%;
+}
+
+/* line 14, ../../source/sass/nudoru/foundation/_tags.sass */
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  line-height: 0.688rem;
+  min-height: 100%;
+  -webkit-text-size-adjust: none;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #635850;
+}
+
+/* line 55, ../../source/sass/nudoru/foundation/_tags.sass */
+strong {
+  font-weight: 700;
+}
+
+/* line 58, ../../source/sass/nudoru/foundation/_tags.sass */
+em {
+  font-style: italic;
+}
+
+/* line 61, ../../source/sass/nudoru/foundation/_tags.sass */
+a {
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  -webkit-transition: all 0.25s ease-out;
+  -ms-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
+  color: #005eb8;
+  outline: none;
+}
+/* line 65, ../../source/sass/nudoru/foundation/_tags.sass */
+a:active, a:hover {
+  color: #00a9e0;
+}
+/* line 67, ../../source/sass/nudoru/foundation/_tags.sass */
+a:focus {
+  outline: thin-dotted;
+}
+
+/* line 74, ../../source/sass/nudoru/foundation/_tags.sass */
+a.custom, #details .details__content a {
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  -webkit-transition: all 0.25s ease-out;
+  -ms-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
+  color: #005eb8;
+  outline: none;
+  text-decoration: none;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #005eb8 2px, #005eb8 3px, rgba(0, 0, 0, 0) 3px);
+}
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx) {
+  /* line 74, ../../source/sass/nudoru/foundation/_tags.sass */
+  a.custom, #details .details__content a {
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #005eb8 2px, #005eb8 2.5px, rgba(0, 0, 0, 0) 2.5px);
+  }
+}
+/* line 83, ../../source/sass/nudoru/foundation/_tags.sass */
+a.custom:active, #details .details__content a:active, a.custom:hover, #details .details__content a:hover {
+  color: #00a9e0;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #00a9e0 2px, #00a9e0 3px, rgba(0, 0, 0, 0) 3px);
+  outline: none;
+}
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx) {
+  /* line 83, ../../source/sass/nudoru/foundation/_tags.sass */
+  a.custom:active, #details .details__content a:active, a.custom:hover, #details .details__content a:hover {
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #00a9e0 2px, #00a9e0 2.5px, rgba(0, 0, 0, 0) 2.5px);
+  }
+}
+/* line 89, ../../source/sass/nudoru/foundation/_tags.sass */
+a.custom:focus, #details .details__content a:focus {
+  outline: thin-dotted;
+}
+
+/* line 92, ../../source/sass/nudoru/foundation/_tags.sass */
+ul {
+  list-style: disc inside;
+}
+
+/* line 95, ../../source/sass/nudoru/foundation/_tags.sass */
+ol {
+  list-style: decimal inside;
+}
+
+/* line 98, ../../source/sass/nudoru/foundation/_tags.sass */
+li {
+  margin-bottom: 0rem;
+}
+
+/* line 101, ../../source/sass/nudoru/foundation/_tags.sass */
+ul ul, ol ol, ul ol, ol ul {
+  margin: 0 0 0 1.376rem;
+}
+
+/* line 104, ../../source/sass/nudoru/foundation/_tags.sass */
+ol ol {
+  list-style: lower-alpha;
+}
+
+/* line 107, ../../source/sass/nudoru/foundation/_tags.sass */
+ol ol ol {
+  list-style: lower-roman;
+}
+
+/* line 110, ../../source/sass/nudoru/foundation/_tags.sass */
+ul ul {
+  list-style: circle;
+}
+
+/* line 113, ../../source/sass/nudoru/foundation/_tags.sass */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* line 116, ../../source/sass/nudoru/foundation/_tags.sass */
+img {
+  vertical-align: middle;
+}
+
+/* line 119, ../../source/sass/nudoru/foundation/_tags.sass */
+input:focus, textarea:focus, button:focus {
+  outline: 0;
+}
+
+/* line 1, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+#modal__cover, .modal__background, #floatimage__cover, #initialization__cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* line 20, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.align-right {
+  text-align: right;
+}
+
+/* line 23, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.pull-left {
+  float: left !important;
+}
+
+/* line 26, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.pull-right {
+  float: right !important;
+}
+
+/* line 29, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.hidden {
+  display: none !important;
+}
+
+/* line 32, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.visible {
+  display: block !important;
+}
+
+/* line 36, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+/* line 47, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+/* line 55, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.img-responsive, #details .details__content .details__content-preview-images ul li img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+/* line 60, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.plain-list, .plain-horizontal-list, .comma-separated-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* line 66, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.plain-horizontal-list li, .comma-separated-list li {
+  display: inline;
+}
+
+/* line 72, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.comma-separated-list li:after {
+  content: ", ";
+}
+/* line 75, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.comma-separated-list li:last-of-type:after {
+  content: "";
+}
+
+/* line 78, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.text-right {
+  text-align: right !important;
+}
+
+/* line 81, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.text-center {
+  text-align: center !important;
+}
+
+/* line 84, ../../source/sass/nudoru/foundation/_utility-classes.sass */
+.all-inline {
+  display: inline !important;
 }
 
 /*
@@ -3021,7 +3265,7 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
 /**
  * Example
  */
-/* line 117, ../../source/sass/foundation/_paper-shadows.scss */
+/* line 117, ../../source/sass/nudoru/foundation/_paper-shadows.scss */
 .card {
   width: 15em;
   height: 15em;
@@ -3030,47 +3274,42 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   display: inline-block;
 }
 
-/* line 124, ../../source/sass/foundation/_paper-shadows.scss */
+/* line 124, ../../source/sass/nudoru/foundation/_paper-shadows.scss */
 .card--z-0 {
   border: 1px solid #eee;
 }
 
-/* line 125, ../../source/sass/foundation/_paper-shadows.scss */
+/* line 125, ../../source/sass/nudoru/foundation/_paper-shadows.scss */
 .card--z-1 {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 2px 5px rgba(0, 0, 0, 0.26);
   border: 1px solid #eee;
 }
 
-/* line 126, ../../source/sass/foundation/_paper-shadows.scss */
+/* line 126, ../../source/sass/nudoru/foundation/_paper-shadows.scss */
 .card--z-2 {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.19), 0 8px 17px rgba(0, 0, 0, 0.2);
   border: 1px solid #eee;
 }
 
-/* line 127, ../../source/sass/foundation/_paper-shadows.scss */
+/* line 127, ../../source/sass/nudoru/foundation/_paper-shadows.scss */
 .card--z-3 {
   box-shadow: 0 17px 50px rgba(0, 0, 0, 0.19), 0 12px 15px rgba(0, 0, 0, 0.24);
   border: 1px solid #eee;
 }
 
-/* line 128, ../../source/sass/foundation/_paper-shadows.scss */
+/* line 128, ../../source/sass/nudoru/foundation/_paper-shadows.scss */
 .card--z-4 {
   box-shadow: 0 25px 55px rgba(0, 0, 0, 0.21), 0 16px 28px rgba(0, 0, 0, 0.22);
   border: 1px solid #eee;
 }
 
-/* line 129, ../../source/sass/foundation/_paper-shadows.scss */
+/* line 129, ../../source/sass/nudoru/foundation/_paper-shadows.scss */
 .card--z-5 {
   box-shadow: 0 40px 77px rgba(0, 0, 0, 0.22), 0 27px 24px rgba(0, 0, 0, 0.2);
   border: 1px solid #eee;
 }
 
-/* line 6, ../../source/sass/foundation/_components.sass */
-input:focus, textarea:focus, button:focus {
-  outline: 0;
-}
-
-/* line 17, ../../source/sass/foundation/_components.sass */
+/* line 16, ../../source/sass/nudoru/foundation/_components.sass */
 .toast__item {
   position: relative;
   margin-bottom: 1px;
@@ -3081,50 +3320,7 @@ input:focus, textarea:focus, button:focus {
   box-shadow: 0px 1px 0 #eae8e6;
 }
 
-/* line 29, ../../source/sass/foundation/_components.sass */
-#modal__cover, .modal__background, #floatimage__cover, #initialization__cover {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-
-/* line 36, ../../source/sass/foundation/_components.sass */
-#modal__cover {
-  z-index: 10003;
-}
-
-/* line 40, ../../source/sass/foundation/_components.sass */
-.modal__background {
-  background-color: #005eb8;
-  opacity: 0.8;
-  cursor: pointer;
-}
-
-/* line 46, ../../source/sass/foundation/_components.sass */
-.modal__close-button {
-  position: absolute;
-  top: 1.376rem;
-  left: 1.376rem;
-  width: 40px;
-  height: 40px;
-  font-size: 2rem;
-  color: rgba(255, 255, 255, 0.75);
-  cursor: pointer;
-}
-/* line 60, ../../source/sass/foundation/_components.sass */
-.modal__close-button:hover {
-  color: white;
-}
-@media (max-width: 750px) {
-  /* line 46, ../../source/sass/foundation/_components.sass */
-  .modal__close-button {
-    left: 0.688rem;
-  }
-}
-
-/* line 70, ../../source/sass/foundation/_components.sass */
+/* line 30, ../../source/sass/nudoru/foundation/_components.sass */
 .grid__header-search-form .grid__header-search {
   position: relative;
   border-radius: 50px;
@@ -3137,15 +3333,15 @@ input:focus, textarea:focus, button:focus {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
 }
-/* line 76, ../../source/sass/foundation/_components.sass */
+/* line 36, ../../source/sass/nudoru/foundation/_components.sass */
 .grid__header-search-form .grid__header-search:hover {
   border: 1px solid #00a9e0;
 }
-/* line 78, ../../source/sass/foundation/_components.sass */
+/* line 38, ../../source/sass/nudoru/foundation/_components.sass */
 .grid__header-search-form .grid__header-search:hover i.fa {
   background-color: #00a9e0;
 }
-/* line 80, ../../source/sass/foundation/_components.sass */
+/* line 40, ../../source/sass/nudoru/foundation/_components.sass */
 .grid__header-search-form .grid__header-search input {
   padding: 0 0.344rem;
   margin: 0.344rem;
@@ -3156,7 +3352,7 @@ input:focus, textarea:focus, button:focus {
   color: #005eb8;
   text-align: right;
 }
-/* line 89, ../../source/sass/foundation/_components.sass */
+/* line 49, ../../source/sass/nudoru/foundation/_components.sass */
 .grid__header-search-form .grid__header-search i.fa {
   position: relative;
   font-size: 0.6rem;
@@ -3173,17 +3369,17 @@ input:focus, textarea:focus, button:focus {
   transition: all 0.25s ease-out;
 }
 
-/* line 105, ../../source/sass/foundation/_components.sass */
+/* line 65, ../../source/sass/nudoru/foundation/_components.sass */
 .icon-right i.fa {
   margin-left: 0.344rem;
 }
 
-/* line 109, ../../source/sass/foundation/_components.sass */
+/* line 69, ../../source/sass/nudoru/foundation/_components.sass */
 .icon-left i.fa {
   margin-right: 0.344rem;
 }
 
-/* line 112, ../../source/sass/foundation/_components.sass */
+/* line 72, ../../source/sass/nudoru/foundation/_components.sass */
 .basic-button, .important-button {
   -webkit-transition: background-color 0.5s ease-out;
   -moz-transition: background-color 0.5s ease-out;
@@ -3208,23 +3404,23 @@ input:focus, textarea:focus, button:focus {
   cursor: pointer;
   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4);
 }
-/* line 128, ../../source/sass/foundation/_components.sass */
+/* line 88, ../../source/sass/nudoru/foundation/_components.sass */
 .basic-button:focus, .important-button:focus {
   border: 1px solid #00a9e0;
 }
-/* line 130, ../../source/sass/foundation/_components.sass */
+/* line 90, ../../source/sass/nudoru/foundation/_components.sass */
 .basic-button:hover, .important-button:hover, .basic-button:active, .important-button:active {
   color: #005eb8;
   background-color: #fff;
   box-shadow: none;
 }
 
-/* line 138, ../../source/sass/foundation/_components.sass */
+/* line 98, ../../source/sass/nudoru/foundation/_components.sass */
 .round-button {
   padding: 0.344rem 0.6192rem;
 }
 
-/* line 141, ../../source/sass/foundation/_components.sass */
+/* line 101, ../../source/sass/nudoru/foundation/_components.sass */
 .important-button {
   font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.9rem;
@@ -3234,18 +3430,18 @@ input:focus, textarea:focus, button:focus {
   text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
 }
-/* line 150, ../../source/sass/foundation/_components.sass */
+/* line 110, ../../source/sass/nudoru/foundation/_components.sass */
 .important-button:focus {
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
-/* line 152, ../../source/sass/foundation/_components.sass */
+/* line 112, ../../source/sass/nudoru/foundation/_components.sass */
 .important-button:hover, .important-button:active {
   color: #fff;
   box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
   background-color: #6e6259;
 }
 
-/* line 157, ../../source/sass/foundation/_components.sass */
+/* line 117, ../../source/sass/nudoru/foundation/_components.sass */
 .transparent-button {
   padding: 0.344rem 0;
   border-radius: 50px;
@@ -3264,18 +3460,18 @@ input:focus, textarea:focus, button:focus {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
 }
-/* line 170, ../../source/sass/foundation/_components.sass */
+/* line 130, ../../source/sass/nudoru/foundation/_components.sass */
 .transparent-button:focus {
   border: 1px solid #00a9e0;
 }
-/* line 172, ../../source/sass/foundation/_components.sass */
+/* line 132, ../../source/sass/nudoru/foundation/_components.sass */
 .transparent-button:hover, .transparent-button:active {
   color: #6e6259;
   border: 1px solid rgba(0, 0, 0, 0.05);
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-/* line 177, ../../source/sass/foundation/_components.sass */
+/* line 137, ../../source/sass/nudoru/foundation/_components.sass */
 .icon-button, .toast__item-controls button {
   background-color: #eae8e6;
   border-radius: 50%;
@@ -3291,13 +3487,13 @@ input:focus, textarea:focus, button:focus {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
 }
-/* line 187, ../../source/sass/foundation/_components.sass */
+/* line 147, ../../source/sass/nudoru/foundation/_components.sass */
 .icon-button:hover, .toast__item-controls button:hover, .icon-button:active, .toast__item-controls button:active {
   background-color: #00a9e0;
   color: #fff;
 }
 
-/* line 191, ../../source/sass/foundation/_components.sass */
+/* line 151, ../../source/sass/nudoru/foundation/_components.sass */
 .icon-button-blue {
   background-color: #00a9e0;
   border-radius: 50%;
@@ -3314,9 +3510,43 @@ input:focus, textarea:focus, button:focus {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
 }
-/* line 202, ../../source/sass/foundation/_components.sass */
+/* line 162, ../../source/sass/nudoru/foundation/_components.sass */
 .icon-button-blue:hover, .icon-button-blue:active {
   background-color: #005eb8;
+}
+
+/* line 1, ../../source/sass/nudoru/components/_modalview.sass */
+#modal__cover {
+  z-index: 10003;
+}
+
+/* line 5, ../../source/sass/nudoru/components/_modalview.sass */
+.modal__background {
+  background-color: #005eb8;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+/* line 11, ../../source/sass/nudoru/components/_modalview.sass */
+.modal__close-button {
+  position: absolute;
+  top: 1.376rem;
+  left: 1.376rem;
+  width: 40px;
+  height: 40px;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+}
+/* line 25, ../../source/sass/nudoru/components/_modalview.sass */
+.modal__close-button:hover {
+  color: white;
+}
+@media (max-width: 750px) {
+  /* line 11, ../../source/sass/nudoru/components/_modalview.sass */
+  .modal__close-button {
+    left: 0.688rem;
+  }
 }
 
 /* line 5, ../../source/sass/nudoru/components/_toastview.sass */
@@ -3527,147 +3757,6 @@ input:focus, textarea:focus, button:focus {
   #header__navigation {
     visibility: hidden;
   }
-}
-
-/* line 1, ../../source/sass/app/view/_tags.sass */
-*, *:after, *:before {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-/* line 6, ../../source/sass/app/view/_tags.sass */
-* {
-  -webkit-font-smoothing: antialiased;
-}
-
-/* line 9, ../../source/sass/app/view/_tags.sass */
-html {
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  heigth: 100%;
-}
-
-/* line 14, ../../source/sass/app/view/_tags.sass */
-body {
-  margin: 0;
-  padding: 0;
-  font-size: 100%;
-  line-height: 0.688rem;
-  min-height: 100%;
-  -webkit-text-size-adjust: none;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #635850;
-}
-
-/* line 55, ../../source/sass/app/view/_tags.sass */
-strong {
-  font-weight: 700;
-}
-
-/* line 58, ../../source/sass/app/view/_tags.sass */
-em {
-  font-style: italic;
-}
-
-/* line 61, ../../source/sass/app/view/_tags.sass */
-a {
-  -moz-transition: all 0.25s ease-out;
-  -o-transition: all 0.25s ease-out;
-  -webkit-transition: all 0.25s ease-out;
-  -ms-transition: all 0.25s ease-out;
-  transition: all 0.25s ease-out;
-  color: #005eb8;
-  outline: none;
-}
-/* line 65, ../../source/sass/app/view/_tags.sass */
-a:active, a:hover {
-  color: #00a9e0;
-}
-/* line 67, ../../source/sass/app/view/_tags.sass */
-a:focus {
-  outline: thin-dotted;
-}
-
-/* line 74, ../../source/sass/app/view/_tags.sass */
-a.custom, #details .details__content a {
-  -moz-transition: all 0.25s ease-out;
-  -o-transition: all 0.25s ease-out;
-  -webkit-transition: all 0.25s ease-out;
-  -ms-transition: all 0.25s ease-out;
-  transition: all 0.25s ease-out;
-  color: #005eb8;
-  outline: none;
-  text-decoration: none;
-  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
-  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #005eb8 2px, #005eb8 3px, rgba(0, 0, 0, 0) 3px);
-}
-@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx) {
-  /* line 74, ../../source/sass/app/view/_tags.sass */
-  a.custom, #details .details__content a {
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #005eb8 2px, #005eb8 2.5px, rgba(0, 0, 0, 0) 2.5px);
-  }
-}
-/* line 83, ../../source/sass/app/view/_tags.sass */
-a.custom:active, #details .details__content a:active, a.custom:hover, #details .details__content a:hover {
-  color: #00a9e0;
-  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #00a9e0 2px, #00a9e0 3px, rgba(0, 0, 0, 0) 3px);
-  outline: none;
-}
-@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx) {
-  /* line 83, ../../source/sass/app/view/_tags.sass */
-  a.custom:active, #details .details__content a:active, a.custom:hover, #details .details__content a:hover {
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #00a9e0 2px, #00a9e0 2.5px, rgba(0, 0, 0, 0) 2.5px);
-  }
-}
-/* line 89, ../../source/sass/app/view/_tags.sass */
-a.custom:focus, #details .details__content a:focus {
-  outline: thin-dotted;
-}
-
-/* line 92, ../../source/sass/app/view/_tags.sass */
-ul {
-  list-style: disc inside;
-}
-
-/* line 95, ../../source/sass/app/view/_tags.sass */
-ol {
-  list-style: decimal inside;
-}
-
-/* line 98, ../../source/sass/app/view/_tags.sass */
-li {
-  margin-bottom: 0rem;
-}
-
-/* line 101, ../../source/sass/app/view/_tags.sass */
-ul ul, ol ol, ul ol, ol ul {
-  margin: 0 0 0 1.376rem;
-}
-
-/* line 104, ../../source/sass/app/view/_tags.sass */
-ol ol {
-  list-style: lower-alpha;
-}
-
-/* line 107, ../../source/sass/app/view/_tags.sass */
-ol ol ol {
-  list-style: lower-roman;
-}
-
-/* line 110, ../../source/sass/app/view/_tags.sass */
-ul ul {
-  list-style: circle;
-}
-
-/* line 113, ../../source/sass/app/view/_tags.sass */
-svg:not(:root) {
-  overflow: hidden;
-}
-
-/* line 116, ../../source/sass/app/view/_tags.sass */
-img {
-  vertical-align: middle;
 }
 
 /* line 1, ../../source/sass/app/view/_itemgridview.sass */
@@ -4424,18 +4513,18 @@ img {
   text-indent: -8px;
 }
 
-/* line 38, ../../source/sass/app.sass */
+/* line 41, ../../source/sass/app.sass */
 .ignore-pointer-events {
   pointer-events: none;
 }
 
-/* line 41, ../../source/sass/app.sass */
+/* line 44, ../../source/sass/app.sass */
 #initialization__cover {
   z-index: 10010;
   background-color: #eee;
 }
 
-/* line 46, ../../source/sass/app.sass */
+/* line 49, ../../source/sass/app.sass */
 .initialization__message {
   position: relative;
   overflow: hidden;
@@ -4448,7 +4537,7 @@ img {
   background-color: #fff;
   box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
 }
-/* line 58, ../../source/sass/app.sass */
+/* line 61, ../../source/sass/app.sass */
 .initialization__message h1 {
   padding: 0;
   margin: 0;
@@ -4456,19 +4545,19 @@ img {
   color: #005eb8;
   font-size: 1.2em;
 }
-/* line 64, ../../source/sass/app.sass */
+/* line 67, ../../source/sass/app.sass */
 .initialization__message .loader {
   display: inline-block;
   width: 25px;
   height: 25px;
 }
 
-/* line 69, ../../source/sass/app.sass */
+/* line 72, ../../source/sass/app.sass */
 body {
   overflow: hidden;
 }
 
-/* line 73, ../../source/sass/app.sass */
+/* line 76, ../../source/sass/app.sass */
 #app__container {
   position: fixed;
   top: 0;
@@ -4478,7 +4567,7 @@ body {
   overflow: hidden;
 }
 
-/* line 81, ../../source/sass/app.sass */
+/* line 84, ../../source/sass/app.sass */
 #app__contents {
   position: absolute;
   min-width: 100%;
