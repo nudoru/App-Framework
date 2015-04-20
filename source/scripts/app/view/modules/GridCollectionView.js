@@ -2,7 +2,7 @@
  * Created by matt on 12/5/14.
  */
 
-define('APP.AppView.ItemGridView',
+define('APP.AppView.GridCollectionView',
   function(require, module, exports) {
 
     var _self,
@@ -76,7 +76,7 @@ define('APP.AppView.ItemGridView',
       //initImagesLoaded();
 
       _data.forEach(function (item) {
-        var itemobj = requireUnique('APP.AppView.ItemGridView.GridViewItem');
+        var itemobj = requireUnique('APP.AppView.GridCollectionView.GridElementView');
         itemobj.initialize(item);
         _containerEl.appendChild(itemobj.getElement());
 

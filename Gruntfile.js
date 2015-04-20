@@ -43,7 +43,7 @@ module.exports = function (grunt) {
         options: {
           sassDir: 'source/sass',
           cssDir: 'deploy/css',
-          environment: 'development',
+          environment: 'production',
           //compressed, expanded
           outputStyle: 'expanded'
         }
@@ -127,8 +127,8 @@ module.exports = function (grunt) {
 
           'source/scripts/app/view/modules/ItemDetailView.js',
           'source/scripts/app/view/modules/TagBarView.js',
-          'source/scripts/app/view/modules/ItemGridView.js',
-          'source/scripts/app/view/modules/GridViewItem.js',
+          'source/scripts/app/view/modules/GridCollectionView.js',
+          'source/scripts/app/view/modules/GridElementView.js',
           'source/scripts/app/view/AppView.js',
 
           'source/scripts/app/controller/AppController.js',

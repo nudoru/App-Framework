@@ -2,7 +2,7 @@
 //  Grid Items
 //----------------------------------------------------------------------------
 
-define('APP.AppView.ItemGridView.GridViewItem',
+define('APP.AppView.GridCollectionView.GridElementView',
   function(require, module, exports) {
     var _visible = true,
       _selected = false,

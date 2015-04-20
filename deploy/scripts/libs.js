@@ -2842,7 +2842,7 @@ APP.AppModel.ItemVO = {
     exports.initialize = initialize;
     exports.update =update;
 
-  });;define('APP.AppView.ItemGridView',
+  });;define('APP.AppView.GridCollectionView',
   function(require, module, exports) {
 
     var _self,
@@ -2916,7 +2916,7 @@ APP.AppModel.ItemVO = {
       //initImagesLoaded();
 
       _data.forEach(function (item) {
-        var itemobj = requireUnique('APP.AppView.ItemGridView.GridViewItem');
+        var itemobj = requireUnique('APP.AppView.GridCollectionView.GridElementView');
         itemobj.initialize(item);
         _containerEl.appendChild(itemobj.getElement());
 
@@ -3378,7 +3378,7 @@ APP.AppModel.ItemVO = {
 //  Grid Items
 //----------------------------------------------------------------------------
 
-define('APP.AppView.ItemGridView.GridViewItem',
+define('APP.AppView.GridCollectionView.GridElementView',
   function(require, module, exports) {
     var _visible = true,
       _selected = false,
@@ -3652,7 +3652,7 @@ APP.AppView = (function () {
     _toastView = require('nudoru.components.ToastView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
     _tagBarView = require('APP.AppView.TagBarView'),
-    _itemGridView = require('APP.AppView.ItemGridView'),
+    _itemGridView = require('APP.AppView.GridCollectionView'),
     _itemDetailView = require('APP.AppView.ItemDetailView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
