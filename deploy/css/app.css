@@ -4513,18 +4513,18 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   text-indent: -8px;
 }
 
-/* line 41, ../../source/sass/app.sass */
+/* line 43, ../../source/sass/app.sass */
 .ignore-pointer-events {
   pointer-events: none;
 }
 
-/* line 44, ../../source/sass/app.sass */
+/* line 46, ../../source/sass/app.sass */
 #initialization__cover {
   z-index: 10010;
   background-color: #eee;
 }
 
-/* line 49, ../../source/sass/app.sass */
+/* line 51, ../../source/sass/app.sass */
 .initialization__message {
   position: relative;
   overflow: hidden;
@@ -4537,7 +4537,7 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   background-color: #fff;
   box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
 }
-/* line 61, ../../source/sass/app.sass */
+/* line 63, ../../source/sass/app.sass */
 .initialization__message h1 {
   padding: 0;
   margin: 0;
@@ -4545,19 +4545,19 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   color: #005eb8;
   font-size: 1.2em;
 }
-/* line 67, ../../source/sass/app.sass */
+/* line 69, ../../source/sass/app.sass */
 .initialization__message .loader {
   display: inline-block;
   width: 25px;
   height: 25px;
 }
 
-/* line 72, ../../source/sass/app.sass */
+/* line 74, ../../source/sass/app.sass */
 body {
   overflow: hidden;
 }
 
-/* line 76, ../../source/sass/app.sass */
+/* line 78, ../../source/sass/app.sass */
 #app__container {
   position: fixed;
   top: 0;
@@ -4567,7 +4567,7 @@ body {
   overflow: hidden;
 }
 
-/* line 84, ../../source/sass/app.sass */
+/* line 86, ../../source/sass/app.sass */
 #app__contents {
   position: absolute;
   min-width: 100%;
