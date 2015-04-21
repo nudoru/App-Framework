@@ -36,7 +36,7 @@ define('nudoru.utils.ArrayUtils',
     };
 
     exports.removeItem = function (arr, item) {
-      var idx = arr.indexOf(item);
+      var idx = arr.index Of(item);
       if (idx > -1) {
         arr.splice(idx, 1);
       }

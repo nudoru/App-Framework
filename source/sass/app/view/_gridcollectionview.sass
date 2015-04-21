@@ -1,0 +1,68 @@
+.grid
+  @extend %relative-area
+  margin-top: $header-height
+  margin-bottom: $footer-height
+  +respond-to(max-width, $tablet-mobile-break)
+    margin-top: $mobile-header-height
+
+.grid__header
+  position: relative
+  overflow: hidden
+  padding: $double-base-line-height
+  background-color: $color-white-grey-fill
+  border-bottom: 1px solid rgba(0,0,0,.05)
+  h1
+    font-family: $font-content
+    font-size: 1.2rem
+    font-weight: 300
+    padding: 5px 0
+    margin: 0
+    +standard-text-shadow-light
+  +respond-to(max-width, $tablet-mobile-break)
+    padding-top: $base-line-height
+    padding-bottom: $base-line-height
+    h1
+      font-size: 1rem
+      font-weight: 400
+  +respond-to(max-width, $phone-mobile-break)
+    h1
+      font-size: .8rem
+
+.grid__header-search-form
+  position: absolute
+  right: $double-base-line-height
+  top: $double-base-line-height
+  button
+    display: inline-block
+    margin-right: 0
+    em
+      font-style: normal
+    i.fa
+      padding-right: $half-base-line-height
+
+  .grid__header-search
+    @extend %input-icon-right-pair
+    display: inline-block
+
+  +respond-to(max-width, $tablet-mobile-break)
+    top: $base-line-height
+    button
+      padding-left: $base-line-height
+      padding-right: $base-line-height
+    .grid__header-search
+      display: none
+
+
+
+#grid__item-container
+  overflow: hidden
+  padding: $double-base-line-height
+
+$item-width: 250px
+$item-height: 185px
+
+$mobile-item-width: 200px
+$mobile-item-height: 150px
+$mobile-phone-item-width: 300px
+$mobile-phone-item-height: 200px
+

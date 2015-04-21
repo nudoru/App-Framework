@@ -7,7 +7,7 @@ define('nudoru.components.DDMenuView',
 
     var _visible = false,
       _data = null,
-      _items = [],
+      _children = [],
       _element = null,
       _anchorElement = null,
       _ddMenuEl = null,
@@ -61,7 +61,7 @@ define('nudoru.components.DDMenuView',
       var menuitem = requireUnique('nudoru.components.BasicMenuItemView');
       menuitem.initialize(item);
       _ddMenuEl.appendChild(menuitem.getElement());
-      _items.push(menuitem);
+      _children.push(menuitem);
     }
 
     function getElement() {
@@ -222,13 +222,13 @@ define('nudoru.components.DDMenuView',
     }
 
     function getItemByValue(value) {
-      return _items.filter(function(item) {
+      return _children.filter(function(item) {
         return (item.getValue() === value);
       })[0];
     }
 
     function deselectAllItems() {
-      _items.forEach(function(item) {
+      _children.forEach(function(item) {
         item.deselect();
       });
     }
@@ -236,7 +236,7 @@ define('nudoru.components.DDMenuView',
     function setSelections(data) {
       deselectAllItems();
 
-      _items.forEach(function(item) {
+      _children.forEach(function(item) {
         data.forEach(function(selection) {
           if(item.getLabel() === selection) {
             item.select();

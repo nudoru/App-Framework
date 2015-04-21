@@ -412,7 +412,7 @@ function requireUnique(id) {
     };
 
     exports.removeItem = function (arr, item) {
-      var idx = arr.indexOf(item);
+      var idx = arr.index Of(item);
       if (idx > -1) {
         arr.splice(idx, 1);
       }
@@ -570,6 +570,13 @@ function requireUnique(id) {
       }
     };
 
+    /**
+     * Get an array of elements in the container returned as Array instead of a Node list
+     */
+    exports.getQSElementsAsArray = function(el, cls) {
+      return Array.prototype.slice.call(el.querySelectorAll(cls));
+    }
+
   });;define('nudoru.utils.NumberUtils',
   function (require, module, exports) {
 
@@ -637,8 +644,8 @@ function requireUnique(id) {
 ;define('nudoru.utils.NTemplate',
   function(require, module, exports) {
 
-    var _templateHTMLCache = {},
-      _templateCache = {},
+    var _templateHTMLCache = Object.create(null),
+      _templateCache = Object.create(null),
       _DOMUtils = require('nudoru.utils.DOMUtils');
 
     /**
@@ -1072,14 +1079,15 @@ function requireUnique(id) {
   });;define('nudoru.components.FloatImageView',
   function (require, module, exports) {
 
-    var _coverDivID = 'floatimage__cover',
+    var _mountPoint = document,
+      _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',
       _zoomedImageClass = 'floatimage__zoomedimage',
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
       _currentImageElement,
-      _scrollingView = document.body,
+      _scrollingView = _mountPoint.body,
       _fancyEffects = false,
       _DOMUtils = require('nudoru.utils.DOMUtils'),
       _numberUtils = require('nudoru.utils.NumberUtils'),
@@ -1089,7 +1097,7 @@ function requireUnique(id) {
      * Entry point, initialize elements and hide cover
      */
     function initialize() {
-      _viewPortCoverEl = document.getElementById(_coverDivID);
+      _viewPortCoverEl = _mountPoint.getElementById(_coverDivID);
       _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
 
       _fancyEffects = !_browserInfo.isIE && !_browserInfo.mobile.any();
@@ -1224,7 +1232,7 @@ function requireUnique(id) {
       TweenLite.to(_currentImageElement, 0.25, {alpha: 0, ease: Circ.easeOut});
 
       if (_fancyEffects) {
-        // further from the center, the greate the effect
+        // further from the center, the create the effect
         var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
@@ -1244,6 +1252,7 @@ function requireUnique(id) {
           }
         });
 
+        // For the 'tear down effect'
         var tl = new TimelineLite();
         tl.to(zoomImage, 0.25, {
           rotationZ: -15,
@@ -1294,7 +1303,7 @@ function requireUnique(id) {
         return;
       }
 
-      _scrollingView = document.body;
+      _scrollingView = _mountPoint.body;
 
       getFloatingElementsInContainerAsArray(container).forEach(function (el) {
         el.removeEventListener('click', onImageClick);
@@ -1314,7 +1323,7 @@ function requireUnique(id) {
       if (!_DOMUtils.isDomObj(container)) {
         return [];
       }
-      return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
+      return _DOMUtils.getQSElementsAsArray(container, _floatingImageClass);
     }
 
     /**
@@ -1361,7 +1370,8 @@ function requireUnique(id) {
 
   });;define('nudoru.components.ModalCoverView',
   function (require, module, exports) {
-    var _modalCoverEl,
+    var _mountPoint = document,
+      _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
       _modalClickStream,
@@ -1374,9 +1384,9 @@ function requireUnique(id) {
 
       _isVisible = true;
 
-      _modalCoverEl = document.getElementById('modal__cover');
-      _modalBackgroundEl = document.querySelector('.modal__background');
-      _modalCloseButtonEl = document.querySelector('.modal__close-button');
+      _modalCoverEl = _mountPoint.getElementById('modal__cover');
+      _modalBackgroundEl = _mountPoint.querySelector('.modal__background');
+      _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
 
       var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
         modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
@@ -1440,13 +1450,13 @@ function requireUnique(id) {
     var _children = [],
       _counter = 0,
       _defaultExpireDuration = 7000,
-      _containerEl,
+      _mountPoint,
       _templateToast,
       _template = require('nudoru.utils.NTemplate'),
       _DOMUtils = require('nudoru.utils.DOMUtils');
 
     function initialize(elID) {
-      _containerEl = document.getElementById(elID);
+      _mountPoint = document.getElementById(elID);
       _templateToast = _template.getTemplate('template__component--toast');
     }
 
@@ -1455,7 +1465,7 @@ function requireUnique(id) {
 
       var newToast = createToastObject(title, message, button);
 
-      _containerEl.insertBefore(newToast.element, _containerEl.firstChild);
+      _mountPoint.insertBefore(newToast.element, _mountPoint.firstChild);
 
       newToast.index = _children.length;
       newToast.height = newToast.element.clientHeight;
@@ -1513,7 +1523,7 @@ function requireUnique(id) {
       var toastIdx = getToastIndexByID(el.getAttribute('id')),
         toast = _children[toastIdx];
 
-      _containerEl.removeChild(el);
+      _mountPoint.removeChild(el);
 
       _children[toastIdx] = null;
 
@@ -1576,16 +1586,16 @@ function requireUnique(id) {
   });;define('nudoru.components.DDMenuBarView',
   function (require, module, exports) {
 
-    var _containerEl = null,
+    var _mountPoint = null,
       _barEl = null,
       _data = null,
-      _children = null,
+      _children = [],
       _isKeepOpen = false,
       _DOMUtils = require('nudoru.utils.DOMUtils'),
       _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize(elID, idata, keep) {
-      _containerEl = document.getElementById(elID);
+      _mountPoint = document.getElementById(elID);
       _data = idata;
 
       _isKeepOpen = keep ? true : false;
@@ -1597,8 +1607,6 @@ function requireUnique(id) {
       var i = 0,
         len = _data.length;
 
-      _children = [];
-
       _barEl = _DOMUtils.HTMLStrToNode('<ul></ul>');
       for (; i < len; i++) {
         var menuobj = requireUnique('nudoru.components.DDMenuView');
@@ -1608,11 +1616,11 @@ function requireUnique(id) {
         _children.push(menuobj);
       }
 
-      _containerEl.insertBefore(_barEl, _containerEl.firstChild);
+      _mountPoint.insertBefore(_barEl, _mountPoint.firstChild);
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
       if (_browserInfo.isIE) {
-        _containerEl.onselectstart = function () {
+        _mountPoint.onselectstart = function () {
           return false;
         };
       }
@@ -1644,7 +1652,7 @@ define('nudoru.components.DDMenuView',
 
     var _visible = false,
       _data = null,
-      _items = [],
+      _children = [],
       _element = null,
       _anchorElement = null,
       _ddMenuEl = null,
@@ -1698,7 +1706,7 @@ define('nudoru.components.DDMenuView',
       var menuitem = requireUnique('nudoru.components.BasicMenuItemView');
       menuitem.initialize(item);
       _ddMenuEl.appendChild(menuitem.getElement());
-      _items.push(menuitem);
+      _children.push(menuitem);
     }
 
     function getElement() {
@@ -1859,13 +1867,13 @@ define('nudoru.components.DDMenuView',
     }
 
     function getItemByValue(value) {
-      return _items.filter(function(item) {
+      return _children.filter(function(item) {
         return (item.getValue() === value);
       })[0];
     }
 
     function deselectAllItems() {
-      _items.forEach(function(item) {
+      _children.forEach(function(item) {
         item.deselect();
       });
     }
@@ -1873,7 +1881,7 @@ define('nudoru.components.DDMenuView',
     function setSelections(data) {
       deselectAllItems();
 
-      _items.forEach(function(item) {
+      _children.forEach(function(item) {
         data.forEach(function(selection) {
           if(item.getLabel() === selection) {
             item.select();
@@ -2040,7 +2048,267 @@ define('nudoru.components.BasicMenuItemView',
     exports.toggleSelect = toggleSelect;
 
   });
-;var APP = {};
+;var Elemental = (function () {
+
+  var _initialized = false,
+    _templateHTMLMap = Object.create(null),
+    _templateObjectMap = Object.create(null),
+    _elements = [],
+    _collections = [];
+
+  function initialize() {
+    if(_initialized) {
+      return;
+    }
+
+    _initialized = true;
+
+    buildTemplateHTMLMap();
+    buildTemplateObjectMap();
+  }
+
+  function buildTemplateHTMLMap() {
+    var els = getAllTemplateElements();
+    els.forEach(function(el) {
+      console.log();
+      _templateHTMLMap[el.getAttribute('id')] = el.innerHTML;
+    });
+  }
+
+  /**
+   * Scans the HTML source for <script id="blah" type="text/template">
+   */
+  function getAllTemplateElements() {
+    var allElsWithType = Array.prototype.slice.call(document.querySelectorAll([type]));
+      matchingEls = [];
+    allElsWithType.forEach(function(el) {
+      if(el.getAttribute('type') === 'text/template') {
+        matchingEls.push(el)
+      }
+    });
+    return matchingEls;
+  }
+
+  function buildTemplateObjectMap() {
+    for(id in _templateHTMLMap) {
+      _templateObjectMap[id] = _.template(_templateHTMLMap[id]);
+    }
+  }
+
+  function getTemplateObjByID(id) {
+    return _templateObjectMap[id];
+  }
+
+  function newElement(initObj) {
+    if(!_initialized) {
+      initialize();
+    }
+
+    var element = requireUnique('ElementalElement');
+    element.create(initObj);
+    _elements[initObj.id] = element;
+    return element;
+  }
+
+  function newCollection(initObj) {
+    if(!_initialized) {
+      initialize();
+    }
+
+    var collection = requireUnique('ElementalCollection');
+    collection.create(initObj);
+    _collections[initObj.id] = collection;
+    return collection;
+  }
+
+  return {
+    initialize: initialize,
+    getTemplateObjByID: getTemplateObjByID,
+    newElement: newElement,
+    newCollection: newCollection
+  };
+
+}());
+
+define('ElementalCollection',
+  function (require, module, exports) {
+
+    var _initObj,
+      _id,
+      _mountPoint,
+      _children = [];
+
+    function create(initObj) {
+      _initObj = initObj;
+      _id = _initObj.id;
+      _mountPoint = initObj.mount;
+    }
+
+    function getChildren() {
+      return _children;
+    }
+
+    function getChildByID(id) {
+      var i = 0,
+          len = _children.length;
+
+      for(;i<len;i++) {
+        if(_children[i].getID() === id) {
+          return _children[i];
+        }
+      }
+
+      return null;
+    }
+
+    function prependChild(elElmnt) {
+      // append to child arry and mount?
+    }
+
+    function appendChild(elElmnt) {
+      // append to child arry and mount?
+    }
+
+    function removeChild(elElmnt) {
+      // append to child arry and mount?
+    }
+
+    exports.create = create;
+    exports.prependChild = prependChild;
+    exports.appendChild = appendChild;
+    exports.removeChild = removeChild;
+    exports.getChildren = getChildren;
+    exports.getChildByID = getChildByID;
+
+  });
+
+define('ElementalElement',
+  function (require, module, exports) {
+
+    var _initObj,
+      _id,
+      _html,
+      _templateID,
+      _templateObj,
+      _DOMElement,
+      _mountPoint,
+      _initialState,
+      _currentState,
+      _willRenderCB,
+      _didRenderCB,
+      _willMountCB,
+      _didMountCB,
+      _willUnMountCB,
+      _didUnMountCB;
+
+    function create(initObj) {
+      _initObj = initObj;
+      _mountPoint = initObj.mount;
+      _id = initObj.id;
+      _html = initObj.html;
+      _templateID = initObj.template;
+      _initialState = _currentState = initObj.state;
+      _willRenderCB = initObj.willRender;
+      _didRenderCB = initObj.didRender;
+      _willMountCB = initObj.willMount;
+      _didMountCB = initObj.didMount;
+      _willUnMountCB = initObj.willUnMount;
+      _didUnMountCB = initObj.didUnMount;
+
+      if(_templateID) {
+        _templateObj = Elemental.getTemplateObjByID(_id);
+      } else {
+        _templateObj = _.template(_html);
+      }
+    }
+
+    function update(state) {
+      _currentState = state;
+    }
+
+    function render() {
+      unmount();
+      exeuteCB(_willRenderCB);
+      _DOMElement = _templateObj(_currentState);
+      exeuteCB(_didRenderCB);
+      mount();
+      return _DOMElement;
+    }
+
+    function mount() {
+      validateElement();
+      exeuteCB(_willMountCB);
+      _mountPoint.appendChild(_DOMElement);
+      exeuteCB(_didMountCB);
+    }
+
+    function unmount() {
+      validateElement();
+      exeuteCB(_willUnMountCB);
+      _mountPoint.removeChild(_DOMElement);
+      exeuteCB(_didUnMountCB);
+    }
+
+    function getID() {
+      return _id;
+    }
+
+    function getDOMElement() {
+      return _DOMElement;
+    }
+
+    function setWillRender(cb) {
+      _willRenderCB = cb;
+    }
+
+    function setDidRender(cb) {
+      _didRenderCB = cb;
+    }
+
+    function setWillMount(cb) {
+      _willMountCB = cb;
+    }
+
+    function setDidMount(cb) {
+      _didMountCB = cb;
+    }
+
+    function setWillUnMount(cb) {
+      _willUnMountCB = cb;
+    }
+
+    function setDidUnMount(cb) {
+      _didUnMountCB = cb;
+    }
+
+    function validateElement() {
+      if(!_DOMElement) {
+        throw new Error('Elemental: Element not created');
+      }
+
+      return true;
+    }
+
+    function exeuteCB(cb) {
+      if(!cb) {
+        return;
+      }
+      cb.apply(this,[_DOMElement, _id, _currentState]);
+    }
+
+    exports.create = create;
+    exports.update = update;
+    exports.render = render;
+    exports.getID = getID;
+    exports.getDOMElement = getDOMElement;
+    exports.setWillRender = setWillRender;
+    exports.setDidRender = setDidRender;
+    exports.setWillMount = setWillMount;
+    exports.setDidMount = setDidMount;
+    exports.setWillUnMount = setWillUnMount;
+    exports.setDidUnMount = setDidUnMount;
+
+  });;var APP = {};
 
 APP = (function () {
   var _self,
@@ -2680,7 +2948,7 @@ APP.AppModel.ItemVO = {
 };;define('APP.AppView.ItemDetailView',
   function(require, module, exports) {
 
-    var _containerEl,
+    var _mountPoint,
       _shareButtonEl,
       _currentItem,
       _template = require('nudoru.utils.NTemplate'),
@@ -2688,7 +2956,7 @@ APP.AppModel.ItemVO = {
       _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize(elID) {
-      _containerEl = document.getElementById(elID);
+      _mountPoint = document.getElementById(elID);
 
       _floatImageView.initialize();
     }
@@ -2696,10 +2964,10 @@ APP.AppModel.ItemVO = {
     function showItem(item) {
       _currentItem = item;
 
-      _containerEl.innerHTML = _template.asHTML('template__detail-item', _currentItem);
+      _mountPoint.innerHTML = _template.asHTML('template__detail-item', _currentItem);
 
-      _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
-      _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
+      _floatImageView.apply(_mountPoint.querySelector('.details__content-preview-images'));
+      _floatImageView.setScrollingView(_mountPoint.querySelector('.details__content'));
 
 
       _shareButtonEl = document.getElementById('js__content-share-button');
@@ -2710,7 +2978,7 @@ APP.AppModel.ItemVO = {
         _shareButtonEl.style.display = 'none';
       }
 
-      TweenLite.to(_containerEl, 0.25, {
+      TweenLite.to(_mountPoint, 0.25, {
         autoAlpha: 1,
         ease: Quad.easeOut,
         delay: 0.1
@@ -2728,9 +2996,9 @@ APP.AppModel.ItemVO = {
     }
 
     function showMessage(obj) {
-      _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
+      _mountPoint.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
 
-      TweenLite.to(_containerEl, 0.25, {
+      TweenLite.to(_mountPoint, 0.25, {
         autoAlpha: 1,
         ease: Quad.easeOut,
         delay: 0.1
@@ -2740,14 +3008,14 @@ APP.AppModel.ItemVO = {
     function hide() {
       _currentItem = null;
 
-      _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
+      _floatImageView.remove(_mountPoint.querySelector('.details__content-preview-images'));
 
       if (_shareButtonEl) {
         _shareButtonEl.removeEventListener(_browserInfo.mouseClickEvtStr(), doShareAction);
       }
 
-      TweenLite.killDelayedCallsTo(_containerEl);
-      TweenLite.to(_containerEl, 0.25, {
+      TweenLite.killDelayedCallsTo(_mountPoint);
+      TweenLite.to(_mountPoint, 0.25, {
         autoAlpha: 0,
         ease: Quad.easeOut,
         delay: 0.1
@@ -2762,13 +3030,13 @@ APP.AppModel.ItemVO = {
   });;define('APP.AppView.TagBarView',
   function(require, module, exports) {
 
-    var _containerEl,
+    var _mountPoint,
       _currentTags,
       _arrayUtils = require('nudoru.utils.ArrayUtils'),
       _template = require('nudoru.utils.NTemplate');
 
     function initialize(elID) {
-      _containerEl = document.getElementById(elID);
+      _mountPoint = document.getElementById(elID);
       _currentTags = [];
 
       hideBar();
@@ -2804,16 +3072,16 @@ APP.AppModel.ItemVO = {
     }
 
     function showBar() {
-      TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
+      TweenLite.to(_mountPoint, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
     }
 
     function hideBar() {
-      TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
+      TweenLite.to(_mountPoint, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
     }
 
     function add(tag) {
       var tagnode = _template.asElement('template__tag-bar', {tag: tag});
-      _containerEl.appendChild(tagnode);
+      _mountPoint.appendChild(tagnode);
       _currentTags.push({label: tag, el: tagnode});
       TweenLite.from(tagnode, 0.5, {alpha: 0, y: '15px', ease: Quad.easeOut});
     }
@@ -2827,14 +3095,14 @@ APP.AppModel.ItemVO = {
       })[0];
 
       if (rmv) {
-        _containerEl.removeChild(rmv.el);
+        _mountPoint.removeChild(rmv.el);
         _currentTags.splice(_currentTags.indexOf(rmv), 1);
       }
     }
 
     function removeAll() {
       _currentTags.forEach(function (tag) {
-        _containerEl.removeChild(tag.el);
+        _mountPoint.removeChild(tag.el);
       });
       _currentTags = [];
     }
@@ -2846,7 +3114,7 @@ APP.AppModel.ItemVO = {
   function(require, module, exports) {
 
     var _self,
-      _containerEl,
+      _mountPoint,
       _appGlobals,
       _containerElID,
       _data,
@@ -2893,7 +3161,7 @@ APP.AppModel.ItemVO = {
       _self = this;
       _appGlobals = APP.globals();
       _containerElID = elID;
-      _containerEl = document.getElementById(_containerElID);
+      _mountPoint = document.getElementById(_containerElID);
       _data = data;
 
       _isLayingOut = false;
@@ -2918,7 +3186,7 @@ APP.AppModel.ItemVO = {
       _data.forEach(function (item) {
         var itemobj = requireUnique('APP.AppView.GridCollectionView.GridElementView');
         itemobj.initialize(item);
-        _containerEl.appendChild(itemobj.getElement());
+        _mountPoint.appendChild(itemobj.getElement());
 
         // gets item props (image alpha) that can only be retrieved after adding to dom
         itemobj.postRender();
@@ -2927,14 +3195,15 @@ APP.AppModel.ItemVO = {
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
       if (_browserInfo.isIE) {
-        _containerEl.onselectstart = function () {
+        _mountPoint.onselectstart = function () {
           return false;
         };
       }
 
       initPackery();
 
-      staggerFrom(getItemsInView(), 0.25, 0.25);
+      // staggering in was causing display issues when going to a saved link on load
+      //staggerFrom(getItemsInView(), 0.25, 0.25);
     }
 
     /**
@@ -2967,6 +3236,14 @@ APP.AppModel.ItemVO = {
 
     function onStaggerInComplete(item) {
       item.setIsAnimating(false);
+    }
+
+    function killAllAnimations() {
+      var els = _children.map(function(item) { return item.getElement();});
+
+      _children.forEach(function(item) { item.setIsAnimating(false);});
+
+      TweenLite.killTweensOf(els);
     }
 
     /**
@@ -3029,21 +3306,21 @@ APP.AppModel.ItemVO = {
      */
     function configureStreams() {
 
-      _itemOverStream = Rx.Observable.fromEvent(_containerEl, 'mouseover')
+      _itemOverStream = Rx.Observable.fromEvent(_mountPoint, 'mouseover')
         .filter(filterForMouseEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
           selectItemByID(id);
         });
 
-      _itemOutStream = Rx.Observable.fromEvent(_containerEl, 'mouseout')
+      _itemOutStream = Rx.Observable.fromEvent(_mountPoint, 'mouseout')
         .filter(filterForMouseEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
           deselectItemByID(id);
         });
 
-      _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'click')
+      _itemSelectStream = Rx.Observable.fromEvent(_mountPoint, 'click')
         .filter(filterForMouseEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
@@ -3090,16 +3367,16 @@ APP.AppModel.ItemVO = {
      */
     function configureMobileStreams() {
       // Note - had problems getting RxJS to work correctly here, used events
-      _containerEl.addEventListener('touchstart', function (evt) {
+      _mountPoint.addEventListener('touchstart', function (evt) {
         _firstTouchPosition = _lastTouchPosition = _touchUtils.getCoords(evt);
         _shouldProcessTouchEnd = false;
       }, false);
 
-      _containerEl.addEventListener('touchmove', function (evt) {
+      _mountPoint.addEventListener('touchmove', function (evt) {
         _lastTouchPosition = _touchUtils.getCoords(evt);
       }, false);
 
-      _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'touchend')
+      _itemSelectStream = Rx.Observable.fromEvent(_mountPoint, 'touchend')
         .filter(processTouchEndEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
@@ -3316,6 +3593,8 @@ APP.AppModel.ItemVO = {
      */
     function updateItemVisibility(visibleArray) {
       var len = visibleArray.length;
+
+      killAllAnimations();
 
       _children.forEach(function (item) {
         var i = 0,
@@ -3685,10 +3964,10 @@ APP.AppView = (function () {
   }
 
   function render() {
-    defineViewElements();
+    defineDOMElements();
     setCurrentViewPortSize();
     setCurrentViewPortScroll();
-    initializeComponents();
+    initializeViewComponents();
     configureUIStreams();
     configureUIEvents();
     checkForMobile();
@@ -3708,7 +3987,7 @@ APP.AppView = (function () {
     document.title = _stringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
-  function defineViewElements() {
+  function defineDOMElements() {
     // ui parts
     _appContainerEl = document.getElementById('app__container');
     _appEl = document.getElementById('app__contents');
@@ -3728,16 +4007,20 @@ APP.AppView = (function () {
     _clearAllButtonEl = document.getElementById('clearall-button');
   }
 
-  function initializeComponents() {
+  function initializeViewComponents() {
     _toastView.initialize('toast__container');
     _modalCoverView.initialize();
     _itemDetailView.initialize('details');
     _tagBarView.initialize('tagbar__container');
+
+    // Menus init'd with data below
+    // Grid collection view init'd with below
+
   }
 
   function configureUIEvents() {
     _eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
-    //_eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
+    //reserved for future _eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
   function configureUIStreams() {
@@ -3782,6 +4065,10 @@ APP.AppView = (function () {
 
   }
 
+  //----------------------------------------------------------------------------
+  //  Viewport and UI elements
+  //----------------------------------------------------------------------------
+
   function handleViewPortResize() {
     checkForMobile();
     _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
@@ -3790,20 +4077,6 @@ APP.AppView = (function () {
   function handleViewPortScroll() {
     _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
-
-  /**
-   * Display a notification "toast"
-   * @param title The title
-   * @param message The message
-   */
-  function showNotification(title, message) {
-    title = title || "Notification";
-    _toastView.add(title, message);
-  }
-
-  //----------------------------------------------------------------------------
-  //  Views
-  //----------------------------------------------------------------------------
 
   /**
    * Cache the current view port size in a var
@@ -3850,7 +4123,6 @@ APP.AppView = (function () {
 
     _mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
     _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
-
   }
 
   /**
@@ -3987,14 +4259,15 @@ APP.AppView = (function () {
   }
 
   //----------------------------------------------------------------------------
-  //  Item Grid
+  //  Grid Collection view
   //----------------------------------------------------------------------------
 
 
-  function initializeGridView(data) {
+  function initializeGridCollectionView(data) {
     _itemGridView.initialize('grid__item-container', data);
   }
 
+  // reserved, no use currently
   //function onGridViewLayoutComplete() {
   //  console.log('gridview layout complete');
   //}
@@ -4032,6 +4305,37 @@ APP.AppView = (function () {
     _itemGridView.showAllItems();
   }
 
+  //----------------------------------------------------------------------------
+  //  Modal View
+  //----------------------------------------------------------------------------
+
+  function showModalCover(animate) {
+    _modalCoverView.show(animate);
+  }
+
+  function hideModalCover(animate) {
+    _modalCoverView.hide(animate);
+  }
+
+  function hideModalContent() {
+    _itemDetailView.hide();
+    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, '');
+  }
+
+  //----------------------------------------------------------------------------
+  //  Init and messaging
+  //----------------------------------------------------------------------------
+
+  /**
+   * Display a notification "toast"
+   * @param title The title
+   * @param message The message
+   */
+  function showNotification(title, message) {
+    title = title || "Notification";
+    _toastView.add(title, message);
+  }
+
   function showItemDetailView(item) {
     _itemDetailView.showItem(item);
     showModalCover(true);
@@ -4041,10 +4345,6 @@ APP.AppView = (function () {
     hideModalCover(true);
     hideModalContent();
   }
-
-  //----------------------------------------------------------------------------
-  //  Modal
-  //----------------------------------------------------------------------------
 
   function showBigMessage(title, message) {
     _itemDetailView.showMessage({title: title, description: message});
@@ -4068,19 +4368,6 @@ APP.AppView = (function () {
     });
   }
 
-  function showModalCover(animate) {
-    _modalCoverView.show(animate);
-  }
-
-  function hideModalCover(animate) {
-    _modalCoverView.hide(animate);
-  }
-
-  function hideModalContent() {
-    _itemDetailView.hide();
-    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, '');
-  }
-
   //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
@@ -4090,12 +4377,11 @@ APP.AppView = (function () {
     render: render,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-
     getMainScrollingView: getMainScrollingView,
     updateSearchHeader: updateSearchHeader,
     showBigMessage: showBigMessage,
     initializeMenus: initializeMenus,
-    initializeGridView: initializeGridView,
+    initializeGridView: initializeGridCollectionView,
     showItemDetailView: showItemDetailView,
     hideItemDetailView: hideItemDetailView,
     clearAllFilters: clearAllFilters,
@@ -4258,6 +4544,9 @@ APP.AppController.AbstractCommand = {
         this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
       }
     }
+
+    Elemental.initialize();
+
   });
 
 //APP.AppController.AppInitializedCommand.execute = function (data) {

@@ -67,10 +67,10 @@ APP.AppView = (function () {
   }
 
   function render() {
-    defineViewElements();
+    defineDOMElements();
     setCurrentViewPortSize();
     setCurrentViewPortScroll();
-    initializeComponents();
+    initializeViewComponents();
     configureUIStreams();
     configureUIEvents();
     checkForMobile();
@@ -90,7 +90,7 @@ APP.AppView = (function () {
     document.title = _stringUtils.removeTags(_appGlobals.appConfig.title);
   }
 
-  function defineViewElements() {
+  function defineDOMElements() {
     // ui parts
     _appContainerEl = document.getElementById('app__container');
     _appEl = document.getElementById('app__contents');
@@ -110,16 +110,20 @@ APP.AppView = (function () {
     _clearAllButtonEl = document.getElementById('clearall-button');
   }
 
-  function initializeComponents() {
+  function initializeViewComponents() {
     _toastView.initialize('toast__container');
     _modalCoverView.initialize();
     _itemDetailView.initialize('details');
     _tagBarView.initialize('tagbar__container');
+
+    // Menus init'd with data below
+    // Grid collection view init'd with below
+
   }
 
   function configureUIEvents() {
     _eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
-    //_eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
+    //reserved for future _eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
   function configureUIStreams() {
@@ -164,6 +168,10 @@ APP.AppView = (function () {
 
   }
 
+  //----------------------------------------------------------------------------
+  //  Viewport and UI elements
+  //----------------------------------------------------------------------------
+
   function handleViewPortResize() {
     checkForMobile();
     _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
@@ -172,20 +180,6 @@ APP.AppView = (function () {
   function handleViewPortScroll() {
     _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
-
-  /**
-   * Display a notification "toast"
-   * @param title The title
-   * @param message The message
-   */
-  function showNotification(title, message) {
-    title = title || "Notification";
-    _toastView.add(title, message);
-  }
-
-  //----------------------------------------------------------------------------
-  //  Views
-  //----------------------------------------------------------------------------
 
   /**
    * Cache the current view port size in a var
@@ -232,7 +226,6 @@ APP.AppView = (function () {
 
     _mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
     _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
-
   }
 
   /**
@@ -369,14 +362,15 @@ APP.AppView = (function () {
   }
 
   //----------------------------------------------------------------------------
-  //  Item Grid
+  //  Grid Collection view
   //----------------------------------------------------------------------------
 
 
-  function initializeGridView(data) {
+  function initializeGridCollectionView(data) {
     _itemGridView.initialize('grid__item-container', data);
   }
 
+  // reserved, no use currently
   //function onGridViewLayoutComplete() {
   //  console.log('gridview layout complete');
   //}
@@ -414,6 +408,37 @@ APP.AppView = (function () {
     _itemGridView.showAllItems();
   }
 
+  //----------------------------------------------------------------------------
+  //  Modal View
+  //----------------------------------------------------------------------------
+
+  function showModalCover(animate) {
+    _modalCoverView.show(animate);
+  }
+
+  function hideModalCover(animate) {
+    _modalCoverView.hide(animate);
+  }
+
+  function hideModalContent() {
+    _itemDetailView.hide();
+    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, '');
+  }
+
+  //----------------------------------------------------------------------------
+  //  Init and messaging
+  //----------------------------------------------------------------------------
+
+  /**
+   * Display a notification "toast"
+   * @param title The title
+   * @param message The message
+   */
+  function showNotification(title, message) {
+    title = title || "Notification";
+    _toastView.add(title, message);
+  }
+
   function showItemDetailView(item) {
     _itemDetailView.showItem(item);
     showModalCover(true);
@@ -423,10 +448,6 @@ APP.AppView = (function () {
     hideModalCover(true);
     hideModalContent();
   }
-
-  //----------------------------------------------------------------------------
-  //  Modal
-  //----------------------------------------------------------------------------
 
   function showBigMessage(title, message) {
     _itemDetailView.showMessage({title: title, description: message});
@@ -450,19 +471,6 @@ APP.AppView = (function () {
     });
   }
 
-  function showModalCover(animate) {
-    _modalCoverView.show(animate);
-  }
-
-  function hideModalCover(animate) {
-    _modalCoverView.hide(animate);
-  }
-
-  function hideModalContent() {
-    _itemDetailView.hide();
-    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, '');
-  }
-
   //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
@@ -472,12 +480,11 @@ APP.AppView = (function () {
     render: render,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-
     getMainScrollingView: getMainScrollingView,
     updateSearchHeader: updateSearchHeader,
     showBigMessage: showBigMessage,
     initializeMenus: initializeMenus,
-    initializeGridView: initializeGridView,
+    initializeGridView: initializeGridCollectionView,
     showItemDetailView: showItemDetailView,
     hideItemDetailView: hideItemDetailView,
     clearAllFilters: clearAllFilters,

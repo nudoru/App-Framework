@@ -8,13 +8,13 @@ define('nudoru.components.ToastView',
     var _children = [],
       _counter = 0,
       _defaultExpireDuration = 7000,
-      _containerEl,
+      _mountPoint,
       _templateToast,
       _template = require('nudoru.utils.NTemplate'),
       _DOMUtils = require('nudoru.utils.DOMUtils');
 
     function initialize(elID) {
-      _containerEl = document.getElementById(elID);
+      _mountPoint = document.getElementById(elID);
       _templateToast = _template.getTemplate('template__component--toast');
     }
 
@@ -23,7 +23,7 @@ define('nudoru.components.ToastView',
 
       var newToast = createToastObject(title, message, button);
 
-      _containerEl.insertBefore(newToast.element, _containerEl.firstChild);
+      _mountPoint.insertBefore(newToast.element, _mountPoint.firstChild);
 
       newToast.index = _children.length;
       newToast.height = newToast.element.clientHeight;
@@ -81,7 +81,7 @@ define('nudoru.components.ToastView',
       var toastIdx = getToastIndexByID(el.getAttribute('id')),
         toast = _children[toastIdx];
 
-      _containerEl.removeChild(el);
+      _mountPoint.removeChild(el);
 
       _children[toastIdx] = null;
 

@@ -1,5 +1,12 @@
 /**
- * Playing with a DOM helper kinda like React.js
+ * Playing with a DOM helper kinda sorta like React.js
+ *
+ * Started 4/20/15 Matt Perkins
+ * last updated 4/21
+ *
+ * Dependencies - Underscore (templates)
+ *
+ * Completely untested and inprogress
  *
  * refnerence
  * https://scotch.io/tutorials/learning-react-getting-started-and-concepts
@@ -8,29 +15,146 @@
 
 var Elemental = (function () {
 
-  var _elements = [],
-    _classes = [],
-    _components = [];
+  var _initialized = false,
+    _templateHTMLMap = Object.create(null),
+    _templateObjectMap = Object.create(null),
+    _elements = [],
+    _collections = [];
 
+  function initialize() {
+    if(_initialized) {
+      return;
+    }
 
-  function newElement(mount, id, html, state) {
-    var elmnt = requireUnique('ElementalElement');
-    elmnt.create(mount,id,html,state);
-    _elements[id] = elmnt;
-    return elmnt;
+    _initialized = true;
+
+    buildTemplateHTMLMap();
+    buildTemplateObjectMap();
+  }
+
+  function buildTemplateHTMLMap() {
+    var els = getAllTemplateElements();
+    els.forEach(function(el) {
+      console.log();
+      _templateHTMLMap[el.getAttribute('id')] = el.innerHTML;
+    });
+  }
+
+  /**
+   * Scans the HTML source for <script id="blah" type="text/template">
+   */
+  function getAllTemplateElements() {
+    var allElsWithType = Array.prototype.slice.call(document.querySelectorAll([type]));
+      matchingEls = [];
+    allElsWithType.forEach(function(el) {
+      if(el.getAttribute('type') === 'text/template') {
+        matchingEls.push(el)
+      }
+    });
+    return matchingEls;
+  }
+
+  function buildTemplateObjectMap() {
+    for(id in _templateHTMLMap) {
+      _templateObjectMap[id] = _.template(_templateHTMLMap[id]);
+    }
+  }
+
+  function getTemplateObjByID(id) {
+    return _templateObjectMap[id];
+  }
+
+  function newElement(initObj) {
+    if(!_initialized) {
+      initialize();
+    }
+
+    var element = requireUnique('ElementalElement');
+    element.create(initObj);
+    _elements[initObj.id] = element;
+    return element;
+  }
+
+  function newCollection(initObj) {
+    if(!_initialized) {
+      initialize();
+    }
+
+    var collection = requireUnique('ElementalCollection');
+    collection.create(initObj);
+    _collections[initObj.id] = collection;
+    return collection;
   }
 
   return {
-    newElement: newElement
+    initialize: initialize,
+    getTemplateObjByID: getTemplateObjByID,
+    newElement: newElement,
+    newCollection: newCollection
   };
 
 }());
 
+define('ElementalCollection',
+  function (require, module, exports) {
+
+    var _initObj,
+      _id,
+      _mountPoint,
+      _children = [];
+
+    function create(initObj) {
+      _initObj = initObj;
+      _id = _initObj.id;
+      _mountPoint = initObj.mount;
+    }
+
+    function getChildren() {
+      return _children;
+    }
+
+    function getChildByID(id) {
+      var i = 0,
+          len = _children.length;
+
+      for(;i<len;i++) {
+        if(_children[i].getID() === id) {
+          return _children[i];
+        }
+      }
+
+      return null;
+    }
+
+    function prependChild(elElmnt) {
+      // append to child arry and mount?
+    }
+
+    function appendChild(elElmnt) {
+      // append to child arry and mount?
+    }
+
+    function removeChild(elElmnt) {
+      // append to child arry and mount?
+    }
+
+    exports.create = create;
+    exports.prependChild = prependChild;
+    exports.appendChild = appendChild;
+    exports.removeChild = removeChild;
+    exports.getChildren = getChildren;
+    exports.getChildByID = getChildByID;
+
+  });
+
 define('ElementalElement',
   function (require, module, exports) {
 
-    var _id,
+    var _initObj,
+      _id,
       _html,
+      _templateID,
+      _templateObj,
       _DOMElement,
       _mountPoint,
       _initialState,
@@ -40,8 +164,63 @@ define('ElementalElement',
       _willMountCB,
       _didMountCB,
       _willUnMountCB,
-      _didUnMountCB,
-      _template = require('com.nudoru.NTempate');
+      _didUnMountCB;
+
+    function create(initObj) {
+      _initObj = initObj;
+      _mountPoint = initObj.mount;
+      _id = initObj.id;
+      _html = initObj.html;
+      _templateID = initObj.template;
+      _initialState = _currentState = initObj.state;
+      _willRenderCB = initObj.willRender;
+      _didRenderCB = initObj.didRender;
+      _willMountCB = initObj.willMount;
+      _didMountCB = initObj.didMount;
+      _willUnMountCB = initObj.willUnMount;
+      _didUnMountCB = initObj.didUnMount;
+
+      if(_templateID) {
+        _templateObj = Elemental.getTemplateObjByID(_id);
+      } else {
+        _templateObj = _.template(_html);
+      }
+    }
+
+    function update(state) {
+      _currentState = state;
+    }
+
+    function render() {
+      unmount();
+      exeuteCB(_willRenderCB);
+      _DOMElement = _templateObj(_currentState);
+      exeuteCB(_didRenderCB);
+      mount();
+      return _DOMElement;
+    }
+
+    function mount() {
+      validateElement();
+      exeuteCB(_willMountCB);
+      _mountPoint.appendChild(_DOMElement);
+      exeuteCB(_didMountCB);
+    }
+
+    function unmount() {
+      validateElement();
+      exeuteCB(_willUnMountCB);
+      _mountPoint.removeChild(_DOMElement);
+      exeuteCB(_didUnMountCB);
+    }
+
+    function getID() {
+      return _id;
+    }
+
+    function getDOMElement() {
+      return _DOMElement;
+    }
 
     function setWillRender(cb) {
       _willRenderCB = cb;
@@ -67,17 +246,6 @@ define('ElementalElement',
       _didUnMountCB = cb;
     }
 
-    function create(mount, id, html, state) {
-      _mountPoint = mount;
-      _id = id;
-      _html = html;
-      _initialState = _currentState = state;
-    }
-
-    function isHTMLCode(str) {
-       return (str.charAt(0) === '<')
-    }
-
     function validateElement() {
       if(!_DOMElement) {
         throw new Error('Elemental: Element not created');
@@ -86,72 +254,23 @@ define('ElementalElement',
       return true;
     }
 
-    function render(state) {
-      _currentState = state || _initialState;
-      exeuteCB(_willRenderCB);
-      unmount();
-
-      // if it's HTML, need to get template from ntemplate
-      // should ntemplate cache raw html?
-      // convert html to dom
-
-      exeuteCB(_didRenderCB);
-      mount();
-      return _DOMElement;
-    }
-
-    function mount() {
-      validateElement();
-      exeuteCB(_willMountCB);
-      // do it
-      exeuteCB(_didMountCB);
-    }
-
-    function unmount() {
-      validateElement();
-      exeuteCB(_willUnMountCB);
-      // do it
-      exeuteCB(_didUnMountCB);
-    }
-
     function exeuteCB(cb) {
-      if(!cb) return;
-      cb.apply(this,[_id,_currentState]);
+      if(!cb) {
+        return;
+      }
+      cb.apply(this,[_DOMElement, _id, _currentState]);
     }
 
     exports.create = create;
+    exports.update = update;
     exports.render = render;
+    exports.getID = getID;
+    exports.getDOMElement = getDOMElement;
     exports.setWillRender = setWillRender;
     exports.setDidRender = setDidRender;
+    exports.setWillMount = setWillMount;
+    exports.setDidMount = setDidMount;
+    exports.setWillUnMount = setWillUnMount;
+    exports.setDidUnMount = setDidUnMount;
 
   });
-
-/*
-define('ElementalClass',
-  function (require, module, exports) {
-
-    var _id,
-      _html,
-      _DOMElement,
-      _mountPoint,
-      _initialState,
-      _currentState,
-      _willRenderCB,
-      _didRenderCB,
-      _willMountCB,
-      _didMountCB,
-      _willUnMountCB,
-      _didUnMountCB,
-      _template = require('com.nudoru.NTempate');
-
-    function create(srcObj) {
-
-    }
-
-  });
-
-define('ElementalComponent',
-  function (require, module, exports) {
-    //
-  });
-*/

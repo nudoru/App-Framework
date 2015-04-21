@@ -1,13 +1,13 @@
 define('APP.AppView.TagBarView',
   function(require, module, exports) {
 
-    var _containerEl,
+    var _mountPoint,
       _currentTags,
       _arrayUtils = require('nudoru.utils.ArrayUtils'),
       _template = require('nudoru.utils.NTemplate');
 
     function initialize(elID) {
-      _containerEl = document.getElementById(elID);
+      _mountPoint = document.getElementById(elID);
       _currentTags = [];
 
       hideBar();
@@ -43,16 +43,16 @@ define('APP.AppView.TagBarView',
     }
 
     function showBar() {
-      TweenLite.to(_containerEl, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
+      TweenLite.to(_mountPoint, 0.25, {autoAlpha: 1, ease: Circ.easeIn});
     }
 
     function hideBar() {
-      TweenLite.to(_containerEl, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
+      TweenLite.to(_mountPoint, 0.25, {autoAlpha: 0, ease: Circ.easeIn});
     }
 
     function add(tag) {
       var tagnode = _template.asElement('template__tag-bar', {tag: tag});
-      _containerEl.appendChild(tagnode);
+      _mountPoint.appendChild(tagnode);
       _currentTags.push({label: tag, el: tagnode});
       TweenLite.from(tagnode, 0.5, {alpha: 0, y: '15px', ease: Quad.easeOut});
     }
@@ -66,14 +66,14 @@ define('APP.AppView.TagBarView',
       })[0];
 
       if (rmv) {
-        _containerEl.removeChild(rmv.el);
+        _mountPoint.removeChild(rmv.el);
         _currentTags.splice(_currentTags.indexOf(rmv), 1);
       }
     }
 
     function removeAll() {
       _currentTags.forEach(function (tag) {
-        _containerEl.removeChild(tag.el);
+        _mountPoint.removeChild(tag.el);
       });
       _currentTags = [];
     }

@@ -6,7 +6,7 @@ define('APP.AppView.GridCollectionView',
   function(require, module, exports) {
 
     var _self,
-      _containerEl,
+      _mountPoint,
       _appGlobals,
       _containerElID,
       _data,
@@ -53,7 +53,7 @@ define('APP.AppView.GridCollectionView',
       _self = this;
       _appGlobals = APP.globals();
       _containerElID = elID;
-      _containerEl = document.getElementById(_containerElID);
+      _mountPoint = document.getElementById(_containerElID);
       _data = data;
 
       _isLayingOut = false;
@@ -78,7 +78,7 @@ define('APP.AppView.GridCollectionView',
       _data.forEach(function (item) {
         var itemobj = requireUnique('APP.AppView.GridCollectionView.GridElementView');
         itemobj.initialize(item);
-        _containerEl.appendChild(itemobj.getElement());
+        _mountPoint.appendChild(itemobj.getElement());
 
         // gets item props (image alpha) that can only be retrieved after adding to dom
         itemobj.postRender();
@@ -87,14 +87,15 @@ define('APP.AppView.GridCollectionView',
 
       // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
       if (_browserInfo.isIE) {
-        _containerEl.onselectstart = function () {
+        _mountPoint.onselectstart = function () {
           return false;
         };
       }
 
       initPackery();
 
-      staggerFrom(getItemsInView(), 0.25, 0.25);
+      // staggering in was causing display issues when going to a saved link on load
+      //staggerFrom(getItemsInView(), 0.25, 0.25);
     }
 
     /**
@@ -127,6 +128,14 @@ define('APP.AppView.GridCollectionView',
 
     function onStaggerInComplete(item) {
       item.setIsAnimating(false);
+    }
+
+    function killAllAnimations() {
+      var els = _children.map(function(item) { return item.getElement();});
+
+      _children.forEach(function(item) { item.setIsAnimating(false);});
+
+      TweenLite.killTweensOf(els);
     }
 
     /**
@@ -189,21 +198,21 @@ define('APP.AppView.GridCollectionView',
      */
     function configureStreams() {
 
-      _itemOverStream = Rx.Observable.fromEvent(_containerEl, 'mouseover')
+      _itemOverStream = Rx.Observable.fromEvent(_mountPoint, 'mouseover')
         .filter(filterForMouseEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
           selectItemByID(id);
         });
 
-      _itemOutStream = Rx.Observable.fromEvent(_containerEl, 'mouseout')
+      _itemOutStream = Rx.Observable.fromEvent(_mountPoint, 'mouseout')
         .filter(filterForMouseEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
           deselectItemByID(id);
         });
 
-      _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'click')
+      _itemSelectStream = Rx.Observable.fromEvent(_mountPoint, 'click')
         .filter(filterForMouseEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
@@ -250,16 +259,16 @@ define('APP.AppView.GridCollectionView',
      */
     function configureMobileStreams() {
       // Note - had problems getting RxJS to work correctly here, used events
-      _containerEl.addEventListener('touchstart', function (evt) {
+      _mountPoint.addEventListener('touchstart', function (evt) {
         _firstTouchPosition = _lastTouchPosition = _touchUtils.getCoords(evt);
         _shouldProcessTouchEnd = false;
       }, false);
 
-      _containerEl.addEventListener('touchmove', function (evt) {
+      _mountPoint.addEventListener('touchmove', function (evt) {
         _lastTouchPosition = _touchUtils.getCoords(evt);
       }, false);
 
-      _itemSelectStream = Rx.Observable.fromEvent(_containerEl, 'touchend')
+      _itemSelectStream = Rx.Observable.fromEvent(_mountPoint, 'touchend')
         .filter(processTouchEndEventsOnItems)
         .map(getMouseEventTargetID)
         .subscribe(function (id) {
@@ -476,6 +485,8 @@ define('APP.AppView.GridCollectionView',
      */
     function updateItemVisibility(visibleArray) {
       var len = visibleArray.length;
+
+      killAllAnimations();
 
       _children.forEach(function (item) {
         var i = 0,

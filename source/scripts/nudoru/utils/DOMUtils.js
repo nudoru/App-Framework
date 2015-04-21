@@ -110,4 +110,11 @@ define('nudoru.utils.DOMUtils',
       }
     };
 
+    /**
+     * Get an array of elements in the container returned as Array instead of a Node list
+     */
+    exports.getQSElementsAsArray = function(el, cls) {
+      return Array.prototype.slice.call(el.querySelectorAll(cls));
+    }
+
   });

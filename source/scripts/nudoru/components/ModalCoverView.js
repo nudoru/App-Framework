@@ -1,6 +1,7 @@
 define('nudoru.components.ModalCoverView',
   function (require, module, exports) {
-    var _modalCoverEl,
+    var _mountPoint = document,
+      _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
       _modalClickStream,
@@ -13,9 +14,9 @@ define('nudoru.components.ModalCoverView',
 
       _isVisible = true;
 
-      _modalCoverEl = document.getElementById('modal__cover');
-      _modalBackgroundEl = document.querySelector('.modal__background');
-      _modalCloseButtonEl = document.querySelector('.modal__close-button');
+      _modalCoverEl = _mountPoint.getElementById('modal__cover');
+      _modalBackgroundEl = _mountPoint.querySelector('.modal__background');
+      _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
 
       var modalBGClick = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
         modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());

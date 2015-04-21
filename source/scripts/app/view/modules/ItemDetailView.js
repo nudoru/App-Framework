@@ -1,7 +1,7 @@
 define('APP.AppView.ItemDetailView',
   function(require, module, exports) {
 
-    var _containerEl,
+    var _mountPoint,
       _shareButtonEl,
       _currentItem,
       _template = require('nudoru.utils.NTemplate'),
@@ -9,7 +9,7 @@ define('APP.AppView.ItemDetailView',
       _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize(elID) {
-      _containerEl = document.getElementById(elID);
+      _mountPoint = document.getElementById(elID);
 
       _floatImageView.initialize();
     }
@@ -17,10 +17,10 @@ define('APP.AppView.ItemDetailView',
     function showItem(item) {
       _currentItem = item;
 
-      _containerEl.innerHTML = _template.asHTML('template__detail-item', _currentItem);
+      _mountPoint.innerHTML = _template.asHTML('template__detail-item', _currentItem);
 
-      _floatImageView.apply(_containerEl.querySelector('.details__content-preview-images'));
-      _floatImageView.setScrollingView(_containerEl.querySelector('.details__content'));
+      _floatImageView.apply(_mountPoint.querySelector('.details__content-preview-images'));
+      _floatImageView.setScrollingView(_mountPoint.querySelector('.details__content'));
 
 
       _shareButtonEl = document.getElementById('js__content-share-button');
@@ -31,7 +31,7 @@ define('APP.AppView.ItemDetailView',
         _shareButtonEl.style.display = 'none';
       }
 
-      TweenLite.to(_containerEl, 0.25, {
+      TweenLite.to(_mountPoint, 0.25, {
         autoAlpha: 1,
         ease: Quad.easeOut,
         delay: 0.1
@@ -49,9 +49,9 @@ define('APP.AppView.ItemDetailView',
     }
 
     function showMessage(obj) {
-      _containerEl.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
+      _mountPoint.innerHTML = nudoru.utils.NTemplate.asHTML('template__detail-message', obj);
 
-      TweenLite.to(_containerEl, 0.25, {
+      TweenLite.to(_mountPoint, 0.25, {
         autoAlpha: 1,
         ease: Quad.easeOut,
         delay: 0.1
@@ -61,14 +61,14 @@ define('APP.AppView.ItemDetailView',
     function hide() {
       _currentItem = null;
 
-      _floatImageView.remove(_containerEl.querySelector('.details__content-preview-images'));
+      _floatImageView.remove(_mountPoint.querySelector('.details__content-preview-images'));
 
       if (_shareButtonEl) {
         _shareButtonEl.removeEventListener(_browserInfo.mouseClickEvtStr(), doShareAction);
       }
 
-      TweenLite.killDelayedCallsTo(_containerEl);
-      TweenLite.to(_containerEl, 0.25, {
+      TweenLite.killDelayedCallsTo(_mountPoint);
+      TweenLite.to(_mountPoint, 0.25, {
         autoAlpha: 0,
         ease: Quad.easeOut,
         delay: 0.1

@@ -21,8 +21,8 @@
 define('nudoru.utils.NTemplate',
   function(require, module, exports) {
 
-    var _templateHTMLCache = {},
-      _templateCache = {},
+    var _templateHTMLCache = Object.create(null),
+      _templateCache = Object.create(null),
       _DOMUtils = require('nudoru.utils.DOMUtils');
 
     /**

@@ -15,6 +15,9 @@ APP.AppController.initializeCommand('APP.AppController.AppInitializedCommand',
         this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
       }
     }
+
+    Elemental.initialize();
+
   });
 
 //APP.AppController.AppInitializedCommand.execute = function (data) {

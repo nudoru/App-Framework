@@ -13,14 +13,15 @@
 define('nudoru.components.FloatImageView',
   function (require, module, exports) {
 
-    var _coverDivID = 'floatimage__cover',
+    var _mountPoint = document,
+      _coverDivID = 'floatimage__cover',
       _floatingImageClass = '.floatimage__srcimage',
       _zoomedImageClass = 'floatimage__zoomedimage',
       _viewPortCoverEl,
       _viewPortCoverClickStream,
       _captionEl,
       _currentImageElement,
-      _scrollingView = document.body,
+      _scrollingView = _mountPoint.body,
       _fancyEffects = false,
       _DOMUtils = require('nudoru.utils.DOMUtils'),
       _numberUtils = require('nudoru.utils.NumberUtils'),
@@ -30,7 +31,7 @@ define('nudoru.components.FloatImageView',
      * Entry point, initialize elements and hide cover
      */
     function initialize() {
-      _viewPortCoverEl = document.getElementById(_coverDivID);
+      _viewPortCoverEl = _mountPoint.getElementById(_coverDivID);
       _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
 
       _fancyEffects = !_browserInfo.isIE && !_browserInfo.mobile.any();
@@ -165,7 +166,7 @@ define('nudoru.components.FloatImageView',
       TweenLite.to(_currentImageElement, 0.25, {alpha: 0, ease: Circ.easeOut});
 
       if (_fancyEffects) {
-        // further from the center, the greate the effect
+        // further from the center, the create the effect
         var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
           origin;
 
@@ -185,6 +186,7 @@ define('nudoru.components.FloatImageView',
           }
         });
 
+        // For the 'tear down effect'
         var tl = new TimelineLite();
         tl.to(zoomImage, 0.25, {
           rotationZ: -15,
@@ -235,7 +237,7 @@ define('nudoru.components.FloatImageView',
         return;
       }
 
-      _scrollingView = document.body;
+      _scrollingView = _mountPoint.body;
 
       getFloatingElementsInContainerAsArray(container).forEach(function (el) {
         el.removeEventListener('click', onImageClick);
@@ -255,7 +257,7 @@ define('nudoru.components.FloatImageView',
       if (!_DOMUtils.isDomObj(container)) {
         return [];
       }
-      return Array.prototype.slice.call(container.querySelectorAll(_floatingImageClass));
+      return _DOMUtils.getQSElementsAsArray(container, _floatingImageClass);
     }
 
     /**
