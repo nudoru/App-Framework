@@ -412,7 +412,7 @@ function requireUnique(id) {
     };
 
     exports.removeItem = function (arr, item) {
-      var idx = arr.index Of(item);
+      var idx = arr.indexOf(item);
       if (idx > -1) {
         arr.splice(idx, 1);
       }
@@ -1451,58 +1451,58 @@ function requireUnique(id) {
       _counter = 0,
       _defaultExpireDuration = 7000,
       _mountPoint,
-      _templateToast,
       _template = require('nudoru.utils.NTemplate'),
-      _DOMUtils = require('nudoru.utils.DOMUtils');
+      _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
-      _templateToast = _template.getTemplate('template__component--toast');
     }
 
-    function add(title, message, button) {
-      button = button || 'OK';
+    function add(title, message) {
+      var toastObj = createToastObject(title, message);
 
-      var newToast = createToastObject(title, message, button);
+      _children.push(toastObj);
 
-      _mountPoint.insertBefore(newToast.element, _mountPoint.firstChild);
+      _mountPoint.insertBefore(toastObj.element, _mountPoint.firstChild);
 
-      newToast.index = _children.length;
-      newToast.height = newToast.element.clientHeight;
-
-      var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, BrowserInfo.mouseClickEvtStr()),
+      var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
+        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
-      newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+      toastObj.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
         .subscribe(function () {
-          remove(newToast.id);
+          remove(toastObj.id);
         });
 
-      _children.push(newToast);
+      transitionIn(toastObj.element);
 
-      transitionIn(newToast.element);
-
-      return newToast.id;
+      return toastObj.id;
     }
 
-    function createToastObject(title, message, button) {
-      var id = 'toast' + (_counter++).toString(),
+    function createToastObject(title, message) {
+      var id = 'js__toast-toastitem-' + (_counter++).toString(),
         obj = {
           id: id,
-          index: -1,
-          title: title,
-          message: message,
-          buttonLabel: button,
-          status: 'new',
-          html: _templateToast({id: id, title: title, message: message}),
-          element: null,
-          height: 0,
+          element: _template.asElement('template__component--toast', {
+            id: id,
+            title: title,
+            message: message
+          }),
           lifeTimeStream: null
         };
 
-      obj.element = _DOMUtils.HTMLStrToNode(obj.html);
       return obj;
+    }
+
+    function remove(id) {
+      var idx = getToastIndexByID(id),
+        toast;
+
+      if (idx > -1) {
+        toast = _children[idx];
+        rearrangeToasts(idx);
+        transitionOut(toast.element);
+      }
     }
 
     function transitionIn(el) {
@@ -1520,24 +1520,10 @@ function requireUnique(id) {
     }
 
     function onTransitionOutComplete(el) {
-      var toastIdx = getToastIndexByID(el.getAttribute('id')),
-        toast = _children[toastIdx];
-
+      var idx = getToastIndexByID(el.getAttribute('id'));
       _mountPoint.removeChild(el);
-
-      _children[toastIdx] = null;
-
-      _children.splice(toast.index, 1);
-      reindex();
-    }
-
-    function reindex() {
-      var i = 0,
-        len = _children.length;
-
-      for (; i < len; i++) {
-        _children[i].index = i;
-      }
+      _children[idx] = null;
+      _children.splice(idx, 1);
     }
 
     function rearrangeToasts(ignore) {
@@ -1551,7 +1537,7 @@ function requireUnique(id) {
         }
         current = _children[i];
         TweenLite.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
-        y += 10 + current.height;
+        y += 10 + current.element.clientHeight;
       }
     }
 
@@ -1566,17 +1552,6 @@ function requireUnique(id) {
       }
 
       return -1;
-    }
-
-    function remove(id) {
-      var toastIndex = getToastIndexByID(id),
-        toast;
-
-      if (toastIndex > -1) {
-        toast = _children[toastIndex];
-        transitionOut(toast.element);
-        rearrangeToasts(toast.index);
-      }
     }
 
     exports.initialize = initialize;
@@ -2079,7 +2054,7 @@ define('nudoru.components.BasicMenuItemView',
    * Scans the HTML source for <script id="blah" type="text/template">
    */
   function getAllTemplateElements() {
-    var allElsWithType = Array.prototype.slice.call(document.querySelectorAll([type]));
+    var allElsWithType = Array.prototype.slice.call(document.querySelectorAll('[type]'));
       matchingEls = [];
     allElsWithType.forEach(function(el) {
       if(el.getAttribute('type') === 'text/template') {
@@ -2090,7 +2065,7 @@ define('nudoru.components.BasicMenuItemView',
   }
 
   function buildTemplateObjectMap() {
-    for(id in _templateHTMLMap) {
+    for(var id in _templateHTMLMap) {
       _templateObjectMap[id] = _.template(_templateHTMLMap[id]);
     }
   }
@@ -2161,16 +2136,35 @@ define('ElementalCollection',
       return null;
     }
 
-    function prependChild(elElmnt) {
-      // append to child arry and mount?
+    function getChildIndexByID(id) {
+      var i = 0,
+        len = _children.length;
+
+      for(;i<len;i++) {
+        if(_children[i].getID() === id) {
+          return i;
+        }
+      }
+
+      return -1;
     }
 
+    // TODO check if it's already a child element and move it to the front
+    function prependChild(elElmnt) {
+      _children.push(elElmnt);
+      _mountPoint.insertBefore(elElmnt.getElement(), _mountPoint.firstChild);
+    }
+
+    // TODO check if it's already a child element and move it to the end
     function appendChild(elElmnt) {
-      // append to child arry and mount?
+      _children.push(elElmnt);
+      _mountPoint.appendChild(elElmnt.getElement());
     }
 
     function removeChild(elElmnt) {
-      // append to child arry and mount?
+      var idx = _children.indexOf(elElmnt);
+      elElmnt.unmount();
+      _children.splice(idx, 1);
     }
 
     exports.create = create;
@@ -2186,20 +2180,20 @@ define('ElementalElement',
   function (require, module, exports) {
 
     var _initObj,
-      _id,
-      _html,
-      _templateID,
-      _templateObj,
-      _DOMElement,
-      _mountPoint,
-      _initialState,
-      _currentState,
-      _willRenderCB,
-      _didRenderCB,
-      _willMountCB,
-      _didMountCB,
-      _willUnMountCB,
-      _didUnMountCB;
+        _id,
+        _html,
+        _templateID,
+        _templateObj,
+        _DOMElement,
+        _mountPoint,
+        _initialState,
+        _currentState,
+        _willRenderCB,
+        _didRenderCB,
+        _willMountCB,
+        _didMountCB,
+        _willUnMountCB,
+        _didUnMountCB;
 
     function create(initObj) {
       _initObj = initObj;
@@ -2299,6 +2293,8 @@ define('ElementalElement',
     exports.create = create;
     exports.update = update;
     exports.render = render;
+    exports.mount = mount;
+    exports.unmount = unmount;
     exports.getID = getID;
     exports.getDOMElement = getDOMElement;
     exports.setWillRender = setWillRender;
@@ -4337,6 +4333,8 @@ APP.AppView = (function () {
   }
 
   function showItemDetailView(item) {
+    showNotification(item.title, 'Is showing ...');
+
     _itemDetailView.showItem(item);
     showModalCover(true);
   }
@@ -4686,7 +4684,7 @@ APP.AppController.AbstractCommand = {
     }
 
     if (item) {
-      nudoru.events.EventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
+      this.eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
     } else {
       this.appModel.setCurrentItem('');
       this.appView.hideItemDetailView();

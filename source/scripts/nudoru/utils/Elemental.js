@@ -8,7 +8,7 @@
  *
  * Completely untested and inprogress
  *
- * refnerence
+ * Ref
  * https://scotch.io/tutorials/learning-react-getting-started-and-concepts
  *
  */
@@ -44,7 +44,7 @@ var Elemental = (function () {
    * Scans the HTML source for <script id="blah" type="text/template">
    */
   function getAllTemplateElements() {
-    var allElsWithType = Array.prototype.slice.call(document.querySelectorAll([type]));
+    var allElsWithType = Array.prototype.slice.call(document.querySelectorAll('[type]'));
       matchingEls = [];
     allElsWithType.forEach(function(el) {
       if(el.getAttribute('type') === 'text/template') {
@@ -55,7 +55,7 @@ var Elemental = (function () {
   }
 
   function buildTemplateObjectMap() {
-    for(id in _templateHTMLMap) {
+    for(var id in _templateHTMLMap) {
       _templateObjectMap[id] = _.template(_templateHTMLMap[id]);
     }
   }
@@ -126,16 +126,35 @@ define('ElementalCollection',
       return null;
     }
 
-    function prependChild(elElmnt) {
-      // append to child arry and mount?
+    function getChildIndexByID(id) {
+      var i = 0,
+        len = _children.length;
+
+      for(;i<len;i++) {
+        if(_children[i].getID() === id) {
+          return i;
+        }
+      }
+
+      return -1;
     }
 
+    // TODO check if it's already a child element and move it to the front
+    function prependChild(elElmnt) {
+      _children.push(elElmnt);
+      _mountPoint.insertBefore(elElmnt.getElement(), _mountPoint.firstChild);
+    }
+
+    // TODO check if it's already a child element and move it to the end
     function appendChild(elElmnt) {
-      // append to child arry and mount?
+      _children.push(elElmnt);
+      _mountPoint.appendChild(elElmnt.getElement());
     }
 
     function removeChild(elElmnt) {
-      // append to child arry and mount?
+      var idx = _children.indexOf(elElmnt);
+      elElmnt.unmount();
+      _children.splice(idx, 1);
     }
 
     exports.create = create;
@@ -151,20 +170,20 @@ define('ElementalElement',
   function (require, module, exports) {
 
     var _initObj,
-      _id,
-      _html,
-      _templateID,
-      _templateObj,
-      _DOMElement,
-      _mountPoint,
-      _initialState,
-      _currentState,
-      _willRenderCB,
-      _didRenderCB,
-      _willMountCB,
-      _didMountCB,
-      _willUnMountCB,
-      _didUnMountCB;
+        _id,
+        _html,
+        _templateID,
+        _templateObj,
+        _DOMElement,
+        _mountPoint,
+        _initialState,
+        _currentState,
+        _willRenderCB,
+        _didRenderCB,
+        _willMountCB,
+        _didMountCB,
+        _willUnMountCB,
+        _didUnMountCB;
 
     function create(initObj) {
       _initObj = initObj;
@@ -264,6 +283,8 @@ define('ElementalElement',
     exports.create = create;
     exports.update = update;
     exports.render = render;
+    exports.mount = mount;
+    exports.unmount = unmount;
     exports.getID = getID;
     exports.getDOMElement = getDOMElement;
     exports.setWillRender = setWillRender;

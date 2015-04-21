@@ -17,7 +17,7 @@ APP.AppController.initializeCommand('APP.AppController.ResumeFromModelStateComma
     }
 
     if (item) {
-      nudoru.events.EventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
+      this.eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, item);
     } else {
       this.appModel.setCurrentItem('');
       this.appView.hideItemDetailView();

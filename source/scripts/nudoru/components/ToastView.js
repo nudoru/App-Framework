@@ -1,5 +1,6 @@
 /**
- * Created by matt on 12/1/14.
+ * Created by matt on 12/1/14
+ * last updated 4/21/15
  */
 
 define('nudoru.components.ToastView',
@@ -9,58 +10,58 @@ define('nudoru.components.ToastView',
       _counter = 0,
       _defaultExpireDuration = 7000,
       _mountPoint,
-      _templateToast,
       _template = require('nudoru.utils.NTemplate'),
-      _DOMUtils = require('nudoru.utils.DOMUtils');
+      _browserInfo = require('nudoru.utils.BrowserInfo');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
-      _templateToast = _template.getTemplate('template__component--toast');
     }
 
-    function add(title, message, button) {
-      button = button || 'OK';
+    function add(title, message) {
+      var toastObj = createToastObject(title, message);
 
-      var newToast = createToastObject(title, message, button);
+      _children.push(toastObj);
 
-      _mountPoint.insertBefore(newToast.element, _mountPoint.firstChild);
+      _mountPoint.insertBefore(toastObj.element, _mountPoint.firstChild);
 
-      newToast.index = _children.length;
-      newToast.height = newToast.element.clientHeight;
-
-      var closeBtn = newToast.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, BrowserInfo.mouseClickEvtStr()),
+      var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
+        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
-      newToast.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+      toastObj.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
         .subscribe(function () {
-          remove(newToast.id);
+          remove(toastObj.id);
         });
 
-      _children.push(newToast);
+      transitionIn(toastObj.element);
 
-      transitionIn(newToast.element);
-
-      return newToast.id;
+      return toastObj.id;
     }
 
-    function createToastObject(title, message, button) {
-      var id = 'toast' + (_counter++).toString(),
+    function createToastObject(title, message) {
+      var id = 'js__toast-toastitem-' + (_counter++).toString(),
         obj = {
           id: id,
-          index: -1,
-          title: title,
-          message: message,
-          buttonLabel: button,
-          status: 'new',
-          html: _templateToast({id: id, title: title, message: message}),
-          element: null,
-          height: 0,
+          element: _template.asElement('template__component--toast', {
+            id: id,
+            title: title,
+            message: message
+          }),
           lifeTimeStream: null
         };
 
-      obj.element = _DOMUtils.HTMLStrToNode(obj.html);
       return obj;
+    }
+
+    function remove(id) {
+      var idx = getToastIndexByID(id),
+        toast;
+
+      if (idx > -1) {
+        toast = _children[idx];
+        rearrangeToasts(idx);
+        transitionOut(toast.element);
+      }
     }
 
     function transitionIn(el) {
@@ -78,24 +79,10 @@ define('nudoru.components.ToastView',
     }
 
     function onTransitionOutComplete(el) {
-      var toastIdx = getToastIndexByID(el.getAttribute('id')),
-        toast = _children[toastIdx];
-
+      var idx = getToastIndexByID(el.getAttribute('id'));
       _mountPoint.removeChild(el);
-
-      _children[toastIdx] = null;
-
-      _children.splice(toast.index, 1);
-      reindex();
-    }
-
-    function reindex() {
-      var i = 0,
-        len = _children.length;
-
-      for (; i < len; i++) {
-        _children[i].index = i;
-      }
+      _children[idx] = null;
+      _children.splice(idx, 1);
     }
 
     function rearrangeToasts(ignore) {
@@ -109,7 +96,7 @@ define('nudoru.components.ToastView',
         }
         current = _children[i];
         TweenLite.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
-        y += 10 + current.height;
+        y += 10 + current.element.clientHeight;
       }
     }
 
@@ -124,17 +111,6 @@ define('nudoru.components.ToastView',
       }
 
       return -1;
-    }
-
-    function remove(id) {
-      var toastIndex = getToastIndexByID(id),
-        toast;
-
-      if (toastIndex > -1) {
-        toast = _children[toastIndex];
-        transitionOut(toast.element);
-        rearrangeToasts(toast.index);
-      }
     }
 
     exports.initialize = initialize;
