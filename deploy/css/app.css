@@ -3534,16 +3534,8 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   padding: 0;
 }
 
-.drawer__menu-hit {
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
 .drawer__menu-spinner-button label {
+  cursor: pointer;
   position: absolute;
   height: 100%;
   width: 100%;
