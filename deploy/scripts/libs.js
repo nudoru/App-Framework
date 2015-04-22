@@ -379,6 +379,10 @@ function requireUnique(id) {
 
     var _numberUtils = require('nudoru.utils.NumberUtils');
 
+    exports.isArray = function(test) {
+      return Object.prototype.toString.call(test) === "[object Array]";
+    };
+
     // Reference: http://jhusain.github.io/learnrx/index.html
     exports.mergeAll = function () {
       var results = [];
@@ -3209,30 +3213,30 @@ APP.AppModel.ItemVO = {
      * @param dur
      * @param interval
      */
-    function staggerFrom(elList, dur, interval) {
-      var i = 0,
-        len = elList.length;
-
-      elList.forEach(function (item) {
-        item.setIsAnimating(true);
-      });
-
-      for (; i < len; i++) {
-        TweenLite.from(elList[i].getElement(), dur, {
-          rotationY: -90,
-          transformOrigin: 'left',
-          alpha: 0,
-          ease: Quad.easeOut,
-          delay: (i + 1) * interval,
-          onComplete: onStaggerInComplete,
-          onCompleteParams: [elList[i]]
-        });
-      }
-    }
-
-    function onStaggerInComplete(item) {
-      item.setIsAnimating(false);
-    }
+    //function staggerFrom(elList, dur, interval) {
+    //  var i = 0,
+    //    len = elList.length;
+    //
+    //  elList.forEach(function (item) {
+    //    item.setIsAnimating(true);
+    //  });
+    //
+    //  for (; i < len; i++) {
+    //    TweenLite.from(elList[i].getElement(), dur, {
+    //      rotationY: -90,
+    //      transformOrigin: 'left',
+    //      alpha: 0,
+    //      ease: Quad.easeOut,
+    //      delay: (i + 1) * interval,
+    //      onComplete: onStaggerInComplete,
+    //      onCompleteParams: [elList[i]]
+    //    });
+    //  }
+    //}
+    //
+    //function onStaggerInComplete(item) {
+    //  item.setIsAnimating(false);
+    //}
 
     function killAllAnimations() {
       var els = _children.map(function(item) { return item.getElement();});
@@ -3908,7 +3912,6 @@ APP.AppView = (function () {
     _mainHeaderEl,
     _mainFooterEl,
     _drawerToggleButtonEl,
-    _drawerToggleButtonInputEl,
     _uiUpdateLayoutStream,
     _searchInputStream,
     _clearAllButtonStream,
@@ -3991,8 +3994,7 @@ APP.AppView = (function () {
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = document.getElementById('drawer');
-    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > label');
-    _drawerToggleButtonInputEl = document.querySelector('.drawer__menu-spinner-button > input');
+    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
@@ -4054,7 +4056,7 @@ APP.AppView = (function () {
         _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
       });
 
-    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _browserInfo.mouseClickEvtStr())
+    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, 'change')
       .subscribe(function () {
         toggleDrawer();
       });
@@ -4104,19 +4106,19 @@ APP.AppView = (function () {
     setCurrentViewPortScroll();
     setCurrentViewPortSize();
 
-    positionUIElements();
+    if(_isMobile) {
+      startIsScrollingTimer();
+      hideElementsOnScrollStart();
+    } else {
+      positionUIElements();
+    }
 
-    //startIsScrollingTimer();
-    //hideElementsOnScrollStart();
   }
 
   /**
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    //TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
-    //TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
-
     _mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
     _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
   }
@@ -4131,35 +4133,35 @@ APP.AppView = (function () {
   /**
    * Start a timer monitor when scrolling stops
    */
-  //function startIsScrollingTimer() {
-  //  if(_isScrollingTimerStream) {
-  //    _isScrollingTimerStream.dispose();
-  //  }
-  //
-  //  _isScrollingTimerStream = Rx.Observable.timer(500)
-  //    .pluck('interval')
-  //    .take(1)
-  //    .subscribe(showElementsOnScrollEnd);
-  //}
+  function startIsScrollingTimer() {
+    if(_isScrollingTimerStream) {
+      _isScrollingTimerStream.dispose();
+    }
+
+    _isScrollingTimerStream = Rx.Observable.timer(500)
+      .pluck('interval')
+      .take(1)
+      .subscribe(showElementsOnScrollEnd);
+  }
 
 
   /**
    * Hide UI elements
    */
-  //function hideElementsOnScrollStart() {
-  //  TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-  //  TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-  //}
+  function hideElementsOnScrollStart() {
+    TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+    TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+  }
 
   /**
    * Show UI elements
    */
-  //function showElementsOnScrollEnd() {
-  //  positionUIElements();
-  //
-  //  TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-  //  TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-  //}
+  function showElementsOnScrollEnd() {
+    positionUIElements();
+
+    TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+    TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+  }
 
   //----------------------------------------------------------------------------
   //  Mobile
@@ -4182,6 +4184,7 @@ APP.AppView = (function () {
     }
 
     _isMobile = true;
+
     _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
   }
 
@@ -4191,6 +4194,7 @@ APP.AppView = (function () {
     }
 
     _isMobile = false;
+
     closeDrawer();
     _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
   }
@@ -4206,16 +4210,12 @@ APP.AppView = (function () {
   function openDrawer() {
     _isDrawerOpen = true;
 
-    _drawerToggleButtonInputEl.checked = false;
-
     TweenLite.to(_drawerEl, 0.5, {x: 0, ease: Quad.easeOut});
     TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease: Quad.easeOut});
   }
 
   function closeDrawer() {
     _isDrawerOpen = false;
-
-    _drawerToggleButtonInputEl.checked = true;
 
     TweenLite.to(_drawerEl, 0.5, {x: _drawerWidth * -1, ease: Quad.easeOut});
     TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
@@ -4543,77 +4543,7 @@ APP.AppController.AbstractCommand = {
       }
     }
 
-    Elemental.initialize();
-
-  });
-
-//APP.AppController.AppInitializedCommand.execute = function (data) {
-//  var _appGlobals = APP.globals();
-//
-//  console.log(this.appController);
-//
-//  this.appController.postIntialize();
-//
-//
-//  this.appView.removeLoadingMessage();
-//
-//  this.appView.initializeMenus(this.appModel.getMenuData());
-//  this.appView.initializeGridView(this.appModel.getData());
-//
-//  var initialRoute = this.urlRouter.getRoute();
-//
-//  if (initialRoute.length > 0) {
-//    this.appModel.parseFiltersFromUrl(initialRoute);
-//  } else {
-//    if (_appGlobals.appConfig.welcome.enabled === 'true') {
-//      this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
-//    }
-//  }
-//
-//};
-
-
-
-
-
-//APP.createNameSpace('APP.AppController.AppInitializedCommand');
-//APP.AppController.AppInitializedCommand = APP.AppController.createCommand(APP.AppController.AbstractCommand);
-//APP.AppController.AppInitializedCommand.execute = function (data) {
-//  var _appGlobals = APP.globals();
-//
-//
-//  this.appController.postIntialize();
-//
-//
-//  this.appView.removeLoadingMessage();
-//
-//  this.appView.initializeMenus(this.appModel.getMenuData());
-//  this.appView.initializeGridView(this.appModel.getData());
-//
-//  var initialRoute = this.urlRouter.getRoute();
-//
-//  if (initialRoute.length > 0) {
-//    this.appModel.parseFiltersFromUrl(initialRoute);
-//  } else {
-//    if (_appGlobals.appConfig.welcome.enabled === 'true') {
-//      this.appView.showBigMessage(_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
-//    }
-//  }
-//
-//};
-
-//console.log('Doing Perf ...');
-//var iterations = 10000;
-//var testObj = this.appModel.getData()[0];
-//console.time('Method');
-//for(var i = 0; i < iterations; i++) {
-//  nudoru.utils.NTemplate.asElement('template__item-tile', testObj);
-//  //nudoru.utils.NTemplate.getTemplate('template__item-tile');
-//}
-//console.timeEnd('Method')
-
-
-;APP.AppController.initializeCommand('APP.AppController.BrowserResizedCommand',
+  });;APP.AppController.initializeCommand('APP.AppController.BrowserResizedCommand',
   function execute(data) {
 
     //console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');

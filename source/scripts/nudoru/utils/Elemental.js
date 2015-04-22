@@ -10,6 +10,7 @@
  *
  * Ref
  * https://scotch.io/tutorials/learning-react-getting-started-and-concepts
+ * http://words.taylorlapeyre.me/an-introduction-to-react
  *
  */
 

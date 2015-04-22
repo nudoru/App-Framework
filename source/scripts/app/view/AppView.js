@@ -15,7 +15,6 @@ APP.AppView = (function () {
     _mainHeaderEl,
     _mainFooterEl,
     _drawerToggleButtonEl,
-    _drawerToggleButtonInputEl,
     _uiUpdateLayoutStream,
     _searchInputStream,
     _clearAllButtonStream,
@@ -98,8 +97,7 @@ APP.AppView = (function () {
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
     _drawerEl = document.getElementById('drawer');
-    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > label');
-    _drawerToggleButtonInputEl = document.querySelector('.drawer__menu-spinner-button > input');
+    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
@@ -161,7 +159,7 @@ APP.AppView = (function () {
         _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
       });
 
-    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, _browserInfo.mouseClickEvtStr())
+    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, 'change')
       .subscribe(function () {
         toggleDrawer();
       });
@@ -211,19 +209,19 @@ APP.AppView = (function () {
     setCurrentViewPortScroll();
     setCurrentViewPortSize();
 
-    positionUIElements();
+    if(_isMobile) {
+      startIsScrollingTimer();
+      hideElementsOnScrollStart();
+    } else {
+      positionUIElements();
+    }
 
-    //startIsScrollingTimer();
-    //hideElementsOnScrollStart();
   }
 
   /**
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    //TweenLite.to(_mainHeaderEl, 0, {top: _currentViewPortScroll.top});
-    //TweenLite.to(_mainFooterEl, 0, {top: _currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight});
-
     _mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
     _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
   }
@@ -238,35 +236,35 @@ APP.AppView = (function () {
   /**
    * Start a timer monitor when scrolling stops
    */
-  //function startIsScrollingTimer() {
-  //  if(_isScrollingTimerStream) {
-  //    _isScrollingTimerStream.dispose();
-  //  }
-  //
-  //  _isScrollingTimerStream = Rx.Observable.timer(500)
-  //    .pluck('interval')
-  //    .take(1)
-  //    .subscribe(showElementsOnScrollEnd);
-  //}
+  function startIsScrollingTimer() {
+    if(_isScrollingTimerStream) {
+      _isScrollingTimerStream.dispose();
+    }
+
+    _isScrollingTimerStream = Rx.Observable.timer(500)
+      .pluck('interval')
+      .take(1)
+      .subscribe(showElementsOnScrollEnd);
+  }
 
 
   /**
    * Hide UI elements
    */
-  //function hideElementsOnScrollStart() {
-  //  TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-  //  TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-  //}
+  function hideElementsOnScrollStart() {
+    TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+    TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
+  }
 
   /**
    * Show UI elements
    */
-  //function showElementsOnScrollEnd() {
-  //  positionUIElements();
-  //
-  //  TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-  //  TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-  //}
+  function showElementsOnScrollEnd() {
+    positionUIElements();
+
+    TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+    TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
+  }
 
   //----------------------------------------------------------------------------
   //  Mobile
@@ -289,6 +287,7 @@ APP.AppView = (function () {
     }
 
     _isMobile = true;
+
     _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
   }
 
@@ -298,6 +297,7 @@ APP.AppView = (function () {
     }
 
     _isMobile = false;
+
     closeDrawer();
     _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
   }
@@ -313,16 +313,12 @@ APP.AppView = (function () {
   function openDrawer() {
     _isDrawerOpen = true;
 
-    _drawerToggleButtonInputEl.checked = false;
-
     TweenLite.to(_drawerEl, 0.5, {x: 0, ease: Quad.easeOut});
     TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease: Quad.easeOut});
   }
 
   function closeDrawer() {
     _isDrawerOpen = false;
-
-    _drawerToggleButtonInputEl.checked = true;
 
     TweenLite.to(_drawerEl, 0.5, {x: _drawerWidth * -1, ease: Quad.easeOut});
     TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});

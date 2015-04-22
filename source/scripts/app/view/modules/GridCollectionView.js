@@ -105,30 +105,30 @@ define('APP.AppView.GridCollectionView',
      * @param dur
      * @param interval
      */
-    function staggerFrom(elList, dur, interval) {
-      var i = 0,
-        len = elList.length;
-
-      elList.forEach(function (item) {
-        item.setIsAnimating(true);
-      });
-
-      for (; i < len; i++) {
-        TweenLite.from(elList[i].getElement(), dur, {
-          rotationY: -90,
-          transformOrigin: 'left',
-          alpha: 0,
-          ease: Quad.easeOut,
-          delay: (i + 1) * interval,
-          onComplete: onStaggerInComplete,
-          onCompleteParams: [elList[i]]
-        });
-      }
-    }
-
-    function onStaggerInComplete(item) {
-      item.setIsAnimating(false);
-    }
+    //function staggerFrom(elList, dur, interval) {
+    //  var i = 0,
+    //    len = elList.length;
+    //
+    //  elList.forEach(function (item) {
+    //    item.setIsAnimating(true);
+    //  });
+    //
+    //  for (; i < len; i++) {
+    //    TweenLite.from(elList[i].getElement(), dur, {
+    //      rotationY: -90,
+    //      transformOrigin: 'left',
+    //      alpha: 0,
+    //      ease: Quad.easeOut,
+    //      delay: (i + 1) * interval,
+    //      onComplete: onStaggerInComplete,
+    //      onCompleteParams: [elList[i]]
+    //    });
+    //  }
+    //}
+    //
+    //function onStaggerInComplete(item) {
+    //  item.setIsAnimating(false);
+    //}
 
     function killAllAnimations() {
       var els = _children.map(function(item) { return item.getElement();});

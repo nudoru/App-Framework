@@ -3,6 +3,10 @@ define('nudoru.utils.ArrayUtils',
 
     var _numberUtils = require('nudoru.utils.NumberUtils');
 
+    exports.isArray = function(test) {
+      return Object.prototype.toString.call(test) === "[object Array]";
+    };
+
     // Reference: http://jhusain.github.io/learnrx/index.html
     exports.mergeAll = function () {
       var results = [];
