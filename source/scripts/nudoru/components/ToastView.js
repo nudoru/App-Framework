@@ -43,11 +43,19 @@ define('nudoru.components.ToastView',
 
       assignTypeClassToElement(type, toastObj.element);
 
+      TweenLite.set(toastObj.element, {
+        css: {
+          transformPerspective: 800,
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "hidden"
+        }
+      });
+
       var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
         closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
-      toastObj.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+      toastObj.closeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
         .subscribe(function () {
           remove(toastObj.id);
         });
@@ -72,7 +80,7 @@ define('nudoru.components.ToastView',
             title: title,
             message: message
           }),
-          lifeTimeStream: null
+          closeStream: null
         };
 
       return obj;
@@ -97,14 +105,20 @@ define('nudoru.components.ToastView',
 
     function transitionOut(el) {
       TweenLite.to(el, 0.25, {
-        left: '+=300', ease: Quad.easeIn, onComplete: function () {
+        rotationX: -45,
+        alpha: 0,
+        ease: Quad.easeIn, onComplete: function () {
           onTransitionOutComplete(el);
         }
       });
     }
 
     function onTransitionOutComplete(el) {
-      var idx = getObjIndexByID(el.getAttribute('id'));
+      var idx = getObjIndexByID(el.getAttribute('id')),
+          toastObj = _children[idx];
+
+      toastObj.closeStream.dispose();
+
       _mountPoint.removeChild(el);
       _children[idx] = null;
       _children.splice(idx, 1);

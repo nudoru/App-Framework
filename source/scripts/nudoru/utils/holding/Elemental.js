@@ -13,7 +13,6 @@
  * http://words.taylorlapeyre.me/an-introduction-to-react
  *
  */
-
 var Elemental = (function () {
 
   var _initialized = false,
@@ -31,12 +30,14 @@ var Elemental = (function () {
 
     buildTemplateHTMLMap();
     buildTemplateObjectMap();
+
+    console.log('Elemental INIT');
   }
 
   function buildTemplateHTMLMap() {
     var els = getAllTemplateElements();
     els.forEach(function(el) {
-      console.log();
+      console.log('Elemental - adding template html: '+el.getAttribute('id'));
       _templateHTMLMap[el.getAttribute('id')] = el.innerHTML;
     });
   }
@@ -95,6 +96,9 @@ var Elemental = (function () {
   };
 
 }());
+
+//TODO put this somewhere else
+Elemental.initialize();
 
 define('ElementalCollection',
   function (require, module, exports) {

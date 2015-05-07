@@ -1,6 +1,8 @@
 /**
+ * Simple popup message box module
+ *
  * Created by matt on 5/5/15
- * last updated 5/5/15
+ * last updated 5/7/15
  */
 
 define('nudoru.components.MessageBoxView',
@@ -9,18 +11,18 @@ define('nudoru.components.MessageBoxView',
     var _children = [],
       _counter = 0,
       _types = {
-        DEFAULT : 'default',
-        INFORMATION : 'information',
+        DEFAULT: 'default',
+        INFORMATION: 'information',
         SUCCESS: 'success',
         WARNING: 'warning',
         DANGER: 'danger'
       },
       _typeStyleMap = {
-        'default' : '',
-        'information' : 'toast__information',
-        'success' : 'toast__success',
-        'warning' : 'toast__warning',
-        'danger' : 'toast__danger'
+        'default': '',
+        'information': 'messagebox__information',
+        'success': 'messagebox__success',
+        'warning': 'messagebox__warning',
+        'danger': 'messagebox__danger'
       },
       _mountPoint,
       _template = require('nudoru.utils.NTemplate'),
@@ -33,46 +35,63 @@ define('nudoru.components.MessageBoxView',
     }
 
     function add(initObj) {
-      var type = initObj || _types.DEFAULT;
+      var type = initObj.type || _types.DEFAULT;
 
-      var toastObj = createToastObject(title, message);
+      var boxOjb = createBoxObject(initObj.title, initObj.content, initObj.modal);
 
-      _children.push(toastObj);
+      _children.push(boxOjb);
 
-      _mountPoint.insertBefore(toastObj.element, _mountPoint.firstChild);
+      _mountPoint.appendChild(boxOjb.element);
 
-      assignTypeClassToElement(type, toastObj.element);
+      assignTypeClassToElement(type, boxOjb.element);
 
-      var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
-        expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+      _domUtils.centerElementInViewPort(boxOjb.element);
 
-      toastObj.lifeTimeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+      TweenLite.set(boxOjb.element, {
+        css: {
+          transformPerspective: 800,
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "hidden"
+        }
+      });
+
+      Draggable.create('#' + boxOjb.id, {
+        bounds: window
+      });
+
+      var closeBtn = boxOjb.element.querySelector('.footer > button');
+
+      boxOjb.closeStream = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr())
         .subscribe(function () {
-          remove(toastObj.id);
+          remove(boxOjb.id);
         });
 
-      transitionIn(toastObj.element);
+      transitionIn(boxOjb.element);
 
-      return toastObj.id;
+      if (initObj.modal) {
+        _modal.showHard(true);
+      }
+
+      return boxOjb.id;
     }
 
     function assignTypeClassToElement(type, element) {
-      if(type !== 'default') {
+      if (type !== 'default') {
         _domUtils.addClass(element, _typeStyleMap[type]);
       }
     }
 
-    function createToastObject(title, message) {
-      var id = 'js__toast-toastitem-' + (_counter++).toString(),
+    function createBoxObject(title, content, modal) {
+      var id = 'js__messagebox-' + (_counter++).toString(),
         obj = {
           id: id,
-          element: _template.asElement('template__component--toast', {
+          modal: modal,
+          element: _template.asElement('template__messagebox--default', {
             id: id,
             title: title,
-            message: message
+            content: content
           }),
-          lifeTimeStream: null
+          closeStream: null
         };
 
       return obj;
@@ -80,32 +99,57 @@ define('nudoru.components.MessageBoxView',
 
     function remove(id) {
       var idx = getObjIndexByID(id),
-        toast;
+        boxObj;
 
       if (idx > -1) {
-        toast = _children[idx];
-        transitionOut(toast.element);
+        boxObj = _children[idx];
+        transitionOut(boxObj.element);
+      }
+    }
+
+    function checkModalStatus() {
+      var isModal = false;
+
+      _children.forEach(function (boxObj) {
+        if (boxObj.modal) {
+          isModal = true;
+        }
+      });
+
+      if (!isModal) {
+        _modal.hide(true);
       }
     }
 
     function transitionIn(el) {
-      TweenLite.to(el, 0, {alpha: 0});
-      TweenLite.to(el, 1, {alpha: 1, ease: Quad.easeOut});
+      TweenLite.to(el, 0, {alpha: 0, rotationX: 45});
+      TweenLite.to(el, 1, {alpha: 1, rotationX: 0, ease: Circ.easeOut});
     }
 
     function transitionOut(el) {
       TweenLite.to(el, 0.25, {
-        left: '+=300', ease: Quad.easeIn, onComplete: function () {
+        alpha: 0,
+        rotationX: -45,
+        ease: Circ.easeIn, onComplete: function () {
           onTransitionOutComplete(el);
         }
       });
     }
 
     function onTransitionOutComplete(el) {
-      var idx = getObjIndexByID(el.getAttribute('id'));
+      var idx = getObjIndexByID(el.getAttribute('id')),
+        boxObj = _children[idx];
+
+      boxObj.closeStream.dispose();
+
+      Draggable.get('#' + boxObj.id).disable();
+
       _mountPoint.removeChild(el);
+
       _children[idx] = null;
       _children.splice(idx, 1);
+
+      checkModalStatus();
     }
 
     function getObjIndexByID(id) {
@@ -124,6 +168,8 @@ define('nudoru.components.MessageBoxView',
     exports.initialize = initialize;
     exports.add = add;
     exports.remove = remove;
-    exports.type = function() { return _types };
+    exports.type = function () {
+      return _types
+    };
 
   });

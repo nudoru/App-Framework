@@ -24,6 +24,19 @@ BEGIN Templates for dynamic content
     </div>
 </script>
 
+<script id="template__messagebox--default" type="text/template">
+    <div class="messagebox__default" id="<%= id %>">
+        <div class="header" id="<%= id %>-header">
+             <h1><%= title %></h1>
+        </div>
+        <div class="content">
+             <%= content %>
+        </div>
+        <div class="footer">
+                <button class="icon-right">Close<i class="fa fa-times"></i></button>
+        </div>
+    </div>
+</script>
 
 <!--
 END
@@ -239,6 +252,16 @@ END
       <div class="initialization__message">
         <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading Spinner" class="loader">
       </div>
+    </div>
+    <div id="messagebox__container">
+      <!--.messagebox__default.messagebox__width-500px-->
+      <!--  .header-->
+      <!--    h1 Title-->
+      <!--  .content-->
+      <!--    p You should think about whether there is a semantic element that matches the intent of your use of a presentational element. If there is such an element, you should use it, and if it doesn't already have a default styling that you like, then you can use CSS from the tables below to make it look like you want. You may also have to reset any other properties that some elements have by default.-->
+      <!--  .footer-->
+      <!--    button.icon-right Close-->
+      <!--      i.fa.fa-times-->
     </div>
     <div id="toast__container">
       <!--.toast__item(id='test')-->

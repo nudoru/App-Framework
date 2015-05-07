@@ -15,6 +15,7 @@ APP.AppView = (function () {
     _browserResizeStream,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _toastView = require('nudoru.components.ToastView'),
+    _messageBoxView = require('nudoru.components.MessageBoxView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents');
@@ -51,8 +52,6 @@ APP.AppView = (function () {
     positionUIElements();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
-
-    //_modalCoverView.showHard();
   }
 
   function defineDOMElements() {
@@ -69,6 +68,7 @@ APP.AppView = (function () {
 
   function initializeViewComponents() {
     _toastView.initialize('toast__container');
+    _messageBoxView.initialize('messagebox__container');
     _modalCoverView.initialize();
   }
 

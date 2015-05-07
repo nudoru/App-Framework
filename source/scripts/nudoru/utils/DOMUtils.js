@@ -115,6 +115,17 @@ define('nudoru.utils.DOMUtils',
      */
     exports.getQSElementsAsArray = function(el, cls) {
       return Array.prototype.slice.call(el.querySelectorAll(cls));
-    }
+    };
+
+    exports.centerElementInViewPort = function(el) {
+      var vpH = window.innerHeight,
+        vpW = window.innerWidth,
+        elR = el.getBoundingClientRect(),
+        elH = elR.height,
+        elW = elR.width;
+
+      el.style.left = (vpW/2) - (elW/2)+'px';
+      el.style.top = (vpH/2) - (elH/2)+'px';
+    };
 
   });

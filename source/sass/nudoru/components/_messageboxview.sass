@@ -1,0 +1,59 @@
+#messagebox__container
+  position: absolute
+  z-index: $z-index-messagebox-cover
+
+%base-messagebox
+  @extend .panel-border
+  +one-edge-shadow-large
+  position: absolute
+  .header
+    @extend .panel-header
+    text-align: center
+    h1
+      color: $control-primary-color-dark
+      font-weight: 400
+      font-size: 1rem
+      text-shadow: 0 1px 0 #fff
+
+  .content
+    padding: $base-line-height
+  .footer
+    @extend .panel-footer
+    //text-align: center
+    //button
+    //  float: none
+
+.messagebox__width-300px
+  width: 300px
+
+.messagebox__width-400px
+  width: 400px
+
+.messagebox__width-500px
+  width: 500px
+
+.messagebox__default
+  @extend %base-messagebox
+  @extend .messagebox__width-400px
+
+=messagebox-variant($color)
+  border: 1px solid $color
+  .header
+    background-color: $color
+    h1
+      color: #fff
+      +control-emboss-shadow
+
+.messagebox__information
+  +messagebox-variant($control-info-color)
+
+.messagebox__success
+  +messagebox-variant($control-success-color)
+
+.messagebox__warning
+  +messagebox-variant($control-warning-color)
+  border-width: 2px
+
+.messagebox__danger
+  +messagebox-variant($control-danger-color)
+  border-width: 2px

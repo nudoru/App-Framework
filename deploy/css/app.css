@@ -2363,7 +2363,7 @@ select, textarea {
   margin-bottom: 1.376rem;
 }
 
-.label-small, .panel-header h1, .panel-footer h1, button, .button-important {
+.label-small, .panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1, button, .button-important {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   line-height: 2.064rem;
@@ -2881,12 +2881,12 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   white-space: nowrap;
 }
 
-.label, .label-small, .panel-header h1, .panel-footer h1, button, .button-important, .label-big {
+.label, .label-small, .panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1, button, .button-important, .label-big {
   padding: 0.344rem;
   display: inline-block;
 }
 
-.label-small, .panel-header h1, .panel-footer h1, button, .button-important {
+.label-small, .panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1, button, .button-important {
   font-weight: 700;
 }
 
@@ -2916,7 +2916,7 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   background-color: #d9534f;
 }
 
-.panel, .panel-border, .panel-shadow, .toast__item {
+.panel, .panel-border, .panel-shadow, .messagebox__default, .toast__item {
   padding: 0.688rem;
   margin-bottom: 0.688rem;
   overflow: hidden;
@@ -2924,11 +2924,11 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   width: 100%;
 }
 
-.panel, .panel-border, .panel-shadow, .toast__item {
+.panel, .panel-border, .panel-shadow, .messagebox__default, .toast__item {
   background-color: #fff;
 }
 
-.panel-border, .panel-shadow, .toast__item {
+.panel-border, .panel-shadow, .messagebox__default, .toast__item {
   border: 1px solid #eae8e6;
   border-radius: 3px;
 }
@@ -2937,33 +2937,33 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.2);
 }
 
-.panel-header, .panel-footer {
+.panel-header, .messagebox__default .header, .panel-footer, .messagebox__default .footer {
   overflow: hidden;
   display: block;
   margin-right: -0.688rem;
   margin-left: -0.688rem;
   padding: 0.344rem 0.688rem;
 }
-.panel-header h1, .panel-footer h1 {
+.panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1 {
   margin: 0;
 }
-.panel-header h1 i.fa, .panel-footer h1 i.fa {
+.panel-header h1 i.fa, .messagebox__default .header h1 i.fa, .panel-footer h1 i.fa, .messagebox__default .footer h1 i.fa {
   font-family: "FontAwesome";
   color: #646464;
   margin-right: 0.688rem;
 }
-.panel-header button, .panel-footer button {
+.panel-header button, .messagebox__default .header button, .panel-footer button, .messagebox__default .footer button {
   float: right;
 }
 
-.panel-header {
+.panel-header, .messagebox__default .header {
   margin-top: -0.688rem;
   margin-bottom: 0.688rem;
   border-bottom: 1px solid #eae8e6;
   background-color: #faf9f9;
 }
 
-.panel-footer {
+.panel-footer, .messagebox__default .footer {
   margin-top: 0.688rem;
   margin-bottom: -0.688rem;
   border-top: 1px solid #eae8e6;
@@ -3418,7 +3418,6 @@ input.form-input-disabled:focus {
 .modal__background {
   background-color: #005eb8;
   opacity: 0.8;
-  cursor: pointer;
 }
 
 .modal__close-button {
@@ -3440,11 +3439,91 @@ input.form-input-disabled:focus {
   }
 }
 
+#messagebox__container {
+  position: absolute;
+  z-index: 10005;
+}
+
+.messagebox__default {
+  box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
+  position: absolute;
+}
+.messagebox__default .header {
+  text-align: center;
+}
+.messagebox__default .header h1 {
+  color: #005eb8;
+  font-weight: 400;
+  font-size: 1rem;
+  text-shadow: 0 1px 0 #fff;
+}
+.messagebox__default .content {
+  padding: 0.688rem;
+}
+
+.messagebox__width-300px {
+  width: 300px;
+}
+
+.messagebox__width-400px, .messagebox__default {
+  width: 400px;
+}
+
+.messagebox__width-500px {
+  width: 500px;
+}
+
+.messagebox__information {
+  border: 1px solid #00a9e0;
+}
+.messagebox__information .header {
+  background-color: #00a9e0;
+}
+.messagebox__information .header h1 {
+  color: #fff;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.messagebox__success {
+  border: 1px solid #5cb85c;
+}
+.messagebox__success .header {
+  background-color: #5cb85c;
+}
+.messagebox__success .header h1 {
+  color: #fff;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.messagebox__warning {
+  border: 1px solid #f0ad4e;
+  border-width: 2px;
+}
+.messagebox__warning .header {
+  background-color: #f0ad4e;
+}
+.messagebox__warning .header h1 {
+  color: #fff;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.messagebox__danger {
+  border: 1px solid #d9534f;
+  border-width: 2px;
+}
+.messagebox__danger .header {
+  background-color: #d9534f;
+}
+.messagebox__danger .header h1 {
+  color: #fff;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 #toast__container {
   position: fixed;
   top: 0.688rem;
   right: 1.376rem;
-  z-index: 10005;
+  z-index: 10006;
 }
 
 .toast__item {

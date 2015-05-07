@@ -89,6 +89,7 @@ module.exports = function (grunt) {
       dist: {
         src: [
           'source/scripts/vendor/gsap/TweenLite.min.js',
+          'source/scripts/vendor/gsap/utils/Draggable.min.js',
           'source/scripts/vendor/gsap/TimeLineLite.min.js',
           'source/scripts/vendor/gsap/easing/EasePack.min.js',
           'source/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
