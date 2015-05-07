@@ -1,0 +1,73 @@
+$control-padding: $base-line-height !default
+$control-padding-small: $half-base-line-height !default
+$control-margin: $base-line-height !default
+
+$control-form-element-height: 33px
+$control-button-height: $control-form-element-height
+
+$control-primary-color: $light-blue !default
+$control-primary-color-dark: $dark-blue !default
+$control-container-color: rgb(255,255,255) !default
+$control-header-color: $color-white-grey-fill !default
+$control-footer-color: $color-white-grey-fill !default
+
+$control-success-color: #5cb85c
+$control-success-color-dark: scale-lightness($control-success-color, -20%)
+$control-warning-color: #f0ad4e
+$control-warning-color-dark: scale-lightness($control-warning-color, -20%)
+$control-danger-color: #d9534f
+$control-danger-color-dark: scale-lightness($control-danger-color, -20%)
+$control-info-color: $light-blue //#5bc0de
+
+$control-font: $font-content !default
+$control-font-color: rgb(100,100,100) !default
+$control-font-neg-color: rgb(255,255,255) !default
+
+$control-font-text-shadow: 0 1px 0 rgba(0,0,0,.25)
+$control-font-neg-text-shadow: 0 1px 0 rgba(0,0,0,.45)
+
+$control-border: 1px solid $color-white-grey-line !default
+$control-border-radius: 3px !default
+$control-panel-border-radius: $control-border-radius !default
+$control-button-border-radius: 500px !default
+
+$control-shadow: 0 5px 5px -4px rgba(0,0,0,.25) !default
+
+$control-table-zebra-color: rgba(0,0,0,.05)
+
+=control-emboss-shadow
+  text-shadow: -1px -1px 0 rgba(0,0,0,.15), 1px 1px 0 rgba(255,255,255,.1)
+
+=control-disabled
+  background-color: rgba(0,0,0,.2)
+  color: rgba(0,0,0,.5)
+  border: none
+  box-shadow: none
+  text-shadow: none
+  cursor: default
+
+.icon-left
+  i.fa
+    margin-right: $base-line-height
+
+.icon-right
+  i.fa
+    margin-left: $base-line-height
+
+.well
+  margin-top: $half-base-line-height
+  margin-bottom: $half-base-line-height
+  padding: $base-line-height
+  border-radius: $border-radius-large
+  border: $control-border
+  background-color: $color-white-grey-fill
+
+.well-dark
+  @extend .well
+  background-color: rgba(0,0,0,.05)
+
+@import "labels"
+@import "panels"
+@import "buttons"
+@import "forms"
+@import "tables"

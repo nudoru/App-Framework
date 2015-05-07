@@ -1,0 +1,51 @@
+%panel-base
+  @extend %small-headers
+  padding: $control-padding
+  margin-bottom: $control-margin
+  overflow: hidden
+  position: relative
+  width: 100%
+
+.panel
+  @extend %panel-base
+  background-color: #fff
+
+.panel-border
+  @extend .panel
+  border: $control-border
+  border-radius: $control-border-radius
+
+.panel-shadow
+  @extend .panel-border
+  //+slight-panel-shadow
+  +one-edge-shadow-faint
+
+%panel-header-footer-base
+  overflow: hidden
+  display: block
+  margin-right: -$control-margin
+  margin-left: -$control-margin
+  padding: $control-padding-small $control-padding
+  h1
+    @extend .label-small
+    margin: 0
+    i.fa
+      font-family: "FontAwesome"
+      color: $control-font-color
+      margin-right: $base-line-height
+  button
+    float: right
+
+.panel-header
+  @extend %panel-header-footer-base
+  margin-top: -$control-margin
+  margin-bottom: $control-margin
+  border-bottom: $control-border
+  background-color: $control-header-color
+
+.panel-footer
+  @extend %panel-header-footer-base
+  margin-top: $control-margin
+  margin-bottom: -$control-margin
+  border-top: $control-border
+  background-color: $control-footer-color

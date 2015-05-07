@@ -1,0 +1,50 @@
+%label-base-formatting
+  padding: 0
+  margin: 0
+  line-height: $double-base-line-height
+  font-family: $control-font
+  color: $control-font-color
+
+%label-base
+  padding: $control-padding-small
+  display: inline-block
+
+.label
+  @extend %body-text
+  @extend %label-base
+
+.label-small
+  @extend %body-text-small
+  @extend %label-base
+  font-weight: 700
+
+.label-big
+  @extend %body-text-big
+  @extend %label-base
+
+%label-bordered
+  +control-emboss-shadow
+  height: $control-button-height
+  line-height: $control-button-height
+  padding-top: 0
+  padding-bottom: 0
+  border-radius: $control-border-radius
+  color: $control-font-neg-color
+
+.label-information
+  @extend %label-bordered
+  background-color: $control-info-color
+
+.label-success
+  @extend %label-bordered
+  background-color: $control-success-color
+
+.label-warning
+  @extend %label-bordered
+  background-color: $control-warning-color
+
+.label-danger
+  @extend %label-bordered
+  background-color: $control-danger-color
+
+

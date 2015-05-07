@@ -1,0 +1,81 @@
+.panel-shadow
+  .column-container
+    h1 Welcome,
+      em Joe Timely
+  section
+    h1
+      i.fa.fa-clock-o.icon-left
+      | May 10-16, 2015
+      label(for='input-select', style='display: block')
+        i.fa.fa-calendar.icon-left
+        select(id='input-select')
+          option Week 20
+          option Week 21
+          option Week 22
+    table.table.table-rows-zebra
+      colgroup
+      colgroup
+      colgroup
+      colgroup
+      colgroup
+      thead
+        tr
+          th(scope='col').-align-left Solution
+          th(scope='col') % Allocation
+          th(scope='col') Time this week
+          th(scope='col') Weely Average
+          th(scope='col')
+      tbody
+        tr
+          th ABC Project
+          td
+            input(id='input-text', type='text', placeholder='%', style='width: 75px')
+          td
+            input(id='input-text', type='text', placeholder='hrs', style='width: 75px')
+          td 25 hrs
+          td
+            button.button-icon-left.button-no-border
+              i.fa.fa-archive
+              | Archive
+        tr
+          th XYZ Solution
+          td
+            input(id='input-text', type='text', placeholder='%', style='width: 75px')
+          td
+            input(id='input-text', type='text', placeholder='hrs', style='width: 75px')
+          td 7 hrs
+          td
+            button.button-icon-left.button-no-border
+              i.fa.fa-archive
+              | Archive
+        tr
+          th PTO
+          td
+            input(id='input-text', type='text', placeholder='%', style='width: 75px')
+          td
+            input(id='input-text', type='text', placeholder='hrs', style='width: 75px')
+          td 8 hrs
+          td
+            button.button-icon-left.button-no-border
+              i.fa.fa-archive
+              | Archive
+        tr
+          td
+            button.button-icon-left.button-no-border
+              i.fa.fa-plus
+              | Add New Project
+          td
+          td
+          td
+          td
+      tfoot
+        tr
+          th Totals
+          th 100%
+          th 40 hrs
+          th
+          th
+            button.button-icon-right.button-success Submit
+              i.fa.fa-check
+
+

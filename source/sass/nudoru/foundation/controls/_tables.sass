@@ -1,0 +1,117 @@
+//https://css-tricks.com/complete-guide-table-element/
+
+.table
+  margin: 0
+  margin-bottom: $base-line-height
+  padding: 0
+  width: 100%
+  table-layout: fixed
+  border-spacing: 0
+  border-collapse: collapse
+
+  caption
+    @extend %header-4
+    //margin: 0
+    border-bottom: $control-border
+
+  th, td
+    @extend %label-base-formatting
+    padding: $base-line-height
+    border: none
+    vertical-align: middle
+
+  thead, tfoot, tbody
+    th
+      font-family: $font-header
+      font-size: .8rem
+      font-weight: 700
+      color: $control-primary-color
+      border-bottom: $control-border
+      text-align: left
+
+      i.fa
+        font-family: "FontAwesome"
+        margin-right: $half-base-line-height
+
+  thead
+    th
+      border-bottom: 1px solid $control-primary-color
+      vertical-align: bottom
+
+  tfoot
+    th
+      border-bottom: none
+      border-top: 1px solid $control-primary-color
+
+  tbody
+    th
+      border: none
+      text-align: right
+    tr
+      border-bottom: $control-border
+
+    tr:last-child
+      border-bottom: none
+
+    td
+      text-align: left
+      color: #333
+
+  .column-feature
+    border: 2px solid $control-primary-color-dark
+    background-color: #fff
+
+  .column-header-feature
+    +control-emboss-shadow
+    background-color: $control-primary-color
+    color: #fff
+
+  .column-very-narrow
+    width: 50px
+
+  .column-narrow
+    width: 100px
+
+  .column-wide
+    width: 300px
+
+  .column-50pct
+    width: 50%
+
+  .column-25pct
+    width: 25%
+
+  .middle-align
+    vertical-align: middle
+
+  .left-column
+    text-align: left
+
+  .center-column
+    text-align: center
+
+  .right-column
+    text-align: right
+
+.table-rows-zebra
+  tbody tr:nth-child(odd)
+    background-color: $control-table-zebra-color
+
+.table-cols-zebra
+  tbody
+    tr
+      border-bottom: none !important
+      td:nth-child(odd)
+        background-color: $control-table-zebra-color
+
+.table-rows-highlight
+  tbody:hover > tr td
+    color: #aaa
+  tbody
+    tr
+      +transition-prop(background-color, .25s)
+    tr:hover
+      background-color: rgba(0,0,0,.15) !important
+      td
+        color: #333
+    

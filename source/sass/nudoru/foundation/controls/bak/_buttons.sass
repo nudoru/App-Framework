@@ -1,0 +1,92 @@
+%button
+  +transition-prop(background-color, .5s)
+  +transition-prop(color, .5s)
+  +white-gray-component-border
+  background: $color-white-grey-fill
+  border-radius: $button-border-radius
+  padding: $half-base-line-height $double-base-line-height
+  margin: 0 $half-base-line-height 0 $half-base-line-height
+  font-family: $font-content
+  font-weight: 400
+  font-size: .8rem
+  line-height: 1.2rem
+  text-align: center
+  color: $dark-warm-grey
+  cursor: pointer
+  +standard-text-shadow-light
+  &:focus
+    border: 1px solid $light-blue
+  &:hover, &:active
+    color: $dark-blue
+    background-color: #fff
+    box-shadow: none
+
+.basic-button
+  @extend %button
+
+.round-button
+  padding: $half-base-line-height $half-base-line-height*1.8
+
+.important-button
+  @extend %button
+  font-family: $font-header
+  font-size: .9rem
+  color: #fff
+  background-color: $light-warm-grey
+  border: 1px solid rgba(0,0,0,.15)
+  +standard-text-shadow
+  +slight-panel-shadow
+  &:focus
+    border: 1px solid rgba(255,255,255,.5)
+  &:hover, &:active
+    color: #fff
+    +slight-panel-shadow
+    background-color: $dark-warm-grey
+
+.transparent-button
+  padding: $half-base-line-height 0
+  border-radius: $button-border-radius
+  border: 1px solid rgba(0,0,0,0)
+  background-color: rgba(255,255,255,0)
+  color: $light-warm-grey
+  font-size: .6rem
+  font-weight: 700
+  text-align: center
+  text-transform: uppercase
+  cursor: pointer
+  +standard-text-shadow-light
+  +transition-all()
+  &:focus
+    border: 1px solid $light-blue
+  &:hover, &:active
+    color: $dark-warm-grey
+    border: 1px solid rgba(0,0,0,.05)
+    background-color: rgba(255,255,255,.5)
+
+.icon-button
+  background-color: $color-white-grey-line
+  border-radius: 50%
+  border: 1px solid rgba(255,255,255,0)
+  color: $dark-blue
+  font-size: .8rem
+  width: 1.6rem
+  line-height: 1.1rem
+  text-align: center
+  +transition-all()
+  &:hover, &:active
+    background-color: $light-blue
+    color: #fff
+
+.icon-button-blue
+  background-color: $light-blue
+  border-radius: 50%
+  border: 1px solid rgba(255,255,255,0)
+  box-shadow: 0px 1px 0 $color-white-grey-line
+  color: #fff
+  font-size: .8rem
+  width: 1.6rem
+  line-height: 1.1rem
+  text-align: center
+  +transition-all()
+  &:hover, &:active
+    background-color: $dark-blue

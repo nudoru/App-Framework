@@ -1,0 +1,123 @@
+//http://purecss.io/forms/?
+
+%base-form-element
+  @extend %body-text
+  margin: 0 $half-base-line-height
+  padding: $half-base-line-height $base-line-height
+  border: 1px solid rgb(200,200,200)
+  border-radius: $border-radius-small
+  background-color: #fff
+  color: $control-primary-color-dark
+  vertical-align: middle
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,.05)
+  height: $control-form-element-height
+  &:focus
+    border: 1px solid $control-primary-color-dark
+    box-shadow: 0 0 3px $control-primary-color
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=date],
+input[type=month],
+input[type=time],
+input[type=datetime],
+input[type=datetime-local],
+input[type=week],
+input[type=number],
+input[type=search],
+input[type=tel],
+input[type=color],
+input[type=file],
+select, textarea
+  @extend %base-form-element
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=date],
+input[type=month],
+input[type=time],
+input[type=datetime],
+input[type=datetime-local],
+input[type=week],
+input[type=number],
+input[type=search],
+input[type=tel],
+input[type=color],
+input[type=file],
+textarea
+  width: 200px
+
+input[type=radio],
+input[type=checkbox]
+  margin-right: $half-base-line-height
+  &:focus
+    border: 1px solid $control-primary-color
+    box-shadow: 0 0 3px $control-primary-color
+  
+fieldset
+  width: 100%
+
+legend
+  @extend %header-4
+  width: 100%
+  border-bottom: $control-border
+
+.form-stacked
+  label
+    display: block
+  input, select, textarea
+    display: block
+    margin: $base-line-height 0 $double-base-line-height 0
+  input[type=radio], input[type=checkbox]
+    display: inline
+    margin-right: $half-base-line-height
+
+input.form-input-error
+  border: 2px solid $control-danger-color
+
+input.form-input-disabled
+  +control-disabled
+  &:focus
+    +control-disabled
+
+//=borderless-control
+//  border: none
+//  box-shadow: none !important
+//
+//.inline-form-spacing
+//  padding-left: $base-line-height
+//  padding-bottom: .2em
+//  padding-top: .2em
+//  input,
+//  select,
+//  a
+//    margin: 0 !important
+//    margin-right: 1em !important
+//  p
+//    display: inline
+//
+//.narrow-input
+//  width: 45px !important
+//
+//.text-input-button-pair
+//  border: 1px solid #333
+//  border-radius: 10px
+//  padding: .25em .25em
+//  input
+//    +borderless-control
+//    width: 150px
+//    font-size: 1em
+//  button
+//    +borderless-control
+//    border-left: $standard-border-props
+//    border-radius: 0
+//    font-size: .8em
+//    font-weight: 400
+//  a:link
+//    margin: .5em
+//    font-size: .8em
+//    display: inline

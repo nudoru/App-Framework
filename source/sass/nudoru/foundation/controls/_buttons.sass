@@ -1,0 +1,112 @@
+%button
+  +transition-prop(background-color, .25s)
+  +transition-prop(color, .25s)
+  +control-emboss-shadow
+  @extend .label-small
+  font-family: $font-header
+  height: $control-button-height
+  padding: 0 $double-base-line-height
+  margin: $half-base-line-height
+  background-color: $control-primary-color
+  border-radius: $border-radius-button
+  border: none
+  line-height: $control-button-height
+  text-align: center
+  color: #fff
+  cursor: pointer
+  border: 1px solid rgba(0,0,0,.15)
+  box-shadow: 0 2px 0px rgba(0,0,0,.2)
+  i.fa
+    position: relative
+    font-weight: 400
+    top: -1px
+  &:focus
+    border: 1px solid rgba(0,0,0,.5)
+  &:hover, &:active
+    background-color: $control-primary-color-dark
+
+button
+  @extend %button
+
+.button-block
+  display: block
+  width: 100%
+  margin-left: 0
+  margin-right: 0
+
+.button-round
+  padding: 0
+  width: $control-button-height
+
+.button-icon-left
+  padding-left: $base-line-height
+  i.fa
+    margin-right: $base-line-height
+
+.button-icon-right
+  padding-right: $base-line-height
+  i.fa
+    margin-left: $base-line-height
+
+.button-important
+  @extend %button
+  font-size: 1rem
+  padding: 0 $triple-base-line-height
+
+.button-no-border
+  border: 1px solid $color-nocolor
+  background-color: rgba(0,0,0,.05)
+  box-shadow: none
+  text-shadow: none
+  padding-left: $base-line-height
+  padding-right: $base-line-height
+  color: $control-primary-color-dark
+  &:hover, &:active
+    border: 1px solid rgba(0,0,0,.1)
+    background-color: $color-nocolor
+    color: $control-primary-color
+
+.button-success
+  background-color: $control-success-color
+  &:hover, &:active
+    background-color: $control-success-color-dark
+  
+.button-warning
+  background-color: $control-warning-color
+  &:hover, &:active
+    background-color: $control-warning-color-dark
+    
+.button-danger
+  background-color: $control-danger-color
+  &:hover, &:active
+    background-color: $control-danger-color-dark
+
+.button-neutral
+  color: #fff
+  background-color: $light-warm-grey
+  &:hover, &:active
+    background-color: $dark-warm-grey
+
+.button-neutral-light
+  @extend .button-neutral
+  background-color: rgba(0,0,0,.05)
+  color: $dark-warm-grey
+  box-shadow: none
+  text-shadow: none
+  &:hover, &:active
+    color: $control-primary-color
+    border: 1px solid $control-primary-color
+    background-color: rgba(0,0,0,.05)
+
+.button-neutral-light-negative
+  @extend .button-neutral-light
+  color: #fff
+  &:hover, &:active
+    color: #fff
+    border: 1px solid #fff
+    background-color: rgba(255, 255, 255, .1)
+
+.button-disabled
+  +control-disabled
+  &:focus, &:hover, &:active
+    +control-disabled

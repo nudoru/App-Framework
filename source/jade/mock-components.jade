@@ -1,0 +1,108 @@
+h1 Mock Components
+
+.panel-shadow
+  .panel-header
+    h1
+      i.fa.fa-cog
+      | Header
+    button.button-round
+      i.fa.fa-cogs
+  section.well
+    h1 Labels
+    .label-small Small Label
+    .label Normal Label
+    .label-big Big Label
+    .label.label-information Information
+    .label.label-success Success
+    .label.label-warning Warning
+    .label.label-danger Danger
+  section.well
+    h1 Buttons
+    button Button
+    button.button-important Important Button
+    button.button-success Success Button
+    button.button-warning Warning Button
+    button.button-danger Danger Button
+    button.button-neutral Neutral Button
+    button.button-neutral-light Neutral Light Button
+    button.button-round
+      i.fa.fa-camera
+    button.button-icon-left
+      i.fa.fa-calculator
+      | Left
+    button.button-icon-right.button-disabled Disabled
+      i.fa.fa-calculator
+  section.well
+    h1 Form Elements
+    fieldset
+      legend A form legend
+      label(for='input-text') Input Element
+       input(id='input-text', type='text', placeholder='Type here')
+      label(for='input-textarea') Text Area Element
+        textarea(id='input-textarea')
+      label(for='input-select') Select Element
+        select(id='input-select')
+          option One
+          option Two
+          option Three
+      label(for='input-check')
+        input(id='input-check', type="checkbox")
+        | Checkbox Element
+      label(for='input-r1')
+        input(id='input-r1', name='input-radios', type="radio")
+        | Radio 1 Element
+      label(for='input-r2')
+        input(id='input-r2', name='input-radios', type="radio")
+        | Radio 2 Element
+  section.well
+    h1 Table
+    table.table.table-rows-zebra.table-rows-highlight
+      caption Look, I'm a table caption!
+      colgroup
+      colgroup.column-feature
+      colgroup
+      colgroup
+      thead
+        tr
+          th(scope='col')
+            i.fa.fa-book
+            |  Col 1
+          th(scope='col').column-header-feature Col 2
+          th(scope='col') Col 3
+          th(scope='col') Col 4
+      tbody
+        tr
+          th Row1
+          td data
+          td data
+          td data
+        tr
+          th Row 2
+          td data
+          td data
+          td data
+        tr
+          th Row 3
+          td data
+          td data
+          td data
+        tr
+          th Row 4
+          td data
+          td data
+          td data
+        tr
+          th Row 5
+          td data
+          td data
+          td data
+      tfoot
+        tr
+          th(scope='col') Col 1
+          th(scope='col') Col 2
+          th(scope='col') Col 3
+          th(scope='col') Col 4
+  .panel-footer
+    //h1 Footer
+    button Default
+    button.button-neutral Optional
