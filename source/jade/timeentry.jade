@@ -1,72 +1,132 @@
 .panel-shadow
-  .column-container
-    h1.h4-alternate Welcome,
-      em  Joe Timely
-  section
+  .column-container.panel-header
+    .half-left-column
+      h1.h1-alternate Welcome,
+        em  Joe Timely
+    .half-right-column.text-right
+      button.button-icon-left
+        i.fa.fa-cubes
+        | Manage my assignments
+  section.padding-top-double
     .column-container
-      .two-thirds-left-column
-        h1.h1-alternate
-          i.fa.fa-calendar.icon-left
-          | Week of
-          em  May 10-16, 2015
-      .one-third-right-column
+      .one-fourth-left-column
         button.button-icon-left.button-neutral-light
           i.fa.fa-chevron-circle-left
-          | Previous Week
-        button.button-icon-right.button-neutral-light Next Week
+          | Previous Wk
+      .half-left-column.text-center
+        h1.h1-alternate Week of
+          em  May 10-16, 2015
+        button.button-icon-left.button-no-border
+          i.fa.fa-calendar
+          | View Full Month
+      .one-fourth-right-column.text-right
+        button.button-icon-right.button-neutral-light Next Wk
           i.fa.fa-chevron-circle-right
+    hr
     table.table.table-rows-zebra
       thead
         tr
           th(scope='col')
-          th(scope='col').column-15pct Wk %
-          th(scope='col').column-15pct Wk Hrs
-          th(scope='col').column-15pct Wk Avg
-          th(scope='col').column-25pct
+          th(scope='col').column-10pct.center-column Sun
+          th(scope='col').column-10pct.center-column Mon
+          th(scope='col').column-10pct.center-column Tue
+          th(scope='col').column-10pct.center-column Wed
+          th(scope='col').column-10pct.center-column Thur
+          th(scope='col').column-10pct.center-column Fri
+          th(scope='col').column-10pct.center-column Sat
       tbody
         tr
           th ABC Project
-          td
-            input(id='input-text', type='text', placeholder='%', style='width: 75px')
-          td
-            input(id='input-text', type='text', placeholder='hrs', style='width: 75px')
-          td 25 hrs
-          td
-            button.button-icon-left.button-no-border
-              i.fa.fa-archive
-              | Archive Project
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
         tr
           th XYZ Solution
-          td
-            input(id='input-text', type='text', placeholder='%', style='width: 75px')
-          td
-            input(id='input-text', type='text', placeholder='hrs', style='width: 75px')
-          td 7 hrs
-          td
-            button.button-icon-left.button-no-border
-              i.fa.fa-archive
-              | Archive Project
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+        tr
+          th Financial Assessment 1.2
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+        tr
+          th Innovation Team X
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
         tr
           th PTO
-          td
-            input(id='input-text', type='text', placeholder='%', style='width: 75px')
-          td
-            input(id='input-text', type='text', placeholder='hrs', style='width: 75px')
-          td 8 hrs
-          td
-            button.button-icon-left.button-no-border
-              i.fa.fa-archive
-              | Archive Project
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
       tfoot
         tr
-          th Totals
-          th 100%
-          th 40 hrs
-          th
-          th
-            button.button-icon-right.button-success Submit
-              i.fa.fa-check
-    hr
-    button.button-icon-left
-      i.fa.fa-plus
-      | Add New Project
+          th.right-column Totals
+          th.center-column 0 hrs
+          th.center-column.cell-danger
+            i.fa.fa-warning
+            | 10 hrs
+          th.center-column 8 hrs
+          th.center-column 8 hrs
+          th.center-column 8 hrs
+          th.center-column 8 hrs
+          th.center-column 0 hrs
+    section.text-right.panel-footer
+      button.button-icon-right.button-success Submit 42 hrs
+        i.fa.fa-check

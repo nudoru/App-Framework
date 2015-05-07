@@ -2656,6 +2656,22 @@ hr {
   margin-left: 0.688rem;
 }
 
+.padding-top-double {
+  padding-top: 1.376rem;
+}
+
+.padding-top-triple {
+  padding-top: 2.064rem;
+}
+
+.padding-bottom-double {
+  padding-bottom: 1.376rem;
+}
+
+.padding-bottom-triple {
+  padding-bottom: 2.064rem;
+}
+
 /*
 http://codepen.io/HugoGiraudel/pen/qBgoh
 */
@@ -3319,6 +3335,11 @@ input.form-input-disabled:focus {
 }
 .table .right-column {
   text-align: right;
+}
+.table .cell-danger {
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+  background-color: #d9534f;
+  color: #fff;
 }
 
 .table-rows-zebra tbody tr:nth-child(odd) {
