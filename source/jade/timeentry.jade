@@ -1,30 +1,28 @@
 .panel-shadow
   .column-container
-    h1 Welcome,
-      em Joe Timely
+    h1.h4-alternate Welcome,
+      em  Joe Timely
   section
-    h1
-      i.fa.fa-clock-o.icon-left
-      | May 10-16, 2015
-      label(for='input-select', style='display: block')
-        i.fa.fa-calendar.icon-left
-        select(id='input-select')
-          option Week 20
-          option Week 21
-          option Week 22
+    .column-container
+      .two-thirds-left-column
+        h1.h1-alternate
+          i.fa.fa-calendar.icon-left
+          | Week of
+          em  May 10-16, 2015
+      .one-third-right-column
+        button.button-icon-left.button-neutral-light
+          i.fa.fa-chevron-circle-left
+          | Previous Week
+        button.button-icon-right.button-neutral-light Next Week
+          i.fa.fa-chevron-circle-right
     table.table.table-rows-zebra
-      colgroup
-      colgroup
-      colgroup
-      colgroup
-      colgroup
       thead
         tr
-          th(scope='col').-align-left Solution
-          th(scope='col') % Allocation
-          th(scope='col') Time this week
-          th(scope='col') Weely Average
           th(scope='col')
+          th(scope='col').column-15pct Wk %
+          th(scope='col').column-15pct Wk Hrs
+          th(scope='col').column-15pct Wk Avg
+          th(scope='col').column-25pct
       tbody
         tr
           th ABC Project
@@ -36,7 +34,7 @@
           td
             button.button-icon-left.button-no-border
               i.fa.fa-archive
-              | Archive
+              | Archive Project
         tr
           th XYZ Solution
           td
@@ -47,7 +45,7 @@
           td
             button.button-icon-left.button-no-border
               i.fa.fa-archive
-              | Archive
+              | Archive Project
         tr
           th PTO
           td
@@ -58,16 +56,7 @@
           td
             button.button-icon-left.button-no-border
               i.fa.fa-archive
-              | Archive
-        tr
-          td
-            button.button-icon-left.button-no-border
-              i.fa.fa-plus
-              | Add New Project
-          td
-          td
-          td
-          td
+              | Archive Project
       tfoot
         tr
           th Totals
@@ -77,5 +66,7 @@
           th
             button.button-icon-right.button-success Submit
               i.fa.fa-check
-
-
+    hr
+    button.button-icon-left
+      i.fa.fa-plus
+      | Add New Project

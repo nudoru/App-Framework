@@ -1,31 +1,26 @@
 
 <div class="panel-shadow">
   <div class="column-container">
-    <h1>Welcome,<em>Joe Timely</em></h1>
+    <h1 class="h4-alternate">Welcome,<em> Joe Timely</em></h1>
   </div>
   <section>
-    <h1><i class="fa fa-clock-o icon-left"></i>May 10-16, 2015
-      <label for="input-select" style="display: block"><i class="fa fa-calendar icon-left"></i>
-        <select id="input-select">
-          <option>Week 20</option>
-          <option>Week 21</option>
-          <option>Week 22</option>
-        </select>
-      </label>
-    </h1>
+    <div class="column-container">
+      <div class="two-thirds-left-column">
+        <h1 class="h1-alternate"><i class="fa fa-calendar icon-left"></i>Week of<em> May 10-16, 2015</em></h1>
+      </div>
+      <div class="one-third-right-column">
+        <button class="button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Week</button>
+        <button class="button-icon-right button-neutral-light">Next Week<i class="fa fa-chevron-circle-right"></i></button>
+      </div>
+    </div>
     <table class="table table-rows-zebra">
-      <colgroup></colgroup>
-      <colgroup></colgroup>
-      <colgroup></colgroup>
-      <colgroup></colgroup>
-      <colgroup></colgroup>
       <thead>
         <tr>
-          <th scope="col" class="-align-left">Solution</th>
-          <th scope="col">% Allocation</th>
-          <th scope="col">Time this week</th>
-          <th scope="col">Weely Average</th>
           <th scope="col"></th>
+          <th scope="col" class="column-15pct">Wk %</th>
+          <th scope="col" class="column-15pct">Wk Hrs</th>
+          <th scope="col" class="column-15pct">Wk Avg</th>
+          <th scope="col" class="column-25pct"></th>
         </tr>
       </thead>
       <tbody>
@@ -39,7 +34,7 @@
           </td>
           <td>25 hrs</td>
           <td>
-            <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive</button>
+            <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive Project</button>
           </td>
         </tr>
         <tr>
@@ -52,7 +47,7 @@
           </td>
           <td>7 hrs</td>
           <td>
-            <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive</button>
+            <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive Project</button>
           </td>
         </tr>
         <tr>
@@ -65,17 +60,8 @@
           </td>
           <td>8 hrs</td>
           <td>
-            <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive</button>
+            <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive Project</button>
           </td>
-        </tr>
-        <tr>
-          <td>
-            <button class="button-icon-left button-no-border"><i class="fa fa-plus"></i>Add New Project</button>
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
         </tr>
       </tbody>
       <tfoot>
@@ -90,5 +76,7 @@
         </tr>
       </tfoot>
     </table>
+    <hr/>
+    <button class="button-icon-left"><i class="fa fa-plus"></i>Add New Project</button>
   </section>
 </div>

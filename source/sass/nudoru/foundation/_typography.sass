@@ -1,0 +1,43 @@
+// Additional Typography Classes
+// base styles are in _tags.sass
+// Mixins are in mixins/_mixins-typography.sass
+
+%header-alternate
+  font-family: $font-content
+  color: $dark-warm-grey
+  margin-bottom: $double-base-line-height
+  padding-bottom: 0
+  padding-top: $half-base-line-height
+  em
+    color: $dark-blue
+    font-style: normal
+
+.h1-alternate
+  @extend %header-alternate
+  font-size: 2.2rem
+  font-weight: 300
+
+.h2-alternate
+  @extend %header-alternate
+  font-size: 2rem
+  font-weight: 300
+
+.h3-alternate
+  @extend %header-alternate
+  font-size: 1.6rem
+  font-weight: 300
+
+.h4-alternate
+  @extend %header-alternate
+  font-size: 1.2rem
+  font-weight: 400
+
+.h5-alternate
+  @extend %header-alternate
+  font-size: 1rem
+  font-weight: 400
+
+.h6-alternate
+  @extend %header-alternate
+  font-size: .8rem
+  font-weight: 400

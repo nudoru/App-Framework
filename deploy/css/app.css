@@ -2289,7 +2289,7 @@ h2 {
   padding-bottom: 1.376rem;
 }
 
-.panel h1, .panel-border h1, .panel-shadow h1, .toast__item h1, h3 {
+h3 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2301,7 +2301,7 @@ h2 {
   padding-bottom: 0.344rem;
 }
 
-.panel h2, .panel-border h2, .panel-shadow h2, .toast__item h2, h4, legend, .table caption, .floatimage__caption p {
+h4, legend, .table caption, .floatimage__caption p {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2313,7 +2313,7 @@ h2 {
   padding-bottom: 0.344rem;
 }
 
-.panel h3, .panel-border h3, .panel-shadow h3, .toast__item h3, h5 {
+h5 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2326,7 +2326,7 @@ h2 {
   font-weight: 700;
 }
 
-.panel h4, .panel-border h4, .panel-shadow h4, .toast__item h4, .panel h5, .panel-border h5, .panel-shadow h5, .toast__item h5, .panel h6, .panel-border h6, .panel-shadow h6, .toast__item h6, h6 {
+h6 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2559,6 +2559,13 @@ input:focus, textarea:focus, button:focus {
   outline: 0;
 }
 
+hr {
+  margin: 1.376rem 0;
+  padding: 0;
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 #modal__cover, .modal__background, #floatimage__cover, #initialization__cover {
   position: fixed;
   top: 0;
@@ -2642,11 +2649,11 @@ input:focus, textarea:focus, button:focus {
 }
 
 .icon-left {
-  margin-right: 0.344rem;
+  margin-right: 0.688rem;
 }
 
 .icon-right {
-  margin-left: 0.344rem;
+  margin-left: 0.688rem;
 }
 
 /*
@@ -2855,6 +2862,7 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   line-height: 1.376rem;
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #646464;
+  white-space: nowrap;
 }
 
 .label, .label-small, .panel-header h1, .panel-footer h1, button, .button-important, .label-big {
@@ -2969,6 +2977,7 @@ button, .button-important {
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.15);
   box-shadow: 0 2px 0px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
 }
 button i.fa, .button-important i.fa {
   position: relative;
@@ -3015,7 +3024,7 @@ button:hover, .button-important:hover, button:active, .button-important:active {
 
 .button-no-border {
   border: 1px solid transparent;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.02);
   box-shadow: none;
   text-shadow: none;
   padding-left: 0.688rem;
@@ -3248,6 +3257,9 @@ input.form-input-disabled:focus {
 .table tfoot th {
   border-bottom: none;
   border-top: 1px solid #00a9e0;
+  vertical-align: top;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #6e6259;
 }
 .table tbody th {
   border: none;
@@ -3272,20 +3284,29 @@ input.form-input-disabled:focus {
   background-color: #00a9e0;
   color: #fff;
 }
-.table .column-very-narrow {
+.table .column-50px {
   width: 50px;
 }
-.table .column-narrow {
+.table .column-100px {
   width: 100px;
 }
-.table .column-wide {
+.table .column-200px {
+  width: 200px;
+}
+.table .column-300px {
   width: 300px;
 }
-.table .column-50pct {
-  width: 50%;
+.table .column-10pct {
+  width: 10%;
+}
+.table .column-15pct {
+  width: 15%;
 }
 .table .column-25pct {
   width: 25%;
+}
+.table .column-50pct {
+  width: 50%;
 }
 .table .middle-align {
   vertical-align: middle;
@@ -3325,6 +3346,48 @@ input.form-input-disabled:focus {
 }
 .table-rows-highlight tbody tr:hover td {
   color: #333;
+}
+
+.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #6e6259;
+  margin-bottom: 1.376rem;
+  padding-bottom: 0;
+  padding-top: 0.344rem;
+}
+.h1-alternate em, .h2-alternate em, .h3-alternate em, .h4-alternate em, .h5-alternate em, .h6-alternate em {
+  color: #005eb8;
+  font-style: normal;
+}
+
+.h1-alternate {
+  font-size: 2.2rem;
+  font-weight: 300;
+}
+
+.h2-alternate {
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+.h3-alternate {
+  font-size: 1.6rem;
+  font-weight: 300;
+}
+
+.h4-alternate {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.h5-alternate {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.h6-alternate {
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
 #modal__cover {
@@ -3634,18 +3697,6 @@ input.form-input-disabled:focus {
   background-color: #53565a;
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
-}
-
-#drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  min-height: 100%;
-  bottom: 100%;
-  width: 250px;
-  background-color: #666666;
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 .ignore-pointer-events {
