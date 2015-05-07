@@ -72,20 +72,10 @@ APP.AppController = function () {
     mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
     // Component events
-    mapCommand(_componentEvents.MENU_SELECT, _self.MenuSelectionCommand);
 
     // App events
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
-
-    mapCommand(APP.AppEvents.SEARCH_INPUT, _self.SearchInputCommand);
-    mapCommand(APP.AppEvents.GRID_VIEW_ITEMS_CHANGED, _self.GridViewItemsVisibleChangedCommand);
-    mapCommand(APP.AppEvents.ITEM_SELECT, _self.ItemSelectCommand);
-
-    mapCommand(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED, _self.ClearAllFiltersCommand);
-    mapCommand(APP.AppEvents.DATA_FILTER_CHANGED, _self.DataFiltersChangedCommand);
-
-    mapCommand(APP.AppEvents.RESUME_FROM_MODEL_STATE, _self.ResumeFromModelStateCommand);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);

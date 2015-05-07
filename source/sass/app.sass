@@ -23,21 +23,19 @@
 @import "nudoru/foundation/tags"
 @import "nudoru/foundation/utility-classes"
 @import "nudoru/foundation/paper-shadows"
-@import "nudoru/foundation/components"
+@import "nudoru/foundation/div-columns"
+
+@import "nudoru/foundation/controls/controls"
 
 @import "nudoru/components/modalview"
+@import "nudoru/components/messageboxview"
 @import "nudoru/components/toastview"
 @import "nudoru/components/floatimage"
 @import "nudoru/components/ddmainnavigation"
 
-
-@import "app/view/gridcollectionview"
-@import "app/view/gridelementview"
-@import "app/view/itemdetailsview"
-@import "app/view/tagbarview"
-
-@import "app/view/drawer-spinner-menu"
+//@import "app/view/drawer-spinner-menu"
 @import "app/view/header"
+@import "app/view/contents"
 @import "app/view/footer"
 @import "app/view/drawer"
 
@@ -72,9 +70,10 @@
     width: 25px
     height: 25px
 
+// To support the mobile app / drawer structure
+
 body
   overflow: hidden
-
 
 #app__container
   position: fixed
@@ -91,7 +90,7 @@ body
   bottom: 100%
   top: 0
   left: 0
-  background-color: $color-bg-content
+  background-image: url('../img/light_toast.png')
   overflow-y: scroll
   overflow-x: hidden
 

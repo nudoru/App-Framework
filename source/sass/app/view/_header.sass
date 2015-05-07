@@ -1,5 +1,5 @@
 #header
-  position: absolute
+  position: fixed
   top: 0
   left: 0
   z-index: $z-index-main-header
@@ -9,8 +9,8 @@
   padding: 0 $double-base-line-height
   background-color: #fff
   text-shadow: none
+  text-align: center
   h1
-    float: left
     margin: 0
     padding: 0
     height: $header-height
@@ -23,48 +23,20 @@
       margin-right: $base-line-height
       font-style: normal
       font-weight: 400
-  +respond-to(max-width, $tablet-mobile-break)
-    text-align: center
-    height: $mobile-header-height
-    background-color: $dark-blue
-    text-shadow: 0 -1px 0 rgba(0,0,0,.35)
-    h1
-      display: block
-      width: 100%
-      font-size: 1.2rem
-      height: $mobile-header-height
-      line-height: $mobile-header-height
-      color: #fff
-      letter-spacing: 0
-      em
-        color: #fff
 
-.header__drawer-toggle
-  visibility: hidden
-  position: absolute
-  top: 0
-  left: 0
-  bottom: 0
-  border: 0
-  background-color: rgba(0,0,0,.15)
-  border-right: 1px solid rgba(0,0,0,.20)
-  padding: 13px $base-line-height $base-line-height $base-line-height
-  height: $mobile-header-height
-  min-height: $mobile-header-height
-  //button
-  //  border: 0
-  //  background-color: rgba(0,0,0,.15)
-  //  border-right: 1px solid rgba(0,0,0,.20)
-  //  padding: 13px $base-line-height $base-line-height $base-line-height
-  //  height: $mobile-header-height
-  //  min-height: $mobile-header-height
-  //  cursor: pointer
-  //  i.fa
-  //    font-size: 1.4rem
-  //    color: #fff
-  //  &:active, &:hover
-  //    color: $light-blue
-  +respond-to(max-width, $tablet-mobile-break)
-    visibility: visible
+//.header__drawer-toggle
+//  visibility: hidden
+//  position: absolute
+//  top: 0
+//  left: 0
+//  bottom: 0
+//  border: 0
+//  background-color: rgba(0,0,0,.15)
+//  border-right: 1px solid rgba(0,0,0,.20)
+//  padding: 13px $base-line-height $base-line-height $base-line-height
+//  height: $mobile-header-height
+//  min-height: $mobile-header-height
+//  +respond-to(max-width, $tablet-mobile-break)
+//    visibility: visible
 
 

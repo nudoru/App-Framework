@@ -44,19 +44,26 @@ h6
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt
   @extend %body-text
 
-//p:last-of-type
-//  margin-bottom: 0
-
-// indent first line of paragraph
-//p + p
-  text-indent: $indent-margin-standard
-  margin-top: -$base-line-height
+p:last-of-type
+  margin-bottom: 0
 
 strong
   font-weight: 700
 
 em
   font-style: italic
+
+blockquote
+  margin-left: $double-base-line-height
+  margin-right: $double-base-line-height
+  padding: $base-line-height
+  background-color: rgba(0,0,0,.05)
+  font-family: $font-header
+
+pre
+  +force-break-all-words
+  padding: $base-line-height
+  background-color: rgba(0,0,0,.05)
 
 a
   +transition-all
@@ -66,10 +73,6 @@ a
     color: $color-link-active
   &:focus
     outline: thin-dotted
-
-//ul, ol
-  //margin-left: -$double-base-line-height
-  //padding-left: $indent-margin-standard
 
 a.custom
   +transition-all

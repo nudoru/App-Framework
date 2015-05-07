@@ -1,5 +1,5 @@
 {
-  "name": "solutions-gallery",
+  "name": "app-framework",
   "version": "0.0.1",
   "devDependencies": {
     "grunt": "~0.4.2",

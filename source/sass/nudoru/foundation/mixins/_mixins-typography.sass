@@ -1,3 +1,78 @@
+=header-base($fontSize, $lineHeight: $double-base-line-height, $marginBottom: $base-line-height)
+  margin: 0
+  padding: 0
+  margin-bottom: $marginBottom
+  font-family: $font-header
+  font-size: $fontSize
+  font-weight: 400
+  line-height: $lineHeight
+  text-rendering: optimizeLegibility
+
+%header-1
+  +header-base(1.8rem)
+  padding-bottom: $double-base-line-height
+
+%header-2
+  +header-base(1.62rem)
+  padding-bottom: $double-base-line-height
+
+%header-3
+  +header-base(1.2rem)
+  padding-bottom: $half-base-line-height
+
+%header-4
+  +header-base(1rem)
+  padding-bottom: $half-base-line-height
+
+%header-5
+  +header-base(.69rem)
+  text-transform: uppercase
+  font-weight: 700
+
+%header-6
+  +header-base(.62rem)
+  text-transform: uppercase
+  font-weight: 700
+
+=paragraph-base($fontSize: $base-font-size, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
+  font-family: $font-content
+  font-size: $fontSize
+  line-height: $lineHeight
+  font-weight: 400
+  margin-top: 0
+  margin-bottom: $marginBottom
+
+// TO-DO using $base-font-size here isn't working - why?
+%body-text
+  +paragraph-base(.9rem, $double-base-line-height+$half-base-line-height, $double-base-line-height)
+
+%body-text-small
+  +paragraph-base(.8rem, $triple-base-line-height, $double-base-line-height)
+
+%body-text-big
+  +paragraph-base(1rem, $triple-base-line-height, $double-base-line-height)
+
+%small-headers
+  h1
+    @extend %header-3
+  h2
+    @extend %header-4
+  h3
+    @extend %header-5
+  h4, h5, h6
+    @extend %header-6
+
+%compressed-paragraph
+  display: inline
+  &:before
+    content: '\00b6'
+    color: rgba(0,0,0,.25)
+    margin-left: $base-line-height
+    margin-right: $half-base-line-height
+  &:first-of-type
+    &:before
+      margin-left: 0
+
 // ONLY WORKS IF THE BODY FONT SIZE PCT IS 62.5
 =font-rem($sizeValue: 1.6)
   font-size: ($sizeValue * 10) + px

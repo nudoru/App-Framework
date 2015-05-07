@@ -6,39 +6,18 @@ APP.AppView = (function () {
     _currentViewPortSize,
     _currentViewPortScroll,
     _mainScrollEl,
-    _mainSearchInputEl,
-    _searchHeaderEl,
-    _clearAllButtonEl,
     _appContainerEl,
     _appEl,
-    _drawerEl,
     _mainHeaderEl,
     _mainFooterEl,
-    _drawerToggleButtonEl,
     _uiUpdateLayoutStream,
-    _searchInputStream,
-    _clearAllButtonStream,
     _browserScrollStream,
     _browserResizeStream,
-    _isScrollingTimerStream,
-    _drawerToggleButtonStream,
-    _isMobile,
-    _tabletBreakWidth,
-    _phoneBreakWidth,
-    _drawerWidth,
-    _isDrawerOpen,
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
-    _headerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
-    _drawerMenuView = requireUnique('nudoru.components.DDMenuBarView'),
     _toastView = require('nudoru.components.ToastView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
-    _tagBarView = require('APP.AppView.TagBarView'),
-    _itemGridView = require('APP.AppView.GridCollectionView'),
-    _itemDetailView = require('APP.AppView.ItemDetailView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
-    _componentEvents = require('nudoru.events.ComponentEvents'),
-    _stringUtils = require('nudoru.utils.StringUtils'),
-    _browserInfo = require('nudoru.utils.BrowserInfo');
+    _componentEvents = require('nudoru.events.ComponentEvents');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -56,12 +35,6 @@ APP.AppView = (function () {
     _self = this;
     _appGlobals = APP.globals();
 
-    _isMobile = false;
-    _tabletBreakWidth = 750;
-    _phoneBreakWidth = 475;
-    _drawerWidth = 250;
-    _isDrawerOpen = false;
-
     _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
   }
 
@@ -72,21 +45,14 @@ APP.AppView = (function () {
     initializeViewComponents();
     configureUIStreams();
     configureUIEvents();
-    checkForMobile();
-    hideModalCover();
-    positionUIElements();
-    updateAppTitle();
 
-    TweenLite.to(_drawerEl, 0, {x: _drawerWidth * -1});
+    hideModalCover();
+
+    positionUIElements();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
-  }
 
-  function updateAppTitle() {
-    var apptitle = _mainHeaderEl.querySelector('h1');
-    apptitle.innerHTML = _appGlobals.appConfig.title;
-
-    document.title = _stringUtils.removeTags(_appGlobals.appConfig.title);
+    //_modalCoverView.showHard();
   }
 
   function defineDOMElements() {
@@ -96,32 +62,18 @@ APP.AppView = (function () {
 
     // listen for scroll on the app container not window or body
     _mainScrollEl = _appEl;
-    _drawerEl = document.getElementById('drawer');
-    _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
-
-    // item grid header
-    _mainSearchInputEl = document.querySelector('.grid__header-search > input');
-    _searchHeaderEl = document.querySelector('.grid__header > h1');
-    _clearAllButtonEl = document.getElementById('clearall-button');
   }
 
   function initializeViewComponents() {
     _toastView.initialize('toast__container');
     _modalCoverView.initialize();
-    _itemDetailView.initialize('details');
-    _tagBarView.initialize('tagbar__container');
-
-    // Menus init'd with data below
-    // Grid collection view init'd with below
-
   }
 
   function configureUIEvents() {
     _eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
-    //reserved for future _eventDispatcher.subscribe(APP.AppEvents.GRID_VIEW_LAYOUT_COMPLETE, onGridViewLayoutComplete);
   }
 
   function configureUIStreams() {
@@ -145,25 +97,6 @@ APP.AppView = (function () {
         handleViewPortScroll();
       });
 
-    _searchInputStream = Rx.Observable.fromEvent(_mainSearchInputEl, 'keyup')
-      .throttle(150)
-      .map(function (evt) {
-        return evt.target.value;
-      })
-      .subscribe(function (value) {
-        _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, value);
-      });
-
-    _clearAllButtonStream = Rx.Observable.fromEvent(_clearAllButtonEl, _browserInfo.mouseClickEvtStr())
-      .subscribe(function () {
-        _eventDispatcher.publish(APP.AppEvents.VIEW_ALL_FILTERS_CLEARED);
-      });
-
-    _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, 'change')
-      .subscribe(function () {
-        toggleDrawer();
-      });
-
   }
 
   //----------------------------------------------------------------------------
@@ -171,11 +104,13 @@ APP.AppView = (function () {
   //----------------------------------------------------------------------------
 
   function handleViewPortResize() {
-    checkForMobile();
+    showNotification('Resize!', 'Here we go!', _toastView.type().INFORMATION);
     _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
   }
 
   function handleViewPortScroll() {
+    showNotification('Scrolling!', 'Here we go!', _toastView.type().DEFAULT);
+
     _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
@@ -209,200 +144,17 @@ APP.AppView = (function () {
     setCurrentViewPortScroll();
     setCurrentViewPortSize();
 
-    if(_isMobile) {
-      startIsScrollingTimer();
-      hideElementsOnScrollStart();
-    } else {
-      positionUIElements();
-    }
-
+    positionUIElements();
   }
 
   /**
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    _mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
-    _mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
+    //_mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
+    //_mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
   }
 
-  /**
-   * Update on filters changed
-   */
-  function updateUIOnFilterChanges() {
-    TweenLite.to(_mainScrollEl, 1, {scrollTop: 0, ease: Quad.easeIn});
-  }
-
-  /**
-   * Start a timer monitor when scrolling stops
-   */
-  function startIsScrollingTimer() {
-    if(_isScrollingTimerStream) {
-      _isScrollingTimerStream.dispose();
-    }
-
-    _isScrollingTimerStream = Rx.Observable.timer(500)
-      .pluck('interval')
-      .take(1)
-      .subscribe(showElementsOnScrollEnd);
-  }
-
-
-  /**
-   * Hide UI elements
-   */
-  function hideElementsOnScrollStart() {
-    TweenLite.to(_mainHeaderEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-    TweenLite.to(_mainFooterEl, 0, {autoAlpha: 0, ease:Circ.easeOut});
-  }
-
-  /**
-   * Show UI elements
-   */
-  function showElementsOnScrollEnd() {
-    positionUIElements();
-
-    TweenLite.to(_mainHeaderEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-    TweenLite.to(_mainFooterEl, 0.1, {autoAlpha: 1, ease:Circ.easeOut});
-  }
-
-  //----------------------------------------------------------------------------
-  //  Mobile
-  //----------------------------------------------------------------------------
-
-  /**
-   * Usually on resize, check to see if we're in mobile
-   */
-  function checkForMobile() {
-    if (_currentViewPortSize.width <= _tabletBreakWidth || _browserInfo.mobile.any()) {
-      switchToMobileView();
-    } else if (_currentViewPortSize.width > _tabletBreakWidth) {
-      switchToDesktopView();
-    }
-  }
-
-  function switchToMobileView() {
-    if (_isMobile) {
-      return;
-    }
-
-    _isMobile = true;
-
-    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
-  }
-
-  function switchToDesktopView() {
-    if (!_isMobile) {
-      return;
-    }
-
-    _isMobile = false;
-
-    closeDrawer();
-    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
-  }
-
-  function toggleDrawer() {
-    if (_isDrawerOpen) {
-      closeDrawer();
-    } else {
-      openDrawer();
-    }
-  }
-
-  function openDrawer() {
-    _isDrawerOpen = true;
-
-    TweenLite.to(_drawerEl, 0.5, {x: 0, ease: Quad.easeOut});
-    TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease: Quad.easeOut});
-  }
-
-  function closeDrawer() {
-    _isDrawerOpen = false;
-
-    TweenLite.to(_drawerEl, 0.5, {x: _drawerWidth * -1, ease: Quad.easeOut});
-    TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
-  }
-
-  //----------------------------------------------------------------------------
-  //  Menus
-  //----------------------------------------------------------------------------
-
-  function initializeMenus(data) {
-    _headerMenuView.initialize('header__navigation', data);
-    _drawerMenuView.initialize('drawer__navigation', data, true);
-  }
-
-  function updateMenuSelections(data) {
-    updateHeaderMenuSelections(data);
-    updateDrawerMenuSelections(data);
-  }
-
-  function updateHeaderMenuSelections(data) {
-    _headerMenuView.setMenuSelections(data);
-  }
-
-  function updateDrawerMenuSelections(data) {
-    _drawerMenuView.setMenuSelections(data);
-  }
-
-  //----------------------------------------------------------------------------
-  //  Tar Bar
-  //----------------------------------------------------------------------------
-
-  function updateTagBarDisplay(tags) {
-    _tagBarView.update(tags);
-
-    // Updating will change the height of the bar, reposition
-    positionUIElements();
-  }
-
-  //----------------------------------------------------------------------------
-  //  Grid Collection view
-  //----------------------------------------------------------------------------
-
-
-  function initializeGridCollectionView(data) {
-    _itemGridView.initialize('grid__item-container', data);
-  }
-
-  // reserved, no use currently
-  //function onGridViewLayoutComplete() {
-  //  console.log('gridview layout complete');
-  //}
-
-  function updateGridItemVisibility(data) {
-    _itemGridView.updateItemVisibility(data);
-  }
-
-  /**
-   * Set the item grid search header
-   * @param message
-   */
-  function updateSearchHeader(message) {
-    _searchHeaderEl.innerHTML = message;
-  }
-
-  function clearAllFilters() {
-    clearFreeTextFilter();
-    _headerMenuView.resetAllSelections();
-    _drawerMenuView.resetAllSelections();
-    _tagBarView.update([]);
-    showAllGridViewItems();
-  }
-
-  function clearFreeTextFilter() {
-    _mainSearchInputEl.value = '';
-  }
-
-  function setFreeTextFilterValue(str) {
-    _mainSearchInputEl.value = str;
-    _eventDispatcher.publish(APP.AppEvents.SEARCH_INPUT, str);
-  }
-
-  function showAllGridViewItems() {
-    _itemGridView.showAllItems();
-  }
 
   //----------------------------------------------------------------------------
   //  Modal View
@@ -417,8 +169,7 @@ APP.AppView = (function () {
   }
 
   function hideModalContent() {
-    _itemDetailView.hide();
-    _eventDispatcher.publish(APP.AppEvents.ITEM_SELECT, '');
+    //
   }
 
   //----------------------------------------------------------------------------
@@ -430,26 +181,10 @@ APP.AppView = (function () {
    * @param title The title
    * @param message The message
    */
-  function showNotification(title, message) {
+  function showNotification(title, message, type) {
     title = title || "Notification";
-    _toastView.add(title, message);
-  }
-
-  function showItemDetailView(item) {
-    showNotification(item.title, 'Is showing ...');
-
-    _itemDetailView.showItem(item);
-    showModalCover(true);
-  }
-
-  function hideItemDetailView() {
-    hideModalCover(true);
-    hideModalContent();
-  }
-
-  function showBigMessage(title, message) {
-    _itemDetailView.showMessage({title: title, description: message});
-    showModalCover(true);
+    type = type || _toastView.type().DEFAULT;
+    _toastView.add(title, message, type);
   }
 
   function removeLoadingMessage() {
@@ -478,22 +213,6 @@ APP.AppView = (function () {
     render: render,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-    getMainScrollingView: getMainScrollingView,
-    updateSearchHeader: updateSearchHeader,
-    showBigMessage: showBigMessage,
-    initializeMenus: initializeMenus,
-    initializeGridView: initializeGridCollectionView,
-    showItemDetailView: showItemDetailView,
-    hideItemDetailView: hideItemDetailView,
-    clearAllFilters: clearAllFilters,
-    clearFreeTextFilter: clearFreeTextFilter,
-    setFreeTextFilterValue: setFreeTextFilterValue,
-    showAllGridViewItems: showAllGridViewItems,
-    updateGridItemVisibility: updateGridItemVisibility,
-    updateTagBarDisplay: updateTagBarDisplay,
-    updateMenuSelections: updateMenuSelections,
-    updateHeaderMenuSelections: updateHeaderMenuSelections,
-    updateDrawerMenuSelections: updateDrawerMenuSelections,
-    updateUIOnFilterChanges: updateUIOnFilterChanges
+    getMainScrollingView: getMainScrollingView
   };
 }());

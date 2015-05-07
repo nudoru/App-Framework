@@ -5,12 +5,15 @@
 #toast__container
   position: fixed
   top: $base-line-height
-  right: $base-line-height
+  right: $double-base-line-height
   //pointer-events: auto
   z-index: $z-index-toast-container
 
 .toast__item
-  @extend %panel
+  //@extend %panel
+  @extend .panel-border
+  border: 1px solid rgba(0,0,0,.1)
+  background-color: #fff
   display: table
   position: absolute
   top: 0
@@ -30,23 +33,46 @@
   float: left
   width: 190px
   h1, p
-    font-family: $font-content
-    color: $light-warm-grey
-    font-size: .8rem
-  h1, p
     padding: 0
     margin: 0
     line-height: $base-line-height + $half-base-line-height
+    font-family: $font-content
+    font-size: .8rem
+    color: $control-primary-color-dark
   h1
     font-size: .7rem
+    font-weight: 700
     margin-bottom: $half-base-line-height
-  p
-    color: $dark-blue
 
 .toast__item-controls
   width: 55px
-  background-color: $color-white-grey-fill
-  //border-left: 1px solid $color-white-grey-line
+  background-color: rgba(0,0,0,.05)
+  border-left: 1px solid rgba(0,0,0,.1)
   text-align: center
   button
-    @extend .icon-button
+    @extend .button-round
+    @extend .button-neutral-light
+
+=toast-variation($color)
+  background-color: $color
+  .toast__item-content
+    h1, p
+      color: #fff
+      +control-emboss-shadow
+  .toast__item-controls
+    background-color: rgba(255, 255, 255,.1)
+    border-left: 1px solid rgba(255, 255, 255,.2)
+    button
+      @extend .button-neutral-light-negative
+
+.toast__information
+  +toast-variation($control-primary-color)
+
+.toast__success
+  +toast-variation($control-success-color-dark)
+
+.toast__warning
+  +toast-variation($control-warning-color-dark)
+
+.toast__danger
+  +toast-variation($control-danger-color)

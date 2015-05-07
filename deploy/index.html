@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Solutions Gallery</title>
+    <title>App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -24,128 +24,6 @@ BEGIN Templates for dynamic content
     </div>
 </script>
 
-<script id="template__tag" type="text/template">
-    <div class="tag"><%= tag %></div>
-</script>
-
-<script id="template__tag-bar" type="text/template">
-    <div class="tag">#<%= tag %></div>
-</script>
-
-<script id="template__menu-item" type="text/template">
-    <li>
-        <button class="js__menu-item" data-value="<%= value %>"><%= label %></button>
-    </li>
-</script>
-
-<script id="template__menu-item-icon" type="text/template">
-    <li class="js__menu-item icon-left">
-        <button class="js__menu-item menu__indent" data-value="<%= value %>">
-            <i class="fa fa-circle-thin"></i><%= label %>
-        </button>
-    </li>
-</script>
-
-<script id="template__menu-header" type="text/template">
-    <li>
-        <button class="js__menu-item" data-value="<%= value %>"><%= label %></button>
-        <ul class="menu"></ul>
-    </li>
-</script>
-
-<script id="template__item-tile" type="text/template">
-    <div class="item">
-        <ul class="item__content item-<%= categories[0] %>" data-value="<%= id %>">
-            <li class="item__image">
-                <div class="item__image-wrapper">
-                    <img src="<%= previewImage %>">
-                </div>
-            </li>
-            <ul class="item__data">
-                <li class="item__data-title"><%= title %></li>
-                <ul class="item__data-metadata">
-                    <li class="left">
-                        <% _.each(categories, function(cat) { %>
-                        <i class="fa fa-cube"></i><%= cat %>
-                        <% }); %>
-                    </li>
-                    <li class="right"><i class="fa fa-puzzle-piece"></i><%= complexity %></li>
-                </ul>
-            </ul>
-        </ul>
-    </div>
-</script>
-
-<script id="template__detail-message" type="text/template">
-    <div class="details__content">
-        <div class="details__content-title">
-            <h1><%= title %></h1>
-        </div>
-        <div class="details__content-description">
-            <%= description %>
-        </div>
-    </div>
-</script>
-
-
-<script id="template__detail-item" type="text/template">
-    <div class="details__content">
-
-        <div class="details__content-title">
-            <h1><%= title %></h1>
-        </div>
-        <div class="details__content-description">
-            <div class="details__content-extras">
-                <button id="js__content-share-button" class="basic-button details__content-share-button"><i class="fa fa-share-alt"></i><em>Share</em>
-                </button>
-            </div>
-            <div class="details__content-description-data">
-                <ul>
-                    <li class="icon-left"><i class="fa fa-building fa-fw"></i>Created for <em><%= companyArea %></em> on <em><%= dateCompleted %></em></li>
-                    <!--<li class="icon-left"><i class="fa fa-calendar fa-fw"></i>Completed on <em><%= dateCompleted %></em>--></li>
-                    <li class="icon-left"><i class="fa fa-clock-o fa-fw"></i>The solution is <em><%= duration %></em> long</li>
-                    <li class="icon-left"><i class="fa fa-cubes fa-fw"></i>The solution is a <em><%= complexity %></em> complexity <em><%= categories %></em></li>
-                    <!--<li class="icon-left"><i class="fa fa-cube fa-fw"></i>The consists of <em><%= types %></em></li>-->
-                    <!--<li class="icon-left"><i class="fa fa-puzzle-piece fa-fw"></i><em><%= complexity %></em> complexity</li>-->
-                </ul>
-            </div>
-
-            <div class="details__content-preview-images">
-                <ul>
-                    <% _.each(images, function(image) { %>
-                    <li>
-                        <div class="floatimage__srcimage"><img src="<%= image %>" alt="<%= title %> preview image">
-                        </div>
-                    </li>
-                    <% }); %>
-                </ul>
-            </div>
-            <%= description %>
-            <div class="details__content-description-metadata">
-                <ul>
-                    <% _.each(types, function(type) { %>
-                    <li class="type icon-left"><i class="fa fa-cube"></i>
-                        <%= type %>
-                    </li>
-                    <% }); %>
-                    <% _.each(tags, function(tag) { %>
-                    <li class="type icon-left"><i class="fa fa-tag"></i>
-                        <%= tag %>
-                    </li>
-                    <% }); %>
-                </ul>
-            </div>
-            <div class="details__content-links">
-                <ul>
-                    <% _.each(links, function(link) { %>
-                    <li class="icon-left"><a href="<%= link %>" target="_blank"><i class="fa fa-external-link"></i><%= link %></a>
-                    </li>
-                    <% }); %>
-                </ul>
-            </div>
-        </div>
-    </div>
-</script>
 
 <!--
 END
@@ -153,55 +31,141 @@ END
   </head>
   <body>
     <div id="app__container">
-      <div id="drawer">
-        <nav id="drawer__navigation"></nav>
-      </div>
+      <!--#drawernav#drawer__navigation
+      -->
       <div id="app__contents">
         <header id="header">
-          <div class="header__drawer-toggle">
-            <div class="drawer__menu-spinner-button">
-              <input type="checkbox" id="drawer__menu-spinner-form">
-              <label for="drawer__menu-spinner-form" class="spinner-spin">
-                <div class="spinner diagonal part-1"></div>
-                <div class="spinner horizontal"></div>
-                <div class="spinner diagonal part-2"></div>
-              </label>
+          <!--.header__drawer-toggle-->
+          <!--  .drawer__menu-spinner-button-->
+          <!--    input(type="checkbox")#drawer__menu-spinner-form-->
+          <!--    label(for="drawer__menu-spinner-form").spinner-spin-->
+          <!--      .spinner.diagonal.part-1-->
+          <!--      .spinner.horizontal-->
+          <!--      .spinner.diagonal.part-2-->
+          <h1>Time Entry</h1>
+        </header>
+        <section id="contents">
+          <div class="padded-content">
+            <!--include mock-styletest-->
+            <!--include mock-components-->
+            <div class="panel-shadow">
+              <div class="column-container">
+                <h1>Welcome,<em>Joe Timely</em></h1>
+              </div>
+              <section>
+                <h1><i class="fa fa-clock-o icon-left"></i>May 10-16, 2015
+                  <label for="input-select" style="display: block"><i class="fa fa-calendar icon-left"></i>
+                    <select id="input-select">
+                      <option>Week 20</option>
+                      <option>Week 21</option>
+                      <option>Week 22</option>
+                    </select>
+                  </label>
+                </h1>
+                <table class="table table-rows-zebra">
+                  <colgroup></colgroup>
+                  <colgroup></colgroup>
+                  <colgroup></colgroup>
+                  <colgroup></colgroup>
+                  <colgroup></colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col" class="-align-left">Solution</th>
+                      <th scope="col">% Allocation</th>
+                      <th scope="col">Time this week</th>
+                      <th scope="col">Weely Average</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>ABC Project</th>
+                      <td>
+                        <input id="input-text" type="text" placeholder="%" style="width: 75px">
+                      </td>
+                      <td>
+                        <input id="input-text" type="text" placeholder="hrs" style="width: 75px">
+                      </td>
+                      <td>25 hrs</td>
+                      <td>
+                        <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>XYZ Solution</th>
+                      <td>
+                        <input id="input-text" type="text" placeholder="%" style="width: 75px">
+                      </td>
+                      <td>
+                        <input id="input-text" type="text" placeholder="hrs" style="width: 75px">
+                      </td>
+                      <td>7 hrs</td>
+                      <td>
+                        <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>PTO</th>
+                      <td>
+                        <input id="input-text" type="text" placeholder="%" style="width: 75px">
+                      </td>
+                      <td>
+                        <input id="input-text" type="text" placeholder="hrs" style="width: 75px">
+                      </td>
+                      <td>8 hrs</td>
+                      <td>
+                        <button class="button-icon-left button-no-border"><i class="fa fa-archive"></i>Archive</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button class="button-icon-left button-no-border"><i class="fa fa-plus"></i>Add New Project</button>
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th>Totals</th>
+                      <th>100%</th>
+                      <th>40 hrs</th>
+                      <th></th>
+                      <th>
+                        <button class="button-icon-right button-success">Submit<i class="fa fa-check"></i></button>
+                      </th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </section>
             </div>
           </div>
-          <h1></h1>
-          <nav id="header__navigation"></nav>
-        </header>
-        <section class="grid">
-          <section class="grid__header">
-            <h1>Please wait ...</h1>
-            <div class="grid__header-search-form">
-              <div class="grid__header-search">
-                <input placeholder="Search titles and tags" size="25"><i class="fa fa-search"></i>
-              </div>
-              <button id="clearall-button" class="basic-button"><i class="fa fa-remove"></i><em>Clear All</em></button>
-            </div>
-          </section>
-          <div id="grid__item-container"></div>
         </section>
         <footer id="footer">
-          <div id="tagbar__container"></div>
+          <p>Footer content</p>
         </footer>
       </div>
     </div>
     <div id="modal__cover">
       <div class="modal__background"></div>
       <div class="modal__close-button"><i class="fa fa-remove"></i></div>
-      <div id="details"></div>
-    </div>
-    <div id="floatimage__cover">
-      <div class="floatimage__caption"></div>
     </div>
     <div id="initialization__cover">
       <div class="initialization__message">
         <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading Spinner" class="loader">
       </div>
     </div>
-    <div id="toast__container"></div>
+    <div id="toast__container">
+      <!--.toast__item(id='test')-->
+      <!--  //.toast__item-content-->
+      <!--  //  h1 Test Toast-->
+      <!--  //  p Hello there! This is a toast control.-->
+      <!--  //.toast__item-controls-->
+      <!--  //  button-->
+      <!--  //    i.fa.fa-close-->
+    </div>
     <script src="scripts/config.js"></script>
     <script src="scripts/libs.js"></script>
     <script src="//localhost:35729/livereload.js"></script>

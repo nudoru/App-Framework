@@ -121,12 +121,12 @@ $paper-card-border: 1px solid #eee !default;
   display: inline-block;
 }
 
-.card--z-0 { @include card(0); }
-.card--z-1 { @include card(1); }
-.card--z-2 { @include card(2); }
-.card--z-3 { @include card(3); }
-.card--z-4 { @include card(4); }
-.card--z-5 { @include card(5); }
+.paper-card--z-0 { @include card(0); }
+.paper-card--z-1 { @include card(1); }
+.paper-card--z-2 { @include card(2); }
+.paper-card--z-3 { @include card(3); }
+.paper-card--z-4 { @include card(4); }
+.paper-card--z-5 { @include card(5); }
 
 //.card--animated {
 //  animation: paper-card 5s infinite alternate;

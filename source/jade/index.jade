@@ -3,7 +3,7 @@ html
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
-    title Solutions Gallery
+    title App
     meta(name='viewport', content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no')
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name='apple-mobile-web-app-status-bar-style', content='black-translucent')
@@ -14,45 +14,41 @@ html
     include templates.html
   body
     #app__container
-      #drawer
+      //#drawer
         nav#drawer__navigation
       #app__contents
         header#header
-          .header__drawer-toggle
-            .drawer__menu-spinner-button
-              input(type="checkbox")#drawer__menu-spinner-form
-              label(for="drawer__menu-spinner-form").spinner-spin
-                .spinner.diagonal.part-1
-                .spinner.horizontal
-                .spinner.diagonal.part-2
-          h1
-          nav#header__navigation
-        section.grid
-          section.grid__header
-            h1 Please wait ...
-            .grid__header-search-form
-              .grid__header-search
-                input(placeholder='Search titles and tags' size='25')
-                i.fa.fa-search
-              button.basic-button#clearall-button
-                i.fa.fa-remove
-                em Clear All
-          #grid__item-container
+          //.header__drawer-toggle
+          //  .drawer__menu-spinner-button
+          //    input(type="checkbox")#drawer__menu-spinner-form
+          //    label(for="drawer__menu-spinner-form").spinner-spin
+          //      .spinner.diagonal.part-1
+          //      .spinner.horizontal
+          //      .spinner.diagonal.part-2
+          h1 Time Entry
+        section#contents
+          .padded-content
+            //include mock-styletest
+            //include mock-components
+            include timeentry
         footer#footer
-          #tagbar__container
-
+          p Footer content
     #modal__cover
       .modal__background
       .modal__close-button
         i.fa.fa-remove
-      #details
-    #floatimage__cover
-      .floatimage__caption
     #initialization__cover
       .initialization__message
         h1 Please Wait ...
         img(src='img/loading_squares_g.gif' alt='Loading Spinner').loader
     #toast__container
+      //.toast__item(id='test')
+      //  //.toast__item-content
+      //  //  h1 Test Toast
+      //  //  p Hello there! This is a toast control.
+      //  //.toast__item-controls
+      //  //  button
+      //  //    i.fa.fa-close
     script(src='scripts/config.js')
     script(src='scripts/libs.js')
     script(src='//localhost:35729/livereload.js')
