@@ -13,12 +13,18 @@ APP.AppView = (function () {
     _uiUpdateLayoutStream,
     _browserScrollStream,
     _browserResizeStream,
+    _subViewMountPoint,
+    _subViewMapping = Object.create(null),
+    _currentSubView,
+    _subViewHTMLTemplatePrefix = 'template__',
+    _subViewModulePrefix = 'APP.AppView.',
+    _template = require('nudoru.utils.NTemplate'),
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _toastView = require('nudoru.components.ToastView'),
     _messageBoxView = require('nudoru.components.MessageBoxView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
-    _componentEvents = require('nudoru.events.ComponentEvents');
+    _domUtils = require('nudoru.utils.DOMUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -62,6 +68,8 @@ APP.AppView = (function () {
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
+
+    _subViewMountPoint = document.getElementById('contents');
   }
 
   function initializeViewComponents() {
@@ -150,8 +158,61 @@ APP.AppView = (function () {
   }
 
   //----------------------------------------------------------------------------
+  //  SubViews
+  //----------------------------------------------------------------------------
+
+  function mapView(templateID, unique) {
+    var template = _subViewHTMLTemplatePrefix + templateID,
+        module = _subViewModulePrefix + templateID;
+
+    _subViewMapping[templateID] = {
+      htmlTemplate: _template.getTemplate(template),
+      controller: unique ? requireUnique(module) : require(module)
+    };
+  }
+
+  function showView(viewObj) {
+    var subview = _subViewMapping[viewObj.templateID];
+
+    if(subview) {
+      unMountCurrentSubView();
+    } else {
+      throw new Error('No subview mapped for route: '+viewObj.route+' > '+viewObj.templateID);
+    }
+
+    _domUtils.removeAllElements(_subViewMountPoint);
+
+    subview.controller.initialize({
+      id: viewObj.templateID,
+      template: subview.htmlTemplate,
+      state: {}
+    });
+
+    _subViewMountPoint.appendChild(subview.controller.getDOMElement());
+
+    _currentSubView = viewObj.templateID;
+  }
+
+  function unMountCurrentSubView() {
+    if(_currentSubView) {
+
+      var subViewController = _subViewMapping[_currentSubView].controller;
+
+      if(subViewController.willUnMount) {
+        subViewController.willUnMount();
+      }
+
+      _currentSubView = '';
+    }
+  }
+
+  //----------------------------------------------------------------------------
   //  Init and messaging
   //----------------------------------------------------------------------------
+
+  function vAlert(message) {
+    _messageBoxView.add({title:'Alert', content: message, type: _messageBoxView.type().DEFAULT});
+  }
 
   /**
    * Display a notification "toast"
@@ -188,8 +249,11 @@ APP.AppView = (function () {
   return {
     initialize: initialize,
     render: render,
+    vAlert: vAlert,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-    getMainScrollingView: getMainScrollingView
+    getMainScrollingView: getMainScrollingView,
+    mapView: mapView,
+    showView: showView
   };
 }());

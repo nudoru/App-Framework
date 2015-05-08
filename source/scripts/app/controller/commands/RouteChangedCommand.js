@@ -3,4 +3,6 @@ APP.AppController.initializeCommand('APP.AppController.RouteChangedCommand',
 
     console.log('RouteChangedCommand, route: '+data.route+', templateID: '+data.templateID);
 
+    this.appView.showView(data);
+
   });

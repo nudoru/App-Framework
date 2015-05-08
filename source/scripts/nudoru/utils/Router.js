@@ -6,6 +6,10 @@
  * _router.when('/',{templateID:'test', controller:function(obj) {
       console.log('Running route: '+obj.route+', with template: '+obj.templateID);
     }});
+ *
+ * Check this out for using a regex match
+ * http://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
+ *
  */
 
 define('nudoru.utils.Router',

@@ -48,6 +48,12 @@ define('nudoru.utils.DOMUtils',
       };
     };
 
+    exports.removeAllElements = function(el) {
+      while(el.firstChild) {
+        el.removeChild(el.firstChild);
+      }
+    };
+
     //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
     exports.HTMLStrToNode = function (str) {
       var temp = document.createElement('div');

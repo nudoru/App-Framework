@@ -3136,6 +3136,11 @@ input[type=tel],
 input[type=color],
 input[type=file],
 select, textarea {
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  -webkit-transition: all 0.25s ease-out;
+  -ms-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
   margin: 0 0.344rem;
   padding: 0.344rem 0.688rem;
   border: 1px solid #c8c8c8;

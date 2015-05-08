@@ -401,6 +401,12 @@ function requireUnique(id) {
       };
     };
 
+    exports.removeAllElements = function(el) {
+      while(el.firstChild) {
+        el.removeChild(el.firstChild);
+      }
+    };
+
     //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
     exports.HTMLStrToNode = function (str) {
       var temp = document.createElement('div');
@@ -2590,7 +2596,111 @@ APP.AppModel = (function () {
 
     exports.initialize = initialize;
 
-});;APP.createNameSpace('APP.AppView');
+});;define('APP.AppView.TemplateSubView',
+  function (require, module, exports) {
+
+    var _initObj,
+      _id,
+      _templateObj,
+      _html,
+      _DOMElement,
+      _initialState,
+      _currentState,
+      _domUtils = require('nudoru.utils.DOMUtils');
+
+    function initialize(initObj) {
+      _initObj = initObj;
+      _id = initObj.id;
+      _templateObj = initObj.template;
+      _initialState = _currentState = initObj.state;
+
+      render();
+    }
+
+    function update(state) {
+      _currentState = state;
+      return render();
+    }
+
+    function render() {
+      _html = _templateObj(_currentState);
+      _DOMElement = _domUtils.HTMLStrToNode(_html);
+      return _DOMElement;
+    }
+
+    function willUnMount() {
+      //console.log('subview will unmount');
+    }
+
+
+    function getID() {
+      return _id;
+    }
+
+    function getDOMElement() {
+      return _DOMElement;
+    }
+
+    exports.initialize = initialize;
+    exports.update = update;
+    exports.render = render;
+    exports.getID = getID;
+    exports.getDOMElement = getDOMElement;
+    exports.willUnMount = willUnMount;
+
+  });;define('APP.AppView.TestSubView',
+  function (require, module, exports) {
+
+    var _initObj,
+      _id,
+      _templateObj,
+      _html,
+      _DOMElement,
+      _initialState,
+      _currentState,
+      _domUtils = require('nudoru.utils.DOMUtils');
+
+    function initialize(initObj) {
+      _initObj = initObj;
+      _id = initObj.id;
+      _templateObj = initObj.template;
+      _initialState = _currentState = initObj.state;
+
+      render();
+    }
+
+    function update(state) {
+      _currentState = state;
+      return render();
+    }
+
+    function render() {
+      _html = _templateObj(_currentState);
+      _DOMElement = _domUtils.HTMLStrToNode(_html);
+      return _DOMElement;
+    }
+
+    function willUnMount() {
+      console.log('subview will unmount');
+    }
+
+
+    function getID() {
+      return _id;
+    }
+
+    function getDOMElement() {
+      return _DOMElement;
+    }
+
+    exports.initialize = initialize;
+    exports.update = update;
+    exports.render = render;
+    exports.getID = getID;
+    exports.getDOMElement = getDOMElement;
+    exports.willUnMount = willUnMount;
+
+  });;APP.createNameSpace('APP.AppView');
 
 APP.AppView = (function () {
   var _self,
@@ -2605,12 +2715,18 @@ APP.AppView = (function () {
     _uiUpdateLayoutStream,
     _browserScrollStream,
     _browserResizeStream,
+    _subViewMountPoint,
+    _subViewMapping = Object.create(null),
+    _currentSubView,
+    _subViewHTMLTemplatePrefix = 'template__',
+    _subViewModulePrefix = 'APP.AppView.',
+    _template = require('nudoru.utils.NTemplate'),
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _toastView = require('nudoru.components.ToastView'),
     _messageBoxView = require('nudoru.components.MessageBoxView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
-    _componentEvents = require('nudoru.events.ComponentEvents');
+    _domUtils = require('nudoru.utils.DOMUtils');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -2654,6 +2770,8 @@ APP.AppView = (function () {
 
     _mainHeaderEl = document.getElementById('header');
     _mainFooterEl = document.getElementById('footer');
+
+    _subViewMountPoint = document.getElementById('contents');
   }
 
   function initializeViewComponents() {
@@ -2742,8 +2860,61 @@ APP.AppView = (function () {
   }
 
   //----------------------------------------------------------------------------
+  //  SubViews
+  //----------------------------------------------------------------------------
+
+  function mapView(templateID, unique) {
+    var template = _subViewHTMLTemplatePrefix + templateID,
+        module = _subViewModulePrefix + templateID;
+
+    _subViewMapping[templateID] = {
+      htmlTemplate: _template.getTemplate(template),
+      controller: unique ? requireUnique(module) : require(module)
+    };
+  }
+
+  function showView(viewObj) {
+    var subview = _subViewMapping[viewObj.templateID];
+
+    if(subview) {
+      unMountCurrentSubView();
+    } else {
+      throw new Error('No subview mapped for route: '+viewObj.route+' > '+viewObj.templateID);
+    }
+
+    _domUtils.removeAllElements(_subViewMountPoint);
+
+    subview.controller.initialize({
+      id: viewObj.templateID,
+      template: subview.htmlTemplate,
+      state: {}
+    });
+
+    _subViewMountPoint.appendChild(subview.controller.getDOMElement());
+
+    _currentSubView = viewObj.templateID;
+  }
+
+  function unMountCurrentSubView() {
+    if(_currentSubView) {
+
+      var subViewController = _subViewMapping[_currentSubView].controller;
+
+      if(subViewController.willUnMount) {
+        subViewController.willUnMount();
+      }
+
+      _currentSubView = '';
+    }
+  }
+
+  //----------------------------------------------------------------------------
   //  Init and messaging
   //----------------------------------------------------------------------------
+
+  function vAlert(message) {
+    _messageBoxView.add({title:'Alert', content: message, type: _messageBoxView.type().DEFAULT});
+  }
 
   /**
    * Display a notification "toast"
@@ -2780,9 +2951,12 @@ APP.AppView = (function () {
   return {
     initialize: initialize,
     render: render,
+    vAlert: vAlert,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
-    getMainScrollingView: getMainScrollingView
+    getMainScrollingView: getMainScrollingView,
+    mapView: mapView,
+    showView: showView
   };
 }());;APP.createNameSpace('APP.AppController');
 APP.AppController = function () {
@@ -2792,7 +2966,6 @@ APP.AppController = function () {
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _eventCommandMap = require('nudoru.events.EventCommandMap'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
-    _componentEvents = require('nudoru.events.ComponentEvents'),
     _router = require('nudoru.utils.Router');
 
   //----------------------------------------------------------------------------
@@ -2815,11 +2988,7 @@ APP.AppController = function () {
     _eventCommandMap.map(evt, command, once);
   }
 
-  function mapRouteCommand(route, templateID, command) {
-    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
-      command.execute(dataObj);
-    }});
-  }
+
 
   function initializeView() {
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
@@ -2857,19 +3026,39 @@ APP.AppController = function () {
     mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
     mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
-    // Component events
-
     // App events
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
 
     // Routes
-    mapRouteCommand('/', 'defaultView', _self.RouteInitialViewCommand);
-    mapRouteCommand('/1', 'test1', _self.RouteChangedCommand);
-    mapRouteCommand('/2', 'test2', _self.RouteChangedCommand);
+    mapRouteCommand('/', 'TemplateSubView', _self.RouteChangedCommand);
+    mapRouteCommand('/1', 'TestSubView', _self.RouteChangedCommand);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
+  }
+
+  /**
+   * Set the router to execute the command when on the route
+   * @param route
+   * @param templateID
+   * @param command
+   */
+  function mapRouteCommand(route, templateID, command) {
+    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
+      command.execute(dataObj);
+    }});
+
+    mapView(templateID, false);
+  }
+
+  /**
+   * Set up mapping between route to html template and sub view module in a 1:1 relationship
+   * @param templateID
+   * @param unique
+   */
+  function mapView(templateID, unique) {
+    _view.mapView(templateID, unique);
   }
 
   /**
@@ -2937,10 +3126,7 @@ APP.AppController.AbstractCommand = {
 
     console.log('RouteChangedCommand, route: '+data.route+', templateID: '+data.templateID);
 
-  });;APP.AppController.initializeCommand('APP.AppController.RouteInitialViewCommand',
-  function execute(data) {
-
-    console.log('RouteInitialViewCommand, route: '+data.route+', templateID: '+data.templateID);
+    this.appView.showView(data);
 
   });;APP.AppController.initializeCommand('APP.AppController.ViewChangedCommand',
   function execute(data) {

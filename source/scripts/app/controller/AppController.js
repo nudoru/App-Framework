@@ -11,7 +11,6 @@ APP.AppController = function () {
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _eventCommandMap = require('nudoru.events.EventCommandMap'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
-    _componentEvents = require('nudoru.events.ComponentEvents'),
     _router = require('nudoru.utils.Router');
 
   //----------------------------------------------------------------------------
@@ -34,11 +33,7 @@ APP.AppController = function () {
     _eventCommandMap.map(evt, command, once);
   }
 
-  function mapRouteCommand(route, templateID, command) {
-    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
-      command.execute(dataObj);
-    }});
-  }
+
 
   function initializeView() {
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
@@ -76,19 +71,39 @@ APP.AppController = function () {
     mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
     mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
-    // Component events
-
     // App events
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
 
     // Routes
-    mapRouteCommand('/', 'defaultView', _self.RouteInitialViewCommand);
-    mapRouteCommand('/1', 'test1', _self.RouteChangedCommand);
-    mapRouteCommand('/2', 'test2', _self.RouteChangedCommand);
+    mapRouteCommand('/', 'TemplateSubView', _self.RouteChangedCommand);
+    mapRouteCommand('/1', 'TestSubView', _self.RouteChangedCommand);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
+  }
+
+  /**
+   * Set the router to execute the command when on the route
+   * @param route
+   * @param templateID
+   * @param command
+   */
+  function mapRouteCommand(route, templateID, command) {
+    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
+      command.execute(dataObj);
+    }});
+
+    mapView(templateID, false);
+  }
+
+  /**
+   * Set up mapping between route to html template and sub view module in a 1:1 relationship
+   * @param templateID
+   * @param unique
+   */
+  function mapView(templateID, unique) {
+    _view.mapView(templateID, unique);
   }
 
   /**
