@@ -1,5 +1,11 @@
-/*
- Simple router, IE9 needs to be supported so using hashes
+/**
+ * Simple router
+ * Supporting IE9 so using hashes instead of the history API for now
+ *
+ * Basic usage:
+ * _router.when('/',{templateID:'test', controller:function(obj) {
+      console.log('Running route: '+obj.route+', with template: '+obj.templateID);
+    }});
  */
 
 define('nudoru.utils.Router',
