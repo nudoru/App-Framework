@@ -47,8 +47,6 @@ APP.AppView = (function () {
     configureUIStreams();
     configureUIEvents();
 
-    hideModalCover();
-
     positionUIElements();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
@@ -73,7 +71,7 @@ APP.AppView = (function () {
   }
 
   function configureUIEvents() {
-    _eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
+    //_eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
   }
 
   function configureUIStreams() {
@@ -104,13 +102,10 @@ APP.AppView = (function () {
   //----------------------------------------------------------------------------
 
   function handleViewPortResize() {
-    showNotification('Resize!', 'Here we go!', _toastView.type().INFORMATION);
     _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
   }
 
   function handleViewPortScroll() {
-    showNotification('Scrolling!', 'Here we go!', _toastView.type().DEFAULT);
-
     _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
@@ -151,24 +146,6 @@ APP.AppView = (function () {
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    //_mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
-    //_mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
-  }
-
-
-  //----------------------------------------------------------------------------
-  //  Modal View
-  //----------------------------------------------------------------------------
-
-  function showModalCover(animate) {
-    _modalCoverView.show(animate);
-  }
-
-  function hideModalCover(animate) {
-    _modalCoverView.hide(animate);
-  }
-
-  function hideModalContent() {
     //
   }
 

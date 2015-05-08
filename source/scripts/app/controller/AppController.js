@@ -12,7 +12,7 @@ APP.AppController = function () {
     _eventCommandMap = require('nudoru.events.EventCommandMap'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
-    _URLRouter = require('nudoru.utils.URLRouter');
+    _router = require('nudoru.utils.Router');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -24,7 +24,7 @@ APP.AppController = function () {
     _model = APP.AppModel;
     _view = APP.AppView;
 
-    _URLRouter.initialize(_eventDispatcher);
+    _router.initialize(_eventDispatcher);
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
     initializeView();
   }
@@ -32,6 +32,12 @@ APP.AppController = function () {
   function mapCommand(evt, command, once) {
     once = once || false;
     _eventCommandMap.map(evt, command, once);
+  }
+
+  function mapRouteCommand(route, templateID, command) {
+    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
+      command.execute(dataObj);
+    }});
   }
 
   function initializeView() {
@@ -67,7 +73,6 @@ APP.AppController = function () {
    */
   function postInitialize() {
     // Browser events
-    mapCommand(_browserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
     mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
     mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
@@ -76,6 +81,11 @@ APP.AppController = function () {
     // App events
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+
+    // Routes
+    mapRouteCommand('/', 'defaultView', _self.RouteInitialViewCommand);
+    mapRouteCommand('/1', 'test1', _self.RouteChangedCommand);
+    mapRouteCommand('/2', 'test2', _self.RouteChangedCommand);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);

@@ -31,6 +31,8 @@ define('nudoru.components.ModalCoverView',
         .subscribe(function () {
           onModalClick();
         });
+
+      hide(false);
     }
 
     function getIsVisible() {

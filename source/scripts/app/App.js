@@ -11,6 +11,8 @@ APP = (function () {
   //----------------------------------------------------------------------------
 
   function initialize() {
+    console.log('APP: Initialize');
+
     _self = this;
     initGlobals();
     this.AppController.initialize();
@@ -22,7 +24,6 @@ APP = (function () {
   function initGlobals() {
     _globals = {};
     _globals.appConfig = APP_CONFIG_DATA;
-    _globals.enhanced = !_browserInfo.isIE && !_browserInfo.mobile.any();
   }
 
   /**
@@ -33,13 +34,6 @@ APP = (function () {
     return _objectUtils.extend({}, _globals);
   }
 
-  //----------------------------------------------------------------------------
-  //  Run
-  //----------------------------------------------------------------------------
-
-  function run() {
-    _self.AppController.run();
-  }
 
   function createNameSpace(str) {
     return NNameSpace.createNameSpace(str, APP, "APP");
@@ -47,7 +41,6 @@ APP = (function () {
 
   return {
     initialize: initialize,
-    run: run,
     createNameSpace: createNameSpace,
     globals: globals
   };

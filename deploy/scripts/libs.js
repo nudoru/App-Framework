@@ -330,6 +330,11 @@ function requireUnique(id) {
 
     };
 
+    // TODO filter for IE > 9
+    exports.enhanced = function() {
+      return !_browserInfo.isIE && !_browserInfo.mobile.any();
+    };
+
     exports.mouseDownEvtStr = function () {
       return this.mobile.any() ? "touchstart" : "mousedown";
     };
@@ -846,7 +851,81 @@ define('nudoru.utils.NDebugger',
     };
 
   });
-;define('nudoru.utils.StringUtils',
+;define('nudoru.utils.Router',
+  function(require, module, exports) {
+
+    var _routeMap = Object.create(null),
+      _eventDispatcher = require('nudoru.events.EventDispatcher'),
+      _browserEvents = require('nudoru.events.BrowserEvents');
+
+    function initialize() {
+      window.addEventListener('hashchange', onHashChange, false);
+    }
+
+    /**
+     * Map a route to a given controller function
+     * The controller funtion will be passed an object with the route and templateID
+     * @param route
+     * @param conObj
+     */
+    function when(route, conObj) {
+      _routeMap[route] = {
+        templateID: conObj.templateID,
+        controller: conObj.controller
+      };
+    }
+
+    // Should the route or event run first?
+    function onHashChange(evt) {
+      runCurrentRoute();
+      _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, getURLFragment());
+    }
+
+    /**
+     * Runs the route currently on the URL
+     * Primarily used window.load
+     */
+    function runCurrentRoute() {
+      var fragment = getURLFragment();
+      runRoute(fragment);
+    }
+
+    /**
+     * Executes the controller function for the given route
+     * @param route
+     */
+    function runRoute(route) {
+      var routeObj = _routeMap[route];
+
+      if(routeObj) {
+        routeObj.controller.call(window, {route: route, templateID: routeObj.templateID});
+      } else {
+       console.log('No Route mapped for: "'+route+'"');
+      }
+    }
+
+    /**
+     * Returns everything after the 'whatever.html#' in the URL
+     * Leading and trailing slashes are removed
+     * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
+     *
+     * @returns {string}
+     */
+    function getURLFragment() {
+      var fragment = location.hash.slice(1);
+      return '/' + fragment.toString().replace(/\/$/, '').replace(/^\//, '');
+    }
+
+    function updateURLFragment(path) {
+      window.location.hash = path;
+    }
+
+    exports.initialize = initialize;
+    exports.when = when;
+    exports.runCurrentRoute = runCurrentRoute;
+    exports.setRoute = updateURLFragment;
+
+  });;define('nudoru.utils.StringUtils',
   function(require, module, exports){
 
     exports.capitalizeFirstLetter = function(str) {
@@ -884,58 +963,7 @@ define('nudoru.utils.NDebugger',
     };
 
   });
-;define('nudoru.utils.URLRouter',
-  function(require, module, exports) {
-
-    var _lastSetPath,
-      _eventDispatcher = require('nudoru.events.EventDispatcher'),
-      _browserEvents = require('nudoru.events.BrowserEvents');
-
-    function initialize(evtDispatcher) {
-      _lastSetPath = '';
-
-      configureStreams();
-    }
-
-    function configureStreams() {
-      window.addEventListener('hashchange', onHashChange, false);
-    }
-
-    function onHashChange(evt) {
-      var hash = getURLHash();
-      if(hash === _lastSetPath) {
-        return;
-      }
-
-      if(!_eventDispatcher) {
-        throw new Error('URLRouter: must set event dispatcher');
-      }
-
-      _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, hash);
-    }
-
-    /**
-     * Returns everything after the 'whatever.html#' in the URL
-     * Leading and trailing slashes are removed
-     * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
-     *
-     * @returns {string}
-     */
-    function getURLHash() {
-      var hash = location.hash.slice(1);
-      return hash.toString().replace(/\/$/, '').replace(/^\//, '');
-    }
-
-    function updateURLHash(path) {
-      _lastSetPath = path;
-      window.location.hash = path;
-    }
-
-    exports.initialize = initialize;
-    exports.getRoute = getURLHash;
-    exports.setRoute = updateURLHash;
-
-  });;define('nudoru.events.BrowserEvents',
+;define('nudoru.events.BrowserEvents',
   function(require, module, exports) {
     exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
     exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
@@ -2064,6 +2092,8 @@ define('nudoru.components.DDMenuView',
         .subscribe(function () {
           onModalClick();
         });
+
+      hide(false);
     }
 
     function getIsVisible() {
@@ -2305,6 +2335,8 @@ APP = (function () {
   //----------------------------------------------------------------------------
 
   function initialize() {
+    console.log('APP: Initialize');
+
     _self = this;
     initGlobals();
     this.AppController.initialize();
@@ -2316,7 +2348,6 @@ APP = (function () {
   function initGlobals() {
     _globals = {};
     _globals.appConfig = APP_CONFIG_DATA;
-    _globals.enhanced = !_browserInfo.isIE && !_browserInfo.mobile.any();
   }
 
   /**
@@ -2327,13 +2358,6 @@ APP = (function () {
     return _objectUtils.extend({}, _globals);
   }
 
-  //----------------------------------------------------------------------------
-  //  Run
-  //----------------------------------------------------------------------------
-
-  function run() {
-    _self.AppController.run();
-  }
 
   function createNameSpace(str) {
     return NNameSpace.createNameSpace(str, APP, "APP");
@@ -2341,7 +2365,6 @@ APP = (function () {
 
   return {
     initialize: initialize,
-    run: run,
     createNameSpace: createNameSpace,
     globals: globals
   };
@@ -2616,8 +2639,6 @@ APP.AppView = (function () {
     configureUIStreams();
     configureUIEvents();
 
-    hideModalCover();
-
     positionUIElements();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
@@ -2642,7 +2663,7 @@ APP.AppView = (function () {
   }
 
   function configureUIEvents() {
-    _eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
+    //_eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
   }
 
   function configureUIStreams() {
@@ -2673,13 +2694,10 @@ APP.AppView = (function () {
   //----------------------------------------------------------------------------
 
   function handleViewPortResize() {
-    showNotification('Resize!', 'Here we go!', _toastView.type().INFORMATION);
     _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
   }
 
   function handleViewPortScroll() {
-    showNotification('Scrolling!', 'Here we go!', _toastView.type().DEFAULT);
-
     _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
   }
 
@@ -2720,24 +2738,6 @@ APP.AppView = (function () {
    * Position UI elements that are dependant on the view port
    */
   function positionUIElements() {
-    //_mainHeaderEl.style.top = _currentViewPortScroll.top + 'px';
-    //_mainFooterEl.style.top = (_currentViewPortSize.height + _currentViewPortScroll.top - _mainFooterEl.clientHeight) + 'px';
-  }
-
-
-  //----------------------------------------------------------------------------
-  //  Modal View
-  //----------------------------------------------------------------------------
-
-  function showModalCover(animate) {
-    _modalCoverView.show(animate);
-  }
-
-  function hideModalCover(animate) {
-    _modalCoverView.hide(animate);
-  }
-
-  function hideModalContent() {
     //
   }
 
@@ -2793,7 +2793,7 @@ APP.AppController = function () {
     _eventCommandMap = require('nudoru.events.EventCommandMap'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _componentEvents = require('nudoru.events.ComponentEvents'),
-    _URLRouter = require('nudoru.utils.URLRouter');
+    _router = require('nudoru.utils.Router');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -2805,7 +2805,7 @@ APP.AppController = function () {
     _model = APP.AppModel;
     _view = APP.AppView;
 
-    _URLRouter.initialize(_eventDispatcher);
+    _router.initialize(_eventDispatcher);
     mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
     initializeView();
   }
@@ -2813,6 +2813,12 @@ APP.AppController = function () {
   function mapCommand(evt, command, once) {
     once = once || false;
     _eventCommandMap.map(evt, command, once);
+  }
+
+  function mapRouteCommand(route, templateID, command) {
+    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
+      command.execute(dataObj);
+    }});
   }
 
   function initializeView() {
@@ -2848,7 +2854,6 @@ APP.AppController = function () {
    */
   function postInitialize() {
     // Browser events
-    mapCommand(_browserEvents.URL_HASH_CHANGED, _self.URLHashChangedCommand);
     mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
     mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
@@ -2857,6 +2862,11 @@ APP.AppController = function () {
     // App events
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+
+    // Routes
+    mapRouteCommand('/', 'defaultView', _self.RouteInitialViewCommand);
+    mapRouteCommand('/1', 'test1', _self.RouteChangedCommand);
+    mapRouteCommand('/2', 'test2', _self.RouteChangedCommand);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
@@ -2901,27 +2911,20 @@ APP.AppController.AbstractCommand = {
     appModel: APP.AppModel,
     appView: APP.AppView,
     eventDispatcher: require('nudoru.events.EventDispatcher'),
-    urlRouter: require('nudoru.utils.URLRouter'),
+    router: require('nudoru.utils.Router'),
     execute: function (data) {
       throw new Error('AbstractCommand: Must subclass and override execute()');
     }
   }
 };;APP.AppController.initializeCommand('APP.AppController.AppInitializedCommand',
   function execute(data) {
+    console.log('AppInitializedCommand');
+
     var _appGlobals = APP.globals();
 
     this.appView.removeLoadingMessage();
 
-    var initialRoute = this.urlRouter.getRoute();
-
-    if (initialRoute.length > 0) {
-      //
-    } else {
-      if (_appGlobals.appConfig.welcome.enabled === 'true') {
-        //show a meesage (_appGlobals.appConfig.welcome.title, _appGlobals.appConfig.welcome.text);
-      }
-    }
-
+    this.router.runCurrentRoute();
   });;APP.AppController.initializeCommand('APP.AppController.BrowserResizedCommand',
   function execute(data) {
 
@@ -2929,10 +2932,15 @@ APP.AppController.AbstractCommand = {
   });;APP.AppController.initializeCommand('APP.AppController.BrowserScrolledCommand',
   function execute(data) {
     //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
-  });;APP.AppController.initializeCommand('APP.AppController.URLHashChangedCommand',
+  });;APP.AppController.initializeCommand('APP.AppController.RouteChangedCommand',
   function execute(data) {
 
-    //
+    console.log('RouteChangedCommand, route: '+data.route+', templateID: '+data.templateID);
+
+  });;APP.AppController.initializeCommand('APP.AppController.RouteInitialViewCommand',
+  function execute(data) {
+
+    console.log('RouteInitialViewCommand, route: '+data.route+', templateID: '+data.templateID);
 
   });;APP.AppController.initializeCommand('APP.AppController.ViewChangedCommand',
   function execute(data) {
@@ -2951,7 +2959,7 @@ APP.AppController.AbstractCommand = {
 
 (function () {
 
-  APP.initialize();
+  window.onload = APP.initialize();
 
   if(APP.globals().notSupported) {
     alert("Your browser is not supported! Please use Firefox, Chrome or Safari.");

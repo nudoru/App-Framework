@@ -44,6 +44,11 @@ define('nudoru.utils.BrowserInfo',
 
     };
 
+    // TODO filter for IE > 9
+    exports.enhanced = function() {
+      return !_browserInfo.isIE && !_browserInfo.mobile.any();
+    };
+
     exports.mouseDownEvtStr = function () {
       return this.mobile.any() ? "touchstart" : "mousedown";
     };

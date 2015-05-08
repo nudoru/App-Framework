@@ -10,7 +10,7 @@ APP.AppController.AbstractCommand = {
     appModel: APP.AppModel,
     appView: APP.AppView,
     eventDispatcher: require('nudoru.events.EventDispatcher'),
-    urlRouter: require('nudoru.utils.URLRouter'),
+    router: require('nudoru.utils.Router'),
     execute: function (data) {
       throw new Error('AbstractCommand: Must subclass and override execute()');
     }
