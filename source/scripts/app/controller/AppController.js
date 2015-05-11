@@ -76,8 +76,8 @@ APP.AppController = function () {
     mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
 
     // Routes
-    mapRouteCommand('/', 'TemplateSubView', _self.RouteChangedCommand);
-    mapRouteCommand('/1', 'TestSubView', _self.RouteChangedCommand);
+    //mapRouteCommand('/', 'TemplateSubView', _self.RouteChangedCommand);
+    //mapRouteCommand('/1', 'TestSubView', _self.RouteChangedCommand);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
