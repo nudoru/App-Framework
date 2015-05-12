@@ -2636,6 +2636,10 @@ hr {
   content: "";
 }
 
+.text-left {
+  text-align: left !important;
+}
+
 .text-right {
   text-align: right !important;
 }
@@ -3323,6 +3327,9 @@ input.form-input-disabled:focus {
 .table .column-15pct {
   width: 15%;
 }
+.table .column-20pct {
+  width: 20%;
+}
 .table .column-25pct {
   width: 25%;
 }
@@ -3345,6 +3352,10 @@ input.form-input-disabled:focus {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
   background-color: #d9534f;
   color: #fff;
+}
+
+.header-grey th {
+  color: #968c83 !important;
 }
 
 .table-rows-zebra tbody tr:nth-child(odd) {

@@ -7,6 +7,9 @@
       button.button-icon-left
         i.fa.fa-cubes
         | Manage my assignments
+      button.button-icon-left
+        i.fa.fa-calendar
+        | Manage my time
   section.padding-top-double
     .column-container
       .one-fourth-left-column
@@ -27,6 +30,7 @@
       thead
         tr
           th(scope='col')
+          th(scope='col', style="width: 40px")
           th(scope='col').column-10pct.center-column Sun
           th(scope='col').column-10pct.center-column Mon
           th(scope='col').column-10pct.center-column Tue
@@ -37,6 +41,8 @@
       tbody
         tr
           th ABC Project
+          th
+            i.fa.fa-briefcase
           td.center-column
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
           td.center-column
@@ -53,6 +59,8 @@
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
         tr
           th XYZ Solution
+          th
+            i.fa.fa-briefcase
           td.center-column
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
           td.center-column
@@ -69,6 +77,8 @@
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
         tr
           th Financial Assessment 1.2
+          th
+            i.fa.fa-briefcase
           td.center-column
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
           td.center-column
@@ -85,6 +95,8 @@
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
         tr
           th Innovation Team X
+          th
+            i.fa.fa-briefcase
           td.center-column
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
           td.center-column
@@ -99,8 +111,46 @@
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
           td.center-column
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-        tr
+        tr.header-grey
+          th Personal Development
+          th
+            i.fa.fa-user
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+        tr.header-grey
           th PTO
+          th
+            i.fa.fa-user
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+          td.center-column
+            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+        tr.header-grey
+          th Sick
+          th
+            i.fa.fa-user
           td.center-column
             input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
           td.center-column
@@ -118,6 +168,7 @@
       tfoot
         tr
           th.right-column Totals
+          th
           th.center-column 0 hrs
           th.center-column 10 hrs
           th.center-column 8 hrs
