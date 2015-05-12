@@ -3358,6 +3358,17 @@ input.form-input-disabled:focus {
   color: #968c83 !important;
 }
 
+tr.row-header-inline {
+  background-color: transparent !important;
+}
+tr.row-header-inline td {
+  text-align: center;
+  padding-top: 1.376rem !important;
+  padding-bottom: 0.688rem !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #00a9e0;
+}
+
 .table-rows-zebra tbody tr:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.05);
 }
@@ -3385,14 +3396,14 @@ input.form-input-disabled:focus {
   color: #333;
 }
 
-.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
+.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, tr.row-header-inline td, .h6-alternate {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #6e6259;
   margin-bottom: 1.376rem;
   padding-bottom: 0;
   padding-top: 0.344rem;
 }
-.h1-alternate em, .h2-alternate em, .h3-alternate em, .h4-alternate em, .h5-alternate em, .h6-alternate em {
+.h1-alternate em, .h2-alternate em, .h3-alternate em, .h4-alternate em, .h5-alternate em, tr.row-header-inline td em, .h6-alternate em {
   color: #005eb8;
   font-style: normal;
 }
@@ -3417,7 +3428,7 @@ input.form-input-disabled:focus {
   font-weight: 400;
 }
 
-.h5-alternate {
+.h5-alternate, tr.row-header-inline td {
   font-size: 1rem;
   font-weight: 400;
 }

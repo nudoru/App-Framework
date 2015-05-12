@@ -19,6 +19,7 @@
         tr
           th(scope='col')
           th(scope='col', style="width: 40px")
+          th(scope='col').column-10pct.center-column Role
           th(scope='col').column-20pct.center-column Start Date
           th(scope='col').column-20pct.center-column End Date
           th(scope='col').column-10pct.center-column Allocation
@@ -28,6 +29,12 @@
           th ABC Project
           th
             i.fa.fa-briefcase
+          td.center-column
+            select(id='input-select')
+              option Role
+              option Consult
+              option Design
+              option Develop
           td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
@@ -45,6 +52,12 @@
           th
             i.fa.fa-briefcase
           td.center-column
+            select(id='input-select')
+              option Role
+              option Consult
+              option Design
+              option Develop
+          td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
           td.center-column
@@ -60,6 +73,12 @@
           th Financial Assessment 1.2
           th
             i.fa.fa-briefcase
+          td.center-column
+            select(id='input-select')
+              option Role
+              option Consult
+              option Design
+              option Develop
           td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
@@ -77,6 +96,12 @@
           th
             i.fa.fa-briefcase
           td.center-column
+            select(id='input-select')
+              option Role
+              option Consult
+              option Design
+              option Develop
+          td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
           td.center-column
@@ -88,47 +113,50 @@
             button.button-icon-left.button-danger
               i.fa.fa-minus-circle
               | Remove
-        tr
-          td(colspan='6').text-center.h5-alternate Default activities
-        tr.header-grey
-          th Personal Development
-          th
-            i.fa.fa-user
-          td.center-column
-            input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-            i.fa.fa-calendar
-          td.center-column
-            input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-            i.fa.fa-calendar
-          td.center-column
-            input(id='input-text', type='text', placeholder='%', style='width: 50px')
-          td.right-column
-        tr.header-grey
-          th PTO
-          th
-            i.fa.fa-user
-          td.center-column
-            input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-            i.fa.fa-calendar
-          td.center-column
-            input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-            i.fa.fa-calendar
-          td.center-column
-            input(id='input-text', type='text', placeholder='%', style='width: 50px')
-          td.right-column
-        tr.header-grey
-          th Sick
-          th
-            i.fa.fa-user
-          td.center-column
-            input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-            i.fa.fa-calendar
-          td.center-column
-            input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-            i.fa.fa-calendar
-          td.center-column
-            input(id='input-text', type='text', placeholder='%', style='width: 50px')
-          td.right-column
+        //tr.row-header-inline
+        //  td(colspan='7') Default activities
+        //tr.header-grey
+        //  th Personal Development
+        //  th
+        //    i.fa.fa-user
+        //  td
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
+        //    i.fa.fa-calendar
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
+        //    i.fa.fa-calendar
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='%', style='width: 50px')
+        //  td.right-column
+        //tr.header-grey
+        //  th PTO
+        //  th
+        //    i.fa.fa-user
+        //  td
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
+        //    i.fa.fa-calendar
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
+        //    i.fa.fa-calendar
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='%', style='width: 50px')
+        //  td.right-column
+        //tr.header-grey
+        //  th Sick
+        //  th
+        //    i.fa.fa-user
+        //  td
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
+        //    i.fa.fa-calendar
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
+        //    i.fa.fa-calendar
+        //  td.center-column
+        //    input(id='input-text', type='text', placeholder='%', style='width: 50px')
+        //  td.right-column
       .column-container
         .half-left-column.text-left
           button.button-icon-left

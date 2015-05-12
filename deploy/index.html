@@ -97,6 +97,7 @@ BEGIN Templates for App SubViews
                     <tr>
                       <th scope="col"></th>
                       <th scope="col" style="width: 40px"></th>
+                      <th scope="col" class="column-10pct center-column">Role</th>
                       <th scope="col" class="column-20pct center-column">Start Date</th>
                       <th scope="col" class="column-20pct center-column">End Date</th>
                       <th scope="col" class="column-10pct center-column">Allocation</th>
@@ -107,6 +108,14 @@ BEGIN Templates for App SubViews
                     <tr>
                       <th>ABC Project</th>
                       <th><i class="fa fa-briefcase"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Role</option>
+                          <option>Consult</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                        </select>
+                      </td>
                       <td class="center-column">
                         <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
                       </td>
@@ -124,6 +133,14 @@ BEGIN Templates for App SubViews
                       <th>XYZ Solution</th>
                       <th><i class="fa fa-briefcase"></i></th>
                       <td class="center-column">
+                        <select id="input-select">
+                          <option>Role</option>
+                          <option>Consult</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
                         <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
                       </td>
                       <td class="center-column">
@@ -139,6 +156,14 @@ BEGIN Templates for App SubViews
                     <tr>
                       <th>Financial Assessment 1.2</th>
                       <th><i class="fa fa-briefcase"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Role</option>
+                          <option>Consult</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                        </select>
+                      </td>
                       <td class="center-column">
                         <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
                       </td>
@@ -156,6 +181,14 @@ BEGIN Templates for App SubViews
                       <th>Innovation Team X</th>
                       <th><i class="fa fa-briefcase"></i></th>
                       <td class="center-column">
+                        <select id="input-select">
+                          <option>Role</option>
+                          <option>Consult</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
                         <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
                       </td>
                       <td class="center-column">
@@ -168,51 +201,50 @@ BEGIN Templates for App SubViews
                         <button class="button-icon-left button-danger"><i class="fa fa-minus-circle"></i>Remove</button>
                       </td>
                     </tr>
-                    <tr>
-                      <td colspan="6" class="text-center h5-alternate">Default activities</td>
-                    </tr>
-                    <tr class="header-grey">
-                      <th>Personal Development</th>
-                      <th><i class="fa fa-user"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px">
-                      </td>
-                      <td class="right-column"></td>
-                    </tr>
-                    <tr class="header-grey">
-                      <th>PTO</th>
-                      <th><i class="fa fa-user"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px">
-                      </td>
-                      <td class="right-column"></td>
-                    </tr>
-                    <tr class="header-grey">
-                      <th>Sick</th>
-                      <th><i class="fa fa-user"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px">
-                      </td>
-                      <td class="right-column"></td>
-                    </tr>
+                    <!--tr.row-header-inline-->
+                    <!--  td(colspan='7') Default activities-->
+                    <!--tr.header-grey-->
+                    <!--  th Personal Development-->
+                    <!--  th-->
+                    <!--    i.fa.fa-user-->
+                    <!--  td-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')-->
+                    <!--    i.fa.fa-calendar-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')-->
+                    <!--    i.fa.fa-calendar-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='%', style='width: 50px')-->
+                    <!--  td.right-column-->
+                    <!--tr.header-grey-->
+                    <!--  th PTO-->
+                    <!--  th-->
+                    <!--    i.fa.fa-user-->
+                    <!--  td-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')-->
+                    <!--    i.fa.fa-calendar-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')-->
+                    <!--    i.fa.fa-calendar-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='%', style='width: 50px')-->
+                    <!--  td.right-column-->
+                    <!--tr.header-grey-->
+                    <!--  th Sick-->
+                    <!--  th-->
+                    <!--    i.fa.fa-user-->
+                    <!--  td-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')-->
+                    <!--    i.fa.fa-calendar-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')-->
+                    <!--    i.fa.fa-calendar-->
+                    <!--  td.center-column-->
+                    <!--    input(id='input-text', type='text', placeholder='%', style='width: 50px')-->
+                    <!--  td.right-column-->
                   </tbody>
                   <div class="column-container">
                     <div class="half-left-column text-left">
@@ -365,6 +397,8 @@ BEGIN Templates for App SubViews
                         <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
                       </td>
                     </tr>
+                    <!--tr.row-header-inline-->
+                    <!--  td(colspan='9') Default activities-->
                     <tr class="header-grey">
                       <th>Personal Development</th>
                       <th><i class="fa fa-user"></i></th>
@@ -445,13 +479,13 @@ BEGIN Templates for App SubViews
                     <tr>
                       <th class="right-column">Totals</th>
                       <th></th>
-                      <th class="center-column">0 hrs</th>
+                      <th class="center-column"></th>
                       <th class="center-column">10 hrs</th>
                       <th class="center-column">8 hrs</th>
                       <th class="center-column">8 hrs</th>
                       <th class="center-column">8 hrs</th>
                       <th class="center-column">8 hrs</th>
-                      <th class="center-column">0 hrs</th>
+                      <th class="center-column"></th>
                     </tr>
                   </tfoot>
                 </table>

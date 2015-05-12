@@ -117,6 +117,17 @@
   th
     color: $light-warm-grey !important
 
+tr.row-header-inline
+  background-color: $color-nocolor !important
+  td
+    @extend .h5-alternate
+    text-align: center
+    padding-top: $double-base-line-height !important
+    padding-bottom: $base-line-height !important
+    border-top: 1px solid rgba(0,0,0,.1)
+    border-bottom: 1px solid $control-primary-color
+
+
 .table-rows-zebra
   tbody tr:nth-child(odd)
     background-color: $control-table-zebra-color
