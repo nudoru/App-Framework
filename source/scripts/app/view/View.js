@@ -2,7 +2,6 @@ APP.createNameSpace('APP.View');
 
 APP.View = (function () {
   var _self,
-    _appGlobals,
     _currentViewPortSize,
     _currentViewPortScroll,
     _mainScrollEl,
@@ -17,8 +16,8 @@ APP.View = (function () {
     _subViewMapping = Object.create(null),
     _currentSubView,
     _subViewHTMLTemplatePrefix = 'template__',
+    _eventDispatcher = APP.eventDispatcher(),
     _template = require('nudoru.utils.NTemplate'),
-    _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _toastView = require('nudoru.components.ToastView'),
     _messageBoxView = require('nudoru.components.MessageBoxView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
@@ -33,13 +32,16 @@ APP.View = (function () {
     return _mainScrollEl;
   }
 
+  function getTemplate() {
+    return _template;
+  }
+
   //----------------------------------------------------------------------------
   //  Initialization
   //----------------------------------------------------------------------------
 
   function initialize() {
     _self = this;
-    _appGlobals = APP.globals();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
 
@@ -79,14 +81,21 @@ APP.View = (function () {
     _modalCoverView.initialize();
   }
 
+  /**
+   * Set up events relating to UI/browser changes
+   */
   function configureUIEvents() {
-    //_eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
+    // stub
   }
 
+  /**
+   * Set up RxJS streams for events
+   */
   function configureUIStreams() {
     var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
       uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
+    // UI layout happens immediately, while resize and scroll is throttled
     _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
       .subscribe(function () {
         positionUIElementsOnChange();
@@ -152,7 +161,7 @@ APP.View = (function () {
   }
 
   /**
-   * Position UI elements that are dependant on the view port
+   * Position UI elements that are dependant on the view port size or position
    */
   function positionUIElements() {
     //
@@ -210,7 +219,7 @@ APP.View = (function () {
   //  Init and messaging
   //----------------------------------------------------------------------------
 
-  function vAlert(message) {
+  function showAlert(message) {
     _messageBoxView.add({title:'Alert', content: message, type: _messageBoxView.type().DEFAULT});
   }
 
@@ -219,7 +228,7 @@ APP.View = (function () {
    * @param title The title
    * @param message The message
    */
-  function showNotification(title, message, type) {
+  function showNotification(message, title, type) {
     title = title || "Notification";
     type = type || _toastView.type().DEFAULT;
     _toastView.add(title, message, type);
@@ -248,10 +257,11 @@ APP.View = (function () {
 
   return {
     initialize: initialize,
-    vAlert: vAlert,
-    showNotification: showNotification,
+    alert: showAlert,
+    notify: showNotification,
     removeLoadingMessage: removeLoadingMessage,
     getMainScrollingView: getMainScrollingView,
+    template: getTemplate,
     mapView: mapView,
     showView: showView
   };

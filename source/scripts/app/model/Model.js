@@ -1,24 +1,7 @@
-/*
- Filters:
- free text: title
- selected from menu
-
- When the free text changes
- on event from view -
- run search input command runs getDataMatchingFreeText(data)
-
- When a menu selection changes
- on event from
-
- ViewFilterChangedCommand fired from ItemGridView when the items are updated setNumItemsVisible
-
- */
-
 APP.createNameSpace('APP.Model');
 
 APP.Model = (function () {
   var _self,
-    _appGlobals,
     _data,
     _eventDispatcher = require('nudoru.events.EventDispatcher');
 
@@ -28,7 +11,6 @@ APP.Model = (function () {
 
   function initialize() {
     _self = this;
-    _appGlobals = APP.globals();
     _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_WAITING);
   }
 

@@ -2332,8 +2332,41 @@ define('nudoru.components.DDMenuView',
 
 APP = (function () {
   var _self,
-    _globals,
-    _objectUtils = require('nudoru.utils.ObjectUtils');
+    _config,
+    _model,
+    _view,
+    _objectUtils = require('nudoru.utils.ObjectUtils'),
+    _eventDispatcher = require('nudoru.events.EventDispatcher'),
+    _eventCommandMap = require('nudoru.events.EventCommandMap'),
+    _router = require('nudoru.utils.Router');
+
+  //----------------------------------------------------------------------------
+  //  Accessors
+  //----------------------------------------------------------------------------
+
+  function getEventDispatcher() {
+    return _eventDispatcher;
+  }
+
+  function getEventCommandMap() {
+    return _eventCommandMap;
+  }
+
+  function getRouter() {
+    return _router;
+  }
+
+  function getView() {
+    return _view;
+  }
+
+  function getModel() {
+    return _model;
+  }
+
+  function getConfig() {
+    return _objectUtils.extend({}, _config);
+  }
 
   //----------------------------------------------------------------------------
   //  Initialize
@@ -2342,36 +2375,146 @@ APP = (function () {
   function initialize() {
     console.log('APP: Initialize');
 
+    initializeConfig();
+
     _self = this;
-    initGlobals();
-    this.AppController.initialize();
+    _model = APP.Model;
+    _view = APP.View;
+
+    _router.initialize(_eventDispatcher);
+
+    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+
+    initializeView();
   }
 
   /**
    * Initialize the global vars
    */
-  function initGlobals() {
-    _globals = {};
-    _globals.appConfig = APP_CONFIG_DATA;
+  function initializeConfig() {
+    _config = {};
+    _config.appConfig = APP_CONFIG_DATA;
+  }
+
+  //----------------------------------------------------------------------------
+  //  MVC Initialization
+  //----------------------------------------------------------------------------
+
+  function initializeView() {
+    _view.initialize();
+    initializeModel();
+  }
+
+  function initializeModel() {
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_WAITING, onModelDataWaiting, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_READY, onModelDataReady, true);
+    _model.initialize();
+  }
+
+  function onModelDataWaiting() {
+    _model.setData({});
+  }
+
+  function onModelDataReady() {
+    postInitialize();
   }
 
   /**
-   * Return a copy of the globals
-   * @returns {void|*}
+   * All APP initialization is complete, pass over to AppInitialzedCommand
    */
-  function globals() {
-    return _objectUtils.extend({}, _globals);
+  function postInitialize() {
+    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
   }
 
+  //----------------------------------------------------------------------------
+  //  Wiring Services
+  //----------------------------------------------------------------------------
 
+  /**
+   * Name space creation utility function
+   * @param str
+   * @returns {*}
+   */
   function createNameSpace(str) {
     return NNameSpace.createNameSpace(str, APP, "APP");
+  }
+
+  /**
+   * Maps an event to trigger a command when it's published
+   * @param evt The event string
+   * @param command The command object
+   * @param once True if should only execute once, will be unmapped automatically
+   */
+  function mapEventCommand(evt, command, once) {
+    once = once || false;
+    _eventCommandMap.map(evt, command, once);
+  }
+
+  /**
+   * Utility function
+   *  1. Create the namespace
+   *  2. Picks the last segment of the namespace
+   *  3. Sets that to the command class w/ new execute()
+   * @param nsStr format: 'APP.Part', only 2 deep
+   * @param execCode
+   */
+  function initializeCommand(nsStr, execCode) {
+    var parts = nsStr.split('.');
+    APP.createNameSpace(nsStr);
+    APP[parts[parts.length-1]] = createAndExtendCommand(execCode);
+  }
+
+  /**
+   * Instantiate the command object and set exececute() function
+   * @param execCode
+   * @returns {APP.AbstractCommand.methods}
+   */
+  function createAndExtendCommand(execCode) {
+    var cmd = Object.create(APP.AbstractCommand.methods);
+    cmd.execute = execCode;
+    return cmd;
+  }
+
+  /**
+   * Set the router to execute the command when on the route
+   * @param route
+   * @param templateID
+   * @param command
+   */
+  function mapRouteCommand(route, templateID, command) {
+    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
+      command.execute(dataObj);
+    }});
+  }
+
+  /**
+   * Maps a route to a view controller
+   * @param route
+   * @param templateID
+   * @param controller
+   * @param unique Should it be a singleton controller (false) or unique instance (true)
+   */
+  function mapRouteView(route, templateID, controller, unique) {
+    _view.mapView(templateID, controller, unique);
+
+    _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
+      _view.showView(dataObj);
+    }});
   }
 
   return {
     initialize: initialize,
     createNameSpace: createNameSpace,
-    globals: globals
+    config: getConfig,
+    eventDispatcher: getEventDispatcher,
+    eventCommandMap: getEventCommandMap,
+    router: getRouter,
+    view: getView,
+    model: getModel,
+    initializeCommand: initializeCommand,
+    mapRouteView: mapRouteView,
+    mapRouteCommand: mapRouteCommand,
+    mapEventCommand: mapEventCommand
   };
 
 }());;APP.createNameSpace('APP.AppEvents');
@@ -2396,7 +2539,6 @@ APP.AppEvents = {
 
 APP.Model = (function () {
   var _self,
-    _appGlobals,
     _data,
     _eventDispatcher = require('nudoru.events.EventDispatcher');
 
@@ -2406,7 +2548,6 @@ APP.Model = (function () {
 
   function initialize() {
     _self = this;
-    _appGlobals = APP.globals();
     _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_WAITING);
   }
 
@@ -2612,7 +2753,6 @@ APP.Model = (function () {
 
 APP.View = (function () {
   var _self,
-    _appGlobals,
     _currentViewPortSize,
     _currentViewPortScroll,
     _mainScrollEl,
@@ -2627,8 +2767,8 @@ APP.View = (function () {
     _subViewMapping = Object.create(null),
     _currentSubView,
     _subViewHTMLTemplatePrefix = 'template__',
+    _eventDispatcher = APP.eventDispatcher(),
     _template = require('nudoru.utils.NTemplate'),
-    _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _toastView = require('nudoru.components.ToastView'),
     _messageBoxView = require('nudoru.components.MessageBoxView'),
     _modalCoverView = require('nudoru.components.ModalCoverView'),
@@ -2643,13 +2783,16 @@ APP.View = (function () {
     return _mainScrollEl;
   }
 
+  function getTemplate() {
+    return _template;
+  }
+
   //----------------------------------------------------------------------------
   //  Initialization
   //----------------------------------------------------------------------------
 
   function initialize() {
     _self = this;
-    _appGlobals = APP.globals();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
 
@@ -2689,14 +2832,21 @@ APP.View = (function () {
     _modalCoverView.initialize();
   }
 
+  /**
+   * Set up events relating to UI/browser changes
+   */
   function configureUIEvents() {
-    //_eventDispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hideModalContent);
+    // stub
   }
 
+  /**
+   * Set up RxJS streams for events
+   */
   function configureUIStreams() {
     var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
       uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
+    // UI layout happens immediately, while resize and scroll is throttled
     _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
       .subscribe(function () {
         positionUIElementsOnChange();
@@ -2762,7 +2912,7 @@ APP.View = (function () {
   }
 
   /**
-   * Position UI elements that are dependant on the view port
+   * Position UI elements that are dependant on the view port size or position
    */
   function positionUIElements() {
     //
@@ -2820,7 +2970,7 @@ APP.View = (function () {
   //  Init and messaging
   //----------------------------------------------------------------------------
 
-  function vAlert(message) {
+  function showAlert(message) {
     _messageBoxView.add({title:'Alert', content: message, type: _messageBoxView.type().DEFAULT});
   }
 
@@ -2829,7 +2979,7 @@ APP.View = (function () {
    * @param title The title
    * @param message The message
    */
-  function showNotification(title, message, type) {
+  function showNotification(message, title, type) {
     title = title || "Notification";
     type = type || _toastView.type().DEFAULT;
     _toastView.add(title, message, type);
@@ -2858,173 +3008,22 @@ APP.View = (function () {
 
   return {
     initialize: initialize,
-    vAlert: vAlert,
-    showNotification: showNotification,
+    alert: showAlert,
+    notify: showNotification,
     removeLoadingMessage: removeLoadingMessage,
     getMainScrollingView: getMainScrollingView,
+    template: getTemplate,
     mapView: mapView,
     showView: showView
   };
-}());;APP.createNameSpace('APP.AppController');
-APP.AppController = function () {
-  var _model,
-    _view,
-    _self,
-    _eventDispatcher = require('nudoru.events.EventDispatcher'),
-    _eventCommandMap = require('nudoru.events.EventCommandMap'),
-    _browserEvents = require('nudoru.events.BrowserEvents'),
-    _router = require('nudoru.utils.Router');
-
-  //----------------------------------------------------------------------------
-  //  Initialization
-  //----------------------------------------------------------------------------
-
-  function initialize() {
-    _self = this;
-
-    _model = APP.Model;
-    _view = APP.View;
-
-    _router.initialize(_eventDispatcher);
-
-    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
-
-    initializeView();
-  }
-
-
-
-  function initializeView() {
-    _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
-    _view.initialize();
-  }
-
-  function onViewRendered() {
-    initializeModel();
-  }
-
-  function initializeModel() {
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_WAITING, onModelDataWaiting, true);
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_READY, onModelDataReady, true);
-    _model.initialize();
-  }
-
-  function onModelDataWaiting() {
-    _model.setData({});
-  }
-
-  function onModelDataReady() {
-    postInitialize();
-  }
-
-  /**
-   * After the application is loaded, wire events/command and start it going
-   */
-  function postInitialize() {
-    //// Browser events
-    //mapEventCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    //mapEventCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
-    //
-    //// App events
-    //mapEventCommand(APP.AppEvents.CHANGE_ROUTE, _self.ChangeRouteCommand);
-    //mapEventCommand(APP.AppEvents.VIEW_CHANGED, _self.ViewChangedCommand);
-    //mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
-    //mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
-    //
-    //// Routes
-    //mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
-    //mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
-
-    //AppInitializedCommand takes over when this fires
-    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
-  }
-
-  /**
-   * Maps an event to trigger a command when it's published
-   * @param evt The event string
-   * @param command The command object
-   * @param once True if should only execute once, will be unmapped automatically
-   */
-  function mapEventCommand(evt, command, once) {
-    once = once || false;
-    _eventCommandMap.map(evt, command, once);
-  }
-
-  /**
-   * Set the router to execute the command when on the route
-   * @param route
-   * @param templateID
-   * @param command
-   */
-  function mapRouteCommand(route, templateID, command) {
-    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
-      command.execute(dataObj);
-    }});
-  }
-
-  /**
-   * Maps a route to a view controller
-   * @param route
-   * @param templateID
-   * @param controller
-   * @param unique Should it be a singleton controller (false) or unique instance (true)
-   */
-  function mapRouteView(route, templateID, controller, unique) {
-    _view.mapView(templateID, controller, unique);
-
-    _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
-      _view.showView(dataObj);
-    }});
-  }
-
-  /**
-   * Utility function
-   *  1. Create the namespace
-   *  2. Picks the last segment of the namespace
-   *  3. Sets that to the command class w/ new execute()
-   * @param nsStr
-   * @param execCode
-   */
-  function initializeCommand(nsStr, execCode) {
-    var parts = nsStr.split('.');
-    APP.createNameSpace(nsStr);
-    APP.AppController[parts[parts.length-1]] = createAndExtendCommand(execCode);
-  }
-
-  /**
-   * Instatiate the command object and set exececute() function
-   * @param execCode
-   * @returns {APP.AppController.AbstractCommand.methods}
-   */
-  function createAndExtendCommand(execCode) {
-    var cmd = Object.create(APP.AppController.AbstractCommand.methods);
-    cmd.execute = execCode;
-    return cmd;
-  }
-
-  return {
-    initialize: initialize,
-    postIntialize: postInitialize,
-    initializeCommand: initializeCommand,
-    mapRouteView: mapRouteView,
-    mapRouteCommand: mapRouteCommand,
-    mapEventCommand: mapEventCommand
-  };
-
-}();;APP.createNameSpace('APP.AppController.AbstractCommand');
-APP.AppController.AbstractCommand = {
+}());;APP.createNameSpace('APP.AbstractCommand');
+APP.AbstractCommand = {
   methods: {
-    app: APP,
-    appController: APP.AppController,
-    appModel: APP.Model,
-    appView: APP.View,
-    eventDispatcher: require('nudoru.events.EventDispatcher'),
-    router: require('nudoru.utils.Router'),
     execute: function (data) {
       throw new Error('AbstractCommand: Must subclass and override execute()');
     }
   }
-};;APP.AppController.initializeCommand('APP.AppController.AppInitializedCommand',
+};;APP.initializeCommand('APP.AppInitializedCommand',
   function execute(data) {
 
     var _browserEvents = require('nudoru.events.BrowserEvents');
@@ -3032,57 +3031,59 @@ APP.AppController.AbstractCommand = {
     console.log('AppInitializedCommand');
 
     // Browser events
-    APP.AppController.mapEventCommand(_browserEvents.BROWSER_RESIZED, APP.AppController.BrowserResizedCommand);
-    APP.AppController.mapEventCommand(_browserEvents.BROWSER_SCROLLED, APP.AppController.BrowserScrolledCommand);
+    APP.mapEventCommand(_browserEvents.BROWSER_RESIZED, APP.BrowserResizedCommand);
+    APP.mapEventCommand(_browserEvents.BROWSER_SCROLLED, APP.BrowserScrolledCommand);
 
     // App events
-    APP.AppController.mapEventCommand(APP.AppEvents.CHANGE_ROUTE, APP.AppController.ChangeRouteCommand);
-    APP.AppController.mapEventCommand(APP.AppEvents.VIEW_CHANGED, APP.AppController.ViewChangedCommand);
-    APP.AppController.mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, APP.AppController.ViewChangedToMobileCommand);
-    APP.AppController.mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, APP.AppController.ViewChangedToDesktopCommand);
+    APP.mapEventCommand(APP.AppEvents.CHANGE_ROUTE, APP.ChangeRouteCommand);
+    APP.mapEventCommand(APP.AppEvents.VIEW_CHANGED, APP.ViewChangedCommand);
+    APP.mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, APP.ViewChangedToMobileCommand);
+    APP.mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, APP.ViewChangedToDesktopCommand);
 
     // Routes
-    APP.AppController.mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
-    APP.AppController.mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
+    APP.mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
+    APP.mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
 
-    APP.View.removeLoadingMessage();
+    APP.view().removeLoadingMessage();
 
-    this.router.runCurrentRoute();
-  });;APP.AppController.initializeCommand('APP.AppController.BrowserResizedCommand',
+    APP.router().runCurrentRoute();
+  });;APP.initializeCommand('APP.BrowserResizedCommand',
   function execute(data) {
     console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
-  });;APP.AppController.initializeCommand('APP.AppController.BrowserScrolledCommand',
+  });;APP.initializeCommand('APP.BrowserScrolledCommand',
   function execute(data) {
     console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
-  });;APP.AppController.initializeCommand('APP.AppController.ChangeRouteCommand',
+  });;APP.initializeCommand('APP.ChangeRouteCommand',
   function execute(data) {
 
     console.log('ChangeRouteCommand, route: '+data.route);
 
-    this.router.setRoute(data.route);
+    APP.router().setRoute(data.route);
 
-  });;APP.AppController.initializeCommand('APP.AppController.RouteChangedCommand',
+  });;APP.initializeCommand('APP.RouteChangedCommand',
   function execute(data) {
 
     console.log('RouteChangedCommand, route: '+data.route+', templateID: '+data.templateID);
 
-    this.appView.showView(data);
+    APP.view().showView(data);
 
-  });;APP.AppController.initializeCommand('APP.AppController.ViewChangedCommand',
+  });;APP.initializeCommand('APP.ViewChangedCommand',
   function execute(data) {
     console.log('ViewChangedCommand: '+data);
-});;APP.AppController.initializeCommand('APP.AppController.ViewChangedToDesktopCommand',
+});;APP.initializeCommand('APP.ViewChangedToDesktopCommand',
   function execute(data) {
-  console.log('ViewChangedToDesktopCommand: '+data);
-});;APP.AppController.initializeCommand('APP.AppController.ViewChangedToMobileCommand',
+    console.log('ViewChangedToDesktopCommand: '+data);
+  });;APP.initializeCommand('APP.ViewChangedToMobileCommand',
   function(data) {
   console.log('ViewChangedToMobileCommand: '+data);
 });;(function () {
 
+  var _browserInfo = require('nudoru.utils.BrowserInfo');
+
   window.onload = APP.initialize();
 
-  if(APP.globals().notSupported) {
-    alert("Your browser is not supported! Please use Firefox, Chrome or Safari.");
+  if(_browserInfo.notSupported) {
+    alert("Your browser is not supported! Please use IE 9+, Firefox, Chrome or Safari.");
   }
 
 }());

@@ -1,4 +1,4 @@
-APP.AppController.initializeCommand('APP.AppController.ViewChangedToDesktopCommand',
+APP.initializeCommand('APP.ViewChangedToDesktopCommand',
   function execute(data) {
-  console.log('ViewChangedToDesktopCommand: '+data);
-});
+    console.log('ViewChangedToDesktopCommand: '+data);
+  });

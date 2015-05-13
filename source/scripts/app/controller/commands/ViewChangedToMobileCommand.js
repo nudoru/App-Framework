@@ -1,4 +1,4 @@
-APP.AppController.initializeCommand('APP.AppController.ViewChangedToMobileCommand',
+APP.initializeCommand('APP.ViewChangedToMobileCommand',
   function(data) {
   console.log('ViewChangedToMobileCommand: '+data);
 });
