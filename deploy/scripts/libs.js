@@ -2333,8 +2333,7 @@ define('nudoru.components.DDMenuView',
 APP = (function () {
   var _self,
     _globals,
-    _objectUtils = require('nudoru.utils.ObjectUtils'),
-    _browserInfo = require('nudoru.utils.BrowserInfo');
+    _objectUtils = require('nudoru.utils.ObjectUtils');
 
   //----------------------------------------------------------------------------
   //  Initialize
@@ -2392,7 +2391,7 @@ APP.AppEvents = {
   VIEW_CHANGE_TO_MOBILE: 'VIEW_CHANGE_TO_MOBILE',
   VIEW_CHANGE_TO_DESKTOP: 'VIEW_CHANGE_TO_DESKTOP',
 
-  SHOW_NOTIFICATION: 'SHOW_NOTIFICATION'
+  CHANGE_ROUTE: 'change_route'
 };;APP.createNameSpace('APP.AppModel');
 
 APP.AppModel = (function () {
@@ -2623,65 +2622,15 @@ APP.AppModel = (function () {
     }
 
     function render() {
+      console.log(_id + ', subview render');
+
       _html = _templateObj(_currentState);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
       return _DOMElement;
     }
 
     function willUnMount() {
-      //console.log('subview will unmount');
-    }
-
-
-    function getID() {
-      return _id;
-    }
-
-    function getDOMElement() {
-      return _DOMElement;
-    }
-
-    exports.initialize = initialize;
-    exports.update = update;
-    exports.render = render;
-    exports.getID = getID;
-    exports.getDOMElement = getDOMElement;
-    exports.willUnMount = willUnMount;
-
-  });;define('APP.AppView.TestSubView',
-  function (require, module, exports) {
-
-    var _initObj,
-      _id,
-      _templateObj,
-      _html,
-      _DOMElement,
-      _initialState,
-      _currentState,
-      _domUtils = require('nudoru.utils.DOMUtils');
-
-    function initialize(initObj) {
-      _initObj = initObj;
-      _id = initObj.id;
-      _templateObj = initObj.template;
-      _initialState = _currentState = initObj.state;
-
-      render();
-    }
-
-    function update(state) {
-      _currentState = state;
-      return render();
-    }
-
-    function render() {
-      _html = _templateObj(_currentState);
-      _DOMElement = _domUtils.HTMLStrToNode(_html);
-      return _DOMElement;
-    }
-
-    function willUnMount() {
-      console.log('subview will unmount');
+      console.log(_id + ', subview will unmount');
     }
 
 
@@ -2863,13 +2812,10 @@ APP.AppView = (function () {
   //  SubViews
   //----------------------------------------------------------------------------
 
-  function mapView(templateID, unique) {
-    var template = _subViewHTMLTemplatePrefix + templateID,
-        module = _subViewModulePrefix + templateID;
-
+  function mapView(templateID, controller, unique) {
     _subViewMapping[templateID] = {
-      htmlTemplate: _template.getTemplate(template),
-      controller: unique ? requireUnique(module) : require(module)
+      htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
+      controller: unique ? requireUnique(controller) : require(controller)
     };
   }
 
@@ -2893,6 +2839,8 @@ APP.AppView = (function () {
     _subViewMountPoint.appendChild(subview.controller.getDOMElement());
 
     _currentSubView = viewObj.templateID;
+
+    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGED, viewObj.templateID);
   }
 
   function unMountCurrentSubView() {
@@ -2979,11 +2927,11 @@ APP.AppController = function () {
     _view = APP.AppView;
 
     _router.initialize(_eventDispatcher);
-    mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
     initializeView();
   }
 
-  function mapCommand(evt, command, once) {
+  function mapEventCommand(evt, command, once) {
     once = once || false;
     _eventCommandMap.map(evt, command, once);
   }
@@ -3023,16 +2971,18 @@ APP.AppController = function () {
    */
   function postInitialize() {
     // Browser events
-    mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    mapEventCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    mapEventCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
     // App events
-    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
-    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+    mapEventCommand(APP.AppEvents.CHANGE_ROUTE, _self.ChangeRouteCommand);
+    mapEventCommand(APP.AppEvents.VIEW_CHANGED, _self.ViewChangedCommand);
+    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
+    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
 
     // Routes
-    //mapRouteCommand('/', 'TemplateSubView', _self.RouteChangedCommand);
-    //mapRouteCommand('/1', 'TestSubView', _self.RouteChangedCommand);
+    mapRouteView('/', 'TemplateSubView', 'APP.AppView.TemplateSubView', false);
+    mapRouteView('/1', 'TestSubView', 'APP.AppView.TemplateSubView', false);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
@@ -3048,17 +2998,21 @@ APP.AppController = function () {
     _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
       command.execute(dataObj);
     }});
-
-    mapView(templateID, false);
   }
 
   /**
-   * Set up mapping between route to html template and sub view module in a 1:1 relationship
+   * Maps a route to a view controller
+   * @param route
    * @param templateID
-   * @param unique
+   * @param controller
+   * @param unique Should it be a singleton controller (false) or unique instance (true)
    */
-  function mapView(templateID, unique) {
-    _view.mapView(templateID, unique);
+  function mapRouteView(route, templateID, controller, unique) {
+    _view.mapView(templateID, controller, unique);
+
+    _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
+      _view.showView(dataObj);
+    }});
   }
 
   /**
@@ -3089,7 +3043,10 @@ APP.AppController = function () {
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    initializeCommand: initializeCommand
+    initializeCommand: initializeCommand,
+    mapRouteView: mapRouteView,
+    mapRouteCommand: mapRouteCommand,
+    mapEventCommand: mapEventCommand
   };
 
 }();;APP.createNameSpace('APP.AppController.AbstractCommand');
@@ -3116,11 +3073,17 @@ APP.AppController.AbstractCommand = {
     this.router.runCurrentRoute();
   });;APP.AppController.initializeCommand('APP.AppController.BrowserResizedCommand',
   function execute(data) {
-
     //console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
   });;APP.AppController.initializeCommand('APP.AppController.BrowserScrolledCommand',
   function execute(data) {
     //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
+  });;APP.AppController.initializeCommand('APP.AppController.ChangeRouteCommand',
+  function execute(data) {
+
+    console.log('ChangeRouteCommand, route: '+data.route);
+
+    this.router.setRoute(data.route);
+
   });;APP.AppController.initializeCommand('APP.AppController.RouteChangedCommand',
   function execute(data) {
 

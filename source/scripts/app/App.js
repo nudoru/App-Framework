@@ -3,8 +3,7 @@ var APP = {};
 APP = (function () {
   var _self,
     _globals,
-    _objectUtils = require('nudoru.utils.ObjectUtils'),
-    _browserInfo = require('nudoru.utils.BrowserInfo');
+    _objectUtils = require('nudoru.utils.ObjectUtils');
 
   //----------------------------------------------------------------------------
   //  Initialize

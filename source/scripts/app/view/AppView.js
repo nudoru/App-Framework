@@ -161,13 +161,10 @@ APP.AppView = (function () {
   //  SubViews
   //----------------------------------------------------------------------------
 
-  function mapView(templateID, unique) {
-    var template = _subViewHTMLTemplatePrefix + templateID,
-        module = _subViewModulePrefix + templateID;
-
+  function mapView(templateID, controller, unique) {
     _subViewMapping[templateID] = {
-      htmlTemplate: _template.getTemplate(template),
-      controller: unique ? requireUnique(module) : require(module)
+      htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
+      controller: unique ? requireUnique(controller) : require(controller)
     };
   }
 
@@ -191,6 +188,8 @@ APP.AppView = (function () {
     _subViewMountPoint.appendChild(subview.controller.getDOMElement());
 
     _currentSubView = viewObj.templateID;
+
+    _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGED, viewObj.templateID);
   }
 
   function unMountCurrentSubView() {

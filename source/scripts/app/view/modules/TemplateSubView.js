@@ -1,3 +1,7 @@
+/**
+ * A template for a subview/route controller
+ */
+
 define('APP.AppView.TemplateSubView',
   function (require, module, exports) {
 
@@ -25,13 +29,15 @@ define('APP.AppView.TemplateSubView',
     }
 
     function render() {
+      console.log(_id + ', subview render');
+
       _html = _templateObj(_currentState);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
       return _DOMElement;
     }
 
     function willUnMount() {
-      //console.log('subview will unmount');
+      console.log(_id + ', subview will unmount');
     }
 
 

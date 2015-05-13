@@ -24,11 +24,11 @@ APP.AppController = function () {
     _view = APP.AppView;
 
     _router.initialize(_eventDispatcher);
-    mapCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
     initializeView();
   }
 
-  function mapCommand(evt, command, once) {
+  function mapEventCommand(evt, command, once) {
     once = once || false;
     _eventCommandMap.map(evt, command, once);
   }
@@ -68,16 +68,18 @@ APP.AppController = function () {
    */
   function postInitialize() {
     // Browser events
-    mapCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    mapEventCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    mapEventCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
 
     // App events
-    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
-    mapCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+    mapEventCommand(APP.AppEvents.CHANGE_ROUTE, _self.ChangeRouteCommand);
+    mapEventCommand(APP.AppEvents.VIEW_CHANGED, _self.ViewChangedCommand);
+    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
+    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
 
     // Routes
-    //mapRouteCommand('/', 'TemplateSubView', _self.RouteChangedCommand);
-    //mapRouteCommand('/1', 'TestSubView', _self.RouteChangedCommand);
+    mapRouteView('/', 'TemplateSubView', 'APP.AppView.TemplateSubView', false);
+    mapRouteView('/1', 'TestSubView', 'APP.AppView.TemplateSubView', false);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
@@ -93,17 +95,21 @@ APP.AppController = function () {
     _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
       command.execute(dataObj);
     }});
-
-    mapView(templateID, false);
   }
 
   /**
-   * Set up mapping between route to html template and sub view module in a 1:1 relationship
+   * Maps a route to a view controller
+   * @param route
    * @param templateID
-   * @param unique
+   * @param controller
+   * @param unique Should it be a singleton controller (false) or unique instance (true)
    */
-  function mapView(templateID, unique) {
-    _view.mapView(templateID, unique);
+  function mapRouteView(route, templateID, controller, unique) {
+    _view.mapView(templateID, controller, unique);
+
+    _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
+      _view.showView(dataObj);
+    }});
   }
 
   /**
@@ -134,7 +140,10 @@ APP.AppController = function () {
   return {
     initialize: initialize,
     postIntialize: postInitialize,
-    initializeCommand: initializeCommand
+    initializeCommand: initializeCommand,
+    mapRouteView: mapRouteView,
+    mapRouteCommand: mapRouteCommand,
+    mapEventCommand: mapEventCommand
   };
 
 }();
