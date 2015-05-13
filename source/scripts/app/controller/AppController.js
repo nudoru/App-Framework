@@ -20,29 +20,21 @@ APP.AppController = function () {
   function initialize() {
     _self = this;
 
-    _model = APP.AppModel;
-    _view = APP.AppView;
+    _model = APP.Model;
+    _view = APP.View;
 
     _router.initialize(_eventDispatcher);
-    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
-    initializeView();
-  }
 
-  function mapEventCommand(evt, command, once) {
-    once = once || false;
-    _eventCommandMap.map(evt, command, once);
+    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+
+    initializeView();
   }
 
 
 
   function initializeView() {
-    _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
     _view.initialize();
-  }
-
-  function onViewInitalized() {
-    _view.render();
   }
 
   function onViewRendered() {
@@ -50,16 +42,16 @@ APP.AppController = function () {
   }
 
   function initializeModel() {
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_INITIALIZED, onModelInitialized, true);
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_LOADED, onModelDataLoaded, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_WAITING, onModelDataWaiting, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_READY, onModelDataReady, true);
     _model.initialize();
   }
 
-  function onModelInitialized() {
-    _model.loadModelData();
+  function onModelDataWaiting() {
+    _model.setData({});
   }
 
-  function onModelDataLoaded() {
+  function onModelDataReady() {
     postInitialize();
   }
 
@@ -67,22 +59,33 @@ APP.AppController = function () {
    * After the application is loaded, wire events/command and start it going
    */
   function postInitialize() {
-    // Browser events
-    mapEventCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapEventCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
-
-    // App events
-    mapEventCommand(APP.AppEvents.CHANGE_ROUTE, _self.ChangeRouteCommand);
-    mapEventCommand(APP.AppEvents.VIEW_CHANGED, _self.ViewChangedCommand);
-    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
-    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
-
-    // Routes
-    mapRouteView('/', 'TemplateSubView', 'APP.AppView.TemplateSubView', false);
-    mapRouteView('/1', 'TestSubView', 'APP.AppView.TemplateSubView', false);
+    //// Browser events
+    //mapEventCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    //mapEventCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    //
+    //// App events
+    //mapEventCommand(APP.AppEvents.CHANGE_ROUTE, _self.ChangeRouteCommand);
+    //mapEventCommand(APP.AppEvents.VIEW_CHANGED, _self.ViewChangedCommand);
+    //mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
+    //mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+    //
+    //// Routes
+    //mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
+    //mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
+  }
+
+  /**
+   * Maps an event to trigger a command when it's published
+   * @param evt The event string
+   * @param command The command object
+   * @param once True if should only execute once, will be unmapped automatically
+   */
+  function mapEventCommand(evt, command, once) {
+    once = once || false;
+    _eventCommandMap.map(evt, command, once);
   }
 
   /**

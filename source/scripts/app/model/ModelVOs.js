@@ -1,5 +1,5 @@
-APP.createNameSpace('APP.AppModel.ItemVO');
-APP.AppModel.ItemVO = {
+APP.createNameSpace('APP.Model.ItemVO');
+APP.Model.ItemVO = {
   properties: {
       title: '',
       shortTitle: '',

@@ -2379,8 +2379,8 @@ APP.AppEvents = {
 
   CONTROLLER_INITIALIZED: 'CONTROLLER_INITIALIZED',
 
-  MODEL_INITIALIZED: 'MODEL_INITIALIZED',
-  MODEL_DATA_LOADED: 'MODEL_DATA_LOADED',
+  MODEL_DATA_WAITING: 'MODEL_DATA_WAITING',
+  MODEL_DATA_READY: 'MODEL_DATA_READY',
 
   RESUME_FROM_MODEL_STATE: 'RESUME_FROM_MODEL_STATE',
 
@@ -2392,60 +2392,13 @@ APP.AppEvents = {
   VIEW_CHANGE_TO_DESKTOP: 'VIEW_CHANGE_TO_DESKTOP',
 
   CHANGE_ROUTE: 'change_route'
-};;APP.createNameSpace('APP.AppModel');
+};;APP.createNameSpace('APP.Model');
 
-APP.AppModel = (function () {
+APP.Model = (function () {
   var _self,
     _appGlobals,
-    _dataProvider,
     _data,
-    _eventDispatcher = require('nudoru.events.EventDispatcher'),
-    _arrayUtils = require('nudoru.utils.ArrayUtils'),
-    _objectUtils = require('nudoru.utils.ObjectUtils');
-
-  //----------------------------------------------------------------------------
-  //  Accessors
-  //  array.slice(0) returns a COPY of the array not the actual array
-  //----------------------------------------------------------------------------
-
-  function getModelData() {
-    return _data.slice(0);
-  }
-
-  //function getFiltersForURL() {
-  //  var filters = '',
-  //  //freeText = 'search='+encodeURIComponent(_currentFreeTextFilter),
-  //  //currentItem = 'item='+encodeURIComponent(_currentItem),
-  //    str = '';
-  //
-  //  if (_currentDataFilters) {
-  //    filters = _currentDataFilters.map(function (filter) {
-  //      return encodeURIComponent(filter.split(' ').join('_'));
-  //    }).join("/");
-  //  }
-  //
-  //  if (filters) {
-  //    str += filters;
-  //  }
-  //
-  //  if (_currentFreeTextFilter || _currentItem) {
-  //    str += '?';
-  //  }
-  //
-  //  if (_currentFreeTextFilter) {
-  //    str += 'search=' + encodeURIComponent(_currentFreeTextFilter);
-  //  }
-  //
-  //  if (_currentFreeTextFilter && _currentItem) {
-  //    str += '&';
-  //  }
-  //
-  //  if (_currentItem) {
-  //    str += 'item=' + encodeURIComponent(_currentItem);
-  //  }
-  //
-  //  return str;
-  //}
+    _eventDispatcher = require('nudoru.events.EventDispatcher');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -2453,25 +2406,30 @@ APP.AppModel = (function () {
 
   function initialize() {
     _self = this;
-
     _appGlobals = APP.globals();
-
-    _eventDispatcher.publish(APP.AppEvents.MODEL_INITIALIZED);
+    _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_WAITING);
   }
-
-  function loadModelData() {
-    onModelDataLoaded();
-  }
-
-  function onModelDataLoaded() {
-    _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_LOADED);
-  }
-
 
   //----------------------------------------------------------------------------
   //  Data
   //----------------------------------------------------------------------------
 
+  /**
+   * Set the datat for the model
+   * @param dataObj
+   */
+  function setData(dataObj) {
+    _data = dataObj;
+    _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_READY);
+  }
+
+  /**
+   * Returns a copy of the data
+   * @returns {Blob|ArrayBuffer|Array.<T>|string|*}
+   */
+  function getData() {
+    return _data.slice(0);
+  }
 
   //----------------------------------------------------------------------------
   //  API
@@ -2479,10 +2437,11 @@ APP.AppModel = (function () {
 
   return {
     initialize: initialize,
-    loadModelData: loadModelData
+    setData: setData,
+    getData: getData
   };
 
-}());;define('APP.AppView.DeviceView',
+}());;define('APP.View.DeviceView',
   function (require, module, exports) {
 
     var _drawerEl,
@@ -2595,7 +2554,7 @@ APP.AppModel = (function () {
 
     exports.initialize = initialize;
 
-});;define('APP.AppView.TemplateSubView',
+});;define('APP.View.TemplateSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -2649,9 +2608,9 @@ APP.AppModel = (function () {
     exports.getDOMElement = getDOMElement;
     exports.willUnMount = willUnMount;
 
-  });;APP.createNameSpace('APP.AppView');
+  });;APP.createNameSpace('APP.View');
 
-APP.AppView = (function () {
+APP.View = (function () {
   var _self,
     _appGlobals,
     _currentViewPortSize,
@@ -2668,7 +2627,6 @@ APP.AppView = (function () {
     _subViewMapping = Object.create(null),
     _currentSubView,
     _subViewHTMLTemplatePrefix = 'template__',
-    _subViewModulePrefix = 'APP.AppView.',
     _template = require('nudoru.utils.NTemplate'),
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _toastView = require('nudoru.components.ToastView'),
@@ -2694,6 +2652,8 @@ APP.AppView = (function () {
     _appGlobals = APP.globals();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
+
+    render();
   }
 
   function render() {
@@ -2898,7 +2858,6 @@ APP.AppView = (function () {
 
   return {
     initialize: initialize,
-    render: render,
     vAlert: vAlert,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
@@ -2923,29 +2882,21 @@ APP.AppController = function () {
   function initialize() {
     _self = this;
 
-    _model = APP.AppModel;
-    _view = APP.AppView;
+    _model = APP.Model;
+    _view = APP.View;
 
     _router.initialize(_eventDispatcher);
-    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
-    initializeView();
-  }
 
-  function mapEventCommand(evt, command, once) {
-    once = once || false;
-    _eventCommandMap.map(evt, command, once);
+    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+
+    initializeView();
   }
 
 
 
   function initializeView() {
-    _eventDispatcher.subscribe(APP.AppEvents.VIEW_INITIALIZED, onViewInitalized, true);
     _eventDispatcher.subscribe(APP.AppEvents.VIEW_RENDERED, onViewRendered, true);
     _view.initialize();
-  }
-
-  function onViewInitalized() {
-    _view.render();
   }
 
   function onViewRendered() {
@@ -2953,16 +2904,16 @@ APP.AppController = function () {
   }
 
   function initializeModel() {
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_INITIALIZED, onModelInitialized, true);
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_LOADED, onModelDataLoaded, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_WAITING, onModelDataWaiting, true);
+    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_READY, onModelDataReady, true);
     _model.initialize();
   }
 
-  function onModelInitialized() {
-    _model.loadModelData();
+  function onModelDataWaiting() {
+    _model.setData({});
   }
 
-  function onModelDataLoaded() {
+  function onModelDataReady() {
     postInitialize();
   }
 
@@ -2970,22 +2921,33 @@ APP.AppController = function () {
    * After the application is loaded, wire events/command and start it going
    */
   function postInitialize() {
-    // Browser events
-    mapEventCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
-    mapEventCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
-
-    // App events
-    mapEventCommand(APP.AppEvents.CHANGE_ROUTE, _self.ChangeRouteCommand);
-    mapEventCommand(APP.AppEvents.VIEW_CHANGED, _self.ViewChangedCommand);
-    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
-    mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
-
-    // Routes
-    mapRouteView('/', 'TemplateSubView', 'APP.AppView.TemplateSubView', false);
-    mapRouteView('/1', 'TestSubView', 'APP.AppView.TemplateSubView', false);
+    //// Browser events
+    //mapEventCommand(_browserEvents.BROWSER_RESIZED, _self.BrowserResizedCommand);
+    //mapEventCommand(_browserEvents.BROWSER_SCROLLED, _self.BrowserScrolledCommand);
+    //
+    //// App events
+    //mapEventCommand(APP.AppEvents.CHANGE_ROUTE, _self.ChangeRouteCommand);
+    //mapEventCommand(APP.AppEvents.VIEW_CHANGED, _self.ViewChangedCommand);
+    //mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, _self.ViewChangedToMobileCommand);
+    //mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, _self.ViewChangedToDesktopCommand);
+    //
+    //// Routes
+    //mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
+    //mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
 
     //AppInitializedCommand takes over when this fires
     _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
+  }
+
+  /**
+   * Maps an event to trigger a command when it's published
+   * @param evt The event string
+   * @param command The command object
+   * @param once True if should only execute once, will be unmapped automatically
+   */
+  function mapEventCommand(evt, command, once) {
+    once = once || false;
+    _eventCommandMap.map(evt, command, once);
   }
 
   /**
@@ -3054,8 +3016,8 @@ APP.AppController.AbstractCommand = {
   methods: {
     app: APP,
     appController: APP.AppController,
-    appModel: APP.AppModel,
-    appView: APP.AppView,
+    appModel: APP.Model,
+    appView: APP.View,
     eventDispatcher: require('nudoru.events.EventDispatcher'),
     router: require('nudoru.utils.Router'),
     execute: function (data) {
@@ -3064,19 +3026,34 @@ APP.AppController.AbstractCommand = {
   }
 };;APP.AppController.initializeCommand('APP.AppController.AppInitializedCommand',
   function execute(data) {
+
+    var _browserEvents = require('nudoru.events.BrowserEvents');
+
     console.log('AppInitializedCommand');
 
-    var _appGlobals = APP.globals();
+    // Browser events
+    APP.AppController.mapEventCommand(_browserEvents.BROWSER_RESIZED, APP.AppController.BrowserResizedCommand);
+    APP.AppController.mapEventCommand(_browserEvents.BROWSER_SCROLLED, APP.AppController.BrowserScrolledCommand);
 
-    this.appView.removeLoadingMessage();
+    // App events
+    APP.AppController.mapEventCommand(APP.AppEvents.CHANGE_ROUTE, APP.AppController.ChangeRouteCommand);
+    APP.AppController.mapEventCommand(APP.AppEvents.VIEW_CHANGED, APP.AppController.ViewChangedCommand);
+    APP.AppController.mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_MOBILE, APP.AppController.ViewChangedToMobileCommand);
+    APP.AppController.mapEventCommand(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP, APP.AppController.ViewChangedToDesktopCommand);
+
+    // Routes
+    APP.AppController.mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
+    APP.AppController.mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
+
+    APP.View.removeLoadingMessage();
 
     this.router.runCurrentRoute();
   });;APP.AppController.initializeCommand('APP.AppController.BrowserResizedCommand',
   function execute(data) {
-    //console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
+    console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
   });;APP.AppController.initializeCommand('APP.AppController.BrowserScrolledCommand',
   function execute(data) {
-    //console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
+    console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
   });;APP.AppController.initializeCommand('APP.AppController.ChangeRouteCommand',
   function execute(data) {
 

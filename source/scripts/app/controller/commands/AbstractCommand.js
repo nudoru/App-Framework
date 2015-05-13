@@ -7,8 +7,8 @@ APP.AppController.AbstractCommand = {
   methods: {
     app: APP,
     appController: APP.AppController,
-    appModel: APP.AppModel,
-    appView: APP.AppView,
+    appModel: APP.Model,
+    appView: APP.View,
     eventDispatcher: require('nudoru.events.EventDispatcher'),
     router: require('nudoru.utils.Router'),
     execute: function (data) {

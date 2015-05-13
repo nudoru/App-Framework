@@ -2,7 +2,7 @@
  * DeviceView handles responding to browser width changes and showing/hiding
  * the mobile UI drawer
  *
- * Extracted from AppView 5/6/15
+ * Extracted from View 5/6/15
  *
  * UNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTED
  * UNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTED
@@ -11,7 +11,7 @@
  * UNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTEDUNTESTED
  */
 
-define('APP.AppView.DeviceView',
+define('APP.View.DeviceView',
   function (require, module, exports) {
 
     var _drawerEl,

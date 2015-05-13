@@ -2,7 +2,7 @@
  * A template for a subview/route controller
  */
 
-define('APP.AppView.TemplateSubView',
+define('APP.View.TemplateSubView',
   function (require, module, exports) {
 
     var _initObj,

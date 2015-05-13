@@ -1,6 +1,6 @@
-APP.createNameSpace('APP.AppView');
+APP.createNameSpace('APP.View');
 
-APP.AppView = (function () {
+APP.View = (function () {
   var _self,
     _appGlobals,
     _currentViewPortSize,
@@ -17,7 +17,6 @@ APP.AppView = (function () {
     _subViewMapping = Object.create(null),
     _currentSubView,
     _subViewHTMLTemplatePrefix = 'template__',
-    _subViewModulePrefix = 'APP.AppView.',
     _template = require('nudoru.utils.NTemplate'),
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _toastView = require('nudoru.components.ToastView'),
@@ -43,6 +42,8 @@ APP.AppView = (function () {
     _appGlobals = APP.globals();
 
     _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
+
+    render();
   }
 
   function render() {
@@ -247,7 +248,6 @@ APP.AppView = (function () {
 
   return {
     initialize: initialize,
-    render: render,
     vAlert: vAlert,
     showNotification: showNotification,
     removeLoadingMessage: removeLoadingMessage,
