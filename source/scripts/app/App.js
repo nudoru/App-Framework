@@ -1,6 +1,4 @@
-var APP = {};
-
-APP = (function () {
+var APP = (function () {
   var _self,
     _config,
     _model,
@@ -113,15 +111,6 @@ APP = (function () {
   //----------------------------------------------------------------------------
   //  Wiring Services
   //----------------------------------------------------------------------------
-
-  /**
-   * Name space creation utility function
-   * @param str
-   * @returns {*}
-   */
-  //function createNameSpace(str) {
-  //  return NNameSpace.createNameSpace(str, APP, "APP");
-  //}
 
   /**
    * Maps an event to trigger a command when it's published

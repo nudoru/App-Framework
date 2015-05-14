@@ -96,7 +96,7 @@ module.exports = function (grunt) {
           'source/scripts/vendor/underscore-min.js',
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
 
-          'source/scripts/nudoru/nudoru.js',
+          'source/scripts/nudoru/require.js',
           'source/scripts/nudoru/utils/*.js',
           'source/scripts/nudoru/events/*.js',
           'source/scripts/nudoru/components/*.js',

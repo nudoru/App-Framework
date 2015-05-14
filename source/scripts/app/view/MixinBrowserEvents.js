@@ -56,7 +56,7 @@ define('APP.View.MixinBrowserEvents',
     }
 
     function setMainScrollingView(elID) {
-      return _mainScrollEl = document.getElementById(elID);
+      _mainScrollEl = document.getElementById(elID);
     }
 
     //----------------------------------------------------------------------------
