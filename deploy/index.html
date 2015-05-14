@@ -33,7 +33,9 @@ BEGIN Templates for Nudoru Components
              <%= content %>
         </div>
         <div class="footer">
+            <div class="footer-buttons">
                 <button class="icon-right">Close<i class="fa fa-times"></i></button>
+            </div>
         </div>
     </div>
 </script>
@@ -77,6 +79,254 @@ BEGIN Templates for App SubViews
           <div class="padded-content">
             <!--include mock-styletest-->
             <!--include mock-components-->
+            <div class="panel-shadow">
+              <div class="column-container panel-header">
+                <div class="one-fourth-left-column">
+                  <h1 class="h1-alternate">Welcome,<em> Joe Timely</em></h1>
+                </div>
+                <div class="three-fourths-right-column text-right">
+                  <button class="button-icon-left"><i class="fa fa-cubes"></i>Manage my assignments</button>
+                  <button class="button-icon-left"><i class="fa fa-calendar"></i>My Forcast</button>
+                  <button class="button-icon-left"><i class="fa fa-list"></i>My Time Card</button>
+                </div>
+              </div>
+              <section class="padding-top-double">
+                <div class="column-container">
+                  <div class="one-fourth-left-column">
+                    <button class="button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
+                  </div>
+                  <div class="half-left-column text-center">
+                    <h1 class="h1-alternate">Week of May 10-16, 2015</h1>
+                    <!--button.button-icon-left.button-no-border-->
+                    <!--  i.fa.fa-calendar-->
+                    <!--  | View Full Month-->
+                  </div>
+                  <div class="one-fourth-right-column text-right">
+                    <button class="button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
+                  </div>
+                </div>
+                <table class="table table-rows-zebra">
+                  <thead>
+                    <tr>
+                      <th scope="col" style=""></th>
+                      <th scope="col" style="width: 40px"></th>
+                      <th scope="col" style="width: 125px" class="center-column">Role</th>
+                      <th scope="col" style="width: 85px" class="center-column">Mon</th>
+                      <th scope="col" style="width: 85px" class="center-column">Tue</th>
+                      <th scope="col" style="width: 85px" class="center-column">Wed</th>
+                      <th scope="col" style="width: 85px" class="center-column">Thur</th>
+                      <th scope="col" style="width: 85px" class="center-column">Fri</th>
+                      <th scope="col" style="width: 200px" class="center-column">Comments</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>ABC Project</th>
+                      <th><i class="fa fa-briefcase"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>XYZ Solution</th>
+                      <th><i class="fa fa-briefcase"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Financial Assessment 1.2</th>
+                      <th><i class="fa fa-briefcase"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Innovation Team X</th>
+                      <th><i class="fa fa-briefcase"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px">
+                      </td>
+                    </tr>
+                    <!--tr.row-header-inline-->
+                    <!--  td(colspan='9') Default activities-->
+                    <tr class="header-grey">
+                      <th>Enrichment</th>
+                      <th><i class="fa fa-user"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Personal</option>
+                          <option>Mandatory</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px">
+                      </td>
+                    </tr>
+                    <tr class="header-grey">
+                      <th>Out of Office</th>
+                      <th><i class="fa fa-user"></i></th>
+                      <td class="center-column">
+                        <select id="input-select">
+                          <option>Vacation</option>
+                          <option>Sick</option>
+                          <option>Other</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px">
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th class="right-column">Totals</th>
+                      <th></th>
+                      <th class="center-column"></th>
+                      <th class="center-column">10 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column"></th>
+                    </tr>
+                  </tfoot>
+                </table>
+                <section class="text-right panel-footer">
+                  <button class="button-icon-right button-danger">Submit 42 hrs<i class="fa fa-check"></i></button>
+                </section>
+              </section>
+            </div>
             <div class="panel-shadow">
               <div class="column-container panel-header">
                 <div class="half-left-column">
@@ -255,242 +505,6 @@ BEGIN Templates for App SubViews
                 </table>
                 <section class="panel-footer">
                   <button class="button-icon-right button-success">Update<i class="fa fa-check"></i></button>
-                </section>
-              </section>
-            </div>
-            <div class="panel-shadow">
-              <div class="column-container panel-header">
-                <div class="half-left-column">
-                  <h1 class="h1-alternate">Welcome,<em> Joe Timely</em></h1>
-                </div>
-                <div class="half-right-column text-right">
-                  <button class="button-icon-left"><i class="fa fa-cubes"></i>Manage my assignments</button>
-                  <button class="button-icon-left"><i class="fa fa-calendar"></i>Manage my time</button>
-                </div>
-              </div>
-              <section class="padding-top-double">
-                <div class="column-container">
-                  <div class="one-fourth-left-column">
-                    <button class="button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
-                  </div>
-                  <div class="half-left-column text-center">
-                    <h1 class="h1-alternate">Week of<em> May 10-16, 2015</em></h1>
-                    <button class="button-icon-left button-no-border"><i class="fa fa-calendar"></i>View Full Month</button>
-                  </div>
-                  <div class="one-fourth-right-column text-right">
-                    <button class="button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
-                  </div>
-                </div>
-                <hr>
-                <table class="table table-rows-zebra">
-                  <thead>
-                    <tr>
-                      <th scope="col"></th>
-                      <th scope="col" style="width: 40px"></th>
-                      <th scope="col" class="column-10pct center-column">Sun</th>
-                      <th scope="col" class="column-10pct center-column">Mon</th>
-                      <th scope="col" class="column-10pct center-column">Tue</th>
-                      <th scope="col" class="column-10pct center-column">Wed</th>
-                      <th scope="col" class="column-10pct center-column">Thur</th>
-                      <th scope="col" class="column-10pct center-column">Fri</th>
-                      <th scope="col" class="column-10pct center-column">Sat</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th>ABC Project</th>
-                      <th><i class="fa fa-briefcase"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>XYZ Solution</th>
-                      <th><i class="fa fa-briefcase"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Financial Assessment 1.2</th>
-                      <th><i class="fa fa-briefcase"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Innovation Team X</th>
-                      <th><i class="fa fa-briefcase"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                    </tr>
-                    <!--tr.row-header-inline-->
-                    <!--  td(colspan='9') Default activities-->
-                    <tr class="header-grey">
-                      <th>Personal Development</th>
-                      <th><i class="fa fa-user"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                    </tr>
-                    <tr class="header-grey">
-                      <th>PTO</th>
-                      <th><i class="fa fa-user"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                    </tr>
-                    <tr class="header-grey">
-                      <th>Sick</th>
-                      <th><i class="fa fa-user"></i></th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="hrs" style="width: 50px">
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <th class="right-column">Totals</th>
-                      <th></th>
-                      <th class="center-column"></th>
-                      <th class="center-column">10 hrs</th>
-                      <th class="center-column">8 hrs</th>
-                      <th class="center-column">8 hrs</th>
-                      <th class="center-column">8 hrs</th>
-                      <th class="center-column">8 hrs</th>
-                      <th class="center-column"></th>
-                    </tr>
-                  </tfoot>
-                </table>
-                <section class="text-right panel-footer">
-                  <button class="button-icon-right button-danger">Submit 42 hrs<i class="fa fa-check"></i></button>
                 </section>
               </section>
             </div>

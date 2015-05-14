@@ -2996,7 +2996,7 @@ button, .button-important {
   color: #fff;
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.15), inset 1px 1px 0 rgba(255, 255, 255, 0.3);
   white-space: nowrap;
 }
 button i.fa, .button-important i.fa {
@@ -3078,21 +3078,21 @@ button:hover, .button-important:hover, button:active, .button-important:active {
   background-color: #c32e2a;
 }
 
-.button-neutral, .button-neutral-light, .button-neutral-light-negative, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .toast__item-controls button {
+.button-neutral, .button-neutral-light, .button-neutral-light-negative, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .messagebox__default .footer .footer-buttons button, .toast__item-controls button {
   color: #fff;
   background-color: #968c83;
 }
-.button-neutral:hover, .button-neutral-light:hover, .button-neutral-light-negative:hover, .toast__item-controls button:hover, .button-neutral:active, .button-neutral-light:active, .button-neutral-light-negative:active, .toast__item-controls button:active {
+.button-neutral:hover, .button-neutral-light:hover, .button-neutral-light-negative:hover, .messagebox__default .footer .footer-buttons button:hover, .toast__item-controls button:hover, .button-neutral:active, .button-neutral-light:active, .button-neutral-light-negative:active, .messagebox__default .footer .footer-buttons button:active, .toast__item-controls button:active {
   background-color: #6e6259;
 }
 
-.button-neutral-light, .button-neutral-light-negative, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .toast__item-controls button {
+.button-neutral-light, .button-neutral-light-negative, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .messagebox__default .footer .footer-buttons button, .toast__item-controls button {
   background-color: rgba(0, 0, 0, 0.05);
   color: #6e6259;
   box-shadow: none;
   text-shadow: none;
 }
-.button-neutral-light:hover, .button-neutral-light-negative:hover, .toast__item-controls button:hover, .button-neutral-light:active, .button-neutral-light-negative:active, .toast__item-controls button:active {
+.button-neutral-light:hover, .button-neutral-light-negative:hover, .messagebox__default .footer .footer-buttons button:hover, .toast__item-controls button:hover, .button-neutral-light:active, .button-neutral-light-negative:active, .messagebox__default .footer .footer-buttons button:active, .toast__item-controls button:active {
   color: #00a9e0;
   border: 1px solid #00a9e0;
   background-color: rgba(0, 0, 0, 0.05);
@@ -3477,15 +3477,47 @@ tr.row-header-inline td {
 }
 .messagebox__default .header {
   text-align: center;
+  border-bottom: none;
+  background-color: transparent;
 }
 .messagebox__default .header h1 {
   color: #005eb8;
   font-weight: 400;
-  font-size: 1rem;
+  font-size: 0.8rem;
   text-shadow: 0 1px 0 #fff;
 }
 .messagebox__default .content {
   padding: 0.688rem;
+  line-height: 1.376rem;
+}
+.messagebox__default .content p {
+  font-size: 1rem;
+}
+.messagebox__default .footer {
+  padding: 0;
+  height: 2.752rem;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+}
+.messagebox__default .footer .footer-buttons {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+.messagebox__default .footer .footer-buttons button {
+  display: table-cell;
+  height: 2.752rem;
+  width: 50%;
+  border-color: transparent;
+  margin: 0;
+}
+.messagebox__default .footer .footer-buttons button:focus, .messagebox__default .footer .footer-buttons button:hover, .messagebox__default .footer .footer-buttons button:active {
+  border-color: transparent !important;
+}
+.messagebox__default .footer .footer-buttons button:first-of-type {
+  border-radius: 0 0 0 3px;
+}
+.messagebox__default .footer .footer-buttons button:last-of-type {
+  border-radius: 0 0 3px 0;
 }
 
 .messagebox__width-300px {

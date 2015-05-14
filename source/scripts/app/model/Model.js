@@ -1,6 +1,6 @@
-APP.createNameSpace('APP.Model');
+define('APP.Model',
+  function(require, module, exports) {
 
-APP.Model = (function () {
   var _self,
     _data,
     _eventDispatcher = require('nudoru.events.EventDispatcher');
@@ -19,7 +19,7 @@ APP.Model = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Set the datat for the model
+   * Set the data for the model
    * @param dataObj
    */
   function setData(dataObj) {
@@ -29,7 +29,7 @@ APP.Model = (function () {
 
   /**
    * Returns a copy of the data
-   * @returns {Blob|ArrayBuffer|Array.<T>|string|*}
+   * @returns *
    */
   function getData() {
     return _data.slice(0);
@@ -39,10 +39,9 @@ APP.Model = (function () {
   //  API
   //----------------------------------------------------------------------------
 
-  return {
-    initialize: initialize,
-    setData: setData,
-    getData: getData
-  };
 
-}());
+  exports.initialize = initialize;
+  exports.setData = setData;
+  exports.getData = getData;
+
+});

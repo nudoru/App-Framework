@@ -59,7 +59,7 @@ define('nudoru.components.MessageBoxView',
         bounds: window
       });
 
-      var closeBtn = boxOjb.element.querySelector('.footer > button');
+      var closeBtn = boxOjb.element.querySelector('.footer button');
 
       boxOjb.closeStream = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr())
         .subscribe(function () {

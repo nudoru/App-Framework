@@ -1,3 +1,5 @@
+$message-box-footer-height: $base-line-height * 4
+
 #messagebox__container
   position: absolute
   z-index: $z-index-messagebox-cover
@@ -9,19 +11,40 @@
   .header
     @extend .panel-header
     text-align: center
+    border-bottom: none
+    background-color: $color-nocolor
     h1
       color: $control-primary-color-dark
       font-weight: 400
-      font-size: 1rem
+      font-size: .8rem
       text-shadow: 0 1px 0 #fff
-
   .content
     padding: $base-line-height
+    line-height: $double-base-line-height
+    p
+      font-size: 1rem
   .footer
     @extend .panel-footer
-    //text-align: center
-    //button
-    //  float: none
+    padding: 0
+    height: $message-box-footer-height
+    box-shadow: inset 0 0 5px rgba(0,0,0,.05)
+    .footer-buttons
+      display: table
+      table-layout: fixed
+      width: 100%
+      button
+        @extend .button-neutral-light
+        display: table-cell
+        height: $message-box-footer-height
+        width: 50%
+        border-color: $color-nocolor
+        margin: 0
+        &:focus, &:hover, &:active
+          border-color: $color-nocolor !important
+        &:first-of-type
+          border-radius: 0 0 0 $control-border-radius
+        &:last-of-type
+          border-radius: 0 0 $control-border-radius 0
 
 .messagebox__width-300px
   width: 300px

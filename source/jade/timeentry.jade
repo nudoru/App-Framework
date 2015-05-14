@@ -1,15 +1,18 @@
 .panel-shadow
   .column-container.panel-header
-    .half-left-column
+    .one-fourth-left-column
       h1.h1-alternate Welcome,
         em  Joe Timely
-    .half-right-column.text-right
+    .three-fourths-right-column.text-right
       button.button-icon-left
         i.fa.fa-cubes
         | Manage my assignments
       button.button-icon-left
         i.fa.fa-calendar
-        | Manage my time
+        | My Forcast
+      button.button-icon-left
+        i.fa.fa-list
+        | My Time Card
   section.padding-top-double
     .column-container
       .one-fourth-left-column
@@ -17,156 +20,165 @@
           i.fa.fa-chevron-circle-left
           | Previous Wk
       .half-left-column.text-center
-        h1.h1-alternate Week of
-          em  May 10-16, 2015
-        button.button-icon-left.button-no-border
-          i.fa.fa-calendar
-          | View Full Month
+        h1.h1-alternate Week of May 10-16, 2015
+        //button.button-icon-left.button-no-border
+        //  i.fa.fa-calendar
+        //  | View Full Month
       .one-fourth-right-column.text-right
         button.button-icon-right.button-neutral-light Next Wk
           i.fa.fa-chevron-circle-right
-    hr
     table.table.table-rows-zebra
       thead
         tr
-          th(scope='col')
+          th(scope='col', style="")
           th(scope='col', style="width: 40px")
-          th(scope='col').column-10pct.center-column Sun
-          th(scope='col').column-10pct.center-column Mon
-          th(scope='col').column-10pct.center-column Tue
-          th(scope='col').column-10pct.center-column Wed
-          th(scope='col').column-10pct.center-column Thur
-          th(scope='col').column-10pct.center-column Fri
-          th(scope='col').column-10pct.center-column Sat
+          th(scope='col', style="width: 125px").center-column Role
+          th(scope='col', style="width: 85px").center-column Mon
+          th(scope='col', style="width: 85px").center-column Tue
+          th(scope='col', style="width: 85px").center-column Wed
+          th(scope='col', style="width: 85px").center-column Thur
+          th(scope='col', style="width: 85px").center-column Fri
+          th(scope='col', style="width: 200px").center-column Comments
       tbody
         tr
           th ABC Project
           th
             i.fa.fa-briefcase
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            select(id='input-select')
+              option Consult
+              option Analysis
+              option Design
+              option Develop
+              option Implement
+              option Evaluate
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='Comment', style='width: 178px')
         tr
           th XYZ Solution
           th
             i.fa.fa-briefcase
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            select(id='input-select')
+              option Consult
+              option Analysis
+              option Design
+              option Develop
+              option Implement
+              option Evaluate
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='Comment', style='width: 178px')
         tr
           th Financial Assessment 1.2
           th
             i.fa.fa-briefcase
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            select(id='input-select')
+              option Consult
+              option Analysis
+              option Design
+              option Develop
+              option Implement
+              option Evaluate
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='Comment', style='width: 178px')
         tr
           th Innovation Team X
           th
             i.fa.fa-briefcase
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            select(id='input-select')
+              option Consult
+              option Analysis
+              option Design
+              option Develop
+              option Implement
+              option Evaluate
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='Comment', style='width: 178px')
         //tr.row-header-inline
         //  td(colspan='9') Default activities
         tr.header-grey
-          th Personal Development
+          th Enrichment
           th
             i.fa.fa-user
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            select(id='input-select')
+              option Personal
+              option Mandatory
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='Comment', style='width: 178px')
         tr.header-grey
-          th PTO
+          th Out of Office
           th
             i.fa.fa-user
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            select(id='input-select')
+              option Vacation
+              option Sick
+              option Other
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='', style='width: 50px')
           td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-        tr.header-grey
-          th Sick
-          th
-            i.fa.fa-user
-          td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-          td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-          td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-          td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-          td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-          td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
-          td.center-column
-            input(id='input-text', type='text', placeholder='hrs', style='width: 50px')
+            input(id='input-text', type='text', placeholder='Comment', style='width: 178px')
       tfoot
         tr
           th.right-column Totals

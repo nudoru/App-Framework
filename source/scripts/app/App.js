@@ -42,14 +42,14 @@ APP = (function () {
   //  Initialize
   //----------------------------------------------------------------------------
 
-  function initialize() {
+  function initialize(model, view) {
     console.log('APP: Initialize');
 
     initializeConfig();
 
     _self = this;
-    _model = APP.Model;
-    _view = APP.View;
+    _model = model;
+    _view = view;
 
     _router.initialize(_eventDispatcher);
 
