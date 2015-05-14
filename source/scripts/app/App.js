@@ -59,6 +59,7 @@ APP = (function () {
 
     _router.initialize(_eventDispatcher);
 
+    mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'APP.ModelDataWaitingCommand', true);
     mapEventCommand(_appEvents.CONTROLLER_INITIALIZED, 'APP.AppInitializedCommand', true);
 
     initializeView();
@@ -86,30 +87,23 @@ APP = (function () {
 
   /**
    * Init step 2
+   * A MODEL_DATA_WAITING event will dispatch, running the 'APP.ModelDataWaitingCommand'
+   * which will inject data and then onModelDataReady() will run
    */
   function initializeModel() {
-    _eventDispatcher.subscribe(_appEvents.MODEL_DATA_WAITING, onModelDataWaiting, true);
     _eventDispatcher.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
     _model.initialize();
   }
 
   /**
    * Init step 3
-   * Feed data to the model
-   */
-  function onModelDataWaiting() {
-    _model.setData({});
-  }
-
-  /**
-   * Init step 4
    */
   function onModelDataReady() {
     postInitialize();
   }
 
   /**
-   * Init step 5
+   * Init step 4
    * All APP initialization is complete, pass over to AppInitialzedCommand
    */
   function postInitialize() {
@@ -167,6 +161,10 @@ APP = (function () {
       _view.showView(dataObj);
     }});
   }
+
+  //----------------------------------------------------------------------------
+  //  API
+  //----------------------------------------------------------------------------
 
   return {
     initialize: initialize,
