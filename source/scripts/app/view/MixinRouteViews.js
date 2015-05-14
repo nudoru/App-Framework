@@ -6,6 +6,7 @@ define('APP.View.MixinRouteViews',
       _subViewMapping = Object.create(null),
       _currentSubView,
       _subViewHTMLTemplatePrefix = 'template__',
+      _appEvents = require('APP.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
       _eventDispatcher = APP.eventDispatcher();
 
@@ -47,7 +48,7 @@ define('APP.View.MixinRouteViews',
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());
       _currentSubView = viewObj.templateID;
-      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGED, viewObj.templateID);
+      _eventDispatcher.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
     }
 
     function unMountCurrentSubView() {

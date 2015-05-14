@@ -7,6 +7,7 @@ define('APP.View',
       _mainHeaderEl,
       _mainFooterEl,
       _eventDispatcher = APP.eventDispatcher(),
+      _appEvents = require('APP.AppEvents'),
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
       _toastView = require('nudoru.components.ToastView'),
@@ -24,7 +25,7 @@ define('APP.View',
     function initialize() {
       _self = this;
 
-      _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
+      _eventDispatcher.publish(_appEvents.VIEW_INITIALIZED);
 
       render();
 
@@ -46,7 +47,7 @@ define('APP.View',
       _messageBoxView.initialize('messagebox__container');
       _modalCoverView.initialize();
 
-      _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
+      _eventDispatcher.publish(_appEvents.VIEW_RENDERED);
     }
 
     /**

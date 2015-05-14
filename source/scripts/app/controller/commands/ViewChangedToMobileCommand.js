@@ -1,4 +1,8 @@
-APP.initializeCommand('APP.ViewChangedToMobileCommand',
-  function(data) {
-  console.log('ViewChangedToMobileCommand: '+data);
-});
+define('APP.ViewChangedToMobileCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('ViewChangedToMobileCommand: '+data);
+    };
+
+  });

@@ -101,8 +101,8 @@ module.exports = function (grunt) {
           'source/scripts/nudoru/events/*.js',
           'source/scripts/nudoru/components/*.js',
 
-          'source/scripts/app/App.js',
           'source/scripts/app/events/*.js',
+          'source/scripts/app/App.js',
           'source/scripts/app/model/modules/*.js',
           'source/scripts/app/model/Model.js',
           'source/scripts/app/view/modules/*.js',

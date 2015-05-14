@@ -1,4 +1,8 @@
-APP.initializeCommand('APP.ViewChangedCommand',
-  function execute(data) {
-    console.log('ViewChangedCommand: '+data);
-});
+define('APP.ViewChangedCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('ViewChangedCommand: '+data);
+    };
+
+  });

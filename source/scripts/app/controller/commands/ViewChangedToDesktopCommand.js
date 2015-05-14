@@ -1,4 +1,8 @@
-APP.initializeCommand('APP.ViewChangedToDesktopCommand',
-  function execute(data) {
-    console.log('ViewChangedToDesktopCommand: '+data);
+define('APP.ViewChangedToDesktopCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('ViewChangedToDesktopCommand: '+data);
+    };
+
   });

@@ -1,8 +1,9 @@
-APP.initializeCommand('APP.ChangeRouteCommand',
-  function execute(data) {
+define('APP.ChangeRouteCommand',
+  function (require, module, exports) {
 
-    console.log('ChangeRouteCommand, route: '+data.route);
-
-    APP.router().setRoute(data.route);
+    exports.execute = function(data) {
+      console.log('ChangeRouteCommand, route: '+data.route);
+      APP.router().setRoute(data.route);
+    };
 
   });

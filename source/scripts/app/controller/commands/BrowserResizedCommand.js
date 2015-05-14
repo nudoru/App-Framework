@@ -1,4 +1,8 @@
-APP.initializeCommand('APP.BrowserResizedCommand',
-  function execute(data) {
-    console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
+define('APP.BrowserResizedCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
+    };
+
   });

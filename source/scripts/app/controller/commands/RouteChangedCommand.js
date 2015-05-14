@@ -1,8 +1,9 @@
-APP.initializeCommand('APP.RouteChangedCommand',
-  function execute(data) {
+define('APP.RouteChangedCommand',
+  function (require, module, exports) {
 
-    console.log('RouteChangedCommand, route: '+data.route+', templateID: '+data.templateID);
-
-    APP.view().showView(data);
+    exports.execute = function(data) {
+      console.log('RouteChangedCommand, route: '+data.route+', templateID: '+data.templateID);
+      APP.view().showView(data);
+    };
 
   });

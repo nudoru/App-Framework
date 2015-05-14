@@ -5,6 +5,7 @@ APP = (function () {
     _config,
     _model,
     _view,
+    _appEvents = require('APP.AppEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _eventDispatcher = require('nudoru.events.EventDispatcher'),
     _eventCommandMap = require('nudoru.events.EventCommandMap'),
@@ -42,6 +43,11 @@ APP = (function () {
   //  Initialize
   //----------------------------------------------------------------------------
 
+  /**
+   * Init the app and inject the model and view
+   * @param model
+   * @param view
+   */
   function initialize(model, view) {
     console.log('APP: Initialize');
 
@@ -53,7 +59,7 @@ APP = (function () {
 
     _router.initialize(_eventDispatcher);
 
-    mapEventCommand(APP.AppEvents.CONTROLLER_INITIALIZED, _self.AppInitializedCommand, true);
+    mapEventCommand(_appEvents.CONTROLLER_INITIALIZED, 'APP.AppInitializedCommand', true);
 
     initializeView();
   }
@@ -70,30 +76,44 @@ APP = (function () {
   //  MVC Initialization
   //----------------------------------------------------------------------------
 
+  /**
+   * Init step 1
+   */
   function initializeView() {
     _view.initialize();
     initializeModel();
   }
 
+  /**
+   * Init step 2
+   */
   function initializeModel() {
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_WAITING, onModelDataWaiting, true);
-    _eventDispatcher.subscribe(APP.AppEvents.MODEL_DATA_READY, onModelDataReady, true);
+    _eventDispatcher.subscribe(_appEvents.MODEL_DATA_WAITING, onModelDataWaiting, true);
+    _eventDispatcher.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
     _model.initialize();
   }
 
+  /**
+   * Init step 3
+   * Feed data to the model
+   */
   function onModelDataWaiting() {
     _model.setData({});
   }
 
+  /**
+   * Init step 4
+   */
   function onModelDataReady() {
     postInitialize();
   }
 
   /**
+   * Init step 5
    * All APP initialization is complete, pass over to AppInitialzedCommand
    */
   function postInitialize() {
-    _eventDispatcher.publish(APP.AppEvents.CONTROLLER_INITIALIZED);
+    _eventDispatcher.publish(_appEvents.CONTROLLER_INITIALIZED);
   }
 
   //----------------------------------------------------------------------------
@@ -105,44 +125,20 @@ APP = (function () {
    * @param str
    * @returns {*}
    */
-  function createNameSpace(str) {
-    return NNameSpace.createNameSpace(str, APP, "APP");
-  }
+  //function createNameSpace(str) {
+  //  return NNameSpace.createNameSpace(str, APP, "APP");
+  //}
 
   /**
    * Maps an event to trigger a command when it's published
    * @param evt The event string
-   * @param command The command object
+   * @param command Module name of a command object, req execute(dataObj) function
    * @param once True if should only execute once, will be unmapped automatically
    */
-  function mapEventCommand(evt, command, once) {
+  function mapEventCommand(evt, cmdModuleName, once) {
     once = once || false;
-    _eventCommandMap.map(evt, command, once);
-  }
-
-  /**
-   * Utility function
-   *  1. Create the namespace
-   *  2. Picks the last segment of the namespace
-   *  3. Sets that to the command class w/ new execute()
-   * @param nsStr format: 'APP.Part', only 2 deep
-   * @param execCode
-   */
-  function initializeCommand(nsStr, execCode) {
-    var parts = nsStr.split('.');
-    APP.createNameSpace(nsStr);
-    APP[parts[parts.length-1]] = createAndExtendCommand(execCode);
-  }
-
-  /**
-   * Instantiate the command object and set exececute() function
-   * @param execCode
-   * @returns {APP.AbstractCommand.methods}
-   */
-  function createAndExtendCommand(execCode) {
-    var cmd = Object.create(APP.AbstractCommand.methods);
-    cmd.execute = execCode;
-    return cmd;
+    var cmdModule = require(cmdModuleName);
+    _eventCommandMap.map(evt, cmdModule, once);
   }
 
   /**
@@ -174,14 +170,12 @@ APP = (function () {
 
   return {
     initialize: initialize,
-    createNameSpace: createNameSpace,
     config: getConfig,
     eventDispatcher: getEventDispatcher,
     eventCommandMap: getEventCommandMap,
     router: getRouter,
     view: getView,
     model: getModel,
-    initializeCommand: initializeCommand,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand

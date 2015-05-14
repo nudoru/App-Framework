@@ -3,6 +3,7 @@ define('APP.Model',
 
   var _self,
     _data,
+    _appEvents = require('APP.AppEvents'),
     _eventDispatcher = require('nudoru.events.EventDispatcher');
 
   //----------------------------------------------------------------------------
@@ -11,7 +12,7 @@ define('APP.Model',
 
   function initialize() {
     _self = this;
-    _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_WAITING);
+    _eventDispatcher.publish(_appEvents.MODEL_DATA_WAITING);
   }
 
   //----------------------------------------------------------------------------
@@ -24,7 +25,7 @@ define('APP.Model',
    */
   function setData(dataObj) {
     _data = dataObj;
-    _eventDispatcher.publish(APP.AppEvents.MODEL_DATA_READY);
+    _eventDispatcher.publish(_appEvents.MODEL_DATA_READY);
   }
 
   /**
