@@ -3514,16 +3514,32 @@ tr.row-header-inline td {
   height: 2.752rem;
   width: 100%;
   border-color: transparent;
+  border-radius: 0;
   margin: 0;
 }
 .messagebox__default .footer .footer-buttons .button button:focus, .messagebox__default .footer .footer-buttons .button button:hover, .messagebox__default .footer .footer-buttons .button button:active {
+  text-shadow: none;
   border-color: transparent !important;
 }
-.messagebox__default .footer .footer-buttons .button button:first-of-type {
-  border-radius: 0 0 0 3px;
+.messagebox__default .footer .footer-buttons .default button {
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+  color: #fff;
+  background-color: #00a9e0;
 }
-.messagebox__default .footer .footer-buttons .button button:last-of-type {
-  border-radius: 0 0 3px 0;
+.messagebox__default .footer .footer-buttons .positive button {
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+  color: #fff;
+  background-color: #5cb85c;
+}
+.messagebox__default .footer .footer-buttons .neutral button {
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+  color: #fff;
+  background-color: #968c83;
+}
+.messagebox__default .footer .footer-buttons .negative button {
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
+  color: #fff;
+  background-color: #d9534f;
 }
 
 .messagebox__width-300px {

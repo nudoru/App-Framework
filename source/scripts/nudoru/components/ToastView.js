@@ -55,7 +55,7 @@ define('nudoru.components.ToastView',
         closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
-      toastObj.closeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+      toastObj.defaultButtonStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
         .subscribe(function () {
           remove(toastObj.id);
         });
@@ -80,7 +80,7 @@ define('nudoru.components.ToastView',
             title: title,
             message: message
           }),
-          closeStream: null
+          defaultButtonStream: null
         };
 
       return obj;
@@ -117,7 +117,7 @@ define('nudoru.components.ToastView',
       var idx = getObjIndexByID(el.getAttribute('id')),
           toastObj = _children[idx];
 
-      toastObj.closeStream.dispose();
+      toastObj.defaultButtonStream.dispose();
 
       _mountPoint.removeChild(el);
       _children[idx] = null;

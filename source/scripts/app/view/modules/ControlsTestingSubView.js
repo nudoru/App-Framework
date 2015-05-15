@@ -74,12 +74,50 @@ define('APP.View.ControlsTestingSubView',
           title: _lIpsum.getSentence(10,20),
           content: _lIpsum.getParagraph(2, 4),
           type: 'default',
-          modal: false
+          modal: false,
+          buttons: [
+            {
+              label: 'Yes',
+              id: 'yes',
+              type: 'default',
+              onClick: function() {
+                console.log('yes');
+              }
+            },
+            {
+              label: 'Maybe',
+              id: 'maybe',
+              type: 'positive',
+              onClick: function() {
+                console.log('maybe');
+              }
+            },
+            {
+              label: 'Nope',
+              id: 'nope',
+              type: 'negative',
+              onClick: function() {
+                console.log('nope');
+              }
+            },
+            {
+              label: 'WTF',
+              id: 'neutral',
+              type: 'neutral',
+              onClick: function() {
+                console.log('neutral');
+              }
+            }
+          ]
         });
       });
 
       _actionThreeEl.addEventListener('click', function actThree(e) {
-        console.log('Three');
+        APP.view().addNotification({
+          title: _lIpsum.getSentence(3,6),
+          type: 'default',
+          message: _lIpsum.getParagraph(1, 2)
+        });
       });
 
       _actionFourEl.addEventListener('click', function actFour(e) {

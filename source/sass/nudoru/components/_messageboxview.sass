@@ -43,13 +43,31 @@ $message-box-footer-height: $base-line-height * 4
           height: $message-box-footer-height
           width: 100%
           border-color: $color-nocolor
+          border-radius: 0
           margin: 0
           &:focus, &:hover, &:active
+            text-shadow: none
             border-color: $color-nocolor !important
-          &:first-of-type
-            border-radius: 0 0 0 $control-border-radius
-          &:last-of-type
-            border-radius: 0 0 $control-border-radius 0
+      .default
+        button
+          +control-emboss-shadow
+          color: #fff
+          background-color: $control-info-color
+      .positive
+        button
+          +control-emboss-shadow
+          color: #fff
+          background-color: $control-success-color
+      .neutral
+        button
+          +control-emboss-shadow
+          color: #fff
+          background-color: $light-warm-grey
+      .negative
+        button
+          +control-emboss-shadow
+          color: #fff
+          background-color: $control-danger-color
 
 .messagebox__width-300px
   width: 300px

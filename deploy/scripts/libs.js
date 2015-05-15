@@ -1841,6 +1841,7 @@ define('nudoru.components.DDMenuView',
 
     var _children = [],
       _counter = 0,
+      _highestZ = 1000,
       _types = {
         DEFAULT: 'default',
         INFORMATION: 'information',
@@ -1856,6 +1857,7 @@ define('nudoru.components.DDMenuView',
         'danger': 'messagebox__danger'
       },
       _mountPoint,
+      _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
       _template = require('nudoru.utils.NTemplate'),
       _modal = require('nudoru.components.ModalCoverView'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
@@ -1866,46 +1868,42 @@ define('nudoru.components.DDMenuView',
     }
 
     function add(initObj) {
-      var type = initObj.type || _types.DEFAULT;
+      var type = initObj.type || _types.DEFAULT,
+        boxObj = createBoxObject(initObj);
 
-      var boxOjb = createBoxObject(initObj.title, initObj.content, initObj.modal);
+      _children.push(boxObj);
+      _mountPoint.appendChild(boxObj.element);
+      assignTypeClassToElement(type, boxObj.element);
+      configureButtons(boxObj);
+      _domUtils.centerElementInViewPort(boxObj.element);
 
-      _children.push(boxOjb);
-
-      _mountPoint.appendChild(boxOjb.element);
-
-      assignTypeClassToElement(type, boxOjb.element);
-
-      _domUtils.centerElementInViewPort(boxOjb.element);
-
-      TweenLite.set(boxOjb.element, {
+      // Set 3d CSS props for in/out transition
+      TweenLite.set(boxObj.element, {
         css: {
           transformPerspective: 800,
           transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden"
+          backfaceVisibility: "hidden",
+          zIndex: _highestZ
         }
       });
 
-      Draggable.create('#' + boxOjb.id, {
-        bounds: window
+      // Make it draggable
+      Draggable.create('#' + boxObj.id, {
+        bounds: window,
+        onPress:function() {
+          _highestZ = Draggable.zIndex;
+        }
       });
 
-      console.log(Draggable.zIndex);
+      // Show it
+      transitionIn(boxObj.element);
 
-      var closeBtn = boxOjb.element.querySelector('.footer button');
-
-      boxOjb.closeStream = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr())
-        .subscribe(function () {
-          remove(boxOjb.id);
-        });
-
-      transitionIn(boxOjb.element);
-
+      // Show the modal cover
       if (initObj.modal) {
         _modal.showHard(true);
       }
 
-      return boxOjb.id;
+      return boxObj.id;
     }
 
     function assignTypeClassToElement(type, element) {
@@ -1914,20 +1912,74 @@ define('nudoru.components.DDMenuView',
       }
     }
 
-    function createBoxObject(title, content, modal) {
+    function createBoxObject(initObj) {
       var id = 'js__messagebox-' + (_counter++).toString(),
         obj = {
+          dataObj: initObj,
           id: id,
-          modal: modal,
+          modal: initObj.modal,
           element: _template.asElement('template__messagebox--default', {
             id: id,
-            title: title,
-            content: content
+            title: initObj.title,
+            content: initObj.content
           }),
-          closeStream: null
+          streams: []
         };
 
       return obj;
+    }
+
+    function configureButtons(boxObj) {
+      var buttonData = boxObj.dataObj.buttons;
+
+      if(!buttonData) {
+        configureDefaultButton(boxObj);
+        return;
+      }
+
+      /*
+       buttons: [
+       {
+       label: 'Close Me!',
+       id: 'close_me',
+       type: ''
+       onClick: function() {
+       console.log('w00t!');
+       }
+       }
+       ]
+       */
+
+      var buttonContainer = boxObj.element.querySelector('.footer-buttons');
+
+      _domUtils.removeAllElements(buttonContainer);
+
+      buttonData.forEach(function makeButton(buttonObj) {
+        buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
+        var buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+        buttonContainer.appendChild(buttonEl);
+
+        var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
+          .subscribe(function () {
+            buttonObj.onClick.call(this);
+            remove(boxObj.id);
+          });
+
+        boxObj.streams.push(btnStream);
+
+      });
+
+    }
+
+    function configureDefaultButton(boxObj) {
+      var defaultBtn = boxObj.element.querySelector('.footer button');
+
+      var defaultButtonStream = Rx.Observable.fromEvent(defaultBtn, _browserInfo.mouseClickEvtStr())
+        .subscribe(function () {
+          remove(boxObj.id);
+        });
+
+      boxObj.streams.push(defaultButtonStream);
     }
 
     function remove(id) {
@@ -1973,7 +2025,9 @@ define('nudoru.components.DDMenuView',
       var idx = getObjIndexByID(el.getAttribute('id')),
         boxObj = _children[idx];
 
-      boxObj.closeStream.dispose();
+      boxObj.streams.forEach(function(stream) {
+        stream.dispose();
+      });
 
       Draggable.get('#' + boxObj.id).disable();
 
@@ -2161,7 +2215,7 @@ define('nudoru.components.DDMenuView',
         closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
         expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
-      toastObj.closeStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+      toastObj.defaultButtonStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
         .subscribe(function () {
           remove(toastObj.id);
         });
@@ -2186,7 +2240,7 @@ define('nudoru.components.DDMenuView',
             title: title,
             message: message
           }),
-          closeStream: null
+          defaultButtonStream: null
         };
 
       return obj;
@@ -2223,7 +2277,7 @@ define('nudoru.components.DDMenuView',
       var idx = getObjIndexByID(el.getAttribute('id')),
           toastObj = _children[idx];
 
-      toastObj.closeStream.dispose();
+      toastObj.defaultButtonStream.dispose();
 
       _mountPoint.removeChild(el);
       _children[idx] = null;
@@ -2564,12 +2618,50 @@ define('nudoru.components.DDMenuView',
           title: _lIpsum.getSentence(10,20),
           content: _lIpsum.getParagraph(2, 4),
           type: 'default',
-          modal: false
+          modal: false,
+          buttons: [
+            {
+              label: 'Yes',
+              id: 'yes',
+              type: 'default',
+              onClick: function() {
+                console.log('yes');
+              }
+            },
+            {
+              label: 'Maybe',
+              id: 'maybe',
+              type: 'positive',
+              onClick: function() {
+                console.log('maybe');
+              }
+            },
+            {
+              label: 'Nope',
+              id: 'nope',
+              type: 'negative',
+              onClick: function() {
+                console.log('nope');
+              }
+            },
+            {
+              label: 'WTF',
+              id: 'neutral',
+              type: 'neutral',
+              onClick: function() {
+                console.log('neutral');
+              }
+            }
+          ]
         });
       });
 
       _actionThreeEl.addEventListener('click', function actThree(e) {
-        console.log('Three');
+        APP.view().addNotification({
+          title: _lIpsum.getSentence(3,6),
+          type: 'default',
+          message: _lIpsum.getParagraph(1, 2)
+        });
       });
 
       _actionFourEl.addEventListener('click', function actFour(e) {
