@@ -32,14 +32,24 @@ define('nudoru.components.MessageBoxView',
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _domUtils = require('nudoru.utils.DOMUtils');
 
+    /**
+     * Initialize and set the mount point / box container
+     * @param elID
+     */
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
     }
 
+    /**
+     * Add a new message box
+     * @param initObj
+     * @returns {*}
+     */
     function add(initObj) {
       var type = initObj.type || _types.DEFAULT,
         boxObj = createBoxObject(initObj);
 
+      // setup
       _children.push(boxObj);
       _mountPoint.appendChild(boxObj.element);
       assignTypeClassToElement(type, boxObj.element);
@@ -75,12 +85,22 @@ define('nudoru.components.MessageBoxView',
       return boxObj.id;
     }
 
+    /**
+     * Assign a type class to it
+     * @param type
+     * @param element
+     */
     function assignTypeClassToElement(type, element) {
       if (type !== 'default') {
         _domUtils.addClass(element, _typeStyleMap[type]);
       }
     }
 
+    /**
+     * Create the object for a box
+     * @param initObj
+     * @returns {{dataObj: *, id: string, modal: (*|boolean), element: *, streams: Array}}
+     */
     function createBoxObject(initObj) {
       var id = 'js__messagebox-' + (_counter++).toString(),
         obj = {
@@ -98,26 +118,21 @@ define('nudoru.components.MessageBoxView',
       return obj;
     }
 
+    /**
+     * Set up the buttons
+     * @param boxObj
+     */
     function configureButtons(boxObj) {
       var buttonData = boxObj.dataObj.buttons;
 
+      // default button if none
       if(!buttonData) {
-        configureDefaultButton(boxObj);
-        return;
+        buttonData = [{
+            label: 'Close',
+            type: '',
+            id: 'default-close'
+          }];
       }
-
-      /*
-       buttons: [
-       {
-       label: 'Close Me!',
-       id: 'close_me',
-       type: ''
-       onClick: function() {
-       console.log('w00t!');
-       }
-       }
-       ]
-       */
 
       var buttonContainer = boxObj.element.querySelector('.footer-buttons');
 
@@ -130,7 +145,9 @@ define('nudoru.components.MessageBoxView',
 
         var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
           .subscribe(function () {
-            buttonObj.onClick.call(this);
+            if(buttonObj.onClick) {
+              buttonObj.onClick.call(this);
+            }
             remove(boxObj.id);
           });
 
@@ -140,17 +157,10 @@ define('nudoru.components.MessageBoxView',
 
     }
 
-    function configureDefaultButton(boxObj) {
-      var defaultBtn = boxObj.element.querySelector('.footer button');
-
-      var defaultButtonStream = Rx.Observable.fromEvent(defaultBtn, _browserInfo.mouseClickEvtStr())
-        .subscribe(function () {
-          remove(boxObj.id);
-        });
-
-      boxObj.streams.push(defaultButtonStream);
-    }
-
+    /**
+     * Remove a box from the screen / container
+     * @param id
+     */
     function remove(id) {
       var idx = getObjIndexByID(id),
         boxObj;
@@ -161,6 +171,9 @@ define('nudoru.components.MessageBoxView',
       }
     }
 
+    /**
+     * Determine if any open boxes have modal true
+     */
     function checkModalStatus() {
       var isModal = false;
 
@@ -175,11 +188,19 @@ define('nudoru.components.MessageBoxView',
       }
     }
 
+    /**
+     * Show the box
+     * @param el
+     */
     function transitionIn(el) {
       TweenLite.to(el, 0, {alpha: 0, rotationX: 45});
       TweenLite.to(el, 1, {alpha: 1, rotationX: 0, ease: Circ.easeOut});
     }
 
+    /**
+     * Remove the box
+     * @param el
+     */
     function transitionOut(el) {
       TweenLite.to(el, 0.25, {
         alpha: 0,
@@ -190,6 +211,10 @@ define('nudoru.components.MessageBoxView',
       });
     }
 
+    /**
+     * Clean up after the transition out animation
+     * @param el
+     */
     function onTransitionOutComplete(el) {
       var idx = getObjIndexByID(el.getAttribute('id')),
         boxObj = _children[idx];
@@ -208,6 +233,11 @@ define('nudoru.components.MessageBoxView',
       checkModalStatus();
     }
 
+    /**
+     * Utility to get the box object by ID
+     * @param id
+     * @returns {number}
+     */
     function getObjIndexByID(id) {
       var len = _children.length,
         i = 0;

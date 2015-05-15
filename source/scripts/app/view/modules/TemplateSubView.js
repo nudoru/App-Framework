@@ -14,6 +14,10 @@ define('APP.View.TemplateSubView',
       _currentState,
       _domUtils = require('nudoru.utils.DOMUtils');
 
+    /**
+     * Initialization
+     * @param initObj
+     */
     function initialize(initObj) {
       console.log(initObj.id + ', subview update');
 
@@ -29,12 +33,21 @@ define('APP.View.TemplateSubView',
       }
     }
 
+    /**
+     * Update state and rerender
+     * @param state
+     * @returns {*}
+     */
     function update(state) {
       console.log(_id + ', subview update');
       _currentState = state;
       return render();
     }
 
+    /**
+     * Render it, need to add it to a parent container, handled in higher level view
+     * @returns {*}
+     */
     function render() {
       console.log(_id + ', subview render');
 
@@ -43,18 +56,32 @@ define('APP.View.TemplateSubView',
       return _DOMElement;
     }
 
+    /**
+     * Call after it's been added to a view
+     */
     function viewDidMount() {
       console.log(_id + ', subview did mount');
     }
 
+    /**
+     * Call when unloading and switching views
+     */
     function viewWillUnMount() {
       console.log(_id + ', subview will unmount');
     }
 
+    /**
+     * Accessor for ID prop
+     * @returns {*}
+     */
     function getID() {
       return _id;
     }
 
+    /**
+     * Accessor for the DOM element
+     * @returns {*}
+     */
     function getDOMElement() {
       return _DOMElement;
     }

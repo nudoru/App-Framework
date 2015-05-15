@@ -96,9 +96,6 @@ define('APP.View.ControlsTestingSubView',
               label: 'Nope',
               id: 'nope',
               type: 'negative',
-              onClick: function() {
-                console.log('nope');
-              }
             },
             {
               label: 'WTF',
