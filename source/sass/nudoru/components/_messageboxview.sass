@@ -6,8 +6,10 @@ $message-box-footer-height: $base-line-height * 4
 
 %base-messagebox
   @extend .panel-border
-  +one-edge-shadow-large
   position: absolute
+  border: none
+  background-color: rgb(250,250,250)
+  box-shadow: inset 0 1px 0 rgb(255,255,255), 0 15px 25px -3px rgba(0,0,0,.35)
   .header
     @extend .panel-header
     text-align: center
@@ -18,6 +20,7 @@ $message-box-footer-height: $base-line-height * 4
       font-weight: 400
       font-size: .8rem
       text-shadow: 0 1px 0 #fff
+      line-height: $double-base-line-height
   .content
     padding: $base-line-height
     line-height: $double-base-line-height
@@ -27,24 +30,26 @@ $message-box-footer-height: $base-line-height * 4
     @extend .panel-footer
     padding: 0
     height: $message-box-footer-height
-    box-shadow: inset 0 0 5px rgba(0,0,0,.05)
+    box-shadow: inset 0 5px 10px rgba(0,0,0,.05)
     .footer-buttons
       display: table
       table-layout: fixed
       width: 100%
-      button
-        @extend .button-neutral-light
+      .button
         display: table-cell
-        height: $message-box-footer-height
-        width: 50%
-        border-color: $color-nocolor
-        margin: 0
-        &:focus, &:hover, &:active
-          border-color: $color-nocolor !important
-        &:first-of-type
-          border-radius: 0 0 0 $control-border-radius
-        &:last-of-type
-          border-radius: 0 0 $control-border-radius 0
+        button
+          @extend .button-neutral-light
+          background-color: rgba(0,0,0,.02)
+          height: $message-box-footer-height
+          width: 100%
+          border-color: $color-nocolor
+          margin: 0
+          &:focus, &:hover, &:active
+            border-color: $color-nocolor !important
+          &:first-of-type
+            border-radius: 0 0 0 $control-border-radius
+          &:last-of-type
+            border-radius: 0 0 $control-border-radius 0
 
 .messagebox__width-300px
   width: 300px

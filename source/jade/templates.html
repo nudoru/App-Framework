@@ -24,7 +24,12 @@ BEGIN Templates for Nudoru Components
         </div>
         <div class="footer">
             <div class="footer-buttons">
-                <button class="icon-right">Close<i class="fa fa-times"></i></button>
+                <div class="button">
+                    <button class="icon-right">Yes<i class="fa fa-check"></i></button>
+                </div>
+                <div class="button">
+                    <button class="icon-right">No<i class="fa fa-times"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -37,6 +42,30 @@ END
 <!--
 BEGIN Templates for App SubViews
 -->
+<script id="template__ControlsTesting" type="text/template">
+    <div class="padded-content">
+        <div class="column-container">
+            <div class="one-third-left-column">
+                <h1 class="h1-alternate">Mock Components</h1>
+                <ul class="plain-list">
+                    <li>
+                        <button id="action-one">Action One</button>
+                    </li>
+                    <li>
+                        <button id="action-two">Action Two</button>
+                    </li>
+                    <li>
+                        <button id="action-three">Action Three</button>
+                    </li>
+                    <li>
+                        <button id="action-four">Action Four</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="two-thirds-right-column"></div>
+        </div>
+    </div>
+</script>
 
 <script id="template__TemplateSubView" type="text/template">
     <h1>Template Sub View</h1>

@@ -17,8 +17,13 @@ define('APP.AppInitializedCommand',
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
 
-      // Routes
-      APP.mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
+      // Map route args:
+      // url fragment for route, ID (template id), module name for controller, use singleton module
+
+      // Default route
+      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
+
+      // Other routes
       APP.mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
 
       APP.view().removeLoadingMessage();

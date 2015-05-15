@@ -2,7 +2,7 @@
  * A template for a subview/route controller
  */
 
-define('APP.View.TemplateSubView',
+define('APP.View.ControlsTestingSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -12,7 +12,12 @@ define('APP.View.TemplateSubView',
       _DOMElement,
       _initialState,
       _currentState,
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _lIpsum = require('nudoru.utils.NLorem'),
+      _actionOneEl,
+      _actionTwoEl,
+      _actionThreeEl,
+      _actionFourEl;
 
     function initialize(initObj) {
       console.log(initObj.id + ', subview update');
@@ -22,6 +27,9 @@ define('APP.View.TemplateSubView',
         _id = initObj.id;
         _templateObj = initObj.template;
         _initialState = _currentState = initObj.state;
+
+        _lIpsum.initialize();
+
         render();
       } else {
         console.log(_id + ', subview already init\'d');
@@ -40,11 +48,44 @@ define('APP.View.TemplateSubView',
 
       _html = _templateObj(_currentState);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
+
       return _DOMElement;
     }
 
     function viewDidMount() {
       console.log(_id + ', subview did mount');
+
+      _actionOneEl = document.getElementById('action-one');
+      _actionTwoEl = document.getElementById('action-two');
+      _actionThreeEl = document.getElementById('action-three');
+      _actionFourEl = document.getElementById('action-four');
+
+      _actionOneEl.addEventListener('click', function actOne(e) {
+        APP.view().addMessageBox({
+          title: _lIpsum.getSentence(2,4),
+          content: _lIpsum.getParagraph(2, 4),
+          type: 'default',
+          modal: true
+        });
+      });
+
+      _actionTwoEl.addEventListener('click', function actTwo(e) {
+        APP.view().addMessageBox({
+          title: _lIpsum.getSentence(10,20),
+          content: _lIpsum.getParagraph(2, 4),
+          type: 'default',
+          modal: false
+        });
+      });
+
+      _actionThreeEl.addEventListener('click', function actThree(e) {
+        console.log('Three');
+      });
+
+      _actionFourEl.addEventListener('click', function actFour(e) {
+        console.log('Four');
+      });
+      
     }
 
     function viewWillUnMount() {

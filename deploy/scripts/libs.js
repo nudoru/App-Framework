@@ -1890,6 +1890,8 @@ define('nudoru.components.DDMenuView',
         bounds: window
       });
 
+      console.log(Draggable.zIndex);
+
       var closeBtn = boxOjb.element.querySelector('.footer button');
 
       boxOjb.closeStream = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr())
@@ -2490,120 +2492,7 @@ define('nudoru.components.DDMenuView',
   exports.setData = setData;
   exports.getData = getData;
 
-});;define('APP.View.DeviceView',
-  function (require, module, exports) {
-
-    var _drawerEl,
-      _drawerToggleButtonEl,
-      _drawerToggleButtonStream,
-      _appEl,
-      _browserResizeStream,
-      _isMobile,
-      _tabletBreakWidth,
-      _phoneBreakWidth,
-      _drawerWidth,
-      _isDrawerOpen,
-      _currentViewPortSize,
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _eventDispatcher = require('nudoru.events.EventDispatcher');
-
-    function initialize(initObj) {
-      _isMobile = false;
-      _tabletBreakWidth = 750;
-      _phoneBreakWidth = 475;
-      _drawerWidth = 250;
-      _isDrawerOpen = false;
-
-      _appEl = document.getElementById('app__contents');
-      _drawerEl = document.getElementById('drawer');
-      _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
-
-      if(_drawerEl) {
-        TweenLite.to(_drawerEl, 0, {x: _drawerWidth * -1});
-      }
-
-      configureStreams();
-      handleViewPortResize();
-    }
-
-    function configureStreams() {
-      _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
-        .throttle(10)
-        .subscribe(function () {
-          handleViewPortResize();
-        });
-
-      if(_drawerToggleButtonEl) {
-        _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, 'change')
-          .subscribe(function () {
-            toggleDrawer();
-          });
-      }
-    }
-
-    function handleViewPortResize() {
-      setViewPortSize();
-      checkForMobile();
-    }
-
-    function setViewPortSize() {
-      _currentViewPortSize = {
-        width: window.innerWidth,
-        height: window.innerHeight
-      };
-    }
-
-    /**
-     * Usually on resize, check to see if we're in mobile
-     */
-    function checkForMobile() {
-      if (_currentViewPortSize.width <= _tabletBreakWidth || _browserInfo.mobile.any()) {
-        switchToMobileView();
-      } else if (_currentViewPortSize.width > _tabletBreakWidth) {
-        switchToDesktopView();
-      }
-    }
-
-    function switchToMobileView() {
-      if (_isMobile) {
-        return;
-      }
-      _isMobile = true;
-      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
-    }
-
-    function switchToDesktopView() {
-      if (!_isMobile) {
-        return;
-      }
-      _isMobile = false;
-      closeDrawer();
-      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
-    }
-
-    function toggleDrawer() {
-      if (_isDrawerOpen) {
-        closeDrawer();
-      } else {
-        openDrawer();
-      }
-    }
-
-    function openDrawer() {
-      _isDrawerOpen = true;
-      TweenLite.to(_drawerEl, 0.5, {x: 0, ease: Quad.easeOut});
-      TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease: Quad.easeOut});
-    }
-
-    function closeDrawer() {
-      _isDrawerOpen = false;
-      TweenLite.to(_drawerEl, 0.5, {x: _drawerWidth * -1, ease: Quad.easeOut});
-      TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
-    }
-
-    exports.initialize = initialize;
-
-});;define('APP.View.TemplateSubView',
+});;define('APP.View.ControlsTestingSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -2613,18 +2502,33 @@ define('nudoru.components.DDMenuView',
       _DOMElement,
       _initialState,
       _currentState,
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _lIpsum = require('nudoru.utils.NLorem'),
+      _actionOneEl,
+      _actionTwoEl,
+      _actionThreeEl,
+      _actionFourEl;
 
     function initialize(initObj) {
-      _initObj = initObj;
-      _id = initObj.id;
-      _templateObj = initObj.template;
-      _initialState = _currentState = initObj.state;
+      console.log(initObj.id + ', subview update');
 
-      render();
+      if(!_initObj) {
+        _initObj = initObj;
+        _id = initObj.id;
+        _templateObj = initObj.template;
+        _initialState = _currentState = initObj.state;
+
+        _lIpsum.initialize();
+
+        render();
+      } else {
+        console.log(_id + ', subview already init\'d');
+        update(initObj.state);
+      }
     }
 
     function update(state) {
+      console.log(_id + ', subview update');
       _currentState = state;
       return render();
     }
@@ -2634,13 +2538,49 @@ define('nudoru.components.DDMenuView',
 
       _html = _templateObj(_currentState);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
+
       return _DOMElement;
     }
 
-    function willUnMount() {
-      console.log(_id + ', subview will unmount');
+    function viewDidMount() {
+      console.log(_id + ', subview did mount');
+
+      _actionOneEl = document.getElementById('action-one');
+      _actionTwoEl = document.getElementById('action-two');
+      _actionThreeEl = document.getElementById('action-three');
+      _actionFourEl = document.getElementById('action-four');
+
+      _actionOneEl.addEventListener('click', function actOne(e) {
+        APP.view().addMessageBox({
+          title: _lIpsum.getSentence(2,4),
+          content: _lIpsum.getParagraph(2, 4),
+          type: 'default',
+          modal: true
+        });
+      });
+
+      _actionTwoEl.addEventListener('click', function actTwo(e) {
+        APP.view().addMessageBox({
+          title: _lIpsum.getSentence(10,20),
+          content: _lIpsum.getParagraph(2, 4),
+          type: 'default',
+          modal: false
+        });
+      });
+
+      _actionThreeEl.addEventListener('click', function actThree(e) {
+        console.log('Three');
+      });
+
+      _actionFourEl.addEventListener('click', function actFour(e) {
+        console.log('Four');
+      });
+      
     }
 
+    function viewWillUnMount() {
+      console.log(_id + ', subview will unmount');
+    }
 
     function getID() {
       return _id;
@@ -2655,7 +2595,73 @@ define('nudoru.components.DDMenuView',
     exports.render = render;
     exports.getID = getID;
     exports.getDOMElement = getDOMElement;
-    exports.willUnMount = willUnMount;
+    exports.viewDidMount = viewDidMount;
+    exports.viewWillUnMount = viewWillUnMount;
+
+  });;define('APP.View.TemplateSubView',
+  function (require, module, exports) {
+
+    var _initObj,
+      _id,
+      _templateObj,
+      _html,
+      _DOMElement,
+      _initialState,
+      _currentState,
+      _domUtils = require('nudoru.utils.DOMUtils');
+
+    function initialize(initObj) {
+      console.log(initObj.id + ', subview update');
+
+      if(!_initObj) {
+        _initObj = initObj;
+        _id = initObj.id;
+        _templateObj = initObj.template;
+        _initialState = _currentState = initObj.state;
+        render();
+      } else {
+        console.log(_id + ', subview already init\'d');
+        update(initObj.state);
+      }
+    }
+
+    function update(state) {
+      console.log(_id + ', subview update');
+      _currentState = state;
+      return render();
+    }
+
+    function render() {
+      console.log(_id + ', subview render');
+
+      _html = _templateObj(_currentState);
+      _DOMElement = _domUtils.HTMLStrToNode(_html);
+      return _DOMElement;
+    }
+
+    function viewDidMount() {
+      console.log(_id + ', subview did mount');
+    }
+
+    function viewWillUnMount() {
+      console.log(_id + ', subview will unmount');
+    }
+
+    function getID() {
+      return _id;
+    }
+
+    function getDOMElement() {
+      return _DOMElement;
+    }
+
+    exports.initialize = initialize;
+    exports.update = update;
+    exports.render = render;
+    exports.getID = getID;
+    exports.getDOMElement = getDOMElement;
+    exports.viewDidMount = viewDidMount;
+    exports.viewWillUnMount = viewWillUnMount;
 
   });;define('APP.BasicView',
   function (require, module, exports) {
@@ -2811,7 +2817,122 @@ define('nudoru.components.DDMenuView',
     exports.getCurrentViewPortSize = getCurrentViewPortSize;
     exports.getCurrentViewPortScroll = getCurrentViewPortScroll;
 
-  });;define('APP.View.MixinRouteViews',
+  });;define('APP.View.MixinMultiDeviceView',
+  function (require, module, exports) {
+
+    var _drawerEl,
+      _drawerToggleButtonEl,
+      _drawerToggleButtonStream,
+      _appEl,
+      _browserResizeStream,
+      _isMobile,
+      _tabletBreakWidth,
+      _phoneBreakWidth,
+      _drawerWidth,
+      _isDrawerOpen,
+      _currentViewPortSize,
+      _browserInfo = require('nudoru.utils.BrowserInfo'),
+      _eventDispatcher = require('nudoru.events.EventDispatcher');
+
+    function initialize(initObj) {
+      _isMobile = false;
+      _tabletBreakWidth = 750;
+      _phoneBreakWidth = 475;
+      _drawerWidth = 250;
+      _isDrawerOpen = false;
+
+      _appEl = document.getElementById('app__contents');
+      _drawerEl = document.getElementById('drawer');
+      _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
+
+      if(_drawerEl) {
+        TweenLite.to(_drawerEl, 0, {x: _drawerWidth * -1});
+      }
+
+      configureStreams();
+      handleViewPortResize();
+    }
+
+    function configureStreams() {
+      _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
+        .throttle(10)
+        .subscribe(function () {
+          handleViewPortResize();
+        });
+
+      if(_drawerToggleButtonEl) {
+        _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, 'change')
+          .subscribe(function () {
+            toggleDrawer();
+          });
+      }
+    }
+
+    function handleViewPortResize() {
+      setViewPortSize();
+      checkForMobile();
+    }
+
+    function setViewPortSize() {
+      _currentViewPortSize = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+    }
+
+    /**
+     * Usually on resize, check to see if we're in mobile
+     */
+    function checkForMobile() {
+      if (_currentViewPortSize.width <= _tabletBreakWidth || _browserInfo.mobile.any()) {
+        switchToMobileView();
+      } else if (_currentViewPortSize.width > _tabletBreakWidth) {
+        switchToDesktopView();
+      }
+    }
+
+    function switchToMobileView() {
+      if (_isMobile) {
+        return;
+      }
+      _isMobile = true;
+      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
+    }
+
+    function switchToDesktopView() {
+      if (!_isMobile) {
+        return;
+      }
+      _isMobile = false;
+      closeDrawer();
+      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
+    }
+
+    function toggleDrawer() {
+      if (_isDrawerOpen) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    }
+
+    function openDrawer() {
+      _isDrawerOpen = true;
+      TweenLite.to(_drawerEl, 0.5, {x: 0, ease: Quad.easeOut});
+      TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease: Quad.easeOut});
+    }
+
+    function closeDrawer() {
+      _isDrawerOpen = false;
+      TweenLite.to(_drawerEl, 0.5, {x: _drawerWidth * -1, ease: Quad.easeOut});
+      TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
+    }
+
+    exports.initialize = initialize;
+    exports.openDrawer = openDrawer;
+    exports.closeDrawer = closeDrawer;
+    exports.checkForMobile = checkForMobile;
+});;define('APP.View.MixinRouteViews',
   function (require, module, exports) {
 
     var _template = require('nudoru.utils.NTemplate'),
@@ -2823,14 +2944,28 @@ define('nudoru.components.DDMenuView',
       _domUtils = require('nudoru.utils.DOMUtils'),
       _eventDispatcher = APP.eventDispatcher();
 
+    /**
+     * Set the location for the view to append, any contents will be removed prior
+     * @param elID
+     */
     function setSubViewMountPoint(elID) {
       _subViewMountPoint = document.getElementById(elID);
     }
 
+    /**
+     * Return the template object
+     * @returns {*}
+     */
     function getTemplate() {
       return _template;
     }
 
+    /**
+     * Map a route to a module view controller
+     * @param templateID
+     * @param controller
+     * @param unique
+     */
     function mapView(templateID, controller, unique) {
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
@@ -2838,6 +2973,10 @@ define('nudoru.components.DDMenuView',
       };
     }
 
+    /**
+     * Show a view (in response to a route change)
+     * @param viewObj props: templateID, route
+     */
     function showView(viewObj) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
@@ -2851,8 +2990,6 @@ define('nudoru.components.DDMenuView',
         throw new Error('No subview mapped for route: ' + viewObj.route + ' > ' + viewObj.templateID);
       }
 
-      _domUtils.removeAllElements(_subViewMountPoint);
-
       subview.controller.initialize({
         id: viewObj.templateID,
         template: subview.htmlTemplate,
@@ -2861,17 +2998,27 @@ define('nudoru.components.DDMenuView',
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());
       _currentSubView = viewObj.templateID;
+
+      if(subview.controller.viewDidMount) {
+        subview.controller.viewDidMount();
+      }
+
       _eventDispatcher.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
     }
 
+    /**
+     * Remove the currently displayed view
+     */
     function unMountCurrentSubView() {
       if (_currentSubView) {
         var subViewController = _subViewMapping[_currentSubView].controller;
-        if (subViewController.willUnMount) {
-          subViewController.willUnMount();
+        if (subViewController.viewWillUnMount) {
+          subViewController.viewWillUnMount();
         }
-        _currentSubView = '';
       }
+
+      _currentSubView = '';
+      _domUtils.removeAllElements(_subViewMountPoint);
     }
 
     //----------------------------------------------------------------------------
@@ -2895,7 +3042,8 @@ define('nudoru.components.DDMenuView',
       _appEvents = require('APP.AppEvents'),
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
-      _toastView = require('nudoru.components.ToastView'),
+      _multiDeviceView = require('APP.View.MixinMultiDeviceView'),
+      _notificationView = require('nudoru.components.ToastView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
       _modalCoverView = require('nudoru.components.ModalCoverView');
 
@@ -2913,8 +3061,6 @@ define('nudoru.components.DDMenuView',
       _eventDispatcher.publish(_appEvents.VIEW_INITIALIZED);
 
       render();
-
-      showAlert('<p>Donec sit amet massa sodales, sodales risus non, semper purus. Praesent ornare id purus vitae tincidunt. Nam lacinia pellentesque aliquam. Praesent vitae nisl consequat, varius erat nec, imperdiet nulla.<p>');
     }
 
     function render() {
@@ -2927,8 +3073,9 @@ define('nudoru.components.DDMenuView',
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
       _routeSubViewView.setSubViewMountPoint('contents');
+      _multiDeviceView.initialize();
 
-      _toastView.initialize('toast__container');
+      _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
       _modalCoverView.initialize();
 
@@ -2948,17 +3095,25 @@ define('nudoru.components.DDMenuView',
     //  Messaging
     //----------------------------------------------------------------------------
 
+    function addMessageBox(obj) {
+      _messageBoxView.add(obj);
+    }
+
     /**
      * Show a popup message box
      * @param message
      */
     function showAlert(message) {
-      _messageBoxView.add({
+      addMessageBox({
         title: 'Alert',
         content: message,
         type: _messageBoxView.type().DEFAULT,
         modal: false
       });
+    }
+
+    function addNotification(obj) {
+      _notificationView.add(obj.title, obj.message, obj.type);
     }
 
     /**
@@ -2967,9 +3122,11 @@ define('nudoru.components.DDMenuView',
      * @param message The message
      */
     function showNotification(message, title, type) {
-      title = title || "Notification";
-      type = type || _toastView.type().DEFAULT;
-      _toastView.add(title, message, type);
+      addNotification({
+        title: title || "Notification",
+        type: type || _notificationView.type().DEFAULT,
+        message: message
+      });
     }
 
     function removeLoadingMessage() {
@@ -3006,6 +3163,8 @@ define('nudoru.components.DDMenuView',
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+    exports.addMessageBox = addMessageBox;
+    exports.addNotification = addNotification;
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
@@ -3031,8 +3190,13 @@ define('nudoru.components.DDMenuView',
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
 
-      // Routes
-      APP.mapRouteView('/', 'TemplateSubView', 'APP.View.TemplateSubView', false);
+      // Map route args:
+      // url fragment for route, ID (template id), module name for controller, use singleton module
+
+      // Default route
+      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
+
+      // Other routes
       APP.mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
 
       APP.view().removeLoadingMessage();

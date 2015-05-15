@@ -10,7 +10,8 @@ define('APP.View',
       _appEvents = require('APP.AppEvents'),
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
-      _toastView = require('nudoru.components.ToastView'),
+      _multiDeviceView = require('APP.View.MixinMultiDeviceView'),
+      _notificationView = require('nudoru.components.ToastView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
       _modalCoverView = require('nudoru.components.ModalCoverView');
 
@@ -28,8 +29,6 @@ define('APP.View',
       _eventDispatcher.publish(_appEvents.VIEW_INITIALIZED);
 
       render();
-
-      showAlert('<p>Donec sit amet massa sodales, sodales risus non, semper purus. Praesent ornare id purus vitae tincidunt. Nam lacinia pellentesque aliquam. Praesent vitae nisl consequat, varius erat nec, imperdiet nulla.<p>');
     }
 
     function render() {
@@ -42,8 +41,9 @@ define('APP.View',
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
       _routeSubViewView.setSubViewMountPoint('contents');
+      _multiDeviceView.initialize();
 
-      _toastView.initialize('toast__container');
+      _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
       _modalCoverView.initialize();
 
@@ -63,17 +63,25 @@ define('APP.View',
     //  Messaging
     //----------------------------------------------------------------------------
 
+    function addMessageBox(obj) {
+      _messageBoxView.add(obj);
+    }
+
     /**
      * Show a popup message box
      * @param message
      */
     function showAlert(message) {
-      _messageBoxView.add({
+      addMessageBox({
         title: 'Alert',
         content: message,
         type: _messageBoxView.type().DEFAULT,
         modal: false
       });
+    }
+
+    function addNotification(obj) {
+      _notificationView.add(obj.title, obj.message, obj.type);
     }
 
     /**
@@ -82,9 +90,11 @@ define('APP.View',
      * @param message The message
      */
     function showNotification(message, title, type) {
-      title = title || "Notification";
-      type = type || _toastView.type().DEFAULT;
-      _toastView.add(title, message, type);
+      addNotification({
+        title: title || "Notification",
+        type: type || _notificationView.type().DEFAULT,
+        message: message
+      });
     }
 
     function removeLoadingMessage() {
@@ -121,6 +131,8 @@ define('APP.View',
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+    exports.addMessageBox = addMessageBox;
+    exports.addNotification = addNotification;
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
