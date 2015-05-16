@@ -825,19 +825,42 @@ define('nudoru.utils.NDebugger',
      * Primarily used window.load
      */
     function runCurrentRoute() {
-      var fragment = getURLFragment();
-      runRoute(fragment);
+      var fragment = getURLFragment(),
+          parts = fragment.split('?'),
+          route = '/' + parts[0],
+          queryStr = decodeURIComponent(parts[1]),
+          queryStrObj = parseQueryStr(queryStr);
+
+        runRoute(route, queryStrObj);
+    }
+
+    /**
+     * Parses a query string into key/value pairs
+     * @param queryStr
+     * @returns {{}}
+     */
+    function parseQueryStr(queryStr) {
+      var obj = {},
+          parts = queryStr.split('&');
+
+      parts.forEach(function(pairStr) {
+        var pairArr = pairStr.split('=');
+        obj[pairArr[0]] = pairArr[1];
+      });
+
+      return obj;
     }
 
     /**
      * Executes the controller function for the given route
      * @param route
+     * @param queryStrObj
      */
-    function runRoute(route) {
+    function runRoute(route, queryStrObj) {
       var routeObj = _routeMap[route];
 
       if(routeObj) {
-        routeObj.controller.call(window, {route: route, templateID: routeObj.templateID});
+        routeObj.controller.call(window, {route: route, templateID: routeObj.templateID, data:queryStrObj});
       } else {
        console.log('No Route mapped for: "'+route+'"');
       }
@@ -852,7 +875,7 @@ define('nudoru.utils.NDebugger',
      */
     function getURLFragment() {
       var fragment = location.hash.slice(1);
-      return '/' + fragment.toString().replace(/\/$/, '').replace(/^\//, '');
+      return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
     }
 
     function updateURLFragment(path) {
@@ -1842,6 +1865,7 @@ define('nudoru.components.DDMenuView',
     var _children = [],
       _counter = 0,
       _highestZ = 1000,
+      _defaultWidth = 400,
       _types = {
         DEFAULT: 'default',
         INFORMATION: 'information',
@@ -1857,6 +1881,7 @@ define('nudoru.components.DDMenuView',
         'danger': 'messagebox__danger'
       },
       _mountPoint,
+      _buttonIconTemplateID = 'template__messagebox--button-icon',
       _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
       _template = require('nudoru.utils.NTemplate'),
       _modal = require('nudoru.components.ModalCoverView'),
@@ -1893,7 +1918,8 @@ define('nudoru.components.DDMenuView',
           transformPerspective: 800,
           transformStyle: "preserve-3d",
           backfaceVisibility: "hidden",
-          zIndex: _highestZ
+          zIndex: _highestZ,
+          width: (initObj.width ? initObj.width : _defaultWidth) + 'px'
         }
       });
 
@@ -1961,6 +1987,7 @@ define('nudoru.components.DDMenuView',
         buttonData = [{
             label: 'Close',
             type: '',
+            icon: 'times',
             id: 'default-close'
           }];
       }
@@ -1971,12 +1998,20 @@ define('nudoru.components.DDMenuView',
 
       buttonData.forEach(function makeButton(buttonObj) {
         buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
-        var buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+
+        var buttonEl;
+
+        if(buttonObj.hasOwnProperty('icon')) {
+          buttonEl = _template.asElement(_buttonIconTemplateID, buttonObj);
+        }  else {
+          buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+        }
+
         buttonContainer.appendChild(buttonEl);
 
         var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
           .subscribe(function () {
-            if(buttonObj.onClick) {
+            if(buttonObj.hasOwnProperty('onClick')) {
               buttonObj.onClick.call(this);
             }
             remove(boxObj.id);
@@ -2002,22 +2037,7 @@ define('nudoru.components.DDMenuView',
       }
     }
 
-    /**
-     * Determine if any open boxes have modal true
-     */
-    function checkModalStatus() {
-      var isModal = false;
 
-      _children.forEach(function (boxObj) {
-        if (boxObj.modal) {
-          isModal = true;
-        }
-      });
-
-      if (!isModal) {
-        _modal.hide(true);
-      }
-    }
 
     /**
      * Show the box
@@ -2062,6 +2082,23 @@ define('nudoru.components.DDMenuView',
       _children.splice(idx, 1);
 
       checkModalStatus();
+    }
+
+    /**
+     * Determine if any open boxes have modal true
+     */
+    function checkModalStatus() {
+      var isModal = false;
+
+      _children.forEach(function (boxObj) {
+        if (boxObj.modal === true) {
+          isModal = true;
+        }
+      });
+
+      if (!isModal) {
+        _modal.hide(true);
+      }
     }
 
     /**
@@ -2222,16 +2259,17 @@ define('nudoru.components.DDMenuView',
       _mountPoint = document.getElementById(elID);
     }
 
-    function add(title, message, type) {
-      type = type || _types.DEFAULT;
+    //obj.title, obj.content, obj.type
+    function add(initObj) {
+      initObj.type = initObj.type || _types.DEFAULT;
 
-      var toastObj = createToastObject(title, message);
+      var toastObj = createToastObject(initObj.title, initObj.content);
 
       _children.push(toastObj);
 
       _mountPoint.insertBefore(toastObj.element, _mountPoint.firstChild);
 
-      assignTypeClassToElement(type, toastObj.element);
+      assignTypeClassToElement(initObj.type, toastObj.element);
 
       TweenLite.set(toastObj.element, {
         css: {
@@ -2639,7 +2677,8 @@ define('nudoru.components.DDMenuView',
           title: _lIpsum.getSentence(2,4),
           content: _lIpsum.getParagraph(2, 4),
           type: 'default',
-          modal: true
+          modal: true,
+          width: 200
         });
       });
 
@@ -2654,6 +2693,7 @@ define('nudoru.components.DDMenuView',
               label: 'Yes',
               id: 'yes',
               type: 'default',
+              icon: 'check',
               onClick: function() {
                 console.log('yes');
               }
@@ -2662,6 +2702,7 @@ define('nudoru.components.DDMenuView',
               label: 'Maybe',
               id: 'maybe',
               type: 'positive',
+              icon:'cog',
               onClick: function() {
                 console.log('maybe');
               }
@@ -2670,6 +2711,7 @@ define('nudoru.components.DDMenuView',
               label: 'Nope',
               id: 'nope',
               type: 'negative',
+              icon: 'times'
             },
             {
               label: 'WTF',
@@ -2687,7 +2729,7 @@ define('nudoru.components.DDMenuView',
         APP.view().addNotification({
           title: _lIpsum.getSentence(3,6),
           type: 'default',
-          message: _lIpsum.getParagraph(1, 2)
+          content: _lIpsum.getParagraph(1, 2)
         });
       });
 
@@ -2735,6 +2777,8 @@ define('nudoru.components.DDMenuView',
      */
     function initialize(initObj) {
       console.log(initObj.id + ', subview update');
+
+      console.log('subview state',initObj.state);
 
       if(!_initObj) {
         _initObj = initObj;
@@ -3139,7 +3183,7 @@ define('nudoru.components.DDMenuView',
       subview.controller.initialize({
         id: viewObj.templateID,
         template: subview.htmlTemplate,
-        state: {}
+        state: viewObj.data
       });
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());
@@ -3219,7 +3263,7 @@ define('nudoru.components.DDMenuView',
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
       _routeSubViewView.setSubViewMountPoint('contents');
-      _multiDeviceView.initialize();
+      // TODO - fix from previous refactors _multiDeviceView.initialize();
 
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
@@ -3259,7 +3303,7 @@ define('nudoru.components.DDMenuView',
     }
 
     function addNotification(obj) {
-      _notificationView.add(obj.title, obj.message, obj.type);
+      _notificationView.add(obj);
     }
 
     /**

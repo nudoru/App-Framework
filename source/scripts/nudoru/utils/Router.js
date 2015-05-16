@@ -47,19 +47,42 @@ define('nudoru.utils.Router',
      * Primarily used window.load
      */
     function runCurrentRoute() {
-      var fragment = getURLFragment();
-      runRoute(fragment);
+      var fragment = getURLFragment(),
+          parts = fragment.split('?'),
+          route = '/' + parts[0],
+          queryStr = decodeURIComponent(parts[1]),
+          queryStrObj = parseQueryStr(queryStr);
+
+        runRoute(route, queryStrObj);
+    }
+
+    /**
+     * Parses a query string into key/value pairs
+     * @param queryStr
+     * @returns {{}}
+     */
+    function parseQueryStr(queryStr) {
+      var obj = {},
+          parts = queryStr.split('&');
+
+      parts.forEach(function(pairStr) {
+        var pairArr = pairStr.split('=');
+        obj[pairArr[0]] = pairArr[1];
+      });
+
+      return obj;
     }
 
     /**
      * Executes the controller function for the given route
      * @param route
+     * @param queryStrObj
      */
-    function runRoute(route) {
+    function runRoute(route, queryStrObj) {
       var routeObj = _routeMap[route];
 
       if(routeObj) {
-        routeObj.controller.call(window, {route: route, templateID: routeObj.templateID});
+        routeObj.controller.call(window, {route: route, templateID: routeObj.templateID, data:queryStrObj});
       } else {
        console.log('No Route mapped for: "'+route+'"');
       }
@@ -74,7 +97,7 @@ define('nudoru.utils.Router',
      */
     function getURLFragment() {
       var fragment = location.hash.slice(1);
-      return '/' + fragment.toString().replace(/\/$/, '').replace(/^\//, '');
+      return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
     }
 
     function updateURLFragment(path) {

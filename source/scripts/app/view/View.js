@@ -41,7 +41,7 @@ define('APP.View',
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
       _routeSubViewView.setSubViewMountPoint('contents');
-      _multiDeviceView.initialize();
+      // TODO - fix from previous refactors _multiDeviceView.initialize();
 
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
@@ -81,7 +81,7 @@ define('APP.View',
     }
 
     function addNotification(obj) {
-      _notificationView.add(obj.title, obj.message, obj.type);
+      _notificationView.add(obj);
     }
 
     /**

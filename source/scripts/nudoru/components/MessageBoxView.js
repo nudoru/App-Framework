@@ -11,6 +11,7 @@ define('nudoru.components.MessageBoxView',
     var _children = [],
       _counter = 0,
       _highestZ = 1000,
+      _defaultWidth = 400,
       _types = {
         DEFAULT: 'default',
         INFORMATION: 'information',
@@ -26,6 +27,7 @@ define('nudoru.components.MessageBoxView',
         'danger': 'messagebox__danger'
       },
       _mountPoint,
+      _buttonIconTemplateID = 'template__messagebox--button-icon',
       _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
       _template = require('nudoru.utils.NTemplate'),
       _modal = require('nudoru.components.ModalCoverView'),
@@ -62,7 +64,8 @@ define('nudoru.components.MessageBoxView',
           transformPerspective: 800,
           transformStyle: "preserve-3d",
           backfaceVisibility: "hidden",
-          zIndex: _highestZ
+          zIndex: _highestZ,
+          width: (initObj.width ? initObj.width : _defaultWidth) + 'px'
         }
       });
 
@@ -130,6 +133,7 @@ define('nudoru.components.MessageBoxView',
         buttonData = [{
             label: 'Close',
             type: '',
+            icon: 'times',
             id: 'default-close'
           }];
       }
@@ -140,12 +144,20 @@ define('nudoru.components.MessageBoxView',
 
       buttonData.forEach(function makeButton(buttonObj) {
         buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
-        var buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+
+        var buttonEl;
+
+        if(buttonObj.hasOwnProperty('icon')) {
+          buttonEl = _template.asElement(_buttonIconTemplateID, buttonObj);
+        }  else {
+          buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+        }
+
         buttonContainer.appendChild(buttonEl);
 
         var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
           .subscribe(function () {
-            if(buttonObj.onClick) {
+            if(buttonObj.hasOwnProperty('onClick')) {
               buttonObj.onClick.call(this);
             }
             remove(boxObj.id);
@@ -171,22 +183,7 @@ define('nudoru.components.MessageBoxView',
       }
     }
 
-    /**
-     * Determine if any open boxes have modal true
-     */
-    function checkModalStatus() {
-      var isModal = false;
 
-      _children.forEach(function (boxObj) {
-        if (boxObj.modal) {
-          isModal = true;
-        }
-      });
-
-      if (!isModal) {
-        _modal.hide(true);
-      }
-    }
 
     /**
      * Show the box
@@ -231,6 +228,23 @@ define('nudoru.components.MessageBoxView',
       _children.splice(idx, 1);
 
       checkModalStatus();
+    }
+
+    /**
+     * Determine if any open boxes have modal true
+     */
+    function checkModalStatus() {
+      var isModal = false;
+
+      _children.forEach(function (boxObj) {
+        if (boxObj.modal === true) {
+          isModal = true;
+        }
+      });
+
+      if (!isModal) {
+        _modal.hide(true);
+      }
     }
 
     /**

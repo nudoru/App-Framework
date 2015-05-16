@@ -65,7 +65,8 @@ define('APP.View.ControlsTestingSubView',
           title: _lIpsum.getSentence(2,4),
           content: _lIpsum.getParagraph(2, 4),
           type: 'default',
-          modal: true
+          modal: true,
+          width: 200
         });
       });
 
@@ -80,6 +81,7 @@ define('APP.View.ControlsTestingSubView',
               label: 'Yes',
               id: 'yes',
               type: 'default',
+              icon: 'check',
               onClick: function() {
                 console.log('yes');
               }
@@ -88,6 +90,7 @@ define('APP.View.ControlsTestingSubView',
               label: 'Maybe',
               id: 'maybe',
               type: 'positive',
+              icon:'cog',
               onClick: function() {
                 console.log('maybe');
               }
@@ -96,6 +99,7 @@ define('APP.View.ControlsTestingSubView',
               label: 'Nope',
               id: 'nope',
               type: 'negative',
+              icon: 'times'
             },
             {
               label: 'WTF',
@@ -113,7 +117,7 @@ define('APP.View.ControlsTestingSubView',
         APP.view().addNotification({
           title: _lIpsum.getSentence(3,6),
           type: 'default',
-          message: _lIpsum.getParagraph(1, 2)
+          content: _lIpsum.getParagraph(1, 2)
         });
       });
 

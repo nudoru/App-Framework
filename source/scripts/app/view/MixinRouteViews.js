@@ -59,7 +59,7 @@ define('APP.View.MixinRouteViews',
       subview.controller.initialize({
         id: viewObj.templateID,
         template: subview.htmlTemplate,
-        state: {}
+        state: viewObj.data
       });
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());

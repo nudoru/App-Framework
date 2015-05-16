@@ -32,16 +32,17 @@ define('nudoru.components.ToastView',
       _mountPoint = document.getElementById(elID);
     }
 
-    function add(title, message, type) {
-      type = type || _types.DEFAULT;
+    //obj.title, obj.content, obj.type
+    function add(initObj) {
+      initObj.type = initObj.type || _types.DEFAULT;
 
-      var toastObj = createToastObject(title, message);
+      var toastObj = createToastObject(initObj.title, initObj.content);
 
       _children.push(toastObj);
 
       _mountPoint.insertBefore(toastObj.element, _mountPoint.firstChild);
 
-      assignTypeClassToElement(type, toastObj.element);
+      assignTypeClassToElement(initObj.type, toastObj.element);
 
       TweenLite.set(toastObj.element, {
         css: {
