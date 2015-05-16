@@ -4,6 +4,15 @@ $message-box-footer-height: $base-line-height * 4
   position: absolute
   z-index: $z-index-messagebox-cover
 
+=messagebox-button-varient($upcolor, $downcolor)
+  button
+    +control-emboss-shadow
+    color: #fff
+    background-color: $upcolor
+    &:focus, &:hover, &:active
+      color: #fff
+      background-color: $downcolor
+
 %base-messagebox
   @extend .panel-border
   position: absolute
@@ -39,6 +48,7 @@ $message-box-footer-height: $base-line-height * 4
         display: table-cell
         button
           @extend .button-neutral-light
+          +transition-all()
           background-color: rgba(0,0,0,.02)
           height: $message-box-footer-height
           width: 100%
@@ -49,25 +59,13 @@ $message-box-footer-height: $base-line-height * 4
             text-shadow: none
             border-color: $color-nocolor !important
       .default
-        button
-          +control-emboss-shadow
-          color: #fff
-          background-color: $control-info-color
+        +messagebox-button-varient($control-info-color, $control-info-color-dark)
       .positive
-        button
-          +control-emboss-shadow
-          color: #fff
-          background-color: $control-success-color
+        +messagebox-button-varient($control-success-color, $control-success-color-dark)
       .neutral
-        button
-          +control-emboss-shadow
-          color: #fff
-          background-color: $light-warm-grey
+        +messagebox-button-varient($control-neutral-color, $control-neutral-color-dark)
       .negative
-        button
-          +control-emboss-shadow
-          color: #fff
-          background-color: $control-danger-color
+        +messagebox-button-varient($control-danger-color, $control-danger-color-dark)
 
 .messagebox__width-300px
   width: 300px

@@ -52,8 +52,7 @@ define('nudoru.utils.Router',
           route = '/' + parts[0],
           queryStr = decodeURIComponent(parts[1]),
           queryStrObj = parseQueryStr(queryStr);
-
-        runRoute(route, queryStrObj);
+      runRoute(route, queryStrObj);
     }
 
     /**

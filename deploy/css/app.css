@@ -3510,6 +3510,11 @@ tr.row-header-inline td {
   display: table-cell;
 }
 .messagebox__default .footer .footer-buttons .button button {
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  -webkit-transition: all 0.25s ease-out;
+  -ms-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
   background-color: rgba(0, 0, 0, 0.02);
   height: 2.752rem;
   width: 100%;
@@ -3526,20 +3531,36 @@ tr.row-header-inline td {
   color: #fff;
   background-color: #00a9e0;
 }
+.messagebox__default .footer .footer-buttons .default button:focus, .messagebox__default .footer .footer-buttons .default button:hover, .messagebox__default .footer .footer-buttons .default button:active {
+  color: #fff;
+  background-color: #0087b3;
+}
 .messagebox__default .footer .footer-buttons .positive button {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
   color: #fff;
   background-color: #5cb85c;
+}
+.messagebox__default .footer .footer-buttons .positive button:focus, .messagebox__default .footer .footer-buttons .positive button:hover, .messagebox__default .footer .footer-buttons .positive button:active {
+  color: #fff;
+  background-color: #439a43;
 }
 .messagebox__default .footer .footer-buttons .neutral button {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
   color: #fff;
   background-color: #968c83;
 }
+.messagebox__default .footer .footer-buttons .neutral button:focus, .messagebox__default .footer .footer-buttons .neutral button:hover, .messagebox__default .footer .footer-buttons .neutral button:active {
+  color: #fff;
+  background-color: #7a7067;
+}
 .messagebox__default .footer .footer-buttons .negative button {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
   color: #fff;
   background-color: #d9534f;
+}
+.messagebox__default .footer .footer-buttons .negative button:focus, .messagebox__default .footer .footer-buttons .negative button:hover, .messagebox__default .footer .footer-buttons .negative button:active {
+  color: #fff;
+  background-color: #c32e2a;
 }
 
 .messagebox__width-300px {
