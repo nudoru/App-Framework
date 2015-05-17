@@ -12,7 +12,7 @@ define('nudoru.events.EventDispatcher',
      * Subscribe a function to an event string
      * @param evtString String for the event
      * @param callback  Callback function
-     * @param once  Unsubscript after the first fire
+     * @param once Unsubscripe after the first fire
      */
     function subscribe(evtString, callback, once) {
       if (_eventMap[evtString] === undefined) {

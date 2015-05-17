@@ -3,22 +3,18 @@ var APP = (function () {
     _config,
     _model,
     _view,
+    _emitterCommandMap = Object.create(null),
     _appEvents = require('APP.AppEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
-    _eventDispatcher = require('nudoru.events.EventDispatcher'),
-    _eventCommandMap = require('nudoru.events.EventCommandMap'),
+    _emitter = require('nudoru.events.Emitter'),
     _router = require('nudoru.utils.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getEventDispatcher() {
-    return _eventDispatcher;
-  }
-
-  function getEventCommandMap() {
-    return _eventCommandMap;
+  function getEmitter() {
+    return _emitter;
   }
 
   function getRouter() {
@@ -55,10 +51,10 @@ var APP = (function () {
     _model = model;
     _view = view;
 
-    _router.initialize(_eventDispatcher);
+    _router.initialize();
 
     mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'APP.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.CONTROLLER_INITIALIZED, 'APP.AppInitializedCommand', true);
+    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.AppInitializedCommand', true);
 
     initializeView();
   }
@@ -89,7 +85,7 @@ var APP = (function () {
    * which will inject data and then onModelDataReady() will run
    */
   function initializeModel() {
-    _eventDispatcher.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
+    _emitter.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
     _model.initialize();
   }
 
@@ -105,7 +101,7 @@ var APP = (function () {
    * All APP initialization is complete, pass over to AppInitialzedCommand
    */
   function postInitialize() {
-    _eventDispatcher.publish(_appEvents.CONTROLLER_INITIALIZED);
+    _emitter.publish(_appEvents.APP_INITIALIZED);
   }
 
   //----------------------------------------------------------------------------
@@ -118,10 +114,8 @@ var APP = (function () {
    * @param command Module name of a command object, req execute(dataObj) function
    * @param once True if should only execute once, will be unmapped automatically
    */
-  function mapEventCommand(evt, cmdModuleName, once) {
-    once = once || false;
-    var cmdModule = require(cmdModuleName);
-    _eventCommandMap.map(evt, cmdModule, once);
+  function mapEventCommand(evt, cmdModuleName) {
+    _emitterCommandMap[evt] = _emitter.subscribeCommand(evt, cmdModuleName);
   }
 
   /**
@@ -158,8 +152,7 @@ var APP = (function () {
   return {
     initialize: initialize,
     config: getConfig,
-    eventDispatcher: getEventDispatcher,
-    eventCommandMap: getEventCommandMap,
+    getEmitter: getEmitter,
     router: getRouter,
     view: getView,
     model: getModel,

@@ -20,7 +20,9 @@ define('APP.View.ControlsTestingSubView',
       _actionFourEl;
 
     function initialize(initObj) {
-      console.log(initObj.id + ', subview update');
+      console.log(initObj.id + ', subview init');
+
+      console.log('subview state',initObj.state);
 
       if(!_initObj) {
         _initObj = initObj;

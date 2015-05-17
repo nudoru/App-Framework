@@ -3,8 +3,8 @@ define('APP.Model',
 
   var _self,
     _data,
-    _appEvents = require('APP.AppEvents'),
-    _eventDispatcher = require('nudoru.events.EventDispatcher');
+    _emitter = require('nudoru.events.Emitter'),
+    _appEvents = require('APP.AppEvents');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -12,7 +12,7 @@ define('APP.Model',
 
   function initialize() {
     _self = this;
-    _eventDispatcher.publish(_appEvents.MODEL_DATA_WAITING);
+    _emitter.publish(_appEvents.MODEL_DATA_WAITING);
   }
 
   //----------------------------------------------------------------------------
@@ -25,7 +25,7 @@ define('APP.Model',
    */
   function setData(dataObj) {
     _data = dataObj;
-    _eventDispatcher.publish(_appEvents.MODEL_DATA_READY);
+    _emitter.publish(_appEvents.MODEL_DATA_READY);
   }
 
   /**

@@ -19,8 +19,9 @@ define('APP.View.MixinMultiDeviceView',
       _drawerWidth,
       _isDrawerOpen,
       _currentViewPortSize,
+      _appEvents = require('APP.AppEvents'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _eventDispatcher = require('nudoru.events.EventDispatcher');
+      _emitter = require('nudoru.events.EventDispatcher');
 
     function initialize(initObj) {
       _isMobile = false;
@@ -84,7 +85,7 @@ define('APP.View.MixinMultiDeviceView',
         return;
       }
       _isMobile = true;
-      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
+      _emitter.publish(_appEvents.VIEW_CHANGE_TO_MOBILE);
     }
 
     function switchToDesktopView() {
@@ -93,7 +94,7 @@ define('APP.View.MixinMultiDeviceView',
       }
       _isMobile = false;
       closeDrawer();
-      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
+      _emitter.publish(_appEvents.VIEW_CHANGE_TO_DESKTOP);
     }
 
     function toggleDrawer() {

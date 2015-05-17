@@ -934,6 +934,85 @@ define('nudoru.utils.NDebugger',
     exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
     exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
     exports.MENU_SELECT = 'MENU_SELECT';
+  });;define('nudoru.events.Emitter',
+  function (require, module, exports) {
+    var _subjectMap = {};
+
+    /**
+     * Add an event as observable
+     * @param name Event name string
+     * @param handler onNext() subscription function
+     * @param once will complete/dispose after one fire
+     * @returns {*}
+     */
+    function subscribe(name, handler, once) {
+      _subjectMap[name] || (_subjectMap[name] = []);
+
+      _subjectMap[name] = {
+        once: once,
+        handler: handler,
+        subject: new Rx.Subject()
+      };
+
+      return _subjectMap[name].subject.subscribe(handler);
+    }
+
+    /**
+     * Maps a module/command's execute() function as the handler for onNext
+     * @param name Event name string
+     * @param cmdModule Module name
+     * @param once will complete/dispose after one fire
+     * @returns {*}
+     */
+    function subscribeCommand(name, cmdModule, once) {
+      var cmd = require(cmdModule);
+      if(cmd.hasOwnProperty('execute')) {
+        return subscribe(name, cmd.execute, once);
+      } else {
+        throw new Error('Emitter cannot map '+name+' to command '+cmdModule+': must have execute()');
+      }
+    }
+
+    /**
+     * Publish a event to all subscribers
+     * @param name
+     * @param data
+     */
+    function publish(name, data) {
+      var subjObj = _subjectMap[name];
+
+      if(!subjObj) {
+        return;
+      }
+
+      subjObj.subject.onNext(data);
+
+      if(subjObj.once) {
+        subjObj.subject.onCompleted();
+        subjObj.subject.dispose();
+        subjObj = null;
+      }
+    }
+
+    /**
+     * Cleanup
+     */
+    function dispose() {
+      var subjects = _subjectMap;
+      for (var prop in subjects) {
+        if (hasOwnProp.call(subjects, prop)) {
+          subjects[prop].subject.dispose();
+        }
+      }
+
+      _subjectMap = {};
+    }
+    
+    exports.subscribe = subscribe;
+    exports.subscribeCommand = subscribeCommand;
+    exports.publish = publish;
+    exports.dispose = dispose;
+
   });;define('nudoru.events.EventCommandMap',
   function (require, module, exports) {
 
@@ -1023,7 +1102,7 @@ define('nudoru.utils.NDebugger',
      * Subscribe a function to an event string
      * @param evtString String for the event
      * @param callback  Callback function
-     * @param once  Unsubscript after the first fire
+     * @param once Unsubscripe after the first fire
      */
     function subscribe(evtString, callback, once) {
       if (_eventMap[evtString] === undefined) {
@@ -1100,763 +1179,6 @@ define('nudoru.utils.NDebugger',
     exports.subscribe = subscribe;
     exports.unsubscribe = unsubscribe;
     exports.publish = publish;
-
-  });;//----------------------------------------------------------------------------
-//  A menu item
-//----------------------------------------------------------------------------
-
-define('nudoru.components.BasicMenuItemView',
-  function(require, module, exports) {
-
-    var _selected = false,
-      _data = null,
-      _element = null,
-      _iconElement = null,
-      _anchorElement = null,
-      _iconDeselectedClass = null,
-      _iconSelectedClass = null,
-      _toggle = null,
-      _stringUtils = require('nudoru.utils.StringUtils'),
-      _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _template = require('nudoru.utils.NTemplate');
-
-    function initialize(idata) {
-      _data = idata;
-
-      if(_data.toggle) {
-        _toggle = true;
-        _iconSelectedClass = 'fa-check';
-        _iconDeselectedClass = 'fa-circle-thin';
-      }
-
-      _data.label = _stringUtils.toTitleCase(_data.label);
-
-      render();
-
-      _selected = false;
-    }
-
-    function render() {
-      if(_toggle) {
-        _element = _template.asElement('template__menu-item-icon', _data);
-      } else {
-        _element = _template.asElement('template__menu-item', _data);
-      }
-
-      _iconElement = _element.querySelector('i');
-      _anchorElement = _element.querySelector('button');
-    }
-
-    function getElement() {
-      return _element;
-    }
-
-    function getLabel() {
-      return _data.label;
-    }
-
-    function getValue() {
-      return _data.value;
-    }
-
-    function select() {
-      if(_selected || _element === undefined) {
-        return;
-      }
-      _selected = true;
-
-      if(_toggle) {
-        _DOMUtils.removeClass(_iconElement, _iconDeselectedClass);
-        _DOMUtils.addClass(_iconElement, _iconSelectedClass);
-      }
-    }
-
-    function showOverEffect() {
-      TweenLite.to(_element, 0.1, {backgroundColor:'rgba(255,255,255,.25)', ease:Circ.easeOut});
-    }
-
-    function showOutEffect() {
-      TweenLite.to(_element, 0.25, {backgroundColor:'rgba(255,255,255,0)', ease:Circ.easeIn});
-    }
-
-    function showDepressEffect() {
-      var tl = new TimelineLite();
-      tl.to(_element,0.1, {scale:0.9, ease: Quad.easeOut});
-      tl.to(_element,0.5, {scale:1, ease: Elastic.easeOut});
-    }
-
-    function deselect() {
-      if(!_selected || _element === undefined) {
-        return;
-      }
-      _selected = false;
-
-      if(_toggle) {
-        _DOMUtils.removeClass(_iconElement, _iconSelectedClass);
-        _DOMUtils.addClass(_iconElement, _iconDeselectedClass);
-      }
-    }
-
-    function toggleSelect() {
-      if(_selected) {
-        deselect();
-      } else {
-        select();
-      }
-    }
-
-    exports.initialize = initialize;
-    exports.getElement = getElement;
-    exports.getLabel = getLabel;
-    exports.getValue = getValue;
-    exports.select = select;
-    exports.showOverEffect = showOverEffect;
-    exports.showOutEffect = showOutEffect;
-    exports.showDepressEffect = showDepressEffect;
-    exports.deselect = deselect;
-    exports.toggleSelect = toggleSelect;
-
-  });
-;define('nudoru.components.DDMenuBarView',
-  function (require, module, exports) {
-
-    var _mountPoint = null,
-      _barEl = null,
-      _data = null,
-      _children = [],
-      _isKeepOpen = false,
-      _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _browserInfo = require('nudoru.utils.BrowserInfo');
-
-    function initialize(elID, idata, keep) {
-      _mountPoint = document.getElementById(elID);
-      _data = idata;
-
-      _isKeepOpen = keep ? true : false;
-
-      render();
-    }
-
-    function render() {
-      var i = 0,
-        len = _data.length;
-
-      _barEl = _DOMUtils.HTMLStrToNode('<ul></ul>');
-      for (; i < len; i++) {
-        var menuobj = requireUnique('nudoru.components.DDMenuView');
-        menuobj.initialize(_data[i], _isKeepOpen);
-
-        _barEl.appendChild(menuobj.getElement());
-        _children.push(menuobj);
-      }
-
-      _mountPoint.insertBefore(_barEl, _mountPoint.firstChild);
-
-      // hack to prevent clicking on menuItems from selecting text on ie since CSS isn't supported
-      if (_browserInfo.isIE) {
-        _mountPoint.onselectstart = function () {
-          return false;
-        };
-      }
-
-    }
-
-    function resetAllSelections() {
-      _children.forEach(function (menu) {
-        menu.deselectAllItems();
-      });
-    }
-
-    function setMenuSelections(data) {
-      _children.forEach(function (menu) {
-        menu.setSelections(data);
-      });
-    }
-
-    exports.initialize = initialize;
-    exports.resetAllSelections = resetAllSelections;
-    exports.setMenuSelections = setMenuSelections;
-
-  });;//----------------------------------------------------------------------------
-//  A menu
-//----------------------------------------------------------------------------
-
-define('nudoru.components.DDMenuView',
-  function(require, module, exports) {
-
-    var _visible = false,
-      _data = null,
-      _children = [],
-      _element = null,
-      _anchorElement = null,
-      _ddMenuEl = null,
-      _menuOpenHeight = 0,
-      _menuOverStream = null,
-      _menuOutStream = null,
-      _menuClickStream = null,
-      _fadeOutComplete = null,
-      _isKeepOpen = false,
-      _firstTouchPosition = [],
-      _lastTouchPosition = [],
-      _touchDeltaTolerance = 10,
-      _shouldProcessTouchEnd = false,
-      _eventDispatcher = require('nudoru.events.EventDispatcher'),
-      _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _touchUtils = require('nudoru.utils.TouchUtils'),
-      _componentEvents = require('nudoru.events.ComponentEvents'),
-      _template = require('nudoru.utils.NTemplate'),
-      _browserInfo = require('nudoru.utils.BrowserInfo');
-
-    function initialize(idata, keep) {
-      _data = idata;
-      _data.value = _data.value || _data.label.split(' ').join('_').toLowerCase();
-
-      // Should the menu ever collapse or remain open always?
-      _isKeepOpen = keep ? true : false;
-
-      render();
-
-      if(_browserInfo.mobile.any()) {
-        configureMobileStreams();
-      } else {
-        configureStreams();
-      }
-    }
-
-    function render() {
-      _element = _template.asElement('template__menu-header', _data);
-      _ddMenuEl = _element.querySelector('ul');
-      _anchorElement = _element.querySelector('button');
-
-      _data.items.forEach(buildMenuItems);
-
-      _fadeOutComplete = true;
-
-      // Need a little delay to get the height of the menu
-      setTimeout(setMenuState, 1);
-    }
-
-    function buildMenuItems(item) {
-      var menuitem = requireUnique('nudoru.components.BasicMenuItemView');
-      menuitem.initialize(item);
-      _ddMenuEl.appendChild(menuitem.getElement());
-      _children.push(menuitem);
-    }
-
-    function getElement() {
-      return _element;
-    }
-
-    function getValue() {
-      return _data.value;
-    }
-
-    function setMenuState() {
-      // not able to get the true height from CSS, 39px is the height of a single line item
-      var guessHeight = _data.items.length * 39,
-        cssHeight = parseInt(window.getComputedStyle(_ddMenuEl,null).getPropertyValue("height"), 10);
-
-      // use the highest measure
-      _menuOpenHeight = Math.max(guessHeight, cssHeight);
-
-      if(_isKeepOpen) {
-        _visible = true;
-      } else {
-        _visible = false;
-        _ddMenuEl.style.height = '0px';
-        TweenLite.to(_ddMenuEl, 0, {autoAlpha: 0});
-      }
-    }
-
-    function configureStreams() {
-      _menuOverStream = Rx.Observable.fromEvent(_element, 'mouseover')
-        .filter(filterForMouseEventsOnItems)
-        .map(getMouseEventTargetValue)
-        .subscribe(handleMenuOver);
-
-      _menuOutStream = Rx.Observable.fromEvent(_element, 'mouseout')
-        .filter(filterForMouseEventsOnItems)
-        .map(getMouseEventTargetValue)
-        .subscribe(handleMenuOut);
-
-      _menuClickStream = Rx.Observable.fromEvent(_element, 'click')
-        .filter(filterForMouseEventsOnItems)
-        .map(getMouseEventTargetValue)
-        .subscribe(handleMenuClick);
-    }
-
-    function filterForMouseEventsOnItems(evt) {
-      var target = evt.target;
-      if(target === null) {
-        return false;
-      }
-      // Need to traverse up the DOM for IE9
-      var el = getTargetElMatching(target, '.js__menu-item');
-      if(el){
-        return el.tagName.toLowerCase() === 'button';
-      }
-      return false;
-    }
-
-    function getMouseEventTargetValue(evt) {
-      var target = getTargetElMatching(evt.target, '.js__menu-item');
-      return target.getAttribute('data-value');
-    }
-
-    function getTargetElMatching(el, cls) {
-      return _DOMUtils.closest(el, cls);
-    }
-
-    /**
-     * The rationale here
-     * 1. on start, register where the finger was on the screen
-     * 2. update position on touch move
-     * 3. on end, compare that the where the finger was
-     * 4. if it's less than the tolerance, show the item
-     * 5. if not, then it was probably a drag/scroll and ignore it
-     * based on https://github.com/filamentgroup/tappy/blob/master/tappy.js
-     */
-    function configureMobileStreams() {
-      // Note - had problems getting RxJS to work correctly here, used events
-      _element.addEventListener('touchstart', (function(evt) {
-        _firstTouchPosition = _lastTouchPosition = _touchUtils.getCoords(evt);
-        _shouldProcessTouchEnd = false;
-      }), false);
-
-      _element.addEventListener('touchmove', (function(evt) {
-        _lastTouchPosition = _touchUtils.getCoords(evt);
-      }), false);
-
-      var touchPressFunction = function(arg) {
-        if(_shouldProcessTouchEnd) {
-          handleMenuClick(arg);
-        }
-      };
-
-      _menuClickStream = Rx.Observable.fromEvent(_element, 'touchend')
-        .filter(processTouchEndEventsOnItems)
-        .map(getMouseEventTargetValue)
-        .subscribe(touchPressFunction);
-    }
-
-    function processTouchEndEventsOnItems(evt) {
-      var deltaX = Math.abs(_lastTouchPosition[0] - _firstTouchPosition[0]),
-        deltaY = Math.abs(_lastTouchPosition[1] - _firstTouchPosition[1]);
-
-      if(deltaX <= _touchDeltaTolerance && deltaY <= _touchDeltaTolerance) {
-        _shouldProcessTouchEnd = true;
-      }
-
-      return filterForMouseEventsOnItems(evt);
-    }
-
-    function handleMenuOver(data) {
-      open();
-      if(isHeaderObject(data)) {
-        // nothing on header
-      } else {
-        var item = getItemByValue(data);
-        item.showOverEffect();
-      }
-    }
-
-    function handleMenuOut(data) {
-      close();
-      if(isHeaderObject(data)) {
-        // nothing on header
-      } else {
-        var item = getItemByValue(data);
-        item.showOutEffect();
-      }
-    }
-
-    function handleMenuClick(data) {
-      if(isHeaderObject(data)) {
-        // Toggle visibility on mobile/tablet
-        if(_browserInfo.mobile.any()) {
-          toggleMenu();
-        }
-      } else {
-        var item = getItemByValue(data);
-        item.toggleSelect();
-        item.showDepressEffect();
-        _eventDispatcher.publish(_componentEvents.MENU_SELECT, data);
-      }
-    }
-
-    function isHeaderObject(data) {
-      return data === _data.value;
-    }
-
-    function toggleMenu() {
-      if(_isKeepOpen) {
-        return;
-      }
-
-      if(_visible) {
-        close();
-      } else {
-        open();
-      }
-    }
-
-    function getItemByValue(value) {
-      return _children.filter(function(item) {
-        return (item.getValue() === value);
-      })[0];
-    }
-
-    function deselectAllItems() {
-      _children.forEach(function(item) {
-        item.deselect();
-      });
-    }
-
-    function setSelections(data) {
-      deselectAllItems();
-
-      _children.forEach(function(item) {
-        data.forEach(function(selection) {
-          if(item.getLabel() === selection) {
-            item.select();
-          }
-        });
-      });
-    }
-
-    function open() {
-      if(_visible || _element === undefined || _isKeepOpen) {
-        return;
-      }
-
-      _visible = true;
-
-      TweenLite.killTweensOf(_anchorElement);
-      TweenLite.killTweensOf(_ddMenuEl);
-
-      TweenLite.to(_anchorElement, 0.25, {paddingTop:'10px', ease:Circ.easeOut});
-      TweenLite.to(_ddMenuEl, 0.5, {autoAlpha: 1, height:_menuOpenHeight, top:'0', ease:Circ.easeOut});
-    }
-
-    function close() {
-      if(!_visible || _element === undefined || _isKeepOpen) {
-        return;
-      }
-      _visible = false;
-
-      _fadeOutComplete = false;
-
-      var closeCompleteFunc = closeComplete;
-
-      TweenLite.to(_anchorElement, 0.25, {paddingTop:'0px', ease:Circ.easeIn, delay:0.1});
-      TweenLite.to(_ddMenuEl,0.1, {autoAlpha: 0, height: 0, ease:Circ.easeIn, onComplete: closeCompleteFunc, delay:0.1});
-    }
-
-    function closeComplete() {
-      _fadeOutComplete = true;
-    }
-
-    exports.initialize = initialize;
-    exports.getElement = getElement;
-    exports.getValue = getValue;
-    exports.open = open;
-    exports.close = close;
-    exports.toggleMenu = toggleMenu;
-    exports.setSelections = setSelections;
-    exports.deselectAllItems = deselectAllItems;
-
-  });
-;define('nudoru.components.FloatImageView',
-  function (require, module, exports) {
-
-    var _mountPoint = document,
-      _coverDivID = 'floatimage__cover',
-      _floatingImageClass = '.floatimage__srcimage',
-      _zoomedImageClass = 'floatimage__zoomedimage',
-      _viewPortCoverEl,
-      _viewPortCoverClickStream,
-      _captionEl,
-      _currentImageElement,
-      _scrollingView = _mountPoint.body,
-      _fancyEffects = false,
-      _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _numberUtils = require('nudoru.utils.NumberUtils'),
-      _browserInfo = require('nudoru.utils.BrowserInfo');
-
-    /**
-     * Entry point, initialize elements and hide cover
-     */
-    function initialize() {
-      _viewPortCoverEl = _mountPoint.getElementById(_coverDivID);
-      _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
-
-      _fancyEffects = !_browserInfo.isIE && !_browserInfo.mobile.any();
-
-      hideFloatImageCover();
-
-      _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, _browserInfo.mouseClickEvtStr())
-        .subscribe(function () {
-          hideFloatImageCover();
-        });
-    }
-
-    /**
-     * Apply functionality to div/container of div>img 's
-     * @param container
-     */
-    function apply(container) {
-      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
-
-        _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
-
-        el.addEventListener(_browserInfo.mouseClickEvtStr(), onImageClick, false);
-
-        //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
-
-        if (!_browserInfo.mobile.any()) {
-          el.addEventListener('mouseover', onImageOver, false);
-          el.addEventListener('mouseout', onImageOut, false);
-        }
-
-      });
-    }
-
-    function setScrollingView(el) {
-      _scrollingView = el;
-    }
-
-    function onImageOver(evt) {
-      if (_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
-          scale: 1.10,
-          ease: Circ.easeOut
-        });
-      } else {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
-          scale: 1.10,
-          ease: Circ.easeOut
-        });
-
-      }
-    }
-
-    function onImageOut(evt) {
-      if (_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
-          scale: 1,
-          ease: Circ.easeOut
-        });
-      } else {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
-          scale: 1,
-          ease: Circ.easeOut
-        });
-      }
-
-    }
-
-    /**
-     * Show the image when the image element is clicked
-     * @param evt
-     */
-    function onImageClick(evt) {
-      showImage(evt.target);
-    }
-
-    /**
-     * Present the image that was clicked
-     * @param imageEl
-     */
-    function showImage(imageEl) {
-      // Will happen if you click on the icon
-      if (imageEl.tagName.toLowerCase() === 'div') {
-        _currentImageElement = imageEl.querySelector('img');
-      } else {
-        _currentImageElement = imageEl;
-      }
-
-      // Calculations
-      var vpFill = 0.75,
-        imgSrc = _currentImageElement.getAttribute('src'),
-        imgAlt = _currentImageElement.getAttribute('alt'),
-        imgWidth = _currentImageElement.clientWidth,
-        imgHeight = _currentImageElement.clientHeight,
-        imgPosition = _DOMUtils.offset(_currentImageElement),
-        imgRatio = imgWidth / imgHeight,
-        imgTargetScale = 1,
-        vpWidth = window.innerWidth,
-        vpHeight = window.innerHeight,
-        vpScrollTop = _scrollingView.scrollTop,
-        vpScrollLeft = _scrollingView.scrollLeft,
-        vpRatio = vpWidth / vpHeight,
-        imgOriginX = imgPosition.left - vpScrollLeft,
-        imgOriginY = imgPosition.top - vpScrollTop,
-        imgTargetX,
-        imgTargetY,
-        imgTargetWidth,
-        imgTargetHeight;
-
-      if (vpRatio > imgRatio) {
-        imgTargetScale = vpHeight * vpFill / imgHeight;
-      } else {
-        imgTargetScale = vpWidth * vpFill / imgWidth;
-      }
-
-      imgTargetWidth = imgWidth * imgTargetScale;
-      imgTargetHeight = imgHeight * imgTargetScale;
-
-      imgTargetX = (vpWidth / 2) - (imgTargetWidth / 2) - imgPosition.left + vpScrollLeft;
-      imgTargetY = (vpHeight / 2) - (imgTargetHeight / 2) - imgPosition.top + vpScrollTop;
-
-      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="' + _zoomedImageClass + '"></div>');
-
-      zoomImage.style.backgroundImage = 'url("' + imgSrc + '")';
-      zoomImage.style.left = imgOriginX + 'px';
-      zoomImage.style.top = imgOriginY + 'px';
-      zoomImage.style.width = imgWidth + 'px';
-      zoomImage.style.height = imgHeight + 'px';
-
-      _viewPortCoverEl.appendChild(zoomImage);
-
-      // fade source image on screen
-      TweenLite.to(_currentImageElement, 0.25, {alpha: 0, ease: Circ.easeOut});
-
-      if (_fancyEffects) {
-        // further from the center, the create the effect
-        var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
-          origin;
-
-        if (startingRot <= 0) {
-          startingRot = Math.min(startingRot, -20);
-          origin = 'left top';
-        } else {
-          startingRot = Math.max(startingRot, 20);
-          origin = 'right top';
-        }
-
-        TweenLite.set(zoomImage, {
-          css: {
-            transformPerspective: 1000,
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "hidden"
-          }
-        });
-
-        // For the 'tear down effect'
-        var tl = new TimelineLite();
-        tl.to(zoomImage, 0.25, {
-          rotationZ: -15,
-          rotationY: startingRot,
-          transformOrigin: origin,
-          y: '+50',
-          ease: Back.easeInOut
-        });
-        tl.to(zoomImage, 0.5, {
-          rotationZ: 0,
-          rotationY: 0,
-          transformOrigin: origin,
-          width: imgTargetWidth,
-          height: imgTargetHeight,
-          x: imgTargetX,
-          y: imgTargetY,
-          ease: Quad.easeOut
-        });
-
-      } else {
-        TweenLite.to(zoomImage, 0.5, {
-          rotationY: 0,
-          width: imgTargetWidth,
-          height: imgTargetHeight,
-          x: imgTargetX,
-          y: imgTargetY,
-          ease: Circ.easeOut
-        });
-      }
-
-      showFloatImageCover();
-
-      // Caption
-      if (imgAlt.length >= 1) {
-        _captionEl.innerHTML = '<p>' + imgAlt + '</p>';
-      } else {
-        _captionEl.innerHTML = '';
-      }
-
-    }
-
-    /**
-     * Remove functionality to div/container of div>img 's
-     * @param container
-     */
-    function remove(container) {
-      if (!container) {
-        return;
-      }
-
-      _scrollingView = _mountPoint.body;
-
-      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
-        el.removeEventListener('click', onImageClick);
-        if (!_browserInfo.mobile.any()) {
-          el.removeEventListener('mouseover', onImageOver);
-          el.removeEventListener('mouseout', onImageOut);
-        }
-      });
-    }
-
-    /**
-     * Get an array of elements in the container returned as Array instead of a Node list
-     * @param container
-     * @returns {*}
-     */
-    function getFloatingElementsInContainerAsArray(container) {
-      if (!_DOMUtils.isDomObj(container)) {
-        return [];
-      }
-      return _DOMUtils.getQSElementsAsArray(container, _floatingImageClass);
-    }
-
-    /**
-     * Show the div covering the UI
-     */
-    function showFloatImageCover() {
-      TweenLite.to(_viewPortCoverEl, 0.25, {autoAlpha: 1, ease: Circ.easeOut});
-    }
-
-    /**
-     * Hide the div covering the UI
-     */
-    function hideFloatImageCover() {
-      if (_currentImageElement) {
-        TweenLite.to(_currentImageElement, 0.1, {alpha: 1, ease: Circ.easeOut});
-        _currentImageElement = null;
-      }
-
-      TweenLite.to(_viewPortCoverEl, 0.25, {
-        autoAlpha: 0,
-        ease: Circ.easeOut,
-        onComplete: hideFloatImageCoverComplete
-      });
-    }
-
-    /**
-     * The enlarged image is present during the cover fade out, remove it when that's completed
-     */
-    function hideFloatImageCoverComplete() {
-      var zoomedImage = _viewPortCoverEl.querySelector('.' + _zoomedImageClass);
-      if (zoomedImage) {
-        _viewPortCoverEl.removeChild(zoomedImage);
-      }
-    }
-
-    /**
-     * Public API
-     */
-    exports.initialize = initialize;
-    exports.apply = apply;
-    exports.setScrollingView = setScrollingView;
-    exports.remove = remove;
-
 
   });;define('nudoru.components.MessageBoxView',
   function (require, module, exports) {
@@ -2386,7 +1708,7 @@ define('nudoru.components.DDMenuView',
 
   });;define('APP.AppEvents',
   function (require, module, exports) {
-    exports.CONTROLLER_INITIALIZED = 'CONTROLLER_INITIALIZED';
+    exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.MODEL_DATA_WAITING = 'MODEL_DATA_WAITING';
     exports.MODEL_DATA_READY = 'MODEL_DATA_READY';
     exports.RESUME_FROM_MODEL_STATE = 'RESUME_FROM_MODEL_STATE';
@@ -2401,22 +1723,18 @@ define('nudoru.components.DDMenuView',
     _config,
     _model,
     _view,
+    _emitterCommandMap = Object.create(null),
     _appEvents = require('APP.AppEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
-    _eventDispatcher = require('nudoru.events.EventDispatcher'),
-    _eventCommandMap = require('nudoru.events.EventCommandMap'),
+    _emitter = require('nudoru.events.Emitter'),
     _router = require('nudoru.utils.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getEventDispatcher() {
-    return _eventDispatcher;
-  }
-
-  function getEventCommandMap() {
-    return _eventCommandMap;
+  function getEmitter() {
+    return _emitter;
   }
 
   function getRouter() {
@@ -2453,10 +1771,10 @@ define('nudoru.components.DDMenuView',
     _model = model;
     _view = view;
 
-    _router.initialize(_eventDispatcher);
+    _router.initialize();
 
     mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'APP.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.CONTROLLER_INITIALIZED, 'APP.AppInitializedCommand', true);
+    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.AppInitializedCommand', true);
 
     initializeView();
   }
@@ -2487,7 +1805,7 @@ define('nudoru.components.DDMenuView',
    * which will inject data and then onModelDataReady() will run
    */
   function initializeModel() {
-    _eventDispatcher.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
+    _emitter.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
     _model.initialize();
   }
 
@@ -2503,7 +1821,7 @@ define('nudoru.components.DDMenuView',
    * All APP initialization is complete, pass over to AppInitialzedCommand
    */
   function postInitialize() {
-    _eventDispatcher.publish(_appEvents.CONTROLLER_INITIALIZED);
+    _emitter.publish(_appEvents.APP_INITIALIZED);
   }
 
   //----------------------------------------------------------------------------
@@ -2516,10 +1834,8 @@ define('nudoru.components.DDMenuView',
    * @param command Module name of a command object, req execute(dataObj) function
    * @param once True if should only execute once, will be unmapped automatically
    */
-  function mapEventCommand(evt, cmdModuleName, once) {
-    once = once || false;
-    var cmdModule = require(cmdModuleName);
-    _eventCommandMap.map(evt, cmdModule, once);
+  function mapEventCommand(evt, cmdModuleName) {
+    _emitterCommandMap[evt] = _emitter.subscribeCommand(evt, cmdModuleName);
   }
 
   /**
@@ -2556,8 +1872,7 @@ define('nudoru.components.DDMenuView',
   return {
     initialize: initialize,
     config: getConfig,
-    eventDispatcher: getEventDispatcher,
-    eventCommandMap: getEventCommandMap,
+    getEmitter: getEmitter,
     router: getRouter,
     view: getView,
     model: getModel,
@@ -2571,8 +1886,8 @@ define('nudoru.components.DDMenuView',
 
   var _self,
     _data,
-    _appEvents = require('APP.AppEvents'),
-    _eventDispatcher = require('nudoru.events.EventDispatcher');
+    _emitter = require('nudoru.events.Emitter'),
+    _appEvents = require('APP.AppEvents');
 
   //----------------------------------------------------------------------------
   //  Initialization
@@ -2580,7 +1895,7 @@ define('nudoru.components.DDMenuView',
 
   function initialize() {
     _self = this;
-    _eventDispatcher.publish(_appEvents.MODEL_DATA_WAITING);
+    _emitter.publish(_appEvents.MODEL_DATA_WAITING);
   }
 
   //----------------------------------------------------------------------------
@@ -2593,7 +1908,7 @@ define('nudoru.components.DDMenuView',
    */
   function setData(dataObj) {
     _data = dataObj;
-    _eventDispatcher.publish(_appEvents.MODEL_DATA_READY);
+    _emitter.publish(_appEvents.MODEL_DATA_READY);
   }
 
   /**
@@ -2631,7 +1946,9 @@ define('nudoru.components.DDMenuView',
       _actionFourEl;
 
     function initialize(initObj) {
-      console.log(initObj.id + ', subview update');
+      console.log(initObj.id + ', subview init');
+
+      console.log('subview state',initObj.state);
 
       if(!_initObj) {
         _initObj = initObj;
@@ -2775,7 +2092,7 @@ define('nudoru.components.DDMenuView',
      * @param initObj
      */
     function initialize(initObj) {
-      console.log(initObj.id + ', subview update');
+      console.log(initObj.id + ', subview init');
 
       console.log('subview state',initObj.state);
 
@@ -2888,7 +2205,7 @@ define('nudoru.components.DDMenuView',
       _browserScrollStream,
       _browserResizeStream,
       _positionUIElementsOnChangeCB,
-      _eventDispatcher = APP.eventDispatcher(),
+      _emitter = require('nudoru.events.Emitter'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
 
@@ -2945,11 +2262,11 @@ define('nudoru.components.DDMenuView',
     //----------------------------------------------------------------------------
 
     function handleViewPortResize() {
-      _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
+      _emitter.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
     }
 
     function handleViewPortScroll() {
-      _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+      _emitter.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
     }
 
     function getCurrentViewPortSize() {
@@ -3020,8 +2337,9 @@ define('nudoru.components.DDMenuView',
       _drawerWidth,
       _isDrawerOpen,
       _currentViewPortSize,
+      _appEvents = require('APP.AppEvents'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _eventDispatcher = require('nudoru.events.EventDispatcher');
+      _emitter = require('nudoru.events.EventDispatcher');
 
     function initialize(initObj) {
       _isMobile = false;
@@ -3085,7 +2403,7 @@ define('nudoru.components.DDMenuView',
         return;
       }
       _isMobile = true;
-      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_MOBILE);
+      _emitter.publish(_appEvents.VIEW_CHANGE_TO_MOBILE);
     }
 
     function switchToDesktopView() {
@@ -3094,7 +2412,7 @@ define('nudoru.components.DDMenuView',
       }
       _isMobile = false;
       closeDrawer();
-      _eventDispatcher.publish(APP.AppEvents.VIEW_CHANGE_TO_DESKTOP);
+      _emitter.publish(_appEvents.VIEW_CHANGE_TO_DESKTOP);
     }
 
     function toggleDrawer() {
@@ -3131,7 +2449,7 @@ define('nudoru.components.DDMenuView',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('APP.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
-      _eventDispatcher = APP.eventDispatcher();
+      _emitter = require('nudoru.events.Emitter');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -3192,7 +2510,7 @@ define('nudoru.components.DDMenuView',
         subview.controller.viewDidMount();
       }
 
-      _eventDispatcher.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
+      _emitter.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
     }
 
     /**
@@ -3227,7 +2545,8 @@ define('nudoru.components.DDMenuView',
       _appEl,
       _mainHeaderEl,
       _mainFooterEl,
-      _eventDispatcher = APP.eventDispatcher(),
+      _emitter = require('nudoru.events.Emitter'),
+      _eventDispatcher = require('nudoru.events.EventDispatcher'),
       _appEvents = require('APP.AppEvents'),
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
@@ -3247,8 +2566,6 @@ define('nudoru.components.DDMenuView',
     function initialize() {
       _self = this;
 
-      _eventDispatcher.publish(_appEvents.VIEW_INITIALIZED);
-
       render();
     }
 
@@ -3267,8 +2584,6 @@ define('nudoru.components.DDMenuView',
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
       _modalCoverView.initialize();
-
-      _eventDispatcher.publish(_appEvents.VIEW_RENDERED);
     }
 
     /**

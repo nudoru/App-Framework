@@ -19,7 +19,7 @@ define('APP.View.TemplateSubView',
      * @param initObj
      */
     function initialize(initObj) {
-      console.log(initObj.id + ', subview update');
+      console.log(initObj.id + ', subview init');
 
       console.log('subview state',initObj.state);
 

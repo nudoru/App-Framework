@@ -8,7 +8,7 @@ define('APP.View.MixinRouteViews',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('APP.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
-      _eventDispatcher = APP.eventDispatcher();
+      _emitter = require('nudoru.events.Emitter');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -69,7 +69,7 @@ define('APP.View.MixinRouteViews',
         subview.controller.viewDidMount();
       }
 
-      _eventDispatcher.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
+      _emitter.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
     }
 
     /**

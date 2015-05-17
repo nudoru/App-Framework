@@ -7,7 +7,7 @@ define('APP.View.MixinBrowserEvents',
       _browserScrollStream,
       _browserResizeStream,
       _positionUIElementsOnChangeCB,
-      _eventDispatcher = APP.eventDispatcher(),
+      _emitter = require('nudoru.events.Emitter'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
 
@@ -64,11 +64,11 @@ define('APP.View.MixinBrowserEvents',
     //----------------------------------------------------------------------------
 
     function handleViewPortResize() {
-      _eventDispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
+      _emitter.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
     }
 
     function handleViewPortScroll() {
-      _eventDispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+      _emitter.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
     }
 
     function getCurrentViewPortSize() {

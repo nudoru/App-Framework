@@ -1,6 +1,6 @@
 define('APP.AppEvents',
   function (require, module, exports) {
-    exports.CONTROLLER_INITIALIZED = 'CONTROLLER_INITIALIZED';
+    exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.MODEL_DATA_WAITING = 'MODEL_DATA_WAITING';
     exports.MODEL_DATA_READY = 'MODEL_DATA_READY';
     exports.RESUME_FROM_MODEL_STATE = 'RESUME_FROM_MODEL_STATE';
