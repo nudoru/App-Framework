@@ -1,5 +1,7 @@
 $control-list-round-button-size: 75px
 
+$control-list-round-button-forecolor: scale-lightness($light-teal, 10%)
+
 // UL
 .list-round-buttons
   @extend .plain-list
@@ -26,7 +28,7 @@ $control-list-round-button-size: 75px
       background-color: rgba(255,255,255,.05)
       border-radius: 50%
       border: 1px solid rgba(0,0,0,0)
-      color: #fff
+      color: $control-list-round-button-forecolor
       text-shadow: 0 1px 0 rgba(0,0,0,.2)
       box-shadow: 0 10px 10px -6px rgba(0,0,0,.1)
       i.fa
@@ -38,11 +40,12 @@ $control-list-round-button-size: 75px
         background-color: rgba(255,255,255,.25)
         border: 1px solid rgba(255,255,255,1)
         box-shadow: 0 10px 10px -6px rgba(0,0,0,.2)
+        color: #fff
     .label
       @extend %header-5
       display: block
       margin: $half-base-line-height
       padding: 0
-      color: #fff !important
+      color: $control-list-round-button-forecolor !important
       text-shadow: 0 1px 0 rgba(0,0,0,.2)
       text-transform: none

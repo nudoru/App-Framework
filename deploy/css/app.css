@@ -2634,12 +2634,12 @@ hr {
   max-width: 100%;
 }
 
-.plain-list, .plain-horizontal-list, .comma-separated-list, .list-round-buttons {
+.plain-list, .plain-horizontal-list, .comma-separated-list, .horizontal-statics, .list-round-buttons {
   list-style: none;
   padding-left: 0;
 }
 
-.plain-horizontal-list li, .comma-separated-list li {
+.plain-horizontal-list li, .comma-separated-list li, .horizontal-statics li {
   display: inline;
 }
 
@@ -2894,14 +2894,13 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   overflow: hidden;
   position: relative;
   display: block;
-  padding-bottom: 0.688rem;
-  margin-bottom: 0.688rem;
 }
 .user-info-header .image {
   display: inline-block;
   width: 75px;
 }
 .user-info-header .name {
+  text-shadow: 0 1px 0 #fff;
   display: inline-block;
   position: absolute;
   left: 75px;
@@ -2921,13 +2920,48 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   width: 75px;
   height: 75px;
   border-radius: 50%;
-  border: 1px solid #fff;
-  box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.2);
+  border: 1px solid #00a9e0;
   overflow: hidden;
 }
 .user-profile-image img {
   max-width: 100%;
   height: auto;
+}
+
+.horizontal-statics {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  display: table;
+  width: 100%;
+}
+.horizontal-statics li {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  height: 75px;
+  margin-right: 1.376rem;
+  padding-right: 1.376rem;
+  border-right: 1px solid #eae8e6;
+}
+.horizontal-statics li:last-of-type {
+  margin-right: 0;
+  padding-right: 0;
+  border-right: none;
+}
+.horizontal-statics h1, .horizontal-statics p {
+  font-size: 0.8rem;
+  margin: 0;
+  padding: 0;
+  line-height: 0.688rem;
+}
+.horizontal-statics h1 {
+  color: #00a9e0;
+  margin-bottom: 0.344rem;
+}
+.horizontal-statics p {
+  color: #005eb8;
+  font-weight: 700;
 }
 
 .table th, .table td {
@@ -3489,7 +3523,7 @@ tr.row-header-inline td {
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 50%;
   border: 1px solid transparent;
-  color: #fff;
+  color: #00bcc8;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.1);
 }
@@ -3503,12 +3537,13 @@ tr.row-header-inline td {
   background-color: rgba(255, 255, 255, 0.25);
   border: 1px solid white;
   box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.2);
+  color: #fff;
 }
 .list-round-buttons li .label {
   display: block;
   margin: 0.344rem;
   padding: 0;
-  color: #fff !important;
+  color: #00bcc8 !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   text-transform: none;
 }
@@ -4027,7 +4062,7 @@ tr.row-header-inline td {
   min-height: 100%;
   bottom: 100%;
   width: 120px;
-  background-color: #53565a;
+  background-color: #005153;
   overflow: hidden;
 }
 #drawer p, #drawer h1, #drawer h2, #drawer h3, #drawer h4, #drawer h5, #drawer h6 {
@@ -4048,7 +4083,7 @@ tr.row-header-inline td {
   padding: 0;
   height: 50px;
   line-height: 50px;
-  color: #ccc;
+  color: #00bcc8;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 #drawer .content {

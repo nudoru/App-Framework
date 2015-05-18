@@ -1,3 +1,6 @@
+$drawer-color-bg: scale-lightness($dark-teal, -30%)
+$drawer-color-accent-light: scale-lightness($light-teal, 10%)
+
 #drawer
   position: fixed
   top: 0
@@ -5,7 +8,7 @@
   min-height: 100%
   bottom: 100%
   width: $drawer-width
-  background-color: $dark-grey
+  background-color: $drawer-color-bg
   overflow: hidden
 
   p,h1,h2,h3,h4,h5,h6
@@ -26,7 +29,7 @@
       padding: 0
       height: $header-height
       line-height: $header-height
-      color: #ccc
+      color: $drawer-color-accent-light
       text-shadow: 0 1px 0 rgba(0,0,0,.1)
   .content
     margin-top: $header-height

@@ -1,20 +1,32 @@
-.user-info-header
-  .image
-    .user-profile-image
-      img(src='img/animals/racoon.jpg')
-  .name Welcome, Joe Timely
+.panel-shadow
+  .column-container
+    .one-third-left-column
+      .user-info-header
+        .image
+          .user-profile-image
+            img(src='img/animals/racoon.jpg')
+        .name Joe Timely
+    .two-thirds-right-column
+      ul.horizontal-statics
+        li
+          h1 Lifetime Projects
+          p 125
+        li
+          h1 Lifetime Hours
+          p 9999
+
+//section.padding-top-double
+  h1.h4-alternate Time Card
 
 .panel-shadow
-  .panel-header
-    h1 Time Card
   section
-    .column-container
+    .column-container.padding-bottom-triple
       .one-fourth-left-column
         button.button-icon-left.button-neutral-light
           i.fa.fa-chevron-circle-left
           | Previous Wk
       .half-left-column.text-center
-        h1.h1-alternate Week of May 10-16, 2015
+        h1.h2-alternate Week of May 10-16, 2015
         //button.button-icon-left.button-no-border
         //  i.fa.fa-calendar
         //  | View Full Month
@@ -171,5 +183,5 @@
           th.center-column 8 hrs
           th.center-column
     section.text-right.panel-footer
-      button.button-icon-right.button-danger Submit 42 hrs
+      button.button-icon-right Submit 40 hrs
         i.fa.fa-check
