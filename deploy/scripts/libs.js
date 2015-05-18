@@ -2545,12 +2545,8 @@ define('nudoru.utils.NDebugger',
       _appEl,
       _mainHeaderEl,
       _mainFooterEl,
-      _emitter = require('nudoru.events.Emitter'),
-      _eventDispatcher = require('nudoru.events.EventDispatcher'),
-      _appEvents = require('APP.AppEvents'),
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
-      _multiDeviceView = require('APP.View.MixinMultiDeviceView'),
       _notificationView = require('nudoru.components.ToastView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
       _modalCoverView = require('nudoru.components.ModalCoverView');
@@ -2579,7 +2575,6 @@ define('nudoru.utils.NDebugger',
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
       _routeSubViewView.setSubViewMountPoint('contents');
-      // TODO - fix from previous refactors _multiDeviceView.initialize();
 
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
@@ -2698,10 +2693,13 @@ define('nudoru.utils.NDebugger',
       // url fragment for route, ID (template id), module name for controller, use singleton module
 
       // Default route
-      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
+      //APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
 
       // Other routes
-      APP.mapRouteView('/1', 'TestSubView', 'APP.View.TemplateSubView', false);
+      APP.mapRouteView('/test', 'TestSubView', 'APP.View.TemplateSubView', true);
+      APP.mapRouteView('/one', 'TestSubView1', 'APP.View.TemplateSubView', true);
+      APP.mapRouteView('/two', 'TestSubView2', 'APP.View.TemplateSubView', true);
+      APP.mapRouteView('/three', 'TestSubView3', 'APP.View.TemplateSubView', true);
 
       APP.view().removeLoadingMessage();
 

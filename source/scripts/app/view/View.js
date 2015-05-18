@@ -6,12 +6,8 @@ define('APP.View',
       _appEl,
       _mainHeaderEl,
       _mainFooterEl,
-      _emitter = require('nudoru.events.Emitter'),
-      _eventDispatcher = require('nudoru.events.EventDispatcher'),
-      _appEvents = require('APP.AppEvents'),
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
-      _multiDeviceView = require('APP.View.MixinMultiDeviceView'),
       _notificationView = require('nudoru.components.ToastView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
       _modalCoverView = require('nudoru.components.ModalCoverView');
@@ -40,7 +36,6 @@ define('APP.View',
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
       _routeSubViewView.setSubViewMountPoint('contents');
-      // TODO - fix from previous refactors _multiDeviceView.initialize();
 
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');

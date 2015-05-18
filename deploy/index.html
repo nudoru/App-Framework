@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" type="text/css" href="css/app.css"><!--[if lte IE 9]>
     <script src="scripts/vendor/html5shiv.min.js"></script><![endif]--><!--
-BEGIN Templates for Nudoru Components
+BEGIN Templates for Components
 -->
 
 <script id="template__component--toast" type="text/template">
@@ -55,11 +55,9 @@ BEGIN Templates for Nudoru Components
 </script>
 
 <!--
-END
--->
-
-<!--
-BEGIN Templates for App SubViews
+END Templates for Components
+--><!--
+BEGIN Templates for Views
 -->
 <script id="template__ControlsTesting" type="text/template">
     <div class="padded-content">
@@ -88,73 +86,321 @@ BEGIN Templates for App SubViews
 
 <script id="template__TemplateSubView" type="text/template">
     <h1>Template Sub View</h1>
-    <h1>Template Sub View</h1>
-    <h1>Template Sub View</h1>
+    <textarea id="input-textarea"></textarea>
 </script>
 
-<script id="template__TestSubView" type="text/template">
-    <h1>Test sub view</h1>
-    <h1>Test sub view</h1>
-    <h1>Test sub view</h1>
+<script id="template__TestSubView1" type="text/template">
+    <h1>Test sub view 1</h1>
+    <textarea id="input-textarea"></textarea>
 </script>
+
+<script id="template__TestSubView2" type="text/template">
+    <h1>Test sub view 2</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<script id="template__TestSubView3" type="text/template">
+    <h1>Test sub view 3</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<!--
+END Templates for Views
+-->
   </head>
   <body>
     <div id="app__container">
-      <!--#drawernav#drawer__navigation
-      -->
+      <div id="drawer">
+        <div class="header">
+          <h1>Options</h1>
+        </div>
+        <div class="content">
+          <ul class="list-round-buttons">
+            <li>
+              <div class="button"><i class="fa fa-list"></i></div>
+              <div class="label">Time Card</div>
+            </li>
+            <li>
+              <div class="button"><i class="fa fa-calendar"></i></div>
+              <div class="label">Forecast</div>
+            </li>
+            <li>
+              <div class="button"><i class="fa fa-cubes"></i></div>
+              <div class="label">Assignments</div>
+            </li>
+          </ul>
+        </div>
+      </div>
       <div id="app__contents">
         <header id="header">
-          <!--.header__drawer-toggle-->
-          <!--  .drawer__menu-spinner-button-->
-          <!--    input(type="checkbox")#drawer__menu-spinner-form-->
-          <!--    label(for="drawer__menu-spinner-form").spinner-spin-->
-          <!--      .spinner.diagonal.part-1-->
-          <!--      .spinner.horizontal-->
-          <!--      .spinner.diagonal.part-2-->
-          <h1>Application</h1>
+          <h1 class="icon-left"><i class="fa fa-pencil"></i><em>Application</em></h1>
         </header>
         <section id="contents">
-          <!--.padded-content
-          include mock-controlstesting
-          //include mock-styletest
-          //include mock-components
-          //include timeentry
-          //include assignments
-          -->
+          <div class="padded-content">
+            <!--include mock-controlstesting-->
+            <!--include mock-styletest-->
+            <!--include mock-components-->
+            <div class="user-info-header">
+              <div class="image">
+                <div class="user-profile-image"><img src="img/animals/racoon.jpg"></div>
+              </div>
+              <div class="name">Welcome, Joe Timely</div>
+            </div>
+            <div class="panel-shadow">
+              <div class="panel-header">
+                <h1>Time Card</h1>
+              </div>
+              <section>
+                <div class="column-container">
+                  <div class="one-fourth-left-column">
+                    <button class="button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
+                  </div>
+                  <div class="half-left-column text-center">
+                    <h1 class="h1-alternate">Week of May 10-16, 2015</h1>
+                    <!--button.button-icon-left.button-no-border-->
+                    <!--  i.fa.fa-calendar-->
+                    <!--  | View Full Month-->
+                  </div>
+                  <div class="one-fourth-right-column text-right">
+                    <button class="button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
+                  </div>
+                </div>
+                <table class="table table-rows-zebra">
+                  <thead>
+                    <tr>
+                      <th scope="col" style=""></th>
+                      <th scope="col" style="width: 125px" class="center-column">Role</th>
+                      <th scope="col" style="width: 85px" class="center-column">Mon</th>
+                      <th scope="col" style="width: 85px" class="center-column">Tue</th>
+                      <th scope="col" style="width: 85px" class="center-column">Wed</th>
+                      <th scope="col" style="width: 85px" class="center-column">Thur</th>
+                      <th scope="col" style="width: 85px" class="center-column">Fri</th>
+                      <th scope="col" style="width: 200px" class="center-column">Comments</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>ABC Project</th>
+                      <td class="center-column">
+                        <select id="input-select" class="subtle">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>XYZ Solution</th>
+                      <td class="center-column">
+                        <select id="input-select" class="subtle">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Financial Assessment 1.2</th>
+                      <td class="center-column">
+                        <select id="input-select" class="subtle">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Innovation Team X</th>
+                      <td class="center-column">
+                        <select id="input-select" class="subtle">
+                          <option>Consult</option>
+                          <option>Analysis</option>
+                          <option>Design</option>
+                          <option>Develop</option>
+                          <option>Implement</option>
+                          <option>Evaluate</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                      </td>
+                    </tr>
+                    <!--tr.row-header-inline-->
+                    <!--  td(colspan='9') Default activities-->
+                    <tr class="header-grey">
+                      <th>Enrichment</th>
+                      <td class="center-column">
+                        <select id="input-select" class="subtle">
+                          <option>Personal</option>
+                          <option>Mandatory</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                      </td>
+                    </tr>
+                    <tr class="header-grey">
+                      <th>Out of Office</th>
+                      <td class="center-column">
+                        <select id="input-select" class="subtle">
+                          <option>Vacation</option>
+                          <option>Sick</option>
+                          <option>Other</option>
+                        </select>
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                      </td>
+                      <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th class="right-column">Totals</th>
+                      <th class="center-column"></th>
+                      <th class="center-column">10 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column">8 hrs</th>
+                      <th class="center-column"></th>
+                    </tr>
+                  </tfoot>
+                </table>
+                <section class="text-right panel-footer">
+                  <button class="button-icon-right button-danger">Submit 42 hrs<i class="fa fa-check"></i></button>
+                </section>
+              </section>
+            </div>
+            <!--include assignments-->
+          </div>
         </section>
-        <footer id="footer">
-          <p>Footer content</p>
-        </footer>
+        <!--footer#footer
+        p.icon-left
+          i.fa.fa-cogs
+          | IMA Footer
+        
+        -->
       </div>
-    </div>
-    <div id="modal__cover">
-      <div class="modal__background"></div>
-      <div class="modal__close-button"><i class="fa fa-remove"></i></div>
     </div>
     <div id="initialization__cover">
       <div class="initialization__message">
         <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading Spinner" class="loader">
       </div>
     </div>
-    <div id="messagebox__container">
-      <!--.messagebox__default.messagebox__width-500px-->
-      <!--  .header-->
-      <!--    h1 Title-->
-      <!--  .content-->
-      <!--    p You should think about whether there is a semantic element that matches the intent of your use of a presentational element. If there is such an element, you should use it, and if it doesn't already have a default styling that you like, then you can use CSS from the tables below to make it look like you want. You may also have to reset any other properties that some elements have by default.-->
-      <!--  .footer-->
-      <!--    button.icon-right Close-->
-      <!--      i.fa.fa-times-->
+    <div id="modal__cover">
+      <div class="modal__background"></div>
+      <div class="modal__close-button"><i class="fa fa-remove"></i></div>
     </div>
-    <div id="toast__container">
-      <!--.toast__item(id='test')-->
-      <!--  //.toast__item-content-->
-      <!--  //  h1 Test Toast-->
-      <!--  //  p Hello there! This is a toast control.-->
-      <!--  //.toast__item-controls-->
-      <!--  //  button-->
-      <!--  //    i.fa.fa-close-->
-    </div>
+    <div id="messagebox__container"></div>
+    <div id="toast__container"></div>
     <script src="scripts/config.js"></script>
     <script src="scripts/libs.js"></script>
     <script src="//localhost:35729/livereload.js"></script>

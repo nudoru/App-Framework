@@ -69,8 +69,46 @@ $control-table-zebra-color: rgba(0,0,0,.05)
   @extend .well
   background-color: rgba(0,0,0,.05)
 
+.user-info-header
+  overflow: hidden
+  position: relative
+  display: block
+  padding-bottom: $base-line-height
+  margin-bottom: $base-line-height
+  .image
+    display: inline-block
+    width: 75px
+  .name
+    @extend %header-3
+    display: inline-block
+    position: absolute
+    left: 75px
+    top: 0px
+    height: 75px
+    margin: 0
+    margin-left: $double-base-line-height
+    padding: 0
+    line-height: 75px
+    color: $control-primary-color-dark
+
+
+.user-profile-image
+  display: inline-block
+  padding: 0
+  margin: 0
+  width: 75px
+  height: 75px
+  border-radius: 50%
+  border: 1px solid #fff
+  box-shadow: 0 10px 10px -6px rgba(0,0,0,.2)
+  overflow: hidden
+  img
+    max-width: 100%
+    height: auto
+
 @import "labels"
 @import "panels"
 @import "buttons"
 @import "forms"
 @import "tables"
+@import "special-list-round-buttons"

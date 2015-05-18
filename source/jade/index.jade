@@ -11,55 +11,54 @@ html
     <!--[if lte IE 9]>
     script(src='scripts/vendor/html5shiv.min.js')
     <![endif]-->
-    include templates.html
+    include templates-components.html
+    include templates-views.html
   body
     #app__container
-      //#drawer
-        nav#drawer__navigation
+      #drawer
+        .header
+          h1 Options
+        .content
+          ul.list-round-buttons
+            li
+              .button
+                i.fa.fa-list
+              .label Time Card
+            li
+              .button
+                i.fa.fa-calendar
+              .label Forecast
+            li
+              .button
+                i.fa.fa-cubes
+              .label Assignments
       #app__contents
         header#header
-          //.header__drawer-toggle
-          //  .drawer__menu-spinner-button
-          //    input(type="checkbox")#drawer__menu-spinner-form
-          //    label(for="drawer__menu-spinner-form").spinner-spin
-          //      .spinner.diagonal.part-1
-          //      .spinner.horizontal
-          //      .spinner.diagonal.part-2
-          h1 Application
+          h1.icon-left
+            i.fa.fa-pencil
+            em Application
         section#contents
-          //.padded-content
-            include mock-controlstesting
+          .padded-content
+            //include mock-controlstesting
             //include mock-styletest
             //include mock-components
-            //include timeentry
+            include timeentry
             //include assignments
-        footer#footer
-          p Footer content
-    #modal__cover
-      .modal__background
-      .modal__close-button
-        i.fa.fa-remove
+        //footer#footer
+          p.icon-left
+            i.fa.fa-cogs
+            | IMA Footer
+
     #initialization__cover
       .initialization__message
         h1 Please Wait ...
         img(src='img/loading_squares_g.gif' alt='Loading Spinner').loader
+    #modal__cover
+      .modal__background
+      .modal__close-button
+        i.fa.fa-remove
     #messagebox__container
-      //.messagebox__default.messagebox__width-500px
-      //  .header
-      //    h1 Title
-      //  .content
-      //    p You should think about whether there is a semantic element that matches the intent of your use of a presentational element. If there is such an element, you should use it, and if it doesn't already have a default styling that you like, then you can use CSS from the tables below to make it look like you want. You may also have to reset any other properties that some elements have by default.
-      //  .footer
-      //    button.icon-right Close
-      //      i.fa.fa-times
     #toast__container
-      //.toast__item(id='test')
-      //  //.toast__item-content
-      //  //  h1 Test Toast
-      //  //  p Hello there! This is a toast control.
-      //  //.toast__item-controls
-      //  //  button
-      //  //    i.fa.fa-close
     script(src='scripts/config.js')
     script(src='scripts/libs.js')
     script(src='//localhost:35729/livereload.js')

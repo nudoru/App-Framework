@@ -2259,17 +2259,31 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   font-style: normal;
 }
 @font-face {
-  font-family: 'Museo Slab';
-  src: url("../fonts/museoslab/Museo_Slab_500-webfont.eot");
-  src: url("../fonts/museoslab/Museo_Slab_500-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/museoslab/Museo_Slab_500-webfont.woff2") format("woff2"), url("../fonts/museoslab/Museo_Slab_500-webfont.woff") format("woff"), url("../fonts/museoslab/Museo_Slab_500-webfont.ttf") format("truetype"), url("../fonts/museoslab/Museo_Slab_500-webfont.svg#museo_slab500") format("svg");
+  font-family: 'Titillium';
+  src: url("../fonts/titillium/Titillium-Light-webfont.eot");
+  src: url("../fonts/titillium/Titillium-Light-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/titillium/Titillium-Light-webfont.woff2") format("woff2"), url("../fonts/titillium/Titillium-Light-webfont.woff") format("woff"), url("../fonts/titillium/Titillium-Light-webfont.ttf") format("truetype"), url("../fonts/titillium/Titillium-Light-webfont.svg#titilliumlight") format("svg");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Titillium';
+  src: url("../fonts/titillium/Titillium-Regular-webfont.eot");
+  src: url("../fonts/titillium/Titillium-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/titillium/Titillium-Regular-webfont.woff2") format("woff2"), url("../fonts/titillium/Titillium-Regular-webfont.woff") format("woff"), url("../fonts/titillium/Titillium-Regular-webfont.ttf") format("truetype"), url("../fonts/titillium/Titillium-Regular-webfont.svg#titilliumregular") format("svg");
   font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Titillium';
+  src: url("../fonts/titillium/Titillium-Semibold-webfont.eot");
+  src: url("../fonts/titillium/Titillium-Semibold-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/titillium/Titillium-Semibold-webfont.woff2") format("woff2"), url("../fonts/titillium/Titillium-Semibold-webfont.woff") format("woff"), url("../fonts/titillium/Titillium-Semibold-webfont.ttf") format("truetype"), url("../fonts/titillium/Titillium-Semibold-webfont.svg#titilliumbold") format("svg");
+  font-weight: 700;
   font-style: normal;
 }
 h1 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.8rem;
   font-weight: 400;
   line-height: 1.376rem;
@@ -2281,7 +2295,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.62rem;
   font-weight: 400;
   line-height: 1.376rem;
@@ -2289,11 +2303,11 @@ h2 {
   padding-bottom: 1.376rem;
 }
 
-h3 {
+h3, .user-info-header .name {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.376rem;
@@ -2305,7 +2319,7 @@ h4, legend, .table caption, .floatimage__caption p {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.376rem;
@@ -2313,11 +2327,11 @@ h4, legend, .table caption, .floatimage__caption p {
   padding-bottom: 0.344rem;
 }
 
-h5 {
+h5, .list-round-buttons li .label, #drawer .header h1 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.69rem;
   font-weight: 400;
   line-height: 1.376rem;
@@ -2330,7 +2344,7 @@ h6 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.62rem;
   font-weight: 400;
   line-height: 1.376rem;
@@ -2457,7 +2471,7 @@ blockquote {
   margin-right: 1.376rem;
   padding: 0.688rem;
   background-color: rgba(0, 0, 0, 0.05);
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 pre {
@@ -2620,7 +2634,7 @@ hr {
   max-width: 100%;
 }
 
-.plain-list, .plain-horizontal-list, .comma-separated-list {
+.plain-list, .plain-horizontal-list, .comma-separated-list, .list-round-buttons {
   list-style: none;
   padding-left: 0;
 }
@@ -2876,6 +2890,46 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+.user-info-header {
+  overflow: hidden;
+  position: relative;
+  display: block;
+  padding-bottom: 0.688rem;
+  margin-bottom: 0.688rem;
+}
+.user-info-header .image {
+  display: inline-block;
+  width: 75px;
+}
+.user-info-header .name {
+  display: inline-block;
+  position: absolute;
+  left: 75px;
+  top: 0px;
+  height: 75px;
+  margin: 0;
+  margin-left: 1.376rem;
+  padding: 0;
+  line-height: 75px;
+  color: #005eb8;
+}
+
+.user-profile-image {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.user-profile-image img {
+  max-width: 100%;
+  height: auto;
+}
+
 .table th, .table td {
   padding: 0;
   margin: 0;
@@ -2984,7 +3038,7 @@ button, .button-important {
   -o-transition: color 0.25s ease-out;
   transition: color 0.25s ease-out;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 33px;
   padding: 0 1.376rem;
   margin: 0.344rem;
@@ -3246,6 +3300,13 @@ input.form-input-disabled:focus {
   cursor: default;
 }
 
+select.subtle,
+input.subtle {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
 .table {
   margin: 0;
   margin-bottom: 0.688rem;
@@ -3264,7 +3325,7 @@ input.form-input-disabled:focus {
   vertical-align: middle;
 }
 .table thead th, .table tfoot th, .table tbody th {
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
   color: #00a9e0;
@@ -3289,6 +3350,7 @@ input.form-input-disabled:focus {
 .table tbody th {
   border: none;
   text-align: right;
+  white-space: normal;
 }
 .table tbody tr {
   border-bottom: 1px solid #eae8e6;
@@ -3394,6 +3456,61 @@ tr.row-header-inline td {
 }
 .table-rows-highlight tbody tr:hover td {
   color: #333;
+}
+
+.list-round-buttons {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+.list-round-buttons li {
+  margin-bottom: 1.376rem;
+  width: 75px;
+  color: #fff;
+}
+.list-round-buttons li:last-of-type {
+  margin-bottom: 0;
+}
+.list-round-buttons li .button {
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  -webkit-transition: all 0.25s ease-out;
+  -ms-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
+  position: relative;
+  display: block;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 75px;
+  height: 75px;
+  line-height: 75px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  border: 1px solid transparent;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.1);
+}
+.list-round-buttons li .button i.fa {
+  position: relative;
+  top: 3px;
+  left: 0px;
+  font-size: 2em;
+}
+.list-round-buttons li .button:hover, .list-round-buttons li .button:focus, .list-round-buttons li .button:active {
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid white;
+  box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.2);
+}
+.list-round-buttons li .label {
+  display: block;
+  margin: 0.344rem;
+  padding: 0;
+  color: #fff !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  text-transform: none;
 }
 
 .h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, tr.row-header-inline td, .h6-alternate {
@@ -3803,9 +3920,9 @@ tr.row-header-inline td {
 #header__navigation button {
   display: block;
   padding: 0 1.376rem;
-  height: 75px;
-  line-height: 75px;
-  font-family: "Museo Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  height: 50px;
+  line-height: 50px;
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05rem;
@@ -3852,23 +3969,22 @@ tr.row-header-inline td {
 }
 
 #header {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 10000;
   width: 100%;
-  height: 75px;
+  height: 50px;
   background: white;
   padding: 0 1.376rem;
   background-color: #fff;
   text-shadow: none;
-  text-align: center;
 }
 #header h1 {
   margin: 0;
   padding: 0;
-  height: 75px;
-  line-height: 75px;
+  height: 50px;
+  line-height: 50px;
   color: #00a9e0;
   font-size: 1.4rem;
   letter-spacing: -0.025em;
@@ -3881,7 +3997,7 @@ tr.row-header-inline td {
 }
 
 #contents {
-  margin: 75px 0 50px 0;
+  margin: 50px 0 50px 0;
 }
 
 .padded-content {
@@ -3889,7 +4005,7 @@ tr.row-header-inline td {
 }
 
 #footer {
-  position: fixed;
+  position: absolute;
   z-index: 10001;
   left: 0;
   right: 0;
@@ -3898,7 +4014,46 @@ tr.row-header-inline td {
   padding: 0.688rem 1.376rem;
   background-color: #53565a;
   color: rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+#footer p {
+  font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 100%;
+  bottom: 100%;
+  width: 120px;
+  background-color: #53565a;
+  overflow: hidden;
+}
+#drawer p, #drawer h1, #drawer h2, #drawer h3, #drawer h4, #drawer h5, #drawer h6 {
+  color: #fff;
+}
+#drawer .header {
+  background-color: rgba(255, 255, 255, 0.1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0 1.376rem;
   text-align: center;
+  margin-bottom: 1.376rem;
+}
+#drawer .header h1 {
+  margin: 0;
+  padding: 0;
+  height: 50px;
+  line-height: 50px;
+  color: #ccc;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+#drawer .content {
+  margin-top: 50px;
+  padding: 1.376rem;
 }
 
 .ignore-pointer-events {
@@ -3935,27 +4090,20 @@ tr.row-header-inline td {
   height: 25px;
 }
 
-body {
-  overflow: hidden;
-}
-
 #app__container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 
 #app__contents {
   position: absolute;
-  min-width: 100%;
   min-height: 100%;
-  bottom: 100%;
   top: 0;
   left: 0;
-  background-image: url("../img/light_toast.png");
-  overflow-y: scroll;
-  overflow-x: hidden;
+  margin-left: 120px;
+  background-color: whitesmoke;
 }

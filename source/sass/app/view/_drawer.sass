@@ -5,6 +5,29 @@
   min-height: 100%
   bottom: 100%
   width: $drawer-width
-  background-color: #666666
-  overflow-y: scroll
-  overflow-x: hidden
+  background-color: $dark-grey
+  overflow: hidden
+
+  p,h1,h2,h3,h4,h5,h6
+    color: #fff
+
+  .header
+    background-color: rgba(255,255,255,.1)
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    padding: 0 $double-base-line-height
+    text-align: center
+    margin-bottom: $double-base-line-height
+    h1
+      @extend %header-5
+      margin: 0
+      padding: 0
+      height: $header-height
+      line-height: $header-height
+      color: #ccc
+      text-shadow: 0 1px 0 rgba(0,0,0,.1)
+  .content
+    margin-top: $header-height
+    padding: $double-base-line-height

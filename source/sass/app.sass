@@ -7,8 +7,8 @@
 @import "vendor/font-awesome/font-awesome"
 
 @import "app/fonts/opensans"
-//@import "partials/titillium"
-@import "app/fonts/museoslab"
+@import "app/fonts/titillium"
+//@import "app/fonts/museoslab"
 
 
 // Measure test line
@@ -48,7 +48,7 @@ $z-index-initialization: 10010
 @import "app/view/header"
 @import "app/view/contents"
 @import "app/view/footer"
-//@import "app/view/drawer"
+@import "app/view/drawer"
 
 .ignore-pointer-events
   pointer-events: none
@@ -84,7 +84,7 @@ $z-index-initialization: 10010
 // To support the mobile app / drawer structure
 
 body
-  overflow: hidden
+  //overflow: auto
 
 #app__container
   position: fixed
@@ -92,15 +92,14 @@ body
   left: 0
   right: 0
   bottom: 0
-  overflow: hidden
+  overflow: auto
 
 #app__contents
   position: absolute
-  min-width: 100%
+  //min-width: 100%
+  //bottom: 100%
   min-height: 100%
-  bottom: 100%
   top: 0
   left: 0
-  background-image: url('../img/light_toast.png')
-  overflow-y: scroll
-  overflow-x: hidden
+  margin-left: $drawer-width
+  background-color: rgb(245,245,245)
