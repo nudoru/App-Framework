@@ -1,25 +1,9 @@
 .panel-shadow
-  .column-container.panel-header
-    .half-left-column
-      h1.h1-alternate Welcome,
-        em  Joe Timely
-    .half-right-column.text-right
-      button.button-icon-left
-        i.fa.fa-cubes
-        | Manage my assignments
-      button.button-icon-left
-        i.fa.fa-calendar
-        | Manage my time
   section.padding-top-double
-    .column-container
-      h1.h1-alternate Manange My Assignments
-    hr
     table.table.table-rows-zebra
       thead
         tr
           th(scope='col')
-          th(scope='col', style="width: 40px")
-          th(scope='col').column-10pct.center-column Role
           th(scope='col').column-20pct.center-column Start Date
           th(scope='col').column-20pct.center-column End Date
           th(scope='col').column-10pct.center-column Allocation
@@ -27,14 +11,6 @@
       tbody
         tr
           th ABC Project
-          th
-            i.fa.fa-briefcase
-          td.center-column
-            select(id='input-select')
-              option Role
-              option Consult
-              option Design
-              option Develop
           td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
@@ -49,14 +25,6 @@
               | Remove
         tr
           th XYZ Solution
-          th
-            i.fa.fa-briefcase
-          td.center-column
-            select(id='input-select')
-              option Role
-              option Consult
-              option Design
-              option Develop
           td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
@@ -71,14 +39,6 @@
               | Remove
         tr
           th Financial Assessment 1.2
-          th
-            i.fa.fa-briefcase
-          td.center-column
-            select(id='input-select')
-              option Role
-              option Consult
-              option Design
-              option Develop
           td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
@@ -93,14 +53,6 @@
               | Remove
         tr
           th Innovation Team X
-          th
-            i.fa.fa-briefcase
-          td.center-column
-            select(id='input-select')
-              option Role
-              option Consult
-              option Design
-              option Develop
           td.center-column
             input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
             i.fa.fa-calendar
@@ -113,56 +65,18 @@
             button.button-icon-left.button-danger
               i.fa.fa-minus-circle
               | Remove
-        //tr.row-header-inline
-        //  td(colspan='7') Default activities
-        //tr.header-grey
-        //  th Personal Development
-        //  th
-        //    i.fa.fa-user
-        //  td
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-        //    i.fa.fa-calendar
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-        //    i.fa.fa-calendar
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='%', style='width: 50px')
-        //  td.right-column
-        //tr.header-grey
-        //  th PTO
-        //  th
-        //    i.fa.fa-user
-        //  td
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-        //    i.fa.fa-calendar
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-        //    i.fa.fa-calendar
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='%', style='width: 50px')
-        //  td.right-column
-        //tr.header-grey
-        //  th Sick
-        //  th
-        //    i.fa.fa-user
-        //  td
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-        //    i.fa.fa-calendar
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='mm/dd', style='width: 100px')
-        //    i.fa.fa-calendar
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='%', style='width: 50px')
-        //  td.right-column
-      .column-container
-        .half-left-column.text-left
+    section.text-center
+        button.button-icon-left
+          i.fa.fa-plus-circle
+          | Add Assignment
+
+
+      //.column-container
+      //  .half-left-column.text-left
           button.button-icon-left
             i.fa.fa-plus-circle
             | Add Assignment
-        .half-right-column.text-right
+      //  .half-right-column.text-right
     section.panel-footer
       button.button-icon-right.button-success Update
         i.fa.fa-check

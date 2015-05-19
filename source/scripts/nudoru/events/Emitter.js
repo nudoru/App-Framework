@@ -10,46 +10,46 @@ define('nudoru.events.Emitter',
 
     /**
      * Add an event as observable
-     * @param name Event name string
+     * @param evtStr Event name string
      * @param handler onNext() subscription function
      * @param once will complete/dispose after one fire
      * @returns {*}
      */
-    function subscribe(name, handler, once) {
-      _subjectMap[name] || (_subjectMap[name] = []);
+    function subscribe(evtStr, handler, once) {
+      _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
 
-      _subjectMap[name] = {
+      _subjectMap[evtStr] = {
         once: once,
         handler: handler,
         subject: new Rx.Subject()
       };
 
-      return _subjectMap[name].subject.subscribe(handler);
+      return _subjectMap[evtStr].subject.subscribe(handler);
     }
 
     /**
      * Maps a module/command's execute() function as the handler for onNext
-     * @param name Event name string
+     * @param evtStr Event name string
      * @param cmdModule Module name
      * @param once will complete/dispose after one fire
      * @returns {*}
      */
-    function subscribeCommand(name, cmdModule, once) {
+    function subscribeCommand(evtStr, cmdModule, once) {
       var cmd = require(cmdModule);
       if(cmd.hasOwnProperty('execute')) {
-        return subscribe(name, cmd.execute, once);
+        return subscribe(evtStr, cmd.execute, once);
       } else {
-        throw new Error('Emitter cannot map '+name+' to command '+cmdModule+': must have execute()');
+        throw new Error('Emitter cannot map '+evtStr+' to command '+cmdModule+': must have execute()');
       }
     }
 
     /**
      * Publish a event to all subscribers
-     * @param name
+     * @param evtStr
      * @param data
      */
-    function publish(name, data) {
-      var subjObj = _subjectMap[name];
+    function publish(evtStr, data) {
+      var subjObj = _subjectMap[evtStr];
 
       if(!subjObj) {
         return;
