@@ -36,7 +36,7 @@ $control-button-border-radius: 500px !default
 
 $control-shadow: 0 5px 5px -4px rgba(0,0,0,.25) !default
 
-$control-table-zebra-color: rgba(0,0,0,.05)
+$control-table-zebra-color: rgb(240,240,240)
 
 =control-emboss-shadow
   text-shadow: -1px -1px 0 rgba(0,0,0,.15), 1px 1px 0 rgba(255,255,255,.1)
@@ -69,76 +69,41 @@ $control-table-zebra-color: rgba(0,0,0,.05)
   @extend .well
   background-color: rgba(0,0,0,.05)
 
-.user-info-header
-  overflow: hidden
-  position: relative
-  display: block
-  .image
-    display: inline-block
-    width: 75px
-  .name
-    @extend %header-3
-    text-shadow: 0 1px 0 #fff
-    display: inline-block
-    position: absolute
-    left: 75px
-    top: 0px
-    height: 75px
-    margin: 0
-    margin-left: $double-base-line-height
-    padding: 0
-    line-height: 75px
+.sidebar
+  margin-top: $half-base-line-height
+  margin-bottom: $half-base-line-height
+  padding: $base-line-height
+  border-radius: $border-radius-small
+  border: $control-border
+  background-color: $color-white-grey-fill
+  box-shadow: inset 1px 1px 0 #fff
+  text-shadow: 0 1px 0 #fff
+  @extend %small-headers
+  h1,h2,h3,h4,h5,h6
     color: $control-primary-color-dark
-
-.user-profile-image
-  display: inline-block
-  padding: 0
-  margin: 0
-  width: 75px
-  height: 75px
-  border-radius: 50%
-  border: 1px solid $control-primary-color
-  overflow: hidden
-  img
-    max-width: 100%
-    height: auto
-
-
-// ul
-.horizontal-statics
-  @extend .plain-horizontal-list
-  overflow: hidden
-  margin: 0
-  padding: 0
-  display: table
-  width: 100%
-  li
-    display: table-cell
-    vertical-align: middle
-    text-align: center
-    height: 75px
-    margin-right: $double-base-line-height
-    padding-right: $double-base-line-height
-    border-right: $control-border
-    &:last-of-type
-      margin-right: 0
-      padding-right: 0
-      border-right: none
-  h1, p
-    font-size: .8rem
-    margin: 0
-    padding: 0
-    line-height: $base-line-height
-  h1
-    color: $control-primary-color
-    margin-bottom: $half-base-line-height
   p
-    color: $control-primary-color-dark
-    font-weight: 700
+    @extend %body-text-small
+
+.control-border-top
+  border-top: $control-border
+
+.control-border-right
+  border-right: $control-border
+
+.control-border-bottom
+  border-bottom: $control-border
+
+.control-border-left
+  border-left: $control-border
+
+.control-background-light
+  //background-color: $color-white-grey-fill
+  +gradient-vertical($color-white-grey-fill, scale-lightness($color-white-grey-fill, 25%))
 
 @import "labels"
 @import "panels"
 @import "buttons"
 @import "forms"
 @import "tables"
+@import "specials"
 @import "special-list-round-buttons"

@@ -16,7 +16,7 @@
 
   th, td
     @extend %label-base-formatting
-    padding: $base-line-height
+    padding: $half-base-line-height
     border: none
     vertical-align: middle
 
@@ -131,7 +131,9 @@ tr.row-header-inline
 
 .table-rows-zebra
   tbody tr:nth-child(odd)
-    background-color: $control-table-zebra-color
+    //background-color: $control-table-zebra-color
+    +gradient-vertical($control-table-zebra-color, scale-lightness($control-table-zebra-color, 75%))
+
 
 .table-cols-zebra
   tbody

@@ -109,49 +109,58 @@ END Templates for Views
 -->
   </head>
   <body>
+    <header id="header">
+      <div class="logo"><i class="fa fa-pencil"></i></div>
+      <div class="title">
+        <h1>Time Management</h1>
+      </div>
+      <nav>
+        <button class="button-small button-neutral-light icon-left"><i class="fa fa-table"></i>PMO Projects</button>
+        <button class="button-small button-neutral-light icon-left"><i class="fa fa-users"></i>People</button>
+        <button class="button-small button-neutral-light icon-left"><i class="fa fa-dashboard"></i>Admin Dashboard</button>
+        <button class="button-small icon-left"><i class="fa fa-life-bouy"></i>How Do I?</button>
+      </nav>
+    </header>
     <div id="app__container">
       <div id="drawer">
         <div class="header">
-          <h1>Options</h1>
+          <h1>Modules</h1>
         </div>
         <div class="content">
           <ul class="list-round-buttons">
+            <li>
+              <div class="button"><i class="fa fa-cubes"></i></div>
+              <div class="label">Assignments</div>
+            </li>
             <li>
               <div class="button"><i class="fa fa-list"></i></div>
               <div class="label">Time Card</div>
             </li>
             <li>
-              <div class="button"><i class="fa fa-calendar"></i></div>
-              <div class="label">Forecast</div>
-            </li>
-            <li>
-              <div class="button"><i class="fa fa-cubes"></i></div>
-              <div class="label">Assignments</div>
+              <div class="button"><i class="fa fa-area-chart"></i></div>
+              <div class="label">Cap. Forecast</div>
             </li>
           </ul>
         </div>
       </div>
       <div id="app__contents">
-        <header id="header">
-          <h1 class="icon-left"><i class="fa fa-pencil"></i><em>Time Management</em></h1>
-        </header>
         <section id="contents">
           <div class="padded-content">
             <!--include mock-controlstesting-->
             <!--include mock-styletest-->
             <!--include mock-components-->
-            <div class="panel-shadow">
+            <div class="panel-shadow padding-none margin-bottom-double">
               <div class="column-container">
-                <div class="one-third-left-column">
+                <div class="half-left-column">
                   <div class="user-info-header">
                     <div class="image">
                       <div class="user-profile-image"><img src="img/animals/racoon.jpg"></div>
                     </div>
-                    <div class="name">Joe Timely</div>
+                    <div class="name">Elliott Manfredonia</div>
                   </div>
                 </div>
-                <div class="two-thirds-right-column">
-                  <ul class="horizontal-statics">
+                <div class="half-right-column">
+                  <ul class="horizontal-statics control-border-left control-background-light">
                     <li>
                       <h1>Lifetime Projects</h1>
                       <p>125</p>
@@ -164,101 +173,12 @@ END Templates for Views
                 </div>
               </div>
             </div>
-            <div class="panel-shadow">
-              <section class="padding-top-double">
-                <table class="table table-rows-zebra">
-                  <thead>
-                    <tr>
-                      <th scope="col"></th>
-                      <th scope="col" class="column-20pct center-column">Start Date</th>
-                      <th scope="col" class="column-20pct center-column">End Date</th>
-                      <th scope="col" class="column-10pct center-column">Allocation</th>
-                      <th scope="col" class="column-20pct right-column"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th>ABC Project</th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px">
-                      </td>
-                      <td class="right-column">
-                        <button class="button-icon-left button-danger"><i class="fa fa-minus-circle"></i>Remove</button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>XYZ Solution</th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px">
-                      </td>
-                      <td class="right-column">
-                        <button class="button-icon-left button-danger"><i class="fa fa-minus-circle"></i>Remove</button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Financial Assessment 1.2</th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px">
-                      </td>
-                      <td class="right-column">
-                        <button class="button-icon-left button-danger"><i class="fa fa-minus-circle"></i>Remove</button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Innovation Team X</th>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px"><i class="fa fa-calendar"></i>
-                      </td>
-                      <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px">
-                      </td>
-                      <td class="right-column">
-                        <button class="button-icon-left button-danger"><i class="fa fa-minus-circle"></i>Remove</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <section class="text-center">
-                  <button class="button-icon-left"><i class="fa fa-plus-circle"></i>Add Assignment</button>
-                </section>
-                <!--.column-container
-                //  .half-left-column.text-left
-                    button.button-icon-left
-                      i.fa.fa-plus-circle
-                      | Add Assignment
-                //  .half-right-column.text-right
-                -->
-                <section class="panel-footer">
-                  <button class="button-icon-right button-success">Update<i class="fa fa-check"></i></button>
-                </section>
-              </section>
-            </div>
+            <!--include assignments-->
             <div class="panel-shadow">
               <section>
                 <div class="column-container padding-top-double padding-bottom-triple">
                   <div class="one-fourth-left-column">
-                    <button class="button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
+                    <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
                   </div>
                   <div class="half-left-column text-center">
                     <h1 class="h2-alternate">Week of May 10-16, 2015</h1>
@@ -267,7 +187,7 @@ END Templates for Views
                     <!--  | View Full Month-->
                   </div>
                   <div class="one-fourth-right-column text-right">
-                    <button class="button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
+                    <button class="button-small button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
                   </div>
                 </div>
                 <table class="table table-rows-zebra">
@@ -292,6 +212,7 @@ END Templates for Views
                           <option>Analysis</option>
                           <option>Design</option>
                           <option>Develop</option>
+                          <option>Rework</option>
                           <option>Implement</option>
                           <option>Evaluate</option>
                         </select>
@@ -323,6 +244,7 @@ END Templates for Views
                           <option>Analysis</option>
                           <option>Design</option>
                           <option>Develop</option>
+                          <option>Rework</option>
                           <option>Implement</option>
                           <option>Evaluate</option>
                         </select>
@@ -354,6 +276,7 @@ END Templates for Views
                           <option>Analysis</option>
                           <option>Design</option>
                           <option>Develop</option>
+                          <option>Rework</option>
                           <option>Implement</option>
                           <option>Evaluate</option>
                         </select>
@@ -385,6 +308,7 @@ END Templates for Views
                           <option>Analysis</option>
                           <option>Design</option>
                           <option>Develop</option>
+                          <option>Rework</option>
                           <option>Implement</option>
                           <option>Evaluate</option>
                         </select>
@@ -470,7 +394,7 @@ END Templates for Views
                     <tr>
                       <th class="right-column">Totals</th>
                       <th class="center-column"></th>
-                      <th class="center-column">10 hrs</th>
+                      <th class="center-column">8 hrs</th>
                       <th class="center-column">8 hrs</th>
                       <th class="center-column">8 hrs</th>
                       <th class="center-column">8 hrs</th>
@@ -479,6 +403,10 @@ END Templates for Views
                     </tr>
                   </tfoot>
                 </table>
+                <section class="sidebar margin-top-double">
+                  <h1 class="icon-left"><i class="fa fa-lightbulb-o"></i>Keep in Mind ...</h1>
+                  <p>Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed.</p>
+                </section>
                 <section class="text-right panel-footer">
                   <button class="button-icon-right">Submit 40 hrs<i class="fa fa-check"></i></button>
                 </section>

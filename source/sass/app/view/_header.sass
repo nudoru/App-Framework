@@ -1,5 +1,7 @@
+$header-border-color: rgba(0,0,0,.1)
+
 #header
-  position: absolute
+  position: fixed
   top: 0
   left: 0
   z-index: $z-index-main-header
@@ -9,19 +11,79 @@
   padding: 0 $double-base-line-height
   background-color: #fff
   text-shadow: none
+  border-bottom: 1px solid $header-border-color
+  .logo
+    position: absolute
+    top: 0
+    left: 0
+    width: $drawer-width
+    height: $header-height
+    background-color: $light-blue
+    text-align: center
+    line-height: $header-height
+    border-right: 1px solid $header-border-color
+    border-bottom: 1px solid rgba(0,0,0,.5)
+    i.fa
+      //@extend %icon-round
+      //background-color: $light-blue
+      color: #fff
+      font-size: 1.4rem
+      +control-emboss-shadow
+  .title
+    position: absolute
+    left: $drawer-width
+    top: 0
+    height: $header-height
+    line-height: $header-height
+    padding-left: $double-base-line-height
   h1
     margin: 0
     padding: 0
     height: $header-height
     line-height: $header-height
-    color: $light-blue
-    font-size: 1.4rem
+    color: $dark-blue
+    font-size: 1rem
     letter-spacing: -0.025em
+    font-weight: 400
     em
       color: $dark-blue
       margin-right: $base-line-height
       font-style: normal
-      font-weight: 400
+      //font-weight: 400
+
+  nav
+    position: absolute
+    top: 0
+    right: 0
+    text-align: right
+    button
+      display: inline
+      float: left
+      margin: 0
+      height: $header-height
+      padding-left: $double-base-line-height
+      padding-right: $double-base-line-height
+      box-shadow: none
+      border: none
+      border-radius: 0
+      border-bottom: 1px solid $header-border-color
+      border-left: 1px solid $header-border-color
+
+
+
+%icon-round
+  +control-emboss-shadow
+  position: relative
+  border-radius: 25px
+  width: 25px
+  height: 25px
+  line-height: 25px
+  font-size: .8rem
+  text-align: center
+  color: #fff
+  border: 1px solid rgba(0,0,0,.1)
+  box-shadow: 1px 1px 0 rgba(0,0,0,.2)
+
 
 //.header__drawer-toggle
 //  visibility: hidden

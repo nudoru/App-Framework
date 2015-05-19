@@ -35,6 +35,16 @@ button
   margin-left: 0
   margin-right: 0
 
+.button-small
+  font-size: .7rem
+  padding: 0 $base-line-height
+  height: 25px
+  line-height: 22px
+  margin-left: 2px
+  margin-right: 2px
+  i.fa
+    top: 1px
+
 .button-round
   padding: 0
   width: $control-button-height
@@ -90,7 +100,7 @@ button
 
 .button-neutral-light
   @extend .button-neutral
-  background-color: rgba(0,0,0,.05)
+  background-color: $color-white-grey-fill
   color: $dark-warm-grey
   box-shadow: none
   text-shadow: none

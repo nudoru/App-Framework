@@ -1,0 +1,67 @@
+.user-info-header
+  overflow: hidden
+  position: relative
+  display: block
+  .image
+    display: inline-block
+    width: 75px
+  .name
+    @extend %header-3
+    text-shadow: 0 1px 0 #fff
+    display: inline-block
+    position: absolute
+    left: 75px
+    top: 0px
+    height: 75px
+    margin: 0
+    margin-left: $double-base-line-height
+    padding: 0
+    line-height: 75px
+    color: $control-primary-color-dark
+
+.user-profile-image
+  display: inline-block
+  padding: 0
+  margin: 0
+  width: 75px
+  height: 75px
+  //border-radius: 50%
+  //border: 1px solid $control-primary-color
+  overflow: hidden
+  img
+    max-width: 100%
+    height: auto
+
+
+// ul
+.horizontal-statics
+  @extend .plain-horizontal-list
+  overflow: hidden
+  margin: 0
+  padding: 0
+  display: table
+  width: 100%
+  li
+    display: table-cell
+    vertical-align: middle
+    text-align: center
+    height: 75px
+    margin-right: $double-base-line-height
+    padding-right: $double-base-line-height
+    border-right: $control-border
+    text-shadow: 0 1px 0 #fff
+    &:last-of-type
+      margin-right: 0
+      padding-right: 0
+      border-right: none
+  h1, p
+    font-size: .8rem
+    margin: 0
+    padding: 0
+    line-height: $base-line-height
+  h1
+    color: $control-primary-color
+    margin-bottom: $half-base-line-height
+  p
+    color: $control-primary-color-dark
+    font-weight: 700
