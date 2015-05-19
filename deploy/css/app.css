@@ -3523,7 +3523,7 @@ tr.row-header-inline td {
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 50%;
   border: 1px solid transparent;
-  color: #00bcc8;
+  color: #b6afa8;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 0 10px 10px -6px rgba(0, 0, 0, 0.1);
 }
@@ -3543,7 +3543,7 @@ tr.row-header-inline td {
   display: block;
   margin: 0.344rem;
   padding: 0;
-  color: #00bcc8 !important;
+  color: #b6afa8 !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   text-transform: none;
 }
@@ -4062,7 +4062,7 @@ tr.row-header-inline td {
   min-height: 100%;
   bottom: 100%;
   width: 120px;
-  background-color: #005153;
+  background-color: #4d453e;
   overflow: hidden;
 }
 #drawer p, #drawer h1, #drawer h2, #drawer h3, #drawer h4, #drawer h5, #drawer h6 {
@@ -4083,7 +4083,7 @@ tr.row-header-inline td {
   padding: 0;
   height: 50px;
   line-height: 50px;
-  color: #00bcc8;
+  color: #a1988f;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 #drawer .content {
@@ -4125,20 +4125,26 @@ tr.row-header-inline td {
   height: 25px;
 }
 
+body {
+  overflow: hidden;
+}
+
 #app__container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: auto;
+  overflow: hidden;
 }
 
 #app__contents {
   position: absolute;
+  bottom: 100%;
   min-height: 100%;
   top: 0;
   left: 0;
   margin-left: 120px;
   background-color: whitesmoke;
+  overflow-y: scroll;
 }

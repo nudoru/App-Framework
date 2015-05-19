@@ -84,7 +84,7 @@ $z-index-initialization: 10010
 // To support the mobile app / drawer structure
 
 body
-  //overflow: auto
+  overflow: hidden
 
 #app__container
   position: fixed
@@ -92,14 +92,15 @@ body
   left: 0
   right: 0
   bottom: 0
-  overflow: auto
+  overflow: hidden
 
 #app__contents
   position: absolute
   //min-width: 100%
-  //bottom: 100%
+  bottom: 100%
   min-height: 100%
   top: 0
   left: 0
   margin-left: $drawer-width
   background-color: rgb(245,245,245)
+  overflow-y: scroll
