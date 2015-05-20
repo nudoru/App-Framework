@@ -18,7 +18,7 @@ $header-border-color: rgba(0,0,0,.1)
     left: 0
     width: $drawer-width
     height: $header-height
-    background-color: $light-blue
+    +gradient-vertical($light-blue, $dark-blue)
     text-align: center
     line-height: $header-height
     border-right: 1px solid $header-border-color
@@ -46,10 +46,8 @@ $header-border-color: rgba(0,0,0,.1)
     letter-spacing: -0.025em
     font-weight: 400
     em
-      color: $dark-blue
-      margin-right: $base-line-height
       font-style: normal
-      //font-weight: 400
+      font-weight: 700
 
   nav
     position: absolute
@@ -68,6 +66,8 @@ $header-border-color: rgba(0,0,0,.1)
       border-radius: 0
       border-bottom: 1px solid $header-border-color
       border-left: 1px solid $header-border-color
+      box-shadow: inset 1px 1px 0 rgba(255,255,255,.1)
+    +
 
 
 

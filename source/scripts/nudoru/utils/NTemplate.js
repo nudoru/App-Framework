@@ -42,8 +42,7 @@ define('nudoru.utils.NTemplate',
       if(src) {
         srchtml = src.innerHTML;
       } else {
-        console.log('Template not found: "'+id+'"');
-        return '';
+        throw new Error('nudoru.utils.NTemplate, template not found: "'+id+'"');
       }
 
       cleanhtml = cleanTemplateHTML(srchtml);

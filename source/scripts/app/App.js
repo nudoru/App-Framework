@@ -63,8 +63,14 @@ var APP = (function () {
    * Initialize the global vars
    */
   function initializeConfig() {
-    _config = {};
-    _config.appConfig = APP_CONFIG_DATA;
+    _config = {
+      appConfig: APP_CONFIG_DATA,
+      routes: [],
+      currentRoute: {
+        route: '/',
+        data: null
+      }
+    };
   }
 
   //----------------------------------------------------------------------------
@@ -105,6 +111,49 @@ var APP = (function () {
   }
 
   //----------------------------------------------------------------------------
+  //  Route Validation
+  //  Route obj is {route: '/whatever', data:{var:value,...}
+  //----------------------------------------------------------------------------
+
+  /**
+   * Add route to the list of valid routes
+   * @param route
+   */
+  function addRouteToConfig(route) {
+    _config.routes.push(route);
+  }
+
+  /**
+   * Determine if the route has been mapped
+   * @param route
+   * @returns {boolean}
+   */
+  function isValidRoute(route) {
+    //console.log('Valid routes: '+_config.routes);
+    if(_config.routes.indexOf(route) > -1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Allow the router to run the route view mapping if it's valid
+   * @param routeObj
+   */
+  function setCurrentRoute(routeObj) {
+    if(isValidRoute(routeObj.route)) {
+      //console.log('set data: ',routeObj.data);
+      _config.currentRoute = routeObj;
+      _router.runCurrentRoute();
+      _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
+    } else {
+      console.log('APP, setCurrentRoute, not a valid route: '+routeObj.route);
+      _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
+    }
+  }
+
+  //----------------------------------------------------------------------------
   //  Wiring Services
   //----------------------------------------------------------------------------
 
@@ -138,6 +187,8 @@ var APP = (function () {
    * @param unique Should it be a singleton controller (false) or unique instance (true)
    */
   function mapRouteView(route, templateID, controller, unique) {
+    addRouteToConfig(route);
+
     _view.mapView(templateID, controller, unique);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
@@ -156,6 +207,7 @@ var APP = (function () {
     router: getRouter,
     view: getView,
     model: getModel,
+    setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand

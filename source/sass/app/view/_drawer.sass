@@ -16,7 +16,7 @@ $drawer-color-accent-light: scale-lightness($light-warm-grey, 10%)
     color: #fff
 
   .header
-    background-color: rgba(255,255,255,.1)
+    +gradient-vertical(rgba(255,255,255,.1), rgba(255,255,255,.15))
     position: absolute
     top: 0
     left: 0
@@ -36,3 +36,6 @@ $drawer-color-accent-light: scale-lightness($light-warm-grey, 10%)
   .content
     margin-top: $header-height
     padding: $double-base-line-height
+    +gradient-vertical(rgba(0,0,0,.05), rgba(0,0,0,.1))
+    box-shadow: inset 0 0 10px rgba(0,0,0,.2)
+    border-bottom: 1px solid rgba(0,0,0,.25)

@@ -591,8 +591,7 @@ define('nudoru.utils.NDebugger',
       if(src) {
         srchtml = src.innerHTML;
       } else {
-        console.log('Template not found: "'+id+'"');
-        return '';
+        throw new Error('nudoru.utils.NTemplate, template not found: "'+id+'"');
       }
 
       cleanhtml = cleanTemplateHTML(srchtml);
@@ -791,10 +790,10 @@ define('nudoru.utils.NDebugger',
 
   });
 ;define('nudoru.utils.Router',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _routeMap = Object.create(null),
-      _eventDispatcher = require('nudoru.events.EventDispatcher'),
+      _emitter = require('nudoru.events.Emitter'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
     function initialize() {
@@ -814,10 +813,30 @@ define('nudoru.utils.NDebugger',
       };
     }
 
-    // Should the route or event run first?
+    /**
+     * Broadcast the change event and let the application determine how to handle
+     * @param evt
+     */
     function onHashChange(evt) {
-      runCurrentRoute();
-      _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, getURLFragment());
+      //runCurrentRoute();
+      _emitter.publish(_browserEvents.URL_HASH_CHANGED, {
+        routeObj: getCurrentRoute(),
+        fragment: getURLFragment()
+      });
+    }
+
+    /**
+     * Parses the route and query string from the current URL fragment
+     * @returns {{route: string, query: {}}}
+     */
+    function getCurrentRoute() {
+      var fragment = getURLFragment(),
+        parts = fragment.split('?'),
+        route = '/' + parts[0],
+        queryStr = decodeURIComponent(parts[1]),
+        queryStrObj = parseQueryStr(queryStr);
+
+      return {route: route, data: queryStrObj};
     }
 
     /**
@@ -825,12 +844,8 @@ define('nudoru.utils.NDebugger',
      * Primarily used window.load
      */
     function runCurrentRoute() {
-      var fragment = getURLFragment(),
-          parts = fragment.split('?'),
-          route = '/' + parts[0],
-          queryStr = decodeURIComponent(parts[1]),
-          queryStrObj = parseQueryStr(queryStr);
-      runRoute(route, queryStrObj);
+      var current = getCurrentRoute();
+      runRoute(current.route, current.query);
     }
 
     /**
@@ -840,9 +855,9 @@ define('nudoru.utils.NDebugger',
      */
     function parseQueryStr(queryStr) {
       var obj = {},
-          parts = queryStr.split('&');
+        parts = queryStr.split('&');
 
-      parts.forEach(function(pairStr) {
+      parts.forEach(function (pairStr) {
         var pairArr = pairStr.split('=');
         obj[pairArr[0]] = pairArr[1];
       });
@@ -858,11 +873,37 @@ define('nudoru.utils.NDebugger',
     function runRoute(route, queryStrObj) {
       var routeObj = _routeMap[route];
 
-      if(routeObj) {
-        routeObj.controller.call(window, {route: route, templateID: routeObj.templateID, data:queryStrObj});
+      if (routeObj) {
+        routeObj.controller.call(window, {
+          route: route,
+          templateID: routeObj.templateID,
+          data: queryStrObj
+        });
       } else {
-       console.log('No Route mapped for: "'+route+'"');
+        console.log('No Route mapped for: "' + route + '"');
       }
+    }
+
+    /**
+     * Combines a route and data object into a proper URL hash fragment
+     * @param route
+     * @param dataObj
+     */
+    function setRoute(route, dataObj) {
+      var path = route, data = [];
+      if (dataObj) {
+        path += "?";
+        for (var prop in dataObj) {
+          if (dataObj.hasOwnProperty(prop)) {
+            data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
+          }
+        }
+        path += data.join('&');
+      }
+
+      console.log('Router, setting URL fragment to: ' + path);
+
+      updateURLFragment(path);
     }
 
     /**
@@ -877,14 +918,19 @@ define('nudoru.utils.NDebugger',
       return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
     }
 
+    /**
+     * Set the URL hash fragment
+     * @param path
+     */
     function updateURLFragment(path) {
       window.location.hash = path;
     }
 
     exports.initialize = initialize;
     exports.when = when;
+    exports.getCurrentRoute = getCurrentRoute;
     exports.runCurrentRoute = runCurrentRoute;
-    exports.setRoute = updateURLFragment;
+    exports.setRoute = setRoute;
 
   });;define('nudoru.utils.StringUtils',
   function(require, module, exports){
@@ -1717,7 +1763,8 @@ define('nudoru.utils.NDebugger',
     exports.VIEW_CHANGED = 'VIEW_CHANGED';
     exports.VIEW_CHANGE_TO_MOBILE = 'VIEW_CHANGE_TO_MOBILE';
     exports.VIEW_CHANGE_TO_DESKTOP = 'VIEW_CHANGE_TO_DESKTOP';
-    exports.CHANGE_ROUTE = 'change_route';
+    exports.ROUTE_CHANGED = 'ROUTE_CHANGED';
+    exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
   });;var APP = (function () {
   var _self,
     _config,
@@ -1783,8 +1830,14 @@ define('nudoru.utils.NDebugger',
    * Initialize the global vars
    */
   function initializeConfig() {
-    _config = {};
-    _config.appConfig = APP_CONFIG_DATA;
+    _config = {
+      appConfig: APP_CONFIG_DATA,
+      routes: [],
+      currentRoute: {
+        route: '/',
+        data: null
+      }
+    };
   }
 
   //----------------------------------------------------------------------------
@@ -1825,6 +1878,49 @@ define('nudoru.utils.NDebugger',
   }
 
   //----------------------------------------------------------------------------
+  //  Route Validation
+  //  Route obj is {route: '/whatever', data:{var:value,...}
+  //----------------------------------------------------------------------------
+
+  /**
+   * Add route to the list of valid routes
+   * @param route
+   */
+  function addRouteToConfig(route) {
+    _config.routes.push(route);
+  }
+
+  /**
+   * Determine if the route has been mapped
+   * @param route
+   * @returns {boolean}
+   */
+  function isValidRoute(route) {
+    //console.log('Valid routes: '+_config.routes);
+    if(_config.routes.indexOf(route) > -1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Allow the router to run the route view mapping if it's valid
+   * @param routeObj
+   */
+  function setCurrentRoute(routeObj) {
+    if(isValidRoute(routeObj.route)) {
+      //console.log('set data: ',routeObj.data);
+      _config.currentRoute = routeObj;
+      _router.runCurrentRoute();
+      _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
+    } else {
+      console.log('APP, setCurrentRoute, not a valid route: '+routeObj.route);
+      _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
+    }
+  }
+
+  //----------------------------------------------------------------------------
   //  Wiring Services
   //----------------------------------------------------------------------------
 
@@ -1858,6 +1954,8 @@ define('nudoru.utils.NDebugger',
    * @param unique Should it be a singleton controller (false) or unique instance (true)
    */
   function mapRouteView(route, templateID, controller, unique) {
+    addRouteToConfig(route);
+
     _view.mapView(templateID, controller, unique);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
@@ -1876,6 +1974,7 @@ define('nudoru.utils.NDebugger',
     router: getRouter,
     view: getView,
     model: getModel,
+    setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand
@@ -2682,8 +2781,10 @@ define('nudoru.utils.NDebugger',
       // Browser events
       APP.mapEventCommand(_browserEvents.BROWSER_RESIZED, 'APP.BrowserResizedCommand');
       APP.mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'APP.BrowserScrolledCommand');
+      APP.mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'APP.URLHashChangedCommand');
 
       // App events
+      APP.mapEventCommand(_appEvents.ROUTE_CHANGED, 'APP.RouteChangedCommand');
       APP.mapEventCommand(_appEvents.CHANGE_ROUTE, 'APP.ChangeRouteCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
@@ -2693,7 +2794,7 @@ define('nudoru.utils.NDebugger',
       // url fragment for route, ID (template id), module name for controller, use singleton module
 
       // Default route
-      //APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
+      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
 
       // Other routes
       APP.mapRouteView('/test', 'TestSubView', 'APP.View.TemplateSubView', true);
@@ -2703,7 +2804,12 @@ define('nudoru.utils.NDebugger',
 
       APP.view().removeLoadingMessage();
 
-      APP.router().runCurrentRoute();
+      //APP.router().setRoute('/foo',{
+      //  bar:'baz',
+      //  baz:'foo'
+      //});
+
+      APP.setCurrentRoute(APP.router().getCurrentRoute());
     };
 
   });;define('APP.BrowserResizedCommand',
@@ -2725,7 +2831,7 @@ define('nudoru.utils.NDebugger',
 
     exports.execute = function(data) {
       console.log('ChangeRouteCommand, route: '+data.route);
-      APP.router().setRoute(data.route);
+      APP.setCurrentRoute(data);
     };
 
   });;define('APP.ModelDataWaitingCommand',
@@ -2745,8 +2851,15 @@ define('nudoru.utils.NDebugger',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      console.log('RouteChangedCommand, route: '+data.route+', templateID: '+data.templateID);
-      APP.view().showView(data);
+      //console.log('RouteChangedCommand, route: '+data.route+', data: '+data.data);
+    };
+
+  });;define('APP.URLHashChangedCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('URLHashChangedCommand: fragment: '+data.fragment+', routeObj: '+data.routeObj);
+      APP.setCurrentRoute(data.routeObj);
     };
 
   });;define('APP.ViewChangedCommand',

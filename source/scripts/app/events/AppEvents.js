@@ -9,5 +9,6 @@ define('APP.AppEvents',
     exports.VIEW_CHANGED = 'VIEW_CHANGED';
     exports.VIEW_CHANGE_TO_MOBILE = 'VIEW_CHANGE_TO_MOBILE';
     exports.VIEW_CHANGE_TO_DESKTOP = 'VIEW_CHANGE_TO_DESKTOP';
-    exports.CHANGE_ROUTE = 'change_route';
+    exports.ROUTE_CHANGED = 'ROUTE_CHANGED';
+    exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
   });

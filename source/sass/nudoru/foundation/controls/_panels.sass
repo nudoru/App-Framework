@@ -25,6 +25,7 @@
   margin-right: -$control-margin
   margin-left: -$control-margin
   padding: $control-padding-small $control-padding
+  box-shadow: inset 1px 1px 0 #fff
   h1
     @extend .label-small
     margin: 0
@@ -42,6 +43,24 @@
   margin-bottom: $control-margin
   border-bottom: $control-border
   background-color: $control-header-color
+
+.panel-message-footer
+  overflow: hidden
+  display: block
+  margin-right: -$control-margin
+  margin-left: -$control-margin
+  padding: $control-padding
+  margin-top: $control-margin
+  margin-bottom: -$control-margin
+  border-top: $control-border
+  background-color: $color-white-grey-fill
+  box-shadow: inset 1px 1px 0 #fff
+  text-shadow: 0 1px 0 #fff
+  @extend %small-headers
+  h1,h2,h3,h4,h5,h6
+    color: $control-primary-color-dark
+  p
+    font-size: .9rem
 
 .panel-footer
   @extend %panel-header-footer-base

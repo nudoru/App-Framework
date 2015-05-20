@@ -3,7 +3,7 @@ define('APP.ChangeRouteCommand',
 
     exports.execute = function(data) {
       console.log('ChangeRouteCommand, route: '+data.route);
-      APP.router().setRoute(data.route);
+      APP.setCurrentRoute(data);
     };
 
   });

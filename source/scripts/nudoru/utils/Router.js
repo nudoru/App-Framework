@@ -13,10 +13,10 @@
  */
 
 define('nudoru.utils.Router',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _routeMap = Object.create(null),
-      _eventDispatcher = require('nudoru.events.EventDispatcher'),
+      _emitter = require('nudoru.events.Emitter'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
     function initialize() {
@@ -36,10 +36,30 @@ define('nudoru.utils.Router',
       };
     }
 
-    // Should the route or event run first?
+    /**
+     * Broadcast the change event and let the application determine how to handle
+     * @param evt
+     */
     function onHashChange(evt) {
-      runCurrentRoute();
-      _eventDispatcher.publish(_browserEvents.URL_HASH_CHANGED, getURLFragment());
+      //runCurrentRoute();
+      _emitter.publish(_browserEvents.URL_HASH_CHANGED, {
+        routeObj: getCurrentRoute(),
+        fragment: getURLFragment()
+      });
+    }
+
+    /**
+     * Parses the route and query string from the current URL fragment
+     * @returns {{route: string, query: {}}}
+     */
+    function getCurrentRoute() {
+      var fragment = getURLFragment(),
+        parts = fragment.split('?'),
+        route = '/' + parts[0],
+        queryStr = decodeURIComponent(parts[1]),
+        queryStrObj = parseQueryStr(queryStr);
+
+      return {route: route, data: queryStrObj};
     }
 
     /**
@@ -47,12 +67,8 @@ define('nudoru.utils.Router',
      * Primarily used window.load
      */
     function runCurrentRoute() {
-      var fragment = getURLFragment(),
-          parts = fragment.split('?'),
-          route = '/' + parts[0],
-          queryStr = decodeURIComponent(parts[1]),
-          queryStrObj = parseQueryStr(queryStr);
-      runRoute(route, queryStrObj);
+      var current = getCurrentRoute();
+      runRoute(current.route, current.query);
     }
 
     /**
@@ -62,9 +78,9 @@ define('nudoru.utils.Router',
      */
     function parseQueryStr(queryStr) {
       var obj = {},
-          parts = queryStr.split('&');
+        parts = queryStr.split('&');
 
-      parts.forEach(function(pairStr) {
+      parts.forEach(function (pairStr) {
         var pairArr = pairStr.split('=');
         obj[pairArr[0]] = pairArr[1];
       });
@@ -80,11 +96,37 @@ define('nudoru.utils.Router',
     function runRoute(route, queryStrObj) {
       var routeObj = _routeMap[route];
 
-      if(routeObj) {
-        routeObj.controller.call(window, {route: route, templateID: routeObj.templateID, data:queryStrObj});
+      if (routeObj) {
+        routeObj.controller.call(window, {
+          route: route,
+          templateID: routeObj.templateID,
+          data: queryStrObj
+        });
       } else {
-       console.log('No Route mapped for: "'+route+'"');
+        console.log('No Route mapped for: "' + route + '"');
       }
+    }
+
+    /**
+     * Combines a route and data object into a proper URL hash fragment
+     * @param route
+     * @param dataObj
+     */
+    function setRoute(route, dataObj) {
+      var path = route, data = [];
+      if (dataObj) {
+        path += "?";
+        for (var prop in dataObj) {
+          if (dataObj.hasOwnProperty(prop)) {
+            data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
+          }
+        }
+        path += data.join('&');
+      }
+
+      console.log('Router, setting URL fragment to: ' + path);
+
+      updateURLFragment(path);
     }
 
     /**
@@ -99,13 +141,18 @@ define('nudoru.utils.Router',
       return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
     }
 
+    /**
+     * Set the URL hash fragment
+     * @param path
+     */
     function updateURLFragment(path) {
       window.location.hash = path;
     }
 
     exports.initialize = initialize;
     exports.when = when;
+    exports.getCurrentRoute = getCurrentRoute;
     exports.runCurrentRoute = runCurrentRoute;
-    exports.setRoute = updateURLFragment;
+    exports.setRoute = setRoute;
 
   });

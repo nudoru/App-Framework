@@ -2303,7 +2303,7 @@ h2 {
   padding-bottom: 1.376rem;
 }
 
-.sidebar h1, h3, .user-info-header .name {
+.sidebar h1, .panel-message-footer h1, h3, .user-info-header .name {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2315,7 +2315,7 @@ h2 {
   padding-bottom: 0.344rem;
 }
 
-.sidebar h2, h4, legend, .table caption, .floatimage__caption p {
+.sidebar h2, .panel-message-footer h2, h4, legend, .table caption, .floatimage__caption p {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2327,7 +2327,7 @@ h2 {
   padding-bottom: 0.344rem;
 }
 
-.sidebar h3, h5, .list-round-buttons li .label, #drawer .header h1 {
+.sidebar h3, .panel-message-footer h3, h5, .list-round-buttons li .label, #drawer .header h1 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2340,7 +2340,7 @@ h2 {
   font-weight: 700;
 }
 
-.sidebar h4, .sidebar h5, .sidebar h6, h6 {
+.sidebar h4, .panel-message-footer h4, .sidebar h5, .panel-message-footer h5, .sidebar h6, .panel-message-footer h6, h6 {
   margin: 0;
   padding: 0;
   margin-bottom: 0.688rem;
@@ -2353,7 +2353,16 @@ h2 {
   font-weight: 700;
 }
 
-p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt, .label, input[type=text],
+p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt, .label {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.72rem;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 1.376rem;
+}
+
+.sidebar p, .label-small, .panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1, button, .button-important, input[type=text],
 input[type=password],
 input[type=email],
 input[type=url],
@@ -2369,15 +2378,6 @@ input[type=tel],
 input[type=color],
 input[type=file],
 select, textarea {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.72rem;
-  font-weight: 400;
-  margin-top: 0;
-  margin-bottom: 1.376rem;
-}
-
-.sidebar p, .label-small, .panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1, button, .button-important {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   line-height: 2.064rem;
@@ -2648,6 +2648,12 @@ hr {
 }
 .comma-separated-list li:last-of-type:after {
   content: "";
+}
+
+.vertical-center {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .text-left {
@@ -3024,6 +3030,7 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   margin-right: -0.688rem;
   margin-left: -0.688rem;
   padding: 0.344rem 0.688rem;
+  box-shadow: inset 1px 1px 0 #fff;
 }
 .panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1 {
   margin: 0;
@@ -3042,6 +3049,26 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
   margin-bottom: 0.688rem;
   border-bottom: 1px solid #eae8e6;
   background-color: #faf9f9;
+}
+
+.panel-message-footer {
+  overflow: hidden;
+  display: block;
+  margin-right: -0.688rem;
+  margin-left: -0.688rem;
+  padding: 0.688rem;
+  margin-top: 0.688rem;
+  margin-bottom: -0.688rem;
+  border-top: 1px solid #eae8e6;
+  background-color: #faf9f9;
+  box-shadow: inset 1px 1px 0 #fff;
+  text-shadow: 0 1px 0 #fff;
+}
+.panel-message-footer h1, .panel-message-footer h2, .panel-message-footer h3, .panel-message-footer h4, .panel-message-footer h5, .panel-message-footer h6 {
+  color: #005eb8;
+}
+.panel-message-footer p {
+  font-size: 0.9rem;
 }
 
 .panel-footer, .messagebox__default .footer {
@@ -3338,10 +3365,84 @@ input.form-input-disabled:focus {
 select.subtle,
 input.subtle {
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: none;
+  box-shadow: inset -1px -1px 0 #fff;
   background-color: rgba(255, 255, 255, 0.5);
 }
 
+.input-focus, input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus,
+input[type=url]:focus,
+input[type=date]:focus,
+input[type=month]:focus,
+input[type=time]:focus,
+input[type=datetime]:focus,
+input[type=datetime-local]:focus,
+input[type=week]:focus,
+input[type=number]:focus,
+input[type=search]:focus,
+input[type=tel]:focus,
+input[type=color]:focus,
+input[type=file]:focus,
+select:focus, textarea:focus {
+  animation: inputFocusAnim ease-out 0.5s;
+  animation-iteration-count: 1;
+  transform-origin: 50% 50%;
+  -webkit-animation: inputFocusAnim ease-out 0.5s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-transform-origin: 50% 50%;
+  -moz-animation: inputFocusAnim ease-out 0.5s;
+  -moz-animation-iteration-count: 1;
+  -moz-transform-origin: 50% 50%;
+  -ms-animation: inputFocusAnim ease-out 0.5s;
+  -ms-animation-iteration-count: 1;
+  -ms-transform-origin: 50% 50%;
+}
+
+@keyframes inputFocusAnim {
+  0% {
+    transform: scaleX(1) scaleY(1);
+  }
+  25% {
+    transform: scaleX(1.1) scaleY(1.1);
+  }
+  100% {
+    transform: scaleX(1) scaleY(1);
+  }
+}
+@-moz-keyframes inputFocusAnim {
+  0% {
+    -moz-transform: scaleX(1) scaleY(1);
+  }
+  25% {
+    -moz-transform: scaleX(1.1) scaleY(1.1);
+  }
+  100% {
+    -moz-transform: scaleX(1) scaleY(1);
+  }
+}
+@-webkit-keyframes inputFocusAnim {
+  0% {
+    -webkit-transform: scaleX(1) scaleY(1);
+  }
+  25% {
+    -webkit-transform: scaleX(1.1) scaleY(1.1);
+  }
+  100% {
+    -webkit-transform: scaleX(1) scaleY(1);
+  }
+}
+@-ms-keyframes inputFocusAnim {
+  0% {
+    -ms-transform: scaleX(1) scaleY(1);
+  }
+  25% {
+    -ms-transform: scaleX(1.1) scaleY(1.1);
+  }
+  100% {
+    -ms-transform: scaleX(1) scaleY(1);
+  }
+}
 .table {
   margin: 0;
   margin-bottom: 0.688rem;
@@ -3518,7 +3619,7 @@ tr.row-header-inline td {
   margin-left: 1.376rem;
   padding: 0;
   line-height: 75px;
-  color: #005eb8;
+  color: #007377;
 }
 
 .user-profile-image {
@@ -3527,7 +3628,10 @@ tr.row-header-inline td {
   margin: 0;
   width: 75px;
   height: 75px;
+  border-radius: 50%;
+  border: 2px solid #fff;
   overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 .user-profile-image img {
   max-width: 100%;
@@ -3540,6 +3644,13 @@ tr.row-header-inline td {
   padding: 0;
   display: table;
   width: 100%;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#faf9f9), to(#f3f2f1));
+  background-image: -webkit-linear-gradient(top, #faf9f9, 0%, #f3f2f1, 100%);
+  background-image: -moz-linear-gradient(top, #faf9f9 0%, #f3f2f1 100%);
+  background-image: linear-gradient(to bottom, #faf9f9 0%, #f3f2f1 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ie-hex-str($start-color)', endColorstr='#ie-hex-str($end-color)', GradientType=0);
+  box-shadow: inset 1px 1px 0 #fff;
 }
 .horizontal-statics li {
   display: table-cell;
@@ -3563,11 +3674,11 @@ tr.row-header-inline td {
   line-height: 0.688rem;
 }
 .horizontal-statics h1 {
-  color: #00a9e0;
+  color: #009ca6;
   margin-bottom: 0.344rem;
 }
 .horizontal-statics p {
-  color: #005eb8;
+  color: #007377;
   font-weight: 700;
 }
 
@@ -3575,6 +3686,7 @@ tr.row-header-inline td {
   position: relative;
   width: 100%;
   text-align: center;
+  margin: 0;
 }
 .list-round-buttons li {
   margin-bottom: 1.376rem;
@@ -4034,8 +4146,8 @@ tr.row-header-inline td {
 #header__navigation button {
   display: block;
   padding: 0 1.376rem;
-  height: 50px;
-  line-height: 50px;
+  height: 65px;
+  line-height: 65px;
   font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -4088,7 +4200,7 @@ tr.row-header-inline td {
   left: 0;
   z-index: 10000;
   width: 100%;
-  height: 50px;
+  height: 65px;
   background: white;
   padding: 0 1.376rem;
   background-color: #fff;
@@ -4100,10 +4212,15 @@ tr.row-header-inline td {
   top: 0;
   left: 0;
   width: 120px;
-  height: 50px;
-  background-color: #00a9e0;
+  height: 65px;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#00a9e0), to(#005eb8));
+  background-image: -webkit-linear-gradient(top, #00a9e0, 0%, #005eb8, 100%);
+  background-image: -moz-linear-gradient(top, #00a9e0 0%, #005eb8 100%);
+  background-image: linear-gradient(to bottom, #00a9e0 0%, #005eb8 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ie-hex-str($start-color)', endColorstr='#ie-hex-str($end-color)', GradientType=0);
   text-align: center;
-  line-height: 50px;
+  line-height: 65px;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }
@@ -4116,24 +4233,23 @@ tr.row-header-inline td {
   position: absolute;
   left: 120px;
   top: 0;
-  height: 50px;
-  line-height: 50px;
+  height: 65px;
+  line-height: 65px;
   padding-left: 1.376rem;
 }
 #header h1 {
   margin: 0;
   padding: 0;
-  height: 50px;
-  line-height: 50px;
+  height: 65px;
+  line-height: 65px;
   color: #005eb8;
   font-size: 1rem;
   letter-spacing: -0.025em;
   font-weight: 400;
 }
 #header h1 em {
-  color: #005eb8;
-  margin-right: 0.688rem;
   font-style: normal;
+  font-weight: 700;
 }
 #header nav {
   position: absolute;
@@ -4145,7 +4261,7 @@ tr.row-header-inline td {
   display: inline;
   float: left;
   margin: 0;
-  height: 50px;
+  height: 65px;
   padding-left: 1.376rem;
   padding-right: 1.376rem;
   box-shadow: none;
@@ -4153,6 +4269,7 @@ tr.row-header-inline td {
   border-radius: 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   border-left: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 #contents {
@@ -4181,7 +4298,7 @@ tr.row-header-inline td {
 
 #drawer {
   position: fixed;
-  top: 50px;
+  top: 65px;
   left: 0;
   min-height: 100%;
   bottom: 100%;
@@ -4199,7 +4316,12 @@ tr.row-header-inline td {
   color: #fff;
 }
 #drawer .header {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(rgba(255, 255, 255, 0.1)), to(rgba(255, 255, 255, 0.15)));
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.1), 0%, rgba(255, 255, 255, 0.15), 100%);
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.15) 100%);
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.15) 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ie-hex-str($start-color)', endColorstr='#ie-hex-str($end-color)', GradientType=0);
   position: absolute;
   top: 0;
   left: 0;
@@ -4212,14 +4334,22 @@ tr.row-header-inline td {
 #drawer .header h1 {
   margin: 0;
   padding: 0;
-  height: 50px;
-  line-height: 50px;
+  height: 65px;
+  line-height: 65px;
   color: #a1988f;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 #drawer .content {
-  margin-top: 50px;
+  margin-top: 65px;
   padding: 1.376rem;
+  background-image: -webkit-gradient(linear, left 0%, left 100%, from(rgba(0, 0, 0, 0.05)), to(rgba(0, 0, 0, 0.1)));
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.05), 0%, rgba(0, 0, 0, 0.1), 100%);
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.1) 100%);
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.1) 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ie-hex-str($start-color)', endColorstr='#ie-hex-str($end-color)', GradientType=0);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 }
 
 .ignore-pointer-events {
@@ -4262,7 +4392,7 @@ body {
 
 #app__container {
   position: fixed;
-  top: 50px;
+  top: 65px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -4271,6 +4401,7 @@ body {
 
 #app__contents {
   position: absolute;
+  width: 100%;
   bottom: 100%;
   min-height: 100%;
   top: 0;

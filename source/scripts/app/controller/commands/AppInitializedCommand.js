@@ -10,8 +10,10 @@ define('APP.AppInitializedCommand',
       // Browser events
       APP.mapEventCommand(_browserEvents.BROWSER_RESIZED, 'APP.BrowserResizedCommand');
       APP.mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'APP.BrowserScrolledCommand');
+      APP.mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'APP.URLHashChangedCommand');
 
       // App events
+      APP.mapEventCommand(_appEvents.ROUTE_CHANGED, 'APP.RouteChangedCommand');
       APP.mapEventCommand(_appEvents.CHANGE_ROUTE, 'APP.ChangeRouteCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
@@ -21,7 +23,7 @@ define('APP.AppInitializedCommand',
       // url fragment for route, ID (template id), module name for controller, use singleton module
 
       // Default route
-      //APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
+      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
 
       // Other routes
       APP.mapRouteView('/test', 'TestSubView', 'APP.View.TemplateSubView', true);
@@ -31,7 +33,12 @@ define('APP.AppInitializedCommand',
 
       APP.view().removeLoadingMessage();
 
-      APP.router().runCurrentRoute();
+      //APP.router().setRoute('/foo',{
+      //  bar:'baz',
+      //  baz:'foo'
+      //});
+
+      APP.setCurrentRoute(APP.router().getCurrentRoute());
     };
 
   });

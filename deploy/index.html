@@ -61,31 +61,31 @@ BEGIN Templates for Views
 -->
 <script id="template__ControlsTesting" type="text/template">
     <div class="padded-content">
-        <div class="column-container">
-            <div class="one-third-left-column">
-                <h1 class="h1-alternate">Mock Components</h1>
-                <ul class="plain-list">
-                    <li>
-                        <button id="action-one">Action One</button>
-                    </li>
-                    <li>
-                        <button id="action-two">Action Two</button>
-                    </li>
-                    <li>
-                        <button id="action-three">Action Three</button>
-                    </li>
-                    <li>
-                        <button id="action-four">Action Four</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="two-thirds-right-column"></div>
-        </div>
+        <h1 class="h1-alternate">Mock Components</h1>
+        <ul class="plain-list">
+            <li>
+                <button id="action-one">Action One</button>
+            </li>
+            <li>
+                <button id="action-two">Action Two</button>
+            </li>
+            <li>
+                <button id="action-three">Action Three</button>
+            </li>
+            <li>
+                <button id="action-four">Action Four</button>
+            </li>
+        </ul>
     </div>
 </script>
 
 <script id="template__TemplateSubView" type="text/template">
     <h1>Template Sub View</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<script id="template__TestSubView" type="text/template">
+    <h1>Test sub view</h1>
     <textarea id="input-textarea"></textarea>
 </script>
 
@@ -110,9 +110,9 @@ END Templates for Views
   </head>
   <body>
     <header id="header">
-      <div class="logo"><i class="fa fa-pencil"></i></div>
+      <div class="logo"><i class="fa fa-rocket"></i></div>
       <div class="title">
-        <h1>Time Management</h1>
+        <h1><em>Time</em> Management</h1>
       </div>
       <nav>
         <button class="button-small button-neutral-light icon-left"><i class="fa fa-table"></i>PMO Projects</button>
@@ -149,7 +149,7 @@ END Templates for Views
             <!--include mock-controlstesting-->
             <!--include mock-styletest-->
             <!--include mock-components-->
-            <div class="panel-shadow padding-none margin-bottom-double">
+            <div style="border-radius: 100px" class="panel-shadow padding-none margin-bottom-double">
               <div class="column-container">
                 <div class="half-left-column">
                   <div class="user-info-header">
@@ -160,7 +160,7 @@ END Templates for Views
                   </div>
                 </div>
                 <div class="half-right-column">
-                  <ul class="horizontal-statics control-border-left control-background-light">
+                  <ul class="horizontal-statics control-border-left">
                     <li>
                       <h1>Lifetime Projects</h1>
                       <p>125</p>
@@ -403,13 +403,21 @@ END Templates for Views
                     </tr>
                   </tfoot>
                 </table>
-                <section class="sidebar margin-top-double">
-                  <h1 class="icon-left"><i class="fa fa-lightbulb-o"></i>Keep in Mind ...</h1>
-                  <p>Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed.</p>
+                <section class="panel-message-footer margin-top-double">
+                  <div class="column-container">
+                    <div class="three-fourths-left-column">
+                      <h1 class="icon-left"><i class="fa fa-lightbulb-o"></i>Keep in Mind ...</h1>
+                      <p>Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed.</p>
+                    </div>
+                    <div class="one-fourth-right-column text-right padding-top-double">
+                      <button class="button-icon-right">Submit 40 hrs<i class="fa fa-check"></i></button>
+                    </div>
+                  </div>
                 </section>
-                <section class="text-right panel-footer">
-                  <button class="button-icon-right">Submit 40 hrs<i class="fa fa-check"></i></button>
-                </section>
+                <!--section.text-right.panel-footer
+                button.button-icon-right Submit 40 hrs
+                  i.fa.fa-check
+                -->
               </section>
             </div>
           </div>

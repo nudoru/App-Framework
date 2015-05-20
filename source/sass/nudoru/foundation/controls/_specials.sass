@@ -17,7 +17,7 @@
     margin-left: $double-base-line-height
     padding: 0
     line-height: 75px
-    color: $control-primary-color-dark
+    color: $dark-teal
 
 .user-profile-image
   display: inline-block
@@ -25,13 +25,13 @@
   margin: 0
   width: 75px
   height: 75px
-  //border-radius: 50%
-  //border: 1px solid $control-primary-color
+  border-radius: 50%
+  border: 2px solid #fff
   overflow: hidden
+  box-shadow: 0 0 10px rgba(0,0,0,.1)
   img
     max-width: 100%
     height: auto
-
 
 // ul
 .horizontal-statics
@@ -41,6 +41,8 @@
   padding: 0
   display: table
   width: 100%
+  +gradient-vertical($color-white-grey-fill, scale-lightness($color-white-grey-fill, -3%))
+  box-shadow: inset 1px 1px 0 #fff
   li
     display: table-cell
     vertical-align: middle
@@ -60,8 +62,8 @@
     padding: 0
     line-height: $base-line-height
   h1
-    color: $control-primary-color
+    color: $light-teal
     margin-bottom: $half-base-line-height
   p
-    color: $control-primary-color-dark
+    color: $dark-teal
     font-weight: 700
