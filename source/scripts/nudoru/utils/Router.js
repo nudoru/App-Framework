@@ -113,11 +113,12 @@ define('nudoru.utils.Router',
      * @param dataObj
      */
     function setRoute(route, dataObj) {
-      var path = route, data = [];
-      if (dataObj) {
+      var path = route,
+          data = [];
+      if (dataObj !== null && dataObj !== undefined) {
         path += "?";
         for (var prop in dataObj) {
-          if (dataObj.hasOwnProperty(prop)) {
+          if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
             data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
           }
         }
