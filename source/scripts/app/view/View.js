@@ -9,6 +9,7 @@ define('APP.View',
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
+      _toolTipView = require('nudoru.components.ToolTipView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
       _modalCoverView = require('nudoru.components.ModalCoverView');
 
@@ -37,6 +38,7 @@ define('APP.View',
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
       _routeSubViewView.setSubViewMountPoint('contents');
 
+      _toolTipView.initialize('tooltip__container');
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
       _modalCoverView.initialize();

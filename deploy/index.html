@@ -24,6 +24,14 @@ BEGIN Templates for Components
     </div>
 </script>
 
+<script id="template__component--tooltip" type="text/template">
+    <div class="tooltip__item" id="<%= id %>">
+        <div class="tooltip__item-content">
+            <p><%= message %></p>
+        </div>
+    </div>
+</script>
+
 <script id="template__messagebox--default" type="text/template">
     <div class="messagebox__default" id="<%= id %>">
         <div class="header" id="<%= id %>-header">
@@ -435,6 +443,7 @@ END Templates for Views
         <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading Spinner" class="loader">
       </div>
     </div>
+    <div id="tooltip__container"></div>
     <div id="modal__cover">
       <div class="modal__background"></div>
       <div class="modal__close-button"><i class="fa fa-remove"></i></div>

@@ -56,7 +56,6 @@ define('nudoru.components.MessageBoxView',
       _mountPoint.appendChild(boxObj.element);
       assignTypeClassToElement(type, boxObj.element);
       configureButtons(boxObj);
-      _domUtils.centerElementInViewPort(boxObj.element);
 
       // Set 3d CSS props for in/out transition
       TweenLite.set(boxObj.element, {
@@ -68,6 +67,9 @@ define('nudoru.components.MessageBoxView',
           width: (initObj.width ? initObj.width : _defaultWidth) + 'px'
         }
       });
+
+      // center after width has been set
+      _domUtils.centerElementInViewPort(boxObj.element);
 
       // Make it draggable
       Draggable.create('#' + boxObj.id, {
@@ -162,9 +164,7 @@ define('nudoru.components.MessageBoxView',
             }
             remove(boxObj.id);
           });
-
         boxObj.streams.push(btnStream);
-
       });
 
     }
@@ -183,15 +183,13 @@ define('nudoru.components.MessageBoxView',
       }
     }
 
-
-
     /**
      * Show the box
      * @param el
      */
     function transitionIn(el) {
-      TweenLite.to(el, 0, {alpha: 0, rotationX: 45});
-      TweenLite.to(el, 1, {alpha: 1, rotationX: 0, ease: Circ.easeOut});
+      TweenLite.to(el, 0, {alpha: 0, rotationX: 45, scale: 2});
+      TweenLite.to(el,.25, {alpha: 1, rotationX: 0, scale: 1, ease: Circ.easeOut});
     }
 
     /**
@@ -202,6 +200,7 @@ define('nudoru.components.MessageBoxView',
       TweenLite.to(el, 0.25, {
         alpha: 0,
         rotationX: -45,
+        scale: 0.25,
         ease: Circ.easeIn, onComplete: function () {
           onTransitionOutComplete(el);
         }

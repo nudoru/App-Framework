@@ -14,6 +14,7 @@ define('APP.View.ControlsTestingSubView',
       _currentState,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _lIpsum = require('nudoru.utils.NLorem'),
+      _toolTip = require('nudoru.components.ToolTipView'),
       _actionOneEl,
       _actionTwoEl,
       _actionThreeEl,
@@ -61,6 +62,15 @@ define('APP.View.ControlsTestingSubView',
       _actionTwoEl = document.getElementById('action-two');
       _actionThreeEl = document.getElementById('action-three');
       _actionFourEl = document.getElementById('action-four');
+
+      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'T', targetEl: _actionFourEl});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'TR', targetEl: _actionFourEl, type:'information'});
+      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'R', targetEl: _actionFourEl, type:'success'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'BR', targetEl: _actionFourEl, type:'success'});
+      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'B', targetEl: _actionFourEl});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy.", width: 100, position:'BL', targetEl: _actionFourEl, type:'warning'});
+      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'L', targetEl: _actionFourEl});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy.", width: 100, position:'TL', targetEl: _actionFourEl, type:'danger'});
 
       _actionOneEl.addEventListener('click', function actOne(e) {
         APP.view().addMessageBox({
