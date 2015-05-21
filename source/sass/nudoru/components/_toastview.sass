@@ -2,11 +2,9 @@
   position: fixed
   top: $base-line-height
   right: $double-base-line-height
-  //pointer-events: auto
   z-index: $z-index-toast-container
 
 .toast__item
-  //@extend %panel
   @extend .panel-border
   border: 1px solid rgba(0,0,0,.1)
   background-color: #fff
@@ -51,6 +49,7 @@
 
 =toast-variation($color)
   background-color: $color
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,.2)
   .toast__item-content
     h1, p
       color: #fff

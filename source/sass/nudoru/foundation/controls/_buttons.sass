@@ -1,6 +1,5 @@
 %button
-  +transition-prop(background-color, .25s)
-  +transition-prop(color, .25s)
+  +transition-all()
   +control-emboss-shadow
   @extend .label-small
   font-family: $font-header
@@ -100,7 +99,7 @@ button
 
 .button-neutral-light
   @extend .button-neutral
-  background-color: $color-white-grey-fill
+  background-color: rgba(255,255,255,.2)
   color: $dark-warm-grey
   box-shadow: none
   text-shadow: none

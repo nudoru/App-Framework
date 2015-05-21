@@ -3053,14 +3053,11 @@ http://codepen.io/HugoGiraudel/pen/qBgoh
 }
 
 button, .button-important {
-  -webkit-transition: background-color 0.25s ease-out;
-  -moz-transition: background-color 0.25s ease-out;
-  -o-transition: background-color 0.25s ease-out;
-  transition: background-color 0.25s ease-out;
-  -webkit-transition: color 0.25s ease-out;
-  -moz-transition: color 0.25s ease-out;
-  -o-transition: color 0.25s ease-out;
-  transition: color 0.25s ease-out;
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  -webkit-transition: all 0.25s ease-out;
+  -ms-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
   font-family: "Titillium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 33px;
@@ -3177,7 +3174,7 @@ button:hover, .button-important:hover, button:active, .button-important:active {
 }
 
 .button-neutral-light, .button-neutral-light-negative, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .messagebox__default .footer .footer-buttons .button button, .toast__item-controls button {
-  background-color: #faf9f9;
+  background-color: rgba(255, 255, 255, 0.2);
   color: #6e6259;
   box-shadow: none;
   text-shadow: none;
@@ -3992,6 +3989,7 @@ tr.row-header-inline td {
 
 .toast__information {
   background-color: #00a9e0;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__information .toast__item-content h1, .toast__information .toast__item-content p {
   color: #fff;
@@ -4004,6 +4002,7 @@ tr.row-header-inline td {
 
 .toast__success {
   background-color: #439a43;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__success .toast__item-content h1, .toast__success .toast__item-content p {
   color: #fff;
@@ -4016,6 +4015,7 @@ tr.row-header-inline td {
 
 .toast__warning {
   background-color: #eb9214;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__warning .toast__item-content h1, .toast__warning .toast__item-content p {
   color: #fff;
@@ -4028,6 +4028,7 @@ tr.row-header-inline td {
 
 .toast__danger {
   background-color: #d9534f;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__danger .toast__item-content h1, .toast__danger .toast__item-content p {
   color: #fff;
@@ -4044,13 +4045,25 @@ tr.row-header-inline td {
 
 .tooltip__item {
   border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
   background-color: #fff;
   position: absolute;
   display: table;
   width: 200px;
   padding: 0;
-  overflow: hidden;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(255, 255, 255, 0.25);
+  overflow: visible;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2), inset 1px 1px 0 rgba(255, 255, 255, 0.25);
+}
+.tooltip__item .arrow {
+  position: absolute;
+  width: 0.688rem;
+  height: 0.688rem;
+  background-color: #fff;
+  -moz-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .tooltip__item-content {
@@ -4064,7 +4077,6 @@ tr.row-header-inline td {
   line-height: 1.032rem;
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
-  font-weight: 700;
   color: #005eb8;
 }
 .tooltip__item-content .title {
@@ -4075,12 +4087,18 @@ tr.row-header-inline td {
 .tooltip__information {
   background-color: #00a9e0;
 }
+.tooltip__information .arrow {
+  background-color: #00a9e0;
+}
 .tooltip__information .tooltip__item-content h1, .tooltip__information .tooltip__item-content p {
   color: #fff;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .tooltip__success {
+  background-color: #439a43;
+}
+.tooltip__success .arrow {
   background-color: #439a43;
 }
 .tooltip__success .tooltip__item-content h1, .tooltip__success .tooltip__item-content p {
@@ -4091,6 +4109,9 @@ tr.row-header-inline td {
 .tooltip__warning {
   background-color: #eb9214;
 }
+.tooltip__warning .arrow {
+  background-color: #eb9214;
+}
 .tooltip__warning .tooltip__item-content h1, .tooltip__warning .tooltip__item-content p {
   color: #fff;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
@@ -4099,41 +4120,73 @@ tr.row-header-inline td {
 .tooltip__danger {
   background-color: #d9534f;
 }
+.tooltip__danger .arrow {
+  background-color: #d9534f;
+}
 .tooltip__danger .tooltip__item-content h1, .tooltip__danger .tooltip__item-content p {
   color: #fff;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.tooltip__top {
-  border-radius: 22px 22px 3px 3px;
+.tooltip__top .arrow {
+  bottom: -0.344rem;
+  left: 0;
+}
+.tooltip__top p {
+  text-align: center;
 }
 
 .tooltip__topright {
-  border-radius: 22px 22px 22px 3px;
+  border-radius: 5px 5px 5px 2px;
+}
+.tooltip__topright .arrow {
+  display: none;
 }
 
-.tooltip__right {
-  border-radius: 3px 22px 22px 3px;
+.tooltip__right .arrow {
+  left: -0.344rem;
 }
 
 .tooltip__bottomright {
-  border-radius: 3px 22px 22px 22px;
+  border-radius: 2px 5px 5px 5px;
+}
+.tooltip__bottomright .arrow {
+  display: none;
 }
 
-.tooltip__bottom {
-  border-radius: 3px 3px 22px 22px;
+.tooltip__bottom .arrow {
+  top: -0.344rem;
+  left: 0;
+}
+.tooltip__bottom p {
+  text-align: center;
 }
 
 .tooltip__bottomleft {
-  border-radius: 22px 3px 22px 22px;
+  border-radius: 5px 2px 5px 5px;
+}
+.tooltip__bottomleft .arrow {
+  display: none;
+}
+.tooltip__bottomleft p {
+  text-align: right;
 }
 
-.tooltip__left {
-  border-radius: 22px 3px 3px 22px;
+.tooltip__left .arrow {
+  right: -0.344rem;
+}
+.tooltip__left p {
+  text-align: right;
 }
 
 .tooltip__topleft {
-  border-radius: 22px 22px 3px 22px;
+  border-radius: 5px 5px 2px 5px;
+}
+.tooltip__topleft .arrow {
+  display: none;
+}
+.tooltip__topleft p {
+  text-align: right;
 }
 
 #header {

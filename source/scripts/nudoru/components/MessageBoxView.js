@@ -32,7 +32,8 @@ define('nudoru.components.MessageBoxView',
       _template = require('nudoru.utils.NTemplate'),
       _modal = require('nudoru.components.ModalCoverView'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _componentUtils = require('nudoru.components.ComponentViewUtils');
 
     /**
      * Initialize and set the mount point / box container
@@ -57,14 +58,13 @@ define('nudoru.components.MessageBoxView',
       assignTypeClassToElement(type, boxObj.element);
       configureButtons(boxObj);
 
+      _componentUtils.applyUnique3DToComponentElement(boxObj.element);
+
       // Set 3d CSS props for in/out transition
       TweenLite.set(boxObj.element, {
         css: {
-          transformPerspective: 800,
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
           zIndex: _highestZ,
-          width: (initObj.width ? initObj.width : _defaultWidth) + 'px'
+          width: initObj.width ? initObj.width : _defaultWidth
         }
       });
 
@@ -252,16 +252,7 @@ define('nudoru.components.MessageBoxView',
      * @returns {number}
      */
     function getObjIndexByID(id) {
-      var len = _children.length,
-        i = 0;
-
-      for (; i < len; i++) {
-        if (_children[i].id === id) {
-          return i;
-        }
-      }
-
-      return -1;
+      return _children.map(function(child) { return child.id; }).indexOf(id);
     }
 
     exports.initialize = initialize;

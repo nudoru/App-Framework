@@ -1227,7 +1227,57 @@ define('nudoru.utils.NDebugger',
     exports.unsubscribe = unsubscribe;
     exports.publish = publish;
 
-  });;define('nudoru.components.MessageBoxView',
+  });;define('nudoru.components.ComponentViewUtils',
+  function (require, module, exports) {
+
+    /**
+     * Create shared 3d perspective for all children
+     * @param el
+     */
+    function apply3DToContainer(el) {
+      TweenLite.set(el, {
+        css: {
+          perspective: 800,
+          perspectiveOrigin: '50% 50%'
+        }
+      });
+    }
+
+    /**
+     * Apply basic CSS props
+     * @param el
+     */
+    function apply3DToComponentElement(el) {
+      TweenLite.set(el, {
+        css: {
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "hidden",
+          transformOrigin: '50% 50%'
+        }
+      });
+    }
+
+    /**
+     * Apply basic 3d props and set unique perspective for children
+     * @param el
+     */
+    function applyUnique3DToComponentElement(el) {
+      TweenLite.set(el, {
+        css: {
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "hidden",
+          transformPerspective: 600,
+          transformOrigin: '50% 50%'
+        }
+      });
+    }
+
+    exports.apply3DToContainer = apply3DToContainer;
+    exports.apply3DToComponentElement = apply3DToComponentElement;
+    exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
+
+  });
+;define('nudoru.components.MessageBoxView',
   function (require, module, exports) {
 
     var _children = [],
@@ -1254,7 +1304,8 @@ define('nudoru.utils.NDebugger',
       _template = require('nudoru.utils.NTemplate'),
       _modal = require('nudoru.components.ModalCoverView'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _componentUtils = require('nudoru.components.ComponentViewUtils');
 
     /**
      * Initialize and set the mount point / box container
@@ -1279,14 +1330,13 @@ define('nudoru.utils.NDebugger',
       assignTypeClassToElement(type, boxObj.element);
       configureButtons(boxObj);
 
+      _componentUtils.applyUnique3DToComponentElement(boxObj.element);
+
       // Set 3d CSS props for in/out transition
       TweenLite.set(boxObj.element, {
         css: {
-          transformPerspective: 800,
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
           zIndex: _highestZ,
-          width: (initObj.width ? initObj.width : _defaultWidth) + 'px'
+          width: initObj.width ? initObj.width : _defaultWidth
         }
       });
 
@@ -1474,16 +1524,7 @@ define('nudoru.utils.NDebugger',
      * @returns {number}
      */
     function getObjIndexByID(id) {
-      var len = _children.length,
-        i = 0;
-
-      for (; i < len; i++) {
-        if (_children[i].id === id) {
-          return i;
-        }
-      }
-
-      return -1;
+      return _children.map(function(child) { return child.id; }).indexOf(id);
     }
 
     exports.initialize = initialize;
@@ -1620,7 +1661,8 @@ define('nudoru.utils.NDebugger',
       _mountPoint,
       _template = require('nudoru.utils.NTemplate'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _componentUtils = require('nudoru.components.ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -1638,13 +1680,8 @@ define('nudoru.utils.NDebugger',
 
       assignTypeClassToElement(initObj.type, toastObj.element);
 
-      TweenLite.set(toastObj.element, {
-        css: {
-          transformPerspective: 800,
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden"
-        }
-      });
+      _componentUtils.apply3DToContainer(_mountPoint);
+      _componentUtils.apply3DToComponentElement(toastObj.element);
 
       var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
         closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
@@ -1735,16 +1772,7 @@ define('nudoru.utils.NDebugger',
     }
 
     function getObjIndexByID(id) {
-      var len = _children.length,
-        i = 0;
-
-      for (; i < len; i++) {
-        if (_children[i].id === id) {
-          return i;
-        }
-      }
-
-      return -1;
+      return _children.map(function(child) { return child.id; }).indexOf(id);
     }
 
     exports.initialize = initialize;
@@ -1758,6 +1786,7 @@ define('nudoru.utils.NDebugger',
     var _children = [],
       _counter = 0,
       _defaultWidth = 200,
+      _endRotationTransform = -45,
       _types = {
         DEFAULT: 'default',
         INFORMATION: 'information',
@@ -1794,7 +1823,8 @@ define('nudoru.utils.NDebugger',
       },
       _mountPoint,
       _template = require('nudoru.utils.NTemplate'),
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _componentUtils = require('nudoru.components.ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -1812,16 +1842,15 @@ define('nudoru.utils.NDebugger',
       _children.push(tooltipObj);
       _mountPoint.appendChild(tooltipObj.element);
 
+      tooltipObj.arrowEl = tooltipObj.element.querySelector('.arrow');
       assignTypeClassToElement(initObj.type, initObj.position, tooltipObj.element);
 
-
+      _componentUtils.apply3DToContainer(_mountPoint);
+      _componentUtils.apply3DToComponentElement(tooltipObj.element);
 
       TweenLite.set(tooltipObj.element, {
         css: {
           autoAlpha: 0,
-          transformPerspective: 200,
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
           width: initObj.width ? initObj.width : _defaultWidth
         }
       });
@@ -1830,12 +1859,21 @@ define('nudoru.utils.NDebugger',
       tooltipObj.width = tooltipObj.element.getBoundingClientRect().width;
       tooltipObj.height = tooltipObj.element.getBoundingClientRect().height;
 
+      // set 3d rotation
       TweenLite.set(tooltipObj.element, {
-        css: {rotationX: -45}
+        css: { rotationX:  _endRotationTransform}
       });
 
       assignEventsToTargetEl(tooltipObj);
       positionToolTip(tooltipObj);
+
+      if(tooltipObj.position === _positions.L || tooltipObj.position === _positions.R) {
+        centerArrowVertically(tooltipObj)
+      }
+
+      if(tooltipObj.position === _positions.T || tooltipObj.position === _positions.B) {
+        centerArrowHorizontally(tooltipObj)
+      }
 
       return tooltipObj.id;
     }
@@ -1861,98 +1899,135 @@ define('nudoru.utils.NDebugger',
             id: id,
             title: title,
             message: message
-          })
+          }),
+          arrowEl: null
         };
 
       return obj;
     }
 
-    function assignEventsToTargetEl(ttObj) {
-      ttObj.elOverStream = Rx.Observable.fromEvent(ttObj.targetEl, 'mouseover')
+    function assignEventsToTargetEl(tooltipObj) {
+      tooltipObj.elOverStream = Rx.Observable.fromEvent(tooltipObj.targetEl, 'mouseover')
         .subscribe(function (evt) {
-          showToolTip(ttObj.id);
+          showToolTip(tooltipObj.id);
         });
 
-      ttObj.elOutStream = Rx.Observable.fromEvent(ttObj.targetEl, 'mouseout')
+      tooltipObj.elOutStream = Rx.Observable.fromEvent(tooltipObj.targetEl, 'mouseout')
         .subscribe(function (evt) {
-          hideToolTip(ttObj.id);
+          hideToolTip(tooltipObj.id);
         });
     }
 
     function showToolTip(id) {
-      var ttObj = getObjByID(id);
-      positionToolTip(ttObj);
-      transitionIn(ttObj.element);
+      var tooltipObj = getObjByID(id);
+      positionToolTip(tooltipObj);
+      transitionIn(tooltipObj.element);
     }
 
-    function positionToolTip(ttObj) {
-      var gutter = 10,
+    function positionToolTip(tooltipObj) {
+      var gutter = 15,
           xPos = 0,
           yPos = 0,
-          tgtProps = ttObj.targetEl.getBoundingClientRect();
+          tOriginH = '50%',
+          tOriginV = '50%',
+          tgtProps = tooltipObj.targetEl.getBoundingClientRect();
 
-      if(ttObj.position === _positions.TL) {
-        xPos = tgtProps.left - ttObj.width;
-        yPos = tgtProps.top - ttObj.height;
-      } else if(ttObj.position === _positions.T) {
-        xPos = tgtProps.left + ((tgtProps.width / 2) - (ttObj.width / 2));
-        yPos = tgtProps.top - ttObj.height - gutter;
-      } else if(ttObj.position === _positions.TR) {
+      if(tooltipObj.position === _positions.TL) {
+        xPos = tgtProps.left - tooltipObj.width;
+        yPos = tgtProps.top - tooltipObj.height;
+        tOriginH = '100%';
+        tOriginV = '100%';
+      } else if(tooltipObj.position === _positions.T) {
+        xPos = tgtProps.left + ((tgtProps.width / 2) - (tooltipObj.width / 2));
+        yPos = tgtProps.top - tooltipObj.height - gutter;
+        tOriginH = '50%';
+        tOriginV = '100%';
+      } else if(tooltipObj.position === _positions.TR) {
         xPos = tgtProps.right;
-        yPos = tgtProps.top - ttObj.height;
-      } else if(ttObj.position === _positions.R) {
+        yPos = tgtProps.top - tooltipObj.height;
+        tOriginH = '0%';
+        tOriginV = '100%';
+      } else if(tooltipObj.position === _positions.R) {
         xPos = tgtProps.right + gutter;
-        yPos = tgtProps.top + ((tgtProps.height / 2) - (ttObj.height / 2));
-      } else if(ttObj.position === _positions.BR) {
+        yPos = tgtProps.top + ((tgtProps.height / 2) - (tooltipObj.height / 2));
+        tOriginH = '0%';
+        tOriginV = '50%';
+      } else if(tooltipObj.position === _positions.BR) {
         xPos = tgtProps.right;
         yPos = tgtProps.bottom;
-      } else if(ttObj.position === _positions.B) {
-        xPos = tgtProps.left + ((tgtProps.width / 2) - (ttObj.width / 2));
+        tOriginH = '0%';
+        tOriginV = '0%';
+      } else if(tooltipObj.position === _positions.B) {
+        xPos = tgtProps.left + ((tgtProps.width / 2) - (tooltipObj.width / 2));
         yPos = tgtProps.bottom + gutter;
-      } else if(ttObj.position === _positions.BL) {
-        xPos = tgtProps.left - ttObj.width;
+        tOriginH = '50%';
+        tOriginV = '0%';
+      } else if(tooltipObj.position === _positions.BL) {
+        xPos = tgtProps.left - tooltipObj.width;
         yPos = tgtProps.bottom;
-      } else if(ttObj.position === _positions.L) {
-        xPos = tgtProps.left - ttObj.width - gutter;
-        yPos = tgtProps.top + ((tgtProps.height / 2) - (ttObj.height / 2));
+        tOriginH = '100%';
+        tOriginV = '0%';
+      } else if(tooltipObj.position === _positions.L) {
+        xPos = tgtProps.left - tooltipObj.width - gutter;
+        yPos = tgtProps.top + ((tgtProps.height / 2) - (tooltipObj.height / 2));
+        tOriginH = '100%';
+        tOriginV = '50%';
       }
 
-      TweenLite.set(ttObj.element, {x: xPos, y: yPos});
+
+
+      TweenLite.set(tooltipObj.element, {x: xPos, y: yPos, transformOrigin: tOriginH+' '+tOriginV});
+    }
+
+    function centerArrowHorizontally(tooltipObj) {
+      var arrowProps = tooltipObj.arrowEl.getBoundingClientRect();
+      TweenLite.set(tooltipObj.arrowEl, {x: (tooltipObj.width/2)-(arrowProps.width/2) });
+    }
+
+    function centerArrowVertically(tooltipObj) {
+      var arrowProps = tooltipObj.arrowEl.getBoundingClientRect();
+      TweenLite.set(tooltipObj.arrowEl, {y: (tooltipObj.height/2)-(arrowProps.height/2)-2 });
     }
 
     function hideToolTip(id) {
-      var ttObj = getObjByID(id);
-      transitionOut(ttObj.element);
+      var tooltipObj = getObjByID(id);
+      transitionOut(tooltipObj.element);
     }
 
     function transitionIn(el) {
       TweenLite.to(el,0.25, {autoAlpha: 1,
-        rotationX: 0,
+         rotationX: 0,
+        scaleY: 1,
         ease: Quad.easeOut
       });
     }
 
     function transitionOut(el) {
       TweenLite.to(el, 0.25, {
-        rotationX: -45,
+         rotationX:  _endRotationTransform,
         autoAlpha: 0,
+        scaleY: 1,
         ease: Quad.easeIn
       });
     }
 
-    function remove(id) {
-      var idx = getObjIndexByID(id),
-        tooltip;
-
-      if (idx > -1) {
-        tooltip = _children[idx];
+    function remove(el) {
+      //var idx = getObjIndexByID(id),
+      //  tooltip;
+      //
+      //if (idx > -1) {
+      //  tooltip = _children[idx];
+      getObjByElement(el).forEach(function(tooltip) {
         tooltip.elOverStream.dispose();
         tooltip.elOutStream.dispose();
 
-        _mountPoint.removeChild(el);
+        _mountPoint.removeChild(tooltip.element);
+
+        var idx = getObjIndexByID(tooltip.id);
+
         _children[idx] = null;
         _children.splice(idx, 1);
-      }
+      });
     }
 
     function getObjByID(id) {
@@ -1961,18 +2036,14 @@ define('nudoru.utils.NDebugger',
       })[0];
     }
 
-    // TODO rewrite with filter
     function getObjIndexByID(id) {
-      var len = _children.length,
-        i = 0;
+      return _children.map(function(child) { return child.id; }).indexOf(id);
+    }
 
-      for (; i < len; i++) {
-        if (_children[i].id === id) {
-          return i;
-        }
-      }
-
-      return -1;
+    function getObjByElement(el) {
+      return _children.filter(function(child) {
+        return child.targetEl === el;
+      });
     }
 
     exports.initialize = initialize;
@@ -2321,14 +2392,16 @@ define('nudoru.utils.NDebugger',
       _actionThreeEl = document.getElementById('action-three');
       _actionFourEl = document.getElementById('action-four');
 
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'T', targetEl: _actionFourEl});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'TR', targetEl: _actionFourEl, type:'information'});
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'R', targetEl: _actionFourEl, type:'success'});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'BR', targetEl: _actionFourEl, type:'success'});
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'B', targetEl: _actionFourEl});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", width: 100, position:'BL', targetEl: _actionFourEl, type:'warning'});
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'L', targetEl: _actionFourEl});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", width: 100, position:'TL', targetEl: _actionFourEl, type:'danger'});
+      //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
+      //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
+      //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
+      //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
+
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'L', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'B', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'R', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'T', targetEl: _actionFourEl, type:'information'});
+
 
       _actionOneEl.addEventListener('click', function actOne(e) {
         APP.view().addMessageBox({
@@ -2386,9 +2459,11 @@ define('nudoru.utils.NDebugger',
       _actionThreeEl.addEventListener('click', function actThree(e) {
         APP.view().addNotification({
           title: _lIpsum.getSentence(3,6),
-          type: 'default',
+          type: 'information',
           content: _lIpsum.getParagraph(1, 2)
         });
+
+        _toolTip.remove(_actionFourEl);
       });
 
       _actionFourEl.addEventListener('click', function actFour(e) {

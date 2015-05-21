@@ -26,7 +26,8 @@ define('nudoru.components.ToastView',
       _mountPoint,
       _template = require('nudoru.utils.NTemplate'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _componentUtils = require('nudoru.components.ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -44,13 +45,8 @@ define('nudoru.components.ToastView',
 
       assignTypeClassToElement(initObj.type, toastObj.element);
 
-      TweenLite.set(toastObj.element, {
-        css: {
-          transformPerspective: 800,
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden"
-        }
-      });
+      _componentUtils.apply3DToContainer(_mountPoint);
+      _componentUtils.apply3DToComponentElement(toastObj.element);
 
       var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
         closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
@@ -141,16 +137,7 @@ define('nudoru.components.ToastView',
     }
 
     function getObjIndexByID(id) {
-      var len = _children.length,
-        i = 0;
-
-      for (; i < len; i++) {
-        if (_children[i].id === id) {
-          return i;
-        }
-      }
-
-      return -1;
+      return _children.map(function(child) { return child.id; }).indexOf(id);
     }
 
     exports.initialize = initialize;

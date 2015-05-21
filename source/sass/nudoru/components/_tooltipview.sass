@@ -1,5 +1,8 @@
-$tooltip-border-radius: 22px
-$tooltip-point-border-radius: 3px
+$tooltip-border-radius: 5px
+$tooltip-point-border-radius: 2px
+
+$arrow-side-trans: 5px solid transparent
+$arrow-side-color: 5px solid
 
 #tooltip__container
   //position: fixed
@@ -10,13 +13,24 @@ $tooltip-point-border-radius: 3px
 .tooltip__item
   @extend .panel-border
   border: 1px solid rgba(0,0,0,.1)
+  border-radius: $tooltip-border-radius
   background-color: #fff
   position: absolute
   display: table
   width: 200px
   padding: 0
-  overflow: hidden
-  box-shadow: 2px 2px 5px rgba(0,0,0,.3), inset 1px 1px 0 rgba(255,255,255,.25)
+  overflow: visible
+  box-shadow: 2px 2px 10px rgba(0,0,0,.2), inset 1px 1px 0 rgba(255,255,255,.25)
+  .arrow
+    position: absolute
+    //top: -$base-line-height
+    //left: -$base-line-height
+    width: $base-line-height
+    height: $base-line-height
+    background-color: #fff
+    +rotate(45)
+    //box-shadow: 0 0 1px rgba(255,255,255,.2)
+
 
 .tooltip__item-content
   padding: $base-line-height
@@ -29,14 +43,16 @@ $tooltip-point-border-radius: 3px
     line-height: $base-line-height + $half-base-line-height
     font-family: $font-content
     font-size: .8rem
-    font-weight: 700
     color: $control-primary-color-dark
   .title
     font-weight: 700
     margin-right: $half-base-line-height
 
+
 =tooltip-variation($color)
   background-color: $color
+  .arrow
+    background-color: $color
   .tooltip__item-content
     h1, p
       color: #fff
@@ -55,25 +71,49 @@ $tooltip-point-border-radius: 3px
   +tooltip-variation($control-danger-color)
 
 .tooltip__top
-  border-radius: $tooltip-border-radius $tooltip-border-radius $tooltip-point-border-radius $tooltip-point-border-radius
+  .arrow
+    bottom: -$half-base-line-height
+    left: 0
+  p
+    text-align: center
 
 .tooltip__topright
   border-radius: $tooltip-border-radius $tooltip-border-radius $tooltip-border-radius $tooltip-point-border-radius
+  .arrow
+    display: none
 
 .tooltip__right
-  border-radius: $tooltip-point-border-radius $tooltip-border-radius $tooltip-border-radius $tooltip-point-border-radius
+  .arrow
+    left: -$half-base-line-height
 
 .tooltip__bottomright
   border-radius: $tooltip-point-border-radius $tooltip-border-radius $tooltip-border-radius $tooltip-border-radius
+  .arrow
+    display: none
 
 .tooltip__bottom
-  border-radius: $tooltip-point-border-radius $tooltip-point-border-radius $tooltip-border-radius $tooltip-border-radius
+  .arrow
+    top: -$half-base-line-height
+    left: 0
+  p
+    text-align: center
 
 .tooltip__bottomleft
   border-radius: $tooltip-border-radius $tooltip-point-border-radius $tooltip-border-radius $tooltip-border-radius
+  .arrow
+    display: none
+  p
+    text-align: right
 
 .tooltip__left
-  border-radius: $tooltip-border-radius $tooltip-point-border-radius $tooltip-point-border-radius $tooltip-border-radius
+  .arrow
+    right: -$half-base-line-height
+  p
+    text-align: right
 
 .tooltip__topleft
   border-radius: $tooltip-border-radius $tooltip-border-radius $tooltip-point-border-radius $tooltip-border-radius
+  .arrow
+    display: none
+  p
+    text-align: right

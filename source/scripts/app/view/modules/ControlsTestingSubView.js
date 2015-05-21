@@ -63,14 +63,16 @@ define('APP.View.ControlsTestingSubView',
       _actionThreeEl = document.getElementById('action-three');
       _actionFourEl = document.getElementById('action-four');
 
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'T', targetEl: _actionFourEl});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'TR', targetEl: _actionFourEl, type:'information'});
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'R', targetEl: _actionFourEl, type:'success'});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'BR', targetEl: _actionFourEl, type:'success'});
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'B', targetEl: _actionFourEl});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", width: 100, position:'BL', targetEl: _actionFourEl, type:'warning'});
-      //_toolTip.add({title:'', content:"This is a button, you click it dummy.", position:'L', targetEl: _actionFourEl});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy.", width: 100, position:'TL', targetEl: _actionFourEl, type:'danger'});
+      //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
+      //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
+      //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
+      //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
+
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'L', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'B', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'R', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'T', targetEl: _actionFourEl, type:'information'});
+
 
       _actionOneEl.addEventListener('click', function actOne(e) {
         APP.view().addMessageBox({
@@ -128,9 +130,11 @@ define('APP.View.ControlsTestingSubView',
       _actionThreeEl.addEventListener('click', function actThree(e) {
         APP.view().addNotification({
           title: _lIpsum.getSentence(3,6),
-          type: 'default',
+          type: 'information',
           content: _lIpsum.getParagraph(1, 2)
         });
+
+        _toolTip.remove(_actionFourEl);
       });
 
       _actionFourEl.addEventListener('click', function actFour(e) {
