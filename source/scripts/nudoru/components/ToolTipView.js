@@ -9,7 +9,7 @@ define('nudoru.components.ToolTipView',
     var _children = [],
       _counter = 0,
       _defaultWidth = 200,
-      _endRotationTransform = -45,
+      _endRotationTransform = -20,
       _types = {
         DEFAULT: 'default',
         INFORMATION: 'information',
@@ -221,16 +221,16 @@ define('nudoru.components.ToolTipView',
       TweenLite.to(el,0.25, {autoAlpha: 1,
          rotationX: 0,
         scaleY: 1,
-        ease: Quad.easeOut
+        ease: Circ.easeOut
       });
     }
 
     function transitionOut(el) {
-      TweenLite.to(el, 0.25, {
+      TweenLite.to(el, 0.5, {
          rotationX:  _endRotationTransform,
         autoAlpha: 0,
         scaleY: 1,
-        ease: Quad.easeIn
+        ease: Circ.easeIn
       });
     }
 

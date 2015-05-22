@@ -1,3 +1,10 @@
+/**
+ * Object.oberve polyfill:
+ * https://github.com/MaxArt2501/object-observe/blob/master/doc/index.md
+ * http://www.html5rocks.com/en/tutorials/es7/observe/
+ */
+
+
 define('APP.Model',
   function(require, module, exports) {
 

@@ -15,10 +15,14 @@ define('APP.View.ControlsTestingSubView',
       _domUtils = require('nudoru.utils.DOMUtils'),
       _lIpsum = require('nudoru.utils.NLorem'),
       _toolTip = require('nudoru.components.ToolTipView'),
+      _emitter = require('nudoru.events.Emitter'),
+      _appEvents = require('APP.AppEvents'),
       _actionOneEl,
       _actionTwoEl,
       _actionThreeEl,
-      _actionFourEl;
+      _actionFourEl,
+      _actionFiveEl,
+      _actionSixEl;
 
     function initialize(initObj) {
       console.log(initObj.id + ', subview init');
@@ -62,6 +66,8 @@ define('APP.View.ControlsTestingSubView',
       _actionTwoEl = document.getElementById('action-two');
       _actionThreeEl = document.getElementById('action-three');
       _actionFourEl = document.getElementById('action-four');
+      _actionFiveEl = document.getElementById('action-five');
+      _actionSixEl = document.getElementById('action-six');
 
       //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
       //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
@@ -78,9 +84,9 @@ define('APP.View.ControlsTestingSubView',
         APP.view().addMessageBox({
           title: _lIpsum.getSentence(2,4),
           content: _lIpsum.getParagraph(2, 4),
-          type: 'default',
+          type: 'warning',
           modal: true,
-          width: 200
+          width: 500
         });
       });
 
@@ -114,14 +120,6 @@ define('APP.View.ControlsTestingSubView',
               id: 'nope',
               type: 'negative',
               icon: 'times'
-            },
-            {
-              label: 'WTF',
-              id: 'neutral',
-              type: 'neutral',
-              onClick: function() {
-                console.log('neutral');
-              }
             }
           ]
         });
@@ -140,7 +138,15 @@ define('APP.View.ControlsTestingSubView',
       _actionFourEl.addEventListener('click', function actFour(e) {
         console.log('Four');
       });
-      
+
+      _actionFiveEl.addEventListener('click', function actFour(e) {
+        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/one',data: {prop:'some data',moar:'25'}});
+      });
+
+      _actionSixEl.addEventListener('click', function actFour(e) {
+        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/two'});
+      });
+
     }
 
     function viewWillUnMount() {

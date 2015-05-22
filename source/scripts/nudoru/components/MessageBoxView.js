@@ -189,7 +189,7 @@ define('nudoru.components.MessageBoxView',
      */
     function transitionIn(el) {
       TweenLite.to(el, 0, {alpha: 0, rotationX: 45, scale: 2});
-      TweenLite.to(el,.25, {alpha: 1, rotationX: 0, scale: 1, ease: Circ.easeOut});
+      TweenLite.to(el,0.5, {alpha: 1, rotationX: 0, scale: 1, ease: Circ.easeOut});
     }
 
     /**

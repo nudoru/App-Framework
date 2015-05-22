@@ -68,7 +68,7 @@ var APP = (function () {
       routes: [],
       currentRoute: {
         route: '/',
-        data: null
+        data: undefined
       }
     };
   }
@@ -139,16 +139,24 @@ var APP = (function () {
 
   /**
    * Allow the router to run the route view mapping if it's valid
-   * @param routeObj
+   * @param routeObj props: route, data, fromApp
    */
   function setCurrentRoute(routeObj) {
+    console.log('APP.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
     if(isValidRoute(routeObj.route)) {
-      //console.log('set data: ',routeObj.data);
       _config.currentRoute = routeObj;
-      _router.runCurrentRoute();
+
+      // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
+      // else is a URL change and just execute current mapping
+      if(routeObj.fromApp) {
+        _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
+      } else {
+        _router.runCurrentRoute();
+      }
+
       _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
     } else {
-      console.log('APP, setCurrentRoute, not a valid route: '+routeObj.route);
+      console.log('APP.setCurrentRoute, not a valid route: '+routeObj.route);
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
     }
   }

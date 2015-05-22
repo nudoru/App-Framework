@@ -68,7 +68,7 @@ define('nudoru.utils.Router',
      */
     function runCurrentRoute() {
       var current = getCurrentRoute();
-      runRoute(current.route, current.query);
+      runRoute(current.route, current.data);
     }
 
     /**

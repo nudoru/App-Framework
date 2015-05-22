@@ -66,7 +66,7 @@ module.exports = function (grunt) {
         },
         files: [ {
           cwd: "source/jade",
-          src: "**/*.jade",
+          src: "index.jade",
           dest: "deploy/",
           expand: true,
           ext: ".html"
@@ -95,6 +95,7 @@ module.exports = function (grunt) {
           'source/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
           'source/scripts/vendor/underscore-min.js',
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
+          'source/scripts/vendor/object-observe.min.js',
 
           'source/scripts/nudoru/require.js',
           'source/scripts/nudoru/utils/*.js',
