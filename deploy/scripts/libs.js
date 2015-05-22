@@ -2069,6 +2069,7 @@ define('nudoru.utils.NDebugger',
     exports.VIEW_CHANGE_TO_DESKTOP = 'VIEW_CHANGE_TO_DESKTOP';
     exports.ROUTE_CHANGED = 'ROUTE_CHANGED';
     exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
+    exports.SUBVIEW_STORE_DATA = 'SUBVIEW_STORE_DATA';
   });;var APP = (function () {
   var _self,
     _config,
@@ -2271,7 +2272,7 @@ define('nudoru.utils.NDebugger',
     _view.mapView(templateID, controller, unique);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
-      _view.showView(dataObj);
+      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
     }});
   }
 
@@ -2293,53 +2294,68 @@ define('nudoru.utils.NDebugger',
   };
 
 }());;define('APP.Model',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
-  var _self,
-    _data,
-    _emitter = require('nudoru.events.Emitter'),
-    _appEvents = require('APP.AppEvents');
+    var _self,
+      _data,
+      _subviewDataMap = Object.create(null),
+      _emitter = require('nudoru.events.Emitter'),
+      _appEvents = require('APP.AppEvents');
 
-  //----------------------------------------------------------------------------
-  //  Initialization
-  //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //  Initialization
+    //----------------------------------------------------------------------------
 
-  function initialize() {
-    _self = this;
-    _emitter.publish(_appEvents.MODEL_DATA_WAITING);
-  }
+    function initialize() {
+      _self = this;
+      _emitter.publish(_appEvents.MODEL_DATA_WAITING);
+    }
 
-  //----------------------------------------------------------------------------
-  //  Data
-  //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //  Data
+    //----------------------------------------------------------------------------
 
-  /**
-   * Set the data for the model
-   * @param dataObj
-   */
-  function setData(dataObj) {
-    _data = dataObj;
-    _emitter.publish(_appEvents.MODEL_DATA_READY);
-  }
+    /**
+     * Set the data for the model
+     * @param dataObj
+     */
+    function setData(dataObj) {
+      _data = dataObj;
+      _emitter.publish(_appEvents.MODEL_DATA_READY);
+    }
 
-  /**
-   * Returns a copy of the data
-   * @returns *
-   */
-  function getData() {
-    return _data.slice(0);
-  }
+    /**
+     * Returns a copy of the data
+     * @returns *
+     */
+    function getData() {
+      return _data.slice(0);
+    }
 
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
+    function storeSubViewData(id, dataObj) {
+      _subviewDataMap[id] = dataObj;
+    }
+
+    //----------------------------------------------------------------------------
+    //  Subview data
+    //----------------------------------------------------------------------------
+
+    function retrieveSubViewData(id) {
+      return _subviewDataMap[id] || {}
+    }
+
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
 
 
-  exports.initialize = initialize;
-  exports.setData = setData;
-  exports.getData = getData;
+    exports.initialize = initialize;
+    exports.setData = setData;
+    exports.getData = getData;
+    exports.storeSubViewData = storeSubViewData;
+    exports.retrieveSubViewData = retrieveSubViewData;
 
-});;define('APP.View.ControlsTestingSubView',
+  });;define('APP.View.ControlsTestingSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -2516,7 +2532,10 @@ define('nudoru.utils.NDebugger',
       _DOMElement,
       _initialState,
       _currentState,
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _modelData,
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _emitter = require('nudoru.events.Emitter'),
+      _appEvents = require('APP.AppEvents');
 
     /**
      * Initialization
@@ -2526,12 +2545,16 @@ define('nudoru.utils.NDebugger',
       console.log(initObj.id + ', subview init');
 
       console.log('subview state',initObj.state);
+      console.log('subview modeldata',initObj.modelData);
+
+      _modelData = initObj.modelData;
 
       if(!_initObj) {
         _initObj = initObj;
         _id = initObj.id;
         _templateObj = initObj.template;
         _initialState = _currentState = initObj.state;
+
         render();
       } else {
         console.log(_id + ', subview already init\'d');
@@ -2574,6 +2597,8 @@ define('nudoru.utils.NDebugger',
      */
     function viewWillUnMount() {
       console.log(_id + ', subview will unmount');
+
+      _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
     }
 
     /**
@@ -2915,7 +2940,7 @@ define('nudoru.utils.NDebugger',
      * Show a view (in response to a route change)
      * @param viewObj props: templateID, route
      */
-    function showView(viewObj) {
+    function showView(viewObj, modelData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
@@ -2931,7 +2956,8 @@ define('nudoru.utils.NDebugger',
       subview.controller.initialize({
         id: viewObj.templateID,
         template: subview.htmlTemplate,
-        state: viewObj.data
+        state: viewObj.data,
+        modelData: modelData
       });
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());
@@ -3086,8 +3112,8 @@ define('nudoru.utils.NDebugger',
       _routeSubViewView.mapView(templateID, controller, unique);
     }
 
-    function showView(viewObj) {
-      _routeSubViewView.showView(viewObj);
+    function showView(viewObj, modelData) {
+      _routeSubViewView.showView(viewObj, modelData);
     }
 
     //----------------------------------------------------------------------------
@@ -3123,6 +3149,9 @@ define('nudoru.utils.NDebugger',
       APP.mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
+
+      // Subviews
+      APP.mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'APP.SubViewStoreDataCommand');
 
       // Map route args:
       // url fragment for route, ID (template id), module name for controller, use singleton module
@@ -3187,6 +3216,14 @@ define('nudoru.utils.NDebugger',
 
     exports.execute = function(data) {
       //console.log('RouteChangedCommand, route: '+data.route+', data: '+data.data);
+    };
+
+  });;define('APP.SubViewStoreDataCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('SubViewStoreDataCommand, subviewid: '+data.id+', data: '+data.data);
+      APP.model().storeSubViewData(data.id, data.data);
     };
 
   });;define('APP.URLHashChangedCommand',

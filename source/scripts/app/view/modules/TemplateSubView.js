@@ -12,7 +12,10 @@ define('APP.View.TemplateSubView',
       _DOMElement,
       _initialState,
       _currentState,
-      _domUtils = require('nudoru.utils.DOMUtils');
+      _modelData,
+      _domUtils = require('nudoru.utils.DOMUtils'),
+      _emitter = require('nudoru.events.Emitter'),
+      _appEvents = require('APP.AppEvents');
 
     /**
      * Initialization
@@ -22,12 +25,16 @@ define('APP.View.TemplateSubView',
       console.log(initObj.id + ', subview init');
 
       console.log('subview state',initObj.state);
+      console.log('subview modeldata',initObj.modelData);
+
+      _modelData = initObj.modelData;
 
       if(!_initObj) {
         _initObj = initObj;
         _id = initObj.id;
         _templateObj = initObj.template;
         _initialState = _currentState = initObj.state;
+
         render();
       } else {
         console.log(_id + ', subview already init\'d');
@@ -70,6 +77,8 @@ define('APP.View.TemplateSubView',
      */
     function viewWillUnMount() {
       console.log(_id + ', subview will unmount');
+
+      _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
     }
 
     /**

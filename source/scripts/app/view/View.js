@@ -116,8 +116,8 @@ define('APP.View',
       _routeSubViewView.mapView(templateID, controller, unique);
     }
 
-    function showView(viewObj) {
-      _routeSubViewView.showView(viewObj);
+    function showView(viewObj, modelData) {
+      _routeSubViewView.showView(viewObj, modelData);
     }
 
     //----------------------------------------------------------------------------

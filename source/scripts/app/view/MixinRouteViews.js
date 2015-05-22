@@ -43,7 +43,7 @@ define('APP.View.MixinRouteViews',
      * Show a view (in response to a route change)
      * @param viewObj props: templateID, route
      */
-    function showView(viewObj) {
+    function showView(viewObj, modelData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
@@ -59,7 +59,8 @@ define('APP.View.MixinRouteViews',
       subview.controller.initialize({
         id: viewObj.templateID,
         template: subview.htmlTemplate,
-        state: viewObj.data
+        state: viewObj.data,
+        modelData: modelData
       });
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());

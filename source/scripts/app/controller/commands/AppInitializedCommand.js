@@ -19,6 +19,9 @@ define('APP.AppInitializedCommand',
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
       APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
 
+      // Subviews
+      APP.mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'APP.SubViewStoreDataCommand');
+
       // Map route args:
       // url fragment for route, ID (template id), module name for controller, use singleton module
 

@@ -200,7 +200,7 @@ var APP = (function () {
     _view.mapView(templateID, controller, unique);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
-      _view.showView(dataObj);
+      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
     }});
   }
 
