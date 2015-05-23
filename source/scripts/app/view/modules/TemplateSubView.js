@@ -77,7 +77,7 @@ define('APP.View.TemplateSubView',
      */
     function viewWillUnMount() {
       console.log(_id + ', subview will unmount');
-
+      // cache state data to the model, will be restored as modelData on next show
       _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
     }
 

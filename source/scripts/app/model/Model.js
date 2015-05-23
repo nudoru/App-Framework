@@ -44,14 +44,24 @@ define('APP.Model',
       return _data.slice(0);
     }
 
-    function storeSubViewData(id, dataObj) {
-      _subviewDataMap[id] = dataObj;
-    }
-
     //----------------------------------------------------------------------------
     //  Subview data
     //----------------------------------------------------------------------------
 
+    /**
+     * Store state data from a subview, called from StoreSubViewDataCommand
+     * @param id
+     * @param dataObj
+     */
+    function storeSubViewData(id, dataObj) {
+      _subviewDataMap[id] = dataObj;
+    }
+
+    /**
+     * Retrieve subview data for reinsertion, called from APP mapping of route/when()
+     * @param id
+     * @returns {*|{}}
+     */
     function retrieveSubViewData(id) {
       return _subviewDataMap[id] || {}
     }

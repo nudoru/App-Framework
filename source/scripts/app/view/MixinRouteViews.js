@@ -41,7 +41,8 @@ define('APP.View.MixinRouteViews',
 
     /**
      * Show a view (in response to a route change)
-     * @param viewObj props: templateID, route
+     * @param viewObj props: templateID, route, data
+     * @param modelData previous state data from the model
      */
     function showView(viewObj, modelData) {
       if(!_subViewMountPoint) {

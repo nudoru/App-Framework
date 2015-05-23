@@ -129,12 +129,7 @@ var APP = (function () {
    * @returns {boolean}
    */
   function isValidRoute(route) {
-    //console.log('Valid routes: '+_config.routes);
-    if(_config.routes.indexOf(route) > -1) {
-      return true;
-    }
-
-    return false;
+    return _config.routes.indexOf(route) > -1;
   }
 
   /**
@@ -168,8 +163,7 @@ var APP = (function () {
   /**
    * Maps an event to trigger a command when it's published
    * @param evt The event string
-   * @param command Module name of a command object, req execute(dataObj) function
-   * @param once True if should only execute once, will be unmapped automatically
+   * @param cmdModuleName Module name of a command object, req execute(dataObj) function
    */
   function mapEventCommand(evt, cmdModuleName) {
     _emitterCommandMap[evt] = _emitter.subscribeCommand(evt, cmdModuleName);
@@ -200,6 +194,7 @@ var APP = (function () {
     _view.mapView(templateID, controller, unique);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
+      // dataObj is from the router, inject previous state data from the model
       _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
     }});
   }

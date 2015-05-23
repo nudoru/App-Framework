@@ -1,8 +1,7 @@
 define('APP.View',
   function (require, module, exports) {
 
-    var _self,
-      _appContainerEl,
+    var _appContainerEl,
       _appEl,
       _mainHeaderEl,
       _mainFooterEl,
@@ -22,11 +21,12 @@ define('APP.View',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      _self = this;
-
       render();
     }
 
+    /**
+     * Basic rendering and component init
+     */
     function render() {
       _appContainerEl = document.getElementById('app__container');
       _appEl = document.getElementById('app__contents');
@@ -57,6 +57,10 @@ define('APP.View',
     //  Messaging
     //----------------------------------------------------------------------------
 
+    /**
+     * Show a message box
+     * @param obj
+     */
     function addMessageBox(obj) {
       _messageBoxView.add(obj);
     }
@@ -74,6 +78,10 @@ define('APP.View',
       });
     }
 
+    /**
+     * Show notificiation
+     * @param obj
+     */
     function addNotification(obj) {
       _notificationView.add(obj);
     }
@@ -91,6 +99,9 @@ define('APP.View',
       });
     }
 
+    /**
+     * After app initialization, remove the loading message
+     */
     function removeLoadingMessage() {
       var cover = document.getElementById('initialization__cover'),
         message = document.getElementsByClassName('initialization__message')[0];
@@ -112,10 +123,21 @@ define('APP.View',
     //  Composition
     //----------------------------------------------------------------------------
 
+    /**
+     * Pass to route sub view
+     * @param templateID
+     * @param controller
+     * @param unique
+     */
     function mapView(templateID, controller, unique) {
       _routeSubViewView.mapView(templateID, controller, unique);
     }
 
+    /**
+     * Pass to route sub view
+     * @param viewObj
+     * @param modelData
+     */
     function showView(viewObj, modelData) {
       _routeSubViewView.showView(viewObj, modelData);
     }
