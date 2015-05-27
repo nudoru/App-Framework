@@ -22,9 +22,7 @@ module.exports = function (grunt) {
           '!scripts/vendor/**/*.js',
           '!scripts/vendor/**/*.map',
           '!scripts/main.js',
-          'scripts/config.js',
-          'scripts/vendor/html5shiv.min.js'
-
+          'scripts/config.js'
         ],
         dest: 'deploy',
         expand: true,
@@ -93,7 +91,7 @@ module.exports = function (grunt) {
           'source/scripts/vendor/gsap/TimeLineLite.min.js',
           'source/scripts/vendor/gsap/easing/EasePack.min.js',
           'source/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
-          'source/scripts/vendor/underscore-min.js',
+          'source/scripts/vendor/lodash.min.js',
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'source/scripts/vendor/object-observe.min.js',
 

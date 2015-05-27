@@ -8,8 +8,7 @@
 define('APP.Model',
   function (require, module, exports) {
 
-    var _self,
-      _data,
+    var _data,
       _subviewDataMap = Object.create(null),
       _emitter = require('nudoru.events.Emitter'),
       _appEvents = require('APP.AppEvents');
@@ -19,7 +18,6 @@ define('APP.Model',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      _self = this;
       _emitter.publish(_appEvents.MODEL_DATA_WAITING);
     }
 
@@ -63,7 +61,7 @@ define('APP.Model',
      * @returns {*|{}}
      */
     function retrieveSubViewData(id) {
-      return _subviewDataMap[id] || {}
+      return _subviewDataMap[id] || {};
     }
 
     //----------------------------------------------------------------------------

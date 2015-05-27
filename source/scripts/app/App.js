@@ -1,6 +1,5 @@
 var APP = (function () {
-  var _self,
-    _config,
+  var _config,
     _model,
     _view,
     _emitterCommandMap = Object.create(null),
@@ -47,7 +46,6 @@ var APP = (function () {
 
     initializeConfig();
 
-    _self = this;
     _model = model;
     _view = view;
 
