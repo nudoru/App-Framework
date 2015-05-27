@@ -1,5 +1,5 @@
 /**
- *
+ * Starting point for the application after the view renders and model data is loaded
  */
 
 define('TT.RunApplicationCommand',
@@ -8,12 +8,23 @@ define('TT.RunApplicationCommand',
     exports.execute = function(data) {
       console.log('TT.RunApplicationCommand');
 
-      // Core commands mapped in Nori postInitialize()
+      // Browser events
+      // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
+      // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
 
-      // Map route args:
-      // url fragment for route, ID (template id), module name for controller, use singleton module
+      // App events
+      // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
+      // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
+      // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
+      // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
+
+      /*
+       Map route args:
+       url fragment for route, ID (template id), module name for controller, use singleton module
+       */
 
       // Default route
+      TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
 
       // Other routes
       TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
@@ -21,6 +32,11 @@ define('TT.RunApplicationCommand',
       TT.mapRouteView('/one', 'TestSubView1', 'TT.View.TemplateSubView');
       TT.mapRouteView('/two', 'TestSubView2', 'TT.View.TemplateSubView');
       TT.mapRouteView('/three', 'TestSubView3', 'TT.View.TemplateSubView');
+
+      // Timecard mock
+      TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
 
       TT.view().removeLoadingMessage();
 

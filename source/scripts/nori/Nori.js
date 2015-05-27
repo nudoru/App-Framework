@@ -87,8 +87,8 @@ var Nori = (function () {
 
   /**
    * Init step 2
-   * A MODEL_DATA_WAITING event will dispatch, running the 'Nori.ModelDataWaitingCommand'
-   * which will inject data and then onModelDataReady() will run
+   * A MODEL_DATA_WAITING event will dispatch, data should be injected to the model
+   * from a command
    */
   function initializeModel() {
     _emitter.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
@@ -158,7 +158,7 @@ var Nori = (function () {
    * @param routeObj props: route, data, fromApp
    */
   function setCurrentRoute(routeObj) {
-    console.log('Nori.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
+    //console.log('Nori.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
     if(isValidRoute(routeObj.route)) {
       _config.currentRoute = routeObj;
 
@@ -172,9 +172,34 @@ var Nori = (function () {
 
       _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
     } else {
-      console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
+      //console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
     }
+  }
+
+  //----------------------------------------------------------------------------
+  //  Subclassing utils, somewhat inspired by Ember
+  //----------------------------------------------------------------------------
+
+  /**
+   * Merges objects
+   * @param dest Destination object
+   * @param src Source
+   * @returns {*}
+   */
+  function extend(dest, src) {
+    dest = _.assign({}, src, dest);
+    dest._super = src;
+    return dest;
+  }
+
+  /**
+   * Returns a new Nori application instance by extending a base if specified
+   * @param ext
+   * @returns {*}
+   */
+  function create(ext) {
+    return extend(ext, this);
   }
 
   //----------------------------------------------------------------------------
@@ -215,39 +240,17 @@ var Nori = (function () {
     _view.mapView(templateID, controller);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
-      // dataObj is from the router, inject previous state data from the model
+      // dataObj is from the router
       showRouteView(dataObj);
     }});
   }
 
+  /**
+   * Pass to the view to show the subview. injects any previous data from the model
+   * @param dataObj
+   */
   function showRouteView(dataObj) {
-    if(_view) {
-      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
-    } else {
-      throw new Error('Nori: No view defined, cannot route to subview');
-    }
-  }
-
-  /**
-   * Merges objects
-   * @param dest Destination object
-   * @param src Source
-   * @returns {*}
-   */
-  function extend(dest, src) {
-    // more testing, should use assign for shallow copy?
-    dest = _.assign({}, src, dest);
-    dest._super = src;
-    return dest;
-  }
-
-  /**
-   * Returns a new Nori application instance by extending a base if specified
-   * @param ext
-   * @returns {*}
-   */
-  function create(ext) {
-    return extend(ext, this);
+     _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
   }
 
   //----------------------------------------------------------------------------

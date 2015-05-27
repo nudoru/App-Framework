@@ -37,16 +37,16 @@ html
           h1 Modules
         .content
           ul.list-round-buttons
-            li.active
-              .button
+            li
+              .button#btn_assignments
                 i.fa.fa-cubes
               .label Assignments
             li
-              .button
+              .button#btn_timecard
                 i.fa.fa-list
               .label Time Card
             li
-              .button
+              .button#btn_forecast
                 i.fa.fa-area-chart
               .label Cap. Forecast
 
@@ -58,9 +58,9 @@ html
             //include mock-components
             include user-info
             section#contents
-              include forecast
-              include assignments
-              include timeentry
+              //include forecast
+              //include assignments
+              //include timeentry
         //footer#footer
           p.icon-left
             i.fa.fa-cogs

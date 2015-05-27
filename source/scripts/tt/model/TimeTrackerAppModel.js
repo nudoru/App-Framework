@@ -8,7 +8,6 @@ define('TT.TimeTrackerAppModel',
   function (require, module, exports) {
 
     function initialize() {
-      console.log('tt app model');
       this._super.initialize();
     }
 

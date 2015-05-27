@@ -12,7 +12,7 @@ define('nudoru.components.ModalCoverView',
       _modalClickStream,
       _isVisible,
       _isHard,
-      _eventDispatcher = require('nudoru.events.EventDispatcher'),
+      _emitter = require('nudoru.events.Emitter'),
       _componentEvents = require('nudoru.events.ComponentEvents'),
       _browserInfo = require('nudoru.utils.BrowserInfo');
 
@@ -65,7 +65,7 @@ define('nudoru.components.ModalCoverView',
         delay: 2
       });
 
-      _eventDispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
+      _emitter.publish(_componentEvents.MODAL_COVER_SHOW);
     }
 
     /**
@@ -98,7 +98,7 @@ define('nudoru.components.ModalCoverView',
         ease: Quad.easeOut
       });
 
-      _eventDispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
+      _emitter.publish(_componentEvents.MODAL_COVER_HIDE);
     }
 
     exports.initialize = initialize;

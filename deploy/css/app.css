@@ -4426,8 +4426,8 @@ body {
   bottom: 100%;
   min-height: 100%;
   top: 0;
-  left: 0;
-  margin-left: 120px;
+  left: 120px;
+  right: 0;
   background-color: whitesmoke;
   overflow-y: auto;
 }
