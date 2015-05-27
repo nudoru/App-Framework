@@ -1,9 +1,9 @@
-define('APP.URLHashChangedCommand',
+define('Nori.URLHashChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('URLHashChangedCommand: fragment: '+data.fragment+', routeObj: '+data.routeObj);
-      APP.setCurrentRoute(data.routeObj);
+      Nori.setCurrentRoute(data.routeObj);
     };
 
   });

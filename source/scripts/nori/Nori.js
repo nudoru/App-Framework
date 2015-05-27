@@ -1,9 +1,9 @@
-var APP = (function () {
+var Nori = (function () {
   var _config,
     _model,
     _view,
     _emitterCommandMap = Object.create(null),
-    _appEvents = require('APP.AppEvents'),
+    _appEvents = require('Nori.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _emitter = require('nudoru.events.Emitter'),
@@ -43,7 +43,7 @@ var APP = (function () {
    * @param view
    */
   function initialize(model, view) {
-    console.log('APP: Initialize');
+    console.log('Nori: Initialize');
 
     initializeConfig();
 
@@ -53,8 +53,8 @@ var APP = (function () {
     _router.initialize();
 
     // Commands used in application loading / core initialization
-    mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'APP.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.InitializeAppCommand', true);
+    mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'Nori.ModelDataWaitingCommand', true);
+    mapEventCommand(_appEvents.APP_INITIALIZED, 'Nori.InitializeAppCommand', true);
 
     initializeView();
   }
@@ -87,7 +87,7 @@ var APP = (function () {
 
   /**
    * Init step 2
-   * A MODEL_DATA_WAITING event will dispatch, running the 'APP.ModelDataWaitingCommand'
+   * A MODEL_DATA_WAITING event will dispatch, running the 'Nori.ModelDataWaitingCommand'
    * which will inject data and then onModelDataReady() will run
    */
   function initializeModel() {
@@ -116,19 +116,19 @@ var APP = (function () {
    */
   function bootStrapCommands() {
     // Browser events
-    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'APP.BrowserResizedCommand');
-    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'APP.BrowserScrolledCommand');
-    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'APP.URLHashChangedCommand');
+    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
+    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
 
     // App events
-    mapEventCommand(_appEvents.ROUTE_CHANGED, 'APP.RouteChangedCommand');
-    mapEventCommand(_appEvents.CHANGE_ROUTE, 'APP.ChangeRouteCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
+    mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
 
     // Subviews
-    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'APP.SubViewStoreDataCommand');
+    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
   }
   
   //----------------------------------------------------------------------------
@@ -158,7 +158,7 @@ var APP = (function () {
    * @param routeObj props: route, data, fromApp
    */
   function setCurrentRoute(routeObj) {
-    console.log('APP.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
+    console.log('Nori.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
     if(isValidRoute(routeObj.route)) {
       _config.currentRoute = routeObj;
 
@@ -172,7 +172,7 @@ var APP = (function () {
 
       _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
     } else {
-      console.log('APP.setCurrentRoute, not a valid route: '+routeObj.route);
+      console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
     }
   }

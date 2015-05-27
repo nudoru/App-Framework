@@ -5,13 +5,13 @@
  */
 
 
-define('APP.Model',
+define('Nori.Model',
   function (require, module, exports) {
 
     var _data,
       _subviewDataMap = Object.create(null),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('APP.AppEvents');
+      _appEvents = require('Nori.AppEvents');
 
     //----------------------------------------------------------------------------
     //  Initialization

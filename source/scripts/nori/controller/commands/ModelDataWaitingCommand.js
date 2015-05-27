@@ -1,4 +1,4 @@
-define('APP.ModelDataWaitingCommand',
+define('Nori.ModelDataWaitingCommand',
   function (require, module, exports) {
 
     /**
@@ -8,7 +8,7 @@ define('APP.ModelDataWaitingCommand',
     exports.execute = function(data) {
       console.log('ModelDataWaitingCommand, injecting data');
 
-      APP.model().setData({});
+      Nori.model().setData({});
     };
 
   });

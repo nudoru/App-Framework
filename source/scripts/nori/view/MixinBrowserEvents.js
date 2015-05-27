@@ -1,4 +1,4 @@
-define('APP.View.MixinBrowserEvents',
+define('Nori.View.MixinBrowserEvents',
   function (require, module, exports) {
 
     var _currentViewPortSize,

@@ -2,7 +2,7 @@
  * A template for a subview/route controller
  */
 
-define('APP.View.TemplateSubView',
+define('Nori.View.TemplateSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -15,7 +15,7 @@ define('APP.View.TemplateSubView',
       _modelData,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('APP.AppEvents');
+      _appEvents = require('Nori.AppEvents');
 
     /**
      * Initialization

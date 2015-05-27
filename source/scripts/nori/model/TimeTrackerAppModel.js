@@ -1,14 +1,14 @@
 /**
- * Must be extended from APP.View module
+ * Must be extended from Nori.Model module
  *
- * this._super refers to APP.View
+ * this._super refers to Nori.Model
  */
 
-define('APP.TimeTrackerAppView',
+define('Nori.TimeTrackerAppModel',
   function (require, module, exports) {
 
     function initialize() {
-      console.log('tt app view');
+      console.log('tt app model');
       this._super.initialize();
     }
 

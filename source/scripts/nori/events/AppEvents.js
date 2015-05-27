@@ -1,4 +1,4 @@
-define('APP.AppEvents',
+define('Nori.AppEvents',
   function (require, module, exports) {
     exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.MODEL_DATA_WAITING = 'MODEL_DATA_WAITING';

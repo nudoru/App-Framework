@@ -1,4 +1,4 @@
-define('APP.ViewChangedToDesktopCommand',
+define('Nori.ViewChangedToDesktopCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

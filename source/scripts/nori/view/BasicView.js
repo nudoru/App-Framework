@@ -1,8 +1,8 @@
-define('APP.BasicView',
+define('Nori.BasicView',
   function (require, module, exports) {
 
     var _self,
-      _eventDispatcher = APP.eventDispatcher();
+      _eventDispatcher = Nori.eventDispatcher();
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -10,12 +10,12 @@ define('APP.BasicView',
 
     function initialize() {
       _self = this;
-      _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
+      _eventDispatcher.publish(Nori.AppEvents.VIEW_INITIALIZED);
       render();
     }
 
     function render() {
-      _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
+      _eventDispatcher.publish(Nori.AppEvents.VIEW_RENDERED);
     }
 
     //----------------------------------------------------------------------------

@@ -2144,7 +2144,7 @@ define('nudoru.utils.NDebugger',
       return _positions
     };
 
-  });;define('APP.AppEvents',
+  });;define('Nori.AppEvents',
   function (require, module, exports) {
     exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.MODEL_DATA_WAITING = 'MODEL_DATA_WAITING';
@@ -2158,266 +2158,13 @@ define('nudoru.utils.NDebugger',
     exports.ROUTE_CHANGED = 'ROUTE_CHANGED';
     exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
     exports.SUBVIEW_STORE_DATA = 'SUBVIEW_STORE_DATA';
-  });;var APP = (function () {
-  var _config,
-    _model,
-    _view,
-    _emitterCommandMap = Object.create(null),
-    _appEvents = require('APP.AppEvents'),
-    _browserEvents = require('nudoru.events.BrowserEvents'),
-    _objectUtils = require('nudoru.utils.ObjectUtils'),
-    _emitter = require('nudoru.events.Emitter'),
-    _router = require('nudoru.utils.Router');
-
-  //----------------------------------------------------------------------------
-  //  Accessors
-  //----------------------------------------------------------------------------
-
-  function getEmitter() {
-    return _emitter;
-  }
-
-  function getRouter() {
-    return _router;
-  }
-
-  function getView() {
-    return _view;
-  }
-
-  function getModel() {
-    return _model;
-  }
-
-  function getConfig() {
-    return _objectUtils.extend({}, _config);
-  }
-
-  //----------------------------------------------------------------------------
-  //  Initialize
-  //----------------------------------------------------------------------------
-
-  /**
-   * Init the app and inject the model and view
-   * @param model
-   * @param view
-   */
-  function initialize(model, view) {
-    console.log('APP: Initialize');
-
-    initializeConfig();
-
-    _model = model;
-    _view = view;
-
-    _router.initialize();
-
-    // Commands used in application loading / core initialization
-    mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'APP.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.InitializeAppCommand', true);
-
-    initializeView();
-  }
-
-  /**
-   * Initialize the global vars
-   */
-  function initializeConfig() {
-    _config = {
-      appConfig: APP_CONFIG_DATA,
-      routes: [],
-      currentRoute: {
-        route: '/',
-        data: undefined
-      }
-    };
-  }
-
-  //----------------------------------------------------------------------------
-  //  MVC Initialization
-  //----------------------------------------------------------------------------
-
-  /**
-   * Init step 1
-   */
-  function initializeView() {
-    _view.initialize();
-    initializeModel();
-  }
-
-  /**
-   * Init step 2
-   * A MODEL_DATA_WAITING event will dispatch, running the 'APP.ModelDataWaitingCommand'
-   * which will inject data and then onModelDataReady() will run
-   */
-  function initializeModel() {
-    _emitter.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
-    _model.initialize();
-  }
-
-  /**
-   * Init step 3
-   */
-  function onModelDataReady() {
-    postInitialize();
-  }
-
-  /**
-   * Init step 4
-   * All APP initialization is complete, pass over to AppInitialzedCommand
-   */
-  function postInitialize() {
-    bootStrapCommands();
-    _emitter.publish(_appEvents.APP_INITIALIZED);
-  }
-
-  /**
-   * Core APP command mapping
-   */
-  function bootStrapCommands() {
-    // Browser events
-    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'APP.BrowserResizedCommand');
-    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'APP.BrowserScrolledCommand');
-    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'APP.URLHashChangedCommand');
-
-    // App events
-    mapEventCommand(_appEvents.ROUTE_CHANGED, 'APP.RouteChangedCommand');
-    mapEventCommand(_appEvents.CHANGE_ROUTE, 'APP.ChangeRouteCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
-
-    // Subviews
-    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'APP.SubViewStoreDataCommand');
-  }
-  
-  //----------------------------------------------------------------------------
-  //  Route Validation
-  //  Route obj is {route: '/whatever', data:{var:value,...}
-  //----------------------------------------------------------------------------
-
-  /**
-   * Add route to the list of valid routes
-   * @param route
-   */
-  function addRouteToConfig(route) {
-    _config.routes.push(route);
-  }
-
-  /**
-   * Determine if the route has been mapped
-   * @param route
-   * @returns {boolean}
-   */
-  function isValidRoute(route) {
-    return _config.routes.indexOf(route) > -1;
-  }
-
-  /**
-   * Allow the router to run the route view mapping if it's valid
-   * @param routeObj props: route, data, fromApp
-   */
-  function setCurrentRoute(routeObj) {
-    console.log('APP.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
-    if(isValidRoute(routeObj.route)) {
-      _config.currentRoute = routeObj;
-
-      // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
-      // else is a URL change and just execute current mapping
-      if(routeObj.fromApp) {
-        _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
-      } else {
-        _router.runCurrentRoute();
-      }
-
-      _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
-    } else {
-      console.log('APP.setCurrentRoute, not a valid route: '+routeObj.route);
-      _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //  Wiring Services
-  //----------------------------------------------------------------------------
-
-  /**
-   * Maps an event to trigger a command when it's published
-   * @param evt The event string
-   * @param cmdModuleName Module name of a command object, req execute(dataObj) function
-   */
-  function mapEventCommand(evt, cmdModuleName) {
-    _emitterCommandMap[evt] = _emitter.subscribeCommand(evt, cmdModuleName);
-  }
-
-  /**
-   * Set the router to execute the command when on the route
-   * @param route
-   * @param templateID
-   * @param command
-   */
-  function mapRouteCommand(route, templateID, command) {
-    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
-      command.execute(dataObj);
-    }});
-  }
-
-  /**
-   * Maps a route to a view controller
-   * @param route
-   * @param templateID
-   * @param controller
-   * @param unique Should it be a singleton controller (false) or unique instance (true)
-   */
-  function mapRouteView(route, templateID, controller, unique) {
-    addRouteToConfig(route);
-
-    _view.mapView(templateID, controller, unique);
-
-    _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
-      // dataObj is from the router, inject previous state data from the model
-      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
-    }});
-  }
-
-  /**
-   * Merges objects. Idea from Ember
-   * @param dest Destination object
-   * @param src Source
-   * @returns {*}
-   */
-  function extend(dest, src) {
-    // more testing, should use assign for shallow copy?
-    dest = _.merge({}, src, dest);
-    dest._super = src;
-    return dest;
-  }
-
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
-
-  return {
-    initialize: initialize,
-    config: getConfig,
-    getEmitter: getEmitter,
-    router: getRouter,
-    view: getView,
-    model: getModel,
-    setCurrentRoute: setCurrentRoute,
-    mapRouteView: mapRouteView,
-    mapRouteCommand: mapRouteCommand,
-    mapEventCommand: mapEventCommand,
-    extend: extend
-  };
-
-}());;define('APP.Model',
+  });;define('Nori.Model',
   function (require, module, exports) {
 
     var _data,
       _subviewDataMap = Object.create(null),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('APP.AppEvents');
+      _appEvents = require('Nori.AppEvents');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -2481,7 +2228,7 @@ define('nudoru.utils.NDebugger',
     exports.storeSubViewData = storeSubViewData;
     exports.retrieveSubViewData = retrieveSubViewData;
 
-  });;define('APP.TimeTrackerAppModel',
+  });;define('Nori.TimeTrackerAppModel',
   function (require, module, exports) {
 
     function initialize() {
@@ -2491,7 +2238,7 @@ define('nudoru.utils.NDebugger',
 
     exports.initialize = initialize;
 
-  });;define('APP.View.ControlsTestingSubView',
+  });;define('Nori.View.ControlsTestingSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -2505,7 +2252,7 @@ define('nudoru.utils.NDebugger',
       _lIpsum = require('nudoru.utils.NLorem'),
       _toolTip = require('nudoru.components.ToolTipView'),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('APP.AppEvents'),
+      _appEvents = require('Nori.AppEvents'),
       _actionOneEl,
       _actionTwoEl,
       _actionThreeEl,
@@ -2570,7 +2317,7 @@ define('nudoru.utils.NDebugger',
 
 
       _actionOneEl.addEventListener('click', function actOne(e) {
-        APP.view().addMessageBox({
+        Nori.view().addMessageBox({
           title: _lIpsum.getSentence(2,4),
           content: _lIpsum.getParagraph(2, 4),
           type: 'warning',
@@ -2580,7 +2327,7 @@ define('nudoru.utils.NDebugger',
       });
 
       _actionTwoEl.addEventListener('click', function actTwo(e) {
-        APP.view().addMessageBox({
+        Nori.view().addMessageBox({
           title: _lIpsum.getSentence(10,20),
           content: _lIpsum.getParagraph(2, 4),
           type: 'default',
@@ -2615,7 +2362,7 @@ define('nudoru.utils.NDebugger',
       });
 
       _actionThreeEl.addEventListener('click', function actThree(e) {
-        APP.view().addNotification({
+        Nori.view().addNotification({
           title: _lIpsum.getSentence(3,6),
           type: 'information',
           content: _lIpsum.getParagraph(1, 2)
@@ -2658,7 +2405,7 @@ define('nudoru.utils.NDebugger',
     exports.viewDidMount = viewDidMount;
     exports.viewWillUnMount = viewWillUnMount;
 
-  });;define('APP.View.TemplateSubView',
+  });;define('Nori.View.TemplateSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -2671,7 +2418,7 @@ define('nudoru.utils.NDebugger',
       _modelData,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('APP.AppEvents');
+      _appEvents = require('Nori.AppEvents');
 
     /**
      * Initialization
@@ -2761,11 +2508,11 @@ define('nudoru.utils.NDebugger',
     exports.viewDidMount = viewDidMount;
     exports.viewWillUnMount = viewWillUnMount;
 
-  });;define('APP.BasicView',
+  });;define('Nori.BasicView',
   function (require, module, exports) {
 
     var _self,
-      _eventDispatcher = APP.eventDispatcher();
+      _eventDispatcher = Nori.eventDispatcher();
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -2773,12 +2520,12 @@ define('nudoru.utils.NDebugger',
 
     function initialize() {
       _self = this;
-      _eventDispatcher.publish(APP.AppEvents.VIEW_INITIALIZED);
+      _eventDispatcher.publish(Nori.AppEvents.VIEW_INITIALIZED);
       render();
     }
 
     function render() {
-      _eventDispatcher.publish(APP.AppEvents.VIEW_RENDERED);
+      _eventDispatcher.publish(Nori.AppEvents.VIEW_RENDERED);
     }
 
     //----------------------------------------------------------------------------
@@ -2788,7 +2535,7 @@ define('nudoru.utils.NDebugger',
     exports.initialize = initialize;
     exports.render = render;
 
-  });;define('APP.View.MixinBrowserEvents',
+  });;define('Nori.View.MixinBrowserEvents',
   function (require, module, exports) {
 
     var _currentViewPortSize,
@@ -2915,7 +2662,7 @@ define('nudoru.utils.NDebugger',
     exports.getCurrentViewPortSize = getCurrentViewPortSize;
     exports.getCurrentViewPortScroll = getCurrentViewPortScroll;
 
-  });;define('APP.View.MixinMultiDeviceView',
+  });;define('Nori.View.MixinMultiDeviceView',
   function (require, module, exports) {
 
     var _drawerEl,
@@ -2929,7 +2676,7 @@ define('nudoru.utils.NDebugger',
       _drawerWidth,
       _isDrawerOpen,
       _currentViewPortSize,
-      _appEvents = require('APP.AppEvents'),
+      _appEvents = require('Nori.AppEvents'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _emitter = require('nudoru.events.EventDispatcher');
 
@@ -3031,7 +2778,7 @@ define('nudoru.utils.NDebugger',
     exports.openDrawer = openDrawer;
     exports.closeDrawer = closeDrawer;
     exports.checkForMobile = checkForMobile;
-});;define('APP.View.MixinRouteViews',
+});;define('Nori.View.MixinRouteViews',
   function (require, module, exports) {
 
     var _template = require('nudoru.utils.NTemplate'),
@@ -3039,7 +2786,7 @@ define('nudoru.utils.NDebugger',
       _subViewMapping = Object.create(null),
       _currentSubView,
       _subViewHTMLTemplatePrefix = 'template__',
-      _appEvents = require('APP.AppEvents'),
+      _appEvents = require('Nori.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter');
 
@@ -3131,7 +2878,7 @@ define('nudoru.utils.NDebugger',
     exports.mapView = mapView;
     exports.showView = showView;
 
-  });;define('APP.TimeTrackerAppView',
+  });;define('Nori.TimeTrackerAppView',
   function (require, module, exports) {
 
     function initialize() {
@@ -3141,13 +2888,13 @@ define('nudoru.utils.NDebugger',
 
     exports.initialize = initialize;
 
-  });;define('APP.View',
+  });;define('Nori.View',
   function (require, module, exports) {
 
     var _appContainerEl,
       _appEl,
-      _browserEventView = require('APP.View.MixinBrowserEvents'),
-      _routeSubViewView = require('APP.View.MixinRouteViews'),
+      _browserEventView = require('Nori.View.MixinBrowserEvents'),
+      _routeSubViewView = require('Nori.View.MixinRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
       _toolTipView = require('nudoru.components.ToolTipView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
@@ -3307,35 +3054,35 @@ define('nudoru.utils.NDebugger',
     exports.getAppContainerEl = getAppContainerEl;
     exports.getAppEl = getAppEl;
 
-  });;define('APP.BrowserResizedCommand',
+  });;define('Nori.BrowserResizedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
     };
 
-  });;define('APP.BrowserScrolledCommand',
+  });;define('Nori.BrowserScrolledCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
     };
 
-  });;define('APP.ChangeRouteCommand',
+  });;define('Nori.ChangeRouteCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('ChangeRouteCommand, route: '+data.route);
       data.fromApp = true;
-      APP.setCurrentRoute(data);
+      Nori.setCurrentRoute(data);
     };
 
-  });;define('APP.InitializeAppCommand',
+  });;define('Nori.InitializeAppCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       var _browserEvents = require('nudoru.events.BrowserEvents'),
-          _appEvents = require('APP.AppEvents');
+          _appEvents = require('Nori.AppEvents');
 
       console.log('InitializeAppCommand');
 
@@ -3345,25 +3092,25 @@ define('nudoru.utils.NDebugger',
       // url fragment for route, ID (template id), module name for controller, use singleton module
 
       // Default route
-      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
+      Nori.mapRouteView('/', 'ControlsTesting', 'Nori.View.ControlsTestingSubView', false);
 
       // Other routes
-      APP.mapRouteView('/test', 'TestSubView', 'APP.View.TemplateSubView', true);
-      APP.mapRouteView('/one', 'TestSubView1', 'APP.View.TemplateSubView', true);
-      APP.mapRouteView('/two', 'TestSubView2', 'APP.View.TemplateSubView', true);
-      APP.mapRouteView('/three', 'TestSubView3', 'APP.View.TemplateSubView', true);
+      Nori.mapRouteView('/test', 'TestSubView', 'Nori.View.TemplateSubView', true);
+      Nori.mapRouteView('/one', 'TestSubView1', 'Nori.View.TemplateSubView', true);
+      Nori.mapRouteView('/two', 'TestSubView2', 'Nori.View.TemplateSubView', true);
+      Nori.mapRouteView('/three', 'TestSubView3', 'Nori.View.TemplateSubView', true);
 
-      APP.view().removeLoadingMessage();
+      Nori.view().removeLoadingMessage();
 
-      //APP.router().setRoute('/foo',{
+      //Nori.router().setRoute('/foo',{
       //  bar:'baz',
       //  baz:'foo'
       //});
 
-      APP.setCurrentRoute(APP.router().getCurrentRoute());
+      Nori.setCurrentRoute(Nori.router().getCurrentRoute());
     };
 
-  });;define('APP.ModelDataWaitingCommand',
+  });;define('Nori.ModelDataWaitingCommand',
   function (require, module, exports) {
 
     /**
@@ -3373,60 +3120,313 @@ define('nudoru.utils.NDebugger',
     exports.execute = function(data) {
       console.log('ModelDataWaitingCommand, injecting data');
 
-      APP.model().setData({});
+      Nori.model().setData({});
     };
 
-  });;define('APP.RouteChangedCommand',
+  });;define('Nori.RouteChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       //console.log('RouteChangedCommand, route: '+data.route+', data: '+data.data);
     };
 
-  });;define('APP.SubViewStoreDataCommand',
+  });;define('Nori.SubViewStoreDataCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('SubViewStoreDataCommand, subviewid: '+data.id+', data: '+data.data);
-      APP.model().storeSubViewData(data.id, data.data);
+      Nori.model().storeSubViewData(data.id, data.data);
     };
 
-  });;define('APP.URLHashChangedCommand',
+  });;define('Nori.URLHashChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('URLHashChangedCommand: fragment: '+data.fragment+', routeObj: '+data.routeObj);
-      APP.setCurrentRoute(data.routeObj);
+      Nori.setCurrentRoute(data.routeObj);
     };
 
-  });;define('APP.ViewChangedCommand',
+  });;define('Nori.ViewChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('ViewChangedCommand: '+data);
     };
 
-  });;define('APP.ViewChangedToDesktopCommand',
+  });;define('Nori.ViewChangedToDesktopCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('ViewChangedToDesktopCommand: '+data);
     };
 
-  });;define('APP.ViewChangedToMobileCommand',
+  });;define('Nori.ViewChangedToMobileCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('ViewChangedToMobileCommand: '+data);
     };
 
-  });;(function () {
+  });;var Nori = (function () {
+  var _config,
+    _model,
+    _view,
+    _emitterCommandMap = Object.create(null),
+    _appEvents = require('Nori.AppEvents'),
+    _browserEvents = require('nudoru.events.BrowserEvents'),
+    _objectUtils = require('nudoru.utils.ObjectUtils'),
+    _emitter = require('nudoru.events.Emitter'),
+    _router = require('nudoru.utils.Router');
+
+  //----------------------------------------------------------------------------
+  //  Accessors
+  //----------------------------------------------------------------------------
+
+  function getEmitter() {
+    return _emitter;
+  }
+
+  function getRouter() {
+    return _router;
+  }
+
+  function getView() {
+    return _view;
+  }
+
+  function getModel() {
+    return _model;
+  }
+
+  function getConfig() {
+    return _objectUtils.extend({}, _config);
+  }
+
+  //----------------------------------------------------------------------------
+  //  Initialize
+  //----------------------------------------------------------------------------
+
+  /**
+   * Init the app and inject the model and view
+   * @param model
+   * @param view
+   */
+  function initialize(model, view) {
+    console.log('Nori: Initialize');
+
+    initializeConfig();
+
+    _model = model;
+    _view = view;
+
+    _router.initialize();
+
+    // Commands used in application loading / core initialization
+    mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'Nori.ModelDataWaitingCommand', true);
+    mapEventCommand(_appEvents.APP_INITIALIZED, 'Nori.InitializeAppCommand', true);
+
+    initializeView();
+  }
+
+  /**
+   * Initialize the global vars
+   */
+  function initializeConfig() {
+    _config = {
+      appConfig: APP_CONFIG_DATA,
+      routes: [],
+      currentRoute: {
+        route: '/',
+        data: undefined
+      }
+    };
+  }
+
+  //----------------------------------------------------------------------------
+  //  MVC Initialization
+  //----------------------------------------------------------------------------
+
+  /**
+   * Init step 1
+   */
+  function initializeView() {
+    _view.initialize();
+    initializeModel();
+  }
+
+  /**
+   * Init step 2
+   * A MODEL_DATA_WAITING event will dispatch, running the 'Nori.ModelDataWaitingCommand'
+   * which will inject data and then onModelDataReady() will run
+   */
+  function initializeModel() {
+    _emitter.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
+    _model.initialize();
+  }
+
+  /**
+   * Init step 3
+   */
+  function onModelDataReady() {
+    postInitialize();
+  }
+
+  /**
+   * Init step 4
+   * All APP initialization is complete, pass over to AppInitialzedCommand
+   */
+  function postInitialize() {
+    bootStrapCommands();
+    _emitter.publish(_appEvents.APP_INITIALIZED);
+  }
+
+  /**
+   * Core APP command mapping
+   */
+  function bootStrapCommands() {
+    // Browser events
+    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
+    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
+
+    // App events
+    mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
+
+    // Subviews
+    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
+  }
+  
+  //----------------------------------------------------------------------------
+  //  Route Validation
+  //  Route obj is {route: '/whatever', data:{var:value,...}
+  //----------------------------------------------------------------------------
+
+  /**
+   * Add route to the list of valid routes
+   * @param route
+   */
+  function addRouteToConfig(route) {
+    _config.routes.push(route);
+  }
+
+  /**
+   * Determine if the route has been mapped
+   * @param route
+   * @returns {boolean}
+   */
+  function isValidRoute(route) {
+    return _config.routes.indexOf(route) > -1;
+  }
+
+  /**
+   * Allow the router to run the route view mapping if it's valid
+   * @param routeObj props: route, data, fromApp
+   */
+  function setCurrentRoute(routeObj) {
+    console.log('Nori.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
+    if(isValidRoute(routeObj.route)) {
+      _config.currentRoute = routeObj;
+
+      // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
+      // else is a URL change and just execute current mapping
+      if(routeObj.fromApp) {
+        _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
+      } else {
+        _router.runCurrentRoute();
+      }
+
+      _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
+    } else {
+      console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
+      _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  //  Wiring Services
+  //----------------------------------------------------------------------------
+
+  /**
+   * Maps an event to trigger a command when it's published
+   * @param evt The event string
+   * @param cmdModuleName Module name of a command object, req execute(dataObj) function
+   */
+  function mapEventCommand(evt, cmdModuleName) {
+    _emitterCommandMap[evt] = _emitter.subscribeCommand(evt, cmdModuleName);
+  }
+
+  /**
+   * Set the router to execute the command when on the route
+   * @param route
+   * @param templateID
+   * @param command
+   */
+  function mapRouteCommand(route, templateID, command) {
+    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
+      command.execute(dataObj);
+    }});
+  }
+
+  /**
+   * Maps a route to a view controller
+   * @param route
+   * @param templateID
+   * @param controller
+   * @param unique Should it be a singleton controller (false) or unique instance (true)
+   */
+  function mapRouteView(route, templateID, controller, unique) {
+    addRouteToConfig(route);
+
+    _view.mapView(templateID, controller, unique);
+
+    _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
+      // dataObj is from the router, inject previous state data from the model
+      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
+    }});
+  }
+
+  /**
+   * Merges objects. Idea from Ember
+   * @param dest Destination object
+   * @param src Source
+   * @returns {*}
+   */
+  function extend(dest, src) {
+    // more testing, should use assign for shallow copy?
+    dest = _.merge({}, src, dest);
+    dest._super = src;
+    return dest;
+  }
+
+  //----------------------------------------------------------------------------
+  //  API
+  //----------------------------------------------------------------------------
+
+  return {
+    initialize: initialize,
+    config: getConfig,
+    getEmitter: getEmitter,
+    router: getRouter,
+    view: getView,
+    model: getModel,
+    setCurrentRoute: setCurrentRoute,
+    mapRouteView: mapRouteView,
+    mapRouteCommand: mapRouteCommand,
+    mapEventCommand: mapEventCommand,
+    extend: extend
+  };
+
+}());;(function () {
 
   var _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _model = APP.extend(require('APP.TimeTrackerAppModel'), require('APP.Model')),
-      _view = APP.extend(require('APP.TimeTrackerAppView'), require('APP.View'));
+      _model = Nori.extend(require('Nori.TimeTrackerAppModel'), require('Nori.Model')),
+      _view = Nori.extend(require('Nori.TimeTrackerAppView'), require('Nori.View'));
 
-  window.onload = APP.initialize(_model, _view);
+  window.onload = Nori.initialize(_model, _view);
 
   if(_browserInfo.notSupported) {
     alert("Your browser is not supported! Please use IE 9+, Firefox, Chrome or Safari.");

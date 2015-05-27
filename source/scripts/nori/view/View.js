@@ -1,10 +1,10 @@
-define('APP.View',
+define('Nori.View',
   function (require, module, exports) {
 
     var _appContainerEl,
       _appEl,
-      _browserEventView = require('APP.View.MixinBrowserEvents'),
-      _routeSubViewView = require('APP.View.MixinRouteViews'),
+      _browserEventView = require('Nori.View.MixinBrowserEvents'),
+      _routeSubViewView = require('Nori.View.MixinRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
       _toolTipView = require('nudoru.components.ToolTipView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),

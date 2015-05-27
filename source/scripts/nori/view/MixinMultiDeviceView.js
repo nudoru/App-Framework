@@ -5,7 +5,7 @@
  * Extracted from View 5/6/15
  */
 
-define('APP.View.MixinMultiDeviceView',
+define('Nori.View.MixinMultiDeviceView',
   function (require, module, exports) {
 
     var _drawerEl,
@@ -19,7 +19,7 @@ define('APP.View.MixinMultiDeviceView',
       _drawerWidth,
       _isDrawerOpen,
       _currentViewPortSize,
-      _appEvents = require('APP.AppEvents'),
+      _appEvents = require('Nori.AppEvents'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _emitter = require('nudoru.events.EventDispatcher');
 

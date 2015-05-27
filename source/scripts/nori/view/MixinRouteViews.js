@@ -1,4 +1,4 @@
-define('APP.View.MixinRouteViews',
+define('Nori.View.MixinRouteViews',
   function (require, module, exports) {
 
     var _template = require('nudoru.utils.NTemplate'),
@@ -6,7 +6,7 @@ define('APP.View.MixinRouteViews',
       _subViewMapping = Object.create(null),
       _currentSubView,
       _subViewHTMLTemplatePrefix = 'template__',
-      _appEvents = require('APP.AppEvents'),
+      _appEvents = require('Nori.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter');
 

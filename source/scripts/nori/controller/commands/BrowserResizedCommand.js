@@ -1,4 +1,4 @@
-define('APP.BrowserResizedCommand',
+define('Nori.BrowserResizedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

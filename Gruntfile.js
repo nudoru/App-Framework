@@ -17,7 +17,7 @@ module.exports = function (grunt) {
           '!sass/**',
           '!jade',
           '!jade/templates.html',
-          '!scripts/app/**/*.js',
+          '!scripts/nori/**/*.js',
           '!scripts/nudoru/**/*.js',
           '!scripts/vendor/**/*.js',
           '!scripts/vendor/**/*.map',
@@ -100,14 +100,14 @@ module.exports = function (grunt) {
           'source/scripts/nudoru/events/*.js',
           'source/scripts/nudoru/components/*.js',
 
-          'source/scripts/app/events/*.js',
-          'source/scripts/app/App.js',
-          'source/scripts/app/model/modules/*.js',
-          'source/scripts/app/model/*.js',
-          'source/scripts/app/view/modules/*.js',
-          'source/scripts/app/view/*.js',
-          'source/scripts/app/controller/*.js',
-          'source/scripts/app/controller/commands/*.js',
+          'source/scripts/nori/events/*.js',
+          'source/scripts/nori/model/modules/*.js',
+          'source/scripts/nori/model/*.js',
+          'source/scripts/nori/view/modules/*.js',
+          'source/scripts/nori/view/*.js',
+          'source/scripts/nori/controller/*.js',
+          'source/scripts/nori/controller/commands/*.js',
+          'source/scripts/nori/Nori.js',
           'source/scripts/main.js'
         ],
         dest: 'deploy/scripts/libs.js'
@@ -129,7 +129,7 @@ module.exports = function (grunt) {
     },
 
     jshint: {
-      files: ['source/scripts/nudoru/*.js', 'source/scripts/app/**/*.js'],
+      files: ['source/scripts/nudoru/*.js', 'source/scripts/nori/**/*.js'],
       options: {
         '-W014': true,
         '-W061': true,

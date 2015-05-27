@@ -2,7 +2,7 @@
  * A template for a subview/route controller
  */
 
-define('APP.View.ControlsTestingSubView',
+define('Nori.View.ControlsTestingSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -16,7 +16,7 @@ define('APP.View.ControlsTestingSubView',
       _lIpsum = require('nudoru.utils.NLorem'),
       _toolTip = require('nudoru.components.ToolTipView'),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('APP.AppEvents'),
+      _appEvents = require('Nori.AppEvents'),
       _actionOneEl,
       _actionTwoEl,
       _actionThreeEl,
@@ -81,7 +81,7 @@ define('APP.View.ControlsTestingSubView',
 
 
       _actionOneEl.addEventListener('click', function actOne(e) {
-        APP.view().addMessageBox({
+        Nori.view().addMessageBox({
           title: _lIpsum.getSentence(2,4),
           content: _lIpsum.getParagraph(2, 4),
           type: 'warning',
@@ -91,7 +91,7 @@ define('APP.View.ControlsTestingSubView',
       });
 
       _actionTwoEl.addEventListener('click', function actTwo(e) {
-        APP.view().addMessageBox({
+        Nori.view().addMessageBox({
           title: _lIpsum.getSentence(10,20),
           content: _lIpsum.getParagraph(2, 4),
           type: 'default',
@@ -126,7 +126,7 @@ define('APP.View.ControlsTestingSubView',
       });
 
       _actionThreeEl.addEventListener('click', function actThree(e) {
-        APP.view().addNotification({
+        Nori.view().addNotification({
           title: _lIpsum.getSentence(3,6),
           type: 'information',
           content: _lIpsum.getParagraph(1, 2)

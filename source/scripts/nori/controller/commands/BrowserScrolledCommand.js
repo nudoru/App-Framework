@@ -1,4 +1,4 @@
-define('APP.BrowserScrolledCommand',
+define('Nori.BrowserScrolledCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
