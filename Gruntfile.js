@@ -18,6 +18,7 @@ module.exports = function (grunt) {
           '!jade',
           '!jade/templates.html',
           '!scripts/nori/**/*.js',
+          '!scripts/tt/**/*.js',
           '!scripts/nudoru/**/*.js',
           '!scripts/vendor/**/*.js',
           '!scripts/vendor/**/*.map',

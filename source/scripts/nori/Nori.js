@@ -3,7 +3,7 @@ var Nori = (function () {
     _model,
     _view,
     _emitterCommandMap = Object.create(null),
-    _appEvents = require('Nori.AppEvents'),
+    _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _emitter = require('nudoru.events.Emitter'),
@@ -46,15 +46,15 @@ var Nori = (function () {
     console.log('Nori: Initialize');
 
     initializeConfig();
+    _router.initialize();
 
     _model = model;
     _view = view;
 
-    _router.initialize();
-
     // Commands used in application loading / core initialization
-    mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'Nori.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.APP_INITIALIZED, 'Nori.InitializeAppCommand', true);
+    // Set by new app
+    //mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'Nori.ModelDataWaitingCommand', true);
+    //mapEventCommand(_appEvents.APP_INITIALIZED, 'Nori.InitializeAppCommand', true);
 
     initializeView();
   }
@@ -216,21 +216,38 @@ var Nori = (function () {
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
       // dataObj is from the router, inject previous state data from the model
-      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
+      showRouteView(dataObj);
     }});
   }
 
+  function showRouteView(dataObj) {
+    if(_view) {
+      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
+    } else {
+      throw new Error('Nori: No view defined, cannot route to subview');
+    }
+  }
+
   /**
-   * Merges objects. Idea from Ember
+   * Merges objects
    * @param dest Destination object
    * @param src Source
    * @returns {*}
    */
   function extend(dest, src) {
     // more testing, should use assign for shallow copy?
-    dest = _.merge({}, src, dest);
+    dest = _.assign({}, src, dest);
     dest._super = src;
     return dest;
+  }
+
+  /**
+   * Returns a new Nori application instance by extending a base if specified
+   * @param ext
+   * @returns {*}
+   */
+  function create(ext) {
+    return extend(ext, this);
   }
 
   //----------------------------------------------------------------------------
@@ -248,7 +265,8 @@ var Nori = (function () {
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
-    extend: extend
+    extend: extend,
+    create: create
   };
 
 }());

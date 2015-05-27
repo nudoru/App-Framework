@@ -11,7 +11,7 @@ define('Nori.Model',
     var _data,
       _subviewDataMap = Object.create(null),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('Nori.AppEvents');
+      _appEvents = require('Nori.Events.AppEvents');
 
     //----------------------------------------------------------------------------
     //  Initialization

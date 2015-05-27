@@ -2144,7 +2144,7 @@ define('nudoru.utils.NDebugger',
       return _positions
     };
 
-  });;define('Nori.AppEvents',
+  });;define('Nori.Events.AppEvents',
   function (require, module, exports) {
     exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.MODEL_DATA_WAITING = 'MODEL_DATA_WAITING';
@@ -2164,7 +2164,7 @@ define('nudoru.utils.NDebugger',
     var _data,
       _subviewDataMap = Object.create(null),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('Nori.AppEvents');
+      _appEvents = require('Nori.Events.AppEvents');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -2242,7 +2242,7 @@ define('nudoru.utils.NDebugger',
       _lIpsum = require('nudoru.utils.NLorem'),
       _toolTip = require('nudoru.components.ToolTipView'),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('Nori.AppEvents'),
+      _appEvents = require('Nori.Events.AppEvents'),
       _actionOneEl,
       _actionTwoEl,
       _actionThreeEl,
@@ -2408,7 +2408,7 @@ define('nudoru.utils.NDebugger',
       _modelData,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('Nori.AppEvents');
+      _appEvents = require('Nori.Events.AppEvents');
 
     /**
      * Initialization
@@ -2666,7 +2666,7 @@ define('nudoru.utils.NDebugger',
       _drawerWidth,
       _isDrawerOpen,
       _currentViewPortSize,
-      _appEvents = require('Nori.AppEvents'),
+      _appEvents = require('Nori.Events.AppEvents'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _emitter = require('nudoru.events.EventDispatcher');
 
@@ -2776,7 +2776,7 @@ define('nudoru.utils.NDebugger',
       _subViewMapping = Object.create(null),
       _currentSubView,
       _subViewHTMLTemplatePrefix = 'template__',
-      _appEvents = require('Nori.AppEvents'),
+      _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter');
 
@@ -3062,7 +3062,7 @@ define('nudoru.utils.NDebugger',
 
     exports.execute = function(data) {
       var _browserEvents = require('nudoru.events.BrowserEvents'),
-          _appEvents = require('Nori.AppEvents');
+          _appEvents = require('Nori.Events.AppEvents');
 
       console.log('InitializeAppCommand');
 
@@ -3152,7 +3152,7 @@ define('nudoru.utils.NDebugger',
     _model,
     _view,
     _emitterCommandMap = Object.create(null),
-    _appEvents = require('Nori.AppEvents'),
+    _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _emitter = require('nudoru.events.Emitter'),
@@ -3195,15 +3195,15 @@ define('nudoru.utils.NDebugger',
     console.log('Nori: Initialize');
 
     initializeConfig();
+    _router.initialize();
 
     _model = model;
     _view = view;
 
-    _router.initialize();
-
     // Commands used in application loading / core initialization
-    mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'Nori.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.APP_INITIALIZED, 'Nori.InitializeAppCommand', true);
+    // Set by new app
+    //mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'Nori.ModelDataWaitingCommand', true);
+    //mapEventCommand(_appEvents.APP_INITIALIZED, 'Nori.InitializeAppCommand', true);
 
     initializeView();
   }
@@ -3365,21 +3365,38 @@ define('nudoru.utils.NDebugger',
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
       // dataObj is from the router, inject previous state data from the model
-      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
+      showRouteView(dataObj);
     }});
   }
 
+  function showRouteView(dataObj) {
+    if(_view) {
+      _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
+    } else {
+      throw new Error('Nori: No view defined, cannot route to subview');
+    }
+  }
+
   /**
-   * Merges objects. Idea from Ember
+   * Merges objects
    * @param dest Destination object
    * @param src Source
    * @returns {*}
    */
   function extend(dest, src) {
     // more testing, should use assign for shallow copy?
-    dest = _.merge({}, src, dest);
+    dest = _.assign({}, src, dest);
     dest._super = src;
     return dest;
+  }
+
+  /**
+   * Returns a new Nori application instance by extending a base if specified
+   * @param ext
+   * @returns {*}
+   */
+  function create(ext) {
+    return extend(ext, this);
   }
 
   //----------------------------------------------------------------------------
@@ -3397,10 +3414,49 @@ define('nudoru.utils.NDebugger',
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
-    extend: extend
+    extend: extend,
+    create: create
   };
 
-}());;define('TT.TimeTrackerAppModel',
+}());;define('TT.LoadModelDataCommand',
+  function (require, module, exports) {
+
+    /**
+     * Should inject some real data here
+     * @param data
+     */
+    exports.execute = function(data) {
+      console.log('TT Load model data, injecting data');
+
+      TT.model().setData({});
+    };
+
+  });;define('TT.RunApplicationCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('TT.RunApplicationCommand');
+
+      // Core commands mapped in APP postInitialize()
+
+      // Map route args:
+      // url fragment for route, ID (template id), module name for controller, use singleton module
+
+      // Default route
+      TT.mapRouteView('/', 'ControlsTesting', 'Nori.View.ControlsTestingSubView', false);
+
+      // Other routes
+      TT.mapRouteView('/test', 'TestSubView', 'Nori.View.TemplateSubView', true);
+      TT.mapRouteView('/one', 'TestSubView1', 'Nori.View.TemplateSubView', true);
+      TT.mapRouteView('/two', 'TestSubView2', 'Nori.View.TemplateSubView', true);
+      TT.mapRouteView('/three', 'TestSubView3', 'Nori.View.TemplateSubView', true);
+
+      TT.view().removeLoadingMessage();
+
+      TT.setCurrentRoute(TT.router().getCurrentRoute());
+    };
+
+  });;define('TT.TimeTrackerAppModel',
   function (require, module, exports) {
 
     function initialize() {
@@ -3422,14 +3478,39 @@ define('nudoru.utils.NDebugger',
 
   });;(function () {
 
-  var _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _model = Nori.extend(require('TT.TimeTrackerAppModel'), require('Nori.Model')),
-      _view = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
-
-  window.onload = Nori.initialize(_model, _view);
+  var _browserInfo = require('nudoru.utils.BrowserInfo');
 
   if(_browserInfo.notSupported) {
     alert("Your browser is not supported! Please use IE 9+, Firefox, Chrome or Safari.");
+  }
+
+  // Initialize the window
+  window.onload = function() {
+
+    var _appEvents = require('Nori.Events.AppEvents'),
+      _model, _view;
+
+    // Create the application instance
+    window.TT = Nori.create();
+
+    // Load and set model data in this command
+    TT.mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'TT.LoadModelDataCommand', true);
+    // Map view routes and other app initialization here
+    TT.mapEventCommand(_appEvents.APP_INITIALIZED, 'TT.RunApplicationCommand', true);
+
+    // Create the model
+    _model = Nori.extend(require('TT.TimeTrackerAppModel'), require('Nori.Model'));
+    // Create the view
+    _view = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
+
+    /*
+     * Initialize the application by injecting the model and view
+     * After the application is initialized (view and model data loaded), the
+     * _appEvents.APP_INITIALIZED event is emitted and the mapped command runs.
+     * Typically, app/commands/TT.RunApplicationCommand
+     */
+    TT.initialize(_model, _view);
+
   }
 
 }());

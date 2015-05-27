@@ -6,7 +6,7 @@ define('Nori.View.MixinRouteViews',
       _subViewMapping = Object.create(null),
       _currentSubView,
       _subViewHTMLTemplatePrefix = 'template__',
-      _appEvents = require('Nori.AppEvents'),
+      _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter');
 

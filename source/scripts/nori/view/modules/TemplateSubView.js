@@ -15,7 +15,7 @@ define('Nori.View.TemplateSubView',
       _modelData,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('Nori.AppEvents');
+      _appEvents = require('Nori.Events.AppEvents');
 
     /**
      * Initialization

@@ -3,7 +3,7 @@ define('Nori.InitializeAppCommand',
 
     exports.execute = function(data) {
       var _browserEvents = require('nudoru.events.BrowserEvents'),
-          _appEvents = require('Nori.AppEvents');
+          _appEvents = require('Nori.Events.AppEvents');
 
       console.log('InitializeAppCommand');
 

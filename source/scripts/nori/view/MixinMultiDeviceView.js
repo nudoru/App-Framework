@@ -19,7 +19,7 @@ define('Nori.View.MixinMultiDeviceView',
       _drawerWidth,
       _isDrawerOpen,
       _currentViewPortSize,
-      _appEvents = require('Nori.AppEvents'),
+      _appEvents = require('Nori.Events.AppEvents'),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _emitter = require('nudoru.events.EventDispatcher');
 
