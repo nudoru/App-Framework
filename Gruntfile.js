@@ -108,7 +108,10 @@ module.exports = function (grunt) {
           'source/scripts/nori/controller/*.js',
           'source/scripts/nori/controller/commands/*.js',
           'source/scripts/nori/Nori.js',
-          'source/scripts/main.js'
+
+          'source/scripts/tt/**/*.js',
+
+          'source/scripts/app.js'
         ],
         dest: 'deploy/scripts/libs.js'
       }

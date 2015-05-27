@@ -2228,16 +2228,6 @@ define('nudoru.utils.NDebugger',
     exports.storeSubViewData = storeSubViewData;
     exports.retrieveSubViewData = retrieveSubViewData;
 
-  });;define('Nori.TimeTrackerAppModel',
-  function (require, module, exports) {
-
-    function initialize() {
-      console.log('tt app model');
-      this._super.initialize();
-    }
-
-    exports.initialize = initialize;
-
   });;define('Nori.View.ControlsTestingSubView',
   function (require, module, exports) {
 
@@ -2878,16 +2868,6 @@ define('nudoru.utils.NDebugger',
     exports.mapView = mapView;
     exports.showView = showView;
 
-  });;define('Nori.TimeTrackerAppView',
-  function (require, module, exports) {
-
-    function initialize() {
-      console.log('tt app view');
-      this._super.initialize();
-    }
-
-    exports.initialize = initialize;
-
   });;define('Nori.View',
   function (require, module, exports) {
 
@@ -3420,11 +3400,31 @@ define('nudoru.utils.NDebugger',
     extend: extend
   };
 
-}());;(function () {
+}());;define('TT.TimeTrackerAppModel',
+  function (require, module, exports) {
+
+    function initialize() {
+      console.log('tt app model');
+      this._super.initialize();
+    }
+
+    exports.initialize = initialize;
+
+  });;define('TT.TimeTrackerAppView',
+  function (require, module, exports) {
+
+    function initialize() {
+      console.log('tt app view');
+      this._super.initialize();
+    }
+
+    exports.initialize = initialize;
+
+  });;(function () {
 
   var _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _model = Nori.extend(require('Nori.TimeTrackerAppModel'), require('Nori.Model')),
-      _view = Nori.extend(require('Nori.TimeTrackerAppView'), require('Nori.View'));
+      _model = Nori.extend(require('TT.TimeTrackerAppModel'), require('Nori.Model')),
+      _view = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
 
   window.onload = Nori.initialize(_model, _view);
 

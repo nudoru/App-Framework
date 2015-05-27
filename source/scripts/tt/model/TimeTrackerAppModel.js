@@ -4,7 +4,7 @@
  * this._super refers to Nori.Model
  */
 
-define('Nori.TimeTrackerAppModel',
+define('TT.TimeTrackerAppModel',
   function (require, module, exports) {
 
     function initialize() {

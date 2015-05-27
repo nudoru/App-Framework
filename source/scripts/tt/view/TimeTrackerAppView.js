@@ -4,7 +4,7 @@
  * this._super refers to Nori.View
  */
 
-define('Nori.TimeTrackerAppView',
+define('TT.TimeTrackerAppView',
   function (require, module, exports) {
 
     function initialize() {
