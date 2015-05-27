@@ -3,8 +3,6 @@ define('APP.View',
 
     var _appContainerEl,
       _appEl,
-      _mainHeaderEl,
-      _mainFooterEl,
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
@@ -15,6 +13,14 @@ define('APP.View',
     //----------------------------------------------------------------------------
     //  Accessors
     //----------------------------------------------------------------------------
+
+    function getAppContainerEl() {
+      return _appContainerEl;
+    }
+
+    function getAppEl() {
+      return _appEl;
+    }
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -30,8 +36,6 @@ define('APP.View',
     function render() {
       _appContainerEl = document.getElementById('app__container');
       _appEl = document.getElementById('app__contents');
-      _mainHeaderEl = document.getElementById('header');
-      _mainFooterEl = document.getElementById('footer');
 
       _browserEventView.setMainScrollingView('app__contents');
       _browserEventView.initializeEventStreams();
@@ -154,5 +158,10 @@ define('APP.View',
     exports.removeLoadingMessage = removeLoadingMessage;
     exports.mapView = mapView;
     exports.showView = showView;
+
+    exports.layoutUI = layoutUI;
+
+    exports.getAppContainerEl = getAppContainerEl;
+    exports.getAppEl = getAppEl;
 
   });

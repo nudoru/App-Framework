@@ -1,8 +1,8 @@
 (function () {
 
   var _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _model = require('APP.Model'),
-      _view = require('APP.View');
+      _model = APP.extend(require('APP.TimeTrackerAppModel'), require('APP.Model')),
+      _view = APP.extend(require('APP.TimeTrackerAppView'), require('APP.View'));
 
   window.onload = APP.initialize(_model, _view);
 

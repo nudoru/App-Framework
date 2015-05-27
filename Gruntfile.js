@@ -103,7 +103,7 @@ module.exports = function (grunt) {
           'source/scripts/app/events/*.js',
           'source/scripts/app/App.js',
           'source/scripts/app/model/modules/*.js',
-          'source/scripts/app/model/Model.js',
+          'source/scripts/app/model/*.js',
           'source/scripts/app/view/modules/*.js',
           'source/scripts/app/view/*.js',
           'source/scripts/app/controller/*.js',

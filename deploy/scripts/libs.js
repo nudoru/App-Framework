@@ -2164,6 +2164,7 @@ define('nudoru.utils.NDebugger',
     _view,
     _emitterCommandMap = Object.create(null),
     _appEvents = require('APP.AppEvents'),
+    _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _emitter = require('nudoru.events.Emitter'),
     _router = require('nudoru.utils.Router');
@@ -2211,8 +2212,9 @@ define('nudoru.utils.NDebugger',
 
     _router.initialize();
 
+    // Commands used in application loading / core initialization
     mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'APP.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.AppInitializedCommand', true);
+    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.InitializeAppCommand', true);
 
     initializeView();
   }
@@ -2265,9 +2267,30 @@ define('nudoru.utils.NDebugger',
    * All APP initialization is complete, pass over to AppInitialzedCommand
    */
   function postInitialize() {
+    bootStrapCommands();
     _emitter.publish(_appEvents.APP_INITIALIZED);
   }
 
+  /**
+   * Core APP command mapping
+   */
+  function bootStrapCommands() {
+    // Browser events
+    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'APP.BrowserResizedCommand');
+    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'APP.BrowserScrolledCommand');
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'APP.URLHashChangedCommand');
+
+    // App events
+    mapEventCommand(_appEvents.ROUTE_CHANGED, 'APP.RouteChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'APP.ChangeRouteCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
+
+    // Subviews
+    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'APP.SubViewStoreDataCommand');
+  }
+  
   //----------------------------------------------------------------------------
   //  Route Validation
   //  Route obj is {route: '/whatever', data:{var:value,...}
@@ -2357,6 +2380,19 @@ define('nudoru.utils.NDebugger',
     }});
   }
 
+  /**
+   * Merges objects. Idea from Ember
+   * @param dest Destination object
+   * @param src Source
+   * @returns {*}
+   */
+  function extend(dest, src) {
+    // more testing, should use assign for shallow copy?
+    dest = _.merge({}, src, dest);
+    dest._super = src;
+    return dest;
+  }
+
   //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
@@ -2371,7 +2407,8 @@ define('nudoru.utils.NDebugger',
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
-    mapEventCommand: mapEventCommand
+    mapEventCommand: mapEventCommand,
+    extend: extend
   };
 
 }());;define('APP.Model',
@@ -2443,6 +2480,16 @@ define('nudoru.utils.NDebugger',
     exports.getData = getData;
     exports.storeSubViewData = storeSubViewData;
     exports.retrieveSubViewData = retrieveSubViewData;
+
+  });;define('APP.TimeTrackerAppModel',
+  function (require, module, exports) {
+
+    function initialize() {
+      console.log('tt app model');
+      this._super.initialize();
+    }
+
+    exports.initialize = initialize;
 
   });;define('APP.View.ControlsTestingSubView',
   function (require, module, exports) {
@@ -3084,13 +3131,21 @@ define('nudoru.utils.NDebugger',
     exports.mapView = mapView;
     exports.showView = showView;
 
+  });;define('APP.TimeTrackerAppView',
+  function (require, module, exports) {
+
+    function initialize() {
+      console.log('tt app view');
+      this._super.initialize();
+    }
+
+    exports.initialize = initialize;
+
   });;define('APP.View',
   function (require, module, exports) {
 
     var _appContainerEl,
       _appEl,
-      _mainHeaderEl,
-      _mainFooterEl,
       _browserEventView = require('APP.View.MixinBrowserEvents'),
       _routeSubViewView = require('APP.View.MixinRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
@@ -3101,6 +3156,14 @@ define('nudoru.utils.NDebugger',
     //----------------------------------------------------------------------------
     //  Accessors
     //----------------------------------------------------------------------------
+
+    function getAppContainerEl() {
+      return _appContainerEl;
+    }
+
+    function getAppEl() {
+      return _appEl;
+    }
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -3116,8 +3179,6 @@ define('nudoru.utils.NDebugger',
     function render() {
       _appContainerEl = document.getElementById('app__container');
       _appEl = document.getElementById('app__contents');
-      _mainHeaderEl = document.getElementById('header');
-      _mainFooterEl = document.getElementById('footer');
 
       _browserEventView.setMainScrollingView('app__contents');
       _browserEventView.initializeEventStreams();
@@ -3241,51 +3302,10 @@ define('nudoru.utils.NDebugger',
     exports.mapView = mapView;
     exports.showView = showView;
 
-  });;define('APP.AppInitializedCommand',
-  function (require, module, exports) {
+    exports.layoutUI = layoutUI;
 
-    exports.execute = function(data) {
-      var _browserEvents = require('nudoru.events.BrowserEvents'),
-          _appEvents = require('APP.AppEvents');
-
-      console.log('AppInitializedCommand');
-
-      // Browser events
-      APP.mapEventCommand(_browserEvents.BROWSER_RESIZED, 'APP.BrowserResizedCommand');
-      APP.mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'APP.BrowserScrolledCommand');
-      APP.mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'APP.URLHashChangedCommand');
-
-      // App events
-      APP.mapEventCommand(_appEvents.ROUTE_CHANGED, 'APP.RouteChangedCommand');
-      APP.mapEventCommand(_appEvents.CHANGE_ROUTE, 'APP.ChangeRouteCommand');
-      APP.mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
-      APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
-      APP.mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
-
-      // Subviews
-      APP.mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'APP.SubViewStoreDataCommand');
-
-      // Map route args:
-      // url fragment for route, ID (template id), module name for controller, use singleton module
-
-      // Default route
-      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
-
-      // Other routes
-      APP.mapRouteView('/test', 'TestSubView', 'APP.View.TemplateSubView', true);
-      APP.mapRouteView('/one', 'TestSubView1', 'APP.View.TemplateSubView', true);
-      APP.mapRouteView('/two', 'TestSubView2', 'APP.View.TemplateSubView', true);
-      APP.mapRouteView('/three', 'TestSubView3', 'APP.View.TemplateSubView', true);
-
-      APP.view().removeLoadingMessage();
-
-      //APP.router().setRoute('/foo',{
-      //  bar:'baz',
-      //  baz:'foo'
-      //});
-
-      APP.setCurrentRoute(APP.router().getCurrentRoute());
-    };
+    exports.getAppContainerEl = getAppContainerEl;
+    exports.getAppEl = getAppEl;
 
   });;define('APP.BrowserResizedCommand',
   function (require, module, exports) {
@@ -3308,6 +3328,39 @@ define('nudoru.utils.NDebugger',
       console.log('ChangeRouteCommand, route: '+data.route);
       data.fromApp = true;
       APP.setCurrentRoute(data);
+    };
+
+  });;define('APP.InitializeAppCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      var _browserEvents = require('nudoru.events.BrowserEvents'),
+          _appEvents = require('APP.AppEvents');
+
+      console.log('InitializeAppCommand');
+
+      // Core commands mapped in APP postInitialize()
+
+      // Map route args:
+      // url fragment for route, ID (template id), module name for controller, use singleton module
+
+      // Default route
+      APP.mapRouteView('/', 'ControlsTesting', 'APP.View.ControlsTestingSubView', false);
+
+      // Other routes
+      APP.mapRouteView('/test', 'TestSubView', 'APP.View.TemplateSubView', true);
+      APP.mapRouteView('/one', 'TestSubView1', 'APP.View.TemplateSubView', true);
+      APP.mapRouteView('/two', 'TestSubView2', 'APP.View.TemplateSubView', true);
+      APP.mapRouteView('/three', 'TestSubView3', 'APP.View.TemplateSubView', true);
+
+      APP.view().removeLoadingMessage();
+
+      //APP.router().setRoute('/foo',{
+      //  bar:'baz',
+      //  baz:'foo'
+      //});
+
+      APP.setCurrentRoute(APP.router().getCurrentRoute());
     };
 
   });;define('APP.ModelDataWaitingCommand',
@@ -3370,8 +3423,8 @@ define('nudoru.utils.NDebugger',
   });;(function () {
 
   var _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _model = require('APP.Model'),
-      _view = require('APP.View');
+      _model = APP.extend(require('APP.TimeTrackerAppModel'), require('APP.Model')),
+      _view = APP.extend(require('APP.TimeTrackerAppView'), require('APP.View'));
 
   window.onload = APP.initialize(_model, _view);
 

@@ -4,6 +4,7 @@ var APP = (function () {
     _view,
     _emitterCommandMap = Object.create(null),
     _appEvents = require('APP.AppEvents'),
+    _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _emitter = require('nudoru.events.Emitter'),
     _router = require('nudoru.utils.Router');
@@ -51,8 +52,9 @@ var APP = (function () {
 
     _router.initialize();
 
+    // Commands used in application loading / core initialization
     mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'APP.ModelDataWaitingCommand', true);
-    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.AppInitializedCommand', true);
+    mapEventCommand(_appEvents.APP_INITIALIZED, 'APP.InitializeAppCommand', true);
 
     initializeView();
   }
@@ -105,9 +107,30 @@ var APP = (function () {
    * All APP initialization is complete, pass over to AppInitialzedCommand
    */
   function postInitialize() {
+    bootStrapCommands();
     _emitter.publish(_appEvents.APP_INITIALIZED);
   }
 
+  /**
+   * Core APP command mapping
+   */
+  function bootStrapCommands() {
+    // Browser events
+    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'APP.BrowserResizedCommand');
+    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'APP.BrowserScrolledCommand');
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'APP.URLHashChangedCommand');
+
+    // App events
+    mapEventCommand(_appEvents.ROUTE_CHANGED, 'APP.RouteChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'APP.ChangeRouteCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGED, 'APP.ViewChangedCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'APP.ViewChangedToMobileCommand');
+    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'APP.ViewChangedToDesktopCommand');
+
+    // Subviews
+    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'APP.SubViewStoreDataCommand');
+  }
+  
   //----------------------------------------------------------------------------
   //  Route Validation
   //  Route obj is {route: '/whatever', data:{var:value,...}
@@ -197,6 +220,19 @@ var APP = (function () {
     }});
   }
 
+  /**
+   * Merges objects. Idea from Ember
+   * @param dest Destination object
+   * @param src Source
+   * @returns {*}
+   */
+  function extend(dest, src) {
+    // more testing, should use assign for shallow copy?
+    dest = _.merge({}, src, dest);
+    dest._super = src;
+    return dest;
+  }
+
   //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
@@ -211,7 +247,8 @@ var APP = (function () {
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
-    mapEventCommand: mapEventCommand
+    mapEventCommand: mapEventCommand,
+    extend: extend
   };
 
 }());
