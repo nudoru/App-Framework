@@ -12,11 +12,9 @@ define('TT.ModuleNavView',
       _emitter = require('nudoru.events.Emitter');
 
     function initialize() {
-
       mapButton('btn_assignments', '/Assignments');
       mapButton('btn_timecard', '/Timecard');
       mapButton('btn_forecast', '/Forecast');
-
     }
 
     function mapButton(elID, route) {

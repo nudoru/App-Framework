@@ -2671,12 +2671,16 @@ define('nudoru.utils.NDebugger',
         modelData: modelData
       });
 
+      TweenLite.set(_subViewMountPoint, {alpha: 0});
+
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());
       _currentSubView = viewObj.templateID;
 
       if(subview.controller.viewDidMount) {
         subview.controller.viewDidMount();
       }
+
+      TweenLite.to(_subViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
       _emitter.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
     }
@@ -3445,11 +3449,9 @@ define('nudoru.utils.NDebugger',
       _emitter = require('nudoru.events.Emitter');
 
     function initialize() {
-
       mapButton('btn_assignments', '/Assignments');
       mapButton('btn_timecard', '/Timecard');
       mapButton('btn_forecast', '/Forecast');
-
     }
 
     function mapButton(elID, route) {
