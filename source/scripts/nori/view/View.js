@@ -133,8 +133,8 @@ define('Nori.View',
      * @param controller
      * @param unique
      */
-    function mapView(templateID, controller, unique) {
-      _routeSubViewView.mapView(templateID, controller, unique);
+    function mapView(templateID, controller) {
+      _routeSubViewView.mapView(templateID, controller);
     }
 
     /**

@@ -5,6 +5,7 @@ define('Nori.View.MixinRouteViews',
       _subViewMountPoint,
       _subViewMapping = Object.create(null),
       _currentSubView,
+      _baseSubViewModuleID = 'Nori.View.BaseSubView',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
@@ -28,14 +29,17 @@ define('Nori.View.MixinRouteViews',
 
     /**
      * Map a route to a module view controller
+     * The controller module is extended from the Nori.View.BaseSubView module
      * @param templateID
-     * @param controller
-     * @param unique
+     * @param controllerModID
      */
-    function mapView(templateID, controller, unique) {
+    function mapView(templateID, controllerModID) {
+      var baseSubViewModule = requireUnique(_baseSubViewModuleID),
+          controllerModule = requireUnique(controllerModID);
+
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller: unique ? requireUnique(controller) : require(controller)
+        controller: Nori.extend(controllerModule, baseSubViewModule)
       };
     }
 

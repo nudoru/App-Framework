@@ -116,18 +116,18 @@ var Nori = (function () {
    */
   function bootStrapCommands() {
     // Browser events
-    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
-    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
-    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
 
     // App events
-    mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
-    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
+    // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
 
     // Subviews
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
     mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
   }
   
@@ -209,10 +209,10 @@ var Nori = (function () {
    * @param controller
    * @param unique Should it be a singleton controller (false) or unique instance (true)
    */
-  function mapRouteView(route, templateID, controller, unique) {
+  function mapRouteView(route, templateID, controller) {
     addRouteToConfig(route);
 
-    _view.mapView(templateID, controller, unique);
+    _view.mapView(templateID, controller);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
       // dataObj is from the router, inject previous state data from the model

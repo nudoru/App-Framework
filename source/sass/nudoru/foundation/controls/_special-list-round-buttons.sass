@@ -42,6 +42,7 @@ $control-list-round-button-forecolor: scale-lightness($light-warm-grey, 30%)
         border: 1px solid rgba(255,255,255,1)
         box-shadow: 0 10px 10px -6px rgba(0,0,0,.2)
         color: #fff
+
     .label
       @extend %header-5
       display: block
@@ -50,3 +51,10 @@ $control-list-round-button-forecolor: scale-lightness($light-warm-grey, 30%)
       color: $control-list-round-button-forecolor !important
       text-shadow: 0 1px 0 rgba(0,0,0,.2)
       text-transform: none
+  .active
+    .button
+      border: 1px solid rgba(255,255,255, .25)
+      background-color: rgba(255,255,255,.1)
+      color: #fff
+    .label
+      color: #fff !important

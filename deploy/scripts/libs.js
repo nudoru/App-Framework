@@ -2228,174 +2228,7 @@ define('nudoru.utils.NDebugger',
     exports.storeSubViewData = storeSubViewData;
     exports.retrieveSubViewData = retrieveSubViewData;
 
-  });;define('Nori.View.ControlsTestingSubView',
-  function (require, module, exports) {
-
-    var _initObj,
-      _id,
-      _templateObj,
-      _html,
-      _DOMElement,
-      _initialState,
-      _currentState,
-      _domUtils = require('nudoru.utils.DOMUtils'),
-      _lIpsum = require('nudoru.utils.NLorem'),
-      _toolTip = require('nudoru.components.ToolTipView'),
-      _emitter = require('nudoru.events.Emitter'),
-      _appEvents = require('Nori.Events.AppEvents'),
-      _actionOneEl,
-      _actionTwoEl,
-      _actionThreeEl,
-      _actionFourEl,
-      _actionFiveEl,
-      _actionSixEl;
-
-    function initialize(initObj) {
-      console.log(initObj.id + ', subview init');
-
-      console.log('subview state',initObj.state);
-
-      if(!_initObj) {
-        _initObj = initObj;
-        _id = initObj.id;
-        _templateObj = initObj.template;
-        _initialState = _currentState = initObj.state;
-
-        _lIpsum.initialize();
-
-        render();
-      } else {
-        console.log(_id + ', subview already init\'d');
-        update(initObj.state);
-      }
-    }
-
-    function update(state) {
-      console.log(_id + ', subview update');
-      _currentState = state;
-      return render();
-    }
-
-    function render() {
-      console.log(_id + ', subview render');
-
-      _html = _templateObj(_currentState);
-      _DOMElement = _domUtils.HTMLStrToNode(_html);
-
-      return _DOMElement;
-    }
-
-    function viewDidMount() {
-      console.log(_id + ', subview did mount');
-
-      _actionOneEl = document.getElementById('action-one');
-      _actionTwoEl = document.getElementById('action-two');
-      _actionThreeEl = document.getElementById('action-three');
-      _actionFourEl = document.getElementById('action-four');
-      _actionFiveEl = document.getElementById('action-five');
-      _actionSixEl = document.getElementById('action-six');
-
-      //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
-      //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
-      //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
-      //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
-
-      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'L', targetEl: _actionFourEl, type:'information'});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'B', targetEl: _actionFourEl, type:'information'});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'R', targetEl: _actionFourEl, type:'information'});
-      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'T', targetEl: _actionFourEl, type:'information'});
-
-
-      _actionOneEl.addEventListener('click', function actOne(e) {
-        Nori.view().addMessageBox({
-          title: _lIpsum.getSentence(2,4),
-          content: _lIpsum.getParagraph(2, 4),
-          type: 'warning',
-          modal: true,
-          width: 500
-        });
-      });
-
-      _actionTwoEl.addEventListener('click', function actTwo(e) {
-        Nori.view().addMessageBox({
-          title: _lIpsum.getSentence(10,20),
-          content: _lIpsum.getParagraph(2, 4),
-          type: 'default',
-          modal: false,
-          buttons: [
-            {
-              label: 'Yes',
-              id: 'yes',
-              type: 'default',
-              icon: 'check',
-              onClick: function() {
-                console.log('yes');
-              }
-            },
-            {
-              label: 'Maybe',
-              id: 'maybe',
-              type: 'positive',
-              icon:'cog',
-              onClick: function() {
-                console.log('maybe');
-              }
-            },
-            {
-              label: 'Nope',
-              id: 'nope',
-              type: 'negative',
-              icon: 'times'
-            }
-          ]
-        });
-      });
-
-      _actionThreeEl.addEventListener('click', function actThree(e) {
-        Nori.view().addNotification({
-          title: _lIpsum.getSentence(3,6),
-          type: 'information',
-          content: _lIpsum.getParagraph(1, 2)
-        });
-
-        _toolTip.remove(_actionFourEl);
-      });
-
-      _actionFourEl.addEventListener('click', function actFour(e) {
-        console.log('Four');
-      });
-
-      _actionFiveEl.addEventListener('click', function actFour(e) {
-        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/one',data: {prop:'some data',moar:'25'}});
-      });
-
-      _actionSixEl.addEventListener('click', function actFour(e) {
-        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/two'});
-      });
-
-    }
-
-    function viewWillUnMount() {
-      console.log(_id + ', subview will unmount');
-    }
-
-    function getID() {
-      return _id;
-    }
-
-    function getDOMElement() {
-      return _DOMElement;
-    }
-
-    exports.initialize = initialize;
-    exports.update = update;
-    exports.render = render;
-    exports.getID = getID;
-    exports.getDOMElement = getDOMElement;
-    exports.viewDidMount = viewDidMount;
-    exports.viewWillUnMount = viewWillUnMount;
-
-  });;define('Nori.View.TemplateSubView',
+  });;define('Nori.View.BaseSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -2415,10 +2248,10 @@ define('nudoru.utils.NDebugger',
      * @param initObj
      */
     function initialize(initObj) {
-      console.log(initObj.id + ', subview init');
-
-      console.log('subview state',initObj.state);
-      console.log('subview modeldata',initObj.modelData);
+      //console.log(initObj.id + ', subview init');
+      //
+      //console.log('subview state',initObj.state);
+      //console.log('subview modeldata',initObj.modelData);
 
       _modelData = initObj.modelData;
 
@@ -2430,7 +2263,7 @@ define('nudoru.utils.NDebugger',
 
         render();
       } else {
-        console.log(_id + ', subview already init\'d');
+        //console.log(_id + ', subview already init\'d');
         update(initObj.state);
       }
     }
@@ -2441,7 +2274,7 @@ define('nudoru.utils.NDebugger',
      * @returns {*}
      */
     function update(state) {
-      console.log(_id + ', subview update');
+      //console.log(_id + ', subview update');
       _currentState = state;
       return render();
     }
@@ -2451,7 +2284,7 @@ define('nudoru.utils.NDebugger',
      * @returns {*}
      */
     function render() {
-      console.log(_id + ', subview render');
+      //console.log(_id + ', subview render');
 
       _html = _templateObj(_currentState);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
@@ -2462,14 +2295,14 @@ define('nudoru.utils.NDebugger',
      * Call after it's been added to a view
      */
     function viewDidMount() {
-      console.log(_id + ', subview did mount');
+      //console.log(_id + ', subview did mount');
     }
 
     /**
      * Call when unloading and switching views
      */
     function viewWillUnMount() {
-      console.log(_id + ', subview will unmount');
+      //console.log(_id + ', subview will unmount');
       // cache state data to the model, will be restored as modelData on next show
       _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
     }
@@ -2775,6 +2608,7 @@ define('nudoru.utils.NDebugger',
       _subViewMountPoint,
       _subViewMapping = Object.create(null),
       _currentSubView,
+      _baseSubViewModuleID = 'Nori.View.BaseSubView',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
@@ -2798,14 +2632,17 @@ define('nudoru.utils.NDebugger',
 
     /**
      * Map a route to a module view controller
+     * The controller module is extended from the Nori.View.BaseSubView module
      * @param templateID
-     * @param controller
-     * @param unique
+     * @param controllerModID
      */
-    function mapView(templateID, controller, unique) {
+    function mapView(templateID, controllerModID) {
+      var baseSubViewModule = requireUnique(_baseSubViewModuleID),
+          controllerModule = requireUnique(controllerModID);
+
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller: unique ? requireUnique(controller) : require(controller)
+        controller: Nori.extend(controllerModule, baseSubViewModule)
       };
     }
 
@@ -3003,8 +2840,8 @@ define('nudoru.utils.NDebugger',
      * @param controller
      * @param unique
      */
-    function mapView(templateID, controller, unique) {
-      _routeSubViewView.mapView(templateID, controller, unique);
+    function mapView(templateID, controller) {
+      _routeSubViewView.mapView(templateID, controller);
     }
 
     /**
@@ -3265,18 +3102,18 @@ define('nudoru.utils.NDebugger',
    */
   function bootStrapCommands() {
     // Browser events
-    mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
-    mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
-    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
 
     // App events
-    mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
-    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
-    mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
+    // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
 
     // Subviews
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
     mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
   }
   
@@ -3358,10 +3195,10 @@ define('nudoru.utils.NDebugger',
    * @param controller
    * @param unique Should it be a singleton controller (false) or unique instance (true)
    */
-  function mapRouteView(route, templateID, controller, unique) {
+  function mapRouteView(route, templateID, controller) {
     addRouteToConfig(route);
 
-    _view.mapView(templateID, controller, unique);
+    _view.mapView(templateID, controller);
 
     _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
       // dataObj is from the router, inject previous state data from the model
@@ -3437,19 +3274,19 @@ define('nudoru.utils.NDebugger',
     exports.execute = function(data) {
       console.log('TT.RunApplicationCommand');
 
-      // Core commands mapped in APP postInitialize()
+      // Core commands mapped in Nori postInitialize()
 
       // Map route args:
       // url fragment for route, ID (template id), module name for controller, use singleton module
 
       // Default route
-      TT.mapRouteView('/', 'ControlsTesting', 'Nori.View.ControlsTestingSubView', false);
 
       // Other routes
-      TT.mapRouteView('/test', 'TestSubView', 'Nori.View.TemplateSubView', true);
-      TT.mapRouteView('/one', 'TestSubView1', 'Nori.View.TemplateSubView', true);
-      TT.mapRouteView('/two', 'TestSubView2', 'Nori.View.TemplateSubView', true);
-      TT.mapRouteView('/three', 'TestSubView3', 'Nori.View.TemplateSubView', true);
+      TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
+      TT.mapRouteView('/test', 'TestSubView', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/one', 'TestSubView1', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/two', 'TestSubView2', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/three', 'TestSubView3', 'TT.View.TemplateSubView');
 
       TT.view().removeLoadingMessage();
 
@@ -3465,6 +3302,125 @@ define('nudoru.utils.NDebugger',
     }
 
     exports.initialize = initialize;
+
+  });;define('TT.View.ControlsTestingSubView',
+  function (require, module, exports) {
+
+    var _lIpsum = require('nudoru.utils.NLorem'),
+      _toolTip = require('nudoru.components.ToolTipView'),
+      _emitter = require('nudoru.events.Emitter'),
+      _appEvents = require('Nori.Events.AppEvents'),
+      _actionOneEl,
+      _actionTwoEl,
+      _actionThreeEl,
+      _actionFourEl,
+      _actionFiveEl,
+      _actionSixEl;
+
+    function initialize(initObj) {
+      _lIpsum.initialize();
+
+      this._super.initialize(initObj);
+    }
+
+
+    function viewDidMount() {
+      console.log(this.getID() + ', subview did mount');
+
+      _actionOneEl = document.getElementById('action-one');
+      _actionTwoEl = document.getElementById('action-two');
+      _actionThreeEl = document.getElementById('action-three');
+      _actionFourEl = document.getElementById('action-four');
+      _actionFiveEl = document.getElementById('action-five');
+      _actionSixEl = document.getElementById('action-six');
+
+      //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
+      //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
+      //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
+      //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
+
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'L', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. ", position:'B', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'R', targetEl: _actionFourEl, type:'information'});
+      _toolTip.add({title:'', content:"This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ", position:'T', targetEl: _actionFourEl, type:'information'});
+
+
+      _actionOneEl.addEventListener('click', function actOne(e) {
+        Nori.view().addMessageBox({
+          title: _lIpsum.getSentence(2,4),
+          content: _lIpsum.getParagraph(2, 4),
+          type: 'warning',
+          modal: true,
+          width: 500
+        });
+      });
+
+      _actionTwoEl.addEventListener('click', function actTwo(e) {
+        Nori.view().addMessageBox({
+          title: _lIpsum.getSentence(10,20),
+          content: _lIpsum.getParagraph(2, 4),
+          type: 'default',
+          modal: false,
+          buttons: [
+            {
+              label: 'Yes',
+              id: 'yes',
+              type: 'default',
+              icon: 'check',
+              onClick: function() {
+                console.log('yes');
+              }
+            },
+            {
+              label: 'Maybe',
+              id: 'maybe',
+              type: 'positive',
+              icon:'cog',
+              onClick: function() {
+                console.log('maybe');
+              }
+            },
+            {
+              label: 'Nope',
+              id: 'nope',
+              type: 'negative',
+              icon: 'times'
+            }
+          ]
+        });
+      });
+
+      _actionThreeEl.addEventListener('click', function actThree(e) {
+        Nori.view().addNotification({
+          title: _lIpsum.getSentence(3,6),
+          type: 'information',
+          content: _lIpsum.getParagraph(1, 2)
+        });
+
+        _toolTip.remove(_actionFourEl);
+      });
+
+      _actionFourEl.addEventListener('click', function actFour(e) {
+        console.log('Four');
+      });
+
+      _actionFiveEl.addEventListener('click', function actFour(e) {
+        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/one',data: {prop:'some data',moar:'25'}});
+      });
+
+      _actionSixEl.addEventListener('click', function actFour(e) {
+        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/two'});
+      });
+
+    }
+
+    exports.initialize = initialize;
+    exports.viewDidMount = viewDidMount;
+
+  });;define('TT.View.TemplateSubView',
+  function (require, module, exports) {
+
+
 
   });;define('TT.TimeTrackerAppView',
   function (require, module, exports) {
@@ -3510,7 +3466,6 @@ define('nudoru.utils.NDebugger',
      * Typically, app/commands/TT.RunApplicationCommand
      */
     TT.initialize(_model, _view);
-
   }
 
 }());

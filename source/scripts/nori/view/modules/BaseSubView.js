@@ -2,7 +2,7 @@
  * A template for a subview/route controller
  */
 
-define('Nori.View.TemplateSubView',
+define('Nori.View.BaseSubView',
   function (require, module, exports) {
 
     var _initObj,
@@ -22,10 +22,10 @@ define('Nori.View.TemplateSubView',
      * @param initObj
      */
     function initialize(initObj) {
-      console.log(initObj.id + ', subview init');
-
-      console.log('subview state',initObj.state);
-      console.log('subview modeldata',initObj.modelData);
+      //console.log(initObj.id + ', subview init');
+      //
+      //console.log('subview state',initObj.state);
+      //console.log('subview modeldata',initObj.modelData);
 
       _modelData = initObj.modelData;
 
@@ -37,7 +37,7 @@ define('Nori.View.TemplateSubView',
 
         render();
       } else {
-        console.log(_id + ', subview already init\'d');
+        //console.log(_id + ', subview already init\'d');
         update(initObj.state);
       }
     }
@@ -48,7 +48,7 @@ define('Nori.View.TemplateSubView',
      * @returns {*}
      */
     function update(state) {
-      console.log(_id + ', subview update');
+      //console.log(_id + ', subview update');
       _currentState = state;
       return render();
     }
@@ -58,7 +58,7 @@ define('Nori.View.TemplateSubView',
      * @returns {*}
      */
     function render() {
-      console.log(_id + ', subview render');
+      //console.log(_id + ', subview render');
 
       _html = _templateObj(_currentState);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
@@ -69,14 +69,14 @@ define('Nori.View.TemplateSubView',
      * Call after it's been added to a view
      */
     function viewDidMount() {
-      console.log(_id + ', subview did mount');
+      //console.log(_id + ', subview did mount');
     }
 
     /**
      * Call when unloading and switching views
      */
     function viewWillUnMount() {
-      console.log(_id + ', subview will unmount');
+      //console.log(_id + ', subview will unmount');
       // cache state data to the model, will be restored as modelData on next show
       _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
     }

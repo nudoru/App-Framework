@@ -22,7 +22,7 @@ module.exports = function (grunt) {
           '!scripts/nudoru/**/*.js',
           '!scripts/vendor/**/*.js',
           '!scripts/vendor/**/*.map',
-          '!scripts/main.js',
+          '!scripts/app.js',
           'scripts/config.js'
         ],
         dest: 'deploy',
@@ -95,6 +95,7 @@ module.exports = function (grunt) {
           'source/scripts/vendor/lodash.min.js',
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'source/scripts/vendor/object-observe.min.js',
+          'source/scripts/vendor/taffy-min.js',
 
           'source/scripts/nudoru/require.js',
           'source/scripts/nudoru/utils/*.js',

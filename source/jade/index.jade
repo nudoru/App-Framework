@@ -21,13 +21,13 @@ html
       nav
         button.button-small.button-neutral-light.icon-left
           i.fa.fa-table
-          | PMO Projects
+          | Projects
         button.button-small.button-neutral-light.icon-left
           i.fa.fa-users
           | People
         button.button-small.button-neutral-light.icon-left
           i.fa.fa-dashboard
-          | Admin Dashboard
+          | Dashboard
         button.button-small.icon-left
           i.fa.fa-life-bouy
           | How Do I?
@@ -37,7 +37,7 @@ html
           h1 Modules
         .content
           ul.list-round-buttons
-            li
+            li.active
               .button
                 i.fa.fa-cubes
               .label Assignments
@@ -51,14 +51,16 @@ html
               .label Cap. Forecast
 
       #app__contents
-        section#contents
+        section
           .padded-content
             //include mock-controlstesting
             //include mock-styletest
             //include mock-components
             include user-info
-            //include assignments
-            include timeentry
+            section#contents
+              include forecast
+              include assignments
+              include timeentry
         //footer#footer
           p.icon-left
             i.fa.fa-cogs

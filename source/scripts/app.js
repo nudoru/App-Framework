@@ -32,7 +32,6 @@
      * Typically, app/commands/TT.RunApplicationCommand
      */
     TT.initialize(_model, _view);
-
   }
 
 }());

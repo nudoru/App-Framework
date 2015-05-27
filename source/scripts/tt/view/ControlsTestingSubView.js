@@ -2,18 +2,10 @@
  * A template for a subview/route controller
  */
 
-define('Nori.View.ControlsTestingSubView',
+define('TT.View.ControlsTestingSubView',
   function (require, module, exports) {
 
-    var _initObj,
-      _id,
-      _templateObj,
-      _html,
-      _DOMElement,
-      _initialState,
-      _currentState,
-      _domUtils = require('nudoru.utils.DOMUtils'),
-      _lIpsum = require('nudoru.utils.NLorem'),
+    var _lIpsum = require('nudoru.utils.NLorem'),
       _toolTip = require('nudoru.components.ToolTipView'),
       _emitter = require('nudoru.events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents'),
@@ -25,42 +17,14 @@ define('Nori.View.ControlsTestingSubView',
       _actionSixEl;
 
     function initialize(initObj) {
-      console.log(initObj.id + ', subview init');
+      _lIpsum.initialize();
 
-      console.log('subview state',initObj.state);
-
-      if(!_initObj) {
-        _initObj = initObj;
-        _id = initObj.id;
-        _templateObj = initObj.template;
-        _initialState = _currentState = initObj.state;
-
-        _lIpsum.initialize();
-
-        render();
-      } else {
-        console.log(_id + ', subview already init\'d');
-        update(initObj.state);
-      }
+      this._super.initialize(initObj);
     }
 
-    function update(state) {
-      console.log(_id + ', subview update');
-      _currentState = state;
-      return render();
-    }
-
-    function render() {
-      console.log(_id + ', subview render');
-
-      _html = _templateObj(_currentState);
-      _DOMElement = _domUtils.HTMLStrToNode(_html);
-
-      return _DOMElement;
-    }
 
     function viewDidMount() {
-      console.log(_id + ', subview did mount');
+      console.log(this.getID() + ', subview did mount');
 
       _actionOneEl = document.getElementById('action-one');
       _actionTwoEl = document.getElementById('action-two');
@@ -149,24 +113,7 @@ define('Nori.View.ControlsTestingSubView',
 
     }
 
-    function viewWillUnMount() {
-      console.log(_id + ', subview will unmount');
-    }
-
-    function getID() {
-      return _id;
-    }
-
-    function getDOMElement() {
-      return _DOMElement;
-    }
-
     exports.initialize = initialize;
-    exports.update = update;
-    exports.render = render;
-    exports.getID = getID;
-    exports.getDOMElement = getDOMElement;
     exports.viewDidMount = viewDidMount;
-    exports.viewWillUnMount = viewWillUnMount;
 
   });

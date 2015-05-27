@@ -3631,7 +3631,6 @@ tr.row-header-inline td {
   margin-right: 1.376rem;
   padding-right: 1.376rem;
   border-right: 1px solid #eae8e6;
-  text-shadow: 0 1px 0 #fff;
 }
 .horizontal-statics li:last-of-type {
   margin-right: 0;
@@ -3643,6 +3642,7 @@ tr.row-header-inline td {
   margin: 0;
   padding: 0;
   line-height: 0.688rem;
+  text-shadow: 0 1px 0 #fff;
 }
 .horizontal-statics h1 {
   color: #009ca6;
@@ -3651,6 +3651,25 @@ tr.row-header-inline td {
 .horizontal-statics p {
   color: #007377;
   font-weight: 700;
+}
+
+.icon-bar-round {
+  display: inline;
+}
+.icon-bar-round i.fa {
+  margin-right: 0.344rem;
+  color: #fff;
+  background-color: #007377;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 10px;
+  font-weight: 400;
+  text-shadow: rgba(0, 0, 0, 0.25);
+}
+.icon-bar-round i.fa:last-of-type {
+  margin-right: 0;
 }
 
 .list-round-buttons {
@@ -3708,6 +3727,14 @@ tr.row-header-inline td {
   color: #b6afa8 !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   text-transform: none;
+}
+.list-round-buttons .active .button {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.list-round-buttons .active .label {
+  color: #fff !important;
 }
 
 .h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, tr.row-header-inline td, .h6-alternate {
@@ -4396,7 +4423,6 @@ body {
 
 #app__contents {
   position: absolute;
-  width: 100%;
   bottom: 100%;
   min-height: 100%;
   top: 0;
