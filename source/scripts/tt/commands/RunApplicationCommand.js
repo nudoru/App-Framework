@@ -8,6 +8,8 @@ define('TT.RunApplicationCommand',
     exports.execute = function(data) {
       console.log('TT.RunApplicationCommand');
 
+      var _appEvents = require('Nori.Events.AppEvents');
+
       // Browser events
       // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
       // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
@@ -17,6 +19,9 @@ define('TT.RunApplicationCommand',
       // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
       // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
       // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
+
+      // Commands
+      TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.RouteChangedCommand');
 
       /*
        Map route args:

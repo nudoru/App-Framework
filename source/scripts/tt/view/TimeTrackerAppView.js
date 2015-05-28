@@ -15,6 +15,11 @@ define('TT.TimeTrackerAppView',
       _moduleNavView.initialize();
     }
 
+    function updateOnRouteChange(newRoute) {
+      console.log('TTAV, updateonRoutechange: '+newRoute.route);
+    }
+
     exports.initialize = initialize;
+    exports.updateOnRouteChange = updateOnRouteChange;
 
   });

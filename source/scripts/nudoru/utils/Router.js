@@ -41,7 +41,6 @@ define('nudoru.utils.Router',
      * @param evt
      */
     function onHashChange(evt) {
-      //runCurrentRoute();
       _emitter.publish(_browserEvents.URL_HASH_CHANGED, {
         routeObj: getCurrentRoute(),
         fragment: getURLFragment()
