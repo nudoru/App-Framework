@@ -101,18 +101,39 @@ define('nudoru.utils.NLorem',
       return getLastName() + ", " + getFirstName();
     }
 
+    /**
+     * Better implementation http://stackoverflow.com/questions/9035627/elegant-method-to-generate-array-of-random-dates-within-two-dates
+     * @returns {{monthNumber: *, monthName: *, monthDay, weekDayNumber: *, weekDay: *, year}}
+     */
     function getDate() {
       var month = _numberUtils.rndNumber(0,11),
-        wkday = _numberUtils.rndNumber(0,4);
-
-      return {
+        wkday = _numberUtils.rndNumber(0,4),
+        date = {
         monthNumber: month + 1,
         monthName: _months[month],
         monthDay: _numberUtils.rndNumber(1,28),
         weekDayNumber: wkday + 1,
         weekDay: _days[wkday],
-        year: _arrayUtils.rndElement(['2010','2011','2012','2013','2014'])
+        year: _arrayUtils.rndElement(['2010','2011','2012','2013','2014','2015','2016'])
       };
+
+      date.string = date.monthName+' '+date.monthDay+', '+date.year;
+
+      return date;
+
+    }
+
+    /**
+     * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+     * @returns {string}
+     */
+    function fakeGUID() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
     exports.initialize = initialize;
@@ -122,5 +143,6 @@ define('nudoru.utils.NLorem',
     exports.getFLName = getFLName;
     exports.getLFName = getLFName;
     exports.getDate = getDate;
+    exports.fakeGUID = fakeGUID;
 
   });

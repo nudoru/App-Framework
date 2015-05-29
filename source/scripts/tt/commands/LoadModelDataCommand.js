@@ -8,7 +8,10 @@ define('TT.LoadModelDataCommand',
     exports.execute = function(data) {
       console.log('TT Load model data, injecting data');
 
-      TT.model().setData({});
+      var dataSource = require('TT.FakeData');
+      dataSource.initialize();
+
+      TT.model().setData(dataSource);
     };
 
   });
