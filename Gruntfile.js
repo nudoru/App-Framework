@@ -85,7 +85,40 @@ module.exports = function (grunt) {
         //    src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
         //}
       },
-      dist: {
+      //dist: {
+      //  src: [
+      //    'source/scripts/vendor/gsap/TweenLite.min.js',
+      //    'source/scripts/vendor/gsap/utils/Draggable.min.js',
+      //    'source/scripts/vendor/gsap/TimeLineLite.min.js',
+      //    'source/scripts/vendor/gsap/easing/EasePack.min.js',
+      //    'source/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
+      //    'source/scripts/vendor/lodash.min.js',
+      //    'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
+      //    'source/scripts/vendor/object-observe.min.js',
+      //    'source/scripts/vendor/taffy-min.js',
+      //
+      //    'source/scripts/nudoru/require.js',
+      //    'source/scripts/nudoru/utils/*.js',
+      //    'source/scripts/nudoru/events/*.js',
+      //    'source/scripts/nudoru/components/*.js',
+      //
+      //    'source/scripts/nori/events/*.js',
+      //    'source/scripts/nori/model/modules/*.js',
+      //    'source/scripts/nori/model/*.js',
+      //    'source/scripts/nori/view/modules/*.js',
+      //    'source/scripts/nori/view/*.js',
+      //    'source/scripts/nori/controller/*.js',
+      //    'source/scripts/nori/controller/commands/*.js',
+      //    'source/scripts/nori/Nori.js',
+      //
+      //    'source/scripts/tt/**/*.js',
+      //
+      //    'source/scripts/app.js'
+      //  ],
+      //  dest: 'deploy/scripts/libs.js'
+      //}
+
+      libs: {
         src: [
           'source/scripts/vendor/gsap/TweenLite.min.js',
           'source/scripts/vendor/gsap/utils/Draggable.min.js',
@@ -95,13 +128,23 @@ module.exports = function (grunt) {
           'source/scripts/vendor/lodash.min.js',
           'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'source/scripts/vendor/object-observe.min.js',
-          'source/scripts/vendor/taffy-min.js',
+          'source/scripts/vendor/taffy-min.js'
+        ],
+        dest: 'deploy/scripts/libs.js'
+      },
 
+      nudorulibs: {
+        src: [
           'source/scripts/nudoru/require.js',
           'source/scripts/nudoru/utils/*.js',
           'source/scripts/nudoru/events/*.js',
-          'source/scripts/nudoru/components/*.js',
+          'source/scripts/nudoru/components/*.js'
+        ],
+        dest: 'deploy/scripts/nudoru.js'
+      },
 
+      nori: {
+        src: [
           'source/scripts/nori/events/*.js',
           'source/scripts/nori/model/modules/*.js',
           'source/scripts/nori/model/*.js',
@@ -109,14 +152,19 @@ module.exports = function (grunt) {
           'source/scripts/nori/view/*.js',
           'source/scripts/nori/controller/*.js',
           'source/scripts/nori/controller/commands/*.js',
-          'source/scripts/nori/Nori.js',
+          'source/scripts/nori/Nori.js'
+        ],
+        dest: 'deploy/scripts/nori.js'
+      },
 
+      app: {
+        src: [
           'source/scripts/tt/**/*.js',
-
           'source/scripts/app.js'
         ],
-        dest: 'deploy/scripts/libs.js'
+        dest: 'deploy/scripts/app.js'
       }
+
     },
 
     uglify: {
@@ -128,13 +176,16 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'deploy/scripts/libs.min.js': ['<%= concat.dist.dest %>']
+          'deploy/scripts/libs.min.js': ['<%= concat.libs.dest %>'],
+          'deploy/scripts/nudoru.min.js': ['<%= concat.nudorulibs.dest %>'],
+          'deploy/scripts/nori.min.js': ['<%= concat.nori.dest %>'],
+          'deploy/scripts/app.min.js': ['<%= concat.app.dest %>']
         }
       }
     },
 
     jshint: {
-      files: ['source/scripts/nudoru/*.js', 'source/scripts/nori/**/*.js'],
+      files: ['source/scripts/nudoru/*.js', 'source/scripts/nori/**/*.js', 'source/scripts/tt/**/*.js'],
       options: {
         '-W014': true,
         '-W061': true,
@@ -143,7 +194,6 @@ module.exports = function (grunt) {
         eqeqeq: true,
         eqnull: true,
         browser: true,
-        //maxstatements: 15,
         maxdepth: 2,
         maxcomplexity: 5,
         globals: {
@@ -185,7 +235,7 @@ module.exports = function (grunt) {
       },
       js: {
         files: ['source/scripts/**/*.js'],
-        tasks: ['concat', 'uglify', 'jshint'],
+        tasks: ['jshint', 'concat', 'uglify'],
         options: {
           spawn: false
         }
@@ -204,5 +254,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.registerTask('default', ['clean', 'copy', 'compass', 'jade', 'concat', 'uglify', 'jshint', 'connect', 'watch']);
+  grunt.registerTask('default', ['clean', 'copy', 'compass', 'jade', 'jshint', 'concat', 'uglify', 'connect', 'watch']);
 };
