@@ -1,56 +1,120 @@
 define('TT.Model.FakeData',
 
   function(require, module, exports) {
+    "use strict";
 
     var _id = 1,
-      _possibleYears = ['2010', '2011', '2012', '2013', '2014'],
-      _possiblePreviewImages = [
-        'screenshots/shot1.jpg',
-        'screenshots/shot2.jpg',
-        'screenshots/shot3.jpg',
-        'screenshots/shot4.jpg',
-        'screenshots/shot5.jpg',
-        'screenshots/shot6.jpg',
-        'screenshots/shot7.jpg',
-        'screenshots/shot8.jpg',
-        'screenshots/shot9.jpg',
-        'screenshots/shot10.jpg',
-        'screenshots/shot11.jpg',
-        'screenshots/shot12.jpg',
-        'screenshots/shot13.jpg'
-      ],
+      _people= [],
+      _projects = [],
+      _assignments = [],
       _possibleContributors = [],
       _possibleLobs = ['Information Technology', 'Asset Management', 'Human Resources', 'Institutional', 'A&O', 'Client Services', 'Finance', 'Internal Audit', 'Marketing', 'Risk Management'],
-      _possibleCategories = ['Synchronous', 'Asynchronous', 'Just-In-Time'],
-      _possibleTypes = ['WBT', 'ILT', 'VILT', 'App', 'Multimedia', 'Sharepoint', 'Blended', 'Game', 'Simulation', 'EPSS', 'Informational'],
-      _possibleTags = ['template', 'storyline', 'social', 'game', 'mobile', 'sharepoint', 'html', 'system', 'ilt', 'paper based', 'application', 'show me', 'simulation'],
-      _possibleComplexity = ['High', 'Medium', 'Low'],
-      _possibleLinks = ['http://google.com', 'http://yahoo.com', 'http://bing.com'],
       _items = [],
       _lorem = require('nudoru.utils.NLorem'),
       _arrayUtils = require('nudoru.utils.ArrayUtils'),
       _stringUtils = require('nudoru.utils.StringUtils'),
       _numberUtils = require('nudoru.utils.NumberUtils');
 
-    function getItems() {
-      return _items;
+    function getPeople() {
+      return _people;
+    }
+
+    function getProjects() {
+      return _projects;
+    }
+
+    function getAssignments() {
+      return _assignments;
     }
 
     function initialize() {
-      var i = 0;
 
       _lorem.initialize();
 
-      for (i = 0; i < 20; i++) {
-        _possibleContributors.push(_lorem.getLFName());
+      var numPeople = 60,
+          numProjects = 400,
+          numAssignments = 1000;
+
+      for(var i = 0; i<numPeople; i++) {
+        _people.push(createPerson());
       }
 
-      for (i = 0; i < 100; i++) {
-        _items.push(createItem());
+      for(var i = 0; i<numProjects; i++) {
+        _projects.push(createProject());
+      }
+
+      for(var i = 0; i<numAssignments; i++) {
+        _assignments.push(createAssignment());
       }
 
     }
 
+    function createPerson() {
+      return {
+        id: '',
+        name: '',
+        manager: '',
+        type: '',
+        team: '',
+        brlTeamManager: '',
+        brlSrLeader: '',
+        jobTitle: '',
+        primaryRole: '',
+        secondaryRole: '',
+        active: '',
+        inActiveDate: '',
+        keySkills: '',
+        comments: '',
+        photoURL: ''
+      };
+    }
+
+    function createProject() {
+      return {
+        id: '',
+        title: '',
+        description: '',
+        status: '',
+        workType: '',
+        requester: '',
+        audience: '',
+        audienceSize: '',
+        projectLead: '',
+        startDate: '',
+        endDate: '',
+        deploymentDate: '',
+        finishDate: '',
+        comments: '',
+        teamLeading: ''
+      };
+
+    }
+
+    function createAssignment() {
+      return {
+        id: '',
+        resourceName: '',
+        startDate: '',
+        endDate: '',
+        role: '',
+        allocation: '',
+        comments: '',
+        timeData: '',
+        allocationData: ''
+      };
+    }
+
+    function getParas(max) {
+      var description = '',
+        descriptionNumParas = _numberUtils.rndNumber(1, max),
+        i = 0;
+
+      for (; i < descriptionNumParas; i++) {
+        description += '<p>' + _lorem.getParagraph(3, 7) + '</p>';
+      }
+    }
+
+    /*
     function createItem() {
       var o = Object.create(APP.AppModel.ItemVO.properties),
         additionalImages = [],
@@ -86,8 +150,11 @@ define('TT.Model.FakeData',
       o.tags = _arrayUtils.getRandomSetOfElements(_possibleTags, 3);
       return o;
     }
+    */
 
     exports.initialize = initialize;
-    exports.getItems = getItems;
+    exports.getPeople = getPeople;
+    exports.getProjects = getProjects;
+    exports.getAssignments = getAssignments;
 
   });
