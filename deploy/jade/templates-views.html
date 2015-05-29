@@ -1,0 +1,409 @@
+<!--
+BEGIN Templates for Views
+-->
+<script id="template__ControlsTesting" type="text/template">
+    <div class="padded-content">
+        <h1 class="h3-alternate">Route Testing</h1>
+        <ul class="plain-list">
+            <li>
+                <button id="action-five">Route testing one</button>
+            </li>
+            <li>
+                <button id="action-six">Route testing two</button>
+            </li>
+        </ul>
+        <hr>
+        <h1 class="h3-alternate">Mock Components</h1>
+        <ul class="plain-list">
+            <li>
+                <button id="action-one">Modal message</button>
+            </li>
+            <li>
+                <button id="action-two">Message</button>
+            </li>
+            <li>
+                <button id="action-three">Notification</button>
+            </li>
+            <li style="margin-left: 400px">
+                <button id="action-four">Tool tip</button>
+            </li>
+        </ul>
+    </div>
+</script>
+
+<script id="template__TemplateSubView" type="text/template">
+    <h1>Template Sub View</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<script id="template__TestSubView" type="text/template">
+    <h1>Test sub view</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<script id="template__TestSubView1" type="text/template">
+    <h1>Test sub view 1</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<script id="template__TestSubView2" type="text/template">
+    <h1>Test sub view 2</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<script id="template__TestSubView3" type="text/template">
+    <h1>Test sub view 3</h1>
+    <textarea id="input-textarea"></textarea>
+</script>
+
+<script id="template__Forecast" type="text/template">
+    <div class="panel-shadow">
+        <section class="padding-top-double">
+            <section class="text-center">
+                <h1 class="h2-alternate">Capacity Forecast</h1>
+            </section>
+            <section class="text-center padding-bottom-double">
+                <button class="button-neutral-light">One Month</button>
+                <button class="button-neutral-light">Three Month</button>
+                <button>Six Month</button>
+                <button class="button-neutral-light">Year</button>
+            </section>
+            <table class="table table-rows-zebra">
+                <tbody>
+                <tr>
+                    <th>ABC Project</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>XYZ Solution</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Financial Assessment 1.2</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Innovation Team X</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th class="right-column"></th>
+                    <th class="center-column">June</th>
+                    <th class="center-column">July</th>
+                    <th class="center-column">Aug</th>
+                    <th class="center-column">Sept</th>
+                    <th class="center-column">Oct</th>
+                    <th class="center-column">Nov</th>
+                </tr>
+                </tfoot>
+            </table>
+        </section>
+        <section class="panel-message-footer margin-top-double">
+            <h1 class="icon-left"><i class="fa fa-lightbulb-o"></i>Keep in Mind ...</h1>
+            <p>Forecasts are based on current allocation percentages in addition to project start and end dates. Adjusting information in the assignments view will impact forecast estimates.</p>
+        </section>
+    </div>
+</script>
+
+<script id="template__Assignments" type="text/template">
+    <div class="panel-shadow">
+        <section class="padding-top-double">
+            <section class="text-center padding-bottom-double">
+                <h1 class="h2-alternate">Active Assignments</h1>
+            </section>
+            <table class="table table-rows-zebra">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col" class="column-20pct center-column">Start Date</th>
+                    <th scope="col" class="column-20pct center-column">End Date</th>
+                    <th scope="col" class="column-10pct center-column">Allocation</th>
+                    <th scope="col" class="column-20pct right-column"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>ABC Project</th>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="%" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="right-column">
+                        <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>XYZ Solution</th>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="%" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="right-column">
+                        <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Financial Assessment 1.2</th>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="%" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="right-column">
+                        <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Innovation Team X</th>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="%" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="right-column">
+                        <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <section class="text-center">
+                <button class="button-icon-left"><i class="fa fa-plus-circle"></i>Add Assignment</button>
+            </section>
+            <section class="panel-footer">
+                <button class="button-success">Update</button>
+            </section>
+        </section>
+    </div>
+</script>
+
+<script id="template__Timecard" type="text/template">
+    <div class="panel-shadow">
+        <section>
+            <div class="column-container padding-top-double padding-bottom-triple">
+                <div class="one-fourth-left-column">
+                    <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
+                </div>
+                <div class="half-left-column text-center">
+                    <h1 class="h2-alternate">Week of May 10-16, 2015</h1>
+                    <!--button.button-icon-left.button-no-border-->
+                    <!--  i.fa.fa-calendar-->
+                    <!--  | View Full Month-->
+                </div>
+                <div class="one-fourth-right-column text-right">
+                    <button class="button-small button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
+                </div>
+            </div>
+            <table class="table table-rows-zebra">
+                <thead>
+                <tr>
+                    <th scope="col" style=""></th>
+                    <th scope="col" style="width: 125px" class="center-column">Role</th>
+                    <th scope="col" style="width: 85px" class="center-column">Mon</th>
+                    <th scope="col" style="width: 85px" class="center-column">Tue</th>
+                    <th scope="col" style="width: 85px" class="center-column">Wed</th>
+                    <th scope="col" style="width: 85px" class="center-column">Thur</th>
+                    <th scope="col" style="width: 85px" class="center-column">Fri</th>
+                    <th scope="col" style="width: 200px" class="center-column">Comments</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>ABC Project</th>
+                    <td class="center-column">
+                        <select id="input-select" class="subtle">
+                            <option>Consult</option>
+                            <option>Analysis</option>
+                            <option>Design</option>
+                            <option>Develop</option>
+                            <option>Rework</option>
+                            <option>Implement</option>
+                            <option>Evaluate</option>
+                        </select>
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                    </td>
+                </tr>
+                <tr>
+                    <th>XYZ Solution</th>
+                    <td class="center-column">
+                        <select id="input-select" class="subtle">
+                            <option>Consult</option>
+                            <option>Analysis</option>
+                            <option>Design</option>
+                            <option>Develop</option>
+                            <option>Rework</option>
+                            <option>Implement</option>
+                            <option>Evaluate</option>
+                        </select>
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Financial Assessment 1.2</th>
+                    <td class="center-column">
+                        <select id="input-select" class="subtle">
+                            <option>Consult</option>
+                            <option>Analysis</option>
+                            <option>Design</option>
+                            <option>Develop</option>
+                            <option>Rework</option>
+                            <option>Implement</option>
+                            <option>Evaluate</option>
+                        </select>
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Innovation Team X</th>
+                    <td class="center-column">
+                        <select id="input-select" class="subtle">
+                            <option>Consult</option>
+                            <option>Analysis</option>
+                            <option>Design</option>
+                            <option>Develop</option>
+                            <option>Rework</option>
+                            <option>Implement</option>
+                            <option>Evaluate</option>
+                        </select>
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                    </td>
+                    <td class="center-column">
+                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th class="right-column">Totals</th>
+                    <th class="center-column"></th>
+                    <th class="center-column">8 hrs</th>
+                    <th class="center-column">8 hrs</th>
+                    <th class="center-column">8 hrs</th>
+                    <th class="center-column">8 hrs</th>
+                    <th class="center-column">8 hrs</th>
+                    <th class="center-column"></th>
+                </tr>
+                </tfoot>
+            </table>
+            <section class="panel-message-footer margin-top-double">
+                <div class="column-container">
+                    <div class="three-fourths-left-column">
+                        <h1 class="icon-left"><i class="fa fa-lightbulb-o"></i>Keep in Mind ...</h1>
+                        <p>Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed.</p>
+                    </div>
+                    <div class="one-fourth-right-column text-right padding-top-double">
+                        <button class="button-icon-right">Submit 40 hrs<i class="fa fa-check"></i></button>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </div>
+</script>
+
+<!--
+END Templates for Views
+-->
