@@ -15,8 +15,12 @@ define('TT.TimeTrackerAppView',
       _moduleNavView.initialize();
     }
 
+    /**
+     * Update the UI or components when the route/subview has changed
+     * @param newRoute
+     */
     function updateOnRouteChange(newRoute) {
-      console.log('TTAV, updateonRoutechange: '+newRoute.route);
+      _moduleNavView.highlightModule(newRoute.route);
     }
 
     exports.initialize = initialize;

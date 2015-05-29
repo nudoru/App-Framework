@@ -124,7 +124,7 @@ define('nudoru.utils.Router',
         path += data.join('&');
       }
 
-      console.log('Router, setting URL fragment to: ' + path);
+      //console.log('Router, setting URL fragment to: ' + path);
 
       updateURLFragment(path);
     }

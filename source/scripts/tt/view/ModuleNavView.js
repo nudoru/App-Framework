@@ -5,7 +5,7 @@
 define('TT.ModuleNavView',
   function (require, module, exports) {
 
-    var _buttonMap = {},
+    var _buttonMap = Object.create(null),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
@@ -17,6 +17,11 @@ define('TT.ModuleNavView',
       mapButton('btn_forecast', '/Forecast');
     }
 
+    /**
+     * Set up data for a button
+     * @param elID
+     * @param route
+     */
     function mapButton(elID, route) {
       var buttonEl = document.getElementById(elID),
         liEl =buttonEl.parentNode;
@@ -32,11 +37,30 @@ define('TT.ModuleNavView',
       };
     }
 
+    /**
+     * Change the appliation route when a button is pressed
+     * @param id
+     */
     function handleButton(id) {
-      console.log('handle: '+id);
       _emitter.publish(_appEvents.CHANGE_ROUTE, {route: _buttonMap[id].route});
     }
 
+    /**
+     * Highlight a button in response to a view change
+     * @param route
+     */
+    function highlightModule(route) {
+      for (var p in _buttonMap) {
+        var btn = _buttonMap[p];
+        if (btn.route === route) {
+          _domUtils.addClass(btn.liEl, 'active');
+        } else {
+          _domUtils.removeClass(btn.liEl, 'active');
+        }
+      }
+    }
+
     exports.initialize = initialize;
+    exports.highlightModule = highlightModule;
 
   });

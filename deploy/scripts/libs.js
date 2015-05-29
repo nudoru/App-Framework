@@ -990,7 +990,7 @@ define('nudoru.utils.NDebugger',
         path += data.join('&');
       }
 
-      console.log('Router, setting URL fragment to: ' + path);
+      //console.log('Router, setting URL fragment to: ' + path);
 
       updateURLFragment(path);
     }
@@ -2963,7 +2963,7 @@ define('nudoru.utils.NDebugger',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      console.log('URLHashChangedCommand: fragment: '+data.fragment+', routeObj: '+data.routeObj);
+      //console.log('URLHashChangedCommand: fragment: '+data.fragment+', routeObj: '+data.routeObj);
       Nori.setCurrentRoute(data.routeObj);
     };
 
@@ -3144,7 +3144,13 @@ define('nudoru.utils.NDebugger',
   }
 
   /**
-   * Allow the router to run the route view mapping if it's valid
+   * Allow the router to run the route view mapping if it's valid. Typically reached from
+   * the ChangeRouteCommand via an emitted event:
+   *  _emitter.publish(_appEvents.CHANGE_ROUTE, {route:'/route', data:{}});
+   * When the route is changed in this way, this method will fire twice, once for the
+   * _router.setRoute and once when the URL hash change event (URLHashChangedCommand).
+   * The route changed event is only published on this 2nd call which will trigger the
+   * RouteChangedCommand to update views, etc.
    * @param routeObj props: route, data, fromApp
    */
   function setCurrentRoute(routeObj) {
@@ -3155,12 +3161,13 @@ define('nudoru.utils.NDebugger',
       // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
       // else is a URL change and just execute current mapping
       if(routeObj.fromApp) {
+        //console.log('Routing from app');
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
+        //console.log('Routing from URL');
         _router.runCurrentRoute();
+        _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
       }
-
-      _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
     } else {
       //console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
@@ -3279,7 +3286,7 @@ define('nudoru.utils.NDebugger',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      //console.log('RouteChangedCommand, route: '+data.route+', data: '+data.data);
+      console.log('RouteChangedCommand, route: '+data.route+', data: '+data.data);
 
       TT.view().updateOnRouteChange(data);
     };
@@ -3456,7 +3463,7 @@ define('nudoru.utils.NDebugger',
   });;define('TT.ModuleNavView',
   function (require, module, exports) {
 
-    var _buttonMap = {},
+    var _buttonMap = Object.create(null),
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
@@ -3468,6 +3475,11 @@ define('nudoru.utils.NDebugger',
       mapButton('btn_forecast', '/Forecast');
     }
 
+    /**
+     * Set up data for a button
+     * @param elID
+     * @param route
+     */
     function mapButton(elID, route) {
       var buttonEl = document.getElementById(elID),
         liEl =buttonEl.parentNode;
@@ -3483,12 +3495,31 @@ define('nudoru.utils.NDebugger',
       };
     }
 
+    /**
+     * Change the appliation route when a button is pressed
+     * @param id
+     */
     function handleButton(id) {
-      console.log('handle: '+id);
       _emitter.publish(_appEvents.CHANGE_ROUTE, {route: _buttonMap[id].route});
     }
 
+    /**
+     * Highlight a button in response to a view change
+     * @param route
+     */
+    function highlightModule(route) {
+      for (var p in _buttonMap) {
+        var btn = _buttonMap[p];
+        if (btn.route === route) {
+          _domUtils.addClass(btn.liEl, 'active');
+        } else {
+          _domUtils.removeClass(btn.liEl, 'active');
+        }
+      }
+    }
+
     exports.initialize = initialize;
+    exports.highlightModule = highlightModule;
 
   });;define('TT.View.TemplateSubView',
   function (require, module, exports) {
@@ -3506,8 +3537,12 @@ define('nudoru.utils.NDebugger',
       _moduleNavView.initialize();
     }
 
+    /**
+     * Update the UI or components when the route/subview has changed
+     * @param newRoute
+     */
     function updateOnRouteChange(newRoute) {
-      console.log('TTAV, updateonRoutechange: '+newRoute.route);
+      _moduleNavView.highlightModule(newRoute.route);
     }
 
     exports.initialize = initialize;

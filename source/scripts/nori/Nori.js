@@ -154,7 +154,13 @@ var Nori = (function () {
   }
 
   /**
-   * Allow the router to run the route view mapping if it's valid
+   * Allow the router to run the route view mapping if it's valid. Typically reached from
+   * the ChangeRouteCommand via an emitted event:
+   *  _emitter.publish(_appEvents.CHANGE_ROUTE, {route:'/route', data:{}});
+   * When the route is changed in this way, this method will fire twice, once for the
+   * _router.setRoute and once when the URL hash change event (URLHashChangedCommand).
+   * The route changed event is only published on this 2nd call which will trigger the
+   * RouteChangedCommand to update views, etc.
    * @param routeObj props: route, data, fromApp
    */
   function setCurrentRoute(routeObj) {
@@ -165,12 +171,13 @@ var Nori = (function () {
       // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
       // else is a URL change and just execute current mapping
       if(routeObj.fromApp) {
+        //console.log('Routing from app');
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
+        //console.log('Routing from URL');
         _router.runCurrentRoute();
+        _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
       }
-
-      _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
     } else {
       //console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
