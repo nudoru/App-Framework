@@ -78,45 +78,12 @@ module.exports = function (grunt) {
         stripBanners: true,
         sourceMap: true,
         separator: ';'
-        //banner: "'use strict';\n",
-        //banner: "(function () {'use strict';}());\n",
         //process: function(src, filepath) {
         //  return '// Source: ' + filepath + '\n' +
         //    src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
         //}
       },
-      //dist: {
-      //  src: [
-      //    'source/scripts/vendor/gsap/TweenLite.min.js',
-      //    'source/scripts/vendor/gsap/utils/Draggable.min.js',
-      //    'source/scripts/vendor/gsap/TimeLineLite.min.js',
-      //    'source/scripts/vendor/gsap/easing/EasePack.min.js',
-      //    'source/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
-      //    'source/scripts/vendor/lodash.min.js',
-      //    'source/scripts/vendor/rxjs/rx.lite.compat.min.js',
-      //    'source/scripts/vendor/object-observe.min.js',
-      //    'source/scripts/vendor/taffy-min.js',
-      //
-      //    'source/scripts/nudoru/require.js',
-      //    'source/scripts/nudoru/utils/*.js',
-      //    'source/scripts/nudoru/events/*.js',
-      //    'source/scripts/nudoru/components/*.js',
-      //
-      //    'source/scripts/nori/events/*.js',
-      //    'source/scripts/nori/model/modules/*.js',
-      //    'source/scripts/nori/model/*.js',
-      //    'source/scripts/nori/view/modules/*.js',
-      //    'source/scripts/nori/view/*.js',
-      //    'source/scripts/nori/controller/*.js',
-      //    'source/scripts/nori/controller/commands/*.js',
-      //    'source/scripts/nori/Nori.js',
-      //
-      //    'source/scripts/tt/**/*.js',
-      //
-      //    'source/scripts/app.js'
-      //  ],
-      //  dest: 'deploy/scripts/libs.js'
-      //}
+
 
       libs: {
         src: [
@@ -133,14 +100,26 @@ module.exports = function (grunt) {
         dest: 'deploy/scripts/libs.js'
       },
 
-      nudorulibs: {
+      nudorucore: {
         src: [
           'source/scripts/nudoru/require.js',
-          'source/scripts/nudoru/utils/*.js',
-          'source/scripts/nudoru/events/*.js',
+          'source/scripts/nudoru/core/*.js'
+        ],
+        dest: 'deploy/scripts/nudoru.core.js'
+      },
+
+      nudorubrowser: {
+        src: [
+          'source/scripts/nudoru/browser/*.js'
+        ],
+        dest: 'deploy/scripts/nudoru.browser.js'
+      },
+
+      nudorucomponents: {
+        src: [
           'source/scripts/nudoru/components/*.js'
         ],
-        dest: 'deploy/scripts/nudoru.js'
+        dest: 'deploy/scripts/nudoru.components.js'
       },
 
       nori: {
@@ -177,7 +156,9 @@ module.exports = function (grunt) {
       dist: {
         files: {
           'deploy/scripts/libs.min.js': ['<%= concat.libs.dest %>'],
-          'deploy/scripts/nudoru.min.js': ['<%= concat.nudorulibs.dest %>'],
+          'deploy/scripts/nudoru.core.min.js': ['<%= concat.nudorucore.dest %>'],
+          'deploy/scripts/nudoru.browser.min.js': ['<%= concat.nudorubrowser.dest %>'],
+          'deploy/scripts/nudoru.components.min.js': ['<%= concat.nudorucomponents.dest %>'],
           'deploy/scripts/nori.min.js': ['<%= concat.nori.dest %>'],
           'deploy/scripts/app.min.js': ['<%= concat.app.dest %>']
         }
