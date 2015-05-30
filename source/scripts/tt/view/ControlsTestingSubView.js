@@ -7,7 +7,7 @@ define('TT.View.ControlsTestingSubView',
 
     var _lIpsum = require('nudoru.utils.NLorem'),
       _toolTip = require('nudoru.components.ToolTipView'),
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents'),
       _actionOneEl,
       _actionTwoEl,

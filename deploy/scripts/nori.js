@@ -12,12 +12,91 @@ define('Nori.Events.AppEvents',
     exports.ROUTE_CHANGED = 'ROUTE_CHANGED';
     exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
     exports.SUBVIEW_STORE_DATA = 'SUBVIEW_STORE_DATA';
+  });;define('Nori.Events.Emitter',
+  function (require, module, exports) {
+    var _subjectMap = {};
+
+    /**
+     * Add an event as observable
+     * @param evtStr Event name string
+     * @param handler onNext() subscription function
+     * @param once will complete/dispose after one fire
+     * @returns {*}
+     */
+    function subscribe(evtStr, handler, once) {
+      _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
+
+      _subjectMap[evtStr] = {
+        once: once,
+        handler: handler,
+        subject: new Rx.Subject()
+      };
+
+      return _subjectMap[evtStr].subject.subscribe(handler);
+    }
+
+    /**
+     * Maps a module/command's execute() function as the handler for onNext
+     * @param evtStr Event name string
+     * @param cmdModule Module name
+     * @param once will complete/dispose after one fire
+     * @returns {*}
+     */
+    function subscribeCommand(evtStr, cmdModule, once) {
+      var cmd = require(cmdModule);
+      if(cmd.hasOwnProperty('execute')) {
+        return subscribe(evtStr, cmd.execute, once);
+      } else {
+        throw new Error('Emitter cannot map '+evtStr+' to command '+cmdModule+': must have execute()');
+      }
+    }
+
+    /**
+     * Publish a event to all subscribers
+     * @param evtStr
+     * @param data
+     */
+    function publish(evtStr, data) {
+      var subjObj = _subjectMap[evtStr];
+
+      if(!subjObj) {
+        return;
+      }
+
+      subjObj.subject.onNext(data);
+
+      if(subjObj.once) {
+        subjObj.subject.onCompleted();
+        subjObj.subject.dispose();
+        subjObj = null;
+      }
+    }
+
+    /**
+     * Cleanup
+     */
+    function dispose() {
+      var subjects = _subjectMap;
+      for (var prop in subjects) {
+        if (hasOwnProp.call(subjects, prop)) {
+          subjects[prop].subject.dispose();
+        }
+      }
+
+      _subjectMap = {};
+    }
+    
+    exports.subscribe = subscribe;
+    exports.subscribeCommand = subscribeCommand;
+    exports.publish = publish;
+    exports.dispose = dispose;
+
   });;define('Nori.Model',
   function (require, module, exports) {
 
     var _data,
       _subviewDataMap = Object.create(null),
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
     //----------------------------------------------------------------------------
@@ -94,7 +173,7 @@ define('Nori.Events.AppEvents',
       _currentState,
       _modelData,
       _domUtils = require('nudoru.utils.DOMUtils'),
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
     /**
@@ -221,7 +300,7 @@ define('Nori.Events.AppEvents',
       _browserScrollStream,
       _browserResizeStream,
       _positionUIElementsOnChangeCB,
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
 
@@ -458,7 +537,7 @@ define('Nori.Events.AppEvents',
 });;define('Nori.View.MixinRouteViews',
   function (require, module, exports) {
 
-    var _template = require('nudoru.utils.NTemplate'),
+    var _template = require('Nori.View.Template'),
       _subViewMountPoint,
       _subViewMapping = Object.create(null),
       _currentSubView,
@@ -466,7 +545,7 @@ define('Nori.Events.AppEvents',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
-      _emitter = require('nudoru.events.Emitter');
+      _emitter = require('Nori.Events.Emitter');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -563,7 +642,88 @@ define('Nori.Events.AppEvents',
     exports.mapView = mapView;
     exports.showView = showView;
 
-  });;define('Nori.View',
+  });;define('Nori.View.Template',
+  function(require, module, exports) {
+
+    var _templateHTMLCache = Object.create(null),
+      _templateCache = Object.create(null),
+      _DOMUtils = require('nudoru.utils.DOMUtils');
+
+    /**
+     * Get the template html from the script tag with id
+     * @param id
+     * @returns {*}
+     */
+    function getSource(id) {
+      if(_templateHTMLCache[id]) {
+        return _templateHTMLCache[id];
+      }
+
+      var src = document.getElementById(id),
+        srchtml = '',
+        cleanhtml = '';
+
+      if(src) {
+        srchtml = src.innerHTML;
+      } else {
+        throw new Error('nudoru.utils.NTemplate, template not found: "'+id+'"');
+      }
+
+      cleanhtml = cleanTemplateHTML(srchtml);
+      _templateHTMLCache[id] = cleanhtml;
+      return cleanhtml;
+    }
+
+    /**
+     * Returns an underscore template
+     * @param id
+     * @returns {*}
+     */
+    function getTemplate(id) {
+      if(_templateCache[id]) {
+        return _templateCache[id];
+      }
+      var templ = _.template(getSource(id));
+      _templateCache[id] = templ;
+      return templ;
+    }
+
+    /**
+     * Processes the template and returns HTML
+     * @param id
+     * @param obj
+     * @returns {*}
+     */
+    function asHTML(id, obj) {
+      var temp = getTemplate(id);
+      return temp(obj);
+    }
+
+    /**
+     * Processes the template and returns an HTML Element
+     * @param id
+     * @param obj
+     * @returns {*}
+     */
+    function asElement(id, obj) {
+      return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
+    }
+
+    /**
+     * Cleans template HTML
+     */
+    function cleanTemplateHTML(str) {
+      //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
+      return str.trim();
+    }
+
+    exports.getSource = getSource;
+    exports.getTemplate = getTemplate;
+    exports.asHTML = asHTML;
+    exports.asElement = asElement;
+
+  });
+;define('Nori.View',
   function (require, module, exports) {
 
     var _appContainerEl,
@@ -729,6 +889,149 @@ define('Nori.Events.AppEvents',
     exports.getAppContainerEl = getAppContainerEl;
     exports.getAppEl = getAppEl;
 
+  });;define('Nori.Router',
+  function (require, module, exports) {
+
+    var _routeMap = Object.create(null),
+      _emitter = require('Nori.Events.Emitter'),
+      _browserEvents = require('nudoru.events.BrowserEvents');
+
+    function initialize() {
+      window.addEventListener('hashchange', onHashChange, false);
+    }
+
+    /**
+     * Map a route to a given controller function
+     * The controller funtion will be passed an object with the route and templateID
+     * @param route
+     * @param conObj
+     */
+    function when(route, conObj) {
+      _routeMap[route] = {
+        templateID: conObj.templateID,
+        controller: conObj.controller
+      };
+    }
+
+    /**
+     * Broadcast the change event and let the application determine how to handle
+     * @param evt
+     */
+    function onHashChange(evt) {
+      _emitter.publish(_browserEvents.URL_HASH_CHANGED, {
+        routeObj: getCurrentRoute(),
+        fragment: getURLFragment()
+      });
+    }
+
+    /**
+     * Parses the route and query string from the current URL fragment
+     * @returns {{route: string, query: {}}}
+     */
+    function getCurrentRoute() {
+      var fragment = getURLFragment(),
+        parts = fragment.split('?'),
+        route = '/' + parts[0],
+        queryStr = decodeURIComponent(parts[1]),
+        queryStrObj = parseQueryStr(queryStr);
+
+      return {route: route, data: queryStrObj};
+    }
+
+    /**
+     * Runs the route currently on the URL
+     * Primarily used window.load
+     */
+    function runCurrentRoute() {
+      var current = getCurrentRoute();
+      runRoute(current.route, current.data);
+    }
+
+    /**
+     * Parses a query string into key/value pairs
+     * @param queryStr
+     * @returns {{}}
+     */
+    function parseQueryStr(queryStr) {
+      var obj = {},
+        parts = queryStr.split('&');
+
+      parts.forEach(function (pairStr) {
+        var pairArr = pairStr.split('=');
+        obj[pairArr[0]] = pairArr[1];
+      });
+
+      return obj;
+    }
+
+    /**
+     * Executes the controller function for the given route
+     * @param route
+     * @param queryStrObj
+     */
+    function runRoute(route, queryStrObj) {
+      var routeObj = _routeMap[route];
+
+      if (routeObj) {
+        routeObj.controller.call(window, {
+          route: route,
+          templateID: routeObj.templateID,
+          data: queryStrObj
+        });
+      } else {
+        console.log('No Route mapped for: "' + route + '"');
+      }
+    }
+
+    /**
+     * Combines a route and data object into a proper URL hash fragment
+     * @param route
+     * @param dataObj
+     */
+    function setRoute(route, dataObj) {
+      var path = route,
+          data = [];
+      if (dataObj !== null && dataObj !== undefined) {
+        path += "?";
+        for (var prop in dataObj) {
+          if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
+            data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
+          }
+        }
+        path += data.join('&');
+      }
+
+      //console.log('Router, setting URL fragment to: ' + path);
+
+      updateURLFragment(path);
+    }
+
+    /**
+     * Returns everything after the 'whatever.html#' in the URL
+     * Leading and trailing slashes are removed
+     * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
+     *
+     * @returns {string}
+     */
+    function getURLFragment() {
+      var fragment = location.hash.slice(1);
+      return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
+    }
+
+    /**
+     * Set the URL hash fragment
+     * @param path
+     */
+    function updateURLFragment(path) {
+      window.location.hash = path;
+    }
+
+    exports.initialize = initialize;
+    exports.when = when;
+    exports.getCurrentRoute = getCurrentRoute;
+    exports.runCurrentRoute = runCurrentRoute;
+    exports.setRoute = setRoute;
+
   });;define('Nori.BrowserResizedCommand',
   function (require, module, exports) {
 
@@ -850,8 +1153,8 @@ define('Nori.Events.AppEvents',
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
-    _emitter = require('nudoru.events.Emitter'),
-    _router = require('nudoru.utils.Router');
+    _emitter = require('Nori.Events.Emitter'),
+    _router = require('Nori.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors

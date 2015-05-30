@@ -10,7 +10,7 @@ define('Nori.Model',
 
     var _data,
       _subviewDataMap = Object.create(null),
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
     //----------------------------------------------------------------------------

@@ -14,7 +14,7 @@ define('Nori.View.BaseSubView',
       _currentState,
       _modelData,
       _domUtils = require('nudoru.utils.DOMUtils'),
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
     /**

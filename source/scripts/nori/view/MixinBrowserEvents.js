@@ -7,7 +7,7 @@ define('Nori.View.MixinBrowserEvents',
       _browserScrollStream,
       _browserResizeStream,
       _positionUIElementsOnChangeCB,
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _browserEvents = require('nudoru.events.BrowserEvents');
 
 

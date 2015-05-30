@@ -260,7 +260,7 @@ define('TT.LoadModelDataCommand',
 
     var _lIpsum = require('nudoru.utils.NLorem'),
       _toolTip = require('nudoru.components.ToolTipView'),
-      _emitter = require('nudoru.events.Emitter'),
+      _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents'),
       _actionOneEl,
       _actionTwoEl,
@@ -376,7 +376,7 @@ define('TT.LoadModelDataCommand',
       _browserInfo = require('nudoru.utils.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('nudoru.utils.DOMUtils'),
-      _emitter = require('nudoru.events.Emitter');
+      _emitter = require('Nori.Events.Emitter');
 
     function initialize() {
       mapButton('btn_assignments', '/Assignments');
@@ -399,7 +399,7 @@ define('TT.LoadModelDataCommand',
         route: route,
         clickStream: Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
           .subscribe(function () {
-            handleButton(elID)
+            handleButton(elID);
           })
       };
     }
