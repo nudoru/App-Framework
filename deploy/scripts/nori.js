@@ -1218,7 +1218,7 @@ define('Nori.Events.AppEvents',
 
     _view = initObj.view;
 
-    _subviewDataModel = extend({}, require('Nori.Model'));
+    _subviewDataModel = createModel({});
     _subviewDataModel.initialize({id:'NoriSubViewDataModel', store:{}, noisy: true});
     addModel(_subviewDataModel);
 
@@ -1276,6 +1276,10 @@ define('Nori.Events.AppEvents',
   //  Models
   //  Simple model collection
   //----------------------------------------------------------------------------
+
+  function createModel(src) {
+    return extend(src, requireUnique('Nori.Model'));
+  }
 
   /**
    * Add a model to the application collection
@@ -1465,6 +1469,7 @@ define('Nori.Events.AppEvents',
     getEmitter: getEmitter,
     router: getRouter,
     view: getView,
+    createModel: createModel,
     addModel: addModel,
     getModel: getModel,
     setCurrentRoute: setCurrentRoute,

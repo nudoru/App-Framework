@@ -44,10 +44,10 @@
     //dataSource.initialize();
 
     // Model testing-
-    _model = Nori.extend({}, require('Nori.Model'));
+    _model = TT.createModel({});
     _model.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, noisy: false});
-
-    //TT.addModel(_model);
+    console.log(_model.toJSON());
+    TT.addModel(_model);
 
     // Everything is ready!
     TT.view().removeLoadingMessage();
