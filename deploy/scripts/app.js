@@ -62,8 +62,6 @@ define('TT.RouteChangedCommand',
         _assignments.push(createAssignment());
       }
 
-      console.table(_assignments);
-
     }
 
     function createPerson() {
@@ -407,7 +405,8 @@ define('TT.RouteChangedCommand',
   window.onload = function() {
 
     var _appEvents = require('Nori.Events.AppEvents'),
-      _model, _view;
+      _model,
+      _view;
 
     // Create the application instance
     window.TT = Nori.create();
@@ -436,10 +435,14 @@ define('TT.RouteChangedCommand',
     TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
     TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
 
-    var dataSource = require('TT.FakeData');
-    dataSource.initialize();
+    //var dataSource = require('TT.FakeData');
+    //dataSource.initialize();
+
+    // Model testing-
     _model = Nori.extend({}, require('Nori.Model'));
-    _model.initialize('testmodel', dataSource);
+    _model.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, noisy: false});
+
+    //TT.addModel(_model);
 
     // Everything is ready!
     TT.view().removeLoadingMessage();

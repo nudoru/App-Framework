@@ -98,7 +98,8 @@ define('Nori.Events.AppEvents',
   function (require, module, exports) {
 
     var _id,
-      _store,
+      _store = Object.create(null),
+      _noisy = false,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -106,24 +107,36 @@ define('Nori.Events.AppEvents',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initialize(id, obj) {
-      if(!id) {
+    function initialize(initObj) {
+      if(!initObj.id) {
         throw new Error('Model must be init\'d with an id');
       }
 
-      _id = id;
+      _store = Object.create(null);
+      _id = initObj.id;
 
-      if(obj) {
-        set(obj);
+      if(initObj.store) {
+        set(initObj.store);
       }
+
+      _noisy = initObj.noisy || false;
+
+    }
+
+    function getID() {
+      return _id;
     }
 
     /**
-     * Set the data for the model
+     * Merge new data into the model
      * @param dataObj
      */
-    function set(dataObj) {
-      _store = dataObj;
+    function set(key, value) {
+      if(typeof key === 'string') {
+        _store[key] = value;
+      } else {
+        _store = _.assign({}, _store, key);
+      }
       publishChange();
     }
 
@@ -144,20 +157,12 @@ define('Nori.Events.AppEvents',
     }
 
     /**
-     * Update a value in the store
-     * @param key
-     * @param newValue
-     */
-    function update(key, newValue) {
-      _store[key] = newValue;
-      publishChange();
-    }
-
-    /**
      * On change, emit event
      */
     function publishChange() {
-      _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+      if(_noisy) {
+        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+      }
     }
 
     function save() {
@@ -168,15 +173,22 @@ define('Nori.Events.AppEvents',
       //
     }
 
+    function toJSON() {
+      return JSON.stringify(_store);
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+    exports.getID = getID;
     exports.set = set;
     exports.get = get;
-    exports.getStore = getStore;
-    exports.update = update;
+    exports.store = getStore;
+    exports.save = save;
+    exports.destroy = destroy;
+    exports.toJSON = toJSON;
 
   });;define('Nori.View.BaseSubView',
   function (require, module, exports) {
@@ -1159,10 +1171,10 @@ define('Nori.Events.AppEvents',
 
   });;var Nori = (function () {
   var _config,
-    _models = [],
     _view,
+    _modelCollection = Object.create(null),
     _emitterCommandMap = Object.create(null),
-    _subviewDataMap = Object.create(null),
+    _subviewDataModel,
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
@@ -1185,10 +1197,6 @@ define('Nori.Events.AppEvents',
     return _view;
   }
 
-  function getModels() {
-    return _models;
-  }
-
   function getConfig() {
     return _objectUtils.extend({}, _config);
   }
@@ -1209,7 +1217,10 @@ define('Nori.Events.AppEvents',
     _router.initialize();
 
     _view = initObj.view;
-    _model = initObj.model;
+
+    _subviewDataModel = extend({}, require('Nori.Model'));
+    _subviewDataModel.initialize({id:'NoriSubViewDataModel', store:{}, noisy: true});
+    addModel(_subviewDataModel);
 
     initializeView();
     postInitialize();
@@ -1263,12 +1274,51 @@ define('Nori.Events.AppEvents',
 
   //----------------------------------------------------------------------------
   //  Models
+  //  Simple model collection
   //----------------------------------------------------------------------------
 
-  function addModel(name, store) {
-    _models.push({name: name, store: store});
+  /**
+   * Add a model to the application collection
+   * @param name
+   * @param store
+   */
+  function addModel(store) {
+    _modelCollection[store.getID()] = store;
   }
 
+  /**
+   * Get a model from the application collection
+   * @param name
+   * @returns {void|*}
+   */
+  function getModel(name) {
+    return _.assign({}, _modelCollection[name]);
+  }
+
+  //----------------------------------------------------------------------------
+  //  Subview data
+  //  Little bit of model creep
+  //----------------------------------------------------------------------------
+
+  /**
+   * Store state data from a subview, called from StoreSubViewDataCommand
+   * @param id
+   * @param dataObj
+   */
+  function storeSubViewData(id, dataObj) {
+    _subviewDataModel.set(id, dataObj);
+
+    console.log('Store subview data: '+_subviewDataModel.toJSON());
+  }
+
+  /**
+   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
+   * @param id
+   * @returns {*|{}}
+   */
+  function retrieveSubViewData(id) {
+    return _subviewDataModel.get(id) || {};
+  }
   //----------------------------------------------------------------------------
   //  Route Validation
   //  Route obj is {route: '/whatever', data:{var:value,...}
@@ -1404,28 +1454,6 @@ define('Nori.Events.AppEvents',
     _view.showView(dataObj, retrieveSubViewData(dataObj.templateID));
   }
 
-  //----------------------------------------------------------------------------
-  //  Subview data
-  //  Little bit of model creep
-  //----------------------------------------------------------------------------
-
-  /**
-   * Store state data from a subview, called from StoreSubViewDataCommand
-   * @param id
-   * @param dataObj
-   */
-  function storeSubViewData(id, dataObj) {
-    _subviewDataMap[id] = dataObj;
-  }
-
-  /**
-   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
-   * @param id
-   * @returns {*|{}}
-   */
-  function retrieveSubViewData(id) {
-    return _subviewDataMap[id] || {};
-  }
 
   //----------------------------------------------------------------------------
   //  API
@@ -1437,7 +1465,8 @@ define('Nori.Events.AppEvents',
     getEmitter: getEmitter,
     router: getRouter,
     view: getView,
-    models: getModels,
+    addModel: addModel,
+    getModel: getModel,
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,

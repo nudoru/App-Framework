@@ -53,8 +53,6 @@ define('TT.FakeData',
         _assignments.push(createAssignment());
       }
 
-      console.table(_assignments);
-
     }
 
     function createPerson() {

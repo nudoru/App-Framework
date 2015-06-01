@@ -9,7 +9,8 @@ define('Nori.Model',
   function (require, module, exports) {
 
     var _id,
-      _store,
+      _store = Object.create(null),
+      _noisy = false,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -17,24 +18,36 @@ define('Nori.Model',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initialize(id, obj) {
-      if(!id) {
+    function initialize(initObj) {
+      if(!initObj.id) {
         throw new Error('Model must be init\'d with an id');
       }
 
-      _id = id;
+      _store = Object.create(null);
+      _id = initObj.id;
 
-      if(obj) {
-        set(obj);
+      if(initObj.store) {
+        set(initObj.store);
       }
+
+      _noisy = initObj.noisy || false;
+
+    }
+
+    function getID() {
+      return _id;
     }
 
     /**
-     * Set the data for the model
+     * Merge new data into the model
      * @param dataObj
      */
-    function set(dataObj) {
-      _store = dataObj;
+    function set(key, value) {
+      if(typeof key === 'string') {
+        _store[key] = value;
+      } else {
+        _store = _.assign({}, _store, key);
+      }
       publishChange();
     }
 
@@ -55,20 +68,12 @@ define('Nori.Model',
     }
 
     /**
-     * Update a value in the store
-     * @param key
-     * @param newValue
-     */
-    function update(key, newValue) {
-      _store[key] = newValue;
-      publishChange();
-    }
-
-    /**
      * On change, emit event
      */
     function publishChange() {
-      _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+      if(_noisy) {
+        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+      }
     }
 
     function save() {
@@ -79,14 +84,21 @@ define('Nori.Model',
       //
     }
 
+    function toJSON() {
+      return JSON.stringify(_store);
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+    exports.getID = getID;
     exports.set = set;
     exports.get = get;
-    exports.getStore = getStore;
-    exports.update = update;
+    exports.store = getStore;
+    exports.save = save;
+    exports.destroy = destroy;
+    exports.toJSON = toJSON;
 
   });

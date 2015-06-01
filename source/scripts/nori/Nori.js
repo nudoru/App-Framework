@@ -1,9 +1,9 @@
 var Nori = (function () {
   var _config,
-    _models = [],
     _view,
+    _modelCollection = Object.create(null),
     _emitterCommandMap = Object.create(null),
-    _subviewDataMap = Object.create(null),
+    _subviewDataModel,
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
@@ -26,10 +26,6 @@ var Nori = (function () {
     return _view;
   }
 
-  function getModels() {
-    return _models;
-  }
-
   function getConfig() {
     return _objectUtils.extend({}, _config);
   }
@@ -50,7 +46,10 @@ var Nori = (function () {
     _router.initialize();
 
     _view = initObj.view;
-    _model = initObj.model;
+
+    _subviewDataModel = extend({}, require('Nori.Model'));
+    _subviewDataModel.initialize({id:'NoriSubViewDataModel', store:{}, noisy: true});
+    addModel(_subviewDataModel);
 
     initializeView();
     postInitialize();
@@ -104,12 +103,51 @@ var Nori = (function () {
 
   //----------------------------------------------------------------------------
   //  Models
+  //  Simple model collection
   //----------------------------------------------------------------------------
 
-  function addModel(name, store) {
-    _models.push({name: name, store: store});
+  /**
+   * Add a model to the application collection
+   * @param name
+   * @param store
+   */
+  function addModel(store) {
+    _modelCollection[store.getID()] = store;
   }
 
+  /**
+   * Get a model from the application collection
+   * @param name
+   * @returns {void|*}
+   */
+  function getModel(name) {
+    return _.assign({}, _modelCollection[name]);
+  }
+
+  //----------------------------------------------------------------------------
+  //  Subview data
+  //  Little bit of model creep
+  //----------------------------------------------------------------------------
+
+  /**
+   * Store state data from a subview, called from StoreSubViewDataCommand
+   * @param id
+   * @param dataObj
+   */
+  function storeSubViewData(id, dataObj) {
+    _subviewDataModel.set(id, dataObj);
+
+    console.log('Store subview data: '+_subviewDataModel.toJSON());
+  }
+
+  /**
+   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
+   * @param id
+   * @returns {*|{}}
+   */
+  function retrieveSubViewData(id) {
+    return _subviewDataModel.get(id) || {};
+  }
   //----------------------------------------------------------------------------
   //  Route Validation
   //  Route obj is {route: '/whatever', data:{var:value,...}
@@ -245,28 +283,6 @@ var Nori = (function () {
     _view.showView(dataObj, retrieveSubViewData(dataObj.templateID));
   }
 
-  //----------------------------------------------------------------------------
-  //  Subview data
-  //  Little bit of model creep
-  //----------------------------------------------------------------------------
-
-  /**
-   * Store state data from a subview, called from StoreSubViewDataCommand
-   * @param id
-   * @param dataObj
-   */
-  function storeSubViewData(id, dataObj) {
-    _subviewDataMap[id] = dataObj;
-  }
-
-  /**
-   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
-   * @param id
-   * @returns {*|{}}
-   */
-  function retrieveSubViewData(id) {
-    return _subviewDataMap[id] || {};
-  }
 
   //----------------------------------------------------------------------------
   //  API
@@ -278,7 +294,8 @@ var Nori = (function () {
     getEmitter: getEmitter,
     router: getRouter,
     view: getView,
-    models: getModels,
+    addModel: addModel,
+    getModel: getModel,
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
