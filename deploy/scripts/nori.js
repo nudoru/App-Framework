@@ -3,6 +3,8 @@ define('Nori.Events.AppEvents',
     exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.MODEL_DATA_WAITING = 'MODEL_DATA_WAITING';
     exports.MODEL_DATA_READY = 'MODEL_DATA_READY';
+    exports.MODEL_DATA_CHANGE = 'MODEL_DATA_CHANGE';
+    exports.MODEL_DATA_SAVED = 'MODEL_DATA_SAVED';
     exports.RESUME_FROM_MODEL_STATE = 'RESUME_FROM_MODEL_STATE';
     exports.VIEW_INITIALIZED = 'VIEW_INITIALIZED';
     exports.VIEW_RENDERED = 'VIEW_RENDERED';
@@ -94,8 +96,7 @@ define('Nori.Events.AppEvents',
   });;define('Nori.Model',
   function (require, module, exports) {
 
-    var _data,
-      _subviewDataMap = Object.create(null),
+    var _store,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -103,8 +104,10 @@ define('Nori.Events.AppEvents',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initialize() {
-      _emitter.publish(_appEvents.MODEL_DATA_WAITING);
+    function initialize(obj) {
+      if(obj) {
+        set(obj);
+      }
     }
 
     //----------------------------------------------------------------------------
@@ -115,51 +118,25 @@ define('Nori.Events.AppEvents',
      * Set the data for the model
      * @param dataObj
      */
-    function setData(dataObj) {
-      _data = dataObj;
-      _emitter.publish(_appEvents.MODEL_DATA_READY);
+    function set(dataObj) {
+      _store = dataObj;
     }
 
     /**
      * Returns a copy of the data
      * @returns *
      */
-    function getData() {
-      return _data.slice(0);
-    }
-
-    //----------------------------------------------------------------------------
-    //  Subview data
-    //----------------------------------------------------------------------------
-
-    /**
-     * Store state data from a subview, called from StoreSubViewDataCommand
-     * @param id
-     * @param dataObj
-     */
-    function storeSubViewData(id, dataObj) {
-      _subviewDataMap[id] = dataObj;
-    }
-
-    /**
-     * Retrieve subview data for reinsertion, called from APP mapping of route/when()
-     * @param id
-     * @returns {*|{}}
-     */
-    function retrieveSubViewData(id) {
-      return _subviewDataMap[id] || {};
+    function get(key) {
+      return _store[key];
     }
 
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
-
     exports.initialize = initialize;
-    exports.setData = setData;
-    exports.getData = getData;
-    exports.storeSubViewData = storeSubViewData;
-    exports.retrieveSubViewData = retrieveSubViewData;
+    exports.set = set;
+    exports.get = get;
 
   });;define('Nori.View.BaseSubView',
   function (require, module, exports) {
@@ -1088,19 +1065,6 @@ define('Nori.Events.AppEvents',
       Nori.setCurrentRoute(Nori.router().getCurrentRoute());
     };
 
-  });;define('Nori.ModelDataWaitingCommand',
-  function (require, module, exports) {
-
-    /**
-     * Should inject some real data here
-     * @param data
-     */
-    exports.execute = function(data) {
-      console.log('ModelDataWaitingCommand, injecting data');
-
-      Nori.model().setData({});
-    };
-
   });;define('Nori.RouteChangedCommand',
   function (require, module, exports) {
 
@@ -1113,7 +1077,7 @@ define('Nori.Events.AppEvents',
 
     exports.execute = function(data) {
       //console.log('SubViewStoreDataCommand, subviewid: '+data.id+', data: '+data.data);
-      Nori.model().storeSubViewData(data.id, data.data);
+      Nori.storeSubViewData(data.id, data.data);
     };
 
   });;define('Nori.URLHashChangedCommand',
@@ -1150,6 +1114,7 @@ define('Nori.Events.AppEvents',
     _model,
     _view,
     _emitterCommandMap = Object.create(null),
+    _subviewDataMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
@@ -1189,21 +1154,17 @@ define('Nori.Events.AppEvents',
    * @param model
    * @param view
    */
-  function initialize(model, view) {
+  function initialize(initObj) {
     console.log('Nori: Initialize');
 
     initializeConfig();
     _router.initialize();
 
-    _model = model;
-    _view = view;
-
-    // Commands used in application loading / core initialization
-    // Set by new app
-    //mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'Nori.ModelDataWaitingCommand', true);
-    //mapEventCommand(_appEvents.APP_INITIALIZED, 'Nori.InitializeAppCommand', true);
+    _view = initObj.view;
+    _model = initObj.model;
 
     initializeView();
+    postInitialize();
   }
 
   /**
@@ -1220,39 +1181,10 @@ define('Nori.Events.AppEvents',
     };
   }
 
-  //----------------------------------------------------------------------------
-  //  MVC Initialization
-  //----------------------------------------------------------------------------
-
-  /**
-   * Init step 1
-   */
   function initializeView() {
     _view.initialize();
-    initializeModel();
   }
 
-  /**
-   * Init step 2
-   * A MODEL_DATA_WAITING event will dispatch, data should be injected to the model
-   * from a command
-   */
-  function initializeModel() {
-    _emitter.subscribe(_appEvents.MODEL_DATA_READY, onModelDataReady, true);
-    _model.initialize();
-  }
-
-  /**
-   * Init step 3
-   */
-  function onModelDataReady() {
-    postInitialize();
-  }
-
-  /**
-   * Init step 4
-   * All APP initialization is complete, pass over to AppInitialzedCommand
-   */
   function postInitialize() {
     bootStrapCommands();
     _emitter.publish(_appEvents.APP_INITIALIZED);
@@ -1277,7 +1209,7 @@ define('Nori.Events.AppEvents',
     mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
     mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
   }
-  
+
   //----------------------------------------------------------------------------
   //  Route Validation
   //  Route obj is {route: '/whatever', data:{var:value,...}
@@ -1312,12 +1244,12 @@ define('Nori.Events.AppEvents',
    */
   function setCurrentRoute(routeObj) {
     //console.log('Nori.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
-    if(isValidRoute(routeObj.route)) {
+    if (isValidRoute(routeObj.route)) {
       _config.currentRoute = routeObj;
 
       // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
       // else is a URL change and just execute current mapping
-      if(routeObj.fromApp) {
+      if (routeObj.fromApp) {
         //console.log('Routing from app');
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
@@ -1332,7 +1264,7 @@ define('Nori.Events.AppEvents',
   }
 
   //----------------------------------------------------------------------------
-  //  Subclassing utils, somewhat inspired by Ember
+  //  Subclassing utils, somewhat inspired by Ember using concatenative inheritance
   //----------------------------------------------------------------------------
 
   /**
@@ -1376,9 +1308,12 @@ define('Nori.Events.AppEvents',
    * @param command
    */
   function mapRouteCommand(route, templateID, command) {
-    _router.when(route,{templateID:templateID, controller:function executeRouteCommand(dataObj) {
-      command.execute(dataObj);
-    }});
+    _router.when(route, {
+      templateID: templateID,
+      controller: function executeRouteCommand(dataObj) {
+        command.execute(dataObj);
+      }
+    });
   }
 
   /**
@@ -1393,10 +1328,13 @@ define('Nori.Events.AppEvents',
 
     _view.mapView(templateID, controller);
 
-    _router.when(route,{templateID:templateID, controller:function routeToViewController(dataObj) {
-      // dataObj is from the router
-      showRouteView(dataObj);
-    }});
+    _router.when(route, {
+      templateID: templateID,
+      controller: function routeToViewController(dataObj) {
+        // dataObj is from the router
+        showRouteView(dataObj);
+      }
+    });
   }
 
   /**
@@ -1404,7 +1342,30 @@ define('Nori.Events.AppEvents',
    * @param dataObj
    */
   function showRouteView(dataObj) {
-     _view.showView(dataObj, _model.retrieveSubViewData(dataObj.templateID));
+    _view.showView(dataObj, retrieveSubViewData(dataObj.templateID));
+  }
+
+  //----------------------------------------------------------------------------
+  //  Subview data
+  //  Little bit of model creep
+  //----------------------------------------------------------------------------
+
+  /**
+   * Store state data from a subview, called from StoreSubViewDataCommand
+   * @param id
+   * @param dataObj
+   */
+  function storeSubViewData(id, dataObj) {
+    _subviewDataMap[id] = dataObj;
+  }
+
+  /**
+   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
+   * @param id
+   * @returns {*|{}}
+   */
+  function retrieveSubViewData(id) {
+    return _subviewDataMap[id] || {};
   }
 
   //----------------------------------------------------------------------------
@@ -1423,7 +1384,10 @@ define('Nori.Events.AppEvents',
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
-    create: create
+    create: create,
+    storeSubViewData: storeSubViewData,
+    retrieveSubViewData: retrieveSubViewData
   };
 
-}());
+}
+());

@@ -1,20 +1,4 @@
-define('TT.LoadModelDataCommand',
-  function (require, module, exports) {
-
-    /**
-     * Should inject some real data here
-     * @param data
-     */
-    exports.execute = function(data) {
-      console.log('TT Load model data, injecting data');
-
-      var dataSource = require('TT.FakeData');
-      dataSource.initialize();
-
-      TT.model().setData(dataSource);
-    };
-
-  });;define('TT.RouteChangedCommand',
+define('TT.RouteChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -63,6 +47,11 @@ define('TT.LoadModelDataCommand',
       TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.TemplateSubView');
       TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
       TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
+
+      var dataSource = require('TT.FakeData');
+      dataSource.initialize();
+      _model = Nori.extend(require('TT.TimeTrackerAppModel'), require('Nori.Model'));
+      _model.set(dataSource);
 
       TT.view().removeLoadingMessage();
 
@@ -474,13 +463,10 @@ define('TT.LoadModelDataCommand',
     // Create the application instance
     window.TT = Nori.create();
 
-    // Load and set model data in this command
-    TT.mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'TT.LoadModelDataCommand', true);
     // Map view routes and other app initialization here
     TT.mapEventCommand(_appEvents.APP_INITIALIZED, 'TT.RunApplicationCommand', true);
 
-    // Create the model
-    _model = Nori.extend(require('TT.TimeTrackerAppModel'), require('Nori.Model'));
+
     // Create the view
     _view = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
 
@@ -490,7 +476,7 @@ define('TT.LoadModelDataCommand',
      * _appEvents.APP_INITIALIZED event is emitted and the mapped command runs.
      * Typically, app/commands/TT.RunApplicationCommand
      */
-    TT.initialize(_model, _view);
+    TT.initialize({view:_view});
   }
 
 }());

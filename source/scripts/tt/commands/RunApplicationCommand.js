@@ -43,6 +43,11 @@ define('TT.RunApplicationCommand',
       TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
       TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
 
+      var dataSource = require('TT.FakeData');
+      dataSource.initialize();
+      _model = Nori.extend(require('TT.TimeTrackerAppModel'), require('Nori.Model'));
+      _model.set(dataSource);
+
       TT.view().removeLoadingMessage();
 
       TT.setCurrentRoute(TT.router().getCurrentRoute());

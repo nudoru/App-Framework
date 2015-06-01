@@ -1,6 +1,12 @@
 {
   "name": "app-framework",
   "version": "0.0.1",
+  "description": "Nori Application Framework",
+  "author": "Matt Perkins <matt@nudoru.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nudoru/App-Framework"
+  },
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-contrib-clean": "^0.6.0",

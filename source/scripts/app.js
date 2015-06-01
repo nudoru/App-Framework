@@ -15,13 +15,10 @@
     // Create the application instance
     window.TT = Nori.create();
 
-    // Load and set model data in this command
-    TT.mapEventCommand(_appEvents.MODEL_DATA_WAITING, 'TT.LoadModelDataCommand', true);
     // Map view routes and other app initialization here
     TT.mapEventCommand(_appEvents.APP_INITIALIZED, 'TT.RunApplicationCommand', true);
 
-    // Create the model
-    _model = Nori.extend(require('TT.TimeTrackerAppModel'), require('Nori.Model'));
+
     // Create the view
     _view = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
 
@@ -31,7 +28,7 @@
      * _appEvents.APP_INITIALIZED event is emitted and the mapped command runs.
      * Typically, app/commands/TT.RunApplicationCommand
      */
-    TT.initialize(_model, _view);
+    TT.initialize({view:_view});
   }
 
 }());

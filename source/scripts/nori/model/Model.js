@@ -8,8 +8,7 @@
 define('Nori.Model',
   function (require, module, exports) {
 
-    var _data,
-      _subviewDataMap = Object.create(null),
+    var _store,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -17,8 +16,10 @@ define('Nori.Model',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initialize() {
-      _emitter.publish(_appEvents.MODEL_DATA_WAITING);
+    function initialize(obj) {
+      if(obj) {
+        set(obj);
+      }
     }
 
     //----------------------------------------------------------------------------
@@ -29,50 +30,24 @@ define('Nori.Model',
      * Set the data for the model
      * @param dataObj
      */
-    function setData(dataObj) {
-      _data = dataObj;
-      _emitter.publish(_appEvents.MODEL_DATA_READY);
+    function set(dataObj) {
+      _store = dataObj;
     }
 
     /**
      * Returns a copy of the data
      * @returns *
      */
-    function getData() {
-      return _data.slice(0);
-    }
-
-    //----------------------------------------------------------------------------
-    //  Subview data
-    //----------------------------------------------------------------------------
-
-    /**
-     * Store state data from a subview, called from StoreSubViewDataCommand
-     * @param id
-     * @param dataObj
-     */
-    function storeSubViewData(id, dataObj) {
-      _subviewDataMap[id] = dataObj;
-    }
-
-    /**
-     * Retrieve subview data for reinsertion, called from APP mapping of route/when()
-     * @param id
-     * @returns {*|{}}
-     */
-    function retrieveSubViewData(id) {
-      return _subviewDataMap[id] || {};
+    function get(key) {
+      return _store[key];
     }
 
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
-
     exports.initialize = initialize;
-    exports.setData = setData;
-    exports.getData = getData;
-    exports.storeSubViewData = storeSubViewData;
-    exports.retrieveSubViewData = retrieveSubViewData;
+    exports.set = set;
+    exports.get = get;
 
   });
