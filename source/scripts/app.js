@@ -15,20 +15,40 @@
     // Create the application instance
     window.TT = Nori.create();
 
-    // Map view routes and other app initialization here
-    TT.mapEventCommand(_appEvents.APP_INITIALIZED, 'TT.RunApplicationCommand', true);
-
-
     // Create the view
     _view = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
 
-    /*
-     * Initialize the application by injecting the model and view
-     * After the application is initialized (view and model data loaded), the
-     * _appEvents.APP_INITIALIZED event is emitted and the mapped command runs.
-     * Typically, app/commands/TT.RunApplicationCommand
-     */
+    // Initialize app with the view
     TT.initialize({view:_view});
+
+    // Commands
+    TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.RouteChangedCommand');
+
+    // Default route
+    TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
+
+    // Other routes
+    TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
+    TT.mapRouteView('/test', 'TestSubView', 'TT.View.TemplateSubView');
+    TT.mapRouteView('/one', 'TestSubView1', 'TT.View.TemplateSubView');
+    TT.mapRouteView('/two', 'TestSubView2', 'TT.View.TemplateSubView');
+    TT.mapRouteView('/three', 'TestSubView3', 'TT.View.TemplateSubView');
+
+    // Timecard mock
+    TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.TemplateSubView');
+    TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
+    TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
+
+    var dataSource = require('TT.FakeData');
+    dataSource.initialize();
+    _model = Nori.extend({}, require('Nori.Model'));
+    _model.initialize('testmodel', dataSource);
+
+    // Everything is ready!
+    TT.view().removeLoadingMessage();
+
+    // Execute the route on the URL
+    TT.setCurrentRoute(TT.router().getCurrentRoute());
   }
 
 }());

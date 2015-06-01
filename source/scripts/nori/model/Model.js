@@ -8,7 +8,8 @@
 define('Nori.Model',
   function (require, module, exports) {
 
-    var _store,
+    var _id,
+      _store,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -16,15 +17,17 @@ define('Nori.Model',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initialize(obj) {
+    function initialize(id, obj) {
+      if(!id) {
+        throw new Error('Model must be init\'d with an id');
+      }
+
+      _id = id;
+
       if(obj) {
         set(obj);
       }
     }
-
-    //----------------------------------------------------------------------------
-    //  Data
-    //----------------------------------------------------------------------------
 
     /**
      * Set the data for the model
@@ -32,6 +35,7 @@ define('Nori.Model',
      */
     function set(dataObj) {
       _store = dataObj;
+      publishChange();
     }
 
     /**
@@ -42,6 +46,39 @@ define('Nori.Model',
       return _store[key];
     }
 
+    /**
+     * Returns a copy of the data store
+     * @returns {void|*}
+     */
+    function getStore() {
+      return _.assign({},_store);
+    }
+
+    /**
+     * Update a value in the store
+     * @param key
+     * @param newValue
+     */
+    function update(key, newValue) {
+      _store[key] = newValue;
+      publishChange();
+    }
+
+    /**
+     * On change, emit event
+     */
+    function publishChange() {
+      _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+    }
+
+    function save() {
+      //
+    }
+
+    function destroy() {
+      //
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -49,5 +86,7 @@ define('Nori.Model',
     exports.initialize = initialize;
     exports.set = set;
     exports.get = get;
+    exports.getStore = getStore;
+    exports.update = update;
 
   });

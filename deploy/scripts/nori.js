@@ -3,8 +3,9 @@ define('Nori.Events.AppEvents',
     exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.MODEL_DATA_WAITING = 'MODEL_DATA_WAITING';
     exports.MODEL_DATA_READY = 'MODEL_DATA_READY';
-    exports.MODEL_DATA_CHANGE = 'MODEL_DATA_CHANGE';
+    exports.MODEL_DATA_CHANGED = 'MODEL_DATA_CHANGED';
     exports.MODEL_DATA_SAVED = 'MODEL_DATA_SAVED';
+    exports.MODEL_DATA_DESTROYED = 'MODEL_DATA_DESTROYED';
     exports.RESUME_FROM_MODEL_STATE = 'RESUME_FROM_MODEL_STATE';
     exports.VIEW_INITIALIZED = 'VIEW_INITIALIZED';
     exports.VIEW_RENDERED = 'VIEW_RENDERED';
@@ -96,7 +97,8 @@ define('Nori.Events.AppEvents',
   });;define('Nori.Model',
   function (require, module, exports) {
 
-    var _store,
+    var _id,
+      _store,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -104,15 +106,17 @@ define('Nori.Events.AppEvents',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initialize(obj) {
+    function initialize(id, obj) {
+      if(!id) {
+        throw new Error('Model must be init\'d with an id');
+      }
+
+      _id = id;
+
       if(obj) {
         set(obj);
       }
     }
-
-    //----------------------------------------------------------------------------
-    //  Data
-    //----------------------------------------------------------------------------
 
     /**
      * Set the data for the model
@@ -120,6 +124,7 @@ define('Nori.Events.AppEvents',
      */
     function set(dataObj) {
       _store = dataObj;
+      publishChange();
     }
 
     /**
@@ -130,6 +135,39 @@ define('Nori.Events.AppEvents',
       return _store[key];
     }
 
+    /**
+     * Returns a copy of the data store
+     * @returns {void|*}
+     */
+    function getStore() {
+      return _.assign({},_store);
+    }
+
+    /**
+     * Update a value in the store
+     * @param key
+     * @param newValue
+     */
+    function update(key, newValue) {
+      _store[key] = newValue;
+      publishChange();
+    }
+
+    /**
+     * On change, emit event
+     */
+    function publishChange() {
+      _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+    }
+
+    function save() {
+      //
+    }
+
+    function destroy() {
+      //
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -137,6 +175,8 @@ define('Nori.Events.AppEvents',
     exports.initialize = initialize;
     exports.set = set;
     exports.get = get;
+    exports.getStore = getStore;
+    exports.update = update;
 
   });;define('Nori.View.BaseSubView',
   function (require, module, exports) {
@@ -1065,6 +1105,14 @@ define('Nori.Events.AppEvents',
       Nori.setCurrentRoute(Nori.router().getCurrentRoute());
     };
 
+  });;define('Nori.ModelDataChanged',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('ModelDataChanged, id: '+data.id);
+      console.table(data.store);
+    };
+
   });;define('Nori.RouteChangedCommand',
   function (require, module, exports) {
 
@@ -1111,7 +1159,7 @@ define('Nori.Events.AppEvents',
 
   });;var Nori = (function () {
   var _config,
-    _model,
+    _models = [],
     _view,
     _emitterCommandMap = Object.create(null),
     _subviewDataMap = Object.create(null),
@@ -1137,8 +1185,8 @@ define('Nori.Events.AppEvents',
     return _view;
   }
 
-  function getModel() {
-    return _model;
+  function getModels() {
+    return _models;
   }
 
   function getConfig() {
@@ -1204,10 +1252,21 @@ define('Nori.Events.AppEvents',
     // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
     // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
 
+    // Model
+    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChanged');
+
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
     mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
     mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
+  }
+
+  //----------------------------------------------------------------------------
+  //  Models
+  //----------------------------------------------------------------------------
+
+  function addModel(name, store) {
+    _models.push({name: name, store: store});
   }
 
   //----------------------------------------------------------------------------
@@ -1378,7 +1437,7 @@ define('Nori.Events.AppEvents',
     getEmitter: getEmitter,
     router: getRouter,
     view: getView,
-    model: getModel,
+    models: getModels,
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,

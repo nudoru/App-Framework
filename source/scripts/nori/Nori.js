@@ -1,6 +1,6 @@
 var Nori = (function () {
   var _config,
-    _model,
+    _models = [],
     _view,
     _emitterCommandMap = Object.create(null),
     _subviewDataMap = Object.create(null),
@@ -26,8 +26,8 @@ var Nori = (function () {
     return _view;
   }
 
-  function getModel() {
-    return _model;
+  function getModels() {
+    return _models;
   }
 
   function getConfig() {
@@ -93,10 +93,21 @@ var Nori = (function () {
     // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
     // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
 
+    // Model
+    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChanged');
+
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
     mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
     mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
+  }
+
+  //----------------------------------------------------------------------------
+  //  Models
+  //----------------------------------------------------------------------------
+
+  function addModel(name, store) {
+    _models.push({name: name, store: store});
   }
 
   //----------------------------------------------------------------------------
@@ -267,7 +278,7 @@ var Nori = (function () {
     getEmitter: getEmitter,
     router: getRouter,
     view: getView,
-    model: getModel,
+    models: getModels,
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
