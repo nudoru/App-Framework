@@ -99,7 +99,7 @@ define('Nori.Events.AppEvents',
 
     var _id,
       _store = Object.create(null),
-      _noisy = false,
+      _silent = false,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -115,11 +115,11 @@ define('Nori.Events.AppEvents',
       _store = Object.create(null);
       _id = initObj.id;
 
+      _silent = initObj.silent || false;
+
       if(initObj.store) {
         set(initObj.store);
       }
-
-      _noisy = initObj.noisy || false;
 
     }
 
@@ -128,16 +128,25 @@ define('Nori.Events.AppEvents',
     }
 
     /**
-     * Merge new data into the model
-     * @param dataObj
+     * Set property or merge in new data
+     * @param key String = name of property to set, Object = will merge new props
+     * @param options String = value of property to set, Object = options: silent
      */
-    function set(key, value) {
-      if(typeof key === 'string') {
-        _store[key] = value;
-      } else {
+    function set(key, options) {
+      var silentSet = false;
+
+      if(typeof key === 'object') {
+        if(options !== null && typeof options === 'object') {
+          silentSet = options.silent || false;
+        }
         _store = _.assign({}, _store, key);
+      } else {
+        _store[key] = options;
       }
-      publishChange();
+
+      if(!silentSet) {
+        publishChange();
+      }
     }
 
     /**
@@ -157,10 +166,10 @@ define('Nori.Events.AppEvents',
     }
 
     /**
-     * On change, emit event
+     * On change, emit event globally
      */
     function publishChange() {
-      if(_noisy) {
+      if(!_silent) {
         _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
       }
     }

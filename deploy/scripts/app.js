@@ -440,8 +440,9 @@ define('TT.RouteChangedCommand',
 
     // Model testing-
     _model = TT.createModel({});
-    _model.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, noisy: false});
+    _model.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: true});
     console.log(_model.toJSON());
+
     TT.addModel(_model);
 
     // Everything is ready!
