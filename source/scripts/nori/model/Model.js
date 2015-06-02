@@ -2,6 +2,9 @@
  * Object.oberve polyfill:
  * https://github.com/MaxArt2501/object-observe/blob/master/doc/index.md
  * http://www.html5rocks.com/en/tutorials/es7/observe/
+ *
+ * Immutable
+ * http://facebook.github.io/immutable-js/
  */
 
 
@@ -81,7 +84,7 @@ define('Nori.Model',
      */
     function publishChange() {
       if(!_silent) {
-        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'model',  store:getStore()});
       }
 
       if(_parentCollection) {

@@ -6,6 +6,7 @@ define('Nori.Events.AppEvents',
     exports.MODEL_DATA_CHANGED = 'MODEL_DATA_CHANGED';
     exports.MODEL_DATA_SAVED = 'MODEL_DATA_SAVED';
     exports.MODEL_DATA_DESTROYED = 'MODEL_DATA_DESTROYED';
+    exports.UPDATE_MODEL_DATA = 'UPDATE_MODEL_DATA';
     exports.RESUME_FROM_MODEL_STATE = 'RESUME_FROM_MODEL_STATE';
     exports.VIEW_INITIALIZED = 'VIEW_INITIALIZED';
     exports.VIEW_RENDERED = 'VIEW_RENDERED';
@@ -170,7 +171,7 @@ define('Nori.Events.AppEvents',
      */
     function publishChange() {
       if(!_silent) {
-        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
+        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'model',  store:getStore()});
       }
 
       if(_parentCollection) {
@@ -234,8 +235,18 @@ define('Nori.Events.AppEvents',
       }
 
       _id = initObj.id;
-
       _silent = initObj.silent || false;
+
+      // BUG - scope not correct to set parentcollection to this, is Window
+      //if(initObj.models) {
+      //  addStoresFromArray(initObj.models);
+      //}
+    }
+
+    function addStoresFromArray(sArry) {
+      sArry.forEach(function(store) {
+        add(store);
+      })
     }
 
     function getID() {
@@ -282,7 +293,7 @@ define('Nori.Events.AppEvents',
      */
     function publishChange(data) {
       if(!_silent) {
-        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:data.store});
+        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
       }
     }
 
@@ -323,6 +334,7 @@ define('Nori.Events.AppEvents',
       _initialState,
       _currentState,
       _modelData,
+      _isMounted = false,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
@@ -360,7 +372,9 @@ define('Nori.Events.AppEvents',
     function update(state) {
       //console.log(_id + ', subview update');
       _currentState = state;
-      return render();
+      if(_isMounted) {
+        return render();
+      }
     }
 
     /**
@@ -380,6 +394,7 @@ define('Nori.Events.AppEvents',
      */
     function viewDidMount() {
       //console.log(_id + ', subview did mount');
+      _isMounted = true;
     }
 
     /**
@@ -387,6 +402,9 @@ define('Nori.Events.AppEvents',
      */
     function viewWillUnMount() {
       //console.log(_id + ', subview will unmount');
+
+      _isMounted = false;
+
       // cache state data to the model, will be restored as modelData on next show
       _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
     }
@@ -1239,12 +1257,12 @@ define('Nori.Events.AppEvents',
       Nori.setCurrentRoute(Nori.router().getCurrentRoute());
     };
 
-  });;define('Nori.ModelDataChanged',
+  });;define('Nori.ModelDataChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      console.log('ModelDataChanged, id: '+data.id);
-      console.table(data.store);
+      console.log('ModelDataChanged, id: '+data.id+'('+data.storeType+'), store data: '+JSON.stringify(data.store));
+      //console.table(data.store);
     };
 
   });;define('Nori.RouteChangedCommand',
@@ -1268,6 +1286,14 @@ define('Nori.Events.AppEvents',
     exports.execute = function(data) {
       //console.log('URLHashChangedCommand: fragment: '+data.fragment+', routeObj: '+data.routeObj);
       Nori.setCurrentRoute(data.routeObj);
+    };
+
+  });;define('Nori.UpdateModelDataCommand',
+  function (require, module, exports) {
+
+    exports.execute = function(data) {
+      console.log('UpdateModelDataCommand, model id: '+data.id+', with data:');
+      console.table(data.data);
     };
 
   });;define('Nori.ViewChangedCommand',
@@ -1294,7 +1320,7 @@ define('Nori.Events.AppEvents',
   });;var Nori = (function () {
   var _config,
     _view,
-    _modelCollection = Object.create(null),
+    _appModelCollection = requireUnique('Nori.ModelCollection'),
     _emitterCommandMap = Object.create(null),
     _subviewDataModel,
     _appEvents = require('Nori.Events.AppEvents'),
@@ -1340,9 +1366,15 @@ define('Nori.Events.AppEvents',
 
     _view = initObj.view;
 
+
+
     _subviewDataModel = createModel({});
     _subviewDataModel.initialize({id:'NoriSubViewDataModel', store:{}, noisy: true});
+
+    _appModelCollection.initialize({id:'NoriGlobalModelCollection', silent: false});
     addModel(_subviewDataModel);
+
+
 
     initializeView();
     postInitialize();
@@ -1386,7 +1418,8 @@ define('Nori.Events.AppEvents',
     // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
 
     // Model
-    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChanged');
+    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChangedCommand');
+    mapEventCommand(_appEvents.UPDATE_MODEL_DATA, 'Nori.UpdateModelDataCommand');
 
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
@@ -1399,8 +1432,9 @@ define('Nori.Events.AppEvents',
   //  Simple model collection
   //----------------------------------------------------------------------------
 
-  function createModel(src) {
-    return extend(src, requireUnique('Nori.Model'));
+  function createModel() {
+   // return extend(src, requireUnique('Nori.Model'));
+    return _.assign({}, requireUnique('Nori.Model'));
   }
 
   /**
@@ -1409,16 +1443,16 @@ define('Nori.Events.AppEvents',
    * @param store
    */
   function addModel(store) {
-    _modelCollection[store.getID()] = store;
+    _appModelCollection.add(store);
   }
 
   /**
    * Get a model from the application collection
-   * @param name
+   * @param storeID
    * @returns {void|*}
    */
-  function getModel(name) {
-    return _.assign({}, _modelCollection[name]);
+  function getModel(storeID) {
+    return _appModelCollection.get(storeID);
   }
 
   //----------------------------------------------------------------------------

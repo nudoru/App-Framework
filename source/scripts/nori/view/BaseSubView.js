@@ -13,6 +13,7 @@ define('Nori.View.BaseSubView',
       _initialState,
       _currentState,
       _modelData,
+      _isMounted = false,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
@@ -50,7 +51,9 @@ define('Nori.View.BaseSubView',
     function update(state) {
       //console.log(_id + ', subview update');
       _currentState = state;
-      return render();
+      if(_isMounted) {
+        return render();
+      }
     }
 
     /**
@@ -70,6 +73,7 @@ define('Nori.View.BaseSubView',
      */
     function viewDidMount() {
       //console.log(_id + ', subview did mount');
+      _isMounted = true;
     }
 
     /**
@@ -77,6 +81,9 @@ define('Nori.View.BaseSubView',
      */
     function viewWillUnMount() {
       //console.log(_id + ', subview will unmount');
+
+      _isMounted = false;
+
       // cache state data to the model, will be restored as modelData on next show
       _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
     }

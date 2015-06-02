@@ -2,6 +2,9 @@
  Matt Perkins, 5/17/15
  Based on
  https://github.com/Reactive-Extensions/RxJS/blob/master/doc/howdoi/eventemitter.md
+
+ Refernect Flux dispatcher
+ https://github.com/facebook/flux/blob/master/src/Dispatcher.js
 */
 
 define('Nori.Events.Emitter',

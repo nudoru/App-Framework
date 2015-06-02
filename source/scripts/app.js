@@ -44,17 +44,22 @@
     //dataSource.initialize();
 
     // Model testing-
-    _model = TT.createModel({});
-    _model.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: true});
-    console.log(_model.toJSON());
-
-    TT.addModel(_model);
+    testModel();
 
     // Everything is ready!
     TT.view().removeLoadingMessage();
 
     // Execute the route on the URL
     TT.setCurrentRoute(TT.router().getCurrentRoute());
+  }
+
+  function testModel() {
+   var test1 = TT.createModel();
+    test1.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
+    test1.set({last:'perkins'});
+    //console.log(test1.toJSON());
+
+    TT.addModel(test1);
   }
 
 }());

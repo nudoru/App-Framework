@@ -24,8 +24,18 @@ define('Nori.ModelCollection',
       }
 
       _id = initObj.id;
-
       _silent = initObj.silent || false;
+
+      // BUG - scope not correct to set parentcollection to this, is Window
+      //if(initObj.models) {
+      //  addStoresFromArray(initObj.models);
+      //}
+    }
+
+    function addStoresFromArray(sArry) {
+      sArry.forEach(function(store) {
+        add(store);
+      })
     }
 
     function getID() {
@@ -72,7 +82,7 @@ define('Nori.ModelCollection',
      */
     function publishChange(data) {
       if(!_silent) {
-        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:data.store});
+        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
       }
     }
 

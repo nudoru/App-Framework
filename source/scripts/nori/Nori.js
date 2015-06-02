@@ -1,7 +1,7 @@
 var Nori = (function () {
   var _config,
     _view,
-    _modelCollection = Object.create(null),
+    _appModelCollection = requireUnique('Nori.ModelCollection'),
     _emitterCommandMap = Object.create(null),
     _subviewDataModel,
     _appEvents = require('Nori.Events.AppEvents'),
@@ -47,9 +47,15 @@ var Nori = (function () {
 
     _view = initObj.view;
 
+
+
     _subviewDataModel = createModel({});
     _subviewDataModel.initialize({id:'NoriSubViewDataModel', store:{}, noisy: true});
+
+    _appModelCollection.initialize({id:'NoriGlobalModelCollection', silent: false});
     addModel(_subviewDataModel);
+
+
 
     initializeView();
     postInitialize();
@@ -93,7 +99,8 @@ var Nori = (function () {
     // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
 
     // Model
-    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChanged');
+    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChangedCommand');
+    mapEventCommand(_appEvents.UPDATE_MODEL_DATA, 'Nori.UpdateModelDataCommand');
 
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
@@ -106,8 +113,9 @@ var Nori = (function () {
   //  Simple model collection
   //----------------------------------------------------------------------------
 
-  function createModel(src) {
-    return extend(src, requireUnique('Nori.Model'));
+  function createModel() {
+   // return extend(src, requireUnique('Nori.Model'));
+    return _.assign({}, requireUnique('Nori.Model'));
   }
 
   /**
@@ -116,16 +124,16 @@ var Nori = (function () {
    * @param store
    */
   function addModel(store) {
-    _modelCollection[store.getID()] = store;
+    _appModelCollection.add(store);
   }
 
   /**
    * Get a model from the application collection
-   * @param name
+   * @param storeID
    * @returns {void|*}
    */
-  function getModel(name) {
-    return _.assign({}, _modelCollection[name]);
+  function getModel(storeID) {
+    return _appModelCollection.get(storeID);
   }
 
   //----------------------------------------------------------------------------
