@@ -11,6 +11,7 @@ define('Nori.Model',
     var _id,
       _store = Object.create(null),
       _silent = false,
+      _parentCollection,
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -23,7 +24,6 @@ define('Nori.Model',
         throw new Error('Model must be init\'d with an id');
       }
 
-      _store = Object.create(null);
       _id = initObj.id;
 
       _silent = initObj.silent || false;
@@ -83,6 +83,11 @@ define('Nori.Model',
       if(!_silent) {
         _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, store:getStore()});
       }
+
+      if(_parentCollection) {
+        _parentCollection.publishChange({id:_id, store:getStore()});
+      }
+
     }
 
     function save() {
@@ -90,11 +95,20 @@ define('Nori.Model',
     }
 
     function destroy() {
-      //
+      _store = null;
+      _parentCollection = null;
     }
 
     function toJSON() {
       return JSON.stringify(_store);
+    }
+
+    function setParentCollection(collection) {
+      _parentCollection = collection;
+    }
+
+    function getParentCollection() {
+      return _parentCollection;
     }
 
     //----------------------------------------------------------------------------
@@ -109,5 +123,7 @@ define('Nori.Model',
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
+    exports.setParentCollection = setParentCollection;
+    exports.getParentCollection = getParentCollection;
 
   });
