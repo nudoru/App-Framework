@@ -55,7 +55,7 @@ define('Nori.View.MixinRouteViews',
       if (subview.controller.update) {
         subview.controller.update({boundModelData: storeData});
       } else {
-        console.log('updateSubViewData, can\'t update subview ID: '+viewID);
+        //console.log('updateSubViewData, can\'t update subview ID: '+viewID);
       }
     }
 

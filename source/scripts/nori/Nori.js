@@ -223,31 +223,31 @@ var Nori = (function () {
    * @param staticProps
    * @returns {*}
    */
-  function bextend(protoProps, staticProps) {
-    //var parent = this,
-    //  child,
-    //  surrogate;
-    //
-    //if(protoProps && _.has(protoProps, 'constructor')) {
-    //  child = protoProps.constructor;
-    //} else {
-    //  child = function() { return parent.apply(this, arguments); };
-    //}
-    //
-    //_.assign(child, parent, staticProps);
-    //
-    //surrogate = function() { this.constructor = child; };
-    //surrogate.prototype = parent.prototype;
-    //child.prototype = new surrogate;
-    //
-    //if(protoProps) {
-    //  _.assign(child.prototype, protoProps);
-    //}
-    //
-    //child._super = parent.prototype;
-    //
-    //return child;
-  }
+  //function bextend(src, protoProps, staticProps) {
+  //  var parent = src,
+  //    child,
+  //    Surrogate;
+  //
+  //  if(protoProps && _.has(protoProps, 'constructor')) {
+  //    child = protoProps.constructor;
+  //  } else {
+  //    child = function() { return parent.apply(this, arguments); };
+  //  }
+  //
+  //  _.assign(child, parent, staticProps);
+  //
+  //  Surrogate = function() { this.constructor = child; };
+  //  Surrogate.prototype = parent.prototype;
+  //  child.prototype = new Surrogate;
+  //
+  //  if(protoProps) {
+  //    _.assign(child.prototype, protoProps);
+  //  }
+  //
+  //  child._super = parent.prototype;
+  //
+  //  return child;
+  //}
 
   //----------------------------------------------------------------------------
   //  Wiring Services
@@ -368,8 +368,6 @@ var Nori = (function () {
       viewArry.forEach(function (view) {
         _view.updateSubViewData(view, modelID, data);
       });
-    } else {
-      console.log('No views bound to '+modelID);
     }
   }
 
@@ -391,7 +389,7 @@ var Nori = (function () {
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
-    bextent: bextend,
+    //bextend: bextend,
     create: create,
     storeSubViewData: storeSubViewData,
     retrieveSubViewData: retrieveSubViewData,
