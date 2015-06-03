@@ -2,7 +2,7 @@
 
 Handy starting template for my JS projects based on some of the ideas of: AS3 Robotlegs, Backbone, Ember + other random ideas I've found and liked.
 
-Dependencies: RxJS, GSAP TweenLite and Lowdash
+Dependencies: RxJS, GSAP TweenLite, Lowdash and my Nudoru utility classes.
 
 ## To create new application
 
@@ -13,32 +13,46 @@ Dependencies: RxJS, GSAP TweenLite and Lowdash
 
 The config.js file contains a global configuration JSON object. Nori wraps it and exposed it via: Nori.getConfig().appConfig
 
-1. Create Make an app.js file
+Create Make an app.js file
 
-2. In here you need to create the global application instance:
+In here you need to create the global application instance:
+```javascript
 window.MyApp = Nori.create();
+```
 
-3. You need to create a module for the main view ... [steps later] ... and make the object:
+You need to create a module for the main view ... [steps later] ... and make the object:
+```javascript
 var appView = Nori.extend(require('myviewmodule.id'), require('Nori.View'));
+```
 
-4. Initialize the application with the view. This is required so that routes can be properly mapped
+Initialize the application with the view. This is required so that routes can be properly mapped
+```javascript
 MyApp.initialize({view:appView});
+```
 
-5. Map events to command modules. Commands are controllers that are triggered when an event is emitted. Sample:
+Map events to command modules. Commands are controllers that are triggered when an event is emitted. Sample:
+```javascript
 MyApp.mapEventCommand(_appEvents.ROUTE_CHANGED, ‘TT.RouteChangedCommand’);
+```
 
-6. Map routes to view modules. The Router module monitors the URL hash for changes and will instruct the view to load the HTML template id [‘template__whateverID’] with the subview module. Sample:
+Map routes to view modules. The Router module monitors the URL hash for changes and will instruct the view to load the HTML template id [‘template__whateverID’] with the subview module. Sample:
+```javascript
 MyApp.mapRouteView(‘/route’, ‘whateverID’, ‘MyApp.view.whaterverIDview’);
+```
 
-7. Define models, load data, etc.
+Define models, load data, etc.
 
-8. Clear the loading message that display while all of this happens
+Clear the loading message that display while all of this happens
+```javascript
 MyApp.view().removeLoadingMessage();
+```
 
-9. Execute the current URL route
+Execute the current URL route
+```javascript
 MyApp.setCurrentRoute(MyApp.router().getCurrentRoute()); 
+```
 
-10. Profit!
+Profit!
 
 ## Define / Require
 
@@ -48,25 +62,30 @@ I created my own define/require module system that works without the need to for
 
 **Everything in Nori is a module** except for the main Nori object.
 
-1. Define a module:
-
+Define a module:
+```javascript
 define(‘MyApp.Module’,
   function (require, module, exports) {
 		exports.method = function() { … };
   });
+```
 
-2. Require a module:
+Require a module:
 
 **Get a singleton instance**
+```javascript
 var module = require(‘MyApp.Module’);
+```
 
 **Get a unique instance**
+```javascript
 var module = requireUnique(‘MyApp.Module’);
-
-
+```
 
 
 # Nudoru Components / Utils
+
+Collection of utility and helper classes.
 
 ## nudoru/components
 
