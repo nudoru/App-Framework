@@ -38,7 +38,7 @@ MyApp.initialize({view:appView});
 
 Commands are controllers that are triggered when an event is emitted. Sample:
 ```javascript
-MyApp.mapEventCommand(_appEvents.ROUTE_CHANGED, ‘TT.RouteChangedCommand’);
+MyApp.mapEventCommand(_appEvents.ROUTE_CHANGED, ‘MyApp.RouteChangedCommand’);
 ```
 
 ### Map routes to view modules. 
@@ -106,13 +106,13 @@ Nori maps the following events to commands as part of the framework:
 
 ```javascript
 // Model
-mapEventCommand(_appEvents.MODEL_DATA_CHANGED, ‘Nori.ModelDataChangedCommand’);
-mapEventCommand(_appEvents.UPDATE_MODEL_DATA, ‘Nori.UpdateModelDataCommand’);
+mapEventCommand(AppEvents.MODEL_DATA_CHANGED, ‘Nori.ModelDataChangedCommand’);
+mapEventCommand(AppEvents.UPDATE_MODEL_DATA, ‘Nori.UpdateModelDataCommand’);
 
 // Subviews
-mapEventCommand(_browserEvents.URL_HASH_CHANGED, ‘Nori.URLHashChangedCommand’);
-mapEventCommand(_appEvents.CHANGE_ROUTE, ‘Nori.ChangeRouteCommand’);
-mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, ‘Nori.SubViewStoreDataCommand’);
+mapEventCommand(BrowserEvents.URL_HASH_CHANGED, ‘Nori.URLHashChangedCommand’);
+mapEventCommand(AppEvents.CHANGE_ROUTE, ‘Nori.ChangeRouteCommand’);
+mapEventCommand(AppEvents.SUBVIEW_STORE_STATE, ‘Nori.SubViewStoreDataCommand’);
 ```
 
 ## Models
@@ -122,7 +122,7 @@ mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, ‘Nori.SubViewStoreDataCommand�
 Nori defines a simple object map based model and model collection class. Sample use:
 
 ```javascript
-var test = TT.createModel();
+var test = MyApp.createModel();
 test.initialize({id: ‘MockModel’, store: {name: ‘Matt’, age: 37}, silent: false});
 test.set({last:’Perkins},{silent:true});
 console.log(test.toJSON());
