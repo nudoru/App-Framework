@@ -140,10 +140,10 @@ define('Nori.View',
     /**
      * Pass to route sub view
      * @param dataObj
-     * @param modelData
+     * @param previousStateData
      */
-    function showView(dataObj, modelData) {
-      _routeSubViewView.showView(dataObj, modelData);
+    function showView(dataObj, previousStateData) {
+      _routeSubViewView.showView(dataObj, previousStateData);
     }
 
     /**
@@ -168,7 +168,7 @@ define('Nori.View',
     exports.removeLoadingMessage = removeLoadingMessage;
     exports.mapView = mapView;
     exports.showView = showView;
-
+    exports.updateSubViewData = updateSubViewData;
     exports.layoutUI = layoutUI;
 
     exports.getAppContainerEl = getAppContainerEl;

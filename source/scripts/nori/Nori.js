@@ -217,7 +217,8 @@ var Nori = (function () {
   }
 
   /**
-   * Copied from Backbone.js
+   * Modified a little from from Backbone.js
+   * http://backbonejs.org/docs/backbone.html
    * @param protoProps
    * @param staticProps
    * @returns {*}
@@ -365,7 +366,7 @@ var Nori = (function () {
 
     if(viewArry) {
       viewArry.forEach(function (view) {
-        console.log('Notify '+view+', about ' + modelID);
+        _view.updateSubViewData(view, modelID, data);
       });
     } else {
       console.log('No views bound to '+modelID);

@@ -50,21 +50,21 @@ define('Nori.View.MixinRouteViews',
      * @param storeData
      */
     function updateSubViewData(viewID, modelID, storeData) {
-      var subview = _subViewMapping[viewObj.templateID];
+      var subview = _subViewMapping[viewID];
 
-      if (subview) {
-        subview.update(storeData);
+      if (subview.controller.update) {
+        subview.controller.update({boundModelData: storeData});
       } else {
-        throw new Error('updateSubViewData, no subview ID: '+viewID);
+        console.log('updateSubViewData, can\'t update subview ID: '+viewID);
       }
     }
 
     /**
      * Show a view (in response to a route change)
      * @param dataObj props: templateID, route, data (from query string)
-     * @param modelData previous state data from the model
+     * @param previousStateData previous state data from the model
      */
-    function showView(dataObj, modelData) {
+    function showView(dataObj, previousStateData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
@@ -78,12 +78,12 @@ define('Nori.View.MixinRouteViews',
       }
 
       // state is from query string
-      // modeldata is saved from the last time the view was unloaded
+      // modeldata is saved state from the last time the view was unloaded
       subview.controller.initialize({
         id: dataObj.templateID,
         template: subview.htmlTemplate,
         queryData: dataObj.queryData,
-        modelData: modelData
+        previousStateData: previousStateData
       });
 
       TweenLite.set(_subViewMountPoint, {alpha: 0});
@@ -123,5 +123,5 @@ define('Nori.View.MixinRouteViews',
     exports.template = getTemplate;
     exports.mapView = mapView;
     exports.showView = showView;
-
+    exports.updateSubViewData = updateSubViewData;
   });

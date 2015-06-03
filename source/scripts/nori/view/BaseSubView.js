@@ -12,7 +12,6 @@ define('Nori.View.BaseSubView',
       _DOMElement,
       _initialState,
       _currentState,
-      _modelData,
       _isMounted = false,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('Nori.Events.Emitter'),
@@ -23,8 +22,6 @@ define('Nori.View.BaseSubView',
      * @param initObj
      */
     function initialize(initObj) {
-      _modelData = initObj.modelData;
-
       if(!_initObj) {
         _initObj = initObj;
         _id = initObj.id;
@@ -38,7 +35,7 @@ define('Nori.View.BaseSubView',
       //console.log('-------------');
       //console.log('Subview: '+_id);
       //console.log('querydata: '+JSON.stringify(initObj.queryData));
-      //console.log('modeldata: '+JSON.stringify(initObj.modelData));
+      //console.log('modeldata: '+JSON.stringify(initObj.previousStateData));
       //console.log('boundModelData: '+JSON.stringify(initObj.boundModelData));
       //console.log('-------------');
 
@@ -50,7 +47,7 @@ define('Nori.View.BaseSubView',
      * @returns {*}
      */
     function mergeDataSources(dataObj) {
-      return _.merge({}, dataObj.modelData, dataObj.boundModelData, dataObj.queryData);
+      return _.merge({}, dataObj.previousStateData, dataObj.boundModelData, dataObj.queryData);
     }
 
     /**

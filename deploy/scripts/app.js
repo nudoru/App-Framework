@@ -404,22 +404,41 @@ define('TT.RouteChangedCommand',
   // Initialize the window
   window.onload = function() {
 
-    var _appEvents = require('Nori.Events.AppEvents'),
-      _model,
-      _view;
+    var appView;
 
     // Create the application instance
     window.TT = Nori.create();
 
     // Create the view
-    _view = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
+    appView = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
 
     // Initialize app with the view
-    TT.initialize({view:_view});
+    TT.initialize({view:appView});
+
+    mapEvents();
+    mapRoutes();
+
+    //var dataSource = require('TT.FakeData');
+    //dataSource.initialize();
+
+    // Everything is ready!
+    TT.view().removeLoadingMessage();
+
+    // Execute the route on the URL
+    TT.setCurrentRoute(TT.router().getCurrentRoute());
+
+    // Model testing-
+    testModel();
+  };
+
+  function mapEvents() {
+    var _appEvents = require('Nori.Events.AppEvents');
 
     // Commands
     TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.RouteChangedCommand');
+  }
 
+  function mapRoutes() {
     // Default route
     TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
 
@@ -434,20 +453,6 @@ define('TT.RouteChangedCommand',
     TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.TemplateSubView');
     TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
     TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
-
-    //var dataSource = require('TT.FakeData');
-    //dataSource.initialize();
-
-    // Model testing-
-    testModel();
-
-
-
-    // Everything is ready!
-    TT.view().removeLoadingMessage();
-
-    // Execute the route on the URL
-    TT.setCurrentRoute(TT.router().getCurrentRoute());
   }
 
   function testModel() {
@@ -470,7 +475,6 @@ define('TT.RouteChangedCommand',
     TT.bindModelView('AnotherModel','Timecard');
 
     test1.set({last:'perkins'});
-
 
   }
 

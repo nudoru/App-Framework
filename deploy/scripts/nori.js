@@ -354,7 +354,6 @@ define('Nori.Events.AppEvents',
       _DOMElement,
       _initialState,
       _currentState,
-      _modelData,
       _isMounted = false,
       _domUtils = require('nudoru.utils.DOMUtils'),
       _emitter = require('Nori.Events.Emitter'),
@@ -365,8 +364,6 @@ define('Nori.Events.AppEvents',
      * @param initObj
      */
     function initialize(initObj) {
-      _modelData = initObj.modelData;
-
       if(!_initObj) {
         _initObj = initObj;
         _id = initObj.id;
@@ -380,7 +377,7 @@ define('Nori.Events.AppEvents',
       //console.log('-------------');
       //console.log('Subview: '+_id);
       //console.log('querydata: '+JSON.stringify(initObj.queryData));
-      //console.log('modeldata: '+JSON.stringify(initObj.modelData));
+      //console.log('modeldata: '+JSON.stringify(initObj.previousStateData));
       //console.log('boundModelData: '+JSON.stringify(initObj.boundModelData));
       //console.log('-------------');
 
@@ -392,7 +389,7 @@ define('Nori.Events.AppEvents',
      * @returns {*}
      */
     function mergeDataSources(dataObj) {
-      return _.merge({}, dataObj.modelData, dataObj.boundModelData, dataObj.queryData);
+      return _.merge({}, dataObj.previousStateData, dataObj.boundModelData, dataObj.queryData);
     }
 
     /**
@@ -786,21 +783,21 @@ define('Nori.Events.AppEvents',
      * @param storeData
      */
     function updateSubViewData(viewID, modelID, storeData) {
-      var subview = _subViewMapping[viewObj.templateID];
+      var subview = _subViewMapping[viewID];
 
-      if (subview) {
-        subview.update(storeData);
+      if (subview.controller.update) {
+        subview.controller.update({boundModelData: storeData});
       } else {
-        throw new Error('updateSubViewData, no subview ID: '+viewID);
+        console.log('updateSubViewData, can\'t update subview ID: '+viewID);
       }
     }
 
     /**
      * Show a view (in response to a route change)
      * @param dataObj props: templateID, route, data (from query string)
-     * @param modelData previous state data from the model
+     * @param previousStateData previous state data from the model
      */
-    function showView(dataObj, modelData) {
+    function showView(dataObj, previousStateData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
@@ -814,12 +811,12 @@ define('Nori.Events.AppEvents',
       }
 
       // state is from query string
-      // modeldata is saved from the last time the view was unloaded
+      // modeldata is saved state from the last time the view was unloaded
       subview.controller.initialize({
         id: dataObj.templateID,
         template: subview.htmlTemplate,
         queryData: dataObj.queryData,
-        modelData: modelData
+        previousStateData: previousStateData
       });
 
       TweenLite.set(_subViewMountPoint, {alpha: 0});
@@ -859,7 +856,7 @@ define('Nori.Events.AppEvents',
     exports.template = getTemplate;
     exports.mapView = mapView;
     exports.showView = showView;
-
+    exports.updateSubViewData = updateSubViewData;
   });;define('Nori.View.Template',
   function(require, module, exports) {
 
@@ -1083,10 +1080,10 @@ define('Nori.Events.AppEvents',
     /**
      * Pass to route sub view
      * @param dataObj
-     * @param modelData
+     * @param previousStateData
      */
-    function showView(dataObj, modelData) {
-      _routeSubViewView.showView(dataObj, modelData);
+    function showView(dataObj, previousStateData) {
+      _routeSubViewView.showView(dataObj, previousStateData);
     }
 
     /**
@@ -1111,7 +1108,7 @@ define('Nori.Events.AppEvents',
     exports.removeLoadingMessage = removeLoadingMessage;
     exports.mapView = mapView;
     exports.showView = showView;
-
+    exports.updateSubViewData = updateSubViewData;
     exports.layoutUI = layoutUI;
 
     exports.getAppContainerEl = getAppContainerEl;
@@ -1600,7 +1597,8 @@ define('Nori.Events.AppEvents',
   }
 
   /**
-   * Copied from Backbone.js
+   * Modified a little from from Backbone.js
+   * http://backbonejs.org/docs/backbone.html
    * @param protoProps
    * @param staticProps
    * @returns {*}
@@ -1748,7 +1746,7 @@ define('Nori.Events.AppEvents',
 
     if(viewArry) {
       viewArry.forEach(function (view) {
-        console.log('Notify '+view+', about ' + modelID);
+        _view.updateSubViewData(view, modelID, data);
       });
     } else {
       console.log('No views bound to '+modelID);
