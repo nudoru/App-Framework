@@ -41,8 +41,6 @@ var Nori = (function () {
    * @param view
    */
   function initialize(initObj) {
-    console.log('Nori: Initialize');
-
     initializeConfig();
     _router.initialize();
 
@@ -171,22 +169,18 @@ var Nori = (function () {
    * @param routeObj props: route, data, fromApp
    */
   function setCurrentRoute(routeObj) {
-    //console.log('Nori.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
     if (isValidRoute(routeObj.route)) {
       _config.currentRoute = routeObj;
 
       // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
       // else is a URL change and just execute current mapping
       if (routeObj.fromApp) {
-        //console.log('Routing from app');
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
-        //console.log('Routing from URL');
         _router.runCurrentRoute();
         _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
       }
     } else {
-      //console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
     }
   }
@@ -320,7 +314,6 @@ var Nori = (function () {
    */
   function storeSubViewData(id, dataObj) {
     _subviewDataModel.set(id, dataObj);
-    console.log('Store subview data: '+_subviewDataModel.toJSON());
   }
 
   /**

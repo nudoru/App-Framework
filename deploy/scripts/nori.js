@@ -238,8 +238,6 @@ define('Nori.Events.AppEvents',
       _id = initObj.id;
       _silent = initObj.silent || false;
 
-      console.log('model collection, this: '+this);
-
       // BUG - call with this scope, calling from Nori.init scope is Window
       //if(initObj.models) {
       //  addStoresFromArray.call(this, initObj.models);
@@ -1275,7 +1273,7 @@ define('Nori.Events.AppEvents',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      console.log('ChangeRouteCommand, route: '+data.route);
+      //console.log('ChangeRouteCommand, route: '+data.route);
       data.fromApp = true;
       Nori.setCurrentRoute(data);
     };
@@ -1317,7 +1315,7 @@ define('Nori.Events.AppEvents',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      console.log('ModelDataChanged, id: '+data.id+'('+data.storeType+'), store data: '+JSON.stringify(data.store));
+      //console.log('ModelDataChanged, id: '+data.id+' ('+data.storeType+'), store data: '+JSON.stringify(data.store));
       //console.table(data.store);
 
       if(data.storeType === 'model') {
@@ -1421,8 +1419,6 @@ define('Nori.Events.AppEvents',
    * @param view
    */
   function initialize(initObj) {
-    console.log('Nori: Initialize');
-
     initializeConfig();
     _router.initialize();
 
@@ -1551,22 +1547,18 @@ define('Nori.Events.AppEvents',
    * @param routeObj props: route, data, fromApp
    */
   function setCurrentRoute(routeObj) {
-    //console.log('Nori.setCurrentRoute, route: '+routeObj.route+', data: '+routeObj.data);
     if (isValidRoute(routeObj.route)) {
       _config.currentRoute = routeObj;
 
       // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
       // else is a URL change and just execute current mapping
       if (routeObj.fromApp) {
-        //console.log('Routing from app');
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
-        //console.log('Routing from URL');
         _router.runCurrentRoute();
         _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
       }
     } else {
-      //console.log('Nori.setCurrentRoute, not a valid route: '+routeObj.route);
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
     }
   }
@@ -1700,7 +1692,6 @@ define('Nori.Events.AppEvents',
    */
   function storeSubViewData(id, dataObj) {
     _subviewDataModel.set(id, dataObj);
-    console.log('Store subview data: '+_subviewDataModel.toJSON());
   }
 
   /**

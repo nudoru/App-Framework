@@ -26,8 +26,6 @@ define('Nori.ModelCollection',
       _id = initObj.id;
       _silent = initObj.silent || false;
 
-      console.log('model collection, this: '+this);
-
       // BUG - call with this scope, calling from Nori.init scope is Window
       //if(initObj.models) {
       //  addStoresFromArray.call(this, initObj.models);
