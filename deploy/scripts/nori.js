@@ -99,7 +99,9 @@ define('Nori.Events.AppEvents',
   function (require, module, exports) {
 
     var _id,
-      _store = Object.create(null),
+      _changed = false,
+      _entries = [],
+      _store = {},
       _silent = false,
       _parentCollection,
       _emitter = require('Nori.Events.Emitter'),
@@ -129,6 +131,11 @@ define('Nori.Events.AppEvents',
       return _id;
     }
 
+    function clear() {
+      _store = {};
+      _changed = true;
+    }
+
     /**
      * Set property or merge in new data
      * @param key String = name of property to set, Object = will merge new props
@@ -146,6 +153,9 @@ define('Nori.Events.AppEvents',
         _store[key] = options;
       }
 
+      // Mark changed
+      _changed = true;
+
       if(!silentSet) {
         publishChange();
       }
@@ -157,6 +167,74 @@ define('Nori.Events.AppEvents',
      */
     function get(key) {
       return _store[key];
+    }
+
+    /**
+     * Returns true of the key is present in the store
+     * @param key
+     * @returns {boolean}
+     */
+    function has(key) {
+      return _store.hasOwnProperty(key);
+    }
+
+    /**
+     * Returns an array of the key/values. Results are cached and only regenerated
+     * if changed (set)
+     * @returns {Array}
+     */
+    function entries() {
+
+      if(!_changed && _entries) {
+        return _entries;
+      }
+
+      var arry = [];
+      for(var key in _store) {
+        arry.push({key:key, value:_store[key]});
+      }
+
+      _entries = arry;
+      _changed = false;
+
+      return arry;
+    }
+
+    /**
+     * Number of entries
+     * @returns {Number}
+     */
+    function length() {
+      return entries().length;
+    }
+
+    /**
+     * Returns an array of all keys in the store
+     * @returns {Array}
+     */
+    function keys() {
+      return entries().map(function(entry) {
+        return entry.key;
+      });
+    }
+
+    /**
+     * Returns an array of all vaules in the store
+     * @returns {Array}
+     */
+    function values() {
+      return entries().map(function(entry) {
+        return entry.value;
+      });
+    }
+
+    /**
+     * Returns matches to the predicate function
+     * @param predicate
+     * @returns {Array.<T>}
+     */
+    function filterValues(predicate) {
+      return values().filter(predicate);
     }
 
     /**
@@ -208,9 +286,16 @@ define('Nori.Events.AppEvents',
 
     exports.initialize = initialize;
     exports.getID = getID;
+    exports.clear = clear;
     exports.set = set;
     exports.get = get;
-    exports.store = getStore;
+    exports.has = has;
+    exports.keys = keys;
+    exports.values = values;
+    exports.entries = entries;
+    exports.length = length;
+    exports.filterValues = filterValues;
+    exports.getStore = getStore;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;

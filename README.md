@@ -1,14 +1,12 @@
 # NORI App Framework
 
-Handy starting template for my JS projects based on some of the ideas of: AS3 Robotlegs, Backbone, Ember + other random ideas I've found and liked.
+Handy starting template for my JS projects based on some of the ideas of: AS3 Robotlegs, Backbone, Ember + other random ideas I've found and liked. Based on the MVC pattern.
 
 Dependencies: RxJS, GSAP TweenLite, Lowdash and my Nudoru utility classes.
 
-It’s based on the MVC pattern.
-
 ## To create new application
 
-**Keep in mind***
+**Keep in mind**
 
 - Update the grunt file as needed.
 - I've created my own define/require module thing based on CommonJS. All require statements refer to that. See below.

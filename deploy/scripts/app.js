@@ -458,8 +458,7 @@ define('TT.RouteChangedCommand',
   function testModel() {
    var test1 = TT.createModel();
     test1.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
-
-
+    
     var test2 = TT.createModel();
     test2.initialize({id: 'AnotherModel', store: {name: 'June', useid:'x1234', age: 27}, silent: false});
 
@@ -470,10 +469,15 @@ define('TT.RouteChangedCommand',
     TT.addModel(test2);
 
 
+
+    console.log('test has: '+test1.has('name'));
+    console.log('test keys: '+test1.keys());
+    console.log('test values: '+test1.values());
+
+    console.log('filter: '+test1.filterValues(function(val) { return val ==='Matt';}));
+
+    console.log('test entries: '+JSON.stringify(test1.entries()));
     TT.bindModelView('MockModel','Timecard');
-
-    test1.set({last:'perkins'});
-
   }
 
 }());
