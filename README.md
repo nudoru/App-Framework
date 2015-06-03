@@ -4,6 +4,8 @@ Handy starting template for my JS projects based on some of the ideas of: AS3 Ro
 
 Dependencies: RxJS, GSAP TweenLite, Lowdash and my Nudoru utility classes.
 
+It’s based on the MVC pattern.
+
 ## To create new application
 
 **Keep in mind***
@@ -20,8 +22,7 @@ Create an `app.js` file and put the following in the `window.onload` handler:
 window.MyApp = Nori.create();
 ```
 
-### You need to create a module for the main view
- ... [steps later] ... and make the object:
+### You need to create a module for the main view and make the object:
 ```javascript
 var appView = Nori.extend(require('myviewmodule.id'), require('Nori.View'));
 ```
@@ -59,7 +60,7 @@ MyApp.view().removeLoadingMessage();
 MyApp.setCurrentRoute(MyApp.router().getCurrentRoute()); 
 ```
 
-Profit!
+### Profit!
 
 ## Define / Require
 
@@ -114,7 +115,32 @@ mapEventCommand(_appEvents.CHANGE_ROUTE, ‘Nori.ChangeRouteCommand’);
 mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, ‘Nori.SubViewStoreDataCommand’);
 ```
 
-—
+## Models
+
+**Models are in development**
+
+Nori defines a simple object map based model and model collection class. Sample use:
+
+```javascript
+var test = TT.createModel();
+test.initialize({id: ‘MockModel’, store: {name: ‘Matt’, age: 37}, silent: false});
+test.set({last:’Perkins},{silent:true});
+console.log(test.toJSON());
+```
+
+If silent is indicated then changes via `set` will not dispatch a `AppEvents.MODEL_DATA_CHANGED` event.
+
+Model collections will dispatch this event when one of their member models is changed unless `{silent:true}` is specified on the set method.
+
+**Todo - document model collection**
+
+### Binding sub views to model changes
+
+You can map a sub view to a model and it will receive the updated model store when a change occurs:
+
+```javascript
+MyApp.bindModelView(‘modelID’,’viewID’);
+```
 
 # Nudoru Components / Utils
 

@@ -141,7 +141,7 @@ define('Nori.Events.AppEvents',
         if(options !== null && typeof options === 'object') {
           silentSet = options.silent || false;
         }
-        _store = _.assign({}, _store, key);
+        _store = _.merge({}, _store, key);
       } else {
         _store[key] = options;
       }
@@ -164,7 +164,7 @@ define('Nori.Events.AppEvents',
      * @returns {void|*}
      */
     function getStore() {
-      return _.assign({},_store);
+      return _.merge({},_store);
     }
 
     /**
