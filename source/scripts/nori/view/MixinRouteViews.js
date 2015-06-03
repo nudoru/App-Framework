@@ -44,34 +44,52 @@ define('Nori.View.MixinRouteViews',
     }
 
     /**
+     * Update subview based on a change in bound model data
+     * @param viewID
+     * @param modelID
+     * @param storeData
+     */
+    function updateSubViewData(viewID, modelID, storeData) {
+      var subview = _subViewMapping[viewObj.templateID];
+
+      if (subview) {
+        subview.update(storeData);
+      } else {
+        throw new Error('updateSubViewData, no subview ID: '+viewID);
+      }
+    }
+
+    /**
      * Show a view (in response to a route change)
-     * @param viewObj props: templateID, route, data
+     * @param dataObj props: templateID, route, data (from query string)
      * @param modelData previous state data from the model
      */
-    function showView(viewObj, modelData) {
+    function showView(dataObj, modelData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
 
-      var subview = _subViewMapping[viewObj.templateID];
+      var subview = _subViewMapping[dataObj.templateID];
 
       if (subview) {
         unMountCurrentSubView();
       } else {
-        throw new Error('No subview mapped for route: ' + viewObj.route + ' > ' + viewObj.templateID);
+        throw new Error('No subview mapped for route: ' + dataObj.route + ' > ' + dataObj.templateID);
       }
 
+      // state is from query string
+      // modeldata is saved from the last time the view was unloaded
       subview.controller.initialize({
-        id: viewObj.templateID,
+        id: dataObj.templateID,
         template: subview.htmlTemplate,
-        state: viewObj.data,
+        queryData: dataObj.queryData,
         modelData: modelData
       });
 
       TweenLite.set(_subViewMountPoint, {alpha: 0});
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());
-      _currentSubView = viewObj.templateID;
+      _currentSubView = dataObj.templateID;
 
       if(subview.controller.viewDidMount) {
         subview.controller.viewDidMount();
@@ -79,7 +97,7 @@ define('Nori.View.MixinRouteViews',
 
       TweenLite.to(_subViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
-      _emitter.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
+      _emitter.publish(_appEvents.VIEW_CHANGED, dataObj.templateID);
     }
 
     /**

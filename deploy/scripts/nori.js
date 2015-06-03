@@ -15,7 +15,7 @@ define('Nori.Events.AppEvents',
     exports.VIEW_CHANGE_TO_DESKTOP = 'VIEW_CHANGE_TO_DESKTOP';
     exports.ROUTE_CHANGED = 'ROUTE_CHANGED';
     exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
-    exports.SUBVIEW_STORE_DATA = 'SUBVIEW_STORE_DATA';
+    exports.SUBVIEW_STORE_STATE = 'SUBVIEW_STORE_STATE';
   });;define('Nori.Events.Emitter',
   function (require, module, exports) {
     var _subjectMap = {};
@@ -119,7 +119,8 @@ define('Nori.Events.AppEvents',
       _silent = initObj.silent || false;
 
       if(initObj.store) {
-        set(initObj.store);
+        // set inital data silently
+        set(initObj.store, {silent: true});
       }
 
     }
@@ -237,16 +238,18 @@ define('Nori.Events.AppEvents',
       _id = initObj.id;
       _silent = initObj.silent || false;
 
-      // BUG - scope not correct to set parentcollection to this, is Window
+      console.log('model collection, this: '+this);
+
+      // BUG - call with this scope, calling from Nori.init scope is Window
       //if(initObj.models) {
-      //  addStoresFromArray(initObj.models);
+      //  addStoresFromArray.call(this, initObj.models);
       //}
     }
 
     function addStoresFromArray(sArry) {
       sArry.forEach(function(store) {
         add(store);
-      })
+      });
     }
 
     function getID() {
@@ -276,12 +279,22 @@ define('Nori.Events.AppEvents',
       }
     }
 
+    /**
+     * Gets the Model by ID
+     * @param storeID
+     * @returns {T}
+     */
     function getStore(storeID) {
       return _children.filter(function(store) {
         return store.getID() === storeID;
       })[0];
     }
 
+    /**
+     * Get the index in _children array by Model's ID
+     * @param storeID
+     * @returns {number}
+     */
     function getStoreIndex(storeID) {
       return _children.map(function(store) {
         return store.getID();
@@ -295,6 +308,13 @@ define('Nori.Events.AppEvents',
       if(!_silent) {
         _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
       }
+    }
+
+    function hasModel(storeID) {
+      if(_children[storeID]) {
+        return true;
+      }
+      return false;
     }
 
     function save() {
@@ -318,6 +338,7 @@ define('Nori.Events.AppEvents',
     exports.add = add;
     exports.remove = remove;
     exports.getStore = getStore;
+    exports.hasModel = hasModel;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
@@ -344,34 +365,44 @@ define('Nori.Events.AppEvents',
      * @param initObj
      */
     function initialize(initObj) {
-      //console.log(initObj.id + ', subview init');
-      //
-      //console.log('subview state',initObj.state);
-      //console.log('subview modeldata',initObj.modelData);
-
       _modelData = initObj.modelData;
 
       if(!_initObj) {
         _initObj = initObj;
         _id = initObj.id;
         _templateObj = initObj.template;
-        _initialState = _currentState = initObj.state;
-
+        _initialState = _currentState = mergeDataSources(initObj);
         render();
       } else {
-        //console.log(_id + ', subview already init\'d');
-        update(initObj.state);
+        update(initObj);
       }
+
+      //console.log('-------------');
+      //console.log('Subview: '+_id);
+      //console.log('querydata: '+JSON.stringify(initObj.queryData));
+      //console.log('modeldata: '+JSON.stringify(initObj.modelData));
+      //console.log('boundModelData: '+JSON.stringify(initObj.boundModelData));
+      //console.log('-------------');
+
+    }
+
+    /**
+     * Merge data objects into one for the state object
+     * @param dataObj
+     * @returns {*}
+     */
+    function mergeDataSources(dataObj) {
+      return _.merge({}, dataObj.modelData, dataObj.boundModelData, dataObj.queryData);
     }
 
     /**
      * Update state and rerender
-     * @param state
+     * @param dataObj
      * @returns {*}
      */
-    function update(state) {
-      //console.log(_id + ', subview update');
-      _currentState = state;
+    function update(dataObj) {
+      _currentState = mergeDataSources(dataObj);
+      console.log(_id + ', subview update state: '+JSON.stringify(_currentState));
       if(_isMounted) {
         return render();
       }
@@ -406,7 +437,7 @@ define('Nori.Events.AppEvents',
       _isMounted = false;
 
       // cache state data to the model, will be restored as modelData on next show
-      _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
+      _emitter.publish(_appEvents.SUBVIEW_STORE_STATE, {id: _id, data:_currentState});
     }
 
     /**
@@ -749,34 +780,52 @@ define('Nori.Events.AppEvents',
     }
 
     /**
+     * Update subview based on a change in bound model data
+     * @param viewID
+     * @param modelID
+     * @param storeData
+     */
+    function updateSubViewData(viewID, modelID, storeData) {
+      var subview = _subViewMapping[viewObj.templateID];
+
+      if (subview) {
+        subview.update(storeData);
+      } else {
+        throw new Error('updateSubViewData, no subview ID: '+viewID);
+      }
+    }
+
+    /**
      * Show a view (in response to a route change)
-     * @param viewObj props: templateID, route, data
+     * @param dataObj props: templateID, route, data (from query string)
      * @param modelData previous state data from the model
      */
-    function showView(viewObj, modelData) {
+    function showView(dataObj, modelData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
 
-      var subview = _subViewMapping[viewObj.templateID];
+      var subview = _subViewMapping[dataObj.templateID];
 
       if (subview) {
         unMountCurrentSubView();
       } else {
-        throw new Error('No subview mapped for route: ' + viewObj.route + ' > ' + viewObj.templateID);
+        throw new Error('No subview mapped for route: ' + dataObj.route + ' > ' + dataObj.templateID);
       }
 
+      // state is from query string
+      // modeldata is saved from the last time the view was unloaded
       subview.controller.initialize({
-        id: viewObj.templateID,
+        id: dataObj.templateID,
         template: subview.htmlTemplate,
-        state: viewObj.data,
+        queryData: dataObj.queryData,
         modelData: modelData
       });
 
       TweenLite.set(_subViewMountPoint, {alpha: 0});
 
       _subViewMountPoint.appendChild(subview.controller.getDOMElement());
-      _currentSubView = viewObj.templateID;
+      _currentSubView = dataObj.templateID;
 
       if(subview.controller.viewDidMount) {
         subview.controller.viewDidMount();
@@ -784,7 +833,7 @@ define('Nori.Events.AppEvents',
 
       TweenLite.to(_subViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
-      _emitter.publish(_appEvents.VIEW_CHANGED, viewObj.templateID);
+      _emitter.publish(_appEvents.VIEW_CHANGED, dataObj.templateID);
     }
 
     /**
@@ -1033,11 +1082,21 @@ define('Nori.Events.AppEvents',
 
     /**
      * Pass to route sub view
-     * @param viewObj
+     * @param dataObj
      * @param modelData
      */
-    function showView(viewObj, modelData) {
-      _routeSubViewView.showView(viewObj, modelData);
+    function showView(dataObj, modelData) {
+      _routeSubViewView.showView(dataObj, modelData);
+    }
+
+    /**
+     * Update subview based on a change in bound model data
+     * @param viewID
+     * @param modelID
+     * @param storeData
+     */
+    function updateSubViewData(viewID, modelID, storeData) {
+     _routeSubViewView.updateSubViewData(viewID, modelID, storeData);
     }
 
     //----------------------------------------------------------------------------
@@ -1145,7 +1204,7 @@ define('Nori.Events.AppEvents',
         routeObj.controller.call(window, {
           route: route,
           templateID: routeObj.templateID,
-          data: queryStrObj
+          queryData: queryStrObj
         });
       } else {
         console.log('No Route mapped for: "' + route + '"');
@@ -1263,6 +1322,11 @@ define('Nori.Events.AppEvents',
     exports.execute = function(data) {
       console.log('ModelDataChanged, id: '+data.id+'('+data.storeType+'), store data: '+JSON.stringify(data.store));
       //console.table(data.store);
+
+      if(data.storeType === 'model') {
+        Nori.notifyBoundViewsOfModelUpdate(data.id, data.store);
+      }
+
     };
 
   });;define('Nori.RouteChangedCommand',
@@ -1323,6 +1387,7 @@ define('Nori.Events.AppEvents',
     _appModelCollection = requireUnique('Nori.ModelCollection'),
     _emitterCommandMap = Object.create(null),
     _subviewDataModel,
+    _modelViewBindingMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
@@ -1366,15 +1431,7 @@ define('Nori.Events.AppEvents',
 
     _view = initObj.view;
 
-
-
-    _subviewDataModel = createModel({});
-    _subviewDataModel.initialize({id:'NoriSubViewDataModel', store:{}, noisy: true});
-
-    _appModelCollection.initialize({id:'NoriGlobalModelCollection', silent: false});
-    addModel(_subviewDataModel);
-
-
+    initializeModels();
 
     initializeView();
     postInitialize();
@@ -1392,6 +1449,14 @@ define('Nori.Events.AppEvents',
         data: undefined
       }
     };
+  }
+
+  function initializeModels() {
+    _subviewDataModel = createModel({});
+    _subviewDataModel.initialize({id:'SubViewDataModel', store:{}, noisy: true});
+
+    _appModelCollection.initialize({id:'GlobalModelCollection', silent: false});
+    addModel(_subviewDataModel);
   }
 
   function initializeView() {
@@ -1424,7 +1489,7 @@ define('Nori.Events.AppEvents',
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
     mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
-    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
+    mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, 'Nori.SubViewStoreDataCommand');
   }
 
   //----------------------------------------------------------------------------
@@ -1455,30 +1520,7 @@ define('Nori.Events.AppEvents',
     return _appModelCollection.get(storeID);
   }
 
-  //----------------------------------------------------------------------------
-  //  Subview data
-  //  Little bit of model creep
-  //----------------------------------------------------------------------------
 
-  /**
-   * Store state data from a subview, called from StoreSubViewDataCommand
-   * @param id
-   * @param dataObj
-   */
-  function storeSubViewData(id, dataObj) {
-    _subviewDataModel.set(id, dataObj);
-
-    console.log('Store subview data: '+_subviewDataModel.toJSON());
-  }
-
-  /**
-   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
-   * @param id
-   * @returns {*|{}}
-   */
-  function retrieveSubViewData(id) {
-    return _subviewDataModel.get(id) || {};
-  }
   //----------------------------------------------------------------------------
   //  Route Validation
   //  Route obj is {route: '/whatever', data:{var:value,...}
@@ -1557,6 +1599,38 @@ define('Nori.Events.AppEvents',
     return extend(ext, this);
   }
 
+  /**
+   * Copied from Backbone.js
+   * @param protoProps
+   * @param staticProps
+   * @returns {*}
+   */
+  function bextend(protoProps, staticProps) {
+    //var parent = this,
+    //  child,
+    //  surrogate;
+    //
+    //if(protoProps && _.has(protoProps, 'constructor')) {
+    //  child = protoProps.constructor;
+    //} else {
+    //  child = function() { return parent.apply(this, arguments); };
+    //}
+    //
+    //_.assign(child, parent, staticProps);
+    //
+    //surrogate = function() { this.constructor = child; };
+    //surrogate.prototype = parent.prototype;
+    //child.prototype = new surrogate;
+    //
+    //if(protoProps) {
+    //  _.assign(child.prototype, protoProps);
+    //}
+    //
+    //child._super = parent.prototype;
+    //
+    //return child;
+  }
+
   //----------------------------------------------------------------------------
   //  Wiring Services
   //----------------------------------------------------------------------------
@@ -1600,7 +1674,10 @@ define('Nori.Events.AppEvents',
     _router.when(route, {
       templateID: templateID,
       controller: function routeToViewController(dataObj) {
-        // dataObj is from the router
+        // dataObj is from the router:
+        // route: route,
+        // templateID: routeObj.templateID,
+        // queryData: queryStrObj
         showRouteView(dataObj);
       }
     });
@@ -1614,6 +1691,69 @@ define('Nori.Events.AppEvents',
     _view.showView(dataObj, retrieveSubViewData(dataObj.templateID));
   }
 
+  //----------------------------------------------------------------------------
+  //  Subview data
+  //----------------------------------------------------------------------------
+
+  /**
+   * Store state data from a subview, called from StoreSubViewDataCommand
+   * @param id
+   * @param dataObj
+   */
+  function storeSubViewData(id, dataObj) {
+    _subviewDataModel.set(id, dataObj);
+    console.log('Store subview data: '+_subviewDataModel.toJSON());
+  }
+
+  /**
+   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
+   * @param id
+   * @returns {*|{}}
+   */
+  function retrieveSubViewData(id) {
+    return _subviewDataModel.get(id) || {};
+  }
+
+  //----------------------------------------------------------------------------
+  //  Model & View Binding
+  //----------------------------------------------------------------------------
+
+  /**
+   * Associate a model with an array of possilbe views. When notifyBoundViewsOfModelUpdate
+   * is called, each view will be notified of the new data
+   * @param modelID
+   * @param viewID
+   */
+  function bindModelView(modelID, viewID) {
+    var viewArry = _modelViewBindingMap[modelID];
+
+    if(viewArry) {
+      if(viewArry.indexOf(viewID) === -1) {
+        viewArry.push(viewID);
+      }
+    } else {
+      viewArry = [viewID];
+    }
+
+    _modelViewBindingMap[modelID] = viewArry;
+  }
+
+  /**
+   * Notify any bound views on model change, not collection change
+   * @param modelID
+   * @param data
+   */
+  function notifyBoundViewsOfModelUpdate(modelID, data) {
+    var viewArry = _modelViewBindingMap[modelID];
+
+    if(viewArry) {
+      viewArry.forEach(function (view) {
+        console.log('Notify '+view+', about ' + modelID);
+      });
+    } else {
+      console.log('No views bound to '+modelID);
+    }
+  }
 
   //----------------------------------------------------------------------------
   //  API
@@ -1633,9 +1773,12 @@ define('Nori.Events.AppEvents',
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
+    bextent: bextend,
     create: create,
     storeSubViewData: storeSubViewData,
-    retrieveSubViewData: retrieveSubViewData
+    retrieveSubViewData: retrieveSubViewData,
+    bindModelView: bindModelView,
+    notifyBoundViewsOfModelUpdate: notifyBoundViewsOfModelUpdate
   };
 
 }

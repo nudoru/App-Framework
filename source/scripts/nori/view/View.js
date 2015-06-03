@@ -139,11 +139,21 @@ define('Nori.View',
 
     /**
      * Pass to route sub view
-     * @param viewObj
+     * @param dataObj
      * @param modelData
      */
-    function showView(viewObj, modelData) {
-      _routeSubViewView.showView(viewObj, modelData);
+    function showView(dataObj, modelData) {
+      _routeSubViewView.showView(dataObj, modelData);
+    }
+
+    /**
+     * Update subview based on a change in bound model data
+     * @param viewID
+     * @param modelID
+     * @param storeData
+     */
+    function updateSubViewData(viewID, modelID, storeData) {
+     _routeSubViewView.updateSubViewData(viewID, modelID, storeData);
     }
 
     //----------------------------------------------------------------------------

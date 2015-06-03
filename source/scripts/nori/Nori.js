@@ -4,6 +4,7 @@ var Nori = (function () {
     _appModelCollection = requireUnique('Nori.ModelCollection'),
     _emitterCommandMap = Object.create(null),
     _subviewDataModel,
+    _modelViewBindingMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
@@ -47,15 +48,7 @@ var Nori = (function () {
 
     _view = initObj.view;
 
-
-
-    _subviewDataModel = createModel({});
-    _subviewDataModel.initialize({id:'NoriSubViewDataModel', store:{}, noisy: true});
-
-    _appModelCollection.initialize({id:'NoriGlobalModelCollection', silent: false});
-    addModel(_subviewDataModel);
-
-
+    initializeModels();
 
     initializeView();
     postInitialize();
@@ -73,6 +66,14 @@ var Nori = (function () {
         data: undefined
       }
     };
+  }
+
+  function initializeModels() {
+    _subviewDataModel = createModel({});
+    _subviewDataModel.initialize({id:'SubViewDataModel', store:{}, noisy: true});
+
+    _appModelCollection.initialize({id:'GlobalModelCollection', silent: false});
+    addModel(_subviewDataModel);
   }
 
   function initializeView() {
@@ -105,7 +106,7 @@ var Nori = (function () {
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
     mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
-    mapEventCommand(_appEvents.SUBVIEW_STORE_DATA, 'Nori.SubViewStoreDataCommand');
+    mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, 'Nori.SubViewStoreDataCommand');
   }
 
   //----------------------------------------------------------------------------
@@ -136,30 +137,7 @@ var Nori = (function () {
     return _appModelCollection.get(storeID);
   }
 
-  //----------------------------------------------------------------------------
-  //  Subview data
-  //  Little bit of model creep
-  //----------------------------------------------------------------------------
 
-  /**
-   * Store state data from a subview, called from StoreSubViewDataCommand
-   * @param id
-   * @param dataObj
-   */
-  function storeSubViewData(id, dataObj) {
-    _subviewDataModel.set(id, dataObj);
-
-    console.log('Store subview data: '+_subviewDataModel.toJSON());
-  }
-
-  /**
-   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
-   * @param id
-   * @returns {*|{}}
-   */
-  function retrieveSubViewData(id) {
-    return _subviewDataModel.get(id) || {};
-  }
   //----------------------------------------------------------------------------
   //  Route Validation
   //  Route obj is {route: '/whatever', data:{var:value,...}
@@ -238,6 +216,38 @@ var Nori = (function () {
     return extend(ext, this);
   }
 
+  /**
+   * Copied from Backbone.js
+   * @param protoProps
+   * @param staticProps
+   * @returns {*}
+   */
+  function bextend(protoProps, staticProps) {
+    //var parent = this,
+    //  child,
+    //  surrogate;
+    //
+    //if(protoProps && _.has(protoProps, 'constructor')) {
+    //  child = protoProps.constructor;
+    //} else {
+    //  child = function() { return parent.apply(this, arguments); };
+    //}
+    //
+    //_.assign(child, parent, staticProps);
+    //
+    //surrogate = function() { this.constructor = child; };
+    //surrogate.prototype = parent.prototype;
+    //child.prototype = new surrogate;
+    //
+    //if(protoProps) {
+    //  _.assign(child.prototype, protoProps);
+    //}
+    //
+    //child._super = parent.prototype;
+    //
+    //return child;
+  }
+
   //----------------------------------------------------------------------------
   //  Wiring Services
   //----------------------------------------------------------------------------
@@ -281,7 +291,10 @@ var Nori = (function () {
     _router.when(route, {
       templateID: templateID,
       controller: function routeToViewController(dataObj) {
-        // dataObj is from the router
+        // dataObj is from the router:
+        // route: route,
+        // templateID: routeObj.templateID,
+        // queryData: queryStrObj
         showRouteView(dataObj);
       }
     });
@@ -295,6 +308,69 @@ var Nori = (function () {
     _view.showView(dataObj, retrieveSubViewData(dataObj.templateID));
   }
 
+  //----------------------------------------------------------------------------
+  //  Subview data
+  //----------------------------------------------------------------------------
+
+  /**
+   * Store state data from a subview, called from StoreSubViewDataCommand
+   * @param id
+   * @param dataObj
+   */
+  function storeSubViewData(id, dataObj) {
+    _subviewDataModel.set(id, dataObj);
+    console.log('Store subview data: '+_subviewDataModel.toJSON());
+  }
+
+  /**
+   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
+   * @param id
+   * @returns {*|{}}
+   */
+  function retrieveSubViewData(id) {
+    return _subviewDataModel.get(id) || {};
+  }
+
+  //----------------------------------------------------------------------------
+  //  Model & View Binding
+  //----------------------------------------------------------------------------
+
+  /**
+   * Associate a model with an array of possilbe views. When notifyBoundViewsOfModelUpdate
+   * is called, each view will be notified of the new data
+   * @param modelID
+   * @param viewID
+   */
+  function bindModelView(modelID, viewID) {
+    var viewArry = _modelViewBindingMap[modelID];
+
+    if(viewArry) {
+      if(viewArry.indexOf(viewID) === -1) {
+        viewArry.push(viewID);
+      }
+    } else {
+      viewArry = [viewID];
+    }
+
+    _modelViewBindingMap[modelID] = viewArry;
+  }
+
+  /**
+   * Notify any bound views on model change, not collection change
+   * @param modelID
+   * @param data
+   */
+  function notifyBoundViewsOfModelUpdate(modelID, data) {
+    var viewArry = _modelViewBindingMap[modelID];
+
+    if(viewArry) {
+      viewArry.forEach(function (view) {
+        console.log('Notify '+view+', about ' + modelID);
+      });
+    } else {
+      console.log('No views bound to '+modelID);
+    }
+  }
 
   //----------------------------------------------------------------------------
   //  API
@@ -314,9 +390,12 @@ var Nori = (function () {
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
+    bextent: bextend,
     create: create,
     storeSubViewData: storeSubViewData,
-    retrieveSubViewData: retrieveSubViewData
+    retrieveSubViewData: retrieveSubViewData,
+    bindModelView: bindModelView,
+    notifyBoundViewsOfModelUpdate: notifyBoundViewsOfModelUpdate
   };
 
 }

@@ -23,34 +23,44 @@ define('Nori.View.BaseSubView',
      * @param initObj
      */
     function initialize(initObj) {
-      //console.log(initObj.id + ', subview init');
-      //
-      //console.log('subview state',initObj.state);
-      //console.log('subview modeldata',initObj.modelData);
-
       _modelData = initObj.modelData;
 
       if(!_initObj) {
         _initObj = initObj;
         _id = initObj.id;
         _templateObj = initObj.template;
-        _initialState = _currentState = initObj.state;
-
+        _initialState = _currentState = mergeDataSources(initObj);
         render();
       } else {
-        //console.log(_id + ', subview already init\'d');
-        update(initObj.state);
+        update(initObj);
       }
+
+      //console.log('-------------');
+      //console.log('Subview: '+_id);
+      //console.log('querydata: '+JSON.stringify(initObj.queryData));
+      //console.log('modeldata: '+JSON.stringify(initObj.modelData));
+      //console.log('boundModelData: '+JSON.stringify(initObj.boundModelData));
+      //console.log('-------------');
+
+    }
+
+    /**
+     * Merge data objects into one for the state object
+     * @param dataObj
+     * @returns {*}
+     */
+    function mergeDataSources(dataObj) {
+      return _.merge({}, dataObj.modelData, dataObj.boundModelData, dataObj.queryData);
     }
 
     /**
      * Update state and rerender
-     * @param state
+     * @param dataObj
      * @returns {*}
      */
-    function update(state) {
-      //console.log(_id + ', subview update');
-      _currentState = state;
+    function update(dataObj) {
+      _currentState = mergeDataSources(dataObj);
+      console.log(_id + ', subview update state: '+JSON.stringify(_currentState));
       if(_isMounted) {
         return render();
       }
@@ -85,7 +95,7 @@ define('Nori.View.BaseSubView',
       _isMounted = false;
 
       // cache state data to the model, will be restored as modelData on next show
-      _emitter.publish(_appEvents.SUBVIEW_STORE_DATA, {id: _id, data:_currentState});
+      _emitter.publish(_appEvents.SUBVIEW_STORE_STATE, {id: _id, data:_currentState});
     }
 
     /**

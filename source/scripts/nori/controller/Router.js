@@ -99,7 +99,7 @@ define('Nori.Router',
         routeObj.controller.call(window, {
           route: route,
           templateID: routeObj.templateID,
-          data: queryStrObj
+          queryData: queryStrObj
         });
       } else {
         console.log('No Route mapped for: "' + route + '"');

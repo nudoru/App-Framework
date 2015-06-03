@@ -15,5 +15,5 @@ define('Nori.Events.AppEvents',
     exports.VIEW_CHANGE_TO_DESKTOP = 'VIEW_CHANGE_TO_DESKTOP';
     exports.ROUTE_CHANGED = 'ROUTE_CHANGED';
     exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
-    exports.SUBVIEW_STORE_DATA = 'SUBVIEW_STORE_DATA';
+    exports.SUBVIEW_STORE_STATE = 'SUBVIEW_STORE_STATE';
   });

@@ -46,6 +46,8 @@
     // Model testing-
     testModel();
 
+
+
     // Everything is ready!
     TT.view().removeLoadingMessage();
 
@@ -56,10 +58,25 @@
   function testModel() {
    var test1 = TT.createModel();
     test1.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
-    test1.set({last:'perkins'});
-    //console.log(test1.toJSON());
+
+
+    var test2 = TT.createModel();
+    test2.initialize({id: 'AnotherModel', store: {name: 'June', useid:'x1234', age: 27}, silent: false});
+
+    console.log(test1.toJSON());
+    console.log(test2.toJSON());
 
     TT.addModel(test1);
+    TT.addModel(test2);
+
+
+    TT.bindModelView('MockModel','Timecard');
+    TT.bindModelView('MockModel','Assignments');
+    TT.bindModelView('AnotherModel','Timecard');
+
+    test1.set({last:'perkins'});
+
+
   }
 
 }());

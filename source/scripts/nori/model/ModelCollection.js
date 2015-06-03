@@ -26,16 +26,18 @@ define('Nori.ModelCollection',
       _id = initObj.id;
       _silent = initObj.silent || false;
 
-      // BUG - scope not correct to set parentcollection to this, is Window
+      console.log('model collection, this: '+this);
+
+      // BUG - call with this scope, calling from Nori.init scope is Window
       //if(initObj.models) {
-      //  addStoresFromArray(initObj.models);
+      //  addStoresFromArray.call(this, initObj.models);
       //}
     }
 
     function addStoresFromArray(sArry) {
       sArry.forEach(function(store) {
         add(store);
-      })
+      });
     }
 
     function getID() {
@@ -65,12 +67,22 @@ define('Nori.ModelCollection',
       }
     }
 
+    /**
+     * Gets the Model by ID
+     * @param storeID
+     * @returns {T}
+     */
     function getStore(storeID) {
       return _children.filter(function(store) {
         return store.getID() === storeID;
       })[0];
     }
 
+    /**
+     * Get the index in _children array by Model's ID
+     * @param storeID
+     * @returns {number}
+     */
     function getStoreIndex(storeID) {
       return _children.map(function(store) {
         return store.getID();
@@ -84,6 +96,13 @@ define('Nori.ModelCollection',
       if(!_silent) {
         _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
       }
+    }
+
+    function hasModel(storeID) {
+      if(_children[storeID]) {
+        return true;
+      }
+      return false;
     }
 
     function save() {
@@ -107,6 +126,7 @@ define('Nori.ModelCollection',
     exports.add = add;
     exports.remove = remove;
     exports.getStore = getStore;
+    exports.hasModel = hasModel;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
