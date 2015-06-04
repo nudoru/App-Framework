@@ -237,6 +237,19 @@ define('Nori.Events.AppEvents',
       return values().filter(predicate);
     }
 
+    function getFirst() {
+      return entries()[0];
+    }
+
+    function getLast() {
+      var e = entries();
+      return e[e.length-1];
+    }
+
+    function getAtIndex(i) {
+      return entries()[i];
+    }
+
     /**
      * Returns a copy of the data store
      * @returns {void|*}
@@ -293,8 +306,11 @@ define('Nori.Events.AppEvents',
     exports.keys = keys;
     exports.values = values;
     exports.entries = entries;
-    exports.length = length;
     exports.filterValues = filterValues;
+    exports.length = length;
+    exports.getFirst = getFirst;
+    exports.getLast = getLast;
+    exports.getAtIndex = getAtIndex;
     exports.getStore = getStore;
     exports.save = save;
     exports.destroy = destroy;
@@ -329,10 +345,35 @@ define('Nori.Events.AppEvents',
       //}
     }
 
+    /**
+     * Add an array of Model instances
+     * @param sArry
+     */
     function addStoresFromArray(sArry) {
       sArry.forEach(function(store) {
         add(store);
       });
+    }
+
+    /**
+     * Create an add child Model stores from an array of objects
+     * @param array Array of objects
+     * @param idKey Key on each object to use for the ID of that Model store
+     */
+    function addFromObjArray(oArry, idKey, silent) {
+      oArry.forEach(function(obj) {
+
+        var id;
+
+        if(obj.hasOwnProperty(idKey)) {
+          id = obj[idKey];
+        } else {
+          id = _id +'child' + _children.length;
+        }
+
+        add(Nori.createModel({id:id, silent: silent, store: obj}));
+      });
+
     }
 
     function getID() {
@@ -391,6 +432,12 @@ define('Nori.Events.AppEvents',
       if(!_silent) {
         _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
       }
+
+      // what will this send up?
+      //if(_parentCollection) {
+      //  _parentCollection.publishChange({id:_id, store:getStore()});
+      //}
+
     }
 
     function hasModel(storeID) {
@@ -398,6 +445,30 @@ define('Nori.Events.AppEvents',
         return true;
       }
       return false;
+    }
+
+    /**
+     * Number of entries
+     * @returns {Number}
+     */
+    function length() {
+      return _children.length;
+    }
+
+    function getFirst() {
+      return _children[0];
+    }
+
+    function getLast() {
+      return _children[_children.length-1];
+    }
+
+    function getAtIndex(i) {
+      return _children[i];
+    }
+
+    function filterValues(predicate) {
+      return _children.filter(predicate)
     }
 
     function save() {
@@ -412,6 +483,14 @@ define('Nori.Events.AppEvents',
       return JSON.stringify(_children);
     }
 
+    function setParentCollection(collection) {
+      _parentCollection = collection;
+    }
+
+    function getParentCollection() {
+      return _parentCollection;
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -419,13 +498,22 @@ define('Nori.Events.AppEvents',
     exports.initialize = initialize;
     exports.getID = getID;
     exports.add = add;
+    exports.addStoresFromArray = addStoresFromArray;
+    exports.addFromObjArray = addFromObjArray;
     exports.remove = remove;
     exports.getStore = getStore;
     exports.hasModel = hasModel;
+    exports.length = length;
+    exports.getFirst = getFirst;
+    exports.getLast = getLast;
+    exports.getAtIndex = getAtIndex;
+    exports.filterValues = filterValues;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
     exports.publishChange = publishChange;
+    exports.setParentCollection = setParentCollection;
+    exports.getParentCollection = getParentCollection;
 
   });;define('Nori.View.BaseSubView',
   function (require, module, exports) {
@@ -1464,7 +1552,7 @@ define('Nori.Events.AppEvents',
   });;var Nori = (function () {
   var _config,
     _view,
-    _appModelCollection = requireUnique('Nori.ModelCollection'),
+    _appModelCollection,
     _emitterCommandMap = Object.create(null),
     _subviewDataModel,
     _modelViewBindingMap = Object.create(null),
@@ -1530,10 +1618,9 @@ define('Nori.Events.AppEvents',
   }
 
   function initializeModels() {
-    _subviewDataModel = createModel({});
-    _subviewDataModel.initialize({id:'SubViewDataModel', store:{}, noisy: true});
+    _subviewDataModel = createModel({id:'SubViewDataModel', store:{}, noisy: true});
 
-    _appModelCollection.initialize({id:'GlobalModelCollection', silent: false});
+    _appModelCollection = createModelCollection({id:'GlobalModelCollection', silent: false});
     addModel(_subviewDataModel);
   }
 
@@ -1575,9 +1662,16 @@ define('Nori.Events.AppEvents',
   //  Simple model collection
   //----------------------------------------------------------------------------
 
-  function createModel() {
-   // return extend(src, requireUnique('Nori.Model'));
-    return _.assign({}, requireUnique('Nori.Model'));
+  function createModelCollection(initObj) {
+    var m = _.assign({}, requireUnique('Nori.ModelCollection'));
+    m.initialize(initObj);
+    return m;
+  }
+
+  function createModel(initObj) {
+    var m = _.assign({}, requireUnique('Nori.Model'));
+    m.initialize(initObj);
+    return m;
   }
 
   /**
@@ -1837,6 +1931,7 @@ define('Nori.Events.AppEvents',
     getEmitter: getEmitter,
     router: getRouter,
     view: getView,
+    createModelCollection: createModelCollection,
     createModel: createModel,
     addModel: addModel,
     getModel: getModel,

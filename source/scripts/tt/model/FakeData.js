@@ -32,8 +32,8 @@ define('TT.FakeData',
 
       _lorem.initialize();
 
-      var numPeople = 70,
-          numProjects = 400,
+      var numPeople = 100,
+          numProjects = 40,
           numAssignments = 10;
 
       for(var a = 0; a<10; a++) {

@@ -23,8 +23,23 @@
     mapEvents();
     mapRoutes();
 
-    //var dataSource = require('TT.FakeData');
-    //dataSource.initialize();
+    var dataSource = require('TT.FakeData');
+    dataSource.initialize();
+
+    var _peopleSet = TT.createModelCollection({id:'peopleset'}),
+      _projectsSet = TT.createModelCollection({id:'projectsset'}),
+      _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
+
+    _peopleSet.addFromObjArray(dataSource.getPeople(), 'id', false);
+    _projectsSet.addFromObjArray(dataSource.getProjects(), 'id', false);
+    _assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
+
+    //var devs = _peopleSet.filterValues(function (store) {
+    //  return store.get('jobTitle') === 'ITD';
+    //}).forEach(function(store) {
+    //  console.log(store.get('name')+', '+store.get('jobTitle'));
+    //});
+
 
     // Everything is ready!
     TT.view().removeLoadingMessage();
@@ -33,13 +48,11 @@
     TT.setCurrentRoute(TT.router().getCurrentRoute());
 
     // Model testing-
-    testModel();
+    //testModel();
   };
 
   function mapEvents() {
     var _appEvents = require('Nori.Events.AppEvents');
-
-    // Commands
     TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.RouteChangedCommand');
   }
 
@@ -61,14 +74,15 @@
   }
 
   function testModel() {
-   var test1 = TT.createModel();
-    test1.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
-    
-    var test2 = TT.createModel();
-    test2.initialize({id: 'AnotherModel', store: {name: 'June', useid:'x1234', age: 27}, silent: false});
+   var test1 = TT.createModel({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
+
+    var test2 = TT.createModel({id: 'AnotherModel', store: {name: 'June', useid:'x1234', age: 27}, silent: false});
 
     //console.log(test1.toJSON());
-    //console.log(test2.toJSON());
+    console.log(test2.toJSON());
+    console.log(test2.getFirst());
+    console.log(test2.getAtIndex(1));
+    console.log(test2.getLast());
 
     TT.addModel(test1);
     TT.addModel(test2);

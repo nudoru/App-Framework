@@ -32,10 +32,35 @@ define('Nori.ModelCollection',
       //}
     }
 
+    /**
+     * Add an array of Model instances
+     * @param sArry
+     */
     function addStoresFromArray(sArry) {
       sArry.forEach(function(store) {
         add(store);
       });
+    }
+
+    /**
+     * Create an add child Model stores from an array of objects
+     * @param array Array of objects
+     * @param idKey Key on each object to use for the ID of that Model store
+     */
+    function addFromObjArray(oArry, idKey, silent) {
+      oArry.forEach(function(obj) {
+
+        var id;
+
+        if(obj.hasOwnProperty(idKey)) {
+          id = obj[idKey];
+        } else {
+          id = _id +'child' + _children.length;
+        }
+
+        add(Nori.createModel({id:id, silent: silent, store: obj}));
+      });
+
     }
 
     function getID() {
@@ -94,6 +119,12 @@ define('Nori.ModelCollection',
       if(!_silent) {
         _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
       }
+
+      // what will this send up?
+      //if(_parentCollection) {
+      //  _parentCollection.publishChange({id:_id, store:getStore()});
+      //}
+
     }
 
     function hasModel(storeID) {
@@ -101,6 +132,30 @@ define('Nori.ModelCollection',
         return true;
       }
       return false;
+    }
+
+    /**
+     * Number of entries
+     * @returns {Number}
+     */
+    function length() {
+      return _children.length;
+    }
+
+    function getFirst() {
+      return _children[0];
+    }
+
+    function getLast() {
+      return _children[_children.length-1];
+    }
+
+    function getAtIndex(i) {
+      return _children[i];
+    }
+
+    function filterValues(predicate) {
+      return _children.filter(predicate)
     }
 
     function save() {
@@ -115,6 +170,14 @@ define('Nori.ModelCollection',
       return JSON.stringify(_children);
     }
 
+    function setParentCollection(collection) {
+      _parentCollection = collection;
+    }
+
+    function getParentCollection() {
+      return _parentCollection;
+    }
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -122,12 +185,21 @@ define('Nori.ModelCollection',
     exports.initialize = initialize;
     exports.getID = getID;
     exports.add = add;
+    exports.addStoresFromArray = addStoresFromArray;
+    exports.addFromObjArray = addFromObjArray;
     exports.remove = remove;
     exports.getStore = getStore;
     exports.hasModel = hasModel;
+    exports.length = length;
+    exports.getFirst = getFirst;
+    exports.getLast = getLast;
+    exports.getAtIndex = getAtIndex;
+    exports.filterValues = filterValues;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
     exports.publishChange = publishChange;
+    exports.setParentCollection = setParentCollection;
+    exports.getParentCollection = getParentCollection;
 
   });

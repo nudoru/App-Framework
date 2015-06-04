@@ -150,6 +150,19 @@ define('Nori.Model',
       return values().filter(predicate);
     }
 
+    function getFirst() {
+      return entries()[0];
+    }
+
+    function getLast() {
+      var e = entries();
+      return e[e.length-1];
+    }
+
+    function getAtIndex(i) {
+      return entries()[i];
+    }
+
     /**
      * Returns a copy of the data store
      * @returns {void|*}
@@ -206,8 +219,11 @@ define('Nori.Model',
     exports.keys = keys;
     exports.values = values;
     exports.entries = entries;
-    exports.length = length;
     exports.filterValues = filterValues;
+    exports.length = length;
+    exports.getFirst = getFirst;
+    exports.getLast = getLast;
+    exports.getAtIndex = getAtIndex;
     exports.getStore = getStore;
     exports.save = save;
     exports.destroy = destroy;

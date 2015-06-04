@@ -1,7 +1,7 @@
 var Nori = (function () {
   var _config,
     _view,
-    _appModelCollection = requireUnique('Nori.ModelCollection'),
+    _appModelCollection,
     _emitterCommandMap = Object.create(null),
     _subviewDataModel,
     _modelViewBindingMap = Object.create(null),
@@ -67,10 +67,9 @@ var Nori = (function () {
   }
 
   function initializeModels() {
-    _subviewDataModel = createModel({});
-    _subviewDataModel.initialize({id:'SubViewDataModel', store:{}, noisy: true});
+    _subviewDataModel = createModel({id:'SubViewDataModel', store:{}, noisy: true});
 
-    _appModelCollection.initialize({id:'GlobalModelCollection', silent: false});
+    _appModelCollection = createModelCollection({id:'GlobalModelCollection', silent: false});
     addModel(_subviewDataModel);
   }
 
@@ -112,9 +111,16 @@ var Nori = (function () {
   //  Simple model collection
   //----------------------------------------------------------------------------
 
-  function createModel() {
-   // return extend(src, requireUnique('Nori.Model'));
-    return _.assign({}, requireUnique('Nori.Model'));
+  function createModelCollection(initObj) {
+    var m = _.assign({}, requireUnique('Nori.ModelCollection'));
+    m.initialize(initObj);
+    return m;
+  }
+
+  function createModel(initObj) {
+    var m = _.assign({}, requireUnique('Nori.Model'));
+    m.initialize(initObj);
+    return m;
   }
 
   /**
@@ -374,6 +380,7 @@ var Nori = (function () {
     getEmitter: getEmitter,
     router: getRouter,
     view: getView,
+    createModelCollection: createModelCollection,
     createModel: createModel,
     addModel: addModel,
     getModel: getModel,
