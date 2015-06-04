@@ -28,6 +28,9 @@
     dataSource.initialize();
     console.timeEnd('Gen fake');
 
+
+
+
     var _peopleSet = TT.createModelCollection({id:'peopleset'}),
       _projectsSet = TT.createModelCollection({id:'projectsset'}),
       _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
@@ -42,11 +45,11 @@
     console.log(_peopleSet.entries());
     console.timeEnd('Get pple entries');
 
-    //var devs = _peopleSet.filterValues(function (store) {
-    //  return store.get('jobTitle') === 'ITD';
-    //}).forEach(function(store) {
-    //  console.log(store.get('name')+', '+store.get('jobTitle'));
-    //});
+    var devs = _peopleSet.filterValues(function (store) {
+      return store.get('jobTitle') === 'ITD';
+    }).forEach(function(store) {
+      console.log(store.get('name')+', '+store.get('jobTitle'));
+    });
 
 
     // Everything is ready!
@@ -82,6 +85,21 @@
   }
 
   function testModel() {
+
+    var testMod = requireExtend('Nori.Model', {
+      make: function() {
+        this.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
+      },
+
+      newFunc: function() {
+        return this.getStore();
+      }
+    });
+
+    testMod.make();
+
+    console.log(testMod.newFunc());
+
    var test1 = TT.createModel({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
 
     var test2 = TT.createModel({id: 'AnotherModel', store: {name: 'June', useid:'x1234', age: 27}, silent: false});

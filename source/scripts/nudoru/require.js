@@ -4,6 +4,7 @@
  * Based on
  * http://eloquentjavascript.net/10_modules.html
  * http://benclinkinbeard.com/posts/how-browserify-works/
+ * https://github.com/substack/browser-pack/blob/d29fddc8a9207d5f967664935073b50971aff708/prelude.js
  *
  ******************************************************************************/
 
@@ -35,11 +36,7 @@ define.cache = Object.create(null);
 
 
 /**
- * To require, it must have been mapped in the module map
- *
- * Refer to this later
- * https://github.com/substack/browser-pack/blob/d29fddc8a9207d5f967664935073b50971aff708/prelude.js
- *
+ * Gets a defined module. Since it's cached, it's a singleton
  * @param id
  * @returns {*}
  */
@@ -63,7 +60,12 @@ function require(id) {
 }
 require.cache = Object.create(null);
 
-// Gets a new copy
+/**
+ * Gets a defined module with no caching
+ *
+ * @param id
+ * @returns {{}|exports}
+ */
 function requireUnique(id) {
   var moduleCode = define.cache[id],
     exports = {},
@@ -74,5 +76,25 @@ function requireUnique(id) {
   }
 
   moduleCode.call(moduleCode, require, module, exports);
+  return module.exports;
+}
+
+/**
+ * Gets a defined module with no caching and extends it
+ * @param protoProps
+ * @param staticProps
+ * @returns {*}
+ */
+function requireExtend(id, extendProps) {
+  var moduleCode = define.cache[id],
+    exports = {},
+    module = {exports: exports};
+
+  if(!moduleCode) {
+    throw new Error('requireUnique: module not found: "'+id+'"');
+  }
+
+  moduleCode.call(moduleCode, require, module, exports);
+  _.assign(module.exports, extendProps);
   return module.exports;
 }

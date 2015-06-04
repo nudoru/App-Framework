@@ -160,7 +160,7 @@ define('Nori.ModelCollection',
      * @returns {Array.<T>}
      */
     function filterValues(predicate) {
-      return _children.filter(predicate)
+      return _children.filter(predicate);
     }
 
     /**
