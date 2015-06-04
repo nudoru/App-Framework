@@ -35,7 +35,8 @@ define('Nori.Model',
 
       if(initObj.store) {
         // set inital data silently
-        set(initObj.store, {silent: true});
+        //set(initObj.store, {silent: true});
+        _store = initObj.store;
       }
 
     }

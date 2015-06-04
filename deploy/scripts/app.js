@@ -41,9 +41,9 @@ define('TT.RouteChangedCommand',
 
       _lorem.initialize();
 
-      var numPeople = 100,
-          numProjects = 40,
-          numAssignments = 10;
+      var numPeople = 70,
+          numProjects = 500,
+          numAssignments = 5000;
 
       for(var a = 0; a<10; a++) {
         _possibleManagers.push(_lorem.getFLName());
@@ -418,16 +418,24 @@ define('TT.RouteChangedCommand',
     mapEvents();
     mapRoutes();
 
+    console.time('Gen fake');
     var dataSource = require('TT.FakeData');
     dataSource.initialize();
+    console.timeEnd('Gen fake');
 
     var _peopleSet = TT.createModelCollection({id:'peopleset'}),
       _projectsSet = TT.createModelCollection({id:'projectsset'}),
       _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
 
+    console.time('Create set');
     _peopleSet.addFromObjArray(dataSource.getPeople(), 'id', false);
     _projectsSet.addFromObjArray(dataSource.getProjects(), 'id', false);
     _assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
+    console.timeEnd('Create set');
+
+    console.time('Get pple entries');
+    console.log(_peopleSet.entries());
+    console.timeEnd('Get pple entries');
 
     //var devs = _peopleSet.filterValues(function (store) {
     //  return store.get('jobTitle') === 'ITD';

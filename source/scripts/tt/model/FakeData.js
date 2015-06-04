@@ -32,9 +32,9 @@ define('TT.FakeData',
 
       _lorem.initialize();
 
-      var numPeople = 100,
-          numProjects = 40,
-          numAssignments = 10;
+      var numPeople = 70,
+          numProjects = 500,
+          numAssignments = 5000;
 
       for(var a = 0; a<10; a++) {
         _possibleManagers.push(_lorem.getFLName());

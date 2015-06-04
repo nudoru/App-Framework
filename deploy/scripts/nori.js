@@ -122,7 +122,8 @@ define('Nori.Events.AppEvents',
 
       if(initObj.store) {
         // set inital data silently
-        set(initObj.store, {silent: true});
+        //set(initObj.store, {silent: true});
+        _store = initObj.store;
       }
 
     }
@@ -467,8 +468,25 @@ define('Nori.Events.AppEvents',
       return _children[i];
     }
 
+    /**
+     * Runs a predidate on each child store
+     * @param predicate
+     * @returns {Array.<T>}
+     */
     function filterValues(predicate) {
       return _children.filter(predicate)
+    }
+
+    /**
+     * Return an array of entries of each store
+     * @returns {Array}
+     */
+    function entries() {
+      var arry = [];
+      _children.forEach(function(store){
+        arry.push(store.entries());
+      });
+      return arry;
     }
 
     function save() {
@@ -508,6 +526,7 @@ define('Nori.Events.AppEvents',
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
     exports.filterValues = filterValues;
+    exports.entries = entries;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
@@ -1663,13 +1682,15 @@ define('Nori.Events.AppEvents',
   //----------------------------------------------------------------------------
 
   function createModelCollection(initObj) {
-    var m = _.assign({}, requireUnique('Nori.ModelCollection'));
+    //var m = _.assign({}, requireUnique('Nori.ModelCollection'));
+    var m = requireUnique('Nori.ModelCollection');
     m.initialize(initObj);
     return m;
   }
 
   function createModel(initObj) {
-    var m = _.assign({}, requireUnique('Nori.Model'));
+    //var m = _.assign({}, requireUnique('Nori.Model'));
+    var m = requireUnique('Nori.Model');
     m.initialize(initObj);
     return m;
   }

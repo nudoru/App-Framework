@@ -154,8 +154,25 @@ define('Nori.ModelCollection',
       return _children[i];
     }
 
+    /**
+     * Runs a predidate on each child store
+     * @param predicate
+     * @returns {Array.<T>}
+     */
     function filterValues(predicate) {
       return _children.filter(predicate)
+    }
+
+    /**
+     * Return an array of entries of each store
+     * @returns {Array}
+     */
+    function entries() {
+      var arry = [];
+      _children.forEach(function(store){
+        arry.push(store.entries());
+      });
+      return arry;
     }
 
     function save() {
@@ -195,6 +212,7 @@ define('Nori.ModelCollection',
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
     exports.filterValues = filterValues;
+    exports.entries = entries;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;

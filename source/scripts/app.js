@@ -23,16 +23,24 @@
     mapEvents();
     mapRoutes();
 
+    console.time('Gen fake');
     var dataSource = require('TT.FakeData');
     dataSource.initialize();
+    console.timeEnd('Gen fake');
 
     var _peopleSet = TT.createModelCollection({id:'peopleset'}),
       _projectsSet = TT.createModelCollection({id:'projectsset'}),
       _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
 
+    console.time('Create set');
     _peopleSet.addFromObjArray(dataSource.getPeople(), 'id', false);
     _projectsSet.addFromObjArray(dataSource.getProjects(), 'id', false);
     _assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
+    console.timeEnd('Create set');
+
+    console.time('Get pple entries');
+    console.log(_peopleSet.entries());
+    console.timeEnd('Get pple entries');
 
     //var devs = _peopleSet.filterValues(function (store) {
     //  return store.get('jobTitle') === 'ITD';

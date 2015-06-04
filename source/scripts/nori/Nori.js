@@ -112,13 +112,15 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   function createModelCollection(initObj) {
-    var m = _.assign({}, requireUnique('Nori.ModelCollection'));
+    //var m = _.assign({}, requireUnique('Nori.ModelCollection'));
+    var m = requireUnique('Nori.ModelCollection');
     m.initialize(initObj);
     return m;
   }
 
   function createModel(initObj) {
-    var m = _.assign({}, requireUnique('Nori.Model'));
+    //var m = _.assign({}, requireUnique('Nori.Model'));
+    var m = requireUnique('Nori.Model');
     m.initialize(initObj);
     return m;
   }
