@@ -436,15 +436,30 @@ define('TT.RouteChangedCommand',
     _assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
     console.timeEnd('Create set');
 
-    console.time('Get pple entries');
-    console.log(_peopleSet.entries());
-    console.timeEnd('Get pple entries');
+    var fakeMe = _peopleSet.getFirst(),
+        myName = fakeMe.get('name'),
+        myProjects;
 
-    var devs = _peopleSet.filterValues(function (store) {
-      return store.get('jobTitle') === 'ITD';
-    }).forEach(function(store) {
-      console.log(store.get('name')+', '+store.get('jobTitle'));
-    });
+    myProjects = _assignmentsSet.filterValues(
+      function getMyProjects(store) {
+         return store.get('resourceName') === myName;
+      }
+    );
+
+    myProjects.forEach(
+      function listMyProjects(store) {
+        console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
+      }
+    );
+
+
+    //var devs = _peopleSet.filterValues(
+    //  function (store) {
+    //    return store.get('jobTitle') === 'ITD';
+    //  }).forEach(
+    //  function(store) {
+    //    console.log(store.get('name')+', '+store.get('jobTitle'));
+    //  });
 
 
     // Everything is ready!
