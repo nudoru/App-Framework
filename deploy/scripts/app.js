@@ -423,9 +423,6 @@ define('TT.RouteChangedCommand',
     dataSource.initialize();
     console.timeEnd('Gen fake');
 
-
-
-
     var _peopleSet = TT.createModelCollection({id:'peopleset'}),
       _projectsSet = TT.createModelCollection({id:'projectsset'}),
       _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
@@ -448,9 +445,10 @@ define('TT.RouteChangedCommand',
 
     myProjects.forEach(
       function listMyProjects(store) {
-        console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
+        //console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
       }
     );
+
 
 
     //var devs = _peopleSet.filterValues(

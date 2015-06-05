@@ -138,7 +138,7 @@ define('Nori.ModelCollection',
      * Number of entries
      * @returns {Number}
      */
-    function length() {
+    function size() {
       return _children.length;
     }
 
@@ -207,7 +207,7 @@ define('Nori.ModelCollection',
     exports.remove = remove;
     exports.getStore = getStore;
     exports.hasModel = hasModel;
-    exports.length = length;
+    exports.size = size;
     exports.getFirst = getFirst;
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;

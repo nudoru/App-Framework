@@ -167,7 +167,7 @@ define('Nori.Events.AppEvents',
      * @returns *
      */
     function get(key) {
-      return _store[key];
+      return has(key) ? _store[key] : undefined;
     }
 
     /**
@@ -205,8 +205,8 @@ define('Nori.Events.AppEvents',
      * Number of entries
      * @returns {Number}
      */
-    function length() {
-      return entries().length;
+    function size() {
+      return keys().length;
     }
 
     /**
@@ -214,9 +214,10 @@ define('Nori.Events.AppEvents',
      * @returns {Array}
      */
     function keys() {
-      return entries().map(function(entry) {
-        return entry.key;
-      });
+      //return entries().map(function(entry) {
+      //  return entry.key;
+      //});
+      return Object.keys(_store);
     }
 
     /**
@@ -227,6 +228,14 @@ define('Nori.Events.AppEvents',
       return entries().map(function(entry) {
         return entry.value;
       });
+    }
+
+    /**
+     * Remove a value
+     * @param key
+     */
+    function remove(key) {
+      delete _store[key];
     }
 
     /**
@@ -304,11 +313,12 @@ define('Nori.Events.AppEvents',
     exports.set = set;
     exports.get = get;
     exports.has = has;
+    exports.remove = remove;
     exports.keys = keys;
     exports.values = values;
     exports.entries = entries;
     exports.filterValues = filterValues;
-    exports.length = length;
+    exports.size = size;
     exports.getFirst = getFirst;
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
@@ -452,7 +462,7 @@ define('Nori.Events.AppEvents',
      * Number of entries
      * @returns {Number}
      */
-    function length() {
+    function size() {
       return _children.length;
     }
 
@@ -521,7 +531,7 @@ define('Nori.Events.AppEvents',
     exports.remove = remove;
     exports.getStore = getStore;
     exports.hasModel = hasModel;
-    exports.length = length;
+    exports.size = size;
     exports.getFirst = getFirst;
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;

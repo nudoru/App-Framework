@@ -115,15 +115,18 @@ mapEventCommand(AppEvents.SUBVIEW_STORE_STATE, ‘Nori.SubViewStoreDataCommand�
 
 ## Models
 
-**Models are in development**
+Nori defines a simple model and model collection class. The model is based on a dictionary and a collection is an array of model objects. Simple example: a model is a spread sheet row with coloumns being data values and a collection would represent the whole sheet. An `id` is required when creating a model or collection.
 
-Nori defines a simple object map based model and model collection class. Sample use:
+The Nori app contains helper methods to create models and collections:
 
 ```javascript
-var test = MyApp.createModel();
-test.initialize({id: ‘MockModel’, store: {name: ‘Matt’, age: 37}, silent: false});
-test.set({last:’Perkins},{silent:true});
-console.log(test.toJSON());
+var myModel = MyApp.createModel({id:'mymodel', store:{key:value, key:value}, {
+    optionalMethods: function() { ... };
+  });
+  
+var myCollection = MyApp.createModelCollection({id:'mycollection', {
+    optionalMethods: function() { ... };
+  });
 ```
 
 If silent is indicated then changes via `set` will not dispatch a `AppEvents.MODEL_DATA_CHANGED` event.

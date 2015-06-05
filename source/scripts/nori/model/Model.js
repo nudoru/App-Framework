@@ -80,7 +80,7 @@ define('Nori.Model',
      * @returns *
      */
     function get(key) {
-      return _store[key];
+      return has(key) ? _store[key] : undefined;
     }
 
     /**
@@ -118,8 +118,8 @@ define('Nori.Model',
      * Number of entries
      * @returns {Number}
      */
-    function length() {
-      return entries().length;
+    function size() {
+      return keys().length;
     }
 
     /**
@@ -127,9 +127,10 @@ define('Nori.Model',
      * @returns {Array}
      */
     function keys() {
-      return entries().map(function(entry) {
-        return entry.key;
-      });
+      //return entries().map(function(entry) {
+      //  return entry.key;
+      //});
+      return Object.keys(_store);
     }
 
     /**
@@ -140,6 +141,14 @@ define('Nori.Model',
       return entries().map(function(entry) {
         return entry.value;
       });
+    }
+
+    /**
+     * Remove a value
+     * @param key
+     */
+    function remove(key) {
+      delete _store[key];
     }
 
     /**
@@ -217,11 +226,12 @@ define('Nori.Model',
     exports.set = set;
     exports.get = get;
     exports.has = has;
+    exports.remove = remove;
     exports.keys = keys;
     exports.values = values;
     exports.entries = entries;
     exports.filterValues = filterValues;
-    exports.length = length;
+    exports.size = size;
     exports.getFirst = getFirst;
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
