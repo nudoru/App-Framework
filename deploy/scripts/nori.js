@@ -123,6 +123,7 @@ define('Nori.Events.AppEvents',
       if(initObj.store) {
         // set inital data silently
         //set(initObj.store, {silent: true});
+        _changed = true;
         _store = initObj.store;
       }
 
@@ -185,7 +186,6 @@ define('Nori.Events.AppEvents',
      * @returns {Array}
      */
     function entries() {
-
       if(!_changed && _entries) {
         return _entries;
       }
@@ -269,6 +269,44 @@ define('Nori.Events.AppEvents',
     }
 
     /**
+     * Return a new object by "translating" the properties of the store from one key to another
+     * @param tObj {currentProp, newProp}
+     */
+    function transform(tObj) {
+      var transformed = {};
+
+      for(var prop in tObj) {
+        if(_store.hasOwnProperty(prop)) {
+          transformed[tObj[prop]] = _store[prop];
+        }
+      }
+
+      return transformed;
+    }
+
+    /**
+     * Validates the store properties
+     * key: {required: true|false, minLength: num, maxLength: num}
+     * @param vObj
+     */
+    function validate(vObj) {
+      return true;
+
+      //var validation = {};
+      //
+      //for(var prop in vObj) {
+      //  // TODO test store hasownprop
+      //  var tests = vObj[prop],
+      //      storeProp = _store[prop];
+      //  for(var testProp in tests) {
+      //    console.log('test '+prop+', for: '+testProp);
+      //  }
+      //}
+      //
+      //return validation;
+    }
+
+    /**
      * On change, emit event globally
      */
     function publishChange() {
@@ -323,6 +361,8 @@ define('Nori.Events.AppEvents',
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
     exports.getStore = getStore;
+    exports.transform = transform;
+    exports.validate = validate;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
@@ -483,8 +523,20 @@ define('Nori.Events.AppEvents',
      * @param predicate
      * @returns {Array.<T>}
      */
-    function filterValues(predicate) {
+    function filterCustom(predicate) {
       return _children.filter(predicate);
+    }
+
+    /**
+     * Returns stores where the filter matches the prop / value pair
+     * @param prop
+     * @param value
+     * @returns {Array.<T>}
+     */
+    function filter(prop, value) {
+      return _children.filter(function(store) {
+        return store.get(prop) === value;
+      })
     }
 
     /**
@@ -535,7 +587,8 @@ define('Nori.Events.AppEvents',
     exports.getFirst = getFirst;
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
-    exports.filterValues = filterValues;
+    exports.filterCustom = filterCustom;
+    exports.filter = filter;
     exports.entries = entries;
     exports.save = save;
     exports.destroy = destroy;

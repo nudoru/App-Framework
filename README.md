@@ -133,8 +133,6 @@ If silent is indicated then changes via `set` will not dispatch a `AppEvents.MOD
 
 Model collections will dispatch this event when one of their member models is changed unless `{silent:true}` is specified on the set method.
 
-**Todo - document model collection**
-
 ### Binding sub views to model changes
 
 You can map a sub view to a model and it will receive the updated model store when a change occurs:

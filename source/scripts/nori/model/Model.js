@@ -36,6 +36,7 @@ define('Nori.Model',
       if(initObj.store) {
         // set inital data silently
         //set(initObj.store, {silent: true});
+        _changed = true;
         _store = initObj.store;
       }
 
@@ -98,7 +99,6 @@ define('Nori.Model',
      * @returns {Array}
      */
     function entries() {
-
       if(!_changed && _entries) {
         return _entries;
       }
@@ -182,6 +182,44 @@ define('Nori.Model',
     }
 
     /**
+     * Return a new object by "translating" the properties of the store from one key to another
+     * @param tObj {currentProp, newProp}
+     */
+    function transform(tObj) {
+      var transformed = {};
+
+      for(var prop in tObj) {
+        if(_store.hasOwnProperty(prop)) {
+          transformed[tObj[prop]] = _store[prop];
+        }
+      }
+
+      return transformed;
+    }
+
+    /**
+     * Validates the store properties
+     * key: {required: true|false, minLength: num, maxLength: num}
+     * @param vObj
+     */
+    function validate(vObj) {
+      return true;
+
+      //var validation = {};
+      //
+      //for(var prop in vObj) {
+      //  // TODO test store hasownprop
+      //  var tests = vObj[prop],
+      //      storeProp = _store[prop];
+      //  for(var testProp in tests) {
+      //    console.log('test '+prop+', for: '+testProp);
+      //  }
+      //}
+      //
+      //return validation;
+    }
+
+    /**
      * On change, emit event globally
      */
     function publishChange() {
@@ -236,6 +274,8 @@ define('Nori.Model',
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
     exports.getStore = getStore;
+    exports.transform = transform;
+    exports.validate = validate;
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;

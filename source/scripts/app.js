@@ -42,17 +42,13 @@
         myName = fakeMe.get('name'),
         myProjects;
 
-    myProjects = _assignmentsSet.filterValues(
-      function getMyProjects(store) {
-         return store.get('resourceName') === myName;
-      }
-    );
+    myProjects = _assignmentsSet.filter('resourceName', myName);
 
-    myProjects.forEach(
-      function listMyProjects(store) {
-        //console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
-      }
-    );
+    //myProjects.forEach(
+    //  function listMyProjects(store) {
+    //    console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
+    //  }
+    //);
 
 
 
@@ -99,43 +95,45 @@
 
   function testModel() {
 
-    var testMod = requireExtend('Nori.Model', {
-      make: function() {
-        this.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
-      },
+    //var testMod = requireExtend('Nori.Model', {
+    //  make: function() {
+    //    this.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
+    //  },
+    //
+    //  newFunc: function() {
+    //    return this.getStore();
+    //  }
+    //});
+    //
+    //testMod.make();
+    //
+    //console.log(testMod.newFunc());
 
-      newFunc: function() {
-        return this.getStore();
-      }
-    });
-
-    testMod.make();
-
-    console.log(testMod.newFunc());
-
-   var test1 = TT.createModel({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
-
+    var test1 = TT.createModel({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
     var test2 = TT.createModel({id: 'AnotherModel', store: {name: 'June', useid:'x1234', age: 27}, silent: false});
 
+    //console.log(test1.transform({name:'first',age:'oldage'}));
+    //console.log(test1.validate({name:{required: true}}));
+
+
     //console.log(test1.toJSON());
-    console.log(test2.toJSON());
-    console.log(test2.getFirst());
-    console.log(test2.getAtIndex(1));
-    console.log(test2.getLast());
+    //console.log(test2.toJSON());
+    //console.log('get first: '+test2.getFirst());
+    //console.log('get index: '+test2.getAtIndex(1));
+    //console.log('get last: '+test2.getLast());
 
-    TT.addModel(test1);
-    TT.addModel(test2);
+    //TT.addModel(test1);
+    //TT.addModel(test2);
 
 
 
-    console.log('test has: '+test1.has('name'));
-    console.log('test keys: '+test1.keys());
-    console.log('test values: '+test1.values());
-
-    console.log('filter: '+test1.filterValues(function(val) { return val ==='Matt';}));
-
-    console.log('test entries: '+JSON.stringify(test1.entries()));
-    TT.bindModelView('MockModel','Timecard');
+    //console.log('test has: '+test1.has('name'));
+    //console.log('test keys: '+test1.keys());
+    //console.log('test values: '+test1.values());
+    //
+    //console.log('filter: '+test1.filterValues(function(val) { return val ==='Matt';}));
+    //
+    //console.log('test entries: '+JSON.stringify(test1.entries()));
   }
 
 }());

@@ -159,8 +159,20 @@ define('Nori.ModelCollection',
      * @param predicate
      * @returns {Array.<T>}
      */
-    function filterValues(predicate) {
+    function filterCustom(predicate) {
       return _children.filter(predicate);
+    }
+
+    /**
+     * Returns stores where the filter matches the prop / value pair
+     * @param prop
+     * @param value
+     * @returns {Array.<T>}
+     */
+    function filter(prop, value) {
+      return _children.filter(function(store) {
+        return store.get(prop) === value;
+      })
     }
 
     /**
@@ -211,7 +223,8 @@ define('Nori.ModelCollection',
     exports.getFirst = getFirst;
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
-    exports.filterValues = filterValues;
+    exports.filterCustom = filterCustom;
+    exports.filter = filter;
     exports.entries = entries;
     exports.save = save;
     exports.destroy = destroy;
