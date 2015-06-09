@@ -988,7 +988,7 @@ define('Nori.Events.AppEvents',
   function (require, module, exports) {
 
     var _template = require('Nori.View.Template'),
-      _subViewMountPoint,
+      _routeViewMountPoint,
       _subViewMapping = Object.create(null),
       _currentSubView,
       _baseSubViewModuleID = 'Nori.View.BaseSubView',
@@ -1001,8 +1001,8 @@ define('Nori.Events.AppEvents',
      * Set the location for the view to append, any contents will be removed prior
      * @param elID
      */
-    function setSubViewMountPoint(elID) {
-      _subViewMountPoint = document.getElementById(elID);
+    function setRouteViewMountPoint(elID) {
+      _routeViewMountPoint = document.getElementById(elID);
     }
 
     /**
@@ -1018,15 +1018,28 @@ define('Nori.Events.AppEvents',
      * The controller module is extended from the Nori.View.BaseSubView module
      * @param templateID
      * @param controllerModID
+     * @param route True | False, is is a subview
      */
-    function mapRouteView(templateID, controllerModID) {
+    function mapView(templateID, controllerModID, route, mountPoint) {
       var baseSubViewModule = requireUnique(_baseSubViewModuleID),
-          controllerModule = requireUnique(controllerModID);
+        controllerModule = requireUnique(controllerModID);
 
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller: Nori.extend(controllerModule, baseSubViewModule)
+        controller: Nori.extend(controllerModule, baseSubViewModule),
+        isRouteView: route,
+        mountPoint: mountPoint
       };
+    }
+
+    /**
+     * Map a route to a module view controller
+     * The controller module is extended from the Nori.View.BaseSubView module
+     * @param templateID
+     * @param controllerModID
+     */
+    function mapRouteView(templateID, controllerModID) {
+      mapView(templateID, controllerModID, true, _routeViewMountPoint);
     }
 
     /**
@@ -1046,12 +1059,40 @@ define('Nori.Events.AppEvents',
     }
 
     /**
+     * Show a mapped subview
+     * @param templateID
+     * @param dataObj
+     */
+    function showView(templateID, dataObj) {
+      var subview = _subViewMapping[templateID],
+          mountEl;
+
+      if(!subview) {
+        throw new Error('No subview mapped for id: ' + dataObj.templateID);
+      }
+
+      subview.controller.initialize({
+        id: templateID,
+        template: subview.htmlTemplate,
+        queryData: dataObj
+      });
+
+      mountEl = document.getElementById(subview.mountPoint);
+
+      mountEl.appendChild(subview.controller.getDOMElement());
+
+      if(subview.controller.viewDidMount) {
+        subview.controller.viewDidMount();
+      }
+    }
+
+    /**
      * Show a view (in response to a route change)
      * @param dataObj props: templateID, route, data (from query string)
      * @param previousStateData previous state data from the model
      */
     function showRouteView(dataObj, previousStateData) {
-      if(!_subViewMountPoint) {
+      if(!_routeViewMountPoint) {
         throw new Error('No subview mount point set');
       }
 
@@ -1072,16 +1113,16 @@ define('Nori.Events.AppEvents',
         previousStateData: previousStateData
       });
 
-      TweenLite.set(_subViewMountPoint, {alpha: 0});
+      TweenLite.set(_routeViewMountPoint, {alpha: 0});
 
-      _subViewMountPoint.appendChild(subview.controller.getDOMElement());
+      _routeViewMountPoint.appendChild(subview.controller.getDOMElement());
       _currentSubView = dataObj.templateID;
 
       if(subview.controller.viewDidMount) {
         subview.controller.viewDidMount();
       }
 
-      TweenLite.to(_subViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
+      TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
       _emitter.publish(_appEvents.VIEW_CHANGED, dataObj.templateID);
     }
@@ -1098,15 +1139,17 @@ define('Nori.Events.AppEvents',
       }
 
       _currentSubView = '';
-      _domUtils.removeAllElements(_subViewMountPoint);
+      _domUtils.removeAllElements(_routeViewMountPoint);
     }
 
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
-    exports.setSubViewMountPoint = setSubViewMountPoint;
+    exports.setRouteViewMountPoint = setRouteViewMountPoint;
     exports.template = getTemplate;
+    exports.mapView = mapView;
+    exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
     exports.updateSubViewData = updateSubViewData;
@@ -1233,7 +1276,8 @@ define('Nori.Events.AppEvents',
       _browserEventView.setMainScrollingView('app__contents');
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
-      _routeSubViewView.setSubViewMountPoint('contents');
+
+      _routeSubViewView.setRouteViewMountPoint('contents');
 
       _toolTipView.initialize('tooltip__container');
       _notificationView.initialize('toast__container');
@@ -1320,11 +1364,30 @@ define('Nori.Events.AppEvents',
     //  Composition
     //----------------------------------------------------------------------------
 
+
+    /**
+     * Map a sub view component
+     * @param templateID
+     * @param controller
+     * @param mountpoint
+     */
+    function mapView(templateID, controller, mountpoint) {
+      _routeSubViewView.mapView(templateID, controller, false, mountpoint);
+    }
+
+    /**
+     * Show a sub view component
+     * @param templateID
+     * @param dataObj
+     */
+    function showView(templateID, dataObj) {
+      _routeSubViewView.showView(templateID, dataObj);
+    }
+
     /**
      * Pass to route sub view
      * @param templateID
      * @param controller
-     * @param unique
      */
     function mapRouteView(templateID, controller) {
       _routeSubViewView.mapRouteView(templateID, controller);
@@ -1359,6 +1422,8 @@ define('Nori.Events.AppEvents',
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
+    exports.mapView = mapView;
+    exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
     exports.updateSubViewData = updateSubViewData;

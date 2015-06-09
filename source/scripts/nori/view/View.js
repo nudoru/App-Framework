@@ -40,7 +40,8 @@ define('Nori.View',
       _browserEventView.setMainScrollingView('app__contents');
       _browserEventView.initializeEventStreams();
       _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
-      _routeSubViewView.setSubViewMountPoint('contents');
+
+      _routeSubViewView.setRouteViewMountPoint('contents');
 
       _toolTipView.initialize('tooltip__container');
       _notificationView.initialize('toast__container');
@@ -127,11 +128,30 @@ define('Nori.View',
     //  Composition
     //----------------------------------------------------------------------------
 
+
+    /**
+     * Map a sub view component
+     * @param templateID
+     * @param controller
+     * @param mountpoint
+     */
+    function mapView(templateID, controller, mountpoint) {
+      _routeSubViewView.mapView(templateID, controller, false, mountpoint);
+    }
+
+    /**
+     * Show a sub view component
+     * @param templateID
+     * @param dataObj
+     */
+    function showView(templateID, dataObj) {
+      _routeSubViewView.showView(templateID, dataObj);
+    }
+
     /**
      * Pass to route sub view
      * @param templateID
      * @param controller
-     * @param unique
      */
     function mapRouteView(templateID, controller) {
       _routeSubViewView.mapRouteView(templateID, controller);
@@ -166,6 +186,8 @@ define('Nori.View',
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
+    exports.mapView = mapView;
+    exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
     exports.updateSubViewData = updateSubViewData;

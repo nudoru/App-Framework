@@ -122,6 +122,17 @@ BEGIN Templates for Views
     <textarea id="input-textarea"></textarea>
 </script>
 
+<script id="template__UserProfilePanel" type="text/template">
+    <div style="border-radius: 100px 0 0 100px" class="panel-shadow padding-none margin-bottom-double">
+        <div class="user-info-header">
+            <div class="image">
+                <div class="user-profile-image"><img src="img/user-profile.png"></div>
+            </div>
+            <div class="name">Ima R. Username</div>
+        </div>
+    </div>
+</script>
+
 <script id="template__Forecast" type="text/template">
     <div class="panel-shadow">
         <section class="padding-top-double">
@@ -481,17 +492,17 @@ END Templates for Views
         <h1><em>Time</em> Management</h1>
       </div>
       <nav>
-        <button class="button-small button-neutral-light icon-left"><i class="fa fa-table"></i>Projects</button>
-        <button class="button-small button-neutral-light icon-left"><i class="fa fa-users"></i>People</button>
-        <button class="button-small button-neutral-light icon-left"><i class="fa fa-dashboard"></i>Dashboard</button>
-        <button class="button-small icon-left"><i class="fa fa-life-bouy"></i>How Do I?</button>
+        <button id="btn_main_projects" class="button-small button-neutral-light icon-left"><i class="fa fa-table"></i>Projects</button>
+        <button id="btn_main_people" class="button-small button-neutral-light icon-left"><i class="fa fa-users"></i>People</button>
+        <!--button.button-small.button-neutral-light.icon-left#btn_main_dashboard
+        i.fa.fa-dashboard
+        | Dashboard
+        -->
+        <button id="btn_main_help" class="button-small icon-left"><i class="fa fa-life-bouy"></i>How Do I?</button>
       </nav>
     </header>
     <div id="app__container">
       <div id="drawer">
-        <div class="header">
-          <h1>Modules</h1>
-        </div>
         <div class="content">
           <ul class="list-round-buttons">
             <li>
@@ -515,14 +526,8 @@ END Templates for Views
             <!--include mock-controlstesting-->
             <!--include mock-styletest-->
             <!--include mock-components-->
-            <div style="border-radius: 100px 0 0 100px" class="panel-shadow padding-none margin-bottom-double">
-              <div class="user-info-header">
-                <div class="image">
-                  <div class="user-profile-image"><img src="img/animals/racoon.jpg"></div>
-                </div>
-                <div class="name">Elliott Manfredonia</div>
-              </div>
-            </div>
+            <!--include user-info-->
+            <section id="userprofilepanel"></section>
             <section id="contents">
               <!--include forecast-->
               <!--include assignments-->

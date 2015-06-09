@@ -3603,6 +3603,7 @@ tr.row-header-inline td {
   border: 2px solid #fff;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .user-profile-image img {
   max-width: 100%;
@@ -3729,9 +3730,10 @@ tr.row-header-inline td {
   text-transform: none;
 }
 .list-round-buttons .active .button {
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.2);
   color: #fff;
+  border-radius: 50% 50% 5px 50%;
 }
 .list-round-buttons .active .label {
   color: #fff !important;
@@ -4362,7 +4364,6 @@ tr.row-header-inline td {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 #drawer .content {
-  margin-top: 65px;
   padding: 1.376rem;
   background-image: -webkit-gradient(linear, left 0%, left 100%, from(rgba(0, 0, 0, 0.05)), to(rgba(0, 0, 0, 0.1)));
   background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.05), 0%, rgba(0, 0, 0, 0.1), 100%);

@@ -19,22 +19,20 @@ html
           em Time
           |  Management
       nav
-        button.button-small.button-neutral-light.icon-left
+        button.button-small.button-neutral-light.icon-left#btn_main_projects
           i.fa.fa-table
           | Projects
-        button.button-small.button-neutral-light.icon-left
+        button.button-small.button-neutral-light.icon-left#btn_main_people
           i.fa.fa-users
           | People
-        button.button-small.button-neutral-light.icon-left
+        //button.button-small.button-neutral-light.icon-left#btn_main_dashboard
           i.fa.fa-dashboard
           | Dashboard
-        button.button-small.icon-left
+        button.button-small.icon-left#btn_main_help
           i.fa.fa-life-bouy
           | How Do I?
     #app__container
       #drawer
-        .header
-          h1 Modules
         .content
           ul.list-round-buttons
             li
@@ -49,14 +47,14 @@ html
               .button#btn_forecast
                 i.fa.fa-area-chart
               .label Cap. Forecast
-
       #app__contents
         section
           .padded-content
             //include mock-controlstesting
             //include mock-styletest
             //include mock-components
-            include user-info
+            //include user-info
+            section#userprofilepanel
             section#contents
               //include forecast
               //include assignments
