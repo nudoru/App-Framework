@@ -536,7 +536,7 @@ define('Nori.Events.AppEvents',
     function filter(prop, value) {
       return _children.filter(function(store) {
         return store.get(prop) === value;
-      })
+      });
     }
 
     /**
@@ -741,7 +741,7 @@ define('Nori.Events.AppEvents',
     exports.initialize = initialize;
     exports.render = render;
 
-  });;define('Nori.View.MixinBrowserEvents',
+  });;define('Nori.View.BrowserEvents',
   function (require, module, exports) {
 
     var _currentViewPortSize,
@@ -868,7 +868,7 @@ define('Nori.Events.AppEvents',
     exports.getCurrentViewPortSize = getCurrentViewPortSize;
     exports.getCurrentViewPortScroll = getCurrentViewPortScroll;
 
-  });;define('Nori.View.MixinMultiDeviceView',
+  });;define('Nori.View.MultiDeviceView',
   function (require, module, exports) {
 
     var _drawerEl,
@@ -984,7 +984,7 @@ define('Nori.Events.AppEvents',
     exports.openDrawer = openDrawer;
     exports.closeDrawer = closeDrawer;
     exports.checkForMobile = checkForMobile;
-});;define('Nori.View.MixinRouteViews',
+});;define('Nori.View.SubRouteViews',
   function (require, module, exports) {
 
     var _template = require('Nori.View.Template'),
@@ -1019,7 +1019,7 @@ define('Nori.Events.AppEvents',
      * @param templateID
      * @param controllerModID
      */
-    function mapView(templateID, controllerModID) {
+    function mapRouteView(templateID, controllerModID) {
       var baseSubViewModule = requireUnique(_baseSubViewModuleID),
           controllerModule = requireUnique(controllerModID);
 
@@ -1050,7 +1050,7 @@ define('Nori.Events.AppEvents',
      * @param dataObj props: templateID, route, data (from query string)
      * @param previousStateData previous state data from the model
      */
-    function showView(dataObj, previousStateData) {
+    function showRouteView(dataObj, previousStateData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
@@ -1107,8 +1107,8 @@ define('Nori.Events.AppEvents',
 
     exports.setSubViewMountPoint = setSubViewMountPoint;
     exports.template = getTemplate;
-    exports.mapView = mapView;
-    exports.showView = showView;
+    exports.mapRouteView = mapRouteView;
+    exports.showRouteView = showRouteView;
     exports.updateSubViewData = updateSubViewData;
   });;define('Nori.View.Template',
   function(require, module, exports) {
@@ -1196,8 +1196,8 @@ define('Nori.Events.AppEvents',
 
     var _appContainerEl,
       _appEl,
-      _browserEventView = require('Nori.View.MixinBrowserEvents'),
-      _routeSubViewView = require('Nori.View.MixinRouteViews'),
+      _browserEventView = require('Nori.View.BrowserEvents'),
+      _routeSubViewView = require('Nori.View.SubRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
       _toolTipView = require('nudoru.components.ToolTipView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
@@ -1326,8 +1326,8 @@ define('Nori.Events.AppEvents',
      * @param controller
      * @param unique
      */
-    function mapView(templateID, controller) {
-      _routeSubViewView.mapView(templateID, controller);
+    function mapRouteView(templateID, controller) {
+      _routeSubViewView.mapRouteView(templateID, controller);
     }
 
     /**
@@ -1335,8 +1335,8 @@ define('Nori.Events.AppEvents',
      * @param dataObj
      * @param previousStateData
      */
-    function showView(dataObj, previousStateData) {
-      _routeSubViewView.showView(dataObj, previousStateData);
+    function showRouteView(dataObj, previousStateData) {
+      _routeSubViewView.showRouteView(dataObj, previousStateData);
     }
 
     /**
@@ -1359,8 +1359,8 @@ define('Nori.Events.AppEvents',
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
-    exports.mapView = mapView;
-    exports.showView = showView;
+    exports.mapRouteView = mapRouteView;
+    exports.showRouteView = showRouteView;
     exports.updateSubViewData = updateSubViewData;
     exports.layoutUI = layoutUI;
 
@@ -1932,7 +1932,7 @@ define('Nori.Events.AppEvents',
   function mapRouteView(route, templateID, controller) {
     addRouteToConfig(route);
 
-    _view.mapView(templateID, controller);
+    _view.mapRouteView(templateID, controller);
 
     _router.when(route, {
       templateID: templateID,
@@ -1951,7 +1951,7 @@ define('Nori.Events.AppEvents',
    * @param dataObj
    */
   function showRouteView(dataObj) {
-    _view.showView(dataObj, retrieveSubViewData(dataObj.templateID));
+    _view.showRouteView(dataObj, retrieveSubViewData(dataObj.templateID));
   }
 
   //----------------------------------------------------------------------------

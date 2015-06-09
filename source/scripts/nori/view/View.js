@@ -3,8 +3,8 @@ define('Nori.View',
 
     var _appContainerEl,
       _appEl,
-      _browserEventView = require('Nori.View.MixinBrowserEvents'),
-      _routeSubViewView = require('Nori.View.MixinRouteViews'),
+      _browserEventView = require('Nori.View.BrowserEvents'),
+      _routeSubViewView = require('Nori.View.SubRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
       _toolTipView = require('nudoru.components.ToolTipView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
@@ -133,8 +133,8 @@ define('Nori.View',
      * @param controller
      * @param unique
      */
-    function mapView(templateID, controller) {
-      _routeSubViewView.mapView(templateID, controller);
+    function mapRouteView(templateID, controller) {
+      _routeSubViewView.mapRouteView(templateID, controller);
     }
 
     /**
@@ -142,8 +142,8 @@ define('Nori.View',
      * @param dataObj
      * @param previousStateData
      */
-    function showView(dataObj, previousStateData) {
-      _routeSubViewView.showView(dataObj, previousStateData);
+    function showRouteView(dataObj, previousStateData) {
+      _routeSubViewView.showRouteView(dataObj, previousStateData);
     }
 
     /**
@@ -166,8 +166,8 @@ define('Nori.View',
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
-    exports.mapView = mapView;
-    exports.showView = showView;
+    exports.mapRouteView = mapRouteView;
+    exports.showRouteView = showRouteView;
     exports.updateSubViewData = updateSubViewData;
     exports.layoutUI = layoutUI;
 

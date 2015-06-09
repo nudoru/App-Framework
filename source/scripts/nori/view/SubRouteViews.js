@@ -1,4 +1,4 @@
-define('Nori.View.MixinRouteViews',
+define('Nori.View.SubRouteViews',
   function (require, module, exports) {
 
     var _template = require('Nori.View.Template'),
@@ -33,7 +33,7 @@ define('Nori.View.MixinRouteViews',
      * @param templateID
      * @param controllerModID
      */
-    function mapView(templateID, controllerModID) {
+    function mapRouteView(templateID, controllerModID) {
       var baseSubViewModule = requireUnique(_baseSubViewModuleID),
           controllerModule = requireUnique(controllerModID);
 
@@ -64,7 +64,7 @@ define('Nori.View.MixinRouteViews',
      * @param dataObj props: templateID, route, data (from query string)
      * @param previousStateData previous state data from the model
      */
-    function showView(dataObj, previousStateData) {
+    function showRouteView(dataObj, previousStateData) {
       if(!_subViewMountPoint) {
         throw new Error('No subview mount point set');
       }
@@ -121,7 +121,7 @@ define('Nori.View.MixinRouteViews',
 
     exports.setSubViewMountPoint = setSubViewMountPoint;
     exports.template = getTemplate;
-    exports.mapView = mapView;
-    exports.showView = showView;
+    exports.mapRouteView = mapRouteView;
+    exports.showRouteView = showRouteView;
     exports.updateSubViewData = updateSubViewData;
   });

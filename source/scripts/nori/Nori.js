@@ -299,7 +299,7 @@ var Nori = (function () {
   function mapRouteView(route, templateID, controller) {
     addRouteToConfig(route);
 
-    _view.mapView(templateID, controller);
+    _view.mapRouteView(templateID, controller);
 
     _router.when(route, {
       templateID: templateID,
@@ -318,7 +318,7 @@ var Nori = (function () {
    * @param dataObj
    */
   function showRouteView(dataObj) {
-    _view.showView(dataObj, retrieveSubViewData(dataObj.templateID));
+    _view.showRouteView(dataObj, retrieveSubViewData(dataObj.templateID));
   }
 
   //----------------------------------------------------------------------------

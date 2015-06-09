@@ -5,7 +5,7 @@
  * Extracted from View 5/6/15
  */
 
-define('Nori.View.MixinMultiDeviceView',
+define('Nori.View.MultiDeviceView',
   function (require, module, exports) {
 
     var _drawerEl,

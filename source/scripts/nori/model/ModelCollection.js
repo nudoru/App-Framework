@@ -172,7 +172,7 @@ define('Nori.ModelCollection',
     function filter(prop, value) {
       return _children.filter(function(store) {
         return store.get(prop) === value;
-      })
+      });
     }
 
     /**
