@@ -172,8 +172,8 @@ define('Nori.View',
      * @param modelID
      * @param storeData
      */
-    function updateSubViewData(viewID, modelID, storeData) {
-     _routeSubViewView.updateSubViewData(viewID, modelID, storeData);
+    function updateViewData(viewID, storeData) {
+     _routeSubViewView.updateViewData(viewID, storeData);
     }
 
     //----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ define('Nori.View',
     exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
-    exports.updateSubViewData = updateSubViewData;
+    exports.updateViewData = updateViewData;
     exports.layoutUI = layoutUI;
 
     exports.getAppContainerEl = getAppContainerEl;

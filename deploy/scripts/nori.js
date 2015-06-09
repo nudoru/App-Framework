@@ -1020,14 +1020,14 @@ define('Nori.Events.AppEvents',
      * @param controllerModID
      * @param route True | False, is is a subview
      */
-    function mapView(templateID, controllerModID, route, mountPoint) {
+    function mapView(templateID, controllerModID, isRoute, mountPoint) {
       var baseSubViewModule = requireUnique(_baseSubViewModuleID),
         controllerModule = requireUnique(controllerModID);
 
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
         controller: Nori.extend(controllerModule, baseSubViewModule),
-        isRouteView: route,
+        isRouteView: isRoute,
         mountPoint: mountPoint
       };
     }
@@ -1048,13 +1048,11 @@ define('Nori.Events.AppEvents',
      * @param modelID
      * @param storeData
      */
-    function updateSubViewData(viewID, modelID, storeData) {
+    function updateViewData(viewID, storeData) {
       var subview = _subViewMapping[viewID];
 
       if (subview.controller.update) {
         subview.controller.update({boundModelData: storeData});
-      } else {
-        //console.log('updateSubViewData, can\'t update subview ID: '+viewID);
       }
     }
 
@@ -1152,7 +1150,7 @@ define('Nori.Events.AppEvents',
     exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
-    exports.updateSubViewData = updateSubViewData;
+    exports.updateViewData = updateViewData;
   });;define('Nori.View.Template',
   function(require, module, exports) {
 
@@ -1408,8 +1406,8 @@ define('Nori.Events.AppEvents',
      * @param modelID
      * @param storeData
      */
-    function updateSubViewData(viewID, modelID, storeData) {
-     _routeSubViewView.updateSubViewData(viewID, modelID, storeData);
+    function updateViewData(viewID, storeData) {
+     _routeSubViewView.updateViewData(viewID, storeData);
     }
 
     //----------------------------------------------------------------------------
@@ -1426,7 +1424,7 @@ define('Nori.Events.AppEvents',
     exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
-    exports.updateSubViewData = updateSubViewData;
+    exports.updateViewData = updateViewData;
     exports.layoutUI = layoutUI;
 
     exports.getAppContainerEl = getAppContainerEl;
@@ -1926,39 +1924,6 @@ define('Nori.Events.AppEvents',
     return extend(ext, this);
   }
 
-  /**
-   * Modified a little from from Backbone.js
-   * http://backbonejs.org/docs/backbone.html
-   * @param protoProps
-   * @param staticProps
-   * @returns {*}
-   */
-  //function bextend(src, protoProps, staticProps) {
-  //  var parent = src,
-  //    child,
-  //    Surrogate;
-  //
-  //  if(protoProps && _.has(protoProps, 'constructor')) {
-  //    child = protoProps.constructor;
-  //  } else {
-  //    child = function() { return parent.apply(this, arguments); };
-  //  }
-  //
-  //  _.assign(child, parent, staticProps);
-  //
-  //  Surrogate = function() { this.constructor = child; };
-  //  Surrogate.prototype = parent.prototype;
-  //  child.prototype = new Surrogate;
-  //
-  //  if(protoProps) {
-  //    _.assign(child.prototype, protoProps);
-  //  }
-  //
-  //  child._super = parent.prototype;
-  //
-  //  return child;
-  //}
-
   //----------------------------------------------------------------------------
   //  Wiring Services
   //----------------------------------------------------------------------------
@@ -2075,7 +2040,7 @@ define('Nori.Events.AppEvents',
 
     if(viewArry) {
       viewArry.forEach(function (view) {
-        _view.updateSubViewData(view, modelID, data);
+        _view.updateViewData(view, data);
       });
     }
   }
@@ -2099,7 +2064,6 @@ define('Nori.Events.AppEvents',
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
-    //bextend: bextend,
     create: create,
     storeSubViewData: storeSubViewData,
     retrieveSubViewData: retrieveSubViewData,

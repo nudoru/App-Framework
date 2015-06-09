@@ -34,14 +34,14 @@ define('Nori.View.SubRouteViews',
      * @param controllerModID
      * @param route True | False, is is a subview
      */
-    function mapView(templateID, controllerModID, route, mountPoint) {
+    function mapView(templateID, controllerModID, isRoute, mountPoint) {
       var baseSubViewModule = requireUnique(_baseSubViewModuleID),
         controllerModule = requireUnique(controllerModID);
 
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
         controller: Nori.extend(controllerModule, baseSubViewModule),
-        isRouteView: route,
+        isRouteView: isRoute,
         mountPoint: mountPoint
       };
     }
@@ -62,13 +62,11 @@ define('Nori.View.SubRouteViews',
      * @param modelID
      * @param storeData
      */
-    function updateSubViewData(viewID, modelID, storeData) {
+    function updateViewData(viewID, storeData) {
       var subview = _subViewMapping[viewID];
 
       if (subview.controller.update) {
         subview.controller.update({boundModelData: storeData});
-      } else {
-        //console.log('updateSubViewData, can\'t update subview ID: '+viewID);
       }
     }
 
@@ -166,5 +164,5 @@ define('Nori.View.SubRouteViews',
     exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
-    exports.updateSubViewData = updateSubViewData;
+    exports.updateViewData = updateViewData;
   });

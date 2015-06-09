@@ -228,39 +228,6 @@ var Nori = (function () {
     return extend(ext, this);
   }
 
-  /**
-   * Modified a little from from Backbone.js
-   * http://backbonejs.org/docs/backbone.html
-   * @param protoProps
-   * @param staticProps
-   * @returns {*}
-   */
-  //function bextend(src, protoProps, staticProps) {
-  //  var parent = src,
-  //    child,
-  //    Surrogate;
-  //
-  //  if(protoProps && _.has(protoProps, 'constructor')) {
-  //    child = protoProps.constructor;
-  //  } else {
-  //    child = function() { return parent.apply(this, arguments); };
-  //  }
-  //
-  //  _.assign(child, parent, staticProps);
-  //
-  //  Surrogate = function() { this.constructor = child; };
-  //  Surrogate.prototype = parent.prototype;
-  //  child.prototype = new Surrogate;
-  //
-  //  if(protoProps) {
-  //    _.assign(child.prototype, protoProps);
-  //  }
-  //
-  //  child._super = parent.prototype;
-  //
-  //  return child;
-  //}
-
   //----------------------------------------------------------------------------
   //  Wiring Services
   //----------------------------------------------------------------------------
@@ -377,7 +344,7 @@ var Nori = (function () {
 
     if(viewArry) {
       viewArry.forEach(function (view) {
-        _view.updateSubViewData(view, modelID, data);
+        _view.updateViewData(view, data);
       });
     }
   }
@@ -401,7 +368,6 @@ var Nori = (function () {
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
-    //bextend: bextend,
     create: create,
     storeSubViewData: storeSubViewData,
     retrieveSubViewData: retrieveSubViewData,

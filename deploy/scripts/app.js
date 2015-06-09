@@ -541,8 +541,6 @@ define('TT.RouteChangedCommand',
     //  }
     //);
 
-
-
     //var devs = _peopleSet.filterValues(
     //  function (store) {
     //    return store.get('jobTitle') === 'ITD';
