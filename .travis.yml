@@ -6,7 +6,7 @@ notifications:
 sudo: false
 before_install:
   - 'npm install -g grunt-cli'
-  - 'gem install sass'
-  - 'gem install compass'
+  - 'gem install sass --version "=3.2.12"'
+  - 'gem install compass --version "=0.12.2"'
 install: npm install
 before_script: grunt build
