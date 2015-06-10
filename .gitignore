@@ -3,6 +3,7 @@
 /.sass-cache
 /source/.sass-cache
 /node_modules
+/deploy
 
 # Packages #
 ############
@@ -16,13 +17,13 @@
 *.rar
 *.tar
 *.zip
- 
+
 # Logs and databases #
 ######################
 *.log
 *.sql
 *.sqlite
- 
+
 # OS generated files #
 ######################
 .DS_Store
