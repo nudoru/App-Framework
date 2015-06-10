@@ -15,6 +15,7 @@ define('Nori.Model.Model',
       _changed = false,
       _entries = [],
       _store = {},
+      _lastChangeResult,
       _silent = false,
       _parentCollection,
       _emitter = require('Nori.Events.Emitter'),
@@ -57,7 +58,8 @@ define('Nori.Model.Model',
      * @param options String = value of property to set, Object = options: silent
      */
     function set(key, options) {
-      var silentSet = false;
+      var silentSet = false,
+          previous = _.merge({}, _store);
 
       if(typeof key === 'object') {
         if(options !== null && typeof options === 'object') {
@@ -70,6 +72,9 @@ define('Nori.Model.Model',
 
       // Mark changed
       _changed = true;
+
+      //https://github.com/flitbit/diff
+      _lastChangeResult = objectDiff.diff(previous, _store);
 
       if(!silentSet) {
         publishChange();
@@ -224,11 +229,11 @@ define('Nori.Model.Model',
      */
     function publishChange() {
       if(!_silent) {
-        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'model',  store:getStore()});
+        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'model',  store:getStore(), changed:_lastChangeResult});
       }
 
-      if(_parentCollection) {
-        _parentCollection.publishChange({id:_id, store:getStore()});
+      if(_parentCollection.publishChange) {
+        _parentCollection.publishChange({id:_id, store:getStore(), changed:_lastChangeResult});
       }
 
     }

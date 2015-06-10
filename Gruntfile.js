@@ -93,7 +93,8 @@ module.exports = function (grunt) {
           'src/scripts/vendor/gsap/easing/EasePack.min.js',
           'src/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
           'src/scripts/vendor/lodash.min.js',
-          'src/scripts/vendor/rxjs/rx.lite.compat.min.js'
+          'src/scripts/vendor/rxjs/rx.lite.compat.min.js',
+          'src/scripts/vendor/objectDiff.js'
         ],
         dest: 'deploy/scripts/libs.js'
       },
