@@ -1,4 +1,4 @@
-define('Nori.URLHashChangedCommand',
+define('Nori.Controller.Commands.URLHashChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

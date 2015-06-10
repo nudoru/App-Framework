@@ -12,7 +12,7 @@
  *
  */
 
-define('Nori.Router',
+define('Nori.Controller.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),

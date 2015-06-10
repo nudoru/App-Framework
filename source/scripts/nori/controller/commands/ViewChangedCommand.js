@@ -1,4 +1,4 @@
-define('Nori.ViewChangedCommand',
+define('Nori.Controller.Commands.ViewChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

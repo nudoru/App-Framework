@@ -1,4 +1,4 @@
-define('TT.RouteChangedCommand',
+define('TT.Commands.RouteChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -7,7 +7,7 @@ define('TT.RouteChangedCommand',
       TT.view().updateOnRouteChange(data);
     };
 
-  });;define('TT.FakeData',
+  });;define('TT.Model.FakeData',
 
   function(require, module, exports) {
     "use strict";
@@ -182,7 +182,7 @@ define('TT.RouteChangedCommand',
     exports.getProjects = getProjects;
     exports.getAssignments = getAssignments;
 
-  });;define('TT.TimeTrackerAppModel',
+  });;define('TT.Model.TimeTrackerAppModel',
   function (require, module, exports) {
 
     function initialize() {
@@ -305,7 +305,7 @@ define('TT.RouteChangedCommand',
     exports.initialize = initialize;
     exports.viewDidMount = viewDidMount;
 
-  });;define('TT.ModuleNavView',
+  });;define('TT.View.ModuleNavView',
   function (require, module, exports) {
 
     var _buttonMap = Object.create(null),
@@ -371,11 +371,11 @@ define('TT.RouteChangedCommand',
 
 
 
-  });;define('TT.TimeTrackerAppView',
+  });;define('TT.View.TimeTrackerAppView',
   function (require, module, exports) {
 
     var _self,
-      _moduleNavView = require('TT.ModuleNavView'),
+      _moduleNavView = require('TT.View.ModuleNavView'),
       _buttonProjects,
       _buttonPeople,
       _buttonHelp,
@@ -414,7 +414,7 @@ define('TT.RouteChangedCommand',
     }
 
     function mapComponentViews() {
-      _self.mapView('UserProfilePanel', 'TT.UserProfilePanelView', false, 'userprofilepanel');
+      _self.mapView('UserProfilePanel', 'TT.View.UserProfilePanelView', false, 'userprofilepanel');
     }
 
     function configureMainButtons() {
@@ -476,7 +476,7 @@ define('TT.RouteChangedCommand',
     exports.render = render;
     exports.updateOnRouteChange = updateOnRouteChange;
 
-  });;define('TT.UserProfilePanelView',
+  });;define('TT.View.UserProfilePanelView',
   function (require, module, exports) {
 
     var _browserInfo = require('nudoru.utils.BrowserInfo'),
@@ -512,7 +512,7 @@ define('TT.RouteChangedCommand',
     window.TT = Nori.createApplication();
 
     // Create the view
-    appView = TT.createApplicationView(require('TT.TimeTrackerAppView'));
+    appView = TT.createApplicationView(require('TT.View.TimeTrackerAppView'));
 
     // Initialize app with the view
     // App muse be initialized with view for route mapping to work
@@ -520,7 +520,6 @@ define('TT.RouteChangedCommand',
 
     mapEvents();
     mapRoutes();
-
     createModel();
 
     // Everything is ready!
@@ -533,11 +532,17 @@ define('TT.RouteChangedCommand',
     //testModel();
   };
 
+  /**
+   * Set up commands / events
+   */
   function mapEvents() {
     var _appEvents = require('Nori.Events.AppEvents');
-    TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.RouteChangedCommand');
+    TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.Commands.RouteChangedCommand');
   }
 
+  /**
+   * Set up the view to routes
+   */
   function mapRoutes() {
     // Default route
     TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
@@ -555,9 +560,12 @@ define('TT.RouteChangedCommand',
     TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
   }
 
+  /**
+   * Create the mock model
+   */
   function createModel() {
     console.time('Gen fake');
-    var dataSource = require('TT.FakeData');
+    var dataSource = require('TT.Model.FakeData');
     dataSource.initialize();
     console.timeEnd('Gen fake');
 
@@ -592,9 +600,12 @@ define('TT.RouteChangedCommand',
     //  });
   }
 
+  /**
+   * Testing for not model functionality
+   */
   function testModel() {
 
-    //var testMod = requireExtend('Nori.Model', {
+    //var testMod = requireExtend('Nori.Model.Model', {
     //  make: function() {
     //    this.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
     //  },
@@ -623,8 +634,6 @@ define('TT.RouteChangedCommand',
 
     //TT.addModel(test1);
     //TT.addModel(test2);
-
-
 
     //console.log('test has: '+test1.has('name'));
     //console.log('test keys: '+test1.keys());

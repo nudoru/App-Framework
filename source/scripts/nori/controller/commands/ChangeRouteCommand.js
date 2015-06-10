@@ -1,4 +1,4 @@
-define('Nori.ChangeRouteCommand',
+define('Nori.Controller.Commands.ChangeRouteCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

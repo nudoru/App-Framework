@@ -5,7 +5,7 @@
  */
 
 
-define('Nori.ModelCollection',
+define('Nori.Model.ModelCollection',
   function (require, module, exports) {
 
     var _id,

@@ -1,4 +1,4 @@
-define('Nori.SubViewStoreDataCommand',
+define('Nori.Controller.Commands.SubViewStoreDataCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

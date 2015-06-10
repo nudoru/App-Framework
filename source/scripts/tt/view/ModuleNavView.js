@@ -2,7 +2,7 @@
  * Manages left side module navigation
  */
 
-define('TT.ModuleNavView',
+define('TT.View.ModuleNavView',
   function (require, module, exports) {
 
     var _buttonMap = Object.create(null),

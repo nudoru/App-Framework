@@ -1,4 +1,4 @@
-define('Nori.ApplicationView',
+define('Nori.View.ApplicationView',
   function (require, module, exports) {
 
     var _appContainerEl,

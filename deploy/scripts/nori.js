@@ -95,7 +95,7 @@ define('Nori.Events.AppEvents',
     exports.publish = publish;
     exports.dispose = dispose;
 
-  });;define('Nori.Model',
+  });;define('Nori.Model.Model',
   function (require, module, exports) {
 
     var _id,
@@ -369,7 +369,7 @@ define('Nori.Events.AppEvents',
     exports.setParentCollection = setParentCollection;
     exports.getParentCollection = getParentCollection;
 
-  });;define('Nori.ModelCollection',
+  });;define('Nori.Model.ModelCollection',
   function (require, module, exports) {
 
     var _id,
@@ -597,7 +597,7 @@ define('Nori.Events.AppEvents',
     exports.setParentCollection = setParentCollection;
     exports.getParentCollection = getParentCollection;
 
-  });;define('Nori.ApplicationView',
+  });;define('Nori.View.ApplicationView',
   function (require, module, exports) {
 
     var _appContainerEl,
@@ -854,7 +854,7 @@ define('Nori.Events.AppEvents',
     exports.viewDidMount = viewDidMount;
     exports.viewWillUnMount = viewWillUnMount;
 
-  });;define('Nori.BasicView',
+  });;define('Nori.View.BasicView',
   function (require, module, exports) {
 
     var _self,
@@ -1378,7 +1378,7 @@ define('Nori.Events.AppEvents',
     exports.asElement = asElement;
 
   });
-;define('Nori.Router',
+;define('Nori.Controller.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
@@ -1521,21 +1521,21 @@ define('Nori.Events.AppEvents',
     exports.runCurrentRoute = runCurrentRoute;
     exports.setRoute = setRoute;
 
-  });;define('Nori.BrowserResizedCommand',
+  });;define('Nori.Controller.Commands.BrowserResizedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('BrowserResizedCommand: '+data.width + 'w, ' + data.height + 'h');
     };
 
-  });;define('Nori.BrowserScrolledCommand',
+  });;define('Nori.Controller.Commands.BrowserScrolledCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('BrowserScrolledCommand: '+data.left + 'l, ' + data.top + 't');
     };
 
-  });;define('Nori.ChangeRouteCommand',
+  });;define('Nori.Controller.Commands.ChangeRouteCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -1544,7 +1544,7 @@ define('Nori.Events.AppEvents',
       Nori.setCurrentRoute(data);
     };
 
-  });;define('Nori.InitializeAppCommand',
+  });;define('Nori.Controller.Commands.InitializeAppCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -1577,7 +1577,7 @@ define('Nori.Events.AppEvents',
       Nori.setCurrentRoute(Nori.router().getCurrentRoute());
     };
 
-  });;define('Nori.ModelDataChangedCommand',
+  });;define('Nori.Controller.Commands.ModelDataChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -1590,14 +1590,14 @@ define('Nori.Events.AppEvents',
 
     };
 
-  });;define('Nori.RouteChangedCommand',
+  });;define('Nori.Controller.Commands.RouteChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       //console.log('RouteChangedCommand, route: '+data.route+', data: '+data.data);
     };
 
-  });;define('Nori.SubViewStoreDataCommand',
+  });;define('Nori.Controller.Commands.SubViewStoreDataCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -1605,7 +1605,7 @@ define('Nori.Events.AppEvents',
       Nori.storeSubViewData(data.id, data.data);
     };
 
-  });;define('Nori.URLHashChangedCommand',
+  });;define('Nori.Controller.Commands.URLHashChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -1613,7 +1613,7 @@ define('Nori.Events.AppEvents',
       Nori.setCurrentRoute(data.routeObj);
     };
 
-  });;define('Nori.UpdateModelDataCommand',
+  });;define('Nori.Controller.Commands.UpdateModelDataCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -1621,21 +1621,21 @@ define('Nori.Events.AppEvents',
       console.table(data.data);
     };
 
-  });;define('Nori.ViewChangedCommand',
+  });;define('Nori.Controller.Commands.ViewChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('ViewChangedCommand: '+data);
     };
 
-  });;define('Nori.ViewChangedToDesktopCommand',
+  });;define('Nori.Controller.Commands.ViewChangedToDesktopCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
       console.log('ViewChangedToDesktopCommand: '+data);
     };
 
-  });;define('Nori.ViewChangedToMobileCommand',
+  });;define('Nori.Controller.Commands.ViewChangedToMobileCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
@@ -1653,7 +1653,7 @@ define('Nori.Events.AppEvents',
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _emitter = require('Nori.Events.Emitter'),
-    _router = require('Nori.Router');
+    _router = require('Nori.Controller.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -1731,23 +1731,23 @@ define('Nori.Events.AppEvents',
    */
   function bootStrapCommands() {
     // Browser events
-    // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
-    // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.Controller.Commands.BrowserResizedCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.Controller.Commands.BrowserScrolledCommand');
 
     // App events
-    // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
+    // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.Controller.Commands.RouteChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.Controller.Commands.ViewChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.Controller.Commands.ViewChangedToMobileCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.Controller.Commands.ViewChangedToDesktopCommand');
 
     // Model
-    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChangedCommand');
-    mapEventCommand(_appEvents.UPDATE_MODEL_DATA, 'Nori.UpdateModelDataCommand');
+    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.Controller.Commands.ModelDataChangedCommand');
+    mapEventCommand(_appEvents.UPDATE_MODEL_DATA, 'Nori.Controller.Commands.UpdateModelDataCommand');
 
     // Subviews
-    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
-    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
-    mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, 'Nori.SubViewStoreDataCommand');
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.Controller.Commands.URLHashChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.Controller.Commands.ChangeRouteCommand');
+    mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, 'Nori.Controller.Commands.SubViewStoreDataCommand');
   }
 
   //----------------------------------------------------------------------------
@@ -1807,7 +1807,7 @@ define('Nori.Events.AppEvents',
    * @returns {*}
    */
   function createModelCollection(initObj, extras) {
-    var m = requireExtend('Nori.ModelCollection', extras);
+    var m = requireExtend('Nori.Model.ModelCollection', extras);
     m.initialize(initObj);
     return m;
   }
@@ -1819,7 +1819,7 @@ define('Nori.Events.AppEvents',
    * @returns {*}
    */
   function createModel(initObj, extras) {
-    var m = requireExtend('Nori.Model', extras);
+    var m = requireExtend('Nori.Model.Model', extras);
     m.initialize(initObj);
     return m;
   }
@@ -1833,11 +1833,11 @@ define('Nori.Events.AppEvents',
 
     // Concat main view with mixins
     var appView = _.assign({},
-      require('Nori.ApplicationView'),
+      require('Nori.View.ApplicationView'),
       require('Nori.View.SubRouteViews'));
 
     return extend(extras, appView);
-    //return extend(extras, require('Nori.ApplicationView'));
+    //return extend(extras, require('Nori.View.ApplicationView'));
   }
 
   //----------------------------------------------------------------------------

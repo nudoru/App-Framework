@@ -4,11 +4,11 @@
  * this._super refers to Nori.View
  */
 
-define('TT.TimeTrackerAppView',
+define('TT.View.TimeTrackerAppView',
   function (require, module, exports) {
 
     var _self,
-      _moduleNavView = require('TT.ModuleNavView'),
+      _moduleNavView = require('TT.View.ModuleNavView'),
       _buttonProjects,
       _buttonPeople,
       _buttonHelp,
@@ -47,7 +47,7 @@ define('TT.TimeTrackerAppView',
     }
 
     function mapComponentViews() {
-      _self.mapView('UserProfilePanel', 'TT.UserProfilePanelView', false, 'userprofilepanel');
+      _self.mapView('UserProfilePanel', 'TT.View.UserProfilePanelView', false, 'userprofilepanel');
     }
 
     function configureMainButtons() {

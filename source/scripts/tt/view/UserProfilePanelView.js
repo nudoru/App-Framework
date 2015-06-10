@@ -1,4 +1,4 @@
-define('TT.UserProfilePanelView',
+define('TT.View.UserProfilePanelView',
   function (require, module, exports) {
 
     var _browserInfo = require('nudoru.utils.BrowserInfo'),

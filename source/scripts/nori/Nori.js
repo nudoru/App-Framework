@@ -9,7 +9,7 @@ var Nori = (function () {
     _browserEvents = require('nudoru.events.BrowserEvents'),
     _objectUtils = require('nudoru.utils.ObjectUtils'),
     _emitter = require('Nori.Events.Emitter'),
-    _router = require('Nori.Router');
+    _router = require('Nori.Controller.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -87,23 +87,23 @@ var Nori = (function () {
    */
   function bootStrapCommands() {
     // Browser events
-    // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.BrowserResizedCommand');
-    // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.BrowserScrolledCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.Controller.Commands.BrowserResizedCommand');
+    // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.Controller.Commands.BrowserScrolledCommand');
 
     // App events
-    // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.RouteChangedCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.ViewChangedCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.ViewChangedToMobileCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.ViewChangedToDesktopCommand');
+    // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.Controller.Commands.RouteChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.Controller.Commands.ViewChangedCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.Controller.Commands.ViewChangedToMobileCommand');
+    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.Controller.Commands.ViewChangedToDesktopCommand');
 
     // Model
-    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.ModelDataChangedCommand');
-    mapEventCommand(_appEvents.UPDATE_MODEL_DATA, 'Nori.UpdateModelDataCommand');
+    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.Controller.Commands.ModelDataChangedCommand');
+    mapEventCommand(_appEvents.UPDATE_MODEL_DATA, 'Nori.Controller.Commands.UpdateModelDataCommand');
 
     // Subviews
-    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.URLHashChangedCommand');
-    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.ChangeRouteCommand');
-    mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, 'Nori.SubViewStoreDataCommand');
+    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.Controller.Commands.URLHashChangedCommand');
+    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.Controller.Commands.ChangeRouteCommand');
+    mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, 'Nori.Controller.Commands.SubViewStoreDataCommand');
   }
 
   //----------------------------------------------------------------------------
@@ -163,7 +163,7 @@ var Nori = (function () {
    * @returns {*}
    */
   function createModelCollection(initObj, extras) {
-    var m = requireExtend('Nori.ModelCollection', extras);
+    var m = requireExtend('Nori.Model.ModelCollection', extras);
     m.initialize(initObj);
     return m;
   }
@@ -175,7 +175,7 @@ var Nori = (function () {
    * @returns {*}
    */
   function createModel(initObj, extras) {
-    var m = requireExtend('Nori.Model', extras);
+    var m = requireExtend('Nori.Model.Model', extras);
     m.initialize(initObj);
     return m;
   }
@@ -189,11 +189,11 @@ var Nori = (function () {
 
     // Concat main view with mixins
     var appView = _.assign({},
-      require('Nori.ApplicationView'),
+      require('Nori.View.ApplicationView'),
       require('Nori.View.SubRouteViews'));
 
     return extend(extras, appView);
-    //return extend(extras, require('Nori.ApplicationView'));
+    //return extend(extras, require('Nori.View.ApplicationView'));
   }
 
   //----------------------------------------------------------------------------

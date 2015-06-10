@@ -1,4 +1,4 @@
-define('Nori.BasicView',
+define('Nori.View.BasicView',
   function (require, module, exports) {
 
     var _self,

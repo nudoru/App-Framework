@@ -8,7 +8,7 @@
  */
 
 
-define('Nori.Model',
+define('Nori.Model.Model',
   function (require, module, exports) {
 
     var _id,

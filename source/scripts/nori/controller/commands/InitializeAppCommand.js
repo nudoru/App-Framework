@@ -1,4 +1,4 @@
-define('Nori.InitializeAppCommand',
+define('Nori.Controller.Commands.InitializeAppCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

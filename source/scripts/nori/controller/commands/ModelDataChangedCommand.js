@@ -1,4 +1,4 @@
-define('Nori.ModelDataChangedCommand',
+define('Nori.Controller.Commands.ModelDataChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

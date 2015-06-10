@@ -1,4 +1,4 @@
-define('TT.RouteChangedCommand',
+define('TT.Commands.RouteChangedCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {

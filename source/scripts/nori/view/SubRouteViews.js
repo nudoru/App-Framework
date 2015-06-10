@@ -1,3 +1,7 @@
+/**
+ * Mixin view that allows for sub view and route mapping and display
+ */
+
 define('Nori.View.SubRouteViews',
   function (require, module, exports) {
 

@@ -15,7 +15,7 @@
     window.TT = Nori.createApplication();
 
     // Create the view
-    appView = TT.createApplicationView(require('TT.TimeTrackerAppView'));
+    appView = TT.createApplicationView(require('TT.View.TimeTrackerAppView'));
 
     // Initialize app with the view
     // App muse be initialized with view for route mapping to work
@@ -40,7 +40,7 @@
    */
   function mapEvents() {
     var _appEvents = require('Nori.Events.AppEvents');
-    TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.RouteChangedCommand');
+    TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.Commands.RouteChangedCommand');
   }
 
   /**
@@ -68,7 +68,7 @@
    */
   function createModel() {
     console.time('Gen fake');
-    var dataSource = require('TT.FakeData');
+    var dataSource = require('TT.Model.FakeData');
     dataSource.initialize();
     console.timeEnd('Gen fake');
 
@@ -108,7 +108,7 @@
    */
   function testModel() {
 
-    //var testMod = requireExtend('Nori.Model', {
+    //var testMod = requireExtend('Nori.Model.Model', {
     //  make: function() {
     //    this.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
     //  },

@@ -1,4 +1,4 @@
-define('TT.FakeData',
+define('TT.Model.FakeData',
 
   function(require, module, exports) {
     "use strict";
