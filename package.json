@@ -9,6 +9,7 @@
     "url": "https://github.com/nudoru/App-Framework"
   },
   "devDependencies": {
+    "jshint": "latest",
     "chai": "^3.0.0",
     "grunt": "~0.4.2",
     "grunt-contrib-clean": "^0.6.0",
@@ -23,6 +24,8 @@
     "grunt-contrib-watch": "~0.5.3"
   },
   "scripts": {
-    "test": "grunt build --verbose"
+    "lint": "jshint src/scripts/nori/",
+    "build": "grunt build --verbose",
+    "test": "mocha test/"
   }
 }
