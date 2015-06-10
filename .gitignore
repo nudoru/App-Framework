@@ -1,8 +1,6 @@
-/.idea
-/source/.idea
-/.sass-cache
-/source/.sass-cache
-/node_modules
+.idea
+.sass-cache
+node_modules
 /deploy
 
 # Packages #
