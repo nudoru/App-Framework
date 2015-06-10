@@ -87,10 +87,10 @@ function requireExtend(id, extendProps) {
   moduleCode.call(moduleCode, require, module, exports);
   _.assign(module.exports, extendProps);
   return module.exports;
-};define('nudoru.utils.ArrayUtils',
+};define('Nudoru.Core.ArrayUtils',
   function (require, module, exports) {
 
-    var _numberUtils = require('nudoru.utils.NumberUtils');
+    var _numberUtils = require('Nudoru.Core.NumberUtils');
 
     exports.isArray = function(test) {
       return Object.prototype.toString.call(test) === "[object Array]";
@@ -175,7 +175,7 @@ function requireExtend(id, extendProps) {
       return dif;
     };
 
-  });;define('nudoru.utils.NumberUtils',
+  });;define('Nudoru.Core.NumberUtils',
   function (require, module, exports) {
 
     exports.isInteger = function (str) {
@@ -201,7 +201,7 @@ function requireExtend(id, extendProps) {
       return Math.sqrt((xd * xd) + (yd * yd));
     };
 
-  });;define('nudoru.utils.ObjectUtils',
+  });;define('Nudoru.Core.ObjectUtils',
   function(require, module, exports) {
 
     exports.dynamicSort = function (property) {
@@ -316,7 +316,7 @@ function requireExtend(id, extendProps) {
     };
 
   });
-;define('nudoru.utils.StringUtils',
+;define('Nudoru.Core.StringUtils',
   function(require, module, exports){
 
     exports.capitalizeFirstLetter = function(str) {
@@ -365,7 +365,7 @@ function requireExtend(id, extendProps) {
  * simplicity.
  *
  * Usage:
- * NImport(this, ['nudoru.utils.NLorem']);
+ * NImport(this, ['Nudoru.Browser.NLorem']);
  * console.log('lorem: '+this.NLorem.getText(3,5));
  *
  * @param context object to add the property to

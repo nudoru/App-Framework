@@ -1,4 +1,4 @@
-define('nudoru.utils.NumberUtils',
+define('Nudoru.Core.NumberUtils',
   function (require, module, exports) {
 
     exports.isInteger = function (str) {

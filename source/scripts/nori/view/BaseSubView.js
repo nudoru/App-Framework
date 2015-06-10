@@ -13,7 +13,7 @@ define('Nori.View.BaseSubView',
       _initialState,
       _currentState,
       _isMounted = false,
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 

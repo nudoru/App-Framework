@@ -3,7 +3,7 @@
  * last updated 5/5/15
  */
 
-define('nudoru.components.ComponentViewUtils',
+define('Nudoru.Component.ComponentViewUtils',
   function (require, module, exports) {
 
     /**

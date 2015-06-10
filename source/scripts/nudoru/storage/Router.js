@@ -12,12 +12,12 @@
  *
  */
 
-define('nudoru.utils.Router',
+define('Nudoru.Core.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
-      _emitter = require('nudoru.events.Emitter'),
-      _browserEvents = require('nudoru.events.BrowserEvents');
+      _emitter = require('Nudoru.Component.Emitter'),
+      _browserEvents = require('Nudoru.Browser.BrowserEvents');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);

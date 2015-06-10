@@ -3,7 +3,7 @@
  * Last updated 5/5/15
  */
 
-define('nudoru.components.ModalCoverView',
+define('Nudoru.Component.ModalCoverView',
   function (require, module, exports) {
     var _mountPoint = document,
       _modalCoverEl,
@@ -12,9 +12,9 @@ define('nudoru.components.ModalCoverView',
       _modalClickStream,
       _isVisible,
       _isHard,
-      _emitter = require('nudoru.events.Emitter'),
-      _componentEvents = require('nudoru.events.ComponentEvents'),
-      _browserInfo = require('nudoru.utils.BrowserInfo');
+      _emitter = require('Nudoru.Component.Emitter'),
+      _componentEvents = require('Nudoru.Component.ComponentEvents'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo');
 
     function initialize() {
 

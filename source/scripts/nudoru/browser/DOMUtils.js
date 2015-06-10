@@ -1,4 +1,4 @@
-define('nudoru.utils.DOMUtils',
+define('Nudoru.Browser.DOMUtils',
   function(require, module, exports) {
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     // element must be entirely on screen

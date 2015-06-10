@@ -3,10 +3,10 @@
  With gentle nudges from Kevin Carmody
  */
 
-define('nudoru.events.EventCommandMap',
+define('Nudoru.events.EventCommandMap',
   function (require, module, exports) {
 
-    var _eventDispatcher = require('nudoru.events.EventDispatcher'),
+    var _eventDispatcher = require('Nudoru.events.EventDispatcher'),
       _commandMap = Object.create(null);
 
     /**

@@ -20,10 +20,10 @@ define('TT.Commands.RouteChangedCommand',
       _possibleRoles = ['ITD','ID','Consultant'],
       _possibleTasks = ['Analysis', 'Design', 'Develop', 'Implement','Evaluate','Consult'],
       _possibleLobs = ['Information Technology', 'Asset Management', 'Human Resources', 'Institutional', 'A&O', 'Client Services', 'Finance', 'Internal Audit', 'Marketing', 'Risk Management'],
-      _lorem = require('nudoru.utils.NLorem'),
-      _arrayUtils = require('nudoru.utils.ArrayUtils'),
-      _stringUtils = require('nudoru.utils.StringUtils'),
-      _numberUtils = require('nudoru.utils.NumberUtils');
+      _lorem = require('Nudoru.Browser.NLorem'),
+      _arrayUtils = require('Nudoru.Core.ArrayUtils'),
+      _stringUtils = require('Nudoru.Core.StringUtils'),
+      _numberUtils = require('Nudoru.Core.NumberUtils');
 
     function getPeople() {
       return _people;
@@ -194,8 +194,8 @@ define('TT.Commands.RouteChangedCommand',
   });;define('TT.View.ControlsTestingSubView',
   function (require, module, exports) {
 
-    var _lIpsum = require('nudoru.utils.NLorem'),
-      _toolTip = require('nudoru.components.ToolTipView'),
+    var _lIpsum = require('Nudoru.Browser.NLorem'),
+      _toolTip = require('Nudoru.Component.ToolTipView'),
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents'),
       _actionOneEl,
@@ -309,9 +309,9 @@ define('TT.Commands.RouteChangedCommand',
   function (require, module, exports) {
 
     var _buttonMap = Object.create(null),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter');
 
     function initialize() {
@@ -382,10 +382,10 @@ define('TT.Commands.RouteChangedCommand',
       _buttonProjectsStream,
       _buttonPeopleStream,
       _buttonHelpStream,
-      _toolTip = require('nudoru.components.ToolTipView'),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
+      _toolTip = require('Nudoru.Component.ToolTipView'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter');
 
     function initialize() {
@@ -479,9 +479,9 @@ define('TT.Commands.RouteChangedCommand',
   });;define('TT.View.UserProfilePanelView',
   function (require, module, exports) {
 
-    var _browserInfo = require('nudoru.utils.BrowserInfo'),
+    var _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter');
 
     function initialize(initObj) {
@@ -497,7 +497,7 @@ define('TT.Commands.RouteChangedCommand',
 
   });;(function () {
 
-  var _browserInfo = require('nudoru.utils.BrowserInfo');
+  var _browserInfo = require('Nudoru.Browser.BrowserInfo');
 
   if(_browserInfo.notSupported) {
     alert("Your browser is not supported! Please use IE 9+, Firefox, Chrome or Safari.");

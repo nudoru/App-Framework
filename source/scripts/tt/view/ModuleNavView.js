@@ -6,9 +6,9 @@ define('TT.View.ModuleNavView',
   function (require, module, exports) {
 
     var _buttonMap = Object.create(null),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter');
 
     function initialize() {

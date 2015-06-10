@@ -3,7 +3,7 @@
  * last updated 5/5/15
  */
 
-define('nudoru.components.ToastView',
+define('Nudoru.Component.ToastView',
   function (require, module, exports) {
 
     var _children = [],
@@ -24,10 +24,10 @@ define('nudoru.components.ToastView',
         'danger' : 'toast__danger'
       },
       _mountPoint,
-      _template = require('nudoru.utils.NTemplate'),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
-      _componentUtils = require('nudoru.components.ComponentViewUtils');
+      _template = require('Nudoru.Component.NTemplate'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
+      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);

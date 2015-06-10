@@ -10,7 +10,7 @@
  - RxJS
  */
 
-define('nudoru.components.FloatImageView',
+define('Nudoru.Component.FloatImageView',
   function (require, module, exports) {
 
     var _mountPoint = document,
@@ -23,9 +23,9 @@ define('nudoru.components.FloatImageView',
       _currentImageElement,
       _scrollingView = _mountPoint.body,
       _fancyEffects = false,
-      _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _numberUtils = require('nudoru.utils.NumberUtils'),
-      _browserInfo = require('nudoru.utils.BrowserInfo');
+      _DOMUtils = require('Nudoru.Browser.DOMUtils'),
+      _numberUtils = require('Nudoru.Core.NumberUtils'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo');
 
     /**
      * Entry point, initialize elements and hide cover

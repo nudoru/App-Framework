@@ -1,9 +1,9 @@
-define('nudoru.events.ComponentEvents',
+define('Nudoru.Component.ComponentEvents',
   function(require, module, exports) {
     exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
     exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
     exports.MENU_SELECT = 'MENU_SELECT';
-  });;define('nudoru.components.ComponentViewUtils',
+  });;define('Nudoru.Component.ComponentViewUtils',
   function (require, module, exports) {
 
     /**
@@ -53,7 +53,7 @@ define('nudoru.events.ComponentEvents',
     exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
 
   });
-;define('nudoru.events.Emitter',
+;define('Nudoru.Component.Emitter',
   function (require, module, exports) {
     var _subjectMap = {};
 
@@ -132,7 +132,7 @@ define('nudoru.events.ComponentEvents',
     exports.publish = publish;
     exports.dispose = dispose;
 
-  });;define('nudoru.components.MessageBoxView',
+  });;define('Nudoru.Component.MessageBoxView',
   function (require, module, exports) {
 
     var _children = [],
@@ -156,11 +156,11 @@ define('nudoru.events.ComponentEvents',
       _mountPoint,
       _buttonIconTemplateID = 'template__messagebox--button-icon',
       _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
-      _template = require('nudoru.utils.NTemplate'),
-      _modal = require('nudoru.components.ModalCoverView'),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
-      _componentUtils = require('nudoru.components.ComponentViewUtils');
+      _template = require('Nudoru.Component.NTemplate'),
+      _modal = require('Nudoru.Component.ModalCoverView'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
+      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
 
     /**
      * Initialize and set the mount point / box container
@@ -389,7 +389,7 @@ define('nudoru.events.ComponentEvents',
       return _types
     };
 
-  });;define('nudoru.components.ModalCoverView',
+  });;define('Nudoru.Component.ModalCoverView',
   function (require, module, exports) {
     var _mountPoint = document,
       _modalCoverEl,
@@ -398,9 +398,9 @@ define('nudoru.events.ComponentEvents',
       _modalClickStream,
       _isVisible,
       _isHard,
-      _emitter = require('nudoru.events.Emitter'),
-      _componentEvents = require('nudoru.events.ComponentEvents'),
-      _browserInfo = require('nudoru.utils.BrowserInfo');
+      _emitter = require('Nudoru.Component.Emitter'),
+      _componentEvents = require('Nudoru.Component.ComponentEvents'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo');
 
     function initialize() {
 
@@ -493,12 +493,12 @@ define('nudoru.events.ComponentEvents',
     exports.hide = hide;
     exports.visible = getIsVisible;
 
-  });;define('nudoru.utils.NTemplate',
+  });;define('Nudoru.Component.NTemplate',
   function(require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
       _templateCache = Object.create(null),
-      _DOMUtils = require('nudoru.utils.DOMUtils');
+      _DOMUtils = require('Nudoru.Browser.DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -517,7 +517,7 @@ define('nudoru.events.ComponentEvents',
       if(src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('nudoru.utils.NTemplate, template not found: "'+id+'"');
+        throw new Error('Nudoru.Core.NTemplate, template not found: "'+id+'"');
       }
 
       cleanhtml = cleanTemplateHTML(srchtml);
@@ -574,7 +574,7 @@ define('nudoru.events.ComponentEvents',
     exports.asElement = asElement;
 
   });
-;define('nudoru.components.ToastView',
+;define('Nudoru.Component.ToastView',
   function (require, module, exports) {
 
     var _children = [],
@@ -595,10 +595,10 @@ define('nudoru.events.ComponentEvents',
         'danger' : 'toast__danger'
       },
       _mountPoint,
-      _template = require('nudoru.utils.NTemplate'),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
-      _componentUtils = require('nudoru.components.ComponentViewUtils');
+      _template = require('Nudoru.Component.NTemplate'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
+      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -716,7 +716,7 @@ define('nudoru.events.ComponentEvents',
     exports.remove = remove;
     exports.type = function() { return _types };
 
-  });;define('nudoru.components.ToolTipView',
+  });;define('Nudoru.Component.ToolTipView',
   function (require, module, exports) {
 
     var _children = [],
@@ -758,9 +758,9 @@ define('nudoru.events.ComponentEvents',
         'TL': 'tooltip__topleft'
       },
       _mountPoint,
-      _template = require('nudoru.utils.NTemplate'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
-      _componentUtils = require('nudoru.components.ComponentViewUtils');
+      _template = require('Nudoru.Component.NTemplate'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
+      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);

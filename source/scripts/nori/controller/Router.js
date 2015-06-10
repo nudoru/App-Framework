@@ -17,7 +17,7 @@ define('Nori.Controller.Router',
 
     var _routeMap = Object.create(null),
       _emitter = require('Nori.Events.Emitter'),
-      _browserEvents = require('nudoru.events.BrowserEvents');
+      _browserEvents = require('Nudoru.Browser.BrowserEvents');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);

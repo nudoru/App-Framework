@@ -15,10 +15,10 @@ define('TT.View.TimeTrackerAppView',
       _buttonProjectsStream,
       _buttonPeopleStream,
       _buttonHelpStream,
-      _toolTip = require('nudoru.components.ToolTipView'),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
+      _toolTip = require('Nudoru.Component.ToolTipView'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter');
 
     function initialize() {

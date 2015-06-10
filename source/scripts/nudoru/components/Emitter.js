@@ -4,7 +4,7 @@
  https://github.com/Reactive-Extensions/RxJS/blob/master/doc/howdoi/eventemitter.md
 */
 
-define('nudoru.events.Emitter',
+define('Nudoru.Component.Emitter',
   function (require, module, exports) {
     var _subjectMap = {};
 

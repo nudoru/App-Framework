@@ -3,10 +3,10 @@ define('Nori.View.ApplicationView',
 
     var _appContainerEl,
       _appEl,
-      _notificationView = require('nudoru.components.ToastView'),
-      _toolTipView = require('nudoru.components.ToolTipView'),
-      _messageBoxView = require('nudoru.components.MessageBoxView'),
-      _modalCoverView = require('nudoru.components.ModalCoverView');
+      _notificationView = require('Nudoru.Component.ToastView'),
+      _toolTipView = require('Nudoru.Component.ToolTipView'),
+      _messageBoxView = require('Nudoru.Component.MessageBoxView'),
+      _modalCoverView = require('Nudoru.Component.ModalCoverView');
 
     //----------------------------------------------------------------------------
     //  Accessors

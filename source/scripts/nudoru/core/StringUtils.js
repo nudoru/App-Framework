@@ -1,4 +1,4 @@
-define('nudoru.utils.StringUtils',
+define('Nudoru.Core.StringUtils',
   function(require, module, exports){
 
     exports.capitalizeFirstLetter = function(str) {

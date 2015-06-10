@@ -1,9 +1,9 @@
-define('nudoru.events.BrowserEvents',
+define('Nudoru.Browser.BrowserEvents',
   function(require, module, exports) {
     exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
     exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
     exports.BROWSER_SCROLLED = 'BROWSER_SCROLLED';
-  });;define('nudoru.utils.BrowserInfo',
+  });;define('Nudoru.Browser.BrowserInfo',
   function (require, module, exports) {
 
     exports.appVersion = navigator.appVersion;
@@ -70,7 +70,7 @@ define('nudoru.events.BrowserEvents',
       return this.mobile.any() ? "touchmove" : "mousemove";
     };
 
-  });;define('nudoru.utils.DOMUtils',
+  });;define('Nudoru.Browser.DOMUtils',
   function(require, module, exports) {
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     // element must be entirely on screen
@@ -206,7 +206,7 @@ define('nudoru.events.BrowserEvents',
       el.style.top = (vpH/2) - (elH/2)+'px';
     };
 
-  });;define('nudoru.utils.NLorem',
+  });;define('Nudoru.Browser.NLorem',
   function(require, module, exports) {
 
     var _currentText = [],
@@ -218,9 +218,9 @@ define('nudoru.events.BrowserEvents',
       _months,
       _days,
       _initialized = false,
-      _arrayUtils = require('nudoru.utils.ArrayUtils'),
-      _stringUtils = require('nudoru.utils.StringUtils'),
-      _numberUtils = require('nudoru.utils.NumberUtils');
+      _arrayUtils = require('Nudoru.Core.ArrayUtils'),
+      _stringUtils = require('Nudoru.Core.StringUtils'),
+      _numberUtils = require('Nudoru.Core.NumberUtils');
 
     _textSets = [
       "Perhaps a re-engineering of your current world view will re-energize your online nomenclature to enable a new holistic interactive enterprise internet communication solution Upscaling the resurgent networking exchange solutions, achieving a breakaway systemic electronic data interchange system synchronization, thereby exploiting technical environments for mission critical broad based capacity constrained systems Fundamentally transforming well designed actionable information whose semantic content is virtually null To more fully clarify the current exchange, a few aggregate issues will require addressing to facilitate this distributed communication venue In integrating non-aligned structures into existing legacy systems, a holistic gateway blueprint is a backward compatible packaging tangible"
@@ -353,7 +353,7 @@ define('nudoru.events.BrowserEvents',
     exports.getDate = getDate;
     exports.fakeGUID = fakeGUID;
 
-  });;define('nudoru.utils.TouchUtils',
+  });;define('Nudoru.Browser.TouchUtils',
   function(require, module, exports) {
 
     // https://github.com/filamentgroup/tappy/blob/master/tappy.js

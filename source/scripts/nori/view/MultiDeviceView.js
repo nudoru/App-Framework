@@ -20,8 +20,8 @@ define('Nori.View.MultiDeviceView',
       _isDrawerOpen,
       _currentViewPortSize,
       _appEvents = require('Nori.Events.AppEvents'),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _emitter = require('nudoru.events.EventDispatcher');
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
+      _emitter = require('Nudoru.events.EventDispatcher');
 
     function initialize(initObj) {
       _isMobile = false;

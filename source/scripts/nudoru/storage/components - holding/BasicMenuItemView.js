@@ -2,7 +2,7 @@
 //  A menu item
 //----------------------------------------------------------------------------
 
-define('nudoru.components.BasicMenuItemView',
+define('Nudoru.Component.BasicMenuItemView',
   function(require, module, exports) {
 
     var _selected = false,
@@ -13,9 +13,9 @@ define('nudoru.components.BasicMenuItemView',
       _iconDeselectedClass = null,
       _iconSelectedClass = null,
       _toggle = null,
-      _stringUtils = require('nudoru.utils.StringUtils'),
-      _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _template = require('nudoru.utils.NTemplate');
+      _stringUtils = require('Nudoru.Core.StringUtils'),
+      _DOMUtils = require('Nudoru.Browser.DOMUtils'),
+      _template = require('Nudoru.Component.NTemplate');
 
     function initialize(idata) {
       _data = idata;

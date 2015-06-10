@@ -23,7 +23,7 @@ define('Nori.View.Template',
 
     var _templateHTMLCache = Object.create(null),
       _templateCache = Object.create(null),
-      _DOMUtils = require('nudoru.utils.DOMUtils');
+      _DOMUtils = require('Nudoru.Browser.DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -42,7 +42,7 @@ define('Nori.View.Template',
       if(src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('nudoru.utils.NTemplate, template not found: "'+id+'"');
+        throw new Error('Nudoru.Core.NTemplate, template not found: "'+id+'"');
       }
 
       cleanhtml = cleanTemplateHTML(srchtml);

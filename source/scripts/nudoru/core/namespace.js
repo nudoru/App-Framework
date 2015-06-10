@@ -32,7 +32,7 @@ var NNameSpace = {
  * simplicity.
  *
  * Usage:
- * NImport(this, ['nudoru.utils.NLorem']);
+ * NImport(this, ['Nudoru.Browser.NLorem']);
  * console.log('lorem: '+this.NLorem.getText(3,5));
  *
  * @param context object to add the property to

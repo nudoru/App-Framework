@@ -602,10 +602,10 @@ define('Nori.Events.AppEvents',
 
     var _appContainerEl,
       _appEl,
-      _notificationView = require('nudoru.components.ToastView'),
-      _toolTipView = require('nudoru.components.ToolTipView'),
-      _messageBoxView = require('nudoru.components.MessageBoxView'),
-      _modalCoverView = require('nudoru.components.ModalCoverView');
+      _notificationView = require('Nudoru.Component.ToastView'),
+      _toolTipView = require('Nudoru.Component.ToolTipView'),
+      _messageBoxView = require('Nudoru.Component.MessageBoxView'),
+      _modalCoverView = require('Nudoru.Component.ModalCoverView');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -748,7 +748,7 @@ define('Nori.Events.AppEvents',
       _initialState,
       _currentState,
       _isMounted = false,
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter'),
       _appEvents = require('Nori.Events.AppEvents');
 
@@ -891,7 +891,7 @@ define('Nori.Events.AppEvents',
       _browserResizeStream,
       _positionUIElementsOnChangeCB,
       _emitter = require('Nori.Events.Emitter'),
-      _browserEvents = require('nudoru.events.BrowserEvents');
+      _browserEvents = require('Nudoru.Browser.BrowserEvents');
 
 
     //----------------------------------------------------------------------------
@@ -1023,8 +1023,8 @@ define('Nori.Events.AppEvents',
       _isDrawerOpen,
       _currentViewPortSize,
       _appEvents = require('Nori.Events.AppEvents'),
-      _browserInfo = require('nudoru.utils.BrowserInfo'),
-      _emitter = require('nudoru.events.EventDispatcher');
+      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
+      _emitter = require('Nudoru.events.EventDispatcher');
 
     function initialize(initObj) {
       _isMobile = false;
@@ -1134,7 +1134,7 @@ define('Nori.Events.AppEvents',
       _baseSubViewModuleID = 'Nori.View.BaseSubView',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEvents'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter');
 
     /**
@@ -1302,7 +1302,7 @@ define('Nori.Events.AppEvents',
 
     var _templateHTMLCache = Object.create(null),
       _templateCache = Object.create(null),
-      _DOMUtils = require('nudoru.utils.DOMUtils');
+      _DOMUtils = require('Nudoru.Browser.DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -1321,7 +1321,7 @@ define('Nori.Events.AppEvents',
       if(src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('nudoru.utils.NTemplate, template not found: "'+id+'"');
+        throw new Error('Nudoru.Core.NTemplate, template not found: "'+id+'"');
       }
 
       cleanhtml = cleanTemplateHTML(srchtml);
@@ -1383,7 +1383,7 @@ define('Nori.Events.AppEvents',
 
     var _routeMap = Object.create(null),
       _emitter = require('Nori.Events.Emitter'),
-      _browserEvents = require('nudoru.events.BrowserEvents');
+      _browserEvents = require('Nudoru.Browser.BrowserEvents');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -1548,7 +1548,7 @@ define('Nori.Events.AppEvents',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      var _browserEvents = require('nudoru.events.BrowserEvents'),
+      var _browserEvents = require('Nudoru.Browser.BrowserEvents'),
           _appEvents = require('Nori.Events.AppEvents');
 
       console.log('InitializeAppCommand');
@@ -1650,8 +1650,8 @@ define('Nori.Events.AppEvents',
     _subviewDataModel,
     _modelViewBindingMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
-    _browserEvents = require('nudoru.events.BrowserEvents'),
-    _objectUtils = require('nudoru.utils.ObjectUtils'),
+    _browserEvents = require('Nudoru.Browser.BrowserEvents'),
+    _objectUtils = require('Nudoru.Core.ObjectUtils'),
     _emitter = require('Nori.Events.Emitter'),
     _router = require('Nori.Controller.Router');
 

@@ -11,10 +11,10 @@ define('TT.Model.FakeData',
       _possibleRoles = ['ITD','ID','Consultant'],
       _possibleTasks = ['Analysis', 'Design', 'Develop', 'Implement','Evaluate','Consult'],
       _possibleLobs = ['Information Technology', 'Asset Management', 'Human Resources', 'Institutional', 'A&O', 'Client Services', 'Finance', 'Internal Audit', 'Marketing', 'Risk Management'],
-      _lorem = require('nudoru.utils.NLorem'),
-      _arrayUtils = require('nudoru.utils.ArrayUtils'),
-      _stringUtils = require('nudoru.utils.StringUtils'),
-      _numberUtils = require('nudoru.utils.NumberUtils');
+      _lorem = require('Nudoru.Browser.NLorem'),
+      _arrayUtils = require('Nudoru.Core.ArrayUtils'),
+      _stringUtils = require('Nudoru.Core.StringUtils'),
+      _numberUtils = require('Nudoru.Core.NumberUtils');
 
     function getPeople() {
       return _people;

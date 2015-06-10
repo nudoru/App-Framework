@@ -4,7 +4,7 @@
  https://github.com/michd/step-sequencer/blob/master/assets/js/eventdispatcher.js
  */
 
-define('nudoru.events.EventDispatcher',
+define('Nudoru.events.EventDispatcher',
   function (require, module, exports) {
     var _eventMap = Object.create(null);
 

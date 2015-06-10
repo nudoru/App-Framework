@@ -3,7 +3,7 @@
  * last updated 5/5/15
  */
 
-define('nudoru.components.ToolTipView',
+define('Nudoru.Component.ToolTipView',
   function (require, module, exports) {
 
     var _children = [],
@@ -45,9 +45,9 @@ define('nudoru.components.ToolTipView',
         'TL': 'tooltip__topleft'
       },
       _mountPoint,
-      _template = require('nudoru.utils.NTemplate'),
-      _domUtils = require('nudoru.utils.DOMUtils'),
-      _componentUtils = require('nudoru.components.ComponentViewUtils');
+      _template = require('Nudoru.Component.NTemplate'),
+      _domUtils = require('Nudoru.Browser.DOMUtils'),
+      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);

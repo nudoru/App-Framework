@@ -3,7 +3,7 @@
  */
 
 
-define('nudoru.components.DDMenuBarView',
+define('Nudoru.Component.DDMenuBarView',
   function (require, module, exports) {
 
     var _mountPoint = null,
@@ -11,8 +11,8 @@ define('nudoru.components.DDMenuBarView',
       _data = null,
       _children = [],
       _isKeepOpen = false,
-      _DOMUtils = require('nudoru.utils.DOMUtils'),
-      _browserInfo = require('nudoru.utils.BrowserInfo');
+      _DOMUtils = require('Nudoru.Browser.DOMUtils'),
+      _browserInfo = require('Nudoru.Browser.BrowserInfo');
 
     function initialize(elID, idata, keep) {
       _mountPoint = document.getElementById(elID);
@@ -29,7 +29,7 @@ define('nudoru.components.DDMenuBarView',
 
       _barEl = _DOMUtils.HTMLStrToNode('<ul></ul>');
       for (; i < len; i++) {
-        var menuobj = requireUnique('nudoru.components.DDMenuView');
+        var menuobj = requireUnique('Nudoru.Component.DDMenuView');
         menuobj.initialize(_data[i], _isKeepOpen);
 
         _barEl.appendChild(menuobj.getElement());

@@ -1,5 +1,5 @@
 // Simple debugger, Matt Perkins
-define('nudoru.utils.NDebugger',
+define('Nudoru.Core.NDebugger',
   function(require, module, exports) {
 
     var _messages = [],

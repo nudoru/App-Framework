@@ -18,12 +18,12 @@
  10000 x NTemplate.getTemplate('template__item-tile')          = 0.3ms
  10000 x NTemplate.asElement('template__item-tile', testObj)   = 614.038ms
  */
-define('nudoru.utils.NTemplate',
+define('Nudoru.Component.NTemplate',
   function(require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
       _templateCache = Object.create(null),
-      _DOMUtils = require('nudoru.utils.DOMUtils');
+      _DOMUtils = require('Nudoru.Browser.DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -42,7 +42,7 @@ define('nudoru.utils.NTemplate',
       if(src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('nudoru.utils.NTemplate, template not found: "'+id+'"');
+        throw new Error('Nudoru.Core.NTemplate, template not found: "'+id+'"');
       }
 
       cleanhtml = cleanTemplateHTML(srchtml);

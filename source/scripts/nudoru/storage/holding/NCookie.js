@@ -1,4 +1,4 @@
-define('nudoru.utils.NCookie',
+define('Nudoru.Core.NCookie',
   function(require, module, exports) {
 
     exports.create = function(name, value, days) {

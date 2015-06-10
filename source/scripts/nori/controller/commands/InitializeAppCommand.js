@@ -2,7 +2,7 @@ define('Nori.Controller.Commands.InitializeAppCommand',
   function (require, module, exports) {
 
     exports.execute = function(data) {
-      var _browserEvents = require('nudoru.events.BrowserEvents'),
+      var _browserEvents = require('Nudoru.Browser.BrowserEvents'),
           _appEvents = require('Nori.Events.AppEvents');
 
       console.log('InitializeAppCommand');

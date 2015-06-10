@@ -1,4 +1,4 @@
-define('nudoru.utils.ObjectUtils',
+define('Nudoru.Core.ObjectUtils',
   function(require, module, exports) {
 
     exports.dynamicSort = function (property) {
