@@ -1,5 +1,7 @@
 # NORI App Framework
 
+[![Build Status](https://travis-ci.org/nudoru/App-Framework.svg?branch=master)](https://travis-ci.org/nudoru/App-Framework)
+
 Handy starting template for my JS projects based on some of the ideas of: AS3 Robotlegs, Backbone, Ember + other random ideas I've found and liked. Based on the MVC pattern.
 
 Dependencies: RxJS, GSAP TweenLite, Lowdash and my Nudoru utility classes.
