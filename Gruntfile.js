@@ -25,7 +25,7 @@ module.exports = function (grunt) {
           '!scripts/app.js',
           'scripts/config.js'
         ],
-        dest: 'deploy',
+        dest: 'bin',
         expand: true,
         filter: 'isFile'
       }
@@ -33,7 +33,7 @@ module.exports = function (grunt) {
 
     clean: {
       build: {
-        src: [ 'deploy' ]
+        src: [ 'bin' ]
       }
     },
 
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
       dist: {
         options: {
           sassDir: 'src/sass',
-          cssDir: 'deploy/css',
+          cssDir: 'bin/css',
           environment: 'production',
           //compressed, expanded
           outputStyle: 'expanded'
@@ -54,7 +54,7 @@ module.exports = function (grunt) {
         options: {
           import: 2
         },
-        src: ['deploy/css/app.css']
+        src: ['bin/css/app.css']
       }
     },
 
@@ -66,7 +66,7 @@ module.exports = function (grunt) {
         files: [ {
           cwd: "src/jade",
           src: "index.jade",
-          dest: "deploy/",
+          dest: "bin/",
           expand: true,
           ext: ".html"
         } ]
@@ -96,7 +96,7 @@ module.exports = function (grunt) {
           'src/scripts/vendor/rxjs/rx.lite.compat.min.js',
           'src/scripts/vendor/objectDiff.js'
         ],
-        dest: 'deploy/scripts/libs.js'
+        dest: 'bin/scripts/libs.js'
       },
 
       nudorucore: {
@@ -104,21 +104,21 @@ module.exports = function (grunt) {
           'src/scripts/nudoru/require.js',
           'src/scripts/nudoru/core/*.js'
         ],
-        dest: 'deploy/scripts/nudoru.core.js'
+        dest: 'bin/scripts/nudoru.core.js'
       },
 
       nudorubrowser: {
         src: [
           'src/scripts/nudoru/browser/*.js'
         ],
-        dest: 'deploy/scripts/nudoru.browser.js'
+        dest: 'bin/scripts/nudoru.browser.js'
       },
 
       nudorucomponents: {
         src: [
           'src/scripts/nudoru/components/*.js'
         ],
-        dest: 'deploy/scripts/nudoru.components.js'
+        dest: 'bin/scripts/nudoru.components.js'
       },
 
       nori: {
@@ -132,7 +132,7 @@ module.exports = function (grunt) {
           'src/scripts/nori/controller/commands/*.js',
           'src/scripts/nori/Nori.js'
         ],
-        dest: 'deploy/scripts/nori.js'
+        dest: 'bin/scripts/nori.js'
       },
 
       app: {
@@ -140,7 +140,7 @@ module.exports = function (grunt) {
           'src/scripts/tt/**/*.js',
           'src/scripts/app.js'
         ],
-        dest: 'deploy/scripts/app.js'
+        dest: 'bin/scripts/app.js'
       }
 
     },
@@ -154,12 +154,12 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'deploy/scripts/libs.min.js': ['<%= concat.libs.dest %>'],
-          'deploy/scripts/nudoru.core.min.js': ['<%= concat.nudorucore.dest %>'],
-          'deploy/scripts/nudoru.browser.min.js': ['<%= concat.nudorubrowser.dest %>'],
-          'deploy/scripts/nudoru.components.min.js': ['<%= concat.nudorucomponents.dest %>'],
-          'deploy/scripts/nori.min.js': ['<%= concat.nori.dest %>'],
-          'deploy/scripts/app.min.js': ['<%= concat.app.dest %>']
+          'bin/scripts/libs.min.js': ['<%= concat.libs.dest %>'],
+          'bin/scripts/nudoru.core.min.js': ['<%= concat.nudorucore.dest %>'],
+          'bin/scripts/nudoru.browser.min.js': ['<%= concat.nudorubrowser.dest %>'],
+          'bin/scripts/nudoru.components.min.js': ['<%= concat.nudorucomponents.dest %>'],
+          'bin/scripts/nori.min.js': ['<%= concat.nori.dest %>'],
+          'bin/scripts/app.min.js': ['<%= concat.app.dest %>']
         }
       }
     },
@@ -189,7 +189,7 @@ module.exports = function (grunt) {
       server: {
         options: {
           port: 9001,
-          base: 'deploy'
+          base: 'bin'
         }
       }
     },
