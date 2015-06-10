@@ -6,6 +6,15 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    mocha: {
+      all: {
+        src: ['tests/'],
+      },
+      options: {
+        run: true
+      }
+    },
+
     copy: {
       build: {
         cwd: 'src',
@@ -224,6 +233,7 @@ module.exports = function (grunt) {
 
   });
 
+  grunt.loadNpmTasks('grunt-mocha');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
