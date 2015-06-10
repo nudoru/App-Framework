@@ -1,7 +1,7 @@
 .idea
 .sass-cache
 node_modules
-/deploy
+/bin
 
 # Packages #
 ############
