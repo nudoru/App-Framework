@@ -35,15 +35,21 @@ define('Nori.View.SubRouteViews',
      * @param route True | False, is is a subview
      */
     function mapView(templateID, controllerModID, isRoute, mountPoint) {
-      var baseSubViewModule = requireUnique(_baseSubViewModuleID),
-        controllerModule = requireUnique(controllerModID);
-
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller: Nori.extend(controllerModule, baseSubViewModule),
+        controller: createSubView(requireUnique(controllerModID)),
         isRouteView: isRoute,
         mountPoint: mountPoint
       };
+    }
+
+    /**
+     * Factory to create subview modules
+     * @param extras
+     * @returns {*}
+     */
+    function createSubView(extras) {
+      return Nori.extend(extras, requireUnique(_baseSubViewModuleID));
     }
 
     /**
@@ -160,6 +166,7 @@ define('Nori.View.SubRouteViews',
 
     exports.setRouteViewMountPoint = setRouteViewMountPoint;
     exports.template = getTemplate;
+    exports.createSubView = createSubView;
     exports.mapView = mapView;
     exports.showView = showView;
     exports.mapRouteView = mapRouteView;

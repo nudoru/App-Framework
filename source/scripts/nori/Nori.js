@@ -153,6 +153,13 @@ var Nori = (function () {
     return _appModelCollection.get(storeID);
   }
 
+  //----------------------------------------------------------------------------
+  //  Views
+  //----------------------------------------------------------------------------
+
+  function createApplicationView(extras) {
+    return extend(extras, require('Nori.ApplicationView'));
+  }
 
   //----------------------------------------------------------------------------
   //  Route Validation
@@ -224,7 +231,7 @@ var Nori = (function () {
    * @param ext
    * @returns {*}
    */
-  function create(ext) {
+  function createApplication(ext) {
     return extend(ext, this);
   }
 
@@ -363,12 +370,13 @@ var Nori = (function () {
     createModel: createModel,
     addModel: addModel,
     getModel: getModel,
+    createApplicationView: createApplicationView,
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
-    create: create,
+    createApplication: createApplication,
     storeSubViewData: storeSubViewData,
     retrieveSubViewData: retrieveSubViewData,
     bindModelView: bindModelView,

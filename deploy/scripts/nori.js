@@ -597,6 +597,203 @@ define('Nori.Events.AppEvents',
     exports.setParentCollection = setParentCollection;
     exports.getParentCollection = getParentCollection;
 
+  });;define('Nori.ApplicationView',
+  function (require, module, exports) {
+
+    var _appContainerEl,
+      _appEl,
+      _browserEventView = require('Nori.View.BrowserEvents'),
+      _routeSubViewView = require('Nori.View.SubRouteViews'),
+      _notificationView = require('nudoru.components.ToastView'),
+      _toolTipView = require('nudoru.components.ToolTipView'),
+      _messageBoxView = require('nudoru.components.MessageBoxView'),
+      _modalCoverView = require('nudoru.components.ModalCoverView');
+
+    //----------------------------------------------------------------------------
+    //  Accessors
+    //----------------------------------------------------------------------------
+
+    function getAppContainerEl() {
+      return _appContainerEl;
+    }
+
+    function getAppEl() {
+      return _appEl;
+    }
+
+    //----------------------------------------------------------------------------
+    //  Initialization
+    //----------------------------------------------------------------------------
+
+    function initialize() {
+      render();
+    }
+
+    /**
+     * Basic rendering and component init
+     */
+    function render() {
+      _appContainerEl = document.getElementById('app__container');
+      _appEl = document.getElementById('app__contents');
+
+      _browserEventView.setMainScrollingView('app__contents');
+      _browserEventView.initializeEventStreams();
+      _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
+
+      _routeSubViewView.setRouteViewMountPoint('contents');
+
+      _toolTipView.initialize('tooltip__container');
+      _notificationView.initialize('toast__container');
+      _messageBoxView.initialize('messagebox__container');
+      _modalCoverView.initialize();
+    }
+
+    /**
+     * Alter the UI on resize or scroll
+     * @param sizeObj Props: width, height
+     * @param scrollObj Props: left, top
+     */
+    function layoutUI(sizeObj, scrollObj) {
+      //
+    }
+
+    //----------------------------------------------------------------------------
+    //  Messaging
+    //----------------------------------------------------------------------------
+
+    /**
+     * Show a message box
+     * @param obj
+     */
+    function addMessageBox(obj) {
+      _messageBoxView.add(obj);
+    }
+
+    /**
+     * Show a popup message box
+     * @param message
+     */
+    function showAlert(message) {
+      addMessageBox({
+        title: 'Alert',
+        content: message,
+        type: _messageBoxView.type().DEFAULT,
+        modal: false
+      });
+    }
+
+    /**
+     * Show notificiation
+     * @param obj
+     */
+    function addNotification(obj) {
+      _notificationView.add(obj);
+    }
+
+    /**
+     * Display a notification "toast"
+     * @param title The title
+     * @param message The message
+     */
+    function showNotification(message, title, type) {
+      addNotification({
+        title: title || "Notification",
+        type: type || _notificationView.type().DEFAULT,
+        message: message
+      });
+    }
+
+    /**
+     * After app initialization, remove the loading message
+     */
+    function removeLoadingMessage() {
+      var cover = document.getElementById('initialization__cover'),
+        message = document.getElementsByClassName('initialization__message')[0];
+
+      TweenLite.to(cover, 1, {
+        alpha: 0, ease: Quad.easeOut, onComplete: function () {
+          document.body.removeChild(cover);
+        }
+      });
+
+      TweenLite.to(message, 2, {
+        top: "+=50px", ease: Quad.easeIn, onComplete: function () {
+          cover.removeChild(message);
+        }
+      });
+    }
+
+    //----------------------------------------------------------------------------
+    //  Composition
+    //----------------------------------------------------------------------------
+
+
+    /**
+     * Map a sub view component
+     * @param templateID
+     * @param controller
+     * @param mountpoint
+     */
+    function mapView(templateID, controller, mountpoint) {
+      _routeSubViewView.mapView(templateID, controller, false, mountpoint);
+    }
+
+    /**
+     * Show a sub view component
+     * @param templateID
+     * @param dataObj
+     */
+    function showView(templateID, dataObj) {
+      _routeSubViewView.showView(templateID, dataObj);
+    }
+
+    /**
+     * Pass to route sub view
+     * @param templateID
+     * @param controller
+     */
+    function mapRouteView(templateID, controller) {
+      _routeSubViewView.mapRouteView(templateID, controller);
+    }
+
+    /**
+     * Pass to route sub view
+     * @param dataObj
+     * @param previousStateData
+     */
+    function showRouteView(dataObj, previousStateData) {
+      _routeSubViewView.showRouteView(dataObj, previousStateData);
+    }
+
+    /**
+     * Update subview based on a change in bound model data
+     * @param viewID
+     * @param modelID
+     * @param storeData
+     */
+    function updateViewData(viewID, storeData) {
+     _routeSubViewView.updateViewData(viewID, storeData);
+    }
+
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
+
+    exports.initialize = initialize;
+    exports.addMessageBox = addMessageBox;
+    exports.addNotification = addNotification;
+    exports.alert = showAlert;
+    exports.notify = showNotification;
+    exports.removeLoadingMessage = removeLoadingMessage;
+    exports.mapView = mapView;
+    exports.showView = showView;
+    exports.mapRouteView = mapRouteView;
+    exports.showRouteView = showRouteView;
+    exports.updateViewData = updateViewData;
+    exports.layoutUI = layoutUI;
+    exports.getAppContainerEl = getAppContainerEl;
+    exports.getAppEl = getAppEl;
+
   });;define('Nori.View.BaseSubView',
   function (require, module, exports) {
 
@@ -1021,15 +1218,21 @@ define('Nori.Events.AppEvents',
      * @param route True | False, is is a subview
      */
     function mapView(templateID, controllerModID, isRoute, mountPoint) {
-      var baseSubViewModule = requireUnique(_baseSubViewModuleID),
-        controllerModule = requireUnique(controllerModID);
-
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller: Nori.extend(controllerModule, baseSubViewModule),
+        controller: createSubView(requireUnique(controllerModID)),
         isRouteView: isRoute,
         mountPoint: mountPoint
       };
+    }
+
+    /**
+     * Factory to create subview modules
+     * @param extras
+     * @returns {*}
+     */
+    function createSubView(extras) {
+      return Nori.extend(extras, requireUnique(_baseSubViewModuleID));
     }
 
     /**
@@ -1146,6 +1349,7 @@ define('Nori.Events.AppEvents',
 
     exports.setRouteViewMountPoint = setRouteViewMountPoint;
     exports.template = getTemplate;
+    exports.createSubView = createSubView;
     exports.mapView = mapView;
     exports.showView = showView;
     exports.mapRouteView = mapRouteView;
@@ -1232,205 +1436,7 @@ define('Nori.Events.AppEvents',
     exports.asElement = asElement;
 
   });
-;define('Nori.View',
-  function (require, module, exports) {
-
-    var _appContainerEl,
-      _appEl,
-      _browserEventView = require('Nori.View.BrowserEvents'),
-      _routeSubViewView = require('Nori.View.SubRouteViews'),
-      _notificationView = require('nudoru.components.ToastView'),
-      _toolTipView = require('nudoru.components.ToolTipView'),
-      _messageBoxView = require('nudoru.components.MessageBoxView'),
-      _modalCoverView = require('nudoru.components.ModalCoverView');
-
-    //----------------------------------------------------------------------------
-    //  Accessors
-    //----------------------------------------------------------------------------
-
-    function getAppContainerEl() {
-      return _appContainerEl;
-    }
-
-    function getAppEl() {
-      return _appEl;
-    }
-
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
-
-    function initialize() {
-      render();
-    }
-
-    /**
-     * Basic rendering and component init
-     */
-    function render() {
-      _appContainerEl = document.getElementById('app__container');
-      _appEl = document.getElementById('app__contents');
-
-      _browserEventView.setMainScrollingView('app__contents');
-      _browserEventView.initializeEventStreams();
-      _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
-
-      _routeSubViewView.setRouteViewMountPoint('contents');
-
-      _toolTipView.initialize('tooltip__container');
-      _notificationView.initialize('toast__container');
-      _messageBoxView.initialize('messagebox__container');
-      _modalCoverView.initialize();
-    }
-
-    /**
-     * Alter the UI on resize or scroll
-     * @param sizeObj Props: width, height
-     * @param scrollObj Props: left, top
-     */
-    function layoutUI(sizeObj, scrollObj) {
-      //
-    }
-
-    //----------------------------------------------------------------------------
-    //  Messaging
-    //----------------------------------------------------------------------------
-
-    /**
-     * Show a message box
-     * @param obj
-     */
-    function addMessageBox(obj) {
-      _messageBoxView.add(obj);
-    }
-
-    /**
-     * Show a popup message box
-     * @param message
-     */
-    function showAlert(message) {
-      addMessageBox({
-        title: 'Alert',
-        content: message,
-        type: _messageBoxView.type().DEFAULT,
-        modal: false
-      });
-    }
-
-    /**
-     * Show notificiation
-     * @param obj
-     */
-    function addNotification(obj) {
-      _notificationView.add(obj);
-    }
-
-    /**
-     * Display a notification "toast"
-     * @param title The title
-     * @param message The message
-     */
-    function showNotification(message, title, type) {
-      addNotification({
-        title: title || "Notification",
-        type: type || _notificationView.type().DEFAULT,
-        message: message
-      });
-    }
-
-    /**
-     * After app initialization, remove the loading message
-     */
-    function removeLoadingMessage() {
-      var cover = document.getElementById('initialization__cover'),
-        message = document.getElementsByClassName('initialization__message')[0];
-
-      TweenLite.to(cover, 1, {
-        alpha: 0, ease: Quad.easeOut, onComplete: function () {
-          document.body.removeChild(cover);
-        }
-      });
-
-      TweenLite.to(message, 2, {
-        top: "+=50px", ease: Quad.easeIn, onComplete: function () {
-          cover.removeChild(message);
-        }
-      });
-    }
-
-    //----------------------------------------------------------------------------
-    //  Composition
-    //----------------------------------------------------------------------------
-
-
-    /**
-     * Map a sub view component
-     * @param templateID
-     * @param controller
-     * @param mountpoint
-     */
-    function mapView(templateID, controller, mountpoint) {
-      _routeSubViewView.mapView(templateID, controller, false, mountpoint);
-    }
-
-    /**
-     * Show a sub view component
-     * @param templateID
-     * @param dataObj
-     */
-    function showView(templateID, dataObj) {
-      _routeSubViewView.showView(templateID, dataObj);
-    }
-
-    /**
-     * Pass to route sub view
-     * @param templateID
-     * @param controller
-     */
-    function mapRouteView(templateID, controller) {
-      _routeSubViewView.mapRouteView(templateID, controller);
-    }
-
-    /**
-     * Pass to route sub view
-     * @param dataObj
-     * @param previousStateData
-     */
-    function showRouteView(dataObj, previousStateData) {
-      _routeSubViewView.showRouteView(dataObj, previousStateData);
-    }
-
-    /**
-     * Update subview based on a change in bound model data
-     * @param viewID
-     * @param modelID
-     * @param storeData
-     */
-    function updateViewData(viewID, storeData) {
-     _routeSubViewView.updateViewData(viewID, storeData);
-    }
-
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
-
-    exports.initialize = initialize;
-    exports.addMessageBox = addMessageBox;
-    exports.addNotification = addNotification;
-    exports.alert = showAlert;
-    exports.notify = showNotification;
-    exports.removeLoadingMessage = removeLoadingMessage;
-    exports.mapView = mapView;
-    exports.showView = showView;
-    exports.mapRouteView = mapRouteView;
-    exports.showRouteView = showRouteView;
-    exports.updateViewData = updateViewData;
-    exports.layoutUI = layoutUI;
-
-    exports.getAppContainerEl = getAppContainerEl;
-    exports.getAppEl = getAppEl;
-
-  });;define('Nori.Router',
+;define('Nori.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
@@ -1849,6 +1855,13 @@ define('Nori.Events.AppEvents',
     return _appModelCollection.get(storeID);
   }
 
+  //----------------------------------------------------------------------------
+  //  Views
+  //----------------------------------------------------------------------------
+
+  function createApplicationView(extras) {
+    return extend(extras, require('Nori.ApplicationView'));
+  }
 
   //----------------------------------------------------------------------------
   //  Route Validation
@@ -1920,7 +1933,7 @@ define('Nori.Events.AppEvents',
    * @param ext
    * @returns {*}
    */
-  function create(ext) {
+  function createApplication(ext) {
     return extend(ext, this);
   }
 
@@ -2059,12 +2072,13 @@ define('Nori.Events.AppEvents',
     createModel: createModel,
     addModel: addModel,
     getModel: getModel,
+    createApplicationView: createApplicationView,
     setCurrentRoute: setCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
-    create: create,
+    createApplication: createApplication,
     storeSubViewData: storeSubViewData,
     retrieveSubViewData: retrieveSubViewData,
     bindModelView: bindModelView,

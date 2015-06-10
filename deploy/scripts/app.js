@@ -503,52 +503,19 @@ define('TT.RouteChangedCommand',
     var appView;
 
     // Create the application instance
-    window.TT = Nori.create();
+    window.TT = Nori.createApplication();
 
     // Create the view
-    appView = Nori.extend(require('TT.TimeTrackerAppView'), require('Nori.View'));
+    appView = TT.createApplicationView(require('TT.TimeTrackerAppView'));
 
     // Initialize app with the view
+    // App muse be initialized with view for route mapping to work
     TT.initialize({view:appView});
 
     mapEvents();
     mapRoutes();
 
-    console.time('Gen fake');
-    var dataSource = require('TT.FakeData');
-    dataSource.initialize();
-    console.timeEnd('Gen fake');
-
-    var _peopleSet = TT.createModelCollection({id:'peopleset'}),
-      _projectsSet = TT.createModelCollection({id:'projectsset'}),
-      _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
-
-    console.time('Create set');
-    _peopleSet.addFromObjArray(dataSource.getPeople(), 'id', false);
-    _projectsSet.addFromObjArray(dataSource.getProjects(), 'id', false);
-    _assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
-    console.timeEnd('Create set');
-
-    var fakeMe = _peopleSet.getFirst(),
-        myName = fakeMe.get('name'),
-        myProjects;
-
-    myProjects = _assignmentsSet.filter('resourceName', myName);
-
-    //myProjects.forEach(
-    //  function listMyProjects(store) {
-    //    console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
-    //  }
-    //);
-
-    //var devs = _peopleSet.filterValues(
-    //  function (store) {
-    //    return store.get('jobTitle') === 'ITD';
-    //  }).forEach(
-    //  function(store) {
-    //    console.log(store.get('name')+', '+store.get('jobTitle'));
-    //  });
-
+    createModel();
 
     // Everything is ready!
     TT.view().removeLoadingMessage();
@@ -580,6 +547,43 @@ define('TT.RouteChangedCommand',
     TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.TemplateSubView');
     TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
     TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
+  }
+
+  function createModel() {
+    console.time('Gen fake');
+    var dataSource = require('TT.FakeData');
+    dataSource.initialize();
+    console.timeEnd('Gen fake');
+
+    var _peopleSet = TT.createModelCollection({id:'peopleset'}),
+      _projectsSet = TT.createModelCollection({id:'projectsset'}),
+      _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
+
+    console.time('Create set');
+    _peopleSet.addFromObjArray(dataSource.getPeople(), 'id', false);
+    _projectsSet.addFromObjArray(dataSource.getProjects(), 'id', false);
+    _assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
+    console.timeEnd('Create set');
+
+    var fakeMe = _peopleSet.getFirst(),
+      myName = fakeMe.get('name'),
+      myProjects;
+
+    myProjects = _assignmentsSet.filter('resourceName', myName);
+
+    //myProjects.forEach(
+    //  function listMyProjects(store) {
+    //    console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
+    //  }
+    //);
+
+    //var devs = _peopleSet.filterValues(
+    //  function (store) {
+    //    return store.get('jobTitle') === 'ITD';
+    //  }).forEach(
+    //  function(store) {
+    //    console.log(store.get('name')+', '+store.get('jobTitle'));
+    //  });
   }
 
   function testModel() {

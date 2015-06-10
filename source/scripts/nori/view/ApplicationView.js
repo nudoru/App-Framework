@@ -1,4 +1,4 @@
-define('Nori.View',
+define('Nori.ApplicationView',
   function (require, module, exports) {
 
     var _appContainerEl,
@@ -192,7 +192,6 @@ define('Nori.View',
     exports.showRouteView = showRouteView;
     exports.updateViewData = updateViewData;
     exports.layoutUI = layoutUI;
-
     exports.getAppContainerEl = getAppContainerEl;
     exports.getAppEl = getAppEl;
 
