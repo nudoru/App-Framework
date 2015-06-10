@@ -111,29 +111,7 @@ var Nori = (function () {
   //  Simple model collection
   //----------------------------------------------------------------------------
 
-  /**
-   * Helper to create a new model collection and initalize
-   * @param initObj
-   * @param extras
-   * @returns {*}
-   */
-  function createModelCollection(initObj, extras) {
-    var m = requireExtend('Nori.ModelCollection', extras);
-    m.initialize(initObj);
-    return m;
-  }
 
-  /**
-   * Helper to create a new model and initialize
-   * @param initObj
-   * @param extras
-   * @returns {*}
-   */
-  function createModel(initObj, extras) {
-    var m = requireExtend('Nori.Model', extras);
-    m.initialize(initObj);
-    return m;
-  }
 
   /**
    * Add a model to the application collection
@@ -154,11 +132,68 @@ var Nori = (function () {
   }
 
   //----------------------------------------------------------------------------
-  //  Views
+  //  Factories - concatenative inheritance
   //----------------------------------------------------------------------------
 
+  /**
+   * Merges objects
+   * @param dest Destination object
+   * @param src Source
+   * @returns {*}
+   */
+  function extend(dest, src) {
+    dest = _.assign({}, src, dest);
+    dest._super = src;
+    return dest;
+  }
+
+  /**
+   * Create a new Nori application instance
+   * @param extras
+   * @returns {*}
+   */
+  function createApplication(extras) {
+    return extend(extras, this);
+  }
+
+  /**
+   * Create a new model collection and initalize
+   * @param initObj
+   * @param extras
+   * @returns {*}
+   */
+  function createModelCollection(initObj, extras) {
+    var m = requireExtend('Nori.ModelCollection', extras);
+    m.initialize(initObj);
+    return m;
+  }
+
+  /**
+   * Create a new model and initialize
+   * @param initObj
+   * @param extras
+   * @returns {*}
+   */
+  function createModel(initObj, extras) {
+    var m = requireExtend('Nori.Model', extras);
+    m.initialize(initObj);
+    return m;
+  }
+
+  /**
+   * Creates main application view
+   * @param extras
+   * @returns {*}
+   */
   function createApplicationView(extras) {
-    return extend(extras, require('Nori.ApplicationView'));
+
+    // Concat main view with mixins
+    var appView = _.assign({},
+      require('Nori.ApplicationView'),
+      require('Nori.View.SubRouteViews'));
+
+    return extend(extras, appView);
+    //return extend(extras, require('Nori.ApplicationView'));
   }
 
   //----------------------------------------------------------------------------
@@ -208,31 +243,6 @@ var Nori = (function () {
     } else {
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
     }
-  }
-
-  //----------------------------------------------------------------------------
-  //  Subclassing utils, somewhat inspired by Ember using concatenative inheritance
-  //----------------------------------------------------------------------------
-
-  /**
-   * Merges objects
-   * @param dest Destination object
-   * @param src Source
-   * @returns {*}
-   */
-  function extend(dest, src) {
-    dest = _.assign({}, src, dest);
-    dest._super = src;
-    return dest;
-  }
-
-  /**
-   * Returns a new Nori application instance by extending a base if specified
-   * @param ext
-   * @returns {*}
-   */
-  function createApplication(ext) {
-    return extend(ext, this);
   }
 
   //----------------------------------------------------------------------------

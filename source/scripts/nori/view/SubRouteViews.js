@@ -96,7 +96,6 @@ define('Nori.View.SubRouteViews',
       });
 
       mountEl = document.getElementById(subview.mountPoint);
-
       mountEl.appendChild(subview.controller.getDOMElement());
 
       if(subview.controller.viewDidMount) {

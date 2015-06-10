@@ -3,8 +3,6 @@ define('Nori.ApplicationView',
 
     var _appContainerEl,
       _appEl,
-      _browserEventView = require('Nori.View.BrowserEvents'),
-      _routeSubViewView = require('Nori.View.SubRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
       _toolTipView = require('nudoru.components.ToolTipView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
@@ -27,22 +25,20 @@ define('Nori.ApplicationView',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      render();
+      initializeApplicationElements();
+      initializeComponents();
     }
 
-    /**
-     * Basic rendering and component init
-     */
     function render() {
+      ///
+    }
+
+    function initializeApplicationElements() {
       _appContainerEl = document.getElementById('app__container');
       _appEl = document.getElementById('app__contents');
+    }
 
-      _browserEventView.setMainScrollingView('app__contents');
-      _browserEventView.initializeEventStreams();
-      _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
-
-      _routeSubViewView.setRouteViewMountPoint('contents');
-
+    function initializeComponents() {
       _toolTipView.initialize('tooltip__container');
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
@@ -125,72 +121,19 @@ define('Nori.ApplicationView',
     }
 
     //----------------------------------------------------------------------------
-    //  Composition
-    //----------------------------------------------------------------------------
-
-
-    /**
-     * Map a sub view component
-     * @param templateID
-     * @param controller
-     * @param mountpoint
-     */
-    function mapView(templateID, controller, mountpoint) {
-      _routeSubViewView.mapView(templateID, controller, false, mountpoint);
-    }
-
-    /**
-     * Show a sub view component
-     * @param templateID
-     * @param dataObj
-     */
-    function showView(templateID, dataObj) {
-      _routeSubViewView.showView(templateID, dataObj);
-    }
-
-    /**
-     * Pass to route sub view
-     * @param templateID
-     * @param controller
-     */
-    function mapRouteView(templateID, controller) {
-      _routeSubViewView.mapRouteView(templateID, controller);
-    }
-
-    /**
-     * Pass to route sub view
-     * @param dataObj
-     * @param previousStateData
-     */
-    function showRouteView(dataObj, previousStateData) {
-      _routeSubViewView.showRouteView(dataObj, previousStateData);
-    }
-
-    /**
-     * Update subview based on a change in bound model data
-     * @param viewID
-     * @param modelID
-     * @param storeData
-     */
-    function updateViewData(viewID, storeData) {
-     _routeSubViewView.updateViewData(viewID, storeData);
-    }
-
-    //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+
+    exports.initializeApplicationElements = initializeApplicationElements;
+    exports.initializeComponents = initializeComponents;
+
     exports.addMessageBox = addMessageBox;
     exports.addNotification = addNotification;
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
-    exports.mapView = mapView;
-    exports.showView = showView;
-    exports.mapRouteView = mapRouteView;
-    exports.showRouteView = showRouteView;
-    exports.updateViewData = updateViewData;
     exports.layoutUI = layoutUI;
     exports.getAppContainerEl = getAppContainerEl;
     exports.getAppEl = getAppEl;

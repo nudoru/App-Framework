@@ -391,24 +391,30 @@ define('TT.RouteChangedCommand',
     function initialize() {
       _self = this;
 
+      _self.initializeApplicationElements();
+      _self.initializeComponents();
 
-      this._super.initialize();
+      _self.setRouteViewMountPoint('contents');
 
       mapComponentViews();
       configureMainButtons();
-
       configureToolTips();
+
+      _moduleNavView.initialize();
 
       render();
     }
 
     function render() {
+      //_browserEventView.setMainScrollingView('app__contents');
+      //_browserEventView.initializeEventStreams();
+      //_browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
+
       _self.showView('UserProfilePanel');
-      _moduleNavView.initialize();
     }
 
     function mapComponentViews() {
-      _self.mapView('UserProfilePanel', 'TT.UserProfilePanelView', 'userprofilepanel');
+      _self.mapView('UserProfilePanel', 'TT.UserProfilePanelView', false, 'userprofilepanel');
     }
 
     function configureMainButtons() {

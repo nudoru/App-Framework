@@ -602,8 +602,6 @@ define('Nori.Events.AppEvents',
 
     var _appContainerEl,
       _appEl,
-      _browserEventView = require('Nori.View.BrowserEvents'),
-      _routeSubViewView = require('Nori.View.SubRouteViews'),
       _notificationView = require('nudoru.components.ToastView'),
       _toolTipView = require('nudoru.components.ToolTipView'),
       _messageBoxView = require('nudoru.components.MessageBoxView'),
@@ -626,22 +624,20 @@ define('Nori.Events.AppEvents',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      render();
+      initializeApplicationElements();
+      initializeComponents();
     }
 
-    /**
-     * Basic rendering and component init
-     */
     function render() {
+      ///
+    }
+
+    function initializeApplicationElements() {
       _appContainerEl = document.getElementById('app__container');
       _appEl = document.getElementById('app__contents');
+    }
 
-      _browserEventView.setMainScrollingView('app__contents');
-      _browserEventView.initializeEventStreams();
-      _browserEventView.setPositionUIElementsOnChangeCB(layoutUI);
-
-      _routeSubViewView.setRouteViewMountPoint('contents');
-
+    function initializeComponents() {
       _toolTipView.initialize('tooltip__container');
       _notificationView.initialize('toast__container');
       _messageBoxView.initialize('messagebox__container');
@@ -724,72 +720,19 @@ define('Nori.Events.AppEvents',
     }
 
     //----------------------------------------------------------------------------
-    //  Composition
-    //----------------------------------------------------------------------------
-
-
-    /**
-     * Map a sub view component
-     * @param templateID
-     * @param controller
-     * @param mountpoint
-     */
-    function mapView(templateID, controller, mountpoint) {
-      _routeSubViewView.mapView(templateID, controller, false, mountpoint);
-    }
-
-    /**
-     * Show a sub view component
-     * @param templateID
-     * @param dataObj
-     */
-    function showView(templateID, dataObj) {
-      _routeSubViewView.showView(templateID, dataObj);
-    }
-
-    /**
-     * Pass to route sub view
-     * @param templateID
-     * @param controller
-     */
-    function mapRouteView(templateID, controller) {
-      _routeSubViewView.mapRouteView(templateID, controller);
-    }
-
-    /**
-     * Pass to route sub view
-     * @param dataObj
-     * @param previousStateData
-     */
-    function showRouteView(dataObj, previousStateData) {
-      _routeSubViewView.showRouteView(dataObj, previousStateData);
-    }
-
-    /**
-     * Update subview based on a change in bound model data
-     * @param viewID
-     * @param modelID
-     * @param storeData
-     */
-    function updateViewData(viewID, storeData) {
-     _routeSubViewView.updateViewData(viewID, storeData);
-    }
-
-    //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
+
+    exports.initializeApplicationElements = initializeApplicationElements;
+    exports.initializeComponents = initializeComponents;
+
     exports.addMessageBox = addMessageBox;
     exports.addNotification = addNotification;
     exports.alert = showAlert;
     exports.notify = showNotification;
     exports.removeLoadingMessage = removeLoadingMessage;
-    exports.mapView = mapView;
-    exports.showView = showView;
-    exports.mapRouteView = mapRouteView;
-    exports.showRouteView = showRouteView;
-    exports.updateViewData = updateViewData;
     exports.layoutUI = layoutUI;
     exports.getAppContainerEl = getAppContainerEl;
     exports.getAppEl = getAppEl;
@@ -938,7 +881,7 @@ define('Nori.Events.AppEvents',
     exports.initialize = initialize;
     exports.render = render;
 
-  });;define('Nori.View.BrowserEvents',
+  });;define('Nori.View.BrowserEventsView',
   function (require, module, exports) {
 
     var _currentViewPortSize,
@@ -1279,7 +1222,6 @@ define('Nori.Events.AppEvents',
       });
 
       mountEl = document.getElementById(subview.mountPoint);
-
       mountEl.appendChild(subview.controller.getDOMElement());
 
       if(subview.controller.viewDidMount) {
@@ -1813,29 +1755,7 @@ define('Nori.Events.AppEvents',
   //  Simple model collection
   //----------------------------------------------------------------------------
 
-  /**
-   * Helper to create a new model collection and initalize
-   * @param initObj
-   * @param extras
-   * @returns {*}
-   */
-  function createModelCollection(initObj, extras) {
-    var m = requireExtend('Nori.ModelCollection', extras);
-    m.initialize(initObj);
-    return m;
-  }
 
-  /**
-   * Helper to create a new model and initialize
-   * @param initObj
-   * @param extras
-   * @returns {*}
-   */
-  function createModel(initObj, extras) {
-    var m = requireExtend('Nori.Model', extras);
-    m.initialize(initObj);
-    return m;
-  }
 
   /**
    * Add a model to the application collection
@@ -1856,11 +1776,68 @@ define('Nori.Events.AppEvents',
   }
 
   //----------------------------------------------------------------------------
-  //  Views
+  //  Factories - concatenative inheritance
   //----------------------------------------------------------------------------
 
+  /**
+   * Merges objects
+   * @param dest Destination object
+   * @param src Source
+   * @returns {*}
+   */
+  function extend(dest, src) {
+    dest = _.assign({}, src, dest);
+    dest._super = src;
+    return dest;
+  }
+
+  /**
+   * Create a new Nori application instance
+   * @param extras
+   * @returns {*}
+   */
+  function createApplication(extras) {
+    return extend(extras, this);
+  }
+
+  /**
+   * Create a new model collection and initalize
+   * @param initObj
+   * @param extras
+   * @returns {*}
+   */
+  function createModelCollection(initObj, extras) {
+    var m = requireExtend('Nori.ModelCollection', extras);
+    m.initialize(initObj);
+    return m;
+  }
+
+  /**
+   * Create a new model and initialize
+   * @param initObj
+   * @param extras
+   * @returns {*}
+   */
+  function createModel(initObj, extras) {
+    var m = requireExtend('Nori.Model', extras);
+    m.initialize(initObj);
+    return m;
+  }
+
+  /**
+   * Creates main application view
+   * @param extras
+   * @returns {*}
+   */
   function createApplicationView(extras) {
-    return extend(extras, require('Nori.ApplicationView'));
+
+    // Concat main view with mixins
+    var appView = _.assign({},
+      require('Nori.ApplicationView'),
+      require('Nori.View.SubRouteViews'));
+
+    return extend(extras, appView);
+    //return extend(extras, require('Nori.ApplicationView'));
   }
 
   //----------------------------------------------------------------------------
@@ -1910,31 +1887,6 @@ define('Nori.Events.AppEvents',
     } else {
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
     }
-  }
-
-  //----------------------------------------------------------------------------
-  //  Subclassing utils, somewhat inspired by Ember using concatenative inheritance
-  //----------------------------------------------------------------------------
-
-  /**
-   * Merges objects
-   * @param dest Destination object
-   * @param src Source
-   * @returns {*}
-   */
-  function extend(dest, src) {
-    dest = _.assign({}, src, dest);
-    dest._super = src;
-    return dest;
-  }
-
-  /**
-   * Returns a new Nori application instance by extending a base if specified
-   * @param ext
-   * @returns {*}
-   */
-  function createApplication(ext) {
-    return extend(ext, this);
   }
 
   //----------------------------------------------------------------------------
