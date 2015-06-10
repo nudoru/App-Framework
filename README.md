@@ -22,7 +22,7 @@ window.MyApp = Nori.create();
 
 ### You need to create a module for the main view and make the object:
 ```javascript
-var appView = Nori.extend(require('myviewmodule.id'), require('Nori.View'));
+var appView = MyApp.createApplicationView(require('MyAppViewModuleID'));
 ```
 
 ### Initialize the application with the view. 

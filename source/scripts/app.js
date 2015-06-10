@@ -23,7 +23,6 @@
 
     mapEvents();
     mapRoutes();
-
     createModel();
 
     // Everything is ready!
@@ -36,11 +35,17 @@
     //testModel();
   };
 
+  /**
+   * Set up commands / events
+   */
   function mapEvents() {
     var _appEvents = require('Nori.Events.AppEvents');
     TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.RouteChangedCommand');
   }
 
+  /**
+   * Set up the view to routes
+   */
   function mapRoutes() {
     // Default route
     TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
@@ -58,6 +63,9 @@
     TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
   }
 
+  /**
+   * Create the mock model
+   */
   function createModel() {
     console.time('Gen fake');
     var dataSource = require('TT.FakeData');
@@ -95,6 +103,9 @@
     //  });
   }
 
+  /**
+   * Testing for not model functionality
+   */
   function testModel() {
 
     //var testMod = requireExtend('Nori.Model', {
@@ -126,8 +137,6 @@
 
     //TT.addModel(test1);
     //TT.addModel(test2);
-
-
 
     //console.log('test has: '+test1.has('name'));
     //console.log('test keys: '+test1.keys());
