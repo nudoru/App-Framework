@@ -235,4 +235,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.registerTask('default', ['clean', 'copy', 'compass', 'jade', 'jshint', 'concat', 'uglify', 'connect', 'watch']);
+  grunt.registerTask('build', ['clean', 'copy', 'compass', 'jade', 'jshint', 'concat', 'uglify']);
 };
