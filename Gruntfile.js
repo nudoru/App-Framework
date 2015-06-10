@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 
     copy: {
       build: {
-        cwd: 'source',
+        cwd: 'src',
         src: [ '**',
           '!**/*.sass',
           '!**/*.scss',
@@ -40,7 +40,7 @@ module.exports = function (grunt) {
     compass: {
       dist: {
         options: {
-          sassDir: 'source/sass',
+          sassDir: 'src/sass',
           cssDir: 'deploy/css',
           environment: 'production',
           //compressed, expanded
@@ -64,7 +64,7 @@ module.exports = function (grunt) {
           pretty: true
         },
         files: [ {
-          cwd: "source/jade",
+          cwd: "src/jade",
           src: "index.jade",
           dest: "deploy/",
           expand: true,
@@ -87,57 +87,57 @@ module.exports = function (grunt) {
 
       libs: {
         src: [
-          'source/scripts/vendor/gsap/TweenLite.min.js',
-          'source/scripts/vendor/gsap/utils/Draggable.min.js',
-          'source/scripts/vendor/gsap/TimeLineLite.min.js',
-          'source/scripts/vendor/gsap/easing/EasePack.min.js',
-          'source/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
-          'source/scripts/vendor/lodash.min.js',
-          'source/scripts/vendor/rxjs/rx.lite.compat.min.js'
+          'src/scripts/vendor/gsap/TweenLite.min.js',
+          'src/scripts/vendor/gsap/utils/Draggable.min.js',
+          'src/scripts/vendor/gsap/TimeLineLite.min.js',
+          'src/scripts/vendor/gsap/easing/EasePack.min.js',
+          'src/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
+          'src/scripts/vendor/lodash.min.js',
+          'src/scripts/vendor/rxjs/rx.lite.compat.min.js'
         ],
         dest: 'deploy/scripts/libs.js'
       },
 
       nudorucore: {
         src: [
-          'source/scripts/nudoru/require.js',
-          'source/scripts/nudoru/core/*.js'
+          'src/scripts/nudoru/require.js',
+          'src/scripts/nudoru/core/*.js'
         ],
         dest: 'deploy/scripts/nudoru.core.js'
       },
 
       nudorubrowser: {
         src: [
-          'source/scripts/nudoru/browser/*.js'
+          'src/scripts/nudoru/browser/*.js'
         ],
         dest: 'deploy/scripts/nudoru.browser.js'
       },
 
       nudorucomponents: {
         src: [
-          'source/scripts/nudoru/components/*.js'
+          'src/scripts/nudoru/components/*.js'
         ],
         dest: 'deploy/scripts/nudoru.components.js'
       },
 
       nori: {
         src: [
-          'source/scripts/nori/events/*.js',
-          'source/scripts/nori/model/modules/*.js',
-          'source/scripts/nori/model/*.js',
-          'source/scripts/nori/view/modules/*.js',
-          'source/scripts/nori/view/*.js',
-          'source/scripts/nori/controller/*.js',
-          'source/scripts/nori/controller/commands/*.js',
-          'source/scripts/nori/Nori.js'
+          'src/scripts/nori/events/*.js',
+          'src/scripts/nori/model/modules/*.js',
+          'src/scripts/nori/model/*.js',
+          'src/scripts/nori/view/modules/*.js',
+          'src/scripts/nori/view/*.js',
+          'src/scripts/nori/controller/*.js',
+          'src/scripts/nori/controller/commands/*.js',
+          'src/scripts/nori/Nori.js'
         ],
         dest: 'deploy/scripts/nori.js'
       },
 
       app: {
         src: [
-          'source/scripts/tt/**/*.js',
-          'source/scripts/app.js'
+          'src/scripts/tt/**/*.js',
+          'src/scripts/app.js'
         ],
         dest: 'deploy/scripts/app.js'
       }
@@ -164,7 +164,7 @@ module.exports = function (grunt) {
     },
 
     jshint: {
-      files: ['source/scripts/nudoru/*.js', 'source/scripts/nori/**/*.js', 'source/scripts/tt/**/*.js'],
+      files: ['src/scripts/nudoru/*.js', 'src/scripts/nori/**/*.js', 'src/scripts/tt/**/*.js'],
       options: {
         '-W014': true,
         '-W061': true,
@@ -199,21 +199,21 @@ module.exports = function (grunt) {
       },
 
       html: {
-        files: ['source/jade/**/*.jade'],
+        files: ['src/jade/**/*.jade'],
         tasks: ['jade'],
         options: {
           spawn: false
         }
       },
       css: {
-        files: ['source/sass/**/*.sass', 'source/sass/**/*.scss'],
+        files: ['src/sass/**/*.sass', 'src/sass/**/*.scss'],
         tasks: ['compass'],
         options: {
           spawn: false
         }
       },
       js: {
-        files: ['source/scripts/**/*.js'],
+        files: ['src/scripts/**/*.js'],
         tasks: ['jshint', 'concat', 'uglify'],
         options: {
           spawn: false
