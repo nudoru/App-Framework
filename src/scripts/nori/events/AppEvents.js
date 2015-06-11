@@ -17,3 +17,31 @@ define('Nori.Events.AppEvents',
     exports.CHANGE_ROUTE = 'CHANGE_ROUTE';
     exports.SUBVIEW_STORE_STATE = 'SUBVIEW_STORE_STATE';
   });
+
+//define('Nori.Events.AppEvents',
+//  function (require, module, exports) {
+//    var objUtils = require('Nudoru.Core.ObjectUtils');
+//
+//    exports = _.merge({}, objUtils.keyMirror({
+//      APP_INITIALIZED: null,
+//      MODEL_DATA_WAITING: null,
+//      MODEL_DATA_READY: null,
+//      MODEL_DATA_CHANGED: null,
+//      MODEL_DATA_SAVED: null,
+//      MODEL_DATA_DESTROYED: null,
+//      UPDATE_MODEL_DATA: null,
+//      RESUME_FROM_MODEL_STATE: null,
+//      VIEW_INITIALIZED: null,
+//      VIEW_RENDERED: null,
+//      VIEW_CHANGED: null,
+//      VIEW_CHANGE_TO_MOBILE: null,
+//      VIEW_CHANGE_TO_DESKTOP: null,
+//      ROUTE_CHANGED: null,
+//      CHANGE_ROUTE: null,
+//      SUBVIEW_STORE_STATE: null
+//    }));
+//
+//    console.log(exports);
+//
+//  });
+
