@@ -22,13 +22,16 @@ define('Nori.Events.Emitter',
     function subscribe(evtStr, handler, once) {
       _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
 
-      _subjectMap[evtStr] = {
-        once: once,
-        handler: handler,
-        subject: new Rx.Subject()
-      };
+       var subject = new Rx.Subject();
 
-      return _subjectMap[evtStr].subject.subscribe(handler);
+      _subjectMap[evtStr].push({
+        once: once,
+        priority: 0,
+        handler: handler,
+        subject: subject
+      });
+
+      return subject.subscribe(handler);
     }
 
     /**
@@ -53,21 +56,56 @@ define('Nori.Events.Emitter',
      * @param data
      */
     function publish(evtStr, data) {
-      var subjObj = _subjectMap[evtStr];
+      var subscribers = _subjectMap[evtStr], i;
 
-      if(!subjObj) {
+      if(!subscribers) {
+        _log.push({event:evtStr, data:'NO SUBSCRIBERS'});
         return;
       }
 
       _log.push({event:evtStr, data:data});
-      console.log('>> ',evtStr, data);
+      //console.log('>> ',evtStr, data);
 
-      subjObj.subject.onNext(data);
+      i = subscribers.length;
 
-      if(subjObj.once) {
-        subjObj.subject.onCompleted();
-        subjObj.subject.dispose();
-        subjObj = null;
+      while (i--) {
+
+        var subjObj = subscribers[i];
+
+        subjObj.subject.onNext(data);
+
+        if (subjObj.once) {
+          unsubscribe(evtStr, subjObj.handler);
+        }
+
+      }
+    }
+
+    function unsubscribe(evtStr, hander) {
+      if (_subjectMap[evtString] === undefined) {
+        return;
+      }
+
+      var subscribers = _subjectMap[evtString],
+        handlerIdx = -1;
+
+      for (var i = 0, len = subscribers.length; i < len; i++) {
+        if (subscribers[i].handler === handler) {
+          handlerIdx = i;
+          subscribers[i].subject.onCompleted();
+          subscribers[i].subject.dispose();
+          subscribers[i] = null;
+        }
+      }
+
+      if (handlerIdx === -1) {
+        return;
+      }
+
+      subscribers.splice(handlerIdx, 1);
+
+      if (subscribers.length === 0) {
+        delete _subjectMap[evtString];
       }
     }
 
@@ -76,30 +114,14 @@ define('Nori.Events.Emitter',
      * @returns {Array.<T>}
      */
     function getLog() {
-      return _log.slice(0)
+      return _log.slice(0);
     }
-
-    /**
-     * Cleanup
-     */
-    function dispose() {
-      var subjects = _subjectMap;
-      for (var prop in subjects) {
-        if (hasOwnProp.call(subjects, prop)) {
-          subjects[prop].subject.dispose();
-        }
-      }
-
-      _subjectMap = {};
-      _log = [];
-    }
-
 
 
     exports.subscribe = subscribe;
+    exports.unsubscribe = unsubscribe;
     exports.subscribeCommand = subscribeCommand;
     exports.publish = publish;
     exports.getLog = getLog;
-    exports.dispose = dispose;
 
   });

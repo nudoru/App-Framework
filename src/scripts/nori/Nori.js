@@ -103,6 +103,11 @@ var Nori = (function () {
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.Controller.Commands.URLHashChangedCommand');
     mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.Controller.Commands.ChangeRouteCommand');
+
+    _emitter.subscribe(_appEvents.ROUTE_CHANGED, function(data) {
+      console.log('evt route changed',data);
+    });
+
   }
 
   //----------------------------------------------------------------------------

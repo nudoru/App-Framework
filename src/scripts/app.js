@@ -39,8 +39,15 @@
    * Set up commands / events
    */
   function mapEvents() {
-    var _appEvents = require('Nori.Events.AppEvents');
-    TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.Commands.RouteChangedCommand');
+    var _appEvents = require('Nori.Events.AppEvents'),
+        _emitter = require('Nori.Events.Emitter');
+    //TT.mapEventCommand(_appEvents.ROUTE_CHANGED, 'TT.Commands.RouteChangedCommand');
+
+    _emitter.subscribe(_appEvents.ROUTE_CHANGED, function(data) {
+      console.log('TT evt route changed',data);
+      TT.view().updateOnRouteChange(data);
+    });
+
   }
 
   /**
