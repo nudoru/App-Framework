@@ -18,7 +18,7 @@ define('Nori.Model.Model',
       _lastChangeResult,
       _silent = false,
       _parentCollection,
-      _emitter = require('Nori.Events.Dispatcher'),
+      _dispatcher = require('Nori.Events.Dispatcher'),
       _appEvents = require('Nori.Events.AppEvents');
 
     //----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ define('Nori.Model.Model',
       _lastChangeResult = objectDiff.diff(previousStore, _store);
 
       if(!silentSet) {
-        emitChange();
+        dispatchChange();
       }
     }
 
@@ -227,13 +227,13 @@ define('Nori.Model.Model',
     /**
      * On change, emit event globally
      */
-    function emitChange() {
+    function dispatchChange() {
       if(!_silent) {
-        _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'model',  store:getStore(), changed:_lastChangeResult});
+        _dispatcher.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'model',  store:getStore(), changed:_lastChangeResult});
       }
 
-      if(_parentCollection.emitChange) {
-        _parentCollection.emitChange({id:_id, store:getStore(), changed:_lastChangeResult});
+      if(_parentCollection.dispatchChange) {
+        _parentCollection.dispatchChange({id:_id, store:getStore(), changed:_lastChangeResult});
       }
 
     }

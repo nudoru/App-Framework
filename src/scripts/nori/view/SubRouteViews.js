@@ -13,7 +13,7 @@ define('Nori.View.SubRouteViews',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _emitter = require('Nori.Events.Dispatcher');
+      _dispatcher = require('Nori.Events.Dispatcher');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -139,7 +139,7 @@ define('Nori.View.SubRouteViews',
 
       TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
-      _emitter.publish(_appEvents.VIEW_CHANGED, dataObj.templateID);
+      _dispatcher.publish(_appEvents.VIEW_CHANGED, dataObj.templateID);
     }
 
     /**

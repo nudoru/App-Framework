@@ -19,7 +19,7 @@ define('TT.View.TimeTrackerAppView',
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _emitter = require('Nori.Events.Dispatcher');
+      _dispatcher = require('Nori.Events.Dispatcher');
 
     function initialize() {
       _self = this;

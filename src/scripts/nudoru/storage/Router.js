@@ -16,7 +16,7 @@ define('Nudoru.Core.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
-      _emitter = require('Nudoru.Component.Emitter'),
+      _dispatcher = require('Nudoru.Component.Emitter'),
       _browserEvents = require('Nudoru.Browser.BrowserEvents');
 
     function initialize() {
@@ -41,7 +41,7 @@ define('Nudoru.Core.Router',
      * @param evt
      */
     function onHashChange(evt) {
-      _emitter.publish(_browserEvents.URL_HASH_CHANGED, {
+      _dispatcher.publish(_browserEvents.URL_HASH_CHANGED, {
         routeObj: getCurrentRoute(),
         fragment: getURLFragment()
       });

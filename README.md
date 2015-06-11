@@ -37,7 +37,7 @@ MyApp.initialize({view:appView});
 ### 4. Map events to handlers or commands. 
 
 ```javascript
-_emitter.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+_dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
   console.log('Update model data, model id: ',data.id, data.data);
 });
 ```
@@ -104,7 +104,7 @@ Events are ‘magic’ strings. Nori defines core application ones in the `scrip
 
 Example:
 ```javascript
-_emitter.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+_dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
   console.log('Update model data, model id: ',data.id, data.data);
 });
 ```

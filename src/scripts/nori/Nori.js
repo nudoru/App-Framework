@@ -2,20 +2,20 @@ var Nori = (function () {
   var _config,
     _view,
     _appModelCollection,
-    _emitterCommandMap = Object.create(null),
+    _dispatcherCommandMap = Object.create(null),
     _modelViewBindingMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('Nudoru.Browser.BrowserEvents'),
     _objectUtils = require('Nudoru.Core.ObjectUtils'),
-    _emitter = require('Nori.Events.Dispatcher'),
+    _dispatcher = require('Nori.Events.Dispatcher'),
     _router = require('Nori.Controller.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getEmitter() {
-    return _emitter;
+  function getDispatcher() {
+    return _dispatcher;
   }
 
   function getRouter() {
@@ -79,25 +79,25 @@ var Nori = (function () {
 
   function postInitialize() {
     // Model
-    _emitter.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(data) {
+    _dispatcher.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(data) {
       handleModelUpdate(data);
     });
 
-    _emitter.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+    _dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
       console.log('Update model data, model id: ',data.id, data.data);
     });
 
     // Subviews
-    _emitter.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(data) {
+    _dispatcher.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(data) {
       setCurrentRoute(data.routeObj);
     });
 
-    _emitter.subscribe(_appEvents.CHANGE_ROUTE, function execute(data) {
+    _dispatcher.subscribe(_appEvents.CHANGE_ROUTE, function execute(data) {
       data.fromApp = true;
       setCurrentRoute(data);
     });
 
-    _emitter.publish(_appEvents.APP_INITIALIZED);
+    _dispatcher.publish(_appEvents.APP_INITIALIZED);
   }
 
 
@@ -214,7 +214,7 @@ var Nori = (function () {
   /**
    * Allow the router to run the route view mapping if it's valid. Typically reached from
    * the ChangeRouteCommand via an emitted event:
-   *  _emitter.publish(_appEvents.CHANGE_ROUTE, {route:'/route', data:{}});
+   *  _dispatcher.publish(_appEvents.CHANGE_ROUTE, {route:'/route', data:{}});
    * When the route is changed in this way, this method will fire twice, once for the
    * _router.setRoute and once when the URL hash change event (URLHashChangedCommand).
    * The route changed event is only published on this 2nd call which will trigger the
@@ -231,7 +231,7 @@ var Nori = (function () {
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
         _router.runCurrentRoute();
-        _emitter.publish(_appEvents.ROUTE_CHANGED, routeObj);
+        _dispatcher.publish(_appEvents.ROUTE_CHANGED, routeObj);
       }
     } else {
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
@@ -248,7 +248,7 @@ var Nori = (function () {
    * @param cmdModuleName Module name of a command object, req execute(dataObj) function
    */
   function mapEventCommand(evt, cmdModuleName) {
-    _emitterCommandMap[evt] = _emitter.subscribeCommand(evt, cmdModuleName);
+    _dispatcherCommandMap[evt] = _dispatcher.subscribeCommand(evt, cmdModuleName);
   }
 
   /**
@@ -345,7 +345,7 @@ var Nori = (function () {
   return {
     initialize: initialize,
     config: getConfig,
-    getEmitter: getEmitter,
+    dispatcher: getDispatcher,
     router: getRouter,
     view: getView,
     createModelCollection: createModelCollection,

@@ -7,7 +7,7 @@ define('Nori.View.BrowserEventsView',
       _browserScrollStream,
       _browserResizeStream,
       _positionUIElementsOnChangeCB,
-      _emitter = require('Nori.Events.Dispatcher'),
+      _dispatcher = require('Nori.Events.Dispatcher'),
       _browserEvents = require('Nudoru.Browser.BrowserEvents');
 
 
@@ -64,11 +64,11 @@ define('Nori.View.BrowserEventsView',
     //----------------------------------------------------------------------------
 
     function handleViewPortResize() {
-      _emitter.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
+      _dispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
     }
 
     function handleViewPortScroll() {
-      _emitter.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+      _dispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
     }
 
     function getCurrentViewPortSize() {

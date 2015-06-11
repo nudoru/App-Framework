@@ -21,27 +21,23 @@
     // App muse be initialized with view for route mapping to work
     TT.initialize({view:appView});
 
-    mapEvents();
     createModel();
+    mapEvents();
 
     // Everything is ready!
     TT.view().removeLoadingMessage();
 
     // Execute the route on the URL
     TT.setCurrentRoute(TT.router().getCurrentRoute());
-
-    // Model testing-
-    //testModel();
   };
 
   /**
    * Set up commands / events
    */
   function mapEvents() {
-    var _appEvents = require('Nori.Events.AppEvents'),
-        _emitter = require('Nori.Events.Dispatcher');
+    var _appEvents = require('Nori.Events.AppEvents');
 
-    _emitter.subscribe(_appEvents.ROUTE_CHANGED, function(data) {
+    TT.dispatcher().subscribe(_appEvents.ROUTE_CHANGED, function(data) {
       TT.view().updateOnRouteChange(data);
     });
 

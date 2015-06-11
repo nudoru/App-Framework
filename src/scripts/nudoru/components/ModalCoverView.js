@@ -12,7 +12,7 @@ define('Nudoru.Component.ModalCoverView',
       _modalClickStream,
       _isVisible,
       _isHard,
-      _emitter = require('Nudoru.Component.Emitter'),
+      _dispatcher = require('Nudoru.Component.Dispatcher'),
       _componentEvents = require('Nudoru.Component.ComponentEvents'),
       _browserInfo = require('Nudoru.Browser.BrowserInfo');
 
@@ -65,7 +65,7 @@ define('Nudoru.Component.ModalCoverView',
         delay: 2
       });
 
-      _emitter.publish(_componentEvents.MODAL_COVER_SHOW);
+      _dispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
     }
 
     /**
@@ -98,7 +98,7 @@ define('Nudoru.Component.ModalCoverView',
         ease: Quad.easeOut
       });
 
-      _emitter.publish(_componentEvents.MODAL_COVER_HIDE);
+      _dispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
     }
 
     exports.initialize = initialize;

@@ -21,7 +21,7 @@ define('Nori.View.MultiDeviceView',
       _currentViewPortSize,
       _appEvents = require('Nori.Events.AppEvents'),
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _emitter = require('Nudoru.events.EventDispatcher');
+      _dispatcher = require('Nudoru.events.EventDispatcher');
 
     function initialize(initObj) {
       _isMobile = false;
@@ -85,7 +85,7 @@ define('Nori.View.MultiDeviceView',
         return;
       }
       _isMobile = true;
-      _emitter.publish(_appEvents.VIEW_CHANGE_TO_MOBILE);
+      _dispatcher.publish(_appEvents.VIEW_CHANGE_TO_MOBILE);
     }
 
     function switchToDesktopView() {
@@ -94,7 +94,7 @@ define('Nori.View.MultiDeviceView',
       }
       _isMobile = false;
       closeDrawer();
-      _emitter.publish(_appEvents.VIEW_CHANGE_TO_DESKTOP);
+      _dispatcher.publish(_appEvents.VIEW_CHANGE_TO_DESKTOP);
     }
 
     function toggleDrawer() {

@@ -7,7 +7,7 @@ define('TT.View.ControlsTestingSubView',
 
     var _lIpsum = require('Nudoru.Browser.NLorem'),
       _toolTip = require('Nudoru.Component.ToolTipView'),
-      _emitter = require('Nori.Events.Dispatcher'),
+      _dispatcher = require('Nori.Events.Dispatcher'),
       _appEvents = require('Nori.Events.AppEvents'),
       _actionOneEl,
       _actionTwoEl,
@@ -104,11 +104,11 @@ define('TT.View.ControlsTestingSubView',
       });
 
       _actionFiveEl.addEventListener('click', function actFour(e) {
-        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/one',data: {prop:'some data',moar:'25'}});
+        _dispatcher.publish(_appEvents.CHANGE_ROUTE, {route: '/one',data: {prop:'some data',moar:'25'}});
       });
 
       _actionSixEl.addEventListener('click', function actFour(e) {
-        _emitter.publish(_appEvents.CHANGE_ROUTE, {route: '/two'});
+        _dispatcher.publish(_appEvents.CHANGE_ROUTE, {route: '/two'});
       });
 
     }
