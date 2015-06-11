@@ -3,7 +3,6 @@ var Nori = (function () {
     _view,
     _appModelCollection,
     _emitterCommandMap = Object.create(null),
-    _subviewDataModel,
     _modelViewBindingMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
     _browserEvents = require('Nudoru.Browser.BrowserEvents'),
@@ -29,6 +28,10 @@ var Nori = (function () {
 
   function getConfig() {
     return _objectUtils.extend({}, _config);
+  }
+
+  function getCurrentRoute() {
+    return _.merge({}, _config.currentRoute);
   }
 
   //----------------------------------------------------------------------------
@@ -67,10 +70,7 @@ var Nori = (function () {
   }
 
   function initializeModels() {
-    _subviewDataModel = createModel({id:'SubViewDataModel', store:{}, noisy: true});
-
     _appModelCollection = createModelCollection({id:'GlobalModelCollection', silent: false});
-    addModel(_subviewDataModel);
   }
 
   function initializeView() {
@@ -103,15 +103,12 @@ var Nori = (function () {
     // Subviews
     mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.Controller.Commands.URLHashChangedCommand');
     mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.Controller.Commands.ChangeRouteCommand');
-    mapEventCommand(_appEvents.SUBVIEW_STORE_STATE, 'Nori.Controller.Commands.SubViewStoreDataCommand');
   }
 
   //----------------------------------------------------------------------------
   //  Models
   //  Simple model collection
   //----------------------------------------------------------------------------
-
-
 
   /**
    * Add a model to the application collection
@@ -278,7 +275,6 @@ var Nori = (function () {
    * @param route
    * @param templateID
    * @param controller
-   * @param unique Should it be a singleton controller (false) or unique instance (true)
    */
   function mapRouteView(route, templateID, controller) {
     addRouteToConfig(route);
@@ -302,29 +298,7 @@ var Nori = (function () {
    * @param dataObj
    */
   function showRouteView(dataObj) {
-    _view.showRouteView(dataObj, retrieveSubViewData(dataObj.templateID));
-  }
-
-  //----------------------------------------------------------------------------
-  //  Subview data
-  //----------------------------------------------------------------------------
-
-  /**
-   * Store state data from a subview, called from StoreSubViewDataCommand
-   * @param id
-   * @param dataObj
-   */
-  function storeSubViewData(id, dataObj) {
-    _subviewDataModel.set(id, dataObj);
-  }
-
-  /**
-   * Retrieve subview data for reinsertion, called from APP mapping of route/when()
-   * @param id
-   * @returns {*|{}}
-   */
-  function retrieveSubViewData(id) {
-    return _subviewDataModel.get(id) || {};
+    _view.showRouteView(dataObj);
   }
 
   //----------------------------------------------------------------------------
@@ -353,31 +327,20 @@ var Nori = (function () {
 
   /**
    * Notify any bound views on model change, not collection change
-   * @param dataObj {id:_id, storeType:'model',  store:getStore(), changed:_lastChangeResult}
+   * @param dataObj
+   * {id:storeid, storeType:'model',  store:getStore(), changed:_lastChangeResult}
+   * {id:collectionid, storeType:'collection', storeID: data.id, store:data.store}
    */
   function handleModelUpdate(dataObj) {
-    var viewArry = _modelViewBindingMap[modelID];
+    var viewArry = _modelViewBindingMap[dataObj.id];
 
     if(viewArry) {
       viewArry.forEach(function (view) {
-        _view.updateViewData(view, data);
+        _view.updateView(view);
       });
     }
   }
 
-  /**
-   * Notify any bound views on model change, not collection change
-   * @param dataObj {id:_id, storeType:'collection', storeID: data.id, store:data.store}
-   */
-  function handleModelCollectionUpdate(dataObj) {
-    var viewArry = _modelViewBindingMap[modelID];
-
-    if(viewArry) {
-      viewArry.forEach(function (view) {
-        _view.updateViewData(view, data);
-      });
-    }
-  }
 
   //----------------------------------------------------------------------------
   //  API
@@ -395,16 +358,14 @@ var Nori = (function () {
     getModel: getModel,
     createApplicationView: createApplicationView,
     setCurrentRoute: setCurrentRoute,
+    getCurrentRoute: getCurrentRoute,
     mapRouteView: mapRouteView,
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
     createApplication: createApplication,
-    storeSubViewData: storeSubViewData,
-    retrieveSubViewData: retrieveSubViewData,
     registerForModelChanges: registerForModelChanges,
-    handleModelUpdate: handleModelUpdate,
-    handleModelCollectionUpdate: handleModelCollectionUpdate
+    handleModelUpdate: handleModelUpdate
   };
 
 }

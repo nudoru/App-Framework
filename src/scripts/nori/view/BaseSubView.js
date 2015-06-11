@@ -10,8 +10,6 @@ define('Nori.View.BaseSubView',
       _templateObj,
       _html,
       _DOMElement,
-      _initialState,
-      _currentState,
       _children = [],
       _isMounted = false,
       _domUtils = require('Nudoru.Browser.DOMUtils'),
@@ -27,29 +25,13 @@ define('Nori.View.BaseSubView',
         _initObj = initObj;
         _id = initObj.id;
         _templateObj = initObj.template;
-        _initialState = _currentState = mergeDataSources(initObj);
         render();
       } else {
         update(initObj);
       }
 
-      //console.log('-------------');
-      //console.log('Subview: '+_id);
-      //console.log('querydata: '+JSON.stringify(initObj.queryData));
-      //console.log('modeldata: '+JSON.stringify(initObj.previousStateData));
-      //console.log('boundModelData: '+JSON.stringify(initObj.boundModelData));
-      //console.log('-------------');
-
     }
 
-    /**
-     * Merge data objects into one for the state object
-     * @param dataObj
-     * @returns {*}
-     */
-    function mergeDataSources(dataObj) {
-      return _.merge({}, dataObj.previousStateData, dataObj.boundModelData, dataObj.queryData);
-    }
 
     /**
      * Add a child
@@ -81,13 +63,11 @@ define('Nori.View.BaseSubView',
      * @param dataObj
      * @returns {*}
      */
-    function update(dataObj) {
+    function update() {
       viewWillUpdate();
-      _currentState = mergeDataSources(dataObj);
-      console.log(_id + ', subview update state: '+JSON.stringify(_currentState));
 
       _children.forEach(function updateChild(child) {
-        child.update(dataObj);
+        child.update();
       });
 
       if(_isMounted) {
@@ -110,11 +90,11 @@ define('Nori.View.BaseSubView',
     function render() {
       //console.log(_id + ', subview render');
 
-      //_children.forEach(function renderChild(child) {
-      //  child.render();
-      //});
+      _children.forEach(function renderChild(child) {
+        child.render();
+      });
 
-      _html = _templateObj(_currentState);
+      _html = _templateObj();
       _DOMElement = _domUtils.HTMLStrToNode(_html);
       return _DOMElement;
     }
@@ -134,9 +114,6 @@ define('Nori.View.BaseSubView',
       //console.log(_id + ', subview will unmount');
 
       _isMounted = false;
-
-      // cache state data to the model, will be restored as modelData on next show
-      _emitter.publish(_appEvents.SUBVIEW_STORE_STATE, {id: _id, data:_currentState});
     }
 
     /**

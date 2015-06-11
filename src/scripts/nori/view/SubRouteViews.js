@@ -69,14 +69,12 @@ define('Nori.View.SubRouteViews',
     /**
      * Update subview based on a change in bound model data
      * @param viewID
-     * @param modelID
-     * @param storeData
      */
-    function updateViewData(viewID, storeData) {
+    function updateView(viewID) {
       var subview = _subViewMapping[viewID];
 
       if (subview.controller.update) {
-        subview.controller.update({boundModelData: storeData});
+        subview.controller.update();
       }
     }
 
@@ -85,18 +83,17 @@ define('Nori.View.SubRouteViews',
      * @param templateID
      * @param dataObj
      */
-    function showView(templateID, dataObj) {
+    function showView(templateID) {
       var subview = _subViewMapping[templateID],
           mountEl;
 
       if(!subview) {
-        throw new Error('No subview mapped for id: ' + dataObj.templateID);
+        throw new Error('No subview mapped for id: ' + templateID);
       }
 
       subview.controller.initialize({
         id: templateID,
-        template: subview.htmlTemplate,
-        queryData: dataObj
+        template: subview.htmlTemplate
       });
 
       mountEl = document.getElementById(subview.mountPoint);
@@ -110,9 +107,8 @@ define('Nori.View.SubRouteViews',
     /**
      * Show a view (in response to a route change)
      * @param dataObj props: templateID, route, data (from query string)
-     * @param previousStateData previous state data from the model
      */
-    function showRouteView(dataObj, previousStateData) {
+    function showRouteView(dataObj) {
       if(!_routeViewMountPoint) {
         throw new Error('No subview mount point set');
       }
@@ -129,9 +125,7 @@ define('Nori.View.SubRouteViews',
       // modeldata is saved state from the last time the view was unloaded
       subview.controller.initialize({
         id: dataObj.templateID,
-        template: subview.htmlTemplate,
-        queryData: dataObj.queryData,
-        previousStateData: previousStateData
+        template: subview.htmlTemplate
       });
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
@@ -174,5 +168,5 @@ define('Nori.View.SubRouteViews',
     exports.showView = showView;
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
-    exports.updateViewData = updateViewData;
+    exports.updateView = updateView;
   });
