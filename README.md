@@ -154,9 +154,8 @@ The view will call `MyApp.registerForModelChanges(modelID, viewID)` to bind it t
 Data flow:
 
 ```
-        set action,
-        change event          ┌──── registerForModelChanges ◀──────────────────┐
-              │               │                                                │
+                              ┌──── registerForModelChanges ◀──────────────────┐
+         set action           │                                                │
               │               │  ┌──────────────────────────┐                  │
               ▼               │  │     Router URL/Query     │──┐ ┌───────────────────────────┐
 ┌───────────────────────────┐ │  ├──────────────────────────┤  │ │   User Information View   │
@@ -165,7 +164,7 @@ Data flow:
               │               └─▶│     Model / View Map     ││ │ └───────────────────────────┘
               │                  └──────────────────────────┘│ │               │
               ▼                                │             │ │               ▼
-   ModelDataChangedCommand                     │             │ │
+   ModelDataChanged Event                      │             │ │
               │                                ▼             │ │   Render (will poll for any
               └─────────────────────▶  handleModelUpdate  ───┘ └──▶   query string data)
 ```

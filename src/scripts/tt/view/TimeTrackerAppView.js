@@ -26,8 +26,9 @@ define('TT.View.TimeTrackerAppView',
 
       _self.initializeApplicationElements();
       _self.initializeComponents();
-
       _self.setRouteViewMountPoint('contents');
+
+      mapRoutes();
 
       mapComponentViews();
       configureMainButtons();
@@ -36,6 +37,26 @@ define('TT.View.TimeTrackerAppView',
       _moduleNavView.initialize();
 
       render();
+    }
+
+    /**
+     * Set up the view to routes
+     */
+    function mapRoutes() {
+      // Default route
+      TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
+
+      // Other routes
+      TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
+      TT.mapRouteView('/test', 'TestSubView', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/one', 'TestSubView1', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/two', 'TestSubView2', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/three', 'TestSubView3', 'TT.View.TemplateSubView');
+
+      // Timecard mock
+      TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
     }
 
     function render() {
