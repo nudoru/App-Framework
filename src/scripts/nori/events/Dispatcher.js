@@ -7,7 +7,7 @@
  https://github.com/facebook/flux/blob/master/src/Dispatcher.js
 */
 
-define('Nori.Events.Emitter',
+define('Nori.Events.Dispatcher',
   function (require, module, exports) {
     var _subjectMap = {},
         _log = [];

@@ -13,7 +13,7 @@ define('Nori.View.SubRouteViews',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _emitter = require('Nori.Events.Emitter');
+      _emitter = require('Nori.Events.Dispatcher');
 
     /**
      * Set the location for the view to append, any contents will be removed prior

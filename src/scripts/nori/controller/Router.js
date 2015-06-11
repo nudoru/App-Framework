@@ -16,7 +16,7 @@ define('Nori.Controller.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
-      _emitter = require('Nori.Events.Emitter'),
+      _emitter = require('Nori.Events.Dispatcher'),
       _browserEvents = require('Nudoru.Browser.BrowserEvents');
 
     function initialize() {

@@ -18,7 +18,7 @@ define('Nori.Model.Model',
       _lastChangeResult,
       _silent = false,
       _parentCollection,
-      _emitter = require('Nori.Events.Emitter'),
+      _emitter = require('Nori.Events.Dispatcher'),
       _appEvents = require('Nori.Events.AppEvents');
 
     //----------------------------------------------------------------------------

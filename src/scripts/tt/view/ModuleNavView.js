@@ -9,7 +9,7 @@ define('TT.View.ModuleNavView',
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _emitter = require('Nori.Events.Emitter');
+      _emitter = require('Nori.Events.Dispatcher');
 
     function initialize() {
       mapButton('btn_assignments', '/Assignments');

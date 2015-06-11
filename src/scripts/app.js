@@ -39,7 +39,7 @@
    */
   function mapEvents() {
     var _appEvents = require('Nori.Events.AppEvents'),
-        _emitter = require('Nori.Events.Emitter');
+        _emitter = require('Nori.Events.Dispatcher');
 
     _emitter.subscribe(_appEvents.ROUTE_CHANGED, function(data) {
       TT.view().updateOnRouteChange(data);
@@ -51,28 +51,24 @@
    * Create the mock model
    */
   function createModel() {
-    console.time('Gen fake');
     var dataSource = require('TT.Model.FakeData');
     dataSource.initialize();
-    console.timeEnd('Gen fake');
 
-    var _peopleSet = TT.createModelCollection({id:'peopleset'}),
-      _projectsSet = TT.createModelCollection({id:'projectsset'}),
-      _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
-
-    console.time('Create set');
-    _peopleSet.addFromObjArray(dataSource.getPeople(), 'id', false);
-    _projectsSet.addFromObjArray(dataSource.getProjects(), 'id', false);
-    _assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
-    console.timeEnd('Create set');
-
-    var fakeMe = _peopleSet.getFirst(),
-      myName = fakeMe.get('name'),
-      myProjects;
-
-    myProjects = _assignmentsSet.filter('resourceName', myName);
-
-    myProjects[0].set({name:'Bob'});
+    //var _peopleSet = TT.createModelCollection({id:'peopleset'}),
+    //  _projectsSet = TT.createModelCollection({id:'projectsset'}),
+    //  _assignmentsSet = TT.createModelCollection({id:'assignmentsset'});
+    //
+    //_peopleSet.addFromObjArray(dataSource.getPeople(), 'id', false);
+    //_projectsSet.addFromObjArray(dataSource.getProjects(), 'id', false);
+    //_assignmentsSet.addFromObjArray(dataSource.getAssignments(), 'id', false);
+    //
+    //var fakeMe = _peopleSet.getFirst(),
+    //  myName = fakeMe.get('name'),
+    //  myProjects;
+    //
+    //myProjects = _assignmentsSet.filter('resourceName', myName);
+    //
+    //myProjects[0].set({name:'Bob'});
 
     //myProjects.forEach(
     //  function listMyProjects(store) {

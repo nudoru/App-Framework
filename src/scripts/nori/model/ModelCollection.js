@@ -11,7 +11,7 @@ define('Nori.Model.ModelCollection',
     var _id,
       _children = [],
       _silent = false,
-      _emitter = require('Nori.Events.Emitter'),
+      _emitter = require('Nori.Events.Dispatcher'),
       _appEvents = require('Nori.Events.AppEvents');
 
     //----------------------------------------------------------------------------

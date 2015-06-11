@@ -4,7 +4,7 @@ define('TT.View.UserProfilePanelView',
     var _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEvents'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _emitter = require('Nori.Events.Emitter');
+      _emitter = require('Nori.Events.Dispatcher');
 
     function initialize(initObj) {
       this._super.initialize(initObj);
