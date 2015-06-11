@@ -34,7 +34,13 @@ This is required so that routes can be properly mapped
 MyApp.initialize({view:appView});
 ```
 
-### 4. Map events to commands. 
+### 4. Map events to handlers or commands. 
+
+```javascript
+_emitter.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+  console.log('Update model data, model id: ',data.id, data.data);
+});
+```
 
 Commands are controllers that are triggered when an event is emitted. Sample:
 ```javascript
@@ -96,9 +102,17 @@ Subscribing to an event returns a RxJS subscription.
 
 Events are ‘magic’ strings. Nori defines core application ones in the `scripts/events/AppEvents.js` and `scripts/nudoru/browser/BrowserEvents.js` modules.
 
+Example:
+```javascript
+_emitter.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+  console.log('Update model data, model id: ',data.id, data.data);
+});
+```
+
+
 ## Commands
 
-Controller functionality is handled by command classes. The `execute(data)` function is executed when the mapped event is published and any data included in the publish is passed as an object in the data argument.
+Controller functionality may be handled by command classes. The `execute(data)` function is executed when the mapped event is published and any data included in the publish is passed as an object in the data argument.
 
 Nori maps the following events to commands as part of the framework:
 
@@ -160,21 +174,14 @@ Data flow:
 
 Collection of utility and helper classes.
 
+## nudoru/core
+
+Utilities for working with data types
+
+## nudoru/browser
+
+Utilities for working on with a browser, DOM, etc.
+
 ## nudoru/components
 
-A few view modules
-
-## nudoru/events
-
-EventDispatcher and EventCommandMap enable event driven functionality. Simple pub/sub system that can drive a command based controller.
-
-+ A few core/common event "magic string" modules.
-
-## nudoru/utils
-
-Various utility classes. And these
-
-- BrowserInfo, information on the current browser
-- NLorem, Lorem Ipsum dummy text generator
-- NTemplate, HTML templating system that uses Underscore
-- Router, enables view routing from URL hash fragments
+UI Components for web apps

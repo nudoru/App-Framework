@@ -78,37 +78,28 @@ var Nori = (function () {
   }
 
   function postInitialize() {
-    bootStrapCommands();
+    // Model
+    _emitter.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(data) {
+      handleModelUpdate(data);
+    });
+
+    _emitter.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+      console.log('Update model data, model id: ',data.id, data.data);
+    });
+
+    // Subviews
+    _emitter.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(data) {
+      setCurrentRoute(data.routeObj);
+    });
+
+    _emitter.subscribe(_appEvents.CHANGE_ROUTE, function execute(data) {
+      data.fromApp = true;
+      setCurrentRoute(data);
+    });
+
     _emitter.publish(_appEvents.APP_INITIALIZED);
   }
 
-  /**
-   * Core APP command mapping
-   */
-  function bootStrapCommands() {
-    // Browser events
-    // unused mapEventCommand(_browserEvents.BROWSER_RESIZED, 'Nori.Controller.Commands.BrowserResizedCommand');
-    // unused mapEventCommand(_browserEvents.BROWSER_SCROLLED, 'Nori.Controller.Commands.BrowserScrolledCommand');
-
-    // App events
-    // unused mapEventCommand(_appEvents.ROUTE_CHANGED, 'Nori.Controller.Commands.RouteChangedCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGED, 'Nori.Controller.Commands.ViewChangedCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_MOBILE, 'Nori.Controller.Commands.ViewChangedToMobileCommand');
-    // unused mapEventCommand(_appEvents.VIEW_CHANGE_TO_DESKTOP, 'Nori.Controller.Commands.ViewChangedToDesktopCommand');
-
-    // Model
-    mapEventCommand(_appEvents.MODEL_DATA_CHANGED, 'Nori.Controller.Commands.ModelDataChangedCommand');
-    mapEventCommand(_appEvents.UPDATE_MODEL_DATA, 'Nori.Controller.Commands.UpdateModelDataCommand');
-
-    // Subviews
-    mapEventCommand(_browserEvents.URL_HASH_CHANGED, 'Nori.Controller.Commands.URLHashChangedCommand');
-    mapEventCommand(_appEvents.CHANGE_ROUTE, 'Nori.Controller.Commands.ChangeRouteCommand');
-
-    _emitter.subscribe(_appEvents.ROUTE_CHANGED, function(data) {
-      console.log('evt route changed',data);
-    });
-
-  }
 
   //----------------------------------------------------------------------------
   //  Models
