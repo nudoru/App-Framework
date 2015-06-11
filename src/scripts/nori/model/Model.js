@@ -182,7 +182,7 @@ define('Nori.Model.Model',
      * Returns a copy of the data store
      * @returns {void|*}
      */
-    function getStore() {
+    function toObject() {
       return _.merge({}, _store);
     }
 
@@ -234,7 +234,7 @@ define('Nori.Model.Model',
           payload: {
             id: _id,
             storeType: 'model',
-            store: getStore(),
+            store: toObject(),
             changed: _lastChangeResult
           }
         });
@@ -243,7 +243,7 @@ define('Nori.Model.Model',
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
           id: _id,
-          store: getStore(),
+          store: toObject(),
           changed: _lastChangeResult
         });
       }
@@ -290,7 +290,7 @@ define('Nori.Model.Model',
     exports.getFirst = getFirst;
     exports.getLast = getLast;
     exports.getAtIndex = getAtIndex;
-    exports.getStore = getStore;
+    exports.toObject = toObject;
     exports.transform = transform;
     exports.validate = validate;
     exports.save = save;
