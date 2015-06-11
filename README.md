@@ -94,9 +94,9 @@ var module = require(‘MyApp.Module’);
 var module = requireUnique(‘MyApp.Module’);
 ```
 
-## Emitted events
+## Dispatcher / Events
 
-The `scripts/nori/events/Emitter.js` is a pub/sub system that uses RxJS subjects. You can subscribe to events with it and publish events.
+The `scripts/nori/events/Dispatcher.js` is a pub/sub system that uses RxJS subjects. You can subscribe to events with it and publish events.
 
 Subscribing to an event returns a RxJS subscription.
 
@@ -109,6 +109,19 @@ _dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
 });
 ```
 
+Events are published and passed a payload object containing the event name type, and an optional payload object
+
+```javascript
+_dispatcher.publish({
+  type: _appEvents.MODEL_DATA_CHANGED,
+  payload: {
+    id: _id,
+    storeType: 'model',
+    store: getStore(),
+    changed: _lastChangeResult
+  }
+});
+```
 
 ## Commands
 
