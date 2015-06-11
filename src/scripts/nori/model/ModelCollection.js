@@ -19,7 +19,7 @@ define('Nori.Model.ModelCollection',
     //----------------------------------------------------------------------------
 
     function initialize(initObj) {
-      if(!initObj.id) {
+      if (!initObj.id) {
         throw new Error('ModelCollection must be init\'d with an id');
       }
 
@@ -37,7 +37,7 @@ define('Nori.Model.ModelCollection',
      * @param sArry
      */
     function addStoresFromArray(sArry) {
-      sArry.forEach(function(store) {
+      sArry.forEach(function (store) {
         add(store);
       });
     }
@@ -48,17 +48,17 @@ define('Nori.Model.ModelCollection',
      * @param idKey Key on each object to use for the ID of that Model store
      */
     function addFromObjArray(oArry, idKey, silent) {
-      oArry.forEach(function(obj) {
+      oArry.forEach(function (obj) {
 
         var id;
 
-        if(obj.hasOwnProperty(idKey)) {
+        if (obj.hasOwnProperty(idKey)) {
           id = obj[idKey];
         } else {
-          id = _id +'child' + _children.length;
+          id = _id + 'child' + _children.length;
         }
 
-        add(Nori.createModel({id:id, silent: silent, store: obj}));
+        add(Nori.createModel({id: id, silent: silent, store: obj}));
       });
 
     }
@@ -72,7 +72,7 @@ define('Nori.Model.ModelCollection',
 
       store.setParentCollection(this);
 
-      if(currIdx >= 0) {
+      if (currIdx >= 0) {
         _children[currIdx] = store;
       } else {
         _children.push(store);
@@ -81,12 +81,12 @@ define('Nori.Model.ModelCollection',
 
     function remove(storeID) {
       var currIdx = getStoreIndex(store.getID());
-      if(currIdx >= 0) {
+      if (currIdx >= 0) {
         _children[currIdx].setParentCollection(null);
         _children[currIdx] = null;
-        _children.splice(currIdx,1);
+        _children.splice(currIdx, 1);
       } else {
-        console.log(_id +' remove, model not in collection: '+storeID);
+        console.log(_id + ' remove, model not in collection: ' + storeID);
       }
     }
 
@@ -96,7 +96,7 @@ define('Nori.Model.ModelCollection',
      * @returns {T}
      */
     function getStore(storeID) {
-      return _children.filter(function(store) {
+      return _children.filter(function (store) {
         return store.getID() === storeID;
       })[0];
     }
@@ -107,7 +107,7 @@ define('Nori.Model.ModelCollection',
      * @returns {number}
      */
     function getStoreIndex(storeID) {
-      return _children.map(function(store) {
+      return _children.map(function (store) {
         return store.getID();
       }).indexOf(storeID);
     }
@@ -116,8 +116,16 @@ define('Nori.Model.ModelCollection',
      * On change, emit event globally
      */
     function dispatchChange(data) {
-      if(!_silent) {
-        _dispatcher.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
+      if (!_silent) {
+        _dispatcher.publish({
+          type: _appEvents.MODEL_DATA_CHANGED,
+          payload: {
+            id: _id,
+            storeType: 'collection',
+            storeID: data.id,
+            store: data.store
+          }
+        });
       }
 
       // what will this send up?
@@ -128,7 +136,7 @@ define('Nori.Model.ModelCollection',
     }
 
     function hasModel(storeID) {
-      if(_children[storeID]) {
+      if (_children[storeID]) {
         return true;
       }
       return false;
@@ -147,7 +155,7 @@ define('Nori.Model.ModelCollection',
     }
 
     function getLast() {
-      return _children[_children.length-1];
+      return _children[_children.length - 1];
     }
 
     function getAtIndex(i) {
@@ -170,7 +178,7 @@ define('Nori.Model.ModelCollection',
      * @returns {Array.<T>}
      */
     function filter(prop, value) {
-      return _children.filter(function(store) {
+      return _children.filter(function (store) {
         return store.get(prop) === value;
       });
     }
@@ -181,7 +189,7 @@ define('Nori.Model.ModelCollection',
      */
     function entries() {
       var arry = [];
-      _children.forEach(function(store){
+      _children.forEach(function (store) {
         arry.push(store.entries());
       });
       return arry;

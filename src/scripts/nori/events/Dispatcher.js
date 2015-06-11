@@ -1,10 +1,21 @@
 /*
- Matt Perkins, 5/17/15
+ Matt Perkins, 6/11/15
  Based on
  https://github.com/Reactive-Extensions/RxJS/blob/master/doc/howdoi/eventemitter.md
 
- Refernect Flux dispatcher
+ Refernece Flux dispatcher
  https://github.com/facebook/flux/blob/master/src/Dispatcher.js
+
+
+ publish paylod object
+
+ {
+ type: EVT_TYPE,
+ payload: {
+    key: value
+  }
+ }
+
 */
 
 define('Nori.Events.Dispatcher',
@@ -52,19 +63,22 @@ define('Nori.Events.Dispatcher',
 
     /**
      * Publish a event to all subscribers
-     * @param evtStr
+     * @param payloadObj type:String, payload:data
      * @param data
      */
-    function publish(evtStr, data) {
-      var subscribers = _subjectMap[evtStr], i;
+    function publish(payloadObj) {
+      if(typeof payloadObj === 'string') {
+        throw new Error('Dispatcher publish must be payload object');
+      };
+
+      var subscribers = _subjectMap[payloadObj.type], i;
 
       if(!subscribers) {
-        _log.push({event:evtStr, data:'NO SUBSCRIBERS'});
         return;
       }
 
-      _log.push({event:evtStr, data:data});
-      //console.log('>> ',evtStr, data);
+      _log.push(payloadObj);
+      console.log('>> ',payloadObj);
 
       i = subscribers.length;
 
@@ -72,10 +86,10 @@ define('Nori.Events.Dispatcher',
 
         var subjObj = subscribers[i];
 
-        subjObj.subject.onNext(data);
+        subjObj.subject.onNext(payloadObj.payload);
 
         if (subjObj.once) {
-          unsubscribe(evtStr, subjObj.handler);
+          unsubscribe(payloadObj.type, subjObj.handler);
         }
 
       }

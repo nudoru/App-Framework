@@ -104,11 +104,11 @@ define('TT.View.ControlsTestingSubView',
       });
 
       _actionFiveEl.addEventListener('click', function actFour(e) {
-        _dispatcher.publish(_appEvents.CHANGE_ROUTE, {route: '/one',data: {prop:'some data',moar:'25'}});
+        _dispatcher.publish({type:_appEvents.CHANGE_ROUTE, payload:{route: '/one',data: {prop:'some data',moar:'25'}}});
       });
 
       _actionSixEl.addEventListener('click', function actFour(e) {
-        _dispatcher.publish(_appEvents.CHANGE_ROUTE, {route: '/two'});
+        _dispatcher.publish({type:_appEvents.CHANGE_ROUTE, payload:{route: '/two'}});
       });
 
     }

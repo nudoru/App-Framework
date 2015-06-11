@@ -26,7 +26,7 @@ define('Nori.Model.Model',
     //----------------------------------------------------------------------------
 
     function initialize(initObj) {
-      if(!initObj.id) {
+      if (!initObj.id) {
         throw new Error('Model must be init\'d with an id');
       }
 
@@ -34,7 +34,7 @@ define('Nori.Model.Model',
 
       _silent = initObj.silent || false;
 
-      if(initObj.store) {
+      if (initObj.store) {
         // set inital data silently
         //set(initObj.store, {silent: true});
         _changed = true;
@@ -59,10 +59,10 @@ define('Nori.Model.Model',
      */
     function set(key, options) {
       var silentSet = false,
-          previousStore = _.merge({}, _store);
+        previousStore = _.merge({}, _store);
 
-      if(typeof key === 'object') {
-        if(options !== null && typeof options === 'object') {
+      if (typeof key === 'object') {
+        if (options !== null && typeof options === 'object') {
           silentSet = options.silent || false;
         }
         _store = _.merge({}, _store, key);
@@ -76,7 +76,7 @@ define('Nori.Model.Model',
       //https://github.com/flitbit/diff
       _lastChangeResult = objectDiff.diff(previousStore, _store);
 
-      if(!silentSet) {
+      if (!silentSet) {
         dispatchChange();
       }
     }
@@ -104,13 +104,13 @@ define('Nori.Model.Model',
      * @returns {Array}
      */
     function entries() {
-      if(!_changed && _entries) {
+      if (!_changed && _entries) {
         return _entries;
       }
 
       var arry = [];
-      for(var key in _store) {
-        arry.push({key:key, value:_store[key]});
+      for (var key in _store) {
+        arry.push({key: key, value: _store[key]});
       }
 
       _entries = arry;
@@ -143,7 +143,7 @@ define('Nori.Model.Model',
      * @returns {Array}
      */
     function values() {
-      return entries().map(function(entry) {
+      return entries().map(function (entry) {
         return entry.value;
       });
     }
@@ -171,7 +171,7 @@ define('Nori.Model.Model',
 
     function getLast() {
       var e = entries();
-      return e[e.length-1];
+      return e[e.length - 1];
     }
 
     function getAtIndex(i) {
@@ -183,7 +183,7 @@ define('Nori.Model.Model',
      * @returns {void|*}
      */
     function getStore() {
-      return _.merge({},_store);
+      return _.merge({}, _store);
     }
 
     /**
@@ -193,8 +193,8 @@ define('Nori.Model.Model',
     function transform(tObj) {
       var transformed = {};
 
-      for(var prop in tObj) {
-        if(_store.hasOwnProperty(prop)) {
+      for (var prop in tObj) {
+        if (_store.hasOwnProperty(prop)) {
           transformed[tObj[prop]] = _store[prop];
         }
       }
@@ -228,12 +228,24 @@ define('Nori.Model.Model',
      * On change, emit event globally
      */
     function dispatchChange() {
-      if(!_silent) {
-        _dispatcher.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'model',  store:getStore(), changed:_lastChangeResult});
+      if (!_silent) {
+        _dispatcher.publish({
+          type: _appEvents.MODEL_DATA_CHANGED,
+          payload: {
+            id: _id,
+            storeType: 'model',
+            store: getStore(),
+            changed: _lastChangeResult
+          }
+        });
       }
 
-      if(_parentCollection.dispatchChange) {
-        _parentCollection.dispatchChange({id:_id, store:getStore(), changed:_lastChangeResult});
+      if (_parentCollection.dispatchChange) {
+        _parentCollection.dispatchChange({
+          id: _id,
+          store: getStore(),
+          changed: _lastChangeResult
+        });
       }
 
     }

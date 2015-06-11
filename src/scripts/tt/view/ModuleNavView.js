@@ -42,7 +42,7 @@ define('TT.View.ModuleNavView',
      * @param id
      */
     function handleButton(id) {
-      _dispatcher.publish(_appEvents.CHANGE_ROUTE, {route: _buttonMap[id].route});
+      _dispatcher.publish({type:_appEvents.CHANGE_ROUTE, payload:{route: _buttonMap[id].route}});
     }
 
     /**

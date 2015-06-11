@@ -97,7 +97,7 @@ var Nori = (function () {
       setCurrentRoute(data);
     });
 
-    _dispatcher.publish(_appEvents.APP_INITIALIZED);
+    _dispatcher.publish({type:_appEvents.APP_INITIALIZED, payload:{}});
   }
 
 
@@ -231,7 +231,7 @@ var Nori = (function () {
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
         _router.runCurrentRoute();
-        _dispatcher.publish(_appEvents.ROUTE_CHANGED, routeObj);
+        _dispatcher.publish({type:_appEvents.ROUTE_CHANGED, payload: routeObj});
       }
     } else {
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);

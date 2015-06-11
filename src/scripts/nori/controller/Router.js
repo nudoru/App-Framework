@@ -41,9 +41,12 @@ define('Nori.Controller.Router',
      * @param evt
      */
     function onHashChange(evt) {
-      _dispatcher.publish(_browserEvents.URL_HASH_CHANGED, {
-        routeObj: getCurrentRoute(),
-        fragment: getURLFragment()
+      _dispatcher.publish({
+        type: _browserEvents.URL_HASH_CHANGED,
+        payload: {
+          routeObj: getCurrentRoute(),
+          fragment: getURLFragment()
+        }
       });
     }
 
@@ -113,7 +116,7 @@ define('Nori.Controller.Router',
      */
     function setRoute(route, dataObj) {
       var path = route,
-          data = [];
+        data = [];
       if (dataObj !== null && dataObj !== undefined) {
         path += "?";
         for (var prop in dataObj) {
