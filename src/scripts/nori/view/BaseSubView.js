@@ -12,6 +12,7 @@ define('Nori.View.BaseSubView',
       _DOMElement,
       _initialState,
       _currentState,
+      _children = [],
       _isMounted = false,
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _emitter = require('Nori.Events.Emitter'),
@@ -51,16 +52,55 @@ define('Nori.View.BaseSubView',
     }
 
     /**
+     * Add a child
+     * @param child
+     */
+    function addChild(child) {
+      _children.push(child);
+    }
+
+    /**
+     * Remove a child
+     * @param child
+     */
+    function removeChild(child) {
+      var idx = _children.indexOf(child);
+      _children[idx].dispose();
+      _children.splice(idx, 1);
+    }
+
+    /**
+     * Before the iew updates and a rerender occurs
+     */
+    function viewWillUpdate() {
+      //
+    }
+
+    /**
      * Update state and rerender
      * @param dataObj
      * @returns {*}
      */
     function update(dataObj) {
+      viewWillUpdate();
       _currentState = mergeDataSources(dataObj);
       console.log(_id + ', subview update state: '+JSON.stringify(_currentState));
+
+      _children.forEach(function updateChild(child) {
+        child.update(dataObj);
+      });
+
       if(_isMounted) {
-        return render();
+        render();
       }
+      viewDidUpdate();
+    }
+
+    /**
+     * After the view updates and a rerender occured
+     */
+    function viewDidUpdate() {
+
     }
 
     /**
@@ -69,6 +109,10 @@ define('Nori.View.BaseSubView',
      */
     function render() {
       //console.log(_id + ', subview render');
+
+      //_children.forEach(function renderChild(child) {
+      //  child.render();
+      //});
 
       _html = _templateObj(_currentState);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
@@ -96,6 +140,14 @@ define('Nori.View.BaseSubView',
     }
 
     /**
+     * Remove a view and cleanup
+     */
+    function dispose() {
+      console.log(_id + ', subview DISPOSE');
+      // Unmount
+    }
+
+    /**
      * Accessor for ID prop
      * @returns {*}
      */
@@ -111,12 +163,24 @@ define('Nori.View.BaseSubView',
       return _DOMElement;
     }
 
+    /**
+     * Get a copy of the children
+     */
+    function getChildren() {
+      return _children.slice(0);
+    }
+
     exports.initialize = initialize;
+    exports.viewWillUpdate = viewWillUpdate;
     exports.update = update;
+    exports.viewDidUpdate = viewDidUpdate;
     exports.render = render;
     exports.getID = getID;
     exports.getDOMElement = getDOMElement;
     exports.viewDidMount = viewDidMount;
     exports.viewWillUnMount = viewWillUnMount;
+    exports.addChild = addChild;
+    exports.removeChild = removeChild;
+    exports.getChildren = getChildren;
 
   });

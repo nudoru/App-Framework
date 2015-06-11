@@ -115,14 +115,14 @@ define('Nori.Model.ModelCollection',
     /**
      * On change, emit event globally
      */
-    function publishChange(data) {
+    function emitChange(data) {
       if(!_silent) {
         _emitter.publish(_appEvents.MODEL_DATA_CHANGED, {id:_id, storeType:'collection', storeID: data.id, store:data.store});
       }
 
       // what will this send up?
       //if(_parentCollection) {
-      //  _parentCollection.publishChange({id:_id, store:getStore()});
+      //  _parentCollection.emitChange({id:_id, store:getStore()});
       //}
 
     }
@@ -229,7 +229,7 @@ define('Nori.Model.ModelCollection',
     exports.save = save;
     exports.destroy = destroy;
     exports.toJSON = toJSON;
-    exports.publishChange = publishChange;
+    exports.emitChange = emitChange;
     exports.setParentCollection = setParentCollection;
     exports.getParentCollection = getParentCollection;
 

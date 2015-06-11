@@ -9,7 +9,8 @@
 
 define('Nori.Events.Emitter',
   function (require, module, exports) {
-    var _subjectMap = {};
+    var _subjectMap = {},
+        _log = [];
 
     /**
      * Add an event as observable
@@ -58,6 +59,9 @@ define('Nori.Events.Emitter',
         return;
       }
 
+      _log.push({event:evtStr, data:data});
+      console.log('>> ',evtStr, data);
+
       subjObj.subject.onNext(data);
 
       if(subjObj.once) {
@@ -65,6 +69,14 @@ define('Nori.Events.Emitter',
         subjObj.subject.dispose();
         subjObj = null;
       }
+    }
+
+    /**
+     * Return a copy of the log array
+     * @returns {Array.<T>}
+     */
+    function getLog() {
+      return _log.slice(0)
     }
 
     /**
@@ -79,11 +91,15 @@ define('Nori.Events.Emitter',
       }
 
       _subjectMap = {};
+      _log = [];
     }
-    
+
+
+
     exports.subscribe = subscribe;
     exports.subscribeCommand = subscribeCommand;
     exports.publish = publish;
+    exports.getLog = getLog;
     exports.dispose = dispose;
 
   });
