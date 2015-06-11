@@ -65,13 +65,14 @@
     //myProjects = _assignmentsSet.filter('resourceName', myName);
     //
     //myProjects[0].set({name:'Bob'});
-
+    //
     //myProjects.forEach(
     //  function listMyProjects(store) {
     //    console.log(store.get('projectTitle')+', dev: '+store.get('resourceName'));
     //  }
     //);
 
+    // filter values was removed
     //var devs = _peopleSet.filterValues(
     //  function (store) {
     //    return store.get('jobTitle') === 'ITD';

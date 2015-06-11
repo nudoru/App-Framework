@@ -1,7 +1,8 @@
 var Nori = (function () {
   var _config,
     _view,
-    _appModelCollection,
+    _appModelCollectionMap = Object.create(null),
+    _appModelMap = Object.create(null),
     _dispatcherCommandMap = Object.create(null),
     _modelViewBindingMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
@@ -49,8 +50,6 @@ var Nori = (function () {
 
     _view = initObj.view;
 
-    initializeModels();
-
     initializeView();
     postInitialize();
   }
@@ -69,32 +68,28 @@ var Nori = (function () {
     };
   }
 
-  function initializeModels() {
-    _appModelCollection = createModelCollection({id:'GlobalModelCollection', silent: false});
-  }
-
   function initializeView() {
     _view.initialize();
   }
 
   function postInitialize() {
     // Model
-    _dispatcher.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(data) {
-      handleModelUpdate(data);
+    _dispatcher.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(payload) {
+      handleModelUpdate(payload);
     });
 
-    _dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
-      console.log('Update model data, model id: ',data.id, data.data);
+    _dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(payload) {
+      console.log('Update model data, model id: ',payload.id, payload.data);
     });
 
     // Subviews
-    _dispatcher.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(data) {
-      setCurrentRoute(data.routeObj);
+    _dispatcher.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(payload) {
+      setCurrentRoute(payload.routeObj);
     });
 
-    _dispatcher.subscribe(_appEvents.CHANGE_ROUTE, function execute(data) {
-      data.fromApp = true;
-      setCurrentRoute(data);
+    _dispatcher.subscribe(_appEvents.CHANGE_ROUTE, function execute(payload) {
+      payload.fromApp = true;
+      setCurrentRoute(payload);
     });
 
     _dispatcher.publish({type:_appEvents.APP_INITIALIZED, payload:{}});
@@ -107,21 +102,21 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Add a model to the application collection
-   * @param name
-   * @param store
-   */
-  function addModel(store) {
-    _appModelCollection.add(store);
-  }
-
-  /**
    * Get a model from the application collection
    * @param storeID
    * @returns {void|*}
    */
   function getModel(storeID) {
-    return _appModelCollection.get(storeID);
+    return _appModelMap[storeID];
+  }
+
+  /**
+   * Get a model collection from the application collection
+   * @param storeID
+   * @returns {void|*}
+   */
+  function getModelCollection(storeID) {
+    return _appModelCollectionMap[storeID];
   }
 
   //----------------------------------------------------------------------------
@@ -158,6 +153,9 @@ var Nori = (function () {
   function createModelCollection(initObj, extras) {
     var m = requireExtend('Nori.Model.ModelCollection', extras);
     m.initialize(initObj);
+
+    _appModelCollectionMap[initObj.id] = m;
+
     return m;
   }
 
@@ -170,6 +168,9 @@ var Nori = (function () {
   function createModel(initObj, extras) {
     var m = requireExtend('Nori.Model.Model', extras);
     m.initialize(initObj);
+
+    _appModelMap[initObj.id] = m;
+
     return m;
   }
 
@@ -350,8 +351,8 @@ var Nori = (function () {
     view: getView,
     createModelCollection: createModelCollection,
     createModel: createModel,
-    addModel: addModel,
     getModel: getModel,
+    getModelCollection: getModelCollection,
     createApplicationView: createApplicationView,
     setCurrentRoute: setCurrentRoute,
     getCurrentRoute: getCurrentRoute,
