@@ -17,50 +17,48 @@ The `config.js` file contains a global configuration JSON object. Nori wraps it 
 
 Create an `app.js` file and put the following in the `window.onload` handler:
 
-### In here you need to create the global application instance:
+### 1. In here you need to create the global application instance:
 ```javascript
 window.MyApp = Nori.create();
 ```
 
-### You need to create a module for the main view and make the object:
+### 2. You need to create a module for the main view and make the object:
 ```javascript
 var appView = MyApp.createApplicationView(require('MyAppViewModuleID'));
 ```
 
-### Initialize the application with the view. 
+### 3. Initialize the application with the view. 
 
 This is required so that routes can be properly mapped
 ```javascript
 MyApp.initialize({view:appView});
 ```
 
-### Map events to command modules. 
+### 4. Map events to commands. 
 
 Commands are controllers that are triggered when an event is emitted. Sample:
 ```javascript
 MyApp.mapEventCommand(_appEvents.ROUTE_CHANGED, ‘MyApp.RouteChangedCommand’);
 ```
 
-### Map routes to view modules. 
+### 5. Map routes to view modules. 
 
 The Router module monitors the URL hash for changes and will instruct the view to load the HTML template id [‘template__whateverID’] with the subview module. Sample:
 ```javascript
 MyApp.mapRouteView(‘/route’, ‘whateverID’, ‘MyApp.view.whaterverIDview’);
 ```
 
-### Define models, load data, etc.
+### 6. Define models, load data, etc.
 
-### Clear the loading message which display while all of this happens
+### 7. Clear the loading message which display while all of this happens
 ```javascript
 MyApp.view().removeLoadingMessage();
 ```
 
-### Execute the current URL route
+### 8. Execute the current URL route
 ```javascript
 MyApp.setCurrentRoute(MyApp.router().getCurrentRoute()); 
 ```
-
-### Profit!
 
 ## Define / Require
 
@@ -135,12 +133,27 @@ If silent is indicated then changes via `set` will not dispatch a `AppEvents.MOD
 
 Model collections will dispatch this event when one of their member models is changed unless `{silent:true}` is specified on the set method.
 
-### Binding sub views to model changes
+### SubView -> Model data
 
-You can map a sub view to a model and it will receive the updated model store when a change occurs:
+The view will call `MyApp.registerForModelChanges(modelID, viewID)` to bind it to any updates on the model. When data is updated on the model or collection the `handleModelUpdate` will run triggering the `update()` method in any bound views.
 
-```javascript
-MyApp.bindModelView(‘modelID’,’viewID’);
+Data flow:
+
+```
+        set action,
+        change event          ┌──── registerForModelChanges ◀──────────────────┐
+              │               │                                                │
+              │               │  ┌──────────────────────────┐                  │
+              ▼               │  │     Router URL/Query     │──┐ ┌───────────────────────────┐
+┌───────────────────────────┐ │  ├──────────────────────────┤  │ │   User Information View   │
+│  User Information Store   │ │  │         NORI APP         │  │ ├───────────────────────────┤
+└───────────────────────────┘ │  ├──────────────────────────┤┌─┼▶│          Update           │
+              │               └─▶│     Model / View Map     ││ │ └───────────────────────────┘
+              │                  └──────────────────────────┘│ │               │
+              ▼                                │             │ │               ▼
+   ModelDataChangedCommand                     │             │ │
+              │                                ▼             │ │   Render (will poll for any
+              └─────────────────────▶  handleModelUpdate  ───┘ └──▶   query string data)
 ```
 
 # Nudoru Components / Utils

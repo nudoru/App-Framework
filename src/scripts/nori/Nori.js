@@ -332,12 +332,12 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Associate a model with an array of possilbe views. When notifyBoundViewsOfModelUpdate
+   * Associate a model with an array of views. When notifyBoundViewsOfModelUpdate
    * is called, each view will be notified of the new data
    * @param modelID
    * @param viewID
    */
-  function bindModelView(modelID, viewID) {
+  function registerForModelChanges(modelID, viewID) {
     var viewArry = _modelViewBindingMap[modelID];
 
     if(viewArry) {
@@ -353,10 +353,23 @@ var Nori = (function () {
 
   /**
    * Notify any bound views on model change, not collection change
-   * @param modelID
-   * @param data
+   * @param dataObj {id:_id, storeType:'model',  store:getStore(), changed:_lastChangeResult}
    */
-  function notifyBoundViewsOfModelUpdate(modelID, data) {
+  function handleModelUpdate(dataObj) {
+    var viewArry = _modelViewBindingMap[modelID];
+
+    if(viewArry) {
+      viewArry.forEach(function (view) {
+        _view.updateViewData(view, data);
+      });
+    }
+  }
+
+  /**
+   * Notify any bound views on model change, not collection change
+   * @param dataObj {id:_id, storeType:'collection', storeID: data.id, store:data.store}
+   */
+  function handleModelCollectionUpdate(dataObj) {
     var viewArry = _modelViewBindingMap[modelID];
 
     if(viewArry) {
@@ -389,8 +402,9 @@ var Nori = (function () {
     createApplication: createApplication,
     storeSubViewData: storeSubViewData,
     retrieveSubViewData: retrieveSubViewData,
-    bindModelView: bindModelView,
-    notifyBoundViewsOfModelUpdate: notifyBoundViewsOfModelUpdate
+    registerForModelChanges: registerForModelChanges,
+    handleModelUpdate: handleModelUpdate,
+    handleModelCollectionUpdate: handleModelCollectionUpdate
   };
 
 }
