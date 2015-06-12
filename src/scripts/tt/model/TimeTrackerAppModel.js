@@ -7,7 +7,7 @@
 define('TT.Model.TimeTrackerAppModel',
   function (require, module, exports) {
 
-    var _mockDataSource = require('TT.Model.FakeData'),
+    var _mockDataSource = require('TT.Model.MockDataCreator'),
       _peopleSet,
       _projectsSet,
       _assignmentsSet,
@@ -44,11 +44,11 @@ define('TT.Model.TimeTrackerAppModel',
 
       _myProjects[0].set({name: 'Bob'});
 
-      _myProjects.forEach(
-        function listMyProjects(store) {
-          console.log(store.get('projectTitle') + ', dev: ' + store.get('resourceName'));
-        }
-      );
+      //_myProjects.forEach(
+      //  function listMyProjects(store) {
+      //    console.log(store.get('projectTitle') + ', dev: ' + store.get('resourceName'));
+      //  }
+      //);
 
       // filter values was removed
       //var devs = _peopleSet.filterValues(

@@ -1,5 +1,5 @@
 /*
- Matt Perkins, 6/11/15
+ Matt Perkins, 6/12/15
  Based on
  https://github.com/Reactive-Extensions/RxJS/blob/master/doc/howdoi/eventemitter.md
 
@@ -70,7 +70,6 @@ define('Nori.Events.Dispatcher',
       }
 
       _log.push(payloadObj);
-      console.log('>> ',payloadObj);
 
       i = subscribers.length;
 

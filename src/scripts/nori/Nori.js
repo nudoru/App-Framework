@@ -290,8 +290,6 @@ var Nori = (function () {
     return extend(extras, this);
   }
 
-
-
   /**
    * Creates main application model
    * @param extras

@@ -1,4 +1,4 @@
-define('TT.Model.FakeData',
+define('TT.Model.MockDataCreator',
 
   function(require, module, exports) {
     "use strict";
@@ -52,15 +52,9 @@ define('TT.Model.FakeData',
         _assignments.push(createAssignment());
       }
 
-      localStorage['mockTTData'] = {
-        people: _people,
-        projects: _projects,
-        assignments: _assignments
-      };
-
-      console.log('Mock Local Data set');
-      console.log(localStorage['mockTTData'].people);
-
+      localStorage['mockTTData.people'] = _people;
+      localStorage['mockTTData.projects'] = _projects;
+      localStorage['mockTTData.assignments'] = _assignments;
     }
 
     function createPerson() {
