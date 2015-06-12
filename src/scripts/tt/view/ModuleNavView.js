@@ -7,7 +7,7 @@ define('TT.View.ModuleNavView',
 
     var _buttonMap = Object.create(null),
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _appEvents = require('Nori.Events.AppEvents'),
+      _appEvents = require('Nori.Events.AppEventConstants'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _dispatcher = require('Nori.Events.Dispatcher');
 

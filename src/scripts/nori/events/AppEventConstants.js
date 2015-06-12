@@ -1,4 +1,4 @@
-define('Nori.Events.AppEvents',
+define('Nori.Events.AppEventConstants',
   function (require, module, exports) {
     exports.APP_INITIALIZED = 'APP_INITIALIZED';
     exports.APP_VIEW_INITIALIZED = 'APP_VIEW_INITIALIZED';
@@ -20,7 +20,7 @@ define('Nori.Events.AppEvents',
     exports.SUBVIEW_STORE_STATE = 'SUBVIEW_STORE_STATE';
   });
 
-//define('Nori.Events.AppEvents',
+//define('Nori.Events.AppEventConstants',
 //  function (require, module, exports) {
 //    var objUtils = require('Nudoru.Core.ObjectUtils');
 //

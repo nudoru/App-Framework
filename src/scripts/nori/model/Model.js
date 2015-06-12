@@ -19,7 +19,7 @@ define('Nori.Model.Model',
       _silent = false,
       _parentCollection,
       _dispatcher = require('Nori.Events.Dispatcher'),
-      _appEvents = require('Nori.Events.AppEvents');
+      _appEvents = require('Nori.Events.AppEventConstants');
 
     //----------------------------------------------------------------------------
     //  Initialization

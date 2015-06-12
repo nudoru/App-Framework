@@ -2,7 +2,7 @@ define('TT.TimeTrackerApplication',
   function (require, module, exports) {
 
     var _self,
-      _appEvents = require('Nori.Events.AppEvents'),
+      _appEvents = require('Nori.Events.AppEventConstants'),
       _dispatcher = require('Nori.Events.Dispatcher');
 
     function initialize() {

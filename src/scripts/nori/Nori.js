@@ -4,8 +4,8 @@ var Nori = (function () {
     _view,
     _dispatcherCommandMap = Object.create(null),
     _modelViewBindingMap = Object.create(null),
-    _appEvents = require('Nori.Events.AppEvents'),
-    _browserEvents = require('Nudoru.Browser.BrowserEvents'),
+    _appEvents = require('Nori.Events.AppEventConstants'),
+    _browserEvents = require('Nudoru.Browser.BrowserEventConstants'),
     _objectUtils = require('Nudoru.Core.ObjectUtils'),
     _dispatcher = require('Nori.Events.Dispatcher'),
     _router = require('Nori.Controller.Router');
@@ -96,7 +96,7 @@ var Nori = (function () {
     });
 
     _dispatcher.subscribe(_appEvents.CHANGE_ROUTE, function execute(payload) {
-      payload.fromApp = true;
+      payload.payload.fromApp = true;
       setCurrentRoute(payload.payload);
     });
 

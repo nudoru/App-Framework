@@ -17,7 +17,7 @@ define('Nudoru.Core.Router',
 
     var _routeMap = Object.create(null),
       _dispatcher = require('Nudoru.Component.Emitter'),
-      _browserEvents = require('Nudoru.Browser.BrowserEvents');
+      _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);

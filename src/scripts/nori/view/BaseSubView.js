@@ -14,7 +14,7 @@ define('Nori.View.BaseSubView',
       _isMounted = false,
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _dispatcher = require('Nori.Events.Dispatcher'),
-      _appEvents = require('Nori.Events.AppEvents');
+      _appEvents = require('Nori.Events.AppEventConstants');
 
     /**
      * Initialization

@@ -17,7 +17,7 @@ define('TT.View.TimeTrackerAppView',
       _buttonHelpStream,
       _toolTip = require('Nudoru.Component.ToolTipView'),
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _appEvents = require('Nori.Events.AppEvents'),
+      _appEvents = require('Nori.Events.AppEventConstants'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _dispatcher = require('Nori.Events.Dispatcher');
 

@@ -2,7 +2,7 @@ define('TT.View.UserProfilePanelView',
   function (require, module, exports) {
 
     var _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _appEvents = require('Nori.Events.AppEvents'),
+      _appEvents = require('Nori.Events.AppEventConstants'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _dispatcher = require('Nori.Events.Dispatcher');
 

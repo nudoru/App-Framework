@@ -11,7 +11,7 @@ define('TT.Model.TimeTrackerAppModel',
       _assignmentsCollection,
       _currentUserModel,
       _currentUserProjectsCollection,
-      _appEvents = require('Nori.Events.AppEvents');
+      _appEvents = require('Nori.Events.AppEventConstants');
       _dispatcher = require('Nori.Events.Dispatcher');
 
     //----------------------------------------------------------------------------
