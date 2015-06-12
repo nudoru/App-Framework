@@ -20,7 +20,7 @@
 
     // Initialize app with the view
     // App muse be initialized with view for route mapping to work
-    TT.initialize({model:appModel, view:appView});
+    TT.initializeApplication({model:appModel, view:appView});
 
     TT.model().initialize();
 

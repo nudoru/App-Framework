@@ -15,7 +15,7 @@ define('TT.Model.TimeTrackerAppModel',
       _myProjects;
 
     function initialize() {
-      console.log('init TT model');
+      this.initializeApplicationModel();
 
       createModel();
     }

@@ -47,22 +47,23 @@ var Nori = (function () {
    * @param model
    * @param view
    */
-  function initialize(initObj) {
+  function initializeApplication(initObj) {
     initializeConfig();
     _router.initialize();
 
     if(initObj.view) {
       _view = initObj.view;
     } else {
+      console.log('Nori, no view. Creating default.');
       _view = createApplicationView({});
     }
 
     if(initObj.model) {
       _model = initObj.model;
     } else {
+      console.log('Nori, no model. Creating default.');
       _model = createApplicationModel({});
     }
-
 
     initializeView();
     postInitialize();
@@ -329,7 +330,7 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   return {
-    initialize: initialize,
+    initializeApplication: initializeApplication,
     config: getConfig,
     dispatcher: getDispatcher,
     router: getRouter,

@@ -24,8 +24,8 @@ define('TT.View.TimeTrackerAppView',
     function initialize() {
       _self = this;
 
-      _self.initializeApplicationElements();
-      _self.initializeComponents();
+      _self.initializeApplicationView();
+
       _self.setRouteViewMountPoint('contents');
 
       mapRoutes();

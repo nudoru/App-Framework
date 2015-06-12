@@ -4,6 +4,10 @@ define('Nori.Model.ApplicationModel',
     var _appModelCollectionMap = Object.create(null),
       _appModelMap = Object.create(null);
 
+    function initializeApplicationModel() {
+      //
+    }
+
     /**
      * Create a new model collection and initalize
      * @param initObj
@@ -52,9 +56,10 @@ define('Nori.Model.ApplicationModel',
       return _appModelCollectionMap[storeID];
     }
 
-    exports.createModelCollection =  createModelCollection;
-      exports.createModel =  createModel;
-      exports.getModel =  getModel;
-      exports.getModelCollection =  getModelCollection;
+    exports.initializeApplicationModel = initializeApplicationModel;
+    exports.createModelCollection = createModelCollection;
+    exports.createModel = createModel;
+    exports.getModel = getModel;
+    exports.getModelCollection = getModelCollection;
 
   });
