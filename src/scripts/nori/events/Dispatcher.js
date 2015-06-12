@@ -17,6 +17,8 @@
 define('Nori.Events.Dispatcher',
   function (require, module, exports) {
     var _subjectMap = {},
+        _receiverMap = {},
+        _id = 0,
         _log = [];
 
     /**
@@ -63,6 +65,9 @@ define('Nori.Events.Dispatcher',
      * @param data
      */
     function publish(payloadObj) {
+
+      dispatchToReceivers(payloadObj);
+
       var subscribers = _subjectMap[payloadObj.type], i;
 
       if(!subscribers) {
@@ -130,10 +135,52 @@ define('Nori.Events.Dispatcher',
     }
 
 
+    /**
+     * Simple receiver implementation based on Flux
+     * Registered receivers will get every published event
+     * https://github.com/facebook/flux/blob/master/src/Dispatcher.js
+     *
+     * Usage:
+     *
+     * _dispatcher.registerReceiver(function (payload) {
+     *    console.log('receiving, ',payload);
+     * });
+     *
+     * @param handler
+     * @returns {string}
+     */
+    function registerReceiver(handler) {
+      var id = 'ID_'+_id++;
+      _receiverMap[id] = handler;
+      return id;
+    }
+
+    /**
+     * Send the payload to all receivers
+     * @param payload
+     */
+    function dispatchToReceivers(payload) {
+      for(var id in _receiverMap) {
+        _receiverMap[id](payload);
+      }
+    }
+
+    /**
+     * Remove a receiver handler
+     * @param id
+     */
+    function unregisterReceiver(id) {
+      if(_receiverMap.hasOwnProperty(id)) {
+        delete _receiverMap[id];
+      }
+    }
+
     exports.subscribe = subscribe;
     exports.unsubscribe = unsubscribe;
     exports.subscribeCommand = subscribeCommand;
     exports.publish = publish;
     exports.getLog = getLog;
+    exports.registerReceiver = registerReceiver;
+    exports.unregisterReceiver = unregisterReceiver;
 
   });
