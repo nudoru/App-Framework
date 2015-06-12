@@ -3,11 +3,7 @@
  Based on
  https://github.com/Reactive-Extensions/RxJS/blob/master/doc/howdoi/eventemitter.md
 
- Refernece Flux dispatcher
- https://github.com/facebook/flux/blob/master/src/Dispatcher.js
-
-
- publish paylod object
+ publish payload object
 
  {
  type: EVT_TYPE,
@@ -67,10 +63,6 @@ define('Nori.Events.Dispatcher',
      * @param data
      */
     function publish(payloadObj) {
-      if(typeof payloadObj === 'string') {
-        throw new Error('Dispatcher publish must be payload object');
-      };
-
       var subscribers = _subjectMap[payloadObj.type], i;
 
       if(!subscribers) {
@@ -95,12 +87,17 @@ define('Nori.Events.Dispatcher',
       }
     }
 
-    function unsubscribe(evtStr, hander) {
-      if (_subjectMap[evtString] === undefined) {
+    /**
+     * Remove a handler
+     * @param evtStr
+     * @param hander
+     */
+    function unsubscribe(evtStr, handler) {
+      if (_subjectMap[evtStr] === undefined) {
         return;
       }
 
-      var subscribers = _subjectMap[evtString],
+      var subscribers = _subjectMap[evtStr],
         handlerIdx = -1;
 
       for (var i = 0, len = subscribers.length; i < len; i++) {
@@ -119,7 +116,7 @@ define('Nori.Events.Dispatcher',
       subscribers.splice(handlerIdx, 1);
 
       if (subscribers.length === 0) {
-        delete _subjectMap[evtString];
+        delete _subjectMap[evtStr];
       }
     }
 
