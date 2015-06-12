@@ -1,8 +1,7 @@
 var Nori = (function () {
   var _config,
+    _model,
     _view,
-    _appModelCollectionMap = Object.create(null),
-    _appModelMap = Object.create(null),
     _dispatcherCommandMap = Object.create(null),
     _modelViewBindingMap = Object.create(null),
     _appEvents = require('Nori.Events.AppEvents'),
@@ -21,6 +20,10 @@ var Nori = (function () {
 
   function getRouter() {
     return _router;
+  }
+
+  function getModel() {
+    return _model;
   }
 
   function getView() {
@@ -48,7 +51,18 @@ var Nori = (function () {
     initializeConfig();
     _router.initialize();
 
-    _view = initObj.view;
+    if(initObj.view) {
+      _view = initObj.view;
+    } else {
+      _view = createApplicationView({});
+    }
+
+    if(initObj.model) {
+      _model = initObj.model;
+    } else {
+      _model = createApplicationModel({});
+    }
+
 
     initializeView();
     postInitialize();
@@ -97,26 +111,8 @@ var Nori = (function () {
 
 
   //----------------------------------------------------------------------------
-  //  Models
+  //  Model binding
   //----------------------------------------------------------------------------
-
-  /**
-   * Get a model from the application collection
-   * @param storeID
-   * @returns {void|*}
-   */
-  function getModel(storeID) {
-    return _appModelMap[storeID];
-  }
-
-  /**
-   * Get a model collection from the application collection
-   * @param storeID
-   * @returns {void|*}
-   */
-  function getModelCollection(storeID) {
-    return _appModelCollectionMap[storeID];
-  }
 
   /**
    * Associate a model with an array of views. When notifyBoundViewsOfModelUpdate
@@ -298,34 +294,19 @@ var Nori = (function () {
     return extend(extras, this);
   }
 
+
+
   /**
-   * Create a new model collection and initalize
-   * @param initObj
+   * Creates main application model
    * @param extras
    * @returns {*}
    */
-  function createModelCollection(initObj, extras) {
-    var m = requireExtend('Nori.Model.ModelCollection', extras);
-    m.initialize(initObj);
+  function createApplicationModel(extras) {
 
-    _appModelCollectionMap[initObj.id] = m;
+    // Concat main model with mixins
+    var appModel= _.assign({}, require('Nori.Model.ApplicationModel'));
 
-    return m;
-  }
-
-  /**
-   * Create a new model and initialize
-   * @param initObj
-   * @param extras
-   * @returns {*}
-   */
-  function createModel(initObj, extras) {
-    var m = requireExtend('Nori.Model.Model', extras);
-    m.initialize(initObj);
-
-    _appModelMap[initObj.id] = m;
-
-    return m;
+    return extend(extras, appModel);
   }
 
   /**
@@ -352,11 +333,10 @@ var Nori = (function () {
     config: getConfig,
     dispatcher: getDispatcher,
     router: getRouter,
+    model: getModel,
     view: getView,
-    createModelCollection: createModelCollection,
-    createModel: createModel,
-    getModel: getModel,
-    getModelCollection: getModelCollection,
+    createApplication: createApplication,
+    createApplicationModel: createApplicationModel,
     createApplicationView: createApplicationView,
     setCurrentRoute: setCurrentRoute,
     getCurrentRoute: getCurrentRoute,
@@ -364,7 +344,6 @@ var Nori = (function () {
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
-    createApplication: createApplication,
     registerViewForModelChanges: registerViewForModelChanges,
     handleModelUpdate: handleModelUpdate
   };

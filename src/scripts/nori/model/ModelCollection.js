@@ -58,7 +58,7 @@ define('Nori.Model.ModelCollection',
           id = _id + 'child' + _children.length;
         }
 
-        add(Nori.createModel({id: id, silent: silent, store: obj}));
+        add(Nori.model().createModel({id: id, silent: silent, store: obj}));
       });
 
     }
