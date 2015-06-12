@@ -52,9 +52,9 @@ define('TT.Model.MockDataCreator',
         _assignments.push(createAssignment());
       }
 
-      localStorage['mockTTData.people'] = _people;
-      localStorage['mockTTData.projects'] = _projects;
-      localStorage['mockTTData.assignments'] = _assignments;
+      localStorage['mockTTData.people'] = JSON.stringify(_people);
+      localStorage['mockTTData.projects'] = JSON.stringify(_projects);
+      localStorage['mockTTData.assignments'] = JSON.stringify(_assignments);
     }
 
     function createPerson() {

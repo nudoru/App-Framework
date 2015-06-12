@@ -83,23 +83,21 @@ var Nori = (function () {
   }
 
   function configureApplicationEvents() {
-    // Model
     _dispatcher.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(payload) {
-      handleModelUpdate(payload);
+      handleModelUpdate(payload.payload);
     });
 
     _dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(payload) {
-      console.log('Update model data, model id: ', payload.id, payload.data);
+      console.log('Update model data, model id: ', payload.payload.id, payload.payload.data);
     });
 
-    // Subviews
     _dispatcher.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(payload) {
-      setCurrentRoute(payload.routeObj);
+      setCurrentRoute(payload.payload.routeObj);
     });
 
     _dispatcher.subscribe(_appEvents.CHANGE_ROUTE, function execute(payload) {
       payload.fromApp = true;
-      setCurrentRoute(payload);
+      setCurrentRoute(payload.payload);
     });
 
     _dispatcher.publish({type: _appEvents.APP_INITIALIZED, payload: {}});

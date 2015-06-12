@@ -70,6 +70,7 @@ define('Nori.Events.Dispatcher',
       }
 
       _log.push(payloadObj);
+      console.log('>> ',payloadObj);
 
       i = subscribers.length;
 
@@ -77,7 +78,7 @@ define('Nori.Events.Dispatcher',
 
         var subjObj = subscribers[i];
 
-        subjObj.subject.onNext(payloadObj.payload);
+        subjObj.subject.onNext(payloadObj);
 
         if (subjObj.once) {
           unsubscribe(payloadObj.type, subjObj.handler);

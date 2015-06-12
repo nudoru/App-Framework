@@ -1,63 +1,91 @@
-/**
- * Must be extended from Nori.Model module
- *
- * this._super refers to Nori.Model
- */
-
 define('TT.Model.TimeTrackerAppModel',
   function (require, module, exports) {
 
-    var _mockDataSource = require('TT.Model.MockDataCreator'),
-      _peopleSet,
-      _projectsSet,
-      _assignmentsSet,
-      _meCurrentUser,
-      _myProjects;
+    var _self,
+      _mockDataSource = require('TT.Model.MockDataCreator'),
+      _peopleSourceData,
+      _projectsSourceData,
+      _assignmentsSourceData,
+      _peopleCollection,
+      _projectsCollection,
+      _assignmentsCollection,
+      _currentUserModel,
+      _currentUserProjectsCollection,
+      _appEvents = require('Nori.Events.AppEvents');
+      _dispatcher = require('Nori.Events.Dispatcher');
 
-    function initialize() {
-      this.initializeApplicationModel();
+    //----------------------------------------------------------------------------
+    //  Accessors
+    //----------------------------------------------------------------------------
 
-      createModel();
+    function getCurrentUserModel() {
+      return _currentUserModel;
     }
 
+    function getCurrentUserProjectsCollection() {
+      return _currentUserProjectsCollection;
+    }
+
+    //----------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------
+
+    function initialize() {
+      _self = this;
+      this.initializeApplicationModel();
+      createModel();
+
+
+    }
 
     /**
-     * Create the mock model
+     * Create model data
      */
     function createModel() {
 
+      // Will init dummy data and save to local storage: mockTTData.people, mockTTData.projects, mockTTData.assignments
       _mockDataSource.initialize();
 
-      _peopleSet = TT.model().createModelCollection({id: 'peopleset'});
-      _projectsSet = TT.model().createModelCollection({id: 'projectsset'});
-      _assignmentsSet = TT.model().createModelCollection({id: 'assignmentsset'});
+      loadApplicationData();
 
-      _peopleSet.addFromObjArray(_mockDataSource.getPeople(), 'id', false);
-      _projectsSet.addFromObjArray(_mockDataSource.getProjects(), 'id', false);
-      _assignmentsSet.addFromObjArray(_mockDataSource.getAssignments(), 'id', false);
+      _peopleCollection = _self.createModelCollection({id: 'peopleset'});
+      _projectsCollection = _self.createModelCollection({id: 'projectsset'});
+      _assignmentsCollection = _self.createModelCollection({id: 'assignmentsset'});
 
-      _meCurrentUser = _peopleSet.getFirst();
+      _peopleCollection.addFromObjArray(_peopleSourceData, 'id', false);
+      _projectsCollection.addFromObjArray(_projectsSourceData, 'id', false);
+      _assignmentsCollection.addFromObjArray(_assignmentsSourceData, 'id', false);
 
-      var myName = _meCurrentUser.get('name');
+      _currentUserModel = _peopleCollection.getFirst();
 
-      _myProjects = _assignmentsSet.filter('resourceName', myName);
+      _currentUserProjectsCollection = _self.createModelCollection({id:'myprojects'});
+      _currentUserProjectsCollection.addStoresFromArray(_assignmentsCollection.filter('resourceName', _currentUserModel.get('name')));
 
-      _myProjects[0].set({name: 'Bob'});
+      //_myProjects.forEach(function (store) {
+      //  console.log(store.get('projectTitle'));
+      //})
+    }
 
-      //_myProjects.forEach(
-      //  function listMyProjects(store) {
-      //    console.log(store.get('projectTitle') + ', dev: ' + store.get('resourceName'));
-      //  }
-      //);
+    /**
+     * Gets the data objects from the source
+     */
+    function loadApplicationData() {
+      _peopleSourceData = JSON.parse(getLocalStorageObject('mockTTData.people'));
+      _projectsSourceData = JSON.parse(getLocalStorageObject('mockTTData.projects'));
+      _assignmentsSourceData = JSON.parse(getLocalStorageObject('mockTTData.assignments'));
+    }
 
-      // filter values was removed
-      //var devs = _peopleSet.filterValues(
-      //  function (store) {
-      //    return store.get('jobTitle') === 'ITD';
-      //  }).forEach(
-      //  function(store) {
-      //    console.log(store.get('name')+', '+store.get('jobTitle'));
-      //  });
+    //----------------------------------------------------------------------------
+    //  Utility
+    //----------------------------------------------------------------------------
+
+    /**
+     * Utility function
+     * @param obj
+     * @returns {*}
+     */
+    function getLocalStorageObject(obj) {
+      return localStorage[obj];
     }
 
     /**
@@ -112,6 +140,12 @@ define('TT.Model.TimeTrackerAppModel',
       //console.log('test entries: '+JSON.stringify(test1.entries()));
     }
 
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
+
     exports.initialize = initialize;
+    exports.getCurrentUserModel = getCurrentUserModel;
+    exports.getCurrentUserProjectsCollection = getCurrentUserProjectsCollection;
 
   });

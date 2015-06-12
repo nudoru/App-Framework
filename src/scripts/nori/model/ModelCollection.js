@@ -183,6 +183,14 @@ define('Nori.Model.ModelCollection',
       });
     }
 
+    function forEach(func) {
+      return _children.forEach(func);
+    }
+
+    function map(func) {
+      return _children.map(func);
+    }
+
     /**
      * Return an array of entries of each store
      * @returns {Array}
@@ -233,6 +241,8 @@ define('Nori.Model.ModelCollection',
     exports.getAtIndex = getAtIndex;
     exports.filterCustom = filterCustom;
     exports.filter = filter;
+    exports.forEach = forEach;
+    exports.map = map;
     exports.entries = entries;
     exports.save = save;
     exports.destroy = destroy;
