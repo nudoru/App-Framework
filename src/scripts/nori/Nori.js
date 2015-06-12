@@ -65,8 +65,7 @@ var Nori = (function () {
       _model = createApplicationModel({});
     }
 
-    initializeView();
-    postInitialize();
+    configureApplicationEvents();
   }
 
   /**
@@ -83,11 +82,7 @@ var Nori = (function () {
     };
   }
 
-  function initializeView() {
-    _view.initialize();
-  }
-
-  function postInitialize() {
+  function configureApplicationEvents() {
     // Model
     _dispatcher.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(payload) {
       handleModelUpdate(payload);

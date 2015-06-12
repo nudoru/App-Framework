@@ -9,42 +9,17 @@
   // Initialize the window
   window.onload = function() {
 
-    var appModel, appView;
+
 
     // Create the application instance
-    window.TT = Nori.createApplication();
+    window.TT = Nori.createApplication(require('TT.TimeTrackerApplication'));
 
-    // Create the model and view
-    appModel = TT.createApplicationModel(require('TT.Model.TimeTrackerAppModel'));
-    appView = TT.createApplicationView(require('TT.View.TimeTrackerAppView'));
+    // Kick off the bootstrapping process
+    TT.initialize();
 
-    // Initialize app with the view
-    // App muse be initialized with view for route mapping to work
-    TT.initializeApplication({model:appModel, view:appView});
 
-    TT.model().initialize();
 
-    mapEvents();
-
-    // Everything is ready!
-    TT.view().removeLoadingMessage();
-
-    // Execute the route on the URL
-    TT.setCurrentRoute(TT.router().getCurrentRoute());
   };
-
-  /**
-   * Set up commands / events
-   */
-  function mapEvents() {
-    var _appEvents = require('Nori.Events.AppEvents');
-
-    TT.dispatcher().subscribe(_appEvents.ROUTE_CHANGED, function(data) {
-      TT.view().updateOnRouteChange(data);
-    });
-
-  }
-
 
 
 }());
