@@ -1,5 +1,5 @@
 /**
- * A template for a subview/route controller
+ * A template for a subviews
  */
 
 define('Nori.View.BaseSubView',
@@ -10,11 +10,10 @@ define('Nori.View.BaseSubView',
       _templateObj,
       _html,
       _DOMElement,
+      _state,
       _children = [],
       _isMounted = false,
-      _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _dispatcher = require('Nori.Events.Dispatcher'),
-      _appEvents = require('Nori.Events.AppEventConstants');
+      _domUtils = require('Nudoru.Browser.DOMUtils');
 
     /**
      * Initialization
@@ -31,7 +30,6 @@ define('Nori.View.BaseSubView',
       }
 
     }
-
 
     /**
      * Add a child
@@ -55,7 +53,7 @@ define('Nori.View.BaseSubView',
      * Before the iew updates and a rerender occurs
      */
     function viewWillUpdate() {
-      //
+      // update state
     }
 
     /**
@@ -77,7 +75,7 @@ define('Nori.View.BaseSubView',
     }
 
     /**
-     * After the view updates and a rerender occured
+     * After the view updates and a rerender occurred
      */
     function viewDidUpdate() {
 
@@ -124,6 +122,18 @@ define('Nori.View.BaseSubView',
       // Unmount
     }
 
+    //----------------------------------------------------------------------------
+    //  Accessors
+    //----------------------------------------------------------------------------
+
+    function setState(obj) {
+      _state = obj;
+    }
+
+    function getState() {
+      return _state;
+    }
+
     /**
      * Accessor for ID prop
      * @returns {*}
@@ -147,7 +157,13 @@ define('Nori.View.BaseSubView',
       return _children.slice(0);
     }
 
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
+
     exports.initialize = initialize;
+    exports.setState = setState;
+    exports.getState = getState;
     exports.viewWillUpdate = viewWillUpdate;
     exports.update = update;
     exports.viewDidUpdate = viewDidUpdate;

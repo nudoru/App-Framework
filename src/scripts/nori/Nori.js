@@ -4,7 +4,7 @@ var Nori = (function () {
     _view,
     _dispatcherCommandMap = Object.create(null),
     _modelViewBindingMap = Object.create(null),
-    _appEvtCreator = require('Nori.Events.AppEventCreator'),
+    _appEventCreator = require('Nori.Events.AppEventCreator'),
     _appEvents = require('Nori.Events.AppEventConstants'),
     _browserEvents = require('Nudoru.Browser.BrowserEventConstants'),
     _objectUtils = require('Nudoru.Core.ObjectUtils'),
@@ -68,7 +68,7 @@ var Nori = (function () {
 
     configureApplicationEvents();
 
-    _appEvtCreator.applicationInitialized();
+    _appEventCreator.applicationInitialized();
   }
 
   /**
@@ -195,7 +195,7 @@ var Nori = (function () {
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
         _router.runCurrentRoute();
-        _appEvtCreator.routeChanged(routeObj);
+        _appEventCreator.routeChanged(routeObj);
       }
     } else {
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);

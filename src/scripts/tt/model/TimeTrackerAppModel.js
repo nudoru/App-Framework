@@ -11,7 +11,8 @@ define('TT.Model.TimeTrackerAppModel',
       _assignmentsCollection,
       _currentUserModel,
       _currentUserProjectsCollection,
-      _appEvtCreator = require('Nori.Events.AppEventCreator');
+      _appEvtCreator = require('Nori.Events.AppEventCreator'),
+      _dispatcher = require('Nori.Events.Dispatcher');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -32,9 +33,20 @@ define('TT.Model.TimeTrackerAppModel',
     function initialize() {
       _self = this;
       this.initializeApplicationModel();
+
+      _dispatcher.registerReceiver(eventReceiver);
+
       createModel();
 
       _appEvtCreator.applicationModelInitialized();
+    }
+
+    /**
+     * Will receive application events
+     * @param payload
+     */
+    function eventReceiver(payload) {
+      //console.log('model receiver ',payload);
     }
 
     /**
@@ -57,8 +69,8 @@ define('TT.Model.TimeTrackerAppModel',
 
       _currentUserModel = _peopleCollection.getFirst();
 
-      _currentUserProjectsCollection = _self.createModelCollection({id:'myprojects'});
-      _currentUserProjectsCollection.addStoresFromArray(_assignmentsCollection.filter('resourceName', _currentUserModel.get('name')));
+      _currentUserProjectsCollection = _self.createModelCollection({id: 'myprojects'});
+      _currentUserProjectsCollection.addStoresFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserModel.get('name')));
 
       //_myProjects.forEach(function (store) {
       //  console.log(store.get('projectTitle'));
