@@ -24,19 +24,9 @@ define('Nori.View.ApplicationView',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initialize() {
-      // stub
-    }
-
     function initializeApplicationView() {
       initializeApplicationElements();
       initializeComponents();
-    }
-
-
-
-    function render() {
-      // stub
     }
 
     function initializeApplicationElements() {
@@ -129,9 +119,6 @@ define('Nori.View.ApplicationView',
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
-
-    exports.initialize = initialize;
-    exports.render = render;
 
     exports.initializeApplicationView = initializeApplicationView;
     exports.initializeApplicationElements = initializeApplicationElements;

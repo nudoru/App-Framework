@@ -52,6 +52,10 @@ define('Nori.Model.Model',
       _changed = true;
     }
 
+    function getChanged() {
+      return _changed;
+    }
+
     /**
      * Set property or merge in new data
      * @param key String = name of property to set, Object = will merge new props
@@ -278,6 +282,7 @@ define('Nori.Model.Model',
     exports.initialize = initialize;
     exports.getID = getID;
     exports.clear = clear;
+    exports.changed = getChanged;
     exports.set = set;
     exports.get = get;
     exports.has = has;

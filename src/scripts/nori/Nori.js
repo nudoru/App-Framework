@@ -320,7 +320,7 @@ var Nori = (function () {
     // Concat main view with mixins
     var appView = _.assign({},
       require('Nori.View.ApplicationView'),
-      require('Nori.View.SubRouteViews'));
+      require('Nori.View.ViewMixinSubViewRoutes'));
 
     return extend(extras, appView);
   }

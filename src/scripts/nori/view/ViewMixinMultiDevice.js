@@ -5,7 +5,7 @@
  * Extracted from View 5/6/15
  */
 
-define('Nori.View.MultiDeviceView',
+define('Nori.View.ViewMixinMultiDevice',
   function (require, module, exports) {
 
     var _drawerEl,
@@ -23,7 +23,7 @@ define('Nori.View.MultiDeviceView',
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _dispatcher = require('Nudoru.events.EventDispatcher');
 
-    function initialize(initObj) {
+    function initializeMultiDeviceView(initObj) {
       _isMobile = false;
       _tabletBreakWidth = 750;
       _phoneBreakWidth = 475;
@@ -117,7 +117,7 @@ define('Nori.View.MultiDeviceView',
       TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
     }
 
-    exports.initialize = initialize;
+    exports.initializeMultiDeviceView = initializeMultiDeviceView;
     exports.openDrawer = openDrawer;
     exports.closeDrawer = closeDrawer;
     exports.checkForMobile = checkForMobile;
