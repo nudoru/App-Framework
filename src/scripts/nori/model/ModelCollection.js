@@ -11,8 +11,7 @@ define('Nori.Model.ModelCollection',
     var _id,
       _children = [],
       _silent = false,
-      _dispatcher = require('Nori.Events.Dispatcher'),
-      _appEvents = require('Nori.Events.AppEventConstants');
+      _appEventCreator = require('Nori.Events.AppEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -117,14 +116,11 @@ define('Nori.Model.ModelCollection',
      */
     function dispatchChange(data) {
       if (!_silent) {
-        _dispatcher.publish({
-          type: _appEvents.MODEL_DATA_CHANGED,
-          payload: {
-            id: _id,
-            storeType: 'collection',
-            storeID: data.id,
-            store: data.store
-          }
+        _appEventCreator.modelChanged({
+          id: _id,
+          storeType: 'collection',
+          storeID: data.id,
+          store: data.store
         });
       }
 

@@ -16,8 +16,7 @@ define('Nori.Controller.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
-      _dispatcher = require('Nori.Events.Dispatcher'),
-      _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
+      _appEvtCreator = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -41,13 +40,17 @@ define('Nori.Controller.Router',
      * @param evt
      */
     function onHashChange(evt) {
-      _dispatcher.publish({
-        type: _browserEvents.URL_HASH_CHANGED,
-        payload: {
-          routeObj: getCurrentRoute(),
-          fragment: getURLFragment()
-        }
-      });
+      _appEvtCreator.urlHashChanged({
+        routeObj: getCurrentRoute(),
+        fragment: getURLFragment()
+      })
+      //_dispatcher.publish({
+      //  type: _browserEvents.URL_HASH_CHANGED,
+      //  payload: {
+      //    routeObj: getCurrentRoute(),
+      //    fragment: getURLFragment()
+      //  }
+      //});
     }
 
     /**

@@ -11,8 +11,7 @@ define('TT.Model.TimeTrackerAppModel',
       _assignmentsCollection,
       _currentUserModel,
       _currentUserProjectsCollection,
-      _appEvents = require('Nori.Events.AppEventConstants');
-      _dispatcher = require('Nori.Events.Dispatcher');
+      _appEvtCreator = require('Nori.Events.AppEventCreator');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -35,7 +34,7 @@ define('TT.Model.TimeTrackerAppModel',
       this.initializeApplicationModel();
       createModel();
 
-
+      _appEvtCreator.applicationModelInitialized();
     }
 
     /**

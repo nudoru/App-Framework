@@ -18,8 +18,7 @@ define('Nori.Model.Model',
       _lastChangeResult,
       _silent = false,
       _parentCollection,
-      _dispatcher = require('Nori.Events.Dispatcher'),
-      _appEvents = require('Nori.Events.AppEventConstants');
+      _appEventCreator = require('Nori.Events.AppEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -233,14 +232,11 @@ define('Nori.Model.Model',
      */
     function dispatchChange() {
       if (!_silent) {
-        _dispatcher.publish({
-          type: _appEvents.MODEL_DATA_CHANGED,
-          payload: {
-            id: _id,
-            storeType: 'model',
-            store: toObject(),
-            changed: _lastChangeResult
-          }
+        _appEventCreator.modelChanged({
+          id: _id,
+          storeType: 'model',
+          store: toObject(),
+          changed: _lastChangeResult
         });
       }
 
