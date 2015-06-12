@@ -5,12 +5,13 @@
 define('Nori.View.BaseSubView',
   function (require, module, exports) {
 
-    var _initObj,
+    var _isInitialized = false,
+      _initObj,
       _id,
       _templateObj,
       _html,
       _DOMElement,
-      _state,
+      _state = {},
       _children = [],
       _isMounted = false,
       _domUtils = require('Nudoru.Browser.DOMUtils');
@@ -19,15 +20,14 @@ define('Nori.View.BaseSubView',
      * Initialization
      * @param initObj
      */
-    function initialize(initObj) {
-      if(!_initObj) {
+    function initializeSubView(initObj) {
+      if(!isInitialized()) {
         _initObj = initObj;
         _id = initObj.id;
         _templateObj = initObj.template;
-        render();
-      } else {
-        update(initObj);
       }
+      this.update();
+      _isInitialized = true;
 
     }
 
@@ -62,7 +62,7 @@ define('Nori.View.BaseSubView',
      * @returns {*}
      */
     function update() {
-      viewWillUpdate();
+      this.viewWillUpdate();
 
       _children.forEach(function updateChild(child) {
         child.update();
@@ -71,7 +71,7 @@ define('Nori.View.BaseSubView',
       if(_isMounted) {
         render();
       }
-      viewDidUpdate();
+      this.viewDidUpdate();
     }
 
     /**
@@ -92,7 +92,7 @@ define('Nori.View.BaseSubView',
         child.render();
       });
 
-      _html = _templateObj();
+      _html = _templateObj(_state);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
       return _DOMElement;
     }
@@ -110,7 +110,6 @@ define('Nori.View.BaseSubView',
      */
     function viewWillUnMount() {
       //console.log(_id + ', subview will unmount');
-
       _isMounted = false;
     }
 
@@ -125,6 +124,10 @@ define('Nori.View.BaseSubView',
     //----------------------------------------------------------------------------
     //  Accessors
     //----------------------------------------------------------------------------
+
+    function isInitialized() {
+      return _isInitialized;
+    }
 
     function setState(obj) {
       _state = obj;
@@ -161,7 +164,8 @@ define('Nori.View.BaseSubView',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
+    exports.initializeSubView = initializeSubView;
+    exports.isInitialized = isInitialized;
     exports.setState = setState;
     exports.getState = getState;
     exports.viewWillUpdate = viewWillUpdate;

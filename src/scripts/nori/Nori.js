@@ -292,10 +292,8 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationModel(extras) {
-
     // Concat main model with mixins
     var appModel= _.assign({}, require('Nori.Model.ApplicationModel'));
-
     return extend(extras, appModel);
   }
 
@@ -305,7 +303,6 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationView(extras) {
-
     // Concat main view with mixins
     var appView = _.assign({},
       require('Nori.View.ApplicationView'),

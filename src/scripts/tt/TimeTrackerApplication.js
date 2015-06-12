@@ -22,6 +22,8 @@ define('TT.TimeTrackerApplication',
 
       this.view().removeLoadingMessage();
 
+      this.view().render();
+
       this.setCurrentRoute(TT.router().getCurrentRoute());
     }
 

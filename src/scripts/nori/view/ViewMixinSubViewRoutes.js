@@ -53,7 +53,14 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @returns {*}
      */
     function createSubView(extras) {
-      return Nori.extend(extras, requireUnique(_baseSubViewModuleID));
+      var base = requireExtend(_baseSubViewModuleID, extras);
+      return base;
+      //console.log('base', base.viewWillUpdate.toString());
+      //console.log('extras', base.viewWillUpdate.toString());
+      //return Nori.extend(extras, requireUnique(_baseSubViewModuleID));
+      //var view = _.assign({}, base, extras);
+      //return Nori.extend(extras, view);
+      //return view;
     }
 
     /**
@@ -84,6 +91,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param dataObj
      */
     function showView(templateID) {
+      console.log('show ',templateID);
+
       var subview = _subViewMapping[templateID],
           mountEl;
 
@@ -95,6 +104,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
         id: templateID,
         template: subview.htmlTemplate
       });
+
+      subview.controller.render();
 
       mountEl = document.getElementById(subview.mountPoint);
       mountEl.appendChild(subview.controller.getDOMElement());
@@ -127,6 +138,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
         id: dataObj.templateID,
         template: subview.htmlTemplate
       });
+
+      subview.controller.render();
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
 

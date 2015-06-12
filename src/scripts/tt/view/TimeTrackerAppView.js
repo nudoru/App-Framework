@@ -33,9 +33,6 @@ define('TT.View.TimeTrackerAppView',
       configureToolTips();
 
       _moduleNavView.initialize();
-
-      render();
-
       _appEvtCreator.applicationViewInitialized();
     }
 

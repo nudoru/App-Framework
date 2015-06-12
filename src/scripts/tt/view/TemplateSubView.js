@@ -5,6 +5,10 @@
 define('TT.View.TemplateSubView',
   function (require, module, exports) {
 
+    function initialize(initObj) {
+      this.initializeSubView(initObj);
+    }
 
+    exports.initialize = initialize;
 
   });
