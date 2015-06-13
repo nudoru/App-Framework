@@ -91,10 +91,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param dataObj
      */
     function showView(templateID) {
-      console.log('show ',templateID);
-
-      var subview = _subViewMapping[templateID],
-          mountEl;
+      var subview = _subViewMapping[templateID];
 
       if(!subview) {
         throw new Error('No subview mapped for id: ' + templateID);
@@ -106,13 +103,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
       });
 
       subview.controller.render();
-
-      mountEl = document.getElementById(subview.mountPoint);
-      mountEl.appendChild(subview.controller.getDOMElement());
-
-      if(subview.controller.viewDidMount) {
-        subview.controller.viewDidMount();
-      }
+      subview.controller.mount(document.getElementById(subview.mountPoint));
     }
 
     /**
@@ -132,8 +123,6 @@ define('Nori.View.ViewMixinSubViewRoutes',
         throw new Error('No subview mapped for route: ' + dataObj.route + ' > ' + dataObj.templateID);
       }
 
-      // state is from query string
-      // modeldata is saved state from the last time the view was unloaded
       subview.controller.initialize({
         id: dataObj.templateID,
         template: subview.htmlTemplate
@@ -143,12 +132,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
 
-      _routeViewMountPoint.appendChild(subview.controller.getDOMElement());
+      subview.controller.mount(_routeViewMountPoint);
       _currentSubView = dataObj.templateID;
-
-      if(subview.controller.viewDidMount) {
-        subview.controller.viewDidMount();
-      }
 
       TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
@@ -161,13 +146,11 @@ define('Nori.View.ViewMixinSubViewRoutes',
     function unMountCurrentSubView() {
       if (_currentSubView) {
         var subViewController = _subViewMapping[_currentSubView].controller;
-        if (subViewController.viewWillUnMount) {
-          subViewController.viewWillUnMount();
-        }
+        subViewController.unmount();
       }
 
       _currentSubView = '';
-      _domUtils.removeAllElements(_routeViewMountPoint);
+      //removed _domUtils.removeAllElements(_routeViewMountPoint);
     }
 
     //----------------------------------------------------------------------------

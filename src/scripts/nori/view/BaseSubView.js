@@ -11,6 +11,7 @@ define('Nori.View.BaseSubView',
       _templateObj,
       _html,
       _DOMElement,
+      _mountPoint,
       _state = {},
       _children = [],
       _isMounted = false,
@@ -78,7 +79,11 @@ define('Nori.View.BaseSubView',
      * After the view updates and a rerender occurred
      */
     function viewDidUpdate() {
+      // stub
+    }
 
+    function viewWillRender() {
+      // stub
     }
 
     /**
@@ -86,7 +91,7 @@ define('Nori.View.BaseSubView',
      * @returns {*}
      */
     function render() {
-      //console.log(_id + ', subview render');
+      this.viewWillRender();
 
       _children.forEach(function renderChild(child) {
         child.render();
@@ -94,31 +99,70 @@ define('Nori.View.BaseSubView',
 
       _html = _templateObj(_state);
       _DOMElement = _domUtils.HTMLStrToNode(_html);
+
+      this.viewDidRender();
+
       return _DOMElement;
+    }
+
+    function viewDidRender() {
+      // stub
+    }
+
+    /**
+     * Call before it's been added to a view
+     */
+    function viewWillMount() {
+      // stub
+    }
+
+    /**
+     * Append it to a parent element
+     * @param mountEl
+     */
+    function mount(mountEl) {
+      if(!_DOMElement) {
+        throw new Error('SubView '+_id+' cannot mount. Call render() first');
+      }
+
+      _mountPoint = mountEl;
+
+      this.viewWillMount();
+      _mountPoint.appendChild(_DOMElement);
+      this.viewDidMount();
     }
 
     /**
      * Call after it's been added to a view
      */
     function viewDidMount() {
-      //console.log(_id + ', subview did mount');
       _isMounted = true;
     }
 
     /**
      * Call when unloading and switching views
      */
-    function viewWillUnMount() {
-      //console.log(_id + ', subview will unmount');
+    function viewWillUnmount() {
+      // stub
+    }
+
+    function unmount() {
+      this.viewWillUnmount();
+      _mountPoint.removeChild(_DOMElement);
+      this.viewDidUnmount();
+    }
+
+    function viewDidUnmount() {
       _isMounted = false;
+
     }
 
     /**
      * Remove a view and cleanup
      */
     function dispose() {
-      console.log(_id + ', subview DISPOSE');
-      // Unmount
+      // TODO
+      this.unmount();
     }
 
     //----------------------------------------------------------------------------
@@ -137,25 +181,14 @@ define('Nori.View.BaseSubView',
       return _state;
     }
 
-    /**
-     * Accessor for ID prop
-     * @returns {*}
-     */
     function getID() {
       return _id;
     }
 
-    /**
-     * Accessor for the DOM element
-     * @returns {*}
-     */
     function getDOMElement() {
       return _DOMElement;
     }
 
-    /**
-     * Get a copy of the children
-     */
     function getChildren() {
       return _children.slice(0);
     }
@@ -171,11 +204,18 @@ define('Nori.View.BaseSubView',
     exports.viewWillUpdate = viewWillUpdate;
     exports.update = update;
     exports.viewDidUpdate = viewDidUpdate;
+    exports.viewWillRender = viewWillRender;
     exports.render = render;
+    exports.viewDidRender = viewDidRender;
+    exports.viewWillMount = viewWillMount;
+    exports.mount = mount;
+    exports.viewDidMount = viewDidMount;
+    exports.viewWillUnmount = viewWillUnmount;
+    exports.unmount = unmount;
+    exports.viewDidUnmount = viewDidUnmount;
     exports.getID = getID;
     exports.getDOMElement = getDOMElement;
-    exports.viewDidMount = viewDidMount;
-    exports.viewWillUnMount = viewWillUnMount;
+    exports.viewWillUnmount = viewWillUnmount;
     exports.addChild = addChild;
     exports.removeChild = removeChild;
     exports.getChildren = getChildren;
