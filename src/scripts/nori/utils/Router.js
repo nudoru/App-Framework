@@ -43,7 +43,7 @@ define('Nori.Utils.Router',
       _appEvents.urlHashChanged({
         routeObj: getCurrentRoute(),
         fragment: getURLFragment()
-      })
+      });
     }
 
     /**

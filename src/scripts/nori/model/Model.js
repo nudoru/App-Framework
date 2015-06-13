@@ -89,7 +89,13 @@ define('Nori.Model.Model',
      * @returns *
      */
     function get(key) {
-      return has(key) ? _store[key] : undefined;
+      var value = has(key) ? _store[key] : undefined;
+
+      if(value) {
+        value = _.cloneDeep(value);
+      }
+
+      return value;
     }
 
     /**

@@ -10,7 +10,7 @@ define('TT.View.CapacityForecastView',
     }
 
     function viewDidMount() {
-      _alertID = TT.view().alert('Capacity Forecast functionality is coming later in the year.')
+      _alertID = TT.view().alert('Capacity Forecast functionality is coming later in the year.');
     }
 
     function viewWillUnmount() {

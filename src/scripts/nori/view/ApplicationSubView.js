@@ -2,7 +2,7 @@
  * A template for a subviews
  */
 
-define('Nori.View.BaseSubView',
+define('Nori.View.ApplicationSubView',
   function (require, module, exports) {
 
     var _isInitialized = false,

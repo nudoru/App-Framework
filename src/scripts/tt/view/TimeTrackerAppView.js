@@ -41,14 +41,14 @@ define('TT.View.TimeTrackerAppView',
      */
     function mapRoutes() {
       // Default route
-      TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/', 'Timecard', 'Nori.View.EmptySubView');
 
       // TESTING routes
       //TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
-      //TT.mapRouteView('/test', 'TestSubView', 'TT.View.TemplateSubView');
-      //TT.mapRouteView('/one', 'TestSubView1', 'TT.View.TemplateSubView');
-      //TT.mapRouteView('/two', 'TestSubView2', 'TT.View.TemplateSubView');
-      //TT.mapRouteView('/three', 'TestSubView3', 'TT.View.TemplateSubView');
+      //TT.mapRouteView('/test', 'TestSubView', 'Nori.View.EmptySubView');
+      //TT.mapRouteView('/one', 'TestSubView1', 'Nori.View.EmptySubView');
+      //TT.mapRouteView('/two', 'TestSubView2', 'Nori.View.EmptySubView');
+      //TT.mapRouteView('/three', 'TestSubView3', 'Nori.View.EmptySubView');
 
       TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.AssignmentsView');
       TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TimeCardView');

@@ -3,7 +3,7 @@ define('Nori.Events.AppEventCreator',
 
     var _dispatcher = require('Nori.Utils.Dispatcher'),
       _appEventConstants = require('Nori.Events.AppEventConstants'),
-      _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
+      _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     exports.applicationInitialized = function (payload) {
       _dispatcher.publish({
@@ -27,7 +27,14 @@ define('Nori.Events.AppEventCreator',
 
     exports.urlHashChanged = function(payload) {
       _dispatcher.publish({
-        type: _browserEvents.URL_HASH_CHANGED,
+        type: _browserEventConstants.URL_HASH_CHANGED,
+        payload: payload
+      });
+    };
+
+    exports.viewChanged = function(payload) {
+      _dispatcher.publish({
+        type: _appEventConstants.VIEW_CHANGED,
         payload: payload
       });
     };

@@ -10,7 +10,7 @@ define('TT.View.AssignmentsView',
     }
 
     function viewDidMount() {
-      _alertID = TT.view().alert('Assignments is coming soon!')
+      _alertID = TT.view().alert('Assignments is coming soon!');
     }
 
     function viewWillUnmount() {

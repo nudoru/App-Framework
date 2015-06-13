@@ -9,11 +9,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
       _routeViewMountPoint,
       _subViewMapping = Object.create(null),
       _currentSubView,
-      _baseSubViewModuleID = 'Nori.View.BaseSubView',
       _subViewHTMLTemplatePrefix = 'template__',
-      _appEventConstants = require('Nori.Events.AppEventConstants'),
-      _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _dispatcher = require('Nori.Utils.Dispatcher');
+      _appEvents = require('Nori.Events.AppEventCreator');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -53,7 +50,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @returns {*}
      */
     function createSubView(extras) {
-      return requireExtend(_baseSubViewModuleID, extras);
+      return requireExtend('Nori.View.ApplicationSubView', extras);
     }
 
     /**
@@ -104,10 +101,6 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param dataObj props: templateID, route, data (from query string)
      */
     function showRouteView(dataObj) {
-      if(!_routeViewMountPoint) {
-        throw new Error('No subview mount point set');
-      }
-
       var subview = _subViewMapping[dataObj.templateID];
 
       if (subview) {
@@ -122,15 +115,13 @@ define('Nori.View.ViewMixinSubViewRoutes',
       });
 
       subview.controller.render();
+      subview.controller.mount(_routeViewMountPoint);
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
-
-      subview.controller.mount(_routeViewMountPoint);
-      _currentSubView = dataObj.templateID;
-
       TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
-      _dispatcher.publish({type:_appEventConstants.VIEW_CHANGED, payload:dataObj.templateID});
+      _currentSubView = dataObj.templateID;
+      _appEvents.viewChanged(_currentSubView);
     }
 
     /**
@@ -143,7 +134,6 @@ define('Nori.View.ViewMixinSubViewRoutes',
       }
 
       _currentSubView = '';
-      //removed _domUtils.removeAllElements(_routeViewMountPoint);
     }
 
     //----------------------------------------------------------------------------
