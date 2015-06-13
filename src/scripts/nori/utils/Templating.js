@@ -6,7 +6,7 @@
 
  Refer - http://ejohn.org/blog/javascript-micro-templating/
  */
-define('Nori.View.Template',
+define('Nori.Utils.Templating',
   function(require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),

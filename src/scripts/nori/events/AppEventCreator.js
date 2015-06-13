@@ -1,7 +1,7 @@
 define('Nori.Events.AppEventCreator',
   function (require, module, exports) {
 
-    var _dispatcher = require('Nori.Events.Dispatcher'),
+    var _dispatcher = require('Nori.Utils.Dispatcher'),
       _appEvents = require('Nori.Events.AppEventConstants'),
       _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
 

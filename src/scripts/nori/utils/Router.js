@@ -12,7 +12,7 @@
  *
  */
 
-define('Nori.Controller.Router',
+define('Nori.Utils.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
@@ -44,13 +44,6 @@ define('Nori.Controller.Router',
         routeObj: getCurrentRoute(),
         fragment: getURLFragment()
       })
-      //_dispatcher.publish({
-      //  type: _browserEvents.URL_HASH_CHANGED,
-      //  payload: {
-      //    routeObj: getCurrentRoute(),
-      //    fragment: getURLFragment()
-      //  }
-      //});
     }
 
     /**

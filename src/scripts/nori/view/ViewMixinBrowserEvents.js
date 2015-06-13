@@ -7,7 +7,7 @@ define('Nori.View.ViewMixinBrowserEvents',
       _browserScrollStream,
       _browserResizeStream,
       _positionUIElementsOnChangeCB,
-      _dispatcher = require('Nori.Events.Dispatcher'),
+      _dispatcher = require('Nori.Utils.Dispatcher'),
       _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
 
 

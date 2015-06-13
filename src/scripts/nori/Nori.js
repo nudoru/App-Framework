@@ -8,8 +8,8 @@ var Nori = (function () {
     _appEvents = require('Nori.Events.AppEventConstants'),
     _browserEvents = require('Nudoru.Browser.BrowserEventConstants'),
     _objectUtils = require('Nudoru.Core.ObjectUtils'),
-    _dispatcher = require('Nori.Events.Dispatcher'),
-    _router = require('Nori.Controller.Router');
+    _dispatcher = require('Nori.Utils.Dispatcher'),
+    _router = require('Nori.Utils.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors

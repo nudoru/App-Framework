@@ -12,7 +12,7 @@ define('TT.Model.TimeTrackerAppModel',
       _currentUserModel,
       _currentUserProjectsCollection,
       _appEvtCreator = require('Nori.Events.AppEventCreator'),
-      _dispatcher = require('Nori.Events.Dispatcher');
+      _dispatcher = require('Nori.Utils.Dispatcher');
 
     //----------------------------------------------------------------------------
     //  Accessors

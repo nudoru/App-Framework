@@ -5,7 +5,7 @@
 define('Nori.View.ViewMixinSubViewRoutes',
   function (require, module, exports) {
 
-    var _template = require('Nori.View.Template'),
+    var _template = require('Nori.Utils.Templating'),
       _routeViewMountPoint,
       _subViewMapping = Object.create(null),
       _currentSubView,
@@ -13,7 +13,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEventConstants'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _dispatcher = require('Nori.Events.Dispatcher');
+      _dispatcher = require('Nori.Utils.Dispatcher');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
