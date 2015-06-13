@@ -98,7 +98,7 @@ var module = requireUnique(‘MyApp.Module’);
 
 ## Dispatcher / Events
 
-The `scripts/nori/events/Dispatcher.js` is a pub/sub system that uses RxJS subjects. You can subscribe to events with it and publish events.
+The `scripts/nori/utils/Dispatcher.js` is a pub/sub system that uses RxJS subjects. You can subscribe to events with it and publish events.
 
 Subscribing to an event returns a RxJS subscription.
 
@@ -124,6 +124,14 @@ _dispatcher.publish({
   }
 });
 ```
+
+### Event Creators
+
+TODO
+
+### Event Registers
+
+TODO
 
 ## Commands
 
