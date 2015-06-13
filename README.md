@@ -127,6 +127,8 @@ _dispatcher.publish({
 
 ## Commands
 
+**Commands might be removed** in favors of smaller event handlers.
+
 Controller functionality may be handled by command classes. The `execute(data)` function is executed when the mapped event is published and any data included in the publish is passed as an object in the data argument.
 
 Nori maps the following events to commands as part of the framework:
@@ -144,16 +146,18 @@ mapEventCommand(AppEvents.SUBVIEW_STORE_STATE, â€˜Nori.SubViewStoreDataCommandâ€
 
 ## Models
 
-Nori defines a simple model and model collection class. The model is based on a dictionary and a collection is an array of model objects. Simple example: a model is a spread sheet row with coloumns being data values and a collection would represent the whole sheet. An `id` is required when creating a model or collection.
+Nori has a simple model singleton that has factory methods for creating domain stores and collections. This can be extend and used to wrap more logic around the managment of these stores, load/save data from a sever and provide accessor methods.
+
+Simple model and model collection classes may be used for specific domains and can be easily created from the model factory. The model is based on a dictionary and a collection is an array of model objects. Simple example: a model is a spread sheet row with coloumns being data values and a collection would represent the whole sheet. An `id` is required when creating a model or collection.
 
 The Nori app contains helper methods to create models and collections:
 
 ```javascript
-var myModel = MyApp.createModel({id:'mymodel', store:{key:value, key:value}, {
+var myModel = MyApp.model().createModel({id:'mymodel', store:{key:value, key:value}, {
     optionalMethods: function() { ... };
   });
   
-var myCollection = MyApp.createModelCollection({id:'mycollection', {
+var myCollection = MyApp.model().createModelCollection({id:'mycollection', {
     optionalMethods: function() { ... };
   });
 ```
