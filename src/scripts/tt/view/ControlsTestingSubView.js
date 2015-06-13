@@ -8,7 +8,7 @@ define('TT.View.ControlsTestingSubView',
     var _lIpsum = require('Nudoru.Browser.NLorem'),
       _toolTip = require('Nudoru.Component.ToolTipView'),
       _dispatcher = require('Nori.Utils.Dispatcher'),
-      _appEvents = require('Nori.Events.AppEventConstants'),
+      _appEventConstants = require('Nori.Events.AppEventConstants'),
       _actionOneEl,
       _actionTwoEl,
       _actionThreeEl,
@@ -104,11 +104,11 @@ define('TT.View.ControlsTestingSubView',
       });
 
       _actionFiveEl.addEventListener('click', function actFour(e) {
-        _dispatcher.publish({type:_appEvents.CHANGE_ROUTE, payload:{route: '/one',data: {prop:'some data',moar:'25'}}});
+        _dispatcher.publish({type:_appEventConstants.CHANGE_ROUTE, payload:{route: '/one',data: {prop:'some data',moar:'25'}}});
       });
 
       _actionSixEl.addEventListener('click', function actFour(e) {
-        _dispatcher.publish({type:_appEvents.CHANGE_ROUTE, payload:{route: '/two'}});
+        _dispatcher.publish({type:_appEventConstants.CHANGE_ROUTE, payload:{route: '/two'}});
       });
 
     }

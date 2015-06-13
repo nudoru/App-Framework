@@ -37,14 +37,14 @@ MyApp.initialize({view:appView});
 ### 4. Map events to handlers or commands. 
 
 ```javascript
-_dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+_dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(data) {
   console.log('Update model data, model id: ',data.id, data.data);
 });
 ```
 
 Commands are controllers that are triggered when an event is emitted. Sample:
 ```javascript
-MyApp.mapEventCommand(_appEvents.ROUTE_CHANGED, ‘MyApp.RouteChangedCommand’);
+MyApp.mapEventCommand(_appEventConstants.ROUTE_CHANGED, ‘MyApp.RouteChangedCommand’);
 ```
 
 ### 5. Map routes to view modules. 
@@ -104,7 +104,7 @@ Events are ‘magic’ strings. Nori defines core application ones in the `scrip
 
 Example:
 ```javascript
-_dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(data) {
+_dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(data) {
   console.log('Update model data, model id: ',data.id, data.data);
 });
 ```
@@ -113,7 +113,7 @@ Events are published and passed a payload object containing the event name type,
 
 ```javascript
 _dispatcher.publish({
-  type: _appEvents.MODEL_DATA_CHANGED,
+  type: _appEventConstants.MODEL_DATA_CHANGED,
   payload: {
     id: _id,
     storeType: 'model',

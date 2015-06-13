@@ -18,7 +18,7 @@ define('Nori.Model.Model',
       _lastChangeResult,
       _silent = false,
       _parentCollection,
-      _appEventCreator = require('Nori.Events.AppEventCreator');
+      _appEvents = require('Nori.Events.AppEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -232,7 +232,7 @@ define('Nori.Model.Model',
      */
     function dispatchChange() {
       if (!_silent) {
-        _appEventCreator.modelChanged({
+        _appEvents.modelChanged({
           id: _id,
           storeType: 'model',
           store: toObject(),

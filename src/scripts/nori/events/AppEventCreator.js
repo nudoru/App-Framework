@@ -2,25 +2,25 @@ define('Nori.Events.AppEventCreator',
   function (require, module, exports) {
 
     var _dispatcher = require('Nori.Utils.Dispatcher'),
-      _appEvents = require('Nori.Events.AppEventConstants'),
+      _appEventConstants = require('Nori.Events.AppEventConstants'),
       _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
 
     exports.applicationInitialized = function (payload) {
       _dispatcher.publish({
-        type: _appEvents.APP_INITIALIZED,
+        type: _appEventConstants.APP_INITIALIZED,
         payload: payload});
     };
 
     exports.applicationModelInitialized = function (payload) {
       _dispatcher.publish({
-        type: _appEvents.APP_MODEL_INITIALIZED,
+        type: _appEventConstants.APP_MODEL_INITIALIZED,
         payload: payload
       });
     };
 
     exports.applicationViewInitialized = function (payload) {
       _dispatcher.publish({
-        type: _appEvents.APP_VIEW_INITIALIZED,
+        type: _appEventConstants.APP_VIEW_INITIALIZED,
         payload: payload
       });
     };
@@ -34,21 +34,21 @@ define('Nori.Events.AppEventCreator',
 
     exports.routeChanged = function(payload) {
       _dispatcher.publish({
-        type: _appEvents.ROUTE_CHANGED,
+        type: _appEventConstants.ROUTE_CHANGED,
         payload: payload
       });
     };
 
     exports.updateModelData = function(payload) {
       _dispatcher.publish({
-        type: _appEvents.UPDATE_MODEL_DATA,
+        type: _appEventConstants.UPDATE_MODEL_DATA,
         payload: payload
       });
     };
 
     exports.modelChanged = function(payload) {
       _dispatcher.publish({
-        type: _appEvents.MODEL_DATA_CHANGED,
+        type: _appEventConstants.MODEL_DATA_CHANGED,
         payload: payload
       });
     };

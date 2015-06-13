@@ -4,8 +4,8 @@ var Nori = (function () {
     _view,
     _dispatcherCommandMap = Object.create(null),
     _modelViewBindingMap = Object.create(null),
-    _appEventCreator = require('Nori.Events.AppEventCreator'),
-    _appEvents = require('Nori.Events.AppEventConstants'),
+    _appEvents = require('Nori.Events.AppEventCreator'),
+    _appEventConstants = require('Nori.Events.AppEventConstants'),
     _browserEvents = require('Nudoru.Browser.BrowserEventConstants'),
     _objectUtils = require('Nudoru.Core.ObjectUtils'),
     _dispatcher = require('Nori.Utils.Dispatcher'),
@@ -68,7 +68,7 @@ var Nori = (function () {
 
     configureApplicationEvents();
 
-    _appEventCreator.applicationInitialized();
+    _appEvents.applicationInitialized();
   }
 
   /**
@@ -86,11 +86,11 @@ var Nori = (function () {
   }
 
   function configureApplicationEvents() {
-    _dispatcher.subscribe(_appEvents.MODEL_DATA_CHANGED, function execute(payload) {
+    _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
       handleModelUpdate(payload.payload);
     });
 
-    _dispatcher.subscribe(_appEvents.UPDATE_MODEL_DATA, function execute(payload) {
+    _dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
       console.log('Update model data, model id: ', payload.payload.id, payload.payload.data);
     });
 
@@ -98,7 +98,7 @@ var Nori = (function () {
       setCurrentRoute(payload.payload.routeObj);
     });
 
-    _dispatcher.subscribe(_appEvents.CHANGE_ROUTE, function execute(payload) {
+    _dispatcher.subscribe(_appEventConstants.CHANGE_ROUTE, function execute(payload) {
       payload.payload.fromApp = true;
       setCurrentRoute(payload.payload);
     });
@@ -178,7 +178,7 @@ var Nori = (function () {
   /**
    * Allow the router to run the route view mapping if it's valid. Typically reached from
    * the ChangeRouteCommand via an emitted event:
-   *  _dispatcher.publish(_appEvents.CHANGE_ROUTE, {route:'/route', data:{}});
+   *  _dispatcher.publish(_appEventConstants.CHANGE_ROUTE, {route:'/route', data:{}});
    * When the route is changed in this way, this method will fire twice, once for the
    * _router.setRoute and once when the URL hash change event (URLHashChangedCommand).
    * The route changed event is only published on this 2nd call which will trigger the
@@ -195,7 +195,7 @@ var Nori = (function () {
         _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
       } else {
         _router.runCurrentRoute();
-        _appEventCreator.routeChanged(routeObj);
+        _appEvents.routeChanged(routeObj);
       }
     } else {
       _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);

@@ -17,7 +17,7 @@ define('TT.View.TimeTrackerAppView',
       _buttonHelpStream,
       _toolTip = require('Nudoru.Component.ToolTipView'),
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _appEvtCreator = require('Nori.Events.AppEventCreator');
+      _appEvents = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       _self = this;
@@ -33,7 +33,7 @@ define('TT.View.TimeTrackerAppView',
       configureToolTips();
 
       _moduleNavView.initialize();
-      _appEvtCreator.applicationViewInitialized();
+      _appEvents.applicationViewInitialized();
     }
 
     /**

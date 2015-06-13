@@ -2,7 +2,7 @@ define('TT.TimeTrackerApplication',
   function (require, module, exports) {
 
     var _self,
-      _appEvents = require('Nori.Events.AppEventConstants'),
+      _appEventConstants = require('Nori.Events.AppEventConstants'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
     function initialize() {
@@ -28,7 +28,7 @@ define('TT.TimeTrackerApplication',
     }
 
     function configureTTEvents() {
-      _dispatcher.subscribe(_appEvents.ROUTE_CHANGED, function(payload) {
+      _dispatcher.subscribe(_appEventConstants.ROUTE_CHANGED, function(payload) {
         _self.view().updateOnRouteChange(payload.payload);
       });
     }

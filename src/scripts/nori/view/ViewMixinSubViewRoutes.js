@@ -11,7 +11,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
       _currentSubView,
       _baseSubViewModuleID = 'Nori.View.BaseSubView',
       _subViewHTMLTemplatePrefix = 'template__',
-      _appEvents = require('Nori.Events.AppEventConstants'),
+      _appEventConstants = require('Nori.Events.AppEventConstants'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
@@ -130,7 +130,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
 
       TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
-      _dispatcher.publish({type:_appEvents.VIEW_CHANGED, payload:dataObj.templateID});
+      _dispatcher.publish({type:_appEventConstants.VIEW_CHANGED, payload:dataObj.templateID});
     }
 
     /**

@@ -16,7 +16,7 @@ define('Nori.Utils.Router',
   function (require, module, exports) {
 
     var _routeMap = Object.create(null),
-      _appEvtCreator = require('Nori.Events.AppEventCreator');
+      _appEvents = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -40,7 +40,7 @@ define('Nori.Utils.Router',
      * @param evt
      */
     function onHashChange(evt) {
-      _appEvtCreator.urlHashChanged({
+      _appEvents.urlHashChanged({
         routeObj: getCurrentRoute(),
         fragment: getURLFragment()
       })

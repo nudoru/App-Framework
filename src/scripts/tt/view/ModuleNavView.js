@@ -7,7 +7,7 @@ define('TT.View.ModuleNavView',
 
     var _buttonMap = Object.create(null),
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _appEvents = require('Nori.Events.AppEventConstants'),
+      _appEventConstants = require('Nori.Events.AppEventConstants'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
@@ -42,7 +42,7 @@ define('TT.View.ModuleNavView',
      * @param id
      */
     function handleButton(id) {
-      _dispatcher.publish({type:_appEvents.CHANGE_ROUTE, payload:{route: _buttonMap[id].route}});
+      _dispatcher.publish({type:_appEventConstants.CHANGE_ROUTE, payload:{route: _buttonMap[id].route}});
     }
 
     /**
