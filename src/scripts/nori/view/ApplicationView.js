@@ -59,7 +59,11 @@ define('Nori.View.ApplicationView',
      * @param obj
      */
     function addMessageBox(obj) {
-      _messageBoxView.add(obj);
+      return _messageBoxView.add(obj);
+    }
+
+    function removeMessageBox(id) {
+      _messageBoxView.remove(id);
     }
 
     /**
@@ -67,7 +71,7 @@ define('Nori.View.ApplicationView',
      * @param message
      */
     function showAlert(message) {
-      addMessageBox({
+      return addMessageBox({
         title: 'Alert',
         content: message,
         type: _messageBoxView.type().DEFAULT,
@@ -80,7 +84,7 @@ define('Nori.View.ApplicationView',
      * @param obj
      */
     function addNotification(obj) {
-      _notificationView.add(obj);
+      return _notificationView.add(obj);
     }
 
     /**
@@ -89,7 +93,7 @@ define('Nori.View.ApplicationView',
      * @param message The message
      */
     function showNotification(message, title, type) {
-      addNotification({
+      return addNotification({
         title: title || "Notification",
         type: type || _notificationView.type().DEFAULT,
         message: message
@@ -125,6 +129,7 @@ define('Nori.View.ApplicationView',
     exports.initializeComponents = initializeComponents;
 
     exports.addMessageBox = addMessageBox;
+    exports.removeMessageBox = removeMessageBox;
     exports.addNotification = addNotification;
     exports.alert = showAlert;
     exports.notify = showNotification;

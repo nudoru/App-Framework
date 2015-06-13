@@ -43,17 +43,17 @@ define('TT.View.TimeTrackerAppView',
       // Default route
       TT.mapRouteView('/', 'Timecard', 'TT.View.TemplateSubView');
 
-      // Other routes
-      TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
-      TT.mapRouteView('/test', 'TestSubView', 'TT.View.TemplateSubView');
-      TT.mapRouteView('/one', 'TestSubView1', 'TT.View.TemplateSubView');
-      TT.mapRouteView('/two', 'TestSubView2', 'TT.View.TemplateSubView');
-      TT.mapRouteView('/three', 'TestSubView3', 'TT.View.TemplateSubView');
+      // TESTING routes
+      //TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
+      //TT.mapRouteView('/test', 'TestSubView', 'TT.View.TemplateSubView');
+      //TT.mapRouteView('/one', 'TestSubView1', 'TT.View.TemplateSubView');
+      //TT.mapRouteView('/two', 'TestSubView2', 'TT.View.TemplateSubView');
+      //TT.mapRouteView('/three', 'TestSubView3', 'TT.View.TemplateSubView');
 
-      // Timecard mock
-      TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.TemplateSubView');
-      TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.TemplateSubView');
-      TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TemplateSubView');
+      TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.AssignmentsView');
+      TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TimeCardView');
+      TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.CapacityForecastView');
+
     }
 
     function render() {

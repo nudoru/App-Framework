@@ -185,8 +185,24 @@ define('Nori.View.BaseSubView',
       return _id;
     }
 
+    function getTemplate() {
+      return _templateObj;
+    }
+
     function getDOMElement() {
       return _DOMElement;
+    }
+
+    function setDOMElement(el) {
+      _DOMElement = el;
+    }
+
+    function getHTML() {
+      return _html;
+    }
+
+    function setHTML(str) {
+      _html = str;
     }
 
     function getChildren() {
@@ -198,24 +214,33 @@ define('Nori.View.BaseSubView',
     //----------------------------------------------------------------------------
 
     exports.initializeSubView = initializeSubView;
+
     exports.isInitialized = isInitialized;
     exports.setState = setState;
     exports.getState = getState;
+    exports.getID = getID;
+    exports.getTemplate = getTemplate;
+    exports.getHTML = getHTML;
+    exports.setHTML = setHTML;
+    exports.getDOMElement = getDOMElement;
+    exports.setDOMElement = setDOMElement;
+
     exports.viewWillUpdate = viewWillUpdate;
     exports.update = update;
     exports.viewDidUpdate = viewDidUpdate;
+
     exports.viewWillRender = viewWillRender;
     exports.render = render;
     exports.viewDidRender = viewDidRender;
+
     exports.viewWillMount = viewWillMount;
     exports.mount = mount;
     exports.viewDidMount = viewDidMount;
+
     exports.viewWillUnmount = viewWillUnmount;
     exports.unmount = unmount;
     exports.viewDidUnmount = viewDidUnmount;
-    exports.getID = getID;
-    exports.getDOMElement = getDOMElement;
-    exports.viewWillUnmount = viewWillUnmount;
+
     exports.addChild = addChild;
     exports.removeChild = removeChild;
     exports.getChildren = getChildren;

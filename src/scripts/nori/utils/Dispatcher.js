@@ -151,7 +151,10 @@ define('Nori.Utils.Dispatcher',
      */
     function registerReceiver(handler) {
       var id = 'ID_'+_id++;
-      _receiverMap[id] = handler;
+      _receiverMap[id] = {
+        id: id,
+        handler: handler
+      };
       return id;
     }
 
@@ -161,7 +164,7 @@ define('Nori.Utils.Dispatcher',
      */
     function dispatchToReceivers(payload) {
       for(var id in _receiverMap) {
-        _receiverMap[id](payload);
+        _receiverMap[id].handler(payload);
       }
     }
 

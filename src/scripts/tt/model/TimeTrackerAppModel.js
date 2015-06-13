@@ -11,6 +11,7 @@ define('TT.Model.TimeTrackerAppModel',
       _assignmentsCollection,
       _currentUserModel,
       _currentUserProjectsCollection,
+      _appEventConstants = require('Nori.Events.AppEventConstants'),
       _appEvents = require('Nori.Events.AppEventCreator'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
@@ -36,25 +37,34 @@ define('TT.Model.TimeTrackerAppModel',
 
       _dispatcher.registerReceiver(eventReceiver);
 
-      createModel();
+      createModelStores();
 
       _appEvents.applicationModelInitialized();
     }
 
     /**
-     * Will receive application events
+     * Will receive all events from the Dispatcher
      * @param payload
      */
     function eventReceiver(payload) {
-      //console.log('model receiver ',payload);
+      //console.log('model receiver ',payload.type);
+
+      switch(payload.type) {
+        case _appEventConstants.UPDATE_MODEL_DATA:
+          console.log('Update model data',payload.payload);
+          break;
+        case _appEventConstants.MODEL_DATA_CHANGED:
+          // Nori will automatically notify subview to update
+          console.log('Model data changed',payload.payload);
+          break;
+      }
+
     }
 
     /**
      * Create model data
      */
-    function createModel() {
-
-      // Will init dummy data and save to local storage: mockTTData.people, mockTTData.projects, mockTTData.assignments
+    function createModelStores() {
       _mockDataSource.initialize();
 
       loadApplicationData();
@@ -99,57 +109,6 @@ define('TT.Model.TimeTrackerAppModel',
       return localStorage[obj];
     }
 
-    /**
-     * Testing for not model functionality
-     */
-    function testModel() {
-
-      //var testMod = requireExtend('Nori.Model.Model', {
-      //  make: function() {
-      //    this.initialize({id: 'MockModel', store: {name: 'Matt', age: 37}, silent: false});
-      //  },
-      //
-      //  newFunc: function() {
-      //    return this.getStore();
-      //  }
-      //});
-      //
-      //testMod.make();
-      //
-      //console.log(testMod.newFunc());
-
-      var test1 = TT.model().createModel({
-        id: 'MockModel',
-        store: {name: 'Matt', age: 37},
-        silent: false
-      });
-      var test2 = TT.model().createModel({
-        id: 'AnotherModel',
-        store: {name: 'June', useid: 'x1234', age: 27},
-        silent: false
-      });
-
-      //console.log(test1.transform({name:'first',age:'oldage'}));
-      //console.log(test1.validate({name:{required: true}}));
-
-
-      //console.log(test1.toJSON());
-      //console.log(test2.toJSON());
-      //console.log('get first: '+test2.getFirst());
-      //console.log('get index: '+test2.getAtIndex(1));
-      //console.log('get last: '+test2.getLast());
-
-      //TT.addModel(test1);
-      //TT.addModel(test2);
-
-      //console.log('test has: '+test1.has('name'));
-      //console.log('test keys: '+test1.keys());
-      //console.log('test values: '+test1.values());
-      //
-      //console.log('filter: '+test1.filterValues(function(val) { return val ==='Matt';}));
-      //
-      //console.log('test entries: '+JSON.stringify(test1.entries()));
-    }
 
     //----------------------------------------------------------------------------
     //  API
