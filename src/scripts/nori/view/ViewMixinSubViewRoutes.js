@@ -53,14 +53,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @returns {*}
      */
     function createSubView(extras) {
-      var base = requireExtend(_baseSubViewModuleID, extras);
-      return base;
-      //console.log('base', base.viewWillUpdate.toString());
-      //console.log('extras', base.viewWillUpdate.toString());
-      //return Nori.extend(extras, requireUnique(_baseSubViewModuleID));
-      //var view = _.assign({}, base, extras);
-      //return Nori.extend(extras, view);
-      //return view;
+      return requireExtend(_baseSubViewModuleID, extras);
     }
 
     /**
