@@ -12,7 +12,7 @@ define('TT.View.TimeCardView',
     function render() {
       this.viewWillRender();
       this.setHTML(this.getTemplate()(this.getState()));
-      this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
+      //DOM elemetn created in mount() this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
       this.viewDidRender();
     }
 

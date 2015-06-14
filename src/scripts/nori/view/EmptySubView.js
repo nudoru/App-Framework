@@ -21,7 +21,7 @@ define('Nori.View.EmptySubView',
     //function render() {
     //  this.viewWillRender();
     //  this.setHTML(this.getTemplate()(this.getState()));
-    //  this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
+    //  // created in mount this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
     //  this.viewDidRender();
     //}
 

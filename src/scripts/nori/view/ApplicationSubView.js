@@ -102,7 +102,7 @@ define('Nori.View.ApplicationSubView',
 
       this.viewDidRender();
 
-      return _DOMElement;
+      //return _DOMElement;
     }
 
     function viewDidRender() {
@@ -121,9 +121,11 @@ define('Nori.View.ApplicationSubView',
      * @param mountEl
      */
     function mount(mountEl) {
-      if(!_DOMElement) {
-        throw new Error('SubView '+_id+' cannot mount. Call render() first');
-      }
+      //if(!_DOMElement) {
+      //  throw new Error('SubView '+_id+' cannot mount. Call render() first');
+      //}
+
+      _DOMElement = _domUtils.HTMLStrToNode(_html);
 
       _mountPoint = mountEl;
 

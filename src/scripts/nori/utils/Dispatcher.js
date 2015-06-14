@@ -76,20 +76,16 @@ define('Nori.Utils.Dispatcher',
       }
 
       _log.push(payloadObj);
-      console.log('>> ',payloadObj);
+      //console.log('>> ',payloadObj);
 
       i = subscribers.length;
 
       while (i--) {
-
         var subjObj = subscribers[i];
-
         subjObj.subject.onNext(payloadObj);
-
         if (subjObj.once) {
           unsubscribe(payloadObj.type, subjObj.handler);
         }
-
       }
     }
 
