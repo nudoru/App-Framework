@@ -1,3 +1,9 @@
+/**
+ * Utility to handle all subview DOM attachment tasks
+ *
+ * TODO - implement virutal-dom https://github.com/Matt-Esch/virtual-dom
+ */
+
 define('Nori.View.Renderer',
   function(require, module, exports) {
 
@@ -14,7 +20,8 @@ define('Nori.View.Renderer',
       var targetSelector = payload.payload.target,
         html = payload.payload.html,
         domEl,
-        mountPoint = document.querySelector(targetSelector);
+        mountPoint = document.querySelector(targetSelector),
+        cb = payload.payload.callback;
 
       mountPoint.innerHTML = '';
 
@@ -23,8 +30,12 @@ define('Nori.View.Renderer',
         mountPoint.appendChild(domEl);
       }
 
-      _appEvents.viewRendered(targetSelector, payload.payload.id);
+      // Send the created DOM element back to the caller
+      if(cb) {
+        cb(domEl);
+      }
 
+      _appEvents.viewRendered(targetSelector, payload.payload.id);
     }
 
     exports.initialize = initialize;

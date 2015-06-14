@@ -90,10 +90,6 @@ var Nori = (function () {
       handleModelUpdate(payload.payload);
     });
 
-    _dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
-      console.log('Update model data, model id: ', payload.payload.id, payload.payload.data);
-    });
-
     _dispatcher.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(payload) {
       setCurrentRoute(payload.payload.routeObj);
     });

@@ -46,10 +46,13 @@ define('Nori.Events.AppEventCreator',
       });
     };
 
-    exports.updateModelData = function(payload) {
+    exports.updateModelData = function(modelID, data) {
       _dispatcher.publish({
         type: _appEventConstants.UPDATE_MODEL_DATA,
-        payload: payload
+        payload: {
+          id: modelID,
+          data: data
+        }
       });
     };
 
@@ -60,13 +63,14 @@ define('Nori.Events.AppEventCreator',
       });
     };
 
-    exports.renderView = function(targetSelector, htmlStr, id) {
+    exports.renderView = function(targetSelector, htmlStr, id, callback) {
       _dispatcher.publish({
         type: _appEventConstants.RENDER_VIEW,
         payload: {
           target: targetSelector,
           html: htmlStr,
-          id: id
+          id: id,
+          callback: callback
         }
       });
     };

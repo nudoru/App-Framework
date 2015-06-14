@@ -11,9 +11,7 @@ define('TT.Model.TimeTrackerAppModel',
       _assignmentsCollection,
       _currentUserModel,
       _currentUserProjectsCollection,
-      _appEventConstants = require('Nori.Events.AppEventConstants'),
-      _appEvents = require('Nori.Events.AppEventCreator'),
-      _dispatcher = require('Nori.Utils.Dispatcher');
+      _appEvents = require('Nori.Events.AppEventCreator');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -34,31 +32,22 @@ define('TT.Model.TimeTrackerAppModel',
     function initialize() {
       _self = this;
       this.initializeApplicationModel();
-
-      _dispatcher.registerReceiver(eventReceiver);
+      this.subscribeToModelEvents();
 
       createModelStores();
 
       _appEvents.applicationModelInitialized();
+
+      _currentUserModel.set({test:'dummy'});
+      _appEvents.updateModelData('model',{foo:'bar'});
     }
 
-    /**
-     * Will receive all events from the Dispatcher
-     * @param payload
-     */
-    function eventReceiver(payload) {
-      //console.log('model receiver ',payload.type);
+    function handleModelDataChanged(dataObj) {
+      console.log('TT, handlemodeldatachange',dataObj);
+    }
 
-      switch(payload.type) {
-        case _appEventConstants.UPDATE_MODEL_DATA:
-          console.log('Update model data',payload.payload);
-          break;
-        case _appEventConstants.MODEL_DATA_CHANGED:
-          // Nori will automatically notify subview to update
-          console.log('Model data changed',payload.payload);
-          break;
-      }
-
+    function handleUpdateModelData(dataObj) {
+      console.log('TT, handleupdatemodeldata',dataObj);
     }
 
     /**
@@ -117,5 +106,7 @@ define('TT.Model.TimeTrackerAppModel',
     exports.initialize = initialize;
     exports.getCurrentUserModel = getCurrentUserModel;
     exports.getCurrentUserProjectsCollection = getCurrentUserProjectsCollection;
+    exports.handleModelDataChanged = handleModelDataChanged;
+    exports.handleUpdateModelData = handleUpdateModelData;
 
   });

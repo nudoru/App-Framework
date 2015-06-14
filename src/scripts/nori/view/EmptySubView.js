@@ -1,4 +1,5 @@
 /**
+ * Concats from Nori.View.ApplicationSubView
  * A template for a subview/route controller
  */
 

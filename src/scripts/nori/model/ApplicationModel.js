@@ -1,11 +1,43 @@
 define('Nori.Model.ApplicationModel',
   function (require, module, exports) {
 
-    var _appModelCollectionMap = Object.create(null),
-      _appModelMap = Object.create(null);
+    var _self,
+      _appModelCollectionMap = Object.create(null),
+      _appModelMap = Object.create(null),
+      _appEventConstants = require('Nori.Events.AppEventConstants'),
+      _dispatcher = require('Nori.Utils.Dispatcher');
 
     function initializeApplicationModel() {
-      //
+      _self = this;
+    }
+
+    function subscribeToModelEvents() {
+      if(!_self) {
+        throw new Error('Nori.Model.ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
+      }
+
+      _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
+        _self.handleModelDataChanged(payload);
+      });
+      _dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
+        _self.handleUpdateModelData(payload);
+      });
+    }
+
+    /**
+     * Respond to the event. To be implemented in sub
+     * @param dataObj
+     */
+    function handleModelDataChanged(dataObj) {
+      console.log('AM, handlemodeldatachange',dataObj);
+    }
+
+    /**
+     * Respond to the event. To be implemented in sub
+     * @param dataObj
+     */
+    function handleUpdateModelData(dataObj) {
+      console.log('AM, handleupdatemodeldata',dataObj);
     }
 
     /**
@@ -83,6 +115,9 @@ define('Nori.Model.ApplicationModel',
     }
 
     exports.initializeApplicationModel = initializeApplicationModel;
+    exports.subscribeToModelEvents = subscribeToModelEvents;
+    exports.handleModelDataChanged = handleModelDataChanged;
+    exports.handleUpdateModelData = handleUpdateModelData;
     exports.createModelCollection = createModelCollection;
     exports.createModel = createModel;
     exports.getModel = getModel;

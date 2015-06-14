@@ -15,8 +15,7 @@ define('Nori.View.ApplicationSubView',
       _state = {},
       _children = [],
       _isMounted = false,
-      _appEvents = require('Nori.Events.AppEventCreator'),
-      _domUtils = require('Nudoru.Browser.DOMUtils');
+      _appEvents = require('Nori.Events.AppEventCreator');
 
     /**
      * Initialization
@@ -126,7 +125,11 @@ define('Nori.View.ApplicationSubView',
       this.viewWillMount();
 
       _isMounted = true;
-      _appEvents.renderView(_mountPoint, _html, _id);
+
+      // Go out to the standard render function. DOM element is returned in callback
+      _appEvents.renderView(_mountPoint, _html, _id, function(domEl) {
+        setDOMElement(domEl);
+      });
 
       this.viewDidMount();
     }
@@ -149,11 +152,12 @@ define('Nori.View.ApplicationSubView',
       this.viewWillUnmount();
       _isMounted = false;
       _appEvents.renderView(_mountPoint, '', _id);
+      setDOMElement(null);
       this.viewDidUnmount();
     }
 
     function viewDidUnmount() {
-      //
+      // stub
     }
 
     /**

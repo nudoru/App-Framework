@@ -44,6 +44,22 @@ define('Nori.Utils.Dispatcher',
       return subject.subscribe(handler);
     }
 
+
+    //function createSubscribeSubject(evtStr, handler, once) {
+    //  _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
+    //
+    //  var subject = new Rx.Subject();
+    //
+    //  _subjectMap[evtStr].push({
+    //    once: once,
+    //    priority: 0,
+    //    subject: subject,
+    //    type: 1
+    //  });
+    //
+    //  return subject;
+    //}
+
     /**
      * Maps a module/command's execute() function as the handler for onNext
      * @param evtStr Event name string
@@ -83,7 +99,9 @@ define('Nori.Utils.Dispatcher',
 
       while (i--) {
         var subjObj = subscribers[i];
-        subjObj.subject.onNext(payloadObj);
+        if(subjObj.type === 0) {
+          subjObj.subject.onNext(payloadObj);
+        }
         if (subjObj.once) {
           unsubscribe(payloadObj.type, subjObj.handler);
         }

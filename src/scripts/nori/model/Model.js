@@ -77,7 +77,7 @@ define('Nori.Model.Model',
       _changed = true;
 
       //https://github.com/flitbit/diff
-      _lastChangeResult = objectDiff.diff(previousStore, _store);
+      _lastChangeResult = {}; //objectDiff.diff(previousStore, _store);
 
       if (!silentSet) {
         dispatchChange();
