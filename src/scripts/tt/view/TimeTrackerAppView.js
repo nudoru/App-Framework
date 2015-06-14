@@ -24,13 +24,13 @@ define('TT.View.TimeTrackerAppView',
 
       _self.initializeApplicationView();
 
-      _self.setRouteViewMountPoint('contents');
+      _self.setRouteViewMountPoint('#contents');
 
       mapRoutes();
 
       mapComponentViews();
       configureMainButtons();
-      configureToolTips();
+      //configureToolTips();
 
       _moduleNavView.initialize();
       _appEvents.applicationViewInitialized();
@@ -65,7 +65,7 @@ define('TT.View.TimeTrackerAppView',
     }
 
     function mapComponentViews() {
-      _self.mapView('UserProfilePanel', 'TT.View.UserProfilePanelView', false, 'userprofilepanel');
+      _self.mapView('UserProfilePanel', 'TT.View.UserProfilePanelView', false, '#userprofilepanel');
     }
 
     function configureMainButtons() {

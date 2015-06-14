@@ -3,6 +3,7 @@ define('Nori.View.ApplicationView',
 
     var _appContainerEl,
       _appEl,
+      _renderer = require('Nori.View.Renderer'),
       _notificationView = require('Nudoru.Component.ToastView'),
       _toolTipView = require('Nudoru.Component.ToolTipView'),
       _messageBoxView = require('Nudoru.Component.MessageBoxView'),
@@ -25,6 +26,8 @@ define('Nori.View.ApplicationView',
     //----------------------------------------------------------------------------
 
     function initializeApplicationView() {
+      _renderer.initialize();
+
       initializeApplicationElements();
       initializeComponents();
     }

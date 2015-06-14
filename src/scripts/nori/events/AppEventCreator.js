@@ -60,5 +60,14 @@ define('Nori.Events.AppEventCreator',
       });
     };
 
+    exports.renderView = function(targetSelector, htmlStr) {
+      _dispatcher.publish({
+        type: _appEventConstants.RENDER_VIEW,
+        payload: {
+          target: targetSelector,
+          html: htmlStr
+        }
+      });
+    };
 
   });

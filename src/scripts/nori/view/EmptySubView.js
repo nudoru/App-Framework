@@ -25,6 +25,14 @@ define('Nori.View.EmptySubView',
     //  this.viewDidRender();
     //}
 
+    //function viewDidMount() {
+    //  // good place to assign events or post render
+    //}
+    //
+    //function viewWillUnmount() {
+    //  // remove events
+    //}
+
     exports.initialize = initialize;
     exports.viewWillUpdate = viewWillUpdate;
 

@@ -37,7 +37,8 @@ define('Nori.Utils.Dispatcher',
         once: once,
         priority: 0,
         handler: handler,
-        subject: subject
+        subject: subject,
+        type: 0
       });
 
       return subject.subscribe(handler);

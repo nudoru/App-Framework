@@ -15,6 +15,7 @@ define('Nori.View.ApplicationSubView',
       _state = {},
       _children = [],
       _isMounted = false,
+      _appEvents = require('Nori.Events.AppEventCreator'),
       _domUtils = require('Nudoru.Browser.DOMUtils');
 
     /**
@@ -26,6 +27,7 @@ define('Nori.View.ApplicationSubView',
         _initObj = initObj;
         _id = initObj.id;
         _templateObj = initObj.template;
+        _mountPoint = initObj.mountPoint;
       }
       this.update();
       _isInitialized = true;
@@ -71,6 +73,7 @@ define('Nori.View.ApplicationSubView',
 
       if(_isMounted) {
         render();
+        mount();
       }
       this.viewDidUpdate();
     }
@@ -98,11 +101,7 @@ define('Nori.View.ApplicationSubView',
       });
 
       _html = _templateObj(_state);
-      _DOMElement = _domUtils.HTMLStrToNode(_html);
-
       this.viewDidRender();
-
-      //return _DOMElement;
     }
 
     function viewDidRender() {
@@ -120,17 +119,15 @@ define('Nori.View.ApplicationSubView',
      * Append it to a parent element
      * @param mountEl
      */
-    function mount(mountEl) {
-      //if(!_DOMElement) {
-      //  throw new Error('SubView '+_id+' cannot mount. Call render() first');
-      //}
-
-      _DOMElement = _domUtils.HTMLStrToNode(_html);
-
-      _mountPoint = mountEl;
-
+    function mount() {
+      if(!_html) {
+        throw new Error('SubView '+_id+' cannot mount with no HTML. Call render() first');
+      }
       this.viewWillMount();
-      _mountPoint.appendChild(_DOMElement);
+
+      _isMounted = true;
+      _appEvents.renderView(_mountPoint, _html);
+
       this.viewDidMount();
     }
 
@@ -138,7 +135,7 @@ define('Nori.View.ApplicationSubView',
      * Call after it's been added to a view
      */
     function viewDidMount() {
-      _isMounted = true;
+      // stub
     }
 
     /**
@@ -150,13 +147,14 @@ define('Nori.View.ApplicationSubView',
 
     function unmount() {
       this.viewWillUnmount();
-      _mountPoint.removeChild(_DOMElement);
+      _isMounted = false;
+      _appEvents.renderView(_mountPoint, '');
+      //_mountPoint.removeChild(_DOMElement);
       this.viewDidUnmount();
     }
 
     function viewDidUnmount() {
-      _isMounted = false;
-
+      //
     }
 
     /**

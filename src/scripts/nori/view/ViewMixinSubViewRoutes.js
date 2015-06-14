@@ -17,7 +17,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param elID
      */
     function setRouteViewMountPoint(elID) {
-      _routeViewMountPoint = document.getElementById(elID);
+      _routeViewMountPoint = elID;
     }
 
     /**
@@ -89,11 +89,12 @@ define('Nori.View.ViewMixinSubViewRoutes',
 
       subview.controller.initialize({
         id: templateID,
-        template: subview.htmlTemplate
+        template: subview.htmlTemplate,
+        mountPoint: subview.mountPoint
       });
 
       subview.controller.render();
-      subview.controller.mount(document.getElementById(subview.mountPoint));
+      subview.controller.mount();
     }
 
     /**
@@ -111,11 +112,12 @@ define('Nori.View.ViewMixinSubViewRoutes',
 
       subview.controller.initialize({
         id: dataObj.templateID,
-        template: subview.htmlTemplate
+        template: subview.htmlTemplate,
+        mountPoint: subview.mountPoint
       });
 
       subview.controller.render();
-      subview.controller.mount(_routeViewMountPoint);
+      subview.controller.mount();
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
       TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
@@ -129,11 +131,12 @@ define('Nori.View.ViewMixinSubViewRoutes',
      */
     function unMountCurrentSubView() {
       if (_currentSubView) {
-        var subViewController = _subViewMapping[_currentSubView].controller;
-        subViewController.unmount();
+        _subViewMapping[_currentSubView].controller.unmount();
       }
 
       _currentSubView = '';
+
+      //document.querySelector(_routeViewMountPoint).innerHTML = '';
     }
 
     //----------------------------------------------------------------------------
