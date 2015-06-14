@@ -23,6 +23,8 @@ define('Nori.View.Renderer',
         mountPoint.appendChild(domEl);
       }
 
+      _appEvents.viewRendered(targetSelector, payload.payload.id);
+
     }
 
     exports.initialize = initialize;

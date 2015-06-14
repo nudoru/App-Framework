@@ -8,7 +8,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
     var _template = require('Nori.Utils.Templating'),
       _routeViewMountPoint,
       _subViewMapping = Object.create(null),
-      _currentSubView,
+      _currentRouteViewID,
       _subViewHTMLTemplatePrefix = 'template__',
       _appEvents = require('Nori.Events.AppEventCreator');
 
@@ -102,39 +102,26 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param dataObj props: templateID, route, data (from query string)
      */
     function showRouteView(dataObj) {
-      var subview = _subViewMapping[dataObj.templateID];
+      unmountCurrentRouteView();
+      _currentRouteViewID = dataObj.templateID;
 
-      if (subview) {
-        unMountCurrentSubView();
-      } else {
-        throw new Error('No subview mapped for route: ' + dataObj.route + ' > ' + dataObj.templateID);
-      }
-
-      subview.controller.initialize({
-        id: dataObj.templateID,
-        template: subview.htmlTemplate,
-        mountPoint: subview.mountPoint
-      });
-
-      subview.controller.render();
-      subview.controller.mount();
+      showView(_currentRouteViewID);
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
       TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
 
-      _currentSubView = dataObj.templateID;
-      _appEvents.viewChanged(_currentSubView);
+      _appEvents.viewChanged(_currentRouteViewID);
     }
 
     /**
      * Remove the currently displayed view
      */
-    function unMountCurrentSubView() {
-      if (_currentSubView) {
-        _subViewMapping[_currentSubView].controller.unmount();
+    function unmountCurrentRouteView() {
+      if (_currentRouteViewID) {
+        _subViewMapping[_currentRouteViewID].controller.unmount();
       }
 
-      _currentSubView = '';
+      _currentRouteViewID = '';
 
       //document.querySelector(_routeViewMountPoint).innerHTML = '';
     }

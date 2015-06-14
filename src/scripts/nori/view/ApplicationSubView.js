@@ -126,7 +126,7 @@ define('Nori.View.ApplicationSubView',
       this.viewWillMount();
 
       _isMounted = true;
-      _appEvents.renderView(_mountPoint, _html);
+      _appEvents.renderView(_mountPoint, _html, _id);
 
       this.viewDidMount();
     }
@@ -148,8 +148,7 @@ define('Nori.View.ApplicationSubView',
     function unmount() {
       this.viewWillUnmount();
       _isMounted = false;
-      _appEvents.renderView(_mountPoint, '');
-      //_mountPoint.removeChild(_DOMElement);
+      _appEvents.renderView(_mountPoint, '', _id);
       this.viewDidUnmount();
     }
 
