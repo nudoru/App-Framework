@@ -6,7 +6,7 @@
           i.fa.fa-chevron-circle-left
           | Previous Wk
       .half-left-column.text-center
-        h1.h2-alternate Week of May 10-16, 2015
+        h1.h2-alternate Week of {Mo}{DtRng}, {Yr}
         //button.button-icon-left.button-no-border
         //  i.fa.fa-calendar
         //  | View Full Month
@@ -17,18 +17,32 @@
       thead
         tr
           th(scope='col', style="")
-          th(scope='col', style="width: 125px").center-column Role
+          th(scope='col', style="width: 85px").center-column Alloc
           th(scope='col', style="width: 85px").center-column Mon
           th(scope='col', style="width: 85px").center-column Tue
           th(scope='col', style="width: 85px").center-column Wed
           th(scope='col', style="width: 85px").center-column Thur
           th(scope='col', style="width: 85px").center-column Fri
+          th(scope='col', style="width: 125px").center-column Wrk Type
           th(scope='col', style="width: 200px").center-column Comments
       tbody
         tr
-          th ABC Project
+          th {ProjectName}
+          td.center-column
+            input(id='input-text', type='text', placeholder='%', style='width: 50px').subtle
+          td.center-column
+            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
+          td.center-column
+            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
+          td.center-column
+            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
+          td.center-column
+            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
+          td.center-column
+            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
           td.center-column
             select(id='input-select').subtle
+              option
               option Consult
               option Analysis
               option Design
@@ -36,133 +50,19 @@
               option Rework
               option Implement
               option Evaluate
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
+              option See comment
           td.center-column
             input(id='input-text', type='text', placeholder='Comment', style='width: 178px').subtle
-        tr
-          th XYZ Solution
-          td.center-column
-            select(id='input-select').subtle
-              option Consult
-              option Analysis
-              option Design
-              option Develop
-              option Rework
-              option Implement
-              option Evaluate
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='Comment', style='width: 178px').subtle
-        tr
-          th Financial Assessment 1.2
-          td.center-column
-            select(id='input-select').subtle
-              option Consult
-              option Analysis
-              option Design
-              option Develop
-              option Rework
-              option Implement
-              option Evaluate
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='Comment', style='width: 178px').subtle
-        tr
-          th Innovation Team X
-          td.center-column
-            select(id='input-select').subtle
-              option Consult
-              option Analysis
-              option Design
-              option Develop
-              option Rework
-              option Implement
-              option Evaluate
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-          td.center-column
-            input(id='input-text', type='text', placeholder='Comment', style='width: 178px').subtle
-        //tr.header-grey
-        //  th Enrichment
-        //  td.center-column
-        //    select(id='input-select').subtle
-        //      option Personal
-        //      option Mandatory
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='Comment', style='width: 178px').subtle
-        //tr.header-grey
-        //  th Out of Office
-        //  td.center-column
-        //    select(id='input-select').subtle
-        //      option Vacation
-        //      option Sick
-        //      option Other
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='', style='width: 50px').subtle
-        //  td.center-column
-        //    input(id='input-text', type='text', placeholder='Comment', style='width: 178px').subtle
       tfoot
         tr
           th.right-column Totals
+          th.center-column {sum}%
+          th.center-column {sum}hrs
+          th.center-column {sum}hrs
+          th.center-column {sum}hrs
+          th.center-column {sum}hrs
+          th.center-column {sum}hrs
           th.center-column
-          th.center-column 8 hrs
-          th.center-column 8 hrs
-          th.center-column 8 hrs
-          th.center-column 8 hrs
-          th.center-column 8 hrs
           th.center-column
     section.panel-message-footer.margin-top-double
       .column-container
@@ -172,7 +72,7 @@
             | Keep in Mind ...
           p Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed.
         .one-fourth-right-column.text-right.padding-top-double
-          button.button-icon-right Submit 40 hrs
+          button.button-icon-right Submit {sum}hrs
             i.fa.fa-check
 
     //section.text-right.panel-footer

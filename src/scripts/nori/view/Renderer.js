@@ -13,7 +13,7 @@ define('Nori.View.Renderer',
       _domUtils = require('Nudoru.Browser.DOMUtils');
 
     function initialize() {
-      _dispatcher.subscribe(_appEventConstants.RENDER_VIEW, render)
+      _dispatcher.subscribe(_appEventConstants.RENDER_VIEW, render);
     }
 
     function render(payload) {

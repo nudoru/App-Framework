@@ -1,8 +1,6 @@
 define('TT.View.AssignmentsView',
   function (require, module, exports) {
 
-    var _alertID;
-
     function initialize(initObj) {
       if(!this.isInitialized()) {
         this.initializeSubView(initObj);
@@ -10,11 +8,11 @@ define('TT.View.AssignmentsView',
     }
 
     function viewDidMount() {
-      _alertID = TT.view().alert('Assignments is coming soon!');
+      this.showAlert('Assignments coming soon!');
     }
 
     function viewWillUnmount() {
-      TT.view().removeMessageBox(_alertID);
+      this.closeAllAlerts();
     }
 
     exports.initialize = initialize;

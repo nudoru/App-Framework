@@ -177,14 +177,15 @@ module.exports = function (grunt) {
       files: ['src/scripts/nudoru/*.js', 'src/scripts/nori/**/*.js', 'src/scripts/tt/**/*.js'],
       options: {
         '-W014': true,
+        '-W030': true,
         '-W061': true,
         force: true,
         curly: true,
         eqeqeq: true,
         eqnull: true,
         browser: true,
-        maxdepth: 2,
-        maxcomplexity: 5,
+        maxdepth: 4,
+        maxcomplexity: 10,
         globals: {
           jQuery: true,
           console: true,

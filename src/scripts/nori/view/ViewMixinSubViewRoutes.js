@@ -64,6 +64,21 @@ define('Nori.View.ViewMixinSubViewRoutes',
     }
 
     /**
+     * Add a mixin for a mapped controller view
+     * @param templateID
+     * @param extras
+     */
+    function extendSubViewController(templateID,extras) {
+      var subview = _subViewMapping[templateID];
+
+      if(!subview) {
+        throw new Error('No subview mapped for id: ' + templateID);
+      }
+
+      subview.controller = _.assign(subview.controller, requireUnique(extras));
+    }
+
+    /**
      * Update subview based on a change in bound model data
      * @param viewID
      */
@@ -138,4 +153,5 @@ define('Nori.View.ViewMixinSubViewRoutes',
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
     exports.updateView = updateView;
+    exports.extendSubViewController = extendSubViewController;
   });

@@ -5,8 +5,18 @@ define('TT.View.TimeCardView',
 
     function initialize(initObj) {
       if(!this.isInitialized()) {
+        this.setProjectsModel();
+
         this.initializeSubView(initObj);
+
+        this.getProjectsModel().forEach(function(store){
+          console.log(store.get('projectTitle'),store.get('resourceName'));
+        });
       }
+    }
+
+    function viewWillUpdate() {
+      this.updateStateFromProjectsModel();
     }
 
     function render() {

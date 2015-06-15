@@ -83,6 +83,6 @@ define('Nori.Events.AppEventCreator',
           id: id
         }
       });
-    }
+    };
 
   });

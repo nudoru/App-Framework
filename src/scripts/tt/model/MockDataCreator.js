@@ -13,6 +13,7 @@ define('TT.Model.MockDataCreator',
       _possibleLobs = ['Information Technology', 'Asset Management', 'Human Resources', 'Institutional', 'A&O', 'Client Services', 'Finance', 'Internal Audit', 'Marketing', 'Risk Management'],
       _lorem = require('Nudoru.Browser.NLorem'),
       _arrayUtils = require('Nudoru.Core.ArrayUtils'),
+      _stringUtils = require('Nudoru.Core.StringUtils'),
       _numberUtils = require('Nudoru.Core.NumberUtils');
 
     function getPeople() {
@@ -31,9 +32,9 @@ define('TT.Model.MockDataCreator',
 
       _lorem.initialize();
 
-      var numPeople = 70,
+      var numPeople = 5,
           numProjects = 500,
-          numAssignments = 5000;
+          numAssignments = 100;
 
       for(var a = 0; a<10; a++) {
         _possibleManagers.push(_lorem.getFLName());
@@ -80,7 +81,7 @@ define('TT.Model.MockDataCreator',
     function createProject() {
       return {
         id: _lorem.fakeGUID(),
-        title: _lorem.getText(3,6),
+        title: _stringUtils.toTitleCase(_lorem.getText(2,6)),
         description: getParas(2),
         status: 'active',
         workType: 'Develop',

@@ -100,7 +100,7 @@ define('Nori.Model.ApplicationModel',
 
       // if the arg is a string, then it must be an ID
       if(typeof store === 'string') {
-        store = getModel(sID)
+        store = getModel(sID);
       }
 
       keysArry.forEach(function getKey(key) {
