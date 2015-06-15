@@ -30,7 +30,6 @@ define('Nori.View.ApplicationSubView',
       }
       this.update();
       _isInitialized = true;
-
     }
 
     /**

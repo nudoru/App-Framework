@@ -38,8 +38,8 @@ define('TT.Model.TimeTrackerAppModel',
 
       _appEvents.applicationModelInitialized();
 
-      _currentUserModel.set({test:'dummy'});
-      _appEvents.updateModelData('model',{foo:'bar'});
+      //_currentUserModel.set({test:'dummy'});
+      //_appEvents.updateModelData('model',{foo:'bar'});
     }
 
     function handleModelDataChanged(dataObj) {

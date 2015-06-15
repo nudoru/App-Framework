@@ -31,28 +31,42 @@ define('TT.View.TTSubViewModuleCommon',
 
     /*
      id: _lorem.fakeGUID(),
-     title: _stringUtils.toTitleCase(_lorem.getText(2,6)),
-     description: getParas(2),
-     status: 'active',
-     workType: 'Develop',
-     requester: _lorem.getFLName(),
-     audience: _arrayUtils.rndElement(_possibleLobs),
-     audienceSize: _numberUtils.rndNumber(10, 500).toString(),
-     projectLead: _lorem.getFLName(),
+     resourceID: person.id,
+     resourceName: person.name,
+     projectID: project.id,
+     projectTitle: project.title,
      startDate: _lorem.getDate().string,
      endDate: _lorem.getDate().string,
-     deploymentDate: _lorem.getDate().string,
-     finishDate: _lorem.getDate().string,
-     comments: getParas(1),
-     teamLeading: 'Dev Team',
-     duration: _numberUtils.rndNumber(1, 5).toString()
+     role: person.primaryRole,
+     allocation: _numberUtils.rndNumber(10, 25).toString(),
+     comments: _lorem.getText(3,6),
+     timeData: '',
+     allocationData: ''
      */
     function updateStateFromProjectsModel() {
       var obj = Object.create(null);
 
+      obj.projects = Object.create(null);
 
+      _myProjectsModel.forEach(function(project){
+        obj.projects[project.get('id')] = {
+          projectTitle:project.get('projectTitle'),
+          projectID:project.get('projectID'),
+          projectDescription:project.get('projectDescription'),
+          role:project.get('role'),
+          startDate:project.get('startDate'),
+          endData:project.get('endDate')
+        }
+      });
+
+      obj.calendar = {
+        currentYear: '2015',
+        currentWeek: 'June 15-June 19'
+      };
 
       this.setState(obj);
+
+      console.log(this.getState());
     }
 
     //----------------------------------------------------------------------------

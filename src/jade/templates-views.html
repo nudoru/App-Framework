@@ -138,7 +138,7 @@ BEGIN Templates for Views
                     <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
                 </div>
                 <div class="half-left-column text-center">
-                    <h1 class="h2-alternate">Week of {Mo}{DtRng}, {Yr}</h1>
+                    <h1 class="h2-alternate"><%= calendar.currentWeek %>, <%= calendar.currentYear %></h1>
                     <!--button.button-icon-left.button-no-border-->
                     <!--  i.fa.fa-calendar-->
                     <!--  | View Full Month-->
@@ -147,7 +147,7 @@ BEGIN Templates for Views
                     <button class="button-small button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
                 </div>
             </div>
-            <table class="table table-rows-zebra">
+            <table id="tc_p_table" class="table table-rows-zebra">
                 <thead>
                 <tr>
                     <th scope="col" style=""></th>
@@ -162,43 +162,45 @@ BEGIN Templates for Views
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th>{ProjectName}</th>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="%" style="width: 50px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <select id="input-select" class="subtle">
-                            <option></option>
-                            <option>Consult</option>
-                            <option>Analysis</option>
-                            <option>Design</option>
-                            <option>Develop</option>
-                            <option>Rework</option>
-                            <option>Implement</option>
-                            <option>Evaluate</option>
-                            <option>See comment</option>
-                        </select>
-                    </td>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
-                    </td>
-                </tr>
+                <% _.forOwn(projects, function(project, key) { %>
+                    <tr id="tc_p_<%= project.projectID%>">
+                        <th><%= project.projectTitle %></th>
+                        <td class="center-column">
+                            <input id="tc_p_alloc_<%= project.projectID%>" class="input-text" type="text" placeholder="%" style="width: 50px" class="subtle">
+                        </td>
+                        <td class="center-column">
+                            <input id="tc_p_monday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                        </td>
+                        <td class="center-column">
+                            <input id="tc_p_tuesday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                        </td>
+                        <td class="center-column">
+                            <input id="tc_p_wednesday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                        </td>
+                        <td class="center-column">
+                            <input id="tc_p_thursday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                        </td>
+                        <td class="center-column">
+                            <input id="tc_p_friday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
+                        </td>
+                        <td class="center-column">
+                            <select id="tc_p_work_<%= project.projectID%>" class="input-select" class="subtle">
+                                <option></option>
+                                <option>Consult</option>
+                                <option>Analysis</option>
+                                <option>Design</option>
+                                <option>Develop</option>
+                                <option>Rework</option>
+                                <option>Implement</option>
+                                <option>Evaluate</option>
+                                <option>See comment</option>
+                            </select>
+                        </td>
+                        <td class="center-column">
+                            <input id="tc_p_comment_<%= project.projectID%>" class="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                        </td>
+                    </tr>
+                <% }); %>
                 </tbody>
                 <tfoot>
                 <tr>

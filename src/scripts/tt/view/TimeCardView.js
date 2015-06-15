@@ -9,9 +9,9 @@ define('TT.View.TimeCardView',
 
         this.initializeSubView(initObj);
 
-        this.getProjectsModel().forEach(function(store){
-          console.log(store.get('projectTitle'),store.get('resourceName'));
-        });
+        //this.getProjectsModel().forEach(function(store){
+        //  console.log(store.get('projectTitle'),store.get('resourceName'));
+        //});
       }
     }
 
@@ -22,7 +22,6 @@ define('TT.View.TimeCardView',
     function render() {
       this.viewWillRender();
       this.setHTML(this.getTemplate()(this.getState()));
-      //DOM elemetn created in mount() this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
       this.viewDidRender();
     }
 
@@ -36,6 +35,7 @@ define('TT.View.TimeCardView',
 
     exports.initialize = initialize;
     exports.render = render;
+    exports.viewWillUpdate = viewWillUpdate;
     exports.viewDidMount = viewDidMount;
     exports.viewWillUnmount = viewWillUnmount;
   });
