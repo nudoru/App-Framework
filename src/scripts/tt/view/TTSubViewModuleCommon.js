@@ -66,7 +66,7 @@ define('TT.View.TTSubViewModuleCommon',
 
       this.setState(obj);
 
-      console.log(this.getState());
+      //console.log(this.getState());
     }
 
     //----------------------------------------------------------------------------

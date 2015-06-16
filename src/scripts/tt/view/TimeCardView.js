@@ -1,17 +1,17 @@
 define('TT.View.TimeCardView',
   function (require, module, exports) {
 
-    var _domUtils = require('Nudoru.Browser.DOMUtils');
-
     function initialize(initObj) {
       if(!this.isInitialized()) {
         this.setProjectsModel();
 
         this.initializeSubView(initObj);
 
-        //this.getProjectsModel().forEach(function(store){
-        //  console.log(store.get('projectTitle'),store.get('resourceName'));
-        //});
+        this.setEvents({
+          'change #tc_p_table':function(evt) {
+            console.log('change',evt);
+          }
+        });
       }
     }
 
@@ -19,14 +19,8 @@ define('TT.View.TimeCardView',
       this.updateStateFromProjectsModel();
     }
 
-    function render() {
-      this.viewWillRender();
-      this.setHTML(this.getTemplate()(this.getState()));
-      this.viewDidRender();
-    }
-
     function viewDidMount() {
-      //
+
     }
 
     function viewWillUnmount() {
@@ -34,7 +28,6 @@ define('TT.View.TimeCardView',
     }
 
     exports.initialize = initialize;
-    exports.render = render;
     exports.viewWillUpdate = viewWillUpdate;
     exports.viewDidMount = viewDidMount;
     exports.viewWillUnmount = viewWillUnmount;

@@ -56,11 +56,13 @@ BEGIN Templates for Views
                 <button class="button-neutral-light">Six Month</button>
                 <button class="button-neutral-light">Year</button>
             </section>
-            <table class="table table-rows-zebra">
+            <table id="fc_p_table" class="table table-rows-zebra">
                 <tbody>
-                <tr>
-                    <th class="center-column">{ProjectName}</th>
-                </tr>
+                <% _.forOwn(projects, function(project, key) { %>
+                    <tr id="fc_p_<%= project.projectID%>">
+                        <th class="center-column"><%= project.projectTitle %></th>
+                    </tr>
+                <% }); %>
                 </tbody>
                 <tfoot>
                 <tr>
@@ -82,7 +84,7 @@ BEGIN Templates for Views
             <section class="text-center padding-bottom-double">
                 <h1 class="h2-alternate">Active Assignments</h1>
             </section>
-            <table class="table table-rows-zebra">
+            <table id="asn_p_table" class="table table-rows-zebra">
                 <thead>
                 <tr>
                     <th scope="col"></th>
@@ -93,29 +95,31 @@ BEGIN Templates for Views
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th>{ProjectName}</th>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
-                    </td>
-                    <td class="center-column">
-                        <select id="input-select" class="subtle">
-                            <option>Consult</option>
-                            <option>Analysis</option>
-                            <option>Design</option>
-                            <option>Develop</option>
-                            <option>Rework</option>
-                            <option>Implement</option>
-                            <option>Evaluate</option>
-                        </select>
-                    </td>
-                    <td class="right-column">
-                        <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
-                    </td>
-                </tr>
+                    <% _.forOwn(projects, function(project, key) { %>
+                        <tr id="asn_p_<%= project.projectID%>">
+                            <th><%= project.projectTitle %></th>
+                            <td class="center-column">
+                                <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                            </td>
+                            <td class="center-column">
+                                <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                            </td>
+                            <td class="center-column">
+                                <select id="input-select" class="subtle">
+                                    <option>Consult</option>
+                                    <option>Analysis</option>
+                                    <option>Design</option>
+                                    <option>Develop</option>
+                                    <option>Rework</option>
+                                    <option>Implement</option>
+                                    <option>Evaluate</option>
+                                </select>
+                            </td>
+                            <td class="right-column">
+                                <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
+                            </td>
+                        </tr>
+                    <% }); %>
                 </tbody>
             </table>
             <section class="panel-message-footer margin-top-double">

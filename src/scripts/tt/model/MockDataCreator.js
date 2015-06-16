@@ -32,9 +32,9 @@ define('TT.Model.MockDataCreator',
 
       _lorem.initialize();
 
-      var numPeople = 5,
+      var numPeople = 6,
           numProjects = 500,
-          numAssignments = 100;
+          numAssignments = 25;
 
       for(var a = 0; a<10; a++) {
         _possibleManagers.push(_lorem.getFLName());

@@ -3,8 +3,13 @@ define('TT.View.CapacityForecastView',
 
     function initialize(initObj) {
       if(!this.isInitialized()) {
+        this.setProjectsModel();
         this.initializeSubView(initObj);
       }
+    }
+
+    function viewWillUpdate() {
+      this.updateStateFromProjectsModel();
     }
 
     function viewDidMount() {
@@ -16,6 +21,8 @@ define('TT.View.CapacityForecastView',
     }
 
     exports.initialize = initialize;
+    exports.viewWillUpdate = viewWillUpdate;
     exports.viewDidMount = viewDidMount;
     exports.viewWillUnmount = viewWillUnmount;
+
   });
