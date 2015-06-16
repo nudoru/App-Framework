@@ -166,6 +166,7 @@ define('Nori.View.ApplicationSubView',
     /**
      * Automates setting events on DOM elements. Events should be set in initalize
      * and this function is called on mount
+     * Based on Backbone
      * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
      * 'evtStr selector':callback,
      */

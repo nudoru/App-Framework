@@ -1,5 +1,7 @@
 //https://css-tricks.com/complete-guide-table-element/
 
+$table-cell-padding: 3px
+
 .table
   margin: 0
   margin-bottom: $base-line-height
@@ -16,7 +18,7 @@
 
   th, td
     @extend %label-base-formatting
-    padding: $half-base-line-height
+    padding: $half-base-line-height $table-cell-padding
     border: none
     vertical-align: middle
 

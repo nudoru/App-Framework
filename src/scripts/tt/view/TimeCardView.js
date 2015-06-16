@@ -7,7 +7,8 @@ define('TT.View.TimeCardView',
         _cardTotal = 0,
         _submitButtonEl,
         _submitButtonLabelEl,
-        _domUtils = require('Nudoru.Browser.DOMUtils');
+        _domUtils = require('Nudoru.Browser.DOMUtils'),
+        _toolTip = require('Nudoru.Component.ToolTipView');
 
     //--------------------------------------------------------------------------
     // Core
@@ -38,10 +39,11 @@ define('TT.View.TimeCardView',
 
       buildFieldList();
       updateColumnSums();
+      setProjectToolTips();
     }
 
     function viewWillUnmount() {
-      //
+      this.closeAllAlerts();
     }
 
     //--------------------------------------------------------------------------
@@ -90,7 +92,7 @@ define('TT.View.TimeCardView',
         var sum = sumFieldGroup(_columnObj[col].fieldIDs), isWarn = false;
         if(_columnObj[col].type === 'hrs') {
           _cardTotal += sum;
-          if(sum > 12) {
+          if(sum > 9) {
             isWarn = true;
           }
         } else if(_columnObj[col].type === '%') {
@@ -136,6 +138,23 @@ define('TT.View.TimeCardView',
             icon: 'thumbs-up'
           }
         ]
+      });
+    }
+
+    function setProjectToolTips() {
+      var allTrEls = document.querySelectorAll('tr');
+      Array.prototype.slice.call(allTrEls, 0).map(function(el) {
+        var rowID = el.getAttribute('id');
+        if(rowID) {
+          if(rowID.indexOf('tc_p_') === 0) {
+            var projectID = rowID.split('tc_p_')[1],
+                projectDesc = _self.getState().projects[projectID].projectDescription,
+                headingCellEl = el.querySelector('th');
+
+            console.log(projectDesc);
+          }
+        }
+
       });
     }
 

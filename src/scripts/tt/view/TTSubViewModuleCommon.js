@@ -49,7 +49,7 @@ define('TT.View.TTSubViewModuleCommon',
       obj.projects = Object.create(null);
 
       _myProjectsModel.forEach(function(project){
-        obj.projects[project.get('id')] = {
+        obj.projects[project.get('projectID')] = {
           projectTitle:project.get('projectTitle'),
           projectID:project.get('projectID'),
           projectDescription:project.get('projectDescription'),
