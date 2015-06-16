@@ -166,10 +166,10 @@ define('Nori.View.ApplicationSubView',
     /**
      * Automates setting events on DOM elements. Events should be set in initalize
      * and this function is called on mount
+     * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
      * 'evtStr selector':callback,
      */
     function createEvents() {
-      console.log('create events');
       if(!_events) {
         return;
       }

@@ -76,6 +76,18 @@ define('Nori.View.ViewMixinSubViewRoutes',
       }
 
       subview.controller = _.assign(subview.controller, requireUnique(extras));
+
+      //bindAllFunctions(subview.controller);
+    }
+
+    function bindAllFunctions(obj) {
+      for(var func in obj) {
+        if(obj.hasOwnProperty(func)) {
+          if(_.isFunction(func)) {
+            _.bindAll(obj, func);
+          }
+        }
+      }
     }
 
     /**

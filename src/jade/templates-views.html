@@ -170,7 +170,7 @@ BEGIN Templates for Views
                     <tr id="tc_p_<%= project.projectID%>">
                         <th><%= project.projectTitle %></th>
                         <td class="center-column">
-                            <input id="tc_p_alloc_<%= project.projectID%>" class="input-text" type="text" placeholder="%" style="width: 50px" class="subtle">
+                            <input id="tc_p_alloc_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
                         </td>
                         <td class="center-column">
                             <input id="tc_p_monday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 50px" class="subtle">
@@ -209,12 +209,12 @@ BEGIN Templates for Views
                 <tfoot>
                 <tr>
                     <th class="right-column">Totals</th>
-                    <th class="center-column">{sum}%</th>
-                    <th class="center-column">{sum}hrs</th>
-                    <th class="center-column">{sum}hrs</th>
-                    <th class="center-column">{sum}hrs</th>
-                    <th class="center-column">{sum}hrs</th>
-                    <th class="center-column">{sum}hrs</th>
+                    <th id="tc_sum_alloc" class="center-column"></th>
+                    <th id="tc_sum_monday" class="center-column"></th>
+                    <th id="tc_sum_tuesday" class="center-column"></th>
+                    <th id="tc_sum_wednesday" class="center-column"></th>
+                    <th id="tc_sum_thursday" class="center-column"></th>
+                    <th id="tc_sum_friday" class="center-column"></th>
                     <th class="center-column"></th>
                     <th class="center-column"></th>
                 </tr>
@@ -227,7 +227,7 @@ BEGIN Templates for Views
                         <p>Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed.</p>
                     </div>
                     <div class="one-fourth-right-column text-right padding-top-double">
-                        <button class="button-icon-right">Submit {sum}hrs<i class="fa fa-check"></i></button>
+                        <button id="tc_btn-submit" class="button-icon-right"><span id="tc_btn-submit-label">Submit</span><i class="fa fa-check"></i></button>
                     </div>
                 </div>
             </section>
