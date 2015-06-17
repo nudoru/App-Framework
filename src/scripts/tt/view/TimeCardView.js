@@ -52,7 +52,7 @@ define('TT.View.TimeCardView',
 
     function buildFieldList() {
       var allInputEls = _self.getDOMElement().querySelectorAll('input');
-      var allInputIDs = Array.prototype.slice.call(allInputEls, 0).map(function(el) { return el.getAttribute('id')});
+      var allInputIDs = Array.prototype.slice.call(allInputEls, 0).map(function(el) { return el.getAttribute('id'); });
 
       _columnNames.forEach(function(col, i) {
         _columnObj[col] = Object.create(null);
@@ -60,7 +60,7 @@ define('TT.View.TimeCardView',
           return id.indexOf(col) > 0;
         });
         _columnObj[col].sumEl = document.getElementById('tc_sum_'+col);
-        _columnObj[col].type = i == 0 ? '%' : 'hrs';
+        _columnObj[col].type = i === 0 ? '%' : 'hrs';
       });
 
     }

@@ -38,7 +38,7 @@ define('Nori.View.ViewMixinEventDelegator',
 
       _eventSubscribers = Object.create(null);
 
-      for(event in _events) {
+      for(var event in _events) {
 
 
         if(_events.hasOwnProperty(event)) {
@@ -65,7 +65,7 @@ define('Nori.View.ViewMixinEventDelegator',
         return;
       }
 
-      for(event in _eventSubscribers) {
+      for(var event in _eventSubscribers) {
         _eventSubscribers[event].dispose();
         delete _eventSubscribers[event];
       }

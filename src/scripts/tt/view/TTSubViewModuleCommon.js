@@ -56,7 +56,7 @@ define('TT.View.TTSubViewModuleCommon',
           role:project.get('role'),
           startDate:project.get('startDate'),
           endData:project.get('endDate')
-        }
+        };
       });
 
       obj.calendar = {

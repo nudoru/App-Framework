@@ -61,7 +61,7 @@ define('TT.View.ModuleNavView',
 
       // Default since it won't matches one of the specific routes
       if(route === '/') {
-        _domUtils.addClass(_buttonMap['btn_timecard'].liEl, 'active');
+        _domUtils.addClass(_buttonMap.btn_timecard.liEl, 'active');
       }
     }
 
