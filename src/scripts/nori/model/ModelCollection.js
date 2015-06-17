@@ -119,8 +119,7 @@ define('Nori.Model.ModelCollection',
         _appEvents.modelChanged({
           id: _id,
           storeType: 'collection',
-          storeID: data.id,
-          store: data.store
+          storeID: data.id
         });
       }
 

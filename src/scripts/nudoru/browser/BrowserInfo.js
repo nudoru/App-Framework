@@ -14,7 +14,7 @@ define('Nudoru.Browser.BrowserInfo',
     exports.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
 
     exports.hasTouch = 'ontouchstart' in document.documentElement;
-    exports.notSupported = this.isIE6 || this.isIE7 || this.isIE8;
+    exports.notSupported = this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9;
 
     exports.mobile = {
       Android: function () {

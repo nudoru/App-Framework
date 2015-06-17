@@ -50,8 +50,11 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @returns {*}
      */
     function createSubView(extras) {
-      var svc = requireExtend('Nori.View.ApplicationSubView', extras);
-      return _.assign(svc, requireUnique('Nori.View.ViewMixinEventDelegator'));
+      return Nori.extendWithArray({}, [
+        requireUnique('Nori.View.ApplicationSubView'),
+        requireUnique('Nori.View.ViewMixinEventDelegator'),
+        extras
+      ]);
     }
 
     /**
@@ -69,22 +72,20 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param templateID
      * @param extras
      */
-    function decorateSubViewController(templateID,extras) {
+    function decorateSubViewController(templateID, extras) {
       var subview = _subViewMapping[templateID];
 
-      if(!subview) {
+      if (!subview) {
         throw new Error('No subview mapped for id: ' + templateID);
       }
 
-      subview.controller = _.assign(subview.controller, requireUnique(extras));
-
-      //bindAllFunctions(subview.controller);
+      subview.controller = Nori.extendWithArray(subview.controller, extras);
     }
 
     function bindAllFunctions(obj) {
-      for(var func in obj) {
-        if(obj.hasOwnProperty(func)) {
-          if(_.isFunction(func)) {
+      for (var func in obj) {
+        if (obj.hasOwnProperty(func)) {
+          if (_.isFunction(func)) {
             _.bindAll(obj, func);
           }
         }
@@ -111,7 +112,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
     function showView(templateID) {
       var subview = _subViewMapping[templateID];
 
-      if(!subview) {
+      if (!subview) {
         throw new Error('No subview mapped for id: ' + templateID);
       }
 
@@ -136,7 +137,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
       showView(_currentRouteViewID);
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
-      TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease:Quad.easeIn});
+      TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
 
       _appEvents.viewChanged(_currentRouteViewID);
     }

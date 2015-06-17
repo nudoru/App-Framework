@@ -12,7 +12,7 @@ define('Nori.Model.ApplicationModel',
     }
 
     function subscribeToModelEvents() {
-      if(!_self) {
+      if (!_self) {
         throw new Error('Nori.Model.ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
       }
 
@@ -29,7 +29,7 @@ define('Nori.Model.ApplicationModel',
      * @param dataObj
      */
     function handleModelDataChanged(dataObj) {
-      console.log('AM, handlemodeldatachange',dataObj);
+      console.log('AM, handlemodeldatachange', dataObj);
     }
 
     /**
@@ -37,7 +37,7 @@ define('Nori.Model.ApplicationModel',
      * @param dataObj
      */
     function handleUpdateModelData(dataObj) {
-      console.log('AM, handleupdatemodeldata',dataObj);
+      console.log('AM, handleupdatemodeldata', dataObj);
     }
 
     /**
@@ -49,9 +49,7 @@ define('Nori.Model.ApplicationModel',
     function createModelCollection(initObj, extras) {
       var m = requireExtend('Nori.Model.ModelCollection', extras);
       m.initialize(initObj);
-
       _appModelCollectionMap[initObj.id] = m;
-
       return m;
     }
 
@@ -64,9 +62,7 @@ define('Nori.Model.ApplicationModel',
     function createModel(initObj, extras) {
       var m = requireExtend('Nori.Model.Model', extras);
       m.initialize(initObj);
-
       _appModelMap[initObj.id] = m;
-
       return m;
     }
 
@@ -99,15 +95,15 @@ define('Nori.Model.ApplicationModel',
       var keysMap = Object.create();
 
       // if the arg is a string, then it must be an ID
-      if(typeof store === 'string') {
+      if (typeof store === 'string') {
         store = getModel(sID);
       }
 
       keysArry.forEach(function getKey(key) {
-        if(store.has(key)) {
+        if (store.has(key)) {
           keysMap[key] = store.get(key);
         } else {
-          keysMap[key] = 'ERR:'+key;
+          keysMap[key] = 'ERR:' + key;
         }
       });
 

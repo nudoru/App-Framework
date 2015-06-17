@@ -32,23 +32,23 @@ define('Nori.View.ViewMixinEventDelegator',
      * 'evtStr selector':callback,
      */
     function delegateEvents() {
-      if(!_events) {
+      if (!_events) {
         return;
       }
 
       _eventSubscribers = Object.create(null);
 
-      for(var event in _events) {
+      for (var event in _events) {
 
 
-        if(_events.hasOwnProperty(event)) {
+        if (_events.hasOwnProperty(event)) {
 
           var eventStr = event.split(' ')[0],
             selector = event.split(' ')[1],
             element = document.querySelector(selector);
 
-          if(!element) {
-            console.log('Cannot add event to invalid DOM element: '+selector);
+          if (!element) {
+            console.log('Cannot add event to invalid DOM element: ' + selector);
             continue;
           }
 
@@ -61,11 +61,11 @@ define('Nori.View.ViewMixinEventDelegator',
      * Cleanly remove events
      */
     function undelegateEvents() {
-      if(!_events) {
+      if (!_events) {
         return;
       }
 
-      for(var event in _eventSubscribers) {
+      for (var event in _eventSubscribers) {
         _eventSubscribers[event].dispose();
         delete _eventSubscribers[event];
       }

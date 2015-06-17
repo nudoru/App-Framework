@@ -52,14 +52,14 @@ var Nori = (function () {
     initializeConfig();
     _router.initialize();
 
-    if(initObj.view) {
+    if (initObj.view) {
       _view = initObj.view;
     } else {
       console.log('Nori, no view. Creating default.');
       _view = createApplicationView({});
     }
 
-    if(initObj.model) {
+    if (initObj.model) {
       _model = initObj.model;
     } else {
       console.log('Nori, no model. Creating default.');
@@ -258,7 +258,7 @@ var Nori = (function () {
   }
 
   //----------------------------------------------------------------------------
-  //  Factories - concatenative inheritance
+  //  Factories - concatenative inheritance, decorators
   //----------------------------------------------------------------------------
 
   /**
@@ -267,10 +267,15 @@ var Nori = (function () {
    * @param src Source
    * @returns {*}
    */
-  function extend(dest, src) {
-    dest = _.assign({}, src, dest);
-    dest._super = src;
-    return dest;
+  function extend(base, extra) {
+    return _.assign({}, base, extra);
+  }
+
+  function extendWithArray(base, extArry) {
+    while (extArry.length) {
+      base = _.assign(base, extArry.shift());
+    }
+    return base;
   }
 
   /**
@@ -279,7 +284,10 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplication(extras) {
-    return extend(extras, this);
+    return extendWithArray({}, [
+      this,
+      extras
+    ]);
   }
 
   /**
@@ -288,9 +296,10 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationModel(extras) {
-    // Concat main model with mixins
-    var appModel= _.assign({}, require('Nori.Model.ApplicationModel'));
-    return extend(extras, appModel);
+    return extendWithArray({}, [
+      require('Nori.Model.ApplicationModel'),
+      extras
+    ]);
   }
 
   /**
@@ -299,13 +308,12 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationView(extras) {
-    // Concat main view with mixins
-    var appView = _.assign({},
+    return extendWithArray({}, [
       require('Nori.View.ApplicationView'),
       require('Nori.View.ViewMixinSubViewRoutes'),
-      requireUnique('Nori.View.ViewMixinEventDelegator'));
-
-    return extend(extras, appView);
+      requireUnique('Nori.View.ViewMixinEventDelegator'),
+      extras
+    ]);
   }
 
   //----------------------------------------------------------------------------
@@ -328,6 +336,7 @@ var Nori = (function () {
     mapRouteCommand: mapRouteCommand,
     mapEventCommand: mapEventCommand,
     extend: extend,
+    extendWithArray: extendWithArray,
     registerViewForModelChanges: registerViewForModelChanges,
     handleModelUpdate: handleModelUpdate
   };

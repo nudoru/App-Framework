@@ -61,8 +61,8 @@ define('Nori.Model.Model',
      * @param options String = value of property to set, Object = options: silent
      */
     function set(key, options) {
-      var silentSet = false,
-        previousStore = _.merge({}, _store);
+      var silentSet = false;
+        //previousStore = _.merge({}, _store);
 
       if (typeof key === 'object') {
         if (options !== null && typeof options === 'object') {
@@ -77,7 +77,7 @@ define('Nori.Model.Model',
       _changed = true;
 
       //https://github.com/flitbit/diff
-      _lastChangeResult = {}; //objectDiff.diff(previousStore, _store);
+      //_lastChangeResult = {}; //objectDiff.diff(previousStore, _store);
 
       if (!silentSet) {
         dispatchChange();
@@ -240,17 +240,13 @@ define('Nori.Model.Model',
       if (!_silent) {
         _appEvents.modelChanged({
           id: _id,
-          storeType: 'model',
-          store: toObject(),
-          changed: _lastChangeResult
+          storeType: 'model'
         });
       }
 
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
-          id: _id,
-          store: toObject(),
-          changed: _lastChangeResult
+          id: _id
         });
       }
 

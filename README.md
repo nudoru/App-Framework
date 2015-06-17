@@ -4,7 +4,7 @@
 
 Handy starting template for my JS projects based on some of the ideas of: ~~AS3 Robotlegs, Backbone, Ember + other random ideas I've found and liked. Based on the MVC pattern.~~ Flux and Command-Query Responsibility Segregation (CQRS) generally after reading this great post: http://jaysoo.ca/2015/02/06/what-the-flux/
 
-Dependencies: RxJS, GSAP TweenLite, Lowdash and my Nudoru utility classes.
+Dependencies: RxJS, GSAP TweenLite, Lodash and my Nudoru utility classes.
 
 ## To create new application
 
