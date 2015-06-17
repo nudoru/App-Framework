@@ -50,6 +50,31 @@ define('TT.View.TimeTrackerAppView',
 
     function render() {
       _self.showView('UserProfilePanel');
+
+      _self.addMessageBox({
+        title: 'Modify Time Card',
+        content: '<p class="text-center padding-bottom-double">This time card has been submitted. Why you are modifying it?</p><textarea name="reason" class="input-text" type="text" style="width:500px; height:75px; resize: none" class="subtle"></textarea>',
+        type: 'default',
+        modal: true,
+        width: 550,
+        buttons: [
+          {
+            label: 'Cancel',
+            id: 'Cancel',
+            type: 'negative',
+            icon: 'times'
+          },
+          {
+            label: 'Proceed',
+            id: 'proceed',
+            type: 'positive',
+            icon: 'check',
+            onClick: function(data) {
+              console.log('yes',data);
+            }
+          }
+        ]
+      });
     }
 
     function mapComponentViews() {

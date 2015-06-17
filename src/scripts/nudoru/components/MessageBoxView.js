@@ -160,13 +160,36 @@ define('Nudoru.Component.MessageBoxView',
         var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
           .subscribe(function () {
             if(buttonObj.hasOwnProperty('onClick')) {
-              buttonObj.onClick.call(this);
+              buttonObj.onClick.call(this, captureFormData(boxObj.id));
             }
             remove(boxObj.id);
           });
         boxObj.streams.push(btnStream);
       });
 
+    }
+
+    // TODO, optimize
+    function captureFormData(boxID) {
+      var dataObj = Object.create(null),
+        boxObj = getObjByID(boxID),
+        textareaEls, inputEls;
+
+      textareaEls = boxObj.element.querySelectorAll('textarea');
+      inputEls = boxObj.element.querySelectorAll('input');
+      Array.prototype.slice.call(textareaEls, 0).forEach(function(formEl) {
+        if(formEl.getAttribute('name')) {
+          dataObj[formEl.getAttribute('name')] = formEl.value;
+        }
+      });
+
+      Array.prototype.slice.call(inputEls, 0).forEach(function(formEl) {
+        if(formEl.getAttribute('name')) {
+          dataObj[formEl.getAttribute('name')] = formEl.value;
+        }
+      });
+
+      return dataObj;
     }
 
     /**
@@ -247,12 +270,21 @@ define('Nudoru.Component.MessageBoxView',
     }
 
     /**
-     * Utility to get the box object by ID
+     * Utility to get the box object index by ID
      * @param id
      * @returns {number}
      */
     function getObjIndexByID(id) {
       return _children.map(function(child) { return child.id; }).indexOf(id);
+    }
+
+    /**
+     * Utility to get the box object by ID
+     * @param id
+     * @returns {number}
+     */
+    function getObjByID(id) {
+      return _children.filter(function(child) { return child.id === id; })[0];
     }
 
     exports.initialize = initialize;

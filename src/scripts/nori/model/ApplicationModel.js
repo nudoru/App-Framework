@@ -47,7 +47,7 @@ define('Nori.Model.ApplicationModel',
      * @returns {*}
      */
     function createModelCollection(initObj, extras) {
-      var m = requireExtend('Nori.Model.ModelCollection', extras);
+      var m = Nori.extendWithArray({},[requireNew('Nori.Model.ModelCollection'), extras]);
       m.initialize(initObj);
       _appModelCollectionMap[initObj.id] = m;
       return m;
@@ -60,7 +60,7 @@ define('Nori.Model.ApplicationModel',
      * @returns {*}
      */
     function createModel(initObj, extras) {
-      var m = requireExtend('Nori.Model.Model', extras);
+      var m = Nori.extendWithArray({},[requireNew('Nori.Model.Model'), extras]); //
       m.initialize(initObj);
       _appModelMap[initObj.id] = m;
       return m;
