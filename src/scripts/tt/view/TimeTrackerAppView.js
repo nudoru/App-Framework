@@ -9,27 +9,17 @@ define('TT.View.TimeTrackerAppView',
 
     var _self,
       _moduleNavView = require('TT.View.ModuleNavView'),
-      _buttonProjects,
-      _buttonPeople,
-      _buttonHelp,
-      _buttonProjectsStream,
-      _buttonPeopleStream,
-      _buttonHelpStream,
       _toolTip = require('Nudoru.Component.ToolTipView'),
-      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _appEvents = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       _self = this;
-
       _self.initializeApplicationView();
-
       _self.setRouteViewMountPoint('#contents');
 
       mapRoutes();
-
       mapComponentViews();
-      configureMainButtons();
+      configureUIEvents();
       //configureToolTips();
 
       _moduleNavView.initialize();
@@ -51,9 +41,10 @@ define('TT.View.TimeTrackerAppView',
       TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TimeCardView');
       TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.CapacityForecastView');
 
-      _self.extendSubViewController('Assignments','TT.View.TTSubViewModuleCommon');
-      _self.extendSubViewController('Timecard','TT.View.TTSubViewModuleCommon');
-      _self.extendSubViewController('Forecast','TT.View.TTSubViewModuleCommon');
+      // Decorate the base subview modules with additional common functionality
+      _self.decorateSubViewController('Assignments','TT.View.TTSubViewModuleCommon');
+      _self.decorateSubViewController('Timecard','TT.View.TTSubViewModuleCommon');
+      _self.decorateSubViewController('Forecast','TT.View.TTSubViewModuleCommon');
 
     }
 
@@ -65,41 +56,43 @@ define('TT.View.TimeTrackerAppView',
       _self.mapView('UserProfilePanel', 'TT.View.UserProfilePanelView', false, '#userprofilepanel');
     }
 
-    function configureMainButtons() {
-      _buttonProjects = document.getElementById('btn_main_projects');
-      _buttonPeople = document.getElementById('btn_main_people');
-      _buttonHelp = document.getElementById('btn_main_help');
+    function configureUIEvents() {
+      _self.setEvents({
+        'click #btn_main_projects':handleProjectsButton,
+        'click #btn_main_people':handlePeopleButton,
+        'click #btn_main_help':handleHelpButton
+      });
+      _self.delegateEvents();
+    }
 
-      _buttonProjectsStream = Rx.Observable.fromEvent(_buttonProjects, _browserInfo.mouseClickEvtStr())
-        .subscribe(function () {
-          _self.addMessageBox({
-            title: 'Projects',
-            content: 'This feature is still in development!',
-            type: 'default',
-            modal: true,
-            width: 350
-          });
-        });
-      _buttonPeopleStream  = Rx.Observable.fromEvent(_buttonPeople, _browserInfo.mouseClickEvtStr())
-        .subscribe(function () {
-          _self.addMessageBox({
-            title: 'People',
-            content: 'This feature is still in development!',
-            type: 'default',
-            modal: true,
-            width: 350
-          });
-        });
-      _buttonHelpStream = Rx.Observable.fromEvent(_buttonHelp, _browserInfo.mouseClickEvtStr())
-        .subscribe(function () {
-          _self.addMessageBox({
-            title: 'How Do I?',
-            content: 'This feature is still in development!',
-            type: 'information',
-            modal: true,
-            width: 550
-          });
-        });
+    function handleProjectsButton() {
+      _self.addMessageBox({
+        title: 'Projects',
+        content: 'This feature is still in development!',
+        type: 'default',
+        modal: true,
+        width: 350
+      });
+    }
+
+    function handlePeopleButton() {
+      _self.addMessageBox({
+        title: 'People',
+        content: 'This feature is still in development!',
+        type: 'default',
+        modal: true,
+        width: 350
+      });
+    }
+
+    function handleHelpButton() {
+      _self.addMessageBox({
+        title: 'How Do I?',
+        content: 'This feature is still in development!',
+        type: 'information',
+        modal: true,
+        width: 550
+      });
     }
 
     function configureToolTips() {

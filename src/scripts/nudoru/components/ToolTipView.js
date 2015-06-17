@@ -205,10 +205,11 @@ define('Nudoru.Component.ToolTipView',
       TweenLite.set(tooltipObj.arrowEl, {x: (tooltipObj.width/2)-(arrowProps.width/2) });
     }
 
+    // TODO fix position in FireFix, seems like it's at the top 1/3 position
     function centerArrowVertically(tooltipObj) {
       var arrowProps = tooltipObj.arrowEl.getBoundingClientRect();
 
-      console.log(tooltipObj.height, arrowProps.height, ((tooltipObj.height/2)-(arrowProps.height/2)));
+      //console.log(tooltipObj.height, arrowProps.height, ((tooltipObj.height/2)-(arrowProps.height/2)));
 
       TweenLite.set(tooltipObj.arrowEl, {y: (tooltipObj.height/2)-(arrowProps.height/2)-2 });
     }

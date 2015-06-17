@@ -14,8 +14,6 @@ define('Nori.View.ApplicationSubView',
       _mountPoint,
       _state = {},
       _children = [],
-      _events,
-      _eventListeners,
       _isMounted = false,
       _appEvents = require('Nori.Events.AppEventCreator');
 
@@ -128,10 +126,14 @@ define('Nori.View.ApplicationSubView',
       _isMounted = true;
 
       // Go out to the standard render function. DOM element is returned in callback
-      _appEvents.renderView(_mountPoint, _html, _id, function(domEl) {
+      // Needs to be bound to 'this' context
+      _appEvents.renderView(_mountPoint, _html, _id, (function(domEl) {
         setDOMElement(domEl);
-        createEvents();
-      });
+        // from the ViewMixinEventDelegator
+        if(this.delegateEvents) {
+          this.delegateEvents();
+        }
+      }).bind(this));
 
       this.viewDidMount();
     }
@@ -154,7 +156,12 @@ define('Nori.View.ApplicationSubView',
       this.viewWillUnmount();
       _isMounted = false;
       _appEvents.renderView(_mountPoint, '', _id);
-      disposeEvents();
+
+      // from the ViewMixinEventDelegator
+      if(this.undelegateEvents) {
+        this.undelegateEvents();
+      }
+
       setDOMElement(null);
       this.viewDidUnmount();
     }
@@ -163,58 +170,7 @@ define('Nori.View.ApplicationSubView',
       // stub
     }
 
-    /**
-     * Automates setting events on DOM elements. Events should be set in initalize
-     * and this function is called on mount
-     * Based on Backbone
-     * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
-     * 'evtStr selector':callback,
-     */
-    function createEvents() {
-      if(!_events) {
-        return;
-      }
 
-      if(!_DOMElement) {
-        throw new Error('Cannot set subview events with no DOM element. Rendered and mounted?');
-      }
-
-      _eventListeners = Object.create(null);
-
-      for(event in _events) {
-
-        if(_events.hasOwnProperty(event)) {
-
-          var eventStr = event.split(' ')[0],
-            selector = event.split(' ')[1],
-            element = document.querySelector(selector);
-
-          if(!element) {
-            console.log('Cannot add event to invalid DOM element: '+selector);
-            continue;
-          }
-
-          _eventListeners[event] = Rx.Observable.fromEvent(element, eventStr).subscribe(_events[event]);
-
-        }
-      }
-    }
-
-    /**
-     * Cleanly remove events. Called on unmount()
-     */
-    function disposeEvents() {
-      if(!_events) {
-        return;
-      }
-
-      for(event in _eventListeners) {
-        _eventListeners[event].dispose();
-        delete _eventListeners[event];
-      }
-
-      _eventListeners = Object.create(null);
-    }
 
     /**
      * Remove a view and cleanup
@@ -267,13 +223,7 @@ define('Nori.View.ApplicationSubView',
       return _children.slice(0);
     }
 
-    function setEvents(events) {
-      _events = events;
-    }
 
-    function getEvents() {
-      return _events;
-    }
 
     //----------------------------------------------------------------------------
     //  API
@@ -310,10 +260,5 @@ define('Nori.View.ApplicationSubView',
     exports.addChild = addChild;
     exports.removeChild = removeChild;
     exports.getChildren = getChildren;
-
-    exports.setEvents = setEvents;
-    exports.getEvents = getEvents;
-    exports.disposeEvents = disposeEvents;
-    exports.createEvents = createEvents;
 
   });

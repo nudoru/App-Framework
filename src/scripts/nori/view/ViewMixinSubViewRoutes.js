@@ -50,7 +50,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @returns {*}
      */
     function createSubView(extras) {
-      return requireExtend('Nori.View.ApplicationSubView', extras);
+      var svc = requireExtend('Nori.View.ApplicationSubView', extras);
+      return _.assign(svc, requireUnique('Nori.View.ViewMixinEventDelegator'));
     }
 
     /**
@@ -68,7 +69,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param templateID
      * @param extras
      */
-    function extendSubViewController(templateID,extras) {
+    function decorateSubViewController(templateID,extras) {
       var subview = _subViewMapping[templateID];
 
       if(!subview) {
@@ -165,5 +166,5 @@ define('Nori.View.ViewMixinSubViewRoutes',
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
     exports.updateView = updateView;
-    exports.extendSubViewController = extendSubViewController;
+    exports.decorateSubViewController = decorateSubViewController;
   });
