@@ -66,13 +66,13 @@ require.cache = Object.create(null);
  * @param id
  * @returns {{}|exports}
  */
-function requireUnique(id) {
+function requireNew(id) {
   var moduleCode = define.cache[id],
     exports = {},
     module = {exports: exports};
 
   if(!moduleCode) {
-    throw new Error('requireUnique: module not found: "'+id+'"');
+    throw new Error('requireNew: module not found: "'+id+'"');
   }
 
   moduleCode.call(moduleCode, require, module, exports);
@@ -91,7 +91,7 @@ function requireExtend(id, extendProps) {
     module = {exports: exports};
 
   if(!moduleCode) {
-    throw new Error('requireUnique: module not found: "'+id+'"');
+    throw new Error('requireNew: module not found: "'+id+'"');
   }
 
   moduleCode.call(moduleCode, require, module, exports);

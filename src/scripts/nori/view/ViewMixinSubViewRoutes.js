@@ -38,7 +38,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
     function mapView(templateID, controllerModID, isRoute, mountPoint) {
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller: createSubView(requireUnique(controllerModID)),
+        controller: createSubView(requireNew(controllerModID)),
         isRouteView: isRoute,
         mountPoint: mountPoint
       };
@@ -51,8 +51,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
      */
     function createSubView(extras) {
       return Nori.extendWithArray({}, [
-        requireUnique('Nori.View.ApplicationSubView'),
-        requireUnique('Nori.View.ViewMixinEventDelegator'),
+        requireNew('Nori.View.ApplicationSubView'),
+        requireNew('Nori.View.ViewMixinEventDelegator'),
         extras
       ]);
     }

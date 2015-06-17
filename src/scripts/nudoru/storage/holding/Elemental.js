@@ -71,7 +71,7 @@ var Elemental = (function () {
       initialize();
     }
 
-    var element = requireUnique('ElementalElement');
+    var element = requireNew('ElementalElement');
     element.create(initObj);
     _elements[initObj.id] = element;
     return element;
@@ -82,7 +82,7 @@ var Elemental = (function () {
       initialize();
     }
 
-    var collection = requireUnique('ElementalCollection');
+    var collection = requireNew('ElementalCollection');
     collection.create(initObj);
     _collections[initObj.id] = collection;
     return collection;

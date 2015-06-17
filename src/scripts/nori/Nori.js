@@ -311,7 +311,7 @@ var Nori = (function () {
     return extendWithArray({}, [
       require('Nori.View.ApplicationView'),
       require('Nori.View.ViewMixinSubViewRoutes'),
-      requireUnique('Nori.View.ViewMixinEventDelegator'),
+      requireNew('Nori.View.ViewMixinEventDelegator'),
       extras
     ]);
   }

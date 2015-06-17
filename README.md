@@ -93,7 +93,7 @@ var module = require(‘MyApp.Module’);
 
 **Get a unique instance**
 ```javascript
-var module = requireUnique(‘MyApp.Module’);
+var module = requireNew(‘MyApp.Module’);
 ```
 
 ## Dispatcher / Events
