@@ -151,7 +151,7 @@ define('TT.View.TimeCardView',
                 projectDesc = _self.getState().projects[projectID].projectDescription,
                 headingCellEl = el.querySelector('th');
 
-            console.log(projectDesc);
+            _toolTip.add({title:'', content:projectDesc, position:'R', targetEl: headingCellEl, type:'information', width: 400});
           }
         }
 

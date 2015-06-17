@@ -197,8 +197,6 @@ define('Nudoru.Component.ToolTipView',
         tOriginV = '50%';
       }
 
-
-
       TweenLite.set(tooltipObj.element, {x: xPos, y: yPos, transformOrigin: tOriginH+' '+tOriginV});
     }
 
@@ -209,6 +207,9 @@ define('Nudoru.Component.ToolTipView',
 
     function centerArrowVertically(tooltipObj) {
       var arrowProps = tooltipObj.arrowEl.getBoundingClientRect();
+
+      console.log(tooltipObj.height, arrowProps.height, ((tooltipObj.height/2)-(arrowProps.height/2)));
+
       TweenLite.set(tooltipObj.arrowEl, {y: (tooltipObj.height/2)-(arrowProps.height/2)-2 });
     }
 
@@ -226,7 +227,7 @@ define('Nudoru.Component.ToolTipView',
     }
 
     function transitionOut(el) {
-      TweenLite.to(el, 0.5, {
+      TweenLite.to(el, 0.15, {
          rotationX:  _endRotationTransform,
         autoAlpha: 0,
         scaleY: 1,
@@ -235,11 +236,6 @@ define('Nudoru.Component.ToolTipView',
     }
 
     function remove(el) {
-      //var idx = getObjIndexByID(id),
-      //  tooltip;
-      //
-      //if (idx > -1) {
-      //  tooltip = _children[idx];
       getObjByElement(el).forEach(function(tooltip) {
         tooltip.elOverStream.dispose();
         tooltip.elOutStream.dispose();
