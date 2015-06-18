@@ -22,10 +22,10 @@ define('TT.View.TimeCardView',
 
         this.initializeSubView(initObj);
 
-        this.setEvents({
-          'change #tc_p_table':handleInputChangeEvent,
-          'click #tc_btn-submit':handleTimeCardSubmit
-        });
+  this.setEvents({
+    'change #tc_p_table':handleInputChangeEvent,
+    'click #tc_btn-submit':handleTimeCardSubmit
+  });
       }
     }
 
