@@ -7,6 +7,7 @@ define('Nori.View.ApplicationView',
       _notificationView = require('Nudoru.Component.ToastView'),
       _toolTipView = require('Nudoru.Component.ToolTipView'),
       _messageBoxView = require('Nudoru.Component.MessageBoxView'),
+      _messageBoxCreator = require('Nudoru.Component.MessageBoxCreator'),
       _modalCoverView = require('Nudoru.Component.ModalCoverView');
 
     //----------------------------------------------------------------------------
@@ -56,6 +57,10 @@ define('Nori.View.ApplicationView',
     //----------------------------------------------------------------------------
     //  Messaging
     //----------------------------------------------------------------------------
+
+    function mbCreator() {
+      return _messageBoxCreator;
+    }
 
     /**
      * Show a message box
@@ -131,6 +136,7 @@ define('Nori.View.ApplicationView',
     exports.initializeApplicationElements = initializeApplicationElements;
     exports.initializeComponents = initializeComponents;
 
+    exports.mbCreator = mbCreator;
     exports.addMessageBox = addMessageBox;
     exports.removeMessageBox = removeMessageBox;
     exports.addNotification = addNotification;
