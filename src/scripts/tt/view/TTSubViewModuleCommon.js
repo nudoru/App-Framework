@@ -103,6 +103,28 @@ define('TT.View.TTSubViewModuleCommon',
       return arry;
     }
 
+    function disableForm() {
+      var inputs = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
+        selects =  _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
+        formElements = inputs.concat(selects);
+
+      formElements.forEach(function(els) {
+        els.disabled = true;
+      });
+
+    }
+
+    function enableForm() {
+      var inputs = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
+        selects =  _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
+        formElements = inputs.concat(selects);
+
+      formElements.forEach(function(els) {
+        els.disabled = false;
+      });
+
+    }
+
     //----------------------------------------------------------------------------
     //  Utility
     //----------------------------------------------------------------------------
@@ -133,5 +155,8 @@ define('TT.View.TTSubViewModuleCommon',
     exports.buildProjectRows = buildProjectRows;
     exports.getProjectRows = getProjectRows;
     exports.getProjectRowData = getProjectRowData;
+
+    exports.disableForm = disableForm;
+    exports.enableForm = enableForm;
 
   });

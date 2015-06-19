@@ -127,8 +127,8 @@ BEGIN Templates for Views
                 <p>Placeholder</p>
             </section>
             <section class="panel-footer">
-                <button class="button-icon-left pull-left"><i class="fa fa-plus-circle"></i>Add New Assignment</button>
-                <button class="button-success icon-right">Update<i class="fa fa-check"></i></button>
+                <button id="asn_btn-addnew" class="button-icon-left pull-left"><i class="fa fa-plus-circle"></i>Add New Assignment</button>
+                <button id="asn_btn-update" class="button-success icon-right">Update<i class="fa fa-check"></i></button>
             </section>
         </section>
     </div>
@@ -139,13 +139,13 @@ BEGIN Templates for Views
         <section>
             <div class="column-container padding-top-double padding-bottom-triple">
                 <div class="one-fourth-left-column">
-                    <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
+                    <button id="tc_btn-prevwk" class="button-small button-icon-left button-neutral-light"><i class="fa fa-chevron-circle-left"></i>Previous Wk</button>
                 </div>
                 <div class="half-left-column text-center">
                     <h1 class="h2-alternate"><%= calendar.currentWeek %>, <%= calendar.currentYear %></h1>
                 </div>
                 <div class="one-fourth-right-column text-right">
-                    <button class="button-small button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
+                    <button id="tc_btn-nextwk" class="button-small button-icon-right button-neutral-light">Next Wk<i class="fa fa-chevron-circle-right"></i></button>
                 </div>
             </div>
             <div>
