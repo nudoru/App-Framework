@@ -16,16 +16,13 @@ define('TT.View.TimeCardView',
 
     function initialize(initObj) {
       _self = this;
-
       if(!this.isInitialized()) {
         this.setProjectsModel();
-
         this.initializeSubView(initObj);
-
-  this.setEvents({
-    'change #tc_p_table':handleInputChangeEvent,
-    'click #tc_btn-submit':handleTimeCardSubmit
-  });
+        this.setEvents({
+          'change #tc_p_table':handleInputChangeEvent,
+          'click #tc_btn-submit':handleTimeCardSubmit
+        });
       }
     }
 
@@ -38,6 +35,7 @@ define('TT.View.TimeCardView',
       _submitButtonLabelEl = document.getElementById('tc_btn-submit-label');
 
       buildFieldList();
+      this.buildProjectRows();
       updateColumnSums();
       setProjectToolTips();
     }
@@ -45,6 +43,22 @@ define('TT.View.TimeCardView',
     function viewWillUnmount() {
       this.closeAllAlerts();
     }
+
+    /*
+     //this.mbCreator().confirm('Read to submit this time card?',
+     //  'Only submit your time card when all data for the week has been entered. Editing a submitted time card will require justification.<br><br>Ready to submit?',
+     //  function() {
+     //    console.log('yes');
+     //  },
+     //  true);
+     //
+     this.mbCreator().prompt('Modify Time Card',
+     'This time card has been submitted. Why you are modifying it?',
+     function(data) {
+     console.log('yes',data);
+     },
+     true);
+     */
 
     //--------------------------------------------------------------------------
     // Custom
@@ -83,6 +97,7 @@ define('TT.View.TimeCardView',
     function handleInputChangeEvent(evt) {
       //var targetEl = evt.target;
       updateColumnSums();
+      _self.getProjectRowData();
     }
 
     function updateColumnSums() {

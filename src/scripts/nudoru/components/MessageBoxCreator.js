@@ -72,7 +72,7 @@ define('Nudoru.Component.MessageBoxCreator',
     }
 
     function choice(title, message, selections, okCB, modal) {
-      var selectHTML = '<select style="width:400px" name="selection" autofocus="true">';
+      var selectHTML = '<select style="width:400px;height:100px" name="selection" autofocus="true" size="10">';
 
         selections.forEach(function(opt) {
           selectHTML += '<option value="'+opt.value+'" '+(opt.selected==='true' ? 'selected' : '')+'>'+opt.label+'</option>';

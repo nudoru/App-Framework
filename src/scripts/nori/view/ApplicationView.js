@@ -79,12 +79,7 @@ define('Nori.View.ApplicationView',
      * @param message
      */
     function showAlert(message) {
-      return addMessageBox({
-        title: 'Alert',
-        content: message,
-        type: _messageBoxView.type().DEFAULT,
-        modal: false
-      });
+      return mbCreator().alert('Alert',message);
     }
 
     /**

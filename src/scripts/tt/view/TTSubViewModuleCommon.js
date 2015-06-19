@@ -7,7 +7,9 @@ define('TT.View.TTSubViewModuleCommon',
   function (require, module, exports) {
 
     var _messageBoxIDs = [],
-        _myProjectsModel;
+        _myProjectsModel,
+        _projectRows = [],
+        _domUtils = require('Nudoru.Browser.DOMUtils');
 
     function initializeCommon() {
       //
@@ -69,6 +71,38 @@ define('TT.View.TTSubViewModuleCommon',
       //console.log(this.getState());
     }
 
+    /**
+     * Build an array of table > tr's that pertain to project data
+     */
+    function buildProjectRows() {
+      _projectRows = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'tr').filter(function(row) {
+        var rowid = row.getAttribute('id');
+        if(!rowid) {
+          return false;
+        }
+        return rowid.indexOf('tc_p_') === 0;
+      });
+    }
+
+    function getProjectRows() {
+      return _projectRows;
+    }
+
+    /**
+     * Returns an array of objects: key is ID, prop is object of form data inputs
+     * @returns {Array}
+     */
+    function getProjectRowData() {
+      var arry = [];
+      this.getProjectRows().forEach(function (row) {
+        var id = row.getAttribute('id').split('tc_p_')[1],
+          obj = Object.create(null);
+        obj[id] = _domUtils.captureFormData(row);
+        arry.push(obj);
+      });
+      return arry;
+    }
+
     //----------------------------------------------------------------------------
     //  Utility
     //----------------------------------------------------------------------------
@@ -95,5 +129,9 @@ define('TT.View.TTSubViewModuleCommon',
 
     exports.showAlert = showAlert;
     exports.closeAllAlerts = closeAllAlerts;
+
+    exports.buildProjectRows = buildProjectRows;
+    exports.getProjectRows = getProjectRows;
+    exports.getProjectRowData = getProjectRowData;
 
   });

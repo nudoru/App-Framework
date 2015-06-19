@@ -50,45 +50,6 @@ define('TT.View.TimeTrackerAppView',
 
     function render() {
       _self.showView('UserProfilePanel');
-
-      //this.mbCreator().alert('Alert','Somehting happened, oop!')
-      //
-      //this.mbCreator().confirm('Read to submit this time card?',
-      //  'Only submit your time card when all data for the week has been entered. Editing a submitted time card will require justification.<br><br>Ready to submit?',
-      //  function() {
-      //    console.log('yes');
-      //  },
-      //  true);
-      //
-      this.mbCreator().prompt('Modify Time Card',
-        'This time card has been submitted. Why you are modifying it?',
-        function(data) {
-          console.log('yes',data);
-        },
-        true);
-
-      //var opt = [];
-      //
-      //for(var i=0; i<300; i++) {
-      //  opt.push({
-      //    value:'data'+i,
-      //    selected:'false',
-      //    label:'Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data '+i
-      //  });
-      //}
-
-      this.mbCreator().choice('Add Project',
-        'Choose a new project to add to your active list',
-        [{value:'data1',selected:'false',label:'Data 1'},
-          {value:'data2',selected:'true',label:'Data 2'},
-          {value:'data3',selected:'false',label:'Data 3'}
-        ],
-        function(data) {
-          console.log('selected',data);
-        },
-        true);
-
-
     }
 
     function mapComponentViews() {

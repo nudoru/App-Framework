@@ -169,34 +169,13 @@ define('Nudoru.Component.MessageBoxView',
 
     }
 
-    // TODO, optimize
+    /**
+     * Returns data from the form on the box contents
+     * @param boxID
+     * @returns {*}
+     */
     function captureFormData(boxID) {
-      var dataObj = Object.create(null),
-        boxObj = getObjByID(boxID),
-        textareaEls, inputEls;
-
-      textareaEls = boxObj.element.querySelectorAll('textarea');
-      inputEls = boxObj.element.querySelectorAll('input');
-      selectEls = boxObj.element.querySelectorAll('select');
-      Array.prototype.slice.call(textareaEls, 0).forEach(function(formEl) {
-        if(formEl.getAttribute('name')) {
-          dataObj[formEl.getAttribute('name')] = formEl.value;
-        }
-      });
-
-      Array.prototype.slice.call(inputEls, 0).forEach(function(formEl) {
-        if(formEl.getAttribute('name')) {
-          dataObj[formEl.getAttribute('name')] = formEl.value;
-        }
-      });
-
-      Array.prototype.slice.call(selectEls, 0).forEach(function(formEl) {
-        if(formEl.getAttribute('name')) {
-          dataObj[formEl.getAttribute('name')] = formEl.options[formEl.selectedIndex].value;
-        }
-      });
-
-      return dataObj;
+      return _domUtils.captureFormData(getObjByID(boxID).element);
     }
 
     /**

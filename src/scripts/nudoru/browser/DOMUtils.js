@@ -120,7 +120,7 @@ define('Nudoru.Browser.DOMUtils',
      * Get an array of elements in the container returned as Array instead of a Node list
      */
     exports.getQSElementsAsArray = function(el, cls) {
-      return Array.prototype.slice.call(el.querySelectorAll(cls));
+      return Array.prototype.slice.call(el.querySelectorAll(cls), 0);
     };
 
     exports.centerElementInViewPort = function(el) {
@@ -132,6 +132,49 @@ define('Nudoru.Browser.DOMUtils',
 
       el.style.left = (vpW/2) - (elW/2)+'px';
       el.style.top = (vpH/2) - (elH/2)+'px';
+    };
+
+    /**
+     * Creates an object from the name (or id) attribs and data of a form
+     * @param el
+     * @returns {null}
+     */
+    exports.captureFormData = function(el) {
+      var dataObj = Object.create(null),
+        textareaEls, inputEls, selectEls;
+
+      textareaEls = Array.prototype.slice.call(el.querySelectorAll('textarea'), 0);
+      inputEls = Array.prototype.slice.call(el.querySelectorAll('input'), 0);
+      selectEls = Array.prototype.slice.call(el.querySelectorAll('select'), 0);
+
+      textareaEls.forEach(getInputFormData);
+      inputEls.forEach(getInputFormData);
+      selectEls.forEach(getSelectFormData);
+
+      return dataObj;
+
+      function getInputFormData(formEl) {
+        dataObj[getElNameOrID(formEl)] = formEl.value;
+      }
+
+      function getSelectFormData(formEl) {
+        var sel = formEl.selectedIndex, val = '';
+        if(sel >= 0) {
+           val = formEl.options[sel].value;
+        }
+        dataObj[getElNameOrID(formEl)] = val;
+      }
+
+      function getElNameOrID(formEl) {
+        var name = 'no_name';
+        if(formEl.getAttribute('name')) {
+          name = formEl.getAttribute('name');
+        } else if(formEl.getAttribute('id')) {
+          name = formEl.getAttribute('id');
+        }
+        return name;
+      }
+
     };
 
   });
