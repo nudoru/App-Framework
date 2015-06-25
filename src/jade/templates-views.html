@@ -149,8 +149,13 @@ BEGIN Templates for Views
                 </div>
             </div>
             <div>
-                <ul>
-                    <li>Status: In progress</li>
+                <ul class="plain-list">
+                    <li class="icon-left" id="tc_status_inprogress"><i class="fa fa-pencil-square-o"></i><strong>Status:</strong> <span>In progress</span></li>
+                    <li class="icon-left" id="tc_status_locked">
+                        <i class="fa fa-lock"></i>
+                        <strong>Status:</strong> Submitted on <span>6/19/15 at 5:00pm</span>
+                        <button id="tc_btn-unlock" class="button-neutral-light button-icon-left"><i class="fa fa-unlock"></i>Unlock</button>
+                    </li>
                 </ul>
             </div>
             <table id="tc_p_table" class="table table-rows-zebra">
@@ -226,7 +231,7 @@ BEGIN Templates for Views
                 <div class="column-container">
                     <div class="three-fourths-left-column">
                         <h1 class="icon-left"><i class="fa fa-lightbulb-o"></i>Keep in Mind ...</h1>
-                        <p>Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed.</p>
+                        <p>Combine weekend time into either Monday or Friday's hours. Select the role most representative of your work for the week. Add comments to clarify as needed. Yellow indicates possible errors in entries.</p>
                     </div>
                     <div class="one-fourth-right-column text-right padding-top-double">
                         <button id="tc_btn-submit" class="button-icon-right"><span id="tc_btn-submit-label">Submit</span><i class="fa fa-check"></i></button>

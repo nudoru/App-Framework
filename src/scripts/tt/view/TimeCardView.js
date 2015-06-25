@@ -8,6 +8,9 @@ define('TT.View.TimeCardView',
       _submitButtonEl,
       _submitButtonLabelEl,
       _isSubmitted = false,
+      _isLocked = false,
+      _lockedStatusEl,
+      _inProgressStatusEl,
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _toolTip = require('Nudoru.Component.ToolTipView');
 
@@ -15,6 +18,10 @@ define('TT.View.TimeCardView',
     // Core
     //--------------------------------------------------------------------------
 
+    /**
+     * Initialize and set up events
+     * @param initObj
+     */
     function initialize(initObj) {
       _self = this;
       if (!this.isInitialized()) {
@@ -24,16 +31,26 @@ define('TT.View.TimeCardView',
           'change #tc_p_table': handleInputChangeEvent,
           'click #tc_btn-submit': handleTimeCardSubmit,
           'click #tc_btn-prevwk': handleNotImpl,
-          'click #tc_btn-nextwk': handleNotImpl
+          'click #tc_btn-nextwk': handleNotImpl,
+          'click #tc_btn-unlock': handleUnlockTimeCard
         });
       }
     }
 
+    /**
+     * Update from the model
+     */
     function viewWillUpdate() {
       this.updateStateFromProjectsModel();
     }
 
+    /**
+     * Render and set from the DOM elements
+     */
     function viewDidMount() {
+      _inProgressStatusEl = document.getElementById('tc_status_inprogress');
+      _lockedStatusEl = document.getElementById('tc_status_locked');
+
       _submitButtonEl = document.getElementById('tc_btn-submit');
       _submitButtonLabelEl = document.getElementById('tc_btn-submit-label');
 
@@ -41,8 +58,14 @@ define('TT.View.TimeCardView',
       this.buildProjectRows();
       updateColumnSums();
       setProjectToolTips();
+
+      unlockCard();
+      updateCardStatusText('Testing!');
     }
 
+    /**
+     * View is going away, remove anything that it created: Cleanup
+     */
     function viewWillUnmount() {
       this.closeAllAlerts();
     }
@@ -52,6 +75,21 @@ define('TT.View.TimeCardView',
     // Custom
     //--------------------------------------------------------------------------
 
+    function updateCardStatusText(text) {
+      var textEl;
+
+      if(_isLocked || _isSubmitted) {
+        textEl = _lockedStatusEl.querySelector('span');
+      } else {
+        textEl = _inProgressStatusEl.querySelector('span');
+      }
+
+      textEl.innerHTML = text;
+    }
+
+    /**
+     * Build an array of all of the form fields on the screen
+     */
     function buildFieldList() {
       var allInputEls = _self.getDOMElement().querySelectorAll('input');
       var allInputIDs = Array.prototype.slice.call(allInputEls, 0).map(function (el) {
@@ -69,27 +107,48 @@ define('TT.View.TimeCardView',
 
     }
 
+    /**
+     * Get a sum for a column of input fields
+     * If the field has a NaN value, set it to 0
+     * If it's ok, set the field to the parsed value, '6t' => '6'
+     * @param idList
+     * @returns {number}
+     */
     function sumFieldGroup(idList) {
       var sum = 0;
       idList.forEach(function (id) {
         var inputValue = document.getElementById(id).value,
-          valueInt = parseFloat(inputValue);
-        sum += valueInt || 0;
-        if (!valueInt) {
+          valueFloat = parseFloat(inputValue);
+        sum += valueFloat || 0;
+        if (!valueFloat) {
           if (inputValue.length) {
             document.getElementById(id).value = '0';
           }
+        } else {
+          document.getElementById(id).value = valueFloat;
         }
+
       });
       return sum;
     }
 
+    /**
+     * Update sums, data when a field changes and looses focus
+     * @param evt
+     */
     function handleInputChangeEvent(evt) {
-      //var targetEl = evt.target;
+      // visual indicator
+      _self.flashProjectRow(evt.target.getAttribute('id'));
+
       updateColumnSums();
+
+      // DEBUG
       _self.getProjectRowData();
     }
 
+    /**
+     * Itterate over the columns and sum them all
+     */
     function updateColumnSums() {
       _cardTotal = 0;
 
@@ -125,9 +184,12 @@ define('TT.View.TimeCardView',
 
     }
 
+    /**
+     * When the submit button is clicked
+     */
     function handleTimeCardSubmit() {
-      if(_isSubmitted) {
-        handledSubmittedTimeCardSubmit();
+      if(_isSubmitted || _isLocked) {
+        _self.showAlert('Unlock the time card to make edits and submit changes.');
         return;
       }
 
@@ -139,7 +201,7 @@ define('TT.View.TimeCardView',
       TT.view().mbCreator().confirm('Read to submit this time card?',
         'Only submit your time card when all data for the week has been entered. Editing a submitted time card will require justification.<br><br>Ready to submit?',
         function () {
-          _self.disableForm();
+          lockCard();
           _isSubmitted = true;
 
           TT.view().addMessageBox({
@@ -160,16 +222,22 @@ define('TT.View.TimeCardView',
         true);
     }
 
-    function handledSubmittedTimeCardSubmit() {
+    /**
+     * If the time card was previously submitted
+     */
+    function handleUnlockTimeCard() {
       TT.view().mbCreator().prompt('Modify Time Card',
         'This time card has been submitted. Please let us know why you\'re modifying it.',
         function(data) {
           _isSubmitted = false;
-          _self.enableForm();
+          unlockCard();
         },
         true);
     }
 
+    /**
+     * Set tool tips to display on hover of project name
+     */
     function setProjectToolTips() {
       var allTrEls = document.querySelectorAll('tr');
       Array.prototype.slice.call(allTrEls, 0).map(function (el) {
@@ -194,6 +262,25 @@ define('TT.View.TimeCardView',
       });
     }
 
+    function lockCard() {
+      _isLocked = true;
+      _self.disableForm();
+      _domUtils.addClass(_submitButtonEl, 'button-disabled');
+      _domUtils.addClass(_inProgressStatusEl, 'hidden');
+      _domUtils.removeClass(_lockedStatusEl, 'hidden');
+    }
+
+    function unlockCard() {
+      _isLocked = false;
+      _self.enableForm();
+      _domUtils.removeClass(_submitButtonEl, 'button-disabled');
+      _domUtils.removeClass(_inProgressStatusEl, 'hidden');
+      _domUtils.addClass(_lockedStatusEl, 'hidden');
+    }
+
+    /**
+     * Generic error function
+     */
     function handleNotImpl() {
       TT.view().mbCreator().alert('Oooops!','This doesn\'t work yet');
     }

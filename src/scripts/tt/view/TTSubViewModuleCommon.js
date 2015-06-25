@@ -103,6 +103,43 @@ define('TT.View.TTSubViewModuleCommon',
       return arry;
     }
 
+    /**
+     * Visual indicator, flash the
+     * @param elIDStr
+     */
+    function flashProjectRow(elIDStr) {
+      var row, animTimeLine;
+
+      elIDStr = parseProjectID(elIDStr);
+
+      row = this.getProjectRows().filter(function(rowEl) {
+        if(rowEl.getAttribute('id').indexOf(elIDStr) > 0) {
+          return true;
+        }
+        return false;
+      });
+
+      if(row) {
+        animTimeLine = new TimelineLite();
+        animTimeLine.to(row, 0.25, {boxShadow:"0 0 2px 2px rgba(0,94,184,0.25) inset", ease:Circ.easeOut});
+        animTimeLine.to(row, 0.5, {boxShadow:"0 0 0px 0px rgba(0,94,184,0) inset", ease:Circ.easeOut});
+        animTimeLine.play();
+      }
+    }
+
+    /**
+     * Returns the project id from a element ID
+     * Element id's on the forms are similar to: 'tc_p_#####'
+     * @param elIDStr
+     * @returns {*}
+     */
+    function parseProjectID(elIDStr) {
+      return _.last(elIDStr.split('_'));
+    }
+
+    /**
+     * Disable all elements on the form
+     */
     function disableForm() {
       var inputs = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
         selects =  _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
@@ -114,6 +151,9 @@ define('TT.View.TTSubViewModuleCommon',
 
     }
 
+    /**
+     * Enable all elements on the form
+     */
     function enableForm() {
       var inputs = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
         selects =  _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
@@ -155,6 +195,8 @@ define('TT.View.TTSubViewModuleCommon',
     exports.buildProjectRows = buildProjectRows;
     exports.getProjectRows = getProjectRows;
     exports.getProjectRowData = getProjectRowData;
+    exports.flashProjectRow = flashProjectRow;
+    exports.parseProjectID = parseProjectID;
 
     exports.disableForm = disableForm;
     exports.enableForm = enableForm;

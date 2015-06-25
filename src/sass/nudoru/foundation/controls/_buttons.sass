@@ -117,6 +117,7 @@ button
     background-color: rgba(255, 255, 255, .1)
 
 .button-disabled
+  @extend .button-neutral-light-negative
   +control-disabled
   &:focus, &:hover, &:active
     +control-disabled
