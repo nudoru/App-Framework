@@ -9,11 +9,11 @@
     // Initialize the window
     window.onload = function() {
 
-// Create the application instance
-window.TT = Nori.createApplication(require('TT.TimeTrackerApplication'));
+      // Create the application instance
+      window.TT = Nori.createApplication(require('TT.TimeTrackerApplication'));
 
-// Kick off the bootstrapping process
-TT.initialize();
+      // Kick off the bootstrapping process
+      TT.initialize();
 
     };
   }

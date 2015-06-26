@@ -15,7 +15,6 @@ define('Nori.Model.Model',
       _changed = false,
       _entries = [],
       _store = {},
-      _lastChangeResult,
       _silent = false,
       _parentCollection,
       _appEvents = require('Nori.Events.AppEventCreator');
