@@ -94,11 +94,11 @@ define('TT.View.ModuleCommon',
      * Returns an array of objects: key is ID, prop is object of form data inputs
      * @returns {Array}
      */
-    function getProjectRowData() {
+    function getProjectRowData(prefix) {
       var packet = Object.create(null),
           arry   = [];
       this.getProjectRows().forEach(function (row) {
-        var id  = row.getAttribute('id').split('tc_p_')[1],
+        var id  = row.getAttribute('id').split(prefix)[1],
             obj = Object.create(null);
         obj[id] = _domUtils.captureFormData(row);
         arry.push(obj);

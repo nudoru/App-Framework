@@ -1,16 +1,20 @@
 define('TT.View.AssignmentsView',
   function (require, module, exports) {
 
-    var _self;
+    var _self,
+        _prefix     = 'asn_p_',
+        _dateFields = [],
+        _removeButtons = [],
+        _domUtils   = require('Nudoru.Browser.DOMUtils');
 
     function initialize(initObj) {
       _self = this;
-      if(!this.isInitialized()) {
+      if (!this.isInitialized()) {
         this.setProjectsModel();
         this.initializeSubView(initObj);
         this.setEvents({
           'change #asn_p_table'  : handleInputChangeEvent,
-          'click #asn_btn-update': handleNotImpl,
+          'click #asn_btn-update': showNotImplementedWarning,
           'click #asn_btn-addnew': handleAddNewClick
         });
       }
@@ -27,8 +31,10 @@ define('TT.View.AssignmentsView',
      * Render and set from the DOM elements
      */
     function viewDidMount() {
-      this.buildProjectRows('asn_p_');
-      this.setProjectHeaderRowToolTips('asn_p_');
+      this.buildProjectRows(_prefix);
+      this.setProjectHeaderRowToolTips(_prefix);
+      buildDateFieldsList();
+      buildRemoveButtons();
     }
 
     /**
@@ -36,11 +42,18 @@ define('TT.View.AssignmentsView',
      */
     function viewWillUnmount() {
       this.closeAllAlerts();
+
+      _removeButtons.forEach(function(buttonObj) {
+        buttonObj.subscriber.dispose();
+      });
+
+      _removeButtons = [];
     }
 
     //--------------------------------------------------------------------------
     // Custom
     //--------------------------------------------------------------------------
+
 
     /**
      * Update sums, data when a field changes and looses focus
@@ -50,39 +63,92 @@ define('TT.View.AssignmentsView',
       _self.flashProjectRow(evt.target.getAttribute('id'));
 
       // DEBUG
-      console.log(_self.getProjectRowData());
+      console.log(_self.getProjectRowData(_prefix));
     }
 
+    /**
+     * Add a new project to the list
+     */
     function handleAddNewClick() {
-      var opt = [];
-
-      for(var i=0; i<300; i++) {
-        opt.push({
-          value:'data'+i,
-          selected:'false',
-          label:'Data Data Data Data Data Data Data Data Data Data Data Data Data Data Data '+i
-        });
-      }
+      var projects = TT.model().getProjectsAndIDList();
 
       TT.view().mbCreator().choice('Add Project',
-        'Choose a new project to add to your active list',
-        opt,
-        function(data) {
-          console.log('selected',data);
+        'Select a new project to add to your active list and click Proceed',
+        projects,
+        function (project) {
+          addNewAssignment(project.selection);
         },
         true);
-      //[{value:'data1',selected:'false',label:'Data 1'},
-      //  {value:'data2',selected:'true',label:'Data 2'},
-      //  {value:'data3',selected:'false',label:'Data 3'}
-      //]
     }
 
-    function handleNotImpl() {
-      TT.view().mbCreator().alert('Oooops!','This doesn\'t work yet');
+    /**
+     * Add a new assignment to the current user
+     * @param projectID
+     */
+    function addNewAssignment(projectID) {
+      _self.showAlert('If this was implemented, I\'d add the project with ID ' + projectID);
     }
 
-    exports.initialize = initialize;
-    exports.viewWillUpdate = viewWillUpdate;
-    exports.viewDidMount = viewDidMount;
+    /**
+     * Remove an assignment from the current user
+     * @param projectID
+     */
+    function removeAssignment(projectID) {
+      _self.showAlert('If this was implemented, I\'d remove the project with ID ' + projectID);
+    }
+
+    /**
+     * Build a list of all start and end date input fields
+     */
+    function buildDateFieldsList() {
+      _dateFields = _domUtils.getQSElementsAsArray(_self.getDOMElement(), 'input').filter(function (inputEl) {
+        var id = inputEl.getAttribute('id');
+        if (!id) {
+          return false;
+        }
+        return id.indexOf('start') > 0 || id.indexOf('end') > 0;
+      });
+    }
+
+    /**
+     * Configure the remove buttons
+     */
+    function buildRemoveButtons() {
+      var buttons = _domUtils.getQSElementsAsArray(_self.getDOMElement(), 'button').filter(function (inputEl) {
+          var id = inputEl.getAttribute('id');
+          if (!id) {
+            return false;
+          }
+          return id.indexOf('removebtn') > 0 ;
+        }),
+        projectIDs = buttons.map(function(buttonEl) {
+          return _.last(buttonEl.getAttribute('id').split('_'));
+        });
+
+      buttons.forEach(function(buttonEl, i) {
+        _removeButtons.push({
+          buttonEl: buttonEl,
+          projectID: projectIDs[i],
+          subscriber: Rx.Observable.fromEvent(buttonEl, 'click').subscribe(
+            function() {
+              removeAssignment(projectIDs[i]);
+            }
+          )
+        });
+      });
+
+    }
+
+    function showNotImplementedWarning() {
+      _self.showAlert('This doesn\'t work yet');
+    }
+
+    //--------------------------------------------------------------------------
+    // API
+    //--------------------------------------------------------------------------
+
+    exports.initialize      = initialize;
+    exports.viewWillUpdate  = viewWillUpdate;
+    exports.viewDidMount    = viewDidMount;
     exports.viewWillUnmount = viewWillUnmount;
   });

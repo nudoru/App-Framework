@@ -2,6 +2,7 @@ define('TT.View.TimeCardView',
   function (require, module, exports) {
 
     var _self,
+        _prefix = 'tc_p_',
         _columnNames = ['alloc', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
         _columnObj   = Object.create(null),
         _cardTotal   = 0,
@@ -30,7 +31,7 @@ define('TT.View.TimeCardView',
           'change #tc_p_table'  : handleInputChangeEvent,
           'click #tc_btn-submit': handleTimeCardSubmitClick,
           'click #tc_btn-unlock': handleUnlockTimeCardClick,
-          'click #tc_btn-prevwk, click #tc_btn-nextwk': showNotImplemented
+          'click #tc_btn-prevwk, click #tc_btn-nextwk': showNotImplementedWarning
         });
       }
     }
@@ -52,8 +53,8 @@ define('TT.View.TimeCardView',
       _submitButtonLabelEl = document.getElementById('tc_btn-submit-label');
 
       buildColumnFieldsList();
-      this.buildProjectRows('tc_p_');
-      this.setProjectHeaderRowToolTips('tc_p_');
+      this.buildProjectRows(_prefix);
+      this.setProjectHeaderRowToolTips(_prefix);
       updateColumnSums();
 
       unlockCard();
@@ -96,7 +97,7 @@ define('TT.View.TimeCardView',
       updateColumnSums();
 
       // DEBUG
-      console.log(_self.getProjectRowData());
+      console.log(_self.getProjectRowData(_prefix));
     }
 
     /**
@@ -122,9 +123,6 @@ define('TT.View.TimeCardView',
     function handleUnlockTimeCardClick() {
       promptForCardUnlock();
     }
-
-
-
     //--------------------------------------------------------------------------
     // Card data
     //--------------------------------------------------------------------------
@@ -267,7 +265,7 @@ define('TT.View.TimeCardView',
     /**
      * Show a message for buttons that don't do anything yet
      */
-    function showNotImplemented() {
+    function showNotImplementedWarning() {
       _self.showAlert('This doesn\'t work yet');
     }
 

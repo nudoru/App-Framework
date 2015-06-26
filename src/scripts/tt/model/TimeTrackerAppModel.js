@@ -2,16 +2,16 @@ define('TT.Model.TimeTrackerAppModel',
   function (require, module, exports) {
 
     var _self,
-      _mockDataSource = require('TT.Model.MockDataCreator'),
-      _peopleSourceData,
-      _projectsSourceData,
-      _assignmentsSourceData,
-      _peopleCollection,
-      _projectsCollection,
-      _assignmentsCollection,
-      _currentUserMap,
-      _currentUserProjectsCollection,
-      _appEvents = require('Nori.Events.AppEventCreator');
+        _mockDataSource = require('TT.Model.MockDataCreator'),
+        _peopleSourceData,
+        _projectsSourceData,
+        _assignmentsSourceData,
+        _peopleCollection,
+        _projectsCollection,
+        _assignmentsCollection,
+        _currentUserMap,
+        _currentUserProjectsCollection,
+        _appEvents      = require('Nori.Events.AppEventCreator');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -43,11 +43,11 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     function handleModelDataChanged(dataObj) {
-      console.log('TT, handlemodeldatachange',dataObj);
+      console.log('TT, handlemodeldatachange', dataObj);
     }
 
     function handleUpdateModelData(dataObj) {
-      console.log('TT, handleupdatemodeldata',dataObj);
+      console.log('TT, handleupdatemodeldata', dataObj);
     }
 
     /**
@@ -58,8 +58,8 @@ define('TT.Model.TimeTrackerAppModel',
 
       loadApplicationData();
 
-      _peopleCollection = _self.createMapCollection({id: 'peopleset'});
-      _projectsCollection = _self.createMapCollection({id: 'projectsset'});
+      _peopleCollection      = _self.createMapCollection({id: 'peopleset'});
+      _projectsCollection    = _self.createMapCollection({id: 'projectsset'});
       _assignmentsCollection = _self.createMapCollection({id: 'assignmentsset'});
 
       _peopleCollection.addFromObjArray(_peopleSourceData, 'id', false);
@@ -80,9 +80,27 @@ define('TT.Model.TimeTrackerAppModel',
      * Gets the data objects from the source
      */
     function loadApplicationData() {
-      _peopleSourceData = JSON.parse(getLocalStorageObject('mockTTData.people'));
-      _projectsSourceData = JSON.parse(getLocalStorageObject('mockTTData.projects'));
+      _peopleSourceData      = JSON.parse(getLocalStorageObject('mockTTData.people'));
+      _projectsSourceData    = JSON.parse(getLocalStorageObject('mockTTData.projects'));
       _assignmentsSourceData = JSON.parse(getLocalStorageObject('mockTTData.assignments'));
+    }
+
+    /**
+     * Used by Assignments view add assignment popup. Format
+     * [{value:'data1',selected:'false',label:'Data 1'}, ...]
+     */
+    function getProjectsAndIDList() {
+      var arry = [];
+
+      _projectsCollection.forEach(function (map) {
+        arry.push({
+          value   : map.get('id'),
+          label   : map.get('title'),
+          selected: 'false'
+        })
+      });
+
+      return arry;
     }
 
     //----------------------------------------------------------------------------
@@ -102,10 +120,11 @@ define('TT.Model.TimeTrackerAppModel',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
-    exports.getCurrentUserModel = getCurrentUserModel;
+    exports.initialize                       = initialize;
+    exports.getCurrentUserModel              = getCurrentUserModel;
     exports.getCurrentUserProjectsCollection = getCurrentUserProjectsCollection;
-    exports.handleModelDataChanged = handleModelDataChanged;
-    exports.handleUpdateModelData = handleUpdateModelData;
+    exports.handleModelDataChanged           = handleModelDataChanged;
+    exports.handleUpdateModelData            = handleUpdateModelData;
+    exports.getProjectsAndIDList             = getProjectsAndIDList;
 
   });
