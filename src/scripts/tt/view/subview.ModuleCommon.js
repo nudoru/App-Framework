@@ -9,7 +9,8 @@ define('TT.View.ModuleCommon',
     var _messageBoxIDs = [],
         _myProjectsModel,
         _projectRows   = [],
-        _domUtils      = require('Nudoru.Browser.DOMUtils');
+        _domUtils      = require('Nudoru.Browser.DOMUtils'),
+        _toolTip       = require('Nudoru.Component.ToolTipView');
 
     function initializeCommon() {
       //
@@ -61,14 +62,14 @@ define('TT.View.ModuleCommon',
         };
       });
 
+      // TEST
       obj.calendar = {
-        currentYear: '2015',
-        currentWeek: 'June 15-June 19'
+        currentYear   : '2015',
+        currentWeekNum: '12',
+        currentWeek   : 'June 15-June 19'
       };
 
       this.setState(obj);
-
-      //console.log(this.getState());
     }
 
     /**
@@ -94,14 +95,40 @@ define('TT.View.ModuleCommon',
      * @returns {Array}
      */
     function getProjectRowData() {
-      var arry = [];
+      var packet = Object.create(null),
+          arry   = [];
       this.getProjectRows().forEach(function (row) {
         var id  = row.getAttribute('id').split('tc_p_')[1],
             obj = Object.create(null);
         obj[id] = _domUtils.captureFormData(row);
         arry.push(obj);
       });
-      return arry;
+
+      packet.year      = this.getState().calendar.currentYear;
+      packet.weekNum   = this.getState().calendar.currentWeekNum;
+      packet.inputData = arry;
+
+      return packet;
+    }
+
+    /**
+     * Set tool tips to display on hover of project name
+     */
+    function setProjectHeaderRowToolTips(prefix) {
+      var state = this.getState();
+      this.getProjectRows().forEach(function (el) {
+        var projectID     = el.getAttribute('id').split(prefix)[1],
+            headingCellEl = el.querySelector('th');
+
+        _toolTip.add({
+          title   : '',
+          content : state.projects[projectID].projectDescription,
+          position: 'B',
+          targetEl: headingCellEl,
+          type    : 'information',
+          width   : 350
+        });
+      });
     }
 
     /**
@@ -200,6 +227,7 @@ define('TT.View.ModuleCommon',
     exports.buildProjectRows             = buildProjectRows;
     exports.getProjectRows               = getProjectRows;
     exports.getProjectRowData            = getProjectRowData;
+    exports.setProjectHeaderRowToolTips  = setProjectHeaderRowToolTips;
     exports.flashProjectRow              = flashProjectRow;
     exports.parseProjectID               = parseProjectID;
     exports.disableForm                  = disableForm;

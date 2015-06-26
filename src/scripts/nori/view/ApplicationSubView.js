@@ -192,7 +192,7 @@ define('Nori.View.ApplicationSubView',
     }
 
     function getState() {
-      return _state;
+      return _.cloneDeep(_state);
     }
 
     function getID() {

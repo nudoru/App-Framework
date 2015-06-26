@@ -11,8 +11,7 @@ define('TT.View.TimeCardView',
         _isLocked    = false,
         _lockedStatusEl,
         _inProgressStatusEl,
-        _domUtils    = require('Nudoru.Browser.DOMUtils'),
-        _toolTip     = require('Nudoru.Component.ToolTipView');
+        _domUtils    = require('Nudoru.Browser.DOMUtils');
 
     //--------------------------------------------------------------------------
     // Core
@@ -52,13 +51,13 @@ define('TT.View.TimeCardView',
       _submitButtonEl      = document.getElementById('tc_btn-submit');
       _submitButtonLabelEl = document.getElementById('tc_btn-submit-label');
 
-      buildFieldList();
+      buildColumnFieldsList();
       this.buildProjectRows('tc_p_');
+      this.setProjectHeaderRowToolTips('tc_p_');
       updateColumnSums();
-      setProjectToolTips();
 
       unlockCard();
-      updateCardStatusText('Inprogress');
+      updateCardStatusText('In progress');
     }
 
     /**
@@ -97,7 +96,7 @@ define('TT.View.TimeCardView',
       updateColumnSums();
 
       // DEBUG
-      _self.getProjectRowData();
+      console.log(_self.getProjectRowData());
     }
 
     /**
@@ -124,32 +123,7 @@ define('TT.View.TimeCardView',
       promptForCardUnlock();
     }
 
-    /**
-     * Set tool tips to display on hover of project name
-     */
-    function setProjectToolTips() {
-      var allTrEls = document.querySelectorAll('tr');
-      Array.prototype.slice.call(allTrEls, 0).map(function (el) {
-        var rowID = el.getAttribute('id');
-        if (rowID) {
-          if (rowID.indexOf('tc_p_') === 0) {
-            var projectID     = rowID.split('tc_p_')[1],
-                projectDesc   = _self.getState().projects[projectID].projectDescription,
-                headingCellEl = el.querySelector('th');
 
-            _toolTip.add({
-              title   : '',
-              content : projectDesc,
-              position: 'B',
-              targetEl: headingCellEl,
-              type    : 'information',
-              width   : 400
-            });
-          }
-        }
-
-      });
-    }
 
     //--------------------------------------------------------------------------
     // Card data
@@ -158,7 +132,7 @@ define('TT.View.TimeCardView',
     /**
      * Build an array of all of the form fields on the screen
      */
-    function buildFieldList() {
+    function buildColumnFieldsList() {
       var allInputEls = _self.getDOMElement().querySelectorAll('input');
       var allInputIDs = Array.prototype.slice.call(allInputEls, 0).map(function (el) {
         return el.getAttribute('id');
