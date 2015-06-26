@@ -128,8 +128,8 @@ var Nori = (function () {
   /**
    * Notify any bound views on model change, not collection change
    * @param dataObj
-   * {id:storeid, storeType:'model',  store:getStore(), changed:_lastChangeResult}
-   * {id:collectionid, storeType:'collection', storeID: data.id, store:data.store}
+   * {id:mapid, mapType:'model'}
+   * {id:collectionid, mapType:'collection', mapID: data.id}
    */
   function handleModelUpdate(dataObj) {
     notifyViewsOfModelUpdate(dataObj.id);

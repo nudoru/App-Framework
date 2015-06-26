@@ -69,7 +69,7 @@ define('TT.Model.TimeTrackerAppModel',
       _currentUserModel = _peopleCollection.getFirst();
 
       _currentUserProjectsCollection = _self.createMapCollection({id: 'myprojects'});
-      _currentUserProjectsCollection.addStoresFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserModel.get('name')));
+      _currentUserProjectsCollection.addMapsFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserModel.get('name')));
 
       //_myProjects.forEach(function (store) {
       //  console.log(store.get('projectTitle'));

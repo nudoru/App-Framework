@@ -1,10 +1,5 @@
 /**
- * Object.oberve polyfill:
- * https://github.com/MaxArt2501/object-observe/blob/master/doc/index.md
- * http://www.html5rocks.com/en/tutorials/es7/observe/
- *
- * Immutable
- * http://facebook.github.io/immutable-js/
+ * Map data type
  */
 
 
@@ -14,7 +9,7 @@ define('Nori.Model.Map',
     var _id,
       _changed = false,
       _entries = [],
-      _store = {},
+      _map = {},
       _silent = false,
       _parentCollection,
       _appEvents = require('Nori.Events.AppEventCreator');
@@ -36,7 +31,7 @@ define('Nori.Model.Map',
         // set inital data silently
         //set(initObj.store, {silent: true});
         _changed = true;
-        _store = initObj.store;
+        _map = initObj.store;
       }
 
     }
@@ -46,7 +41,7 @@ define('Nori.Model.Map',
     }
 
     function clear() {
-      _store = {};
+      _map = {};
       _changed = true;
     }
 
@@ -61,22 +56,18 @@ define('Nori.Model.Map',
      */
     function set(key, options) {
       var silentSet = false;
-        //previousStore = _.merge({}, _store);
 
       if (typeof key === 'object') {
         if (options !== null && typeof options === 'object') {
           silentSet = options.silent || false;
         }
-        _store = _.merge({}, _store, key);
+        _map = _.merge({}, _map, key);
       } else {
-        _store[key] = options;
+        _map[key] = options;
       }
 
       // Mark changed
       _changed = true;
-
-      //https://github.com/flitbit/diff
-      //_lastChangeResult = {}; //objectDiff.diff(previousStore, _store);
 
       if (!silentSet) {
         dispatchChange();
@@ -88,7 +79,7 @@ define('Nori.Model.Map',
      * @returns *
      */
     function get(key) {
-      var value = has(key) ? _store[key] : undefined;
+      var value = has(key) ? _map[key] : undefined;
 
       if(value) {
         value = _.cloneDeep(value);
@@ -98,12 +89,12 @@ define('Nori.Model.Map',
     }
 
     /**
-     * Returns true of the key is present in the store
+     * Returns true of the key is present in the map
      * @param key
      * @returns {boolean}
      */
     function has(key) {
-      return _store.hasOwnProperty(key);
+      return _map.hasOwnProperty(key);
     }
 
     /**
@@ -117,8 +108,8 @@ define('Nori.Model.Map',
       }
 
       var arry = [];
-      for (var key in _store) {
-        arry.push({key: key, value: _store[key]});
+      for (var key in _map) {
+        arry.push({key: key, value: _map[key]});
       }
 
       _entries = arry;
@@ -136,18 +127,18 @@ define('Nori.Model.Map',
     }
 
     /**
-     * Returns an array of all keys in the store
+     * Returns an array of all keys in the map
      * @returns {Array}
      */
     function keys() {
       //return entries().map(function(entry) {
       //  return entry.key;
       //});
-      return Object.keys(_store);
+      return Object.keys(_map);
     }
 
     /**
-     * Returns an array of all vaules in the store
+     * Returns an array of all vaules in the map
      * @returns {Array}
      */
     function values() {
@@ -161,7 +152,7 @@ define('Nori.Model.Map',
      * @param key
      */
     function remove(key) {
-      delete _store[key];
+      delete _map[key];
     }
 
     /**
@@ -187,23 +178,23 @@ define('Nori.Model.Map',
     }
 
     /**
-     * Returns a copy of the data store
+     * Returns a copy of the data map
      * @returns {void|*}
      */
     function toObject() {
-      return _.merge({}, _store);
+      return _.merge({}, _map);
     }
 
     /**
-     * Return a new object by "translating" the properties of the store from one key to another
+     * Return a new object by "translating" the properties of the map from one key to another
      * @param tObj {currentProp, newProp}
      */
     function transform(tObj) {
       var transformed = {};
 
       for (var prop in tObj) {
-        if (_store.hasOwnProperty(prop)) {
-          transformed[tObj[prop]] = _store[prop];
+        if (_map.hasOwnProperty(prop)) {
+          transformed[tObj[prop]] = _map[prop];
         }
       }
 
@@ -211,7 +202,7 @@ define('Nori.Model.Map',
     }
 
     /**
-     * Validates the store properties
+     * Validates the map properties
      * key: {required: true|false, minLength: num, maxLength: num}
      * @param vObj
      */
@@ -221,9 +212,9 @@ define('Nori.Model.Map',
       //var validation = {};
       //
       //for(var prop in vObj) {
-      //  // TODO test store hasownprop
+      //  // TODO test map hasownprop
       //  var tests = vObj[prop],
-      //      storeProp = _store[prop];
+      //      mapProp = _map[prop];
       //  for(var testProp in tests) {
       //    console.log('test '+prop+', for: '+testProp);
       //  }
@@ -239,7 +230,7 @@ define('Nori.Model.Map',
       if (!_silent) {
         _appEvents.modelChanged({
           id: _id,
-          storeType: 'model'
+          mapType: 'model'
         });
       }
 
@@ -256,12 +247,12 @@ define('Nori.Model.Map',
     }
 
     function destroy() {
-      _store = null;
+      _map = null;
       _parentCollection = null;
     }
 
     function toJSON() {
-      return JSON.stringify(_store);
+      return JSON.stringify(_map);
     }
 
     function setParentCollection(collection) {

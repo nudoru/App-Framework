@@ -1,7 +1,5 @@
 /**
- * Object.oberve polyfill:
- * https://github.com/MaxArt2501/object-observe/blob/master/doc/index.md
- * http://www.html5rocks.com/en/tutorials/es7/observe/
+ * Map Collection - an array of maps
  */
 
 
@@ -27,7 +25,7 @@ define('Nori.Model.MapCollection',
 
       // BUG - call with this scope, calling from Nori.init scope is Window
       //if(initObj.models) {
-      //  addStoresFromArray.call(this, initObj.models);
+      //  addMapsFromArray.call(this, initObj.models);
       //}
     }
 
@@ -35,7 +33,7 @@ define('Nori.Model.MapCollection',
      * Add an array of Model instances
      * @param sArry
      */
-    function addStoresFromArray(sArry) {
+    function addMapsFromArray(sArry) {
       sArry.forEach(function (store) {
         add(store);
       });
@@ -67,7 +65,7 @@ define('Nori.Model.MapCollection',
     }
 
     function add(store) {
-      var currIdx = getStoreIndex(store.getID());
+      var currIdx = getMapIndex(store.getID());
 
       store.setParentCollection(this);
 
@@ -79,7 +77,7 @@ define('Nori.Model.MapCollection',
     }
 
     function remove(storeID) {
-      var currIdx = getStoreIndex(store.getID());
+      var currIdx = getMapIndex(store.getID());
       if (currIdx >= 0) {
         _children[currIdx].setParentCollection(null);
         _children[currIdx] = null;
@@ -94,7 +92,7 @@ define('Nori.Model.MapCollection',
      * @param storeID
      * @returns {T}
      */
-    function getStore(storeID) {
+    function getMap(storeID) {
       return _children.filter(function (store) {
         return store.getID() === storeID;
       })[0];
@@ -105,7 +103,7 @@ define('Nori.Model.MapCollection',
      * @param storeID
      * @returns {number}
      */
-    function getStoreIndex(storeID) {
+    function getMapIndex(storeID) {
       return _children.map(function (store) {
         return store.getID();
       }).indexOf(storeID);
@@ -118,19 +116,19 @@ define('Nori.Model.MapCollection',
       if (!_silent) {
         _appEvents.modelChanged({
           id: _id,
-          storeType: 'collection',
-          storeID: data.id
+          mapType: 'collection',
+          mapID: data.id
         });
       }
 
       // what will this send up?
       //if(_parentCollection) {
-      //  _parentCollection.dispatchChange({id:_id, store:getStore()});
+      //  _parentCollection.dispatchChange({id:_id, store:getMap()});
       //}
 
     }
 
-    function hasModel(storeID) {
+    function hasMap(storeID) {
       if (_children[storeID]) {
         return true;
       }
@@ -158,7 +156,7 @@ define('Nori.Model.MapCollection',
     }
 
     /**
-     * Runs a predidate on each child store
+     * Runs a predidate on each child map
      * @param predicate
      * @returns {Array.<T>}
      */
@@ -167,14 +165,14 @@ define('Nori.Model.MapCollection',
     }
 
     /**
-     * Returns stores where the filter matches the prop / value pair
+     * Returns maps where the filter matches the prop / value pair
      * @param key
      * @param value
      * @returns {Array.<T>}
      */
     function filterByKey(key, value) {
-      return _children.filter(function (store) {
-        return store.get(key) === value;
+      return _children.filter(function (map) {
+        return map.get(key) === value;
       });
     }
 
@@ -187,13 +185,13 @@ define('Nori.Model.MapCollection',
     }
 
     /**
-     * Return an array of entries of each store
+     * Return an array of entries of each map
      * @returns {Array}
      */
     function entries() {
       var arry = [];
-      _children.forEach(function (store) {
-        arry.push(store.entries());
+      _children.forEach(function (map) {
+        arry.push(map.entries());
       });
       return arry;
     }
@@ -225,11 +223,11 @@ define('Nori.Model.MapCollection',
     exports.initialize = initialize;
     exports.getID = getID;
     exports.add = add;
-    exports.addStoresFromArray = addStoresFromArray;
+    exports.addMapsFromArray = addMapsFromArray;
     exports.addFromObjArray = addFromObjArray;
     exports.remove = remove;
-    exports.getStore = getStore;
-    exports.hasModel = hasModel;
+    exports.getMap = getMap;
+    exports.hasMap = hasMap;
     exports.size = size;
     exports.getFirst = getFirst;
     exports.getLast = getLast;
