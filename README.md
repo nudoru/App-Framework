@@ -4,7 +4,7 @@
 
 Nori is a handy starting template for my JS projects based on some of the ideas of: ~~AS3 Robotlegs, Backbone, Ember + other random ideas I've found and liked. Based on the MVC pattern.~~ Flux and Command-Query Responsibility Segregation (CQRS) generally after reading this great post: http://jaysoo.ca/2015/02/06/what-the-flux/
 
-Dependencies: 
+Dependencies:
 - RxJS
 - GreenSock Animation Playform
 - Lodash
@@ -12,7 +12,7 @@ Dependencies:
 
 ## Data Flow
 
-The flow of data in an application is one direction and generally follows Flux. 
+The flow of data in an application is one direction and generally follows Flux.
 
 ```
      ┌──────────────────────────────┬──────────────────────────┐
@@ -145,7 +145,7 @@ exports.viewRendered = function(targetSelector, id) {
 
 ### Registering for all published events
 
-Inspired by the Flux Dispatcher, modules may also register with the dispatcher and receive all events published. 
+Inspired by the Flux Dispatcher, modules may also register with the dispatcher and receive all events published.
 
 ```javascript
 _dispatcher.registerReceiver(handlerFunc);
@@ -171,15 +171,15 @@ The `Nori.Model.ApplicationModel` module provides a basic starting point for a m
 
 ### Model and Model Collection Objects
 
-Simple model and model collection classes may be used for specific domains and may be easily created from the model factory. The model is based on a dictionary and a collection is an array of model objects. Simple example: a model is a spread sheet row with columns being data values and a collection would represent the whole sheet. An `id` is required when creating a model or collection.
+Nori includes a Map (based on an object key/value pair) and Map Collection (array of Maps) datatype objects.
 
-The Nori app contains helper methods to create models and collections:
+The Nori app contains helper methods to create these:
 
 ```javascript
 var myMap = MyApp.model().createMap({id:'mymodel', store:{key:value, key:value}, {
     optionalMethods: function() { ... };
   });
-  
+
 var myCollection = MyApp.model().createMapCollection({id:'mycollection', {
     optionalMethods: function() { ... };
   });
@@ -191,7 +191,7 @@ Model collections will dispatch this event when one of their member models is ch
 
 ## Application View
 
-The `Nori.View.ApplicationView` module provides a basic starting point for a specific application view / bootstrapper and factory functions for creating new subviews. 
+The `Nori.View.ApplicationView` module provides a basic starting point for a specific application view / bootstrapper and factory functions for creating new subviews.
 
 Calling the `Nori.createApplicationView()` function will create this for you and mixin the custom specific application view module you pass it. Nori also combines functionality for subviews and URL routes and an event delegator.
 
@@ -211,7 +211,7 @@ Query parameters, may be accessed from `Nori.getCurrentRoute()`. The returned ob
 
 ### Event Delegator
 
-Inspired by Backbone, there Event delegator module adds the ability to easily add events to UI elements. 
+Inspired by Backbone, there Event delegator module adds the ability to easily add events to UI elements.
 
 Events are defined via the `setEvents` function with the event type and selector as the key and the handler function as the value.
 

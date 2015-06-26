@@ -9,7 +9,7 @@ define('TT.Model.TimeTrackerAppModel',
       _peopleCollection,
       _projectsCollection,
       _assignmentsCollection,
-      _currentUserModel,
+      _currentUserMap,
       _currentUserProjectsCollection,
       _appEvents = require('Nori.Events.AppEventCreator');
 
@@ -18,7 +18,7 @@ define('TT.Model.TimeTrackerAppModel',
     //----------------------------------------------------------------------------
 
     function getCurrentUserModel() {
-      return _currentUserModel;
+      return _currentUserMap;
     }
 
     function getCurrentUserProjectsCollection() {
@@ -38,7 +38,7 @@ define('TT.Model.TimeTrackerAppModel',
 
       _appEvents.applicationModelInitialized();
 
-      //_currentUserModel.set({test:'dummy'});
+      //_currentUserMap.set({test:'dummy'});
       //_appEvents.updateModelData('model',{foo:'bar'});
     }
 
@@ -66,10 +66,10 @@ define('TT.Model.TimeTrackerAppModel',
       _projectsCollection.addFromObjArray(_projectsSourceData, 'id', false);
       _assignmentsCollection.addFromObjArray(_assignmentsSourceData, 'id', false);
 
-      _currentUserModel = _peopleCollection.getFirst();
+      _currentUserMap = _peopleCollection.getFirst();
 
       _currentUserProjectsCollection = _self.createMapCollection({id: 'myprojects'});
-      _currentUserProjectsCollection.addMapsFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserModel.get('name')));
+      _currentUserProjectsCollection.addMapsFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserMap.get('name')));
 
       //_myProjects.forEach(function (store) {
       //  console.log(store.get('projectTitle'));
