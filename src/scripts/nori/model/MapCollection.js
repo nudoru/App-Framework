@@ -5,7 +5,7 @@
  */
 
 
-define('Nori.Model.ModelCollection',
+define('Nori.Model.MapCollection',
   function (require, module, exports) {
 
     var _id,
@@ -57,7 +57,7 @@ define('Nori.Model.ModelCollection',
           id = _id + 'child' + _children.length;
         }
 
-        add(Nori.model().createModel({id: id, silent: silent, store: obj}));
+        add(Nori.model().createMap({id: id, silent: silent, store: obj}));
       });
 
     }

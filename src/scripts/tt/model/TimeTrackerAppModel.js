@@ -34,7 +34,7 @@ define('TT.Model.TimeTrackerAppModel',
       this.initializeApplicationModel();
       this.subscribeToModelEvents();
 
-      createModelStores();
+      createMapStores();
 
       _appEvents.applicationModelInitialized();
 
@@ -53,14 +53,14 @@ define('TT.Model.TimeTrackerAppModel',
     /**
      * Create model data
      */
-    function createModelStores() {
+    function createMapStores() {
       _mockDataSource.initialize();
 
       loadApplicationData();
 
-      _peopleCollection = _self.createModelCollection({id: 'peopleset'});
-      _projectsCollection = _self.createModelCollection({id: 'projectsset'});
-      _assignmentsCollection = _self.createModelCollection({id: 'assignmentsset'});
+      _peopleCollection = _self.createMapCollection({id: 'peopleset'});
+      _projectsCollection = _self.createMapCollection({id: 'projectsset'});
+      _assignmentsCollection = _self.createMapCollection({id: 'assignmentsset'});
 
       _peopleCollection.addFromObjArray(_peopleSourceData, 'id', false);
       _projectsCollection.addFromObjArray(_projectsSourceData, 'id', false);
@@ -68,7 +68,7 @@ define('TT.Model.TimeTrackerAppModel',
 
       _currentUserModel = _peopleCollection.getFirst();
 
-      _currentUserProjectsCollection = _self.createModelCollection({id: 'myprojects'});
+      _currentUserProjectsCollection = _self.createMapCollection({id: 'myprojects'});
       _currentUserProjectsCollection.addStoresFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserModel.get('name')));
 
       //_myProjects.forEach(function (store) {

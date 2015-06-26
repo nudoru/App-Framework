@@ -167,7 +167,7 @@ The `initialize()` function is custom for your application. It should initialize
 
 ## Application Model
 
-The `Nori.Model.ApplicationModel` module provides a basic starting point for a more specific application model / bootstrapper and factory functions for creating new Model Store and Collection data types. You may create your own by calling the `Nori.createModel` factory and extending this class or Nori will just use the basic module if none is specified on the `Nori.initialize()` call.
+The `Nori.Model.ApplicationModel` module provides a basic starting point for a more specific application model / bootstrapper and factory functions for creating new Model Store and Collection data types. You may create your own by calling the `Nori.createMap` factory and extending this class or Nori will just use the basic module if none is specified on the `Nori.initialize()` call.
 
 ### Model and Model Collection Objects
 
@@ -176,11 +176,11 @@ Simple model and model collection classes may be used for specific domains and m
 The Nori app contains helper methods to create models and collections:
 
 ```javascript
-var myModel = MyApp.model().createModel({id:'mymodel', store:{key:value, key:value}, {
+var myMap = MyApp.model().createMap({id:'mymodel', store:{key:value, key:value}, {
     optionalMethods: function() { ... };
   });
   
-var myCollection = MyApp.model().createModelCollection({id:'mycollection', {
+var myCollection = MyApp.model().createMapCollection({id:'mycollection', {
     optionalMethods: function() { ... };
   });
 ```

@@ -2,8 +2,8 @@ define('Nori.Model.ApplicationModel',
   function (require, module, exports) {
 
     var _self,
-      _appModelCollectionMap = Object.create(null),
-      _appModelMap = Object.create(null),
+      _appMapCollectionList = Object.create(null),
+      _appMapList = Object.create(null),
       _appEventConstants = require('Nori.Events.AppEventConstants'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
@@ -46,10 +46,10 @@ define('Nori.Model.ApplicationModel',
      * @param extras
      * @returns {*}
      */
-    function createModelCollection(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('Nori.Model.ModelCollection'), extras]);
+    function createMapCollection(initObj, extras) {
+      var m = Nori.extendWithArray({},[requireNew('Nori.Model.MapCollection'), extras]);
       m.initialize(initObj);
-      _appModelCollectionMap[initObj.id] = m;
+      _appMapCollectionList[initObj.id] = m;
       return m;
     }
 
@@ -59,10 +59,10 @@ define('Nori.Model.ApplicationModel',
      * @param extras
      * @returns {*}
      */
-    function createModel(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('Nori.Model.Model'), extras]); //
+    function createMap(initObj, extras) {
+      var m = Nori.extendWithArray({},[requireNew('Nori.Model.Map'), extras]); //
       m.initialize(initObj);
-      _appModelMap[initObj.id] = m;
+      _appMapList[initObj.id] = m;
       return m;
     }
 
@@ -71,8 +71,8 @@ define('Nori.Model.ApplicationModel',
      * @param storeID
      * @returns {void|*}
      */
-    function getModel(storeID) {
-      return _appModelMap[storeID];
+    function getMap(storeID) {
+      return _appMapList[storeID];
     }
 
     /**
@@ -80,8 +80,8 @@ define('Nori.Model.ApplicationModel',
      * @param storeID
      * @returns {void|*}
      */
-    function getModelCollection(storeID) {
-      return _appModelCollectionMap[storeID];
+    function getMapCollection(storeID) {
+      return _appMapCollectionList[storeID];
     }
 
     /**
@@ -91,33 +91,33 @@ define('Nori.Model.ApplicationModel',
      * @param keysArry
      * @returns {Object}
      */
-    function getKeysFromModel(store, keysArry) {
-      var keysMap = Object.create();
-
-      // if the arg is a string, then it must be an ID
-      if (typeof store === 'string') {
-        store = getModel(sID);
-      }
-
-      keysArry.forEach(function getKey(key) {
-        if (store.has(key)) {
-          keysMap[key] = store.get(key);
-        } else {
-          keysMap[key] = 'ERR:' + key;
-        }
-      });
-
-      return keysMap;
-    }
+    //function getKeysFromMap(store, keysArry) {
+    //  var keysMap = Object.create();
+    //
+    //  // if the arg is a string, then it must be an ID
+    //  if (typeof store === 'string') {
+    //    store = getMap(sID);
+    //  }
+    //
+    //  keysArry.forEach(function getKey(key) {
+    //    if (store.has(key)) {
+    //      keysMap[key] = store.get(key);
+    //    } else {
+    //      keysMap[key] = 'ERR:' + key;
+    //    }
+    //  });
+    //
+    //  return keysMap;
+    //}
 
     exports.initializeApplicationModel = initializeApplicationModel;
     exports.subscribeToModelEvents = subscribeToModelEvents;
     exports.handleModelDataChanged = handleModelDataChanged;
     exports.handleUpdateModelData = handleUpdateModelData;
-    exports.createModelCollection = createModelCollection;
-    exports.createModel = createModel;
-    exports.getModel = getModel;
-    exports.getModelCollection = getModelCollection;
-    exports.getKeysFromModel = getKeysFromModel;
+    exports.createMapCollection = createMapCollection;
+    exports.createMap = createMap;
+    exports.getMap = getMap;
+    exports.getMapCollection = getMapCollection;
+    //exports.getKeysFromMap = getKeysFromMap;
 
   });
