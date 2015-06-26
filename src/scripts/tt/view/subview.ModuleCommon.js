@@ -3,13 +3,13 @@
  * Capacity Forecast share
  */
 
-define('TT.View.TTSubViewModuleCommon',
+define('TT.View.ModuleCommon',
   function (require, module, exports) {
 
     var _messageBoxIDs = [],
         _myProjectsModel,
-        _projectRows = [],
-        _domUtils = require('Nudoru.Browser.DOMUtils');
+        _projectRows   = [],
+        _domUtils      = require('Nudoru.Browser.DOMUtils');
 
     function initializeCommon() {
       //
@@ -50,14 +50,14 @@ define('TT.View.TTSubViewModuleCommon',
 
       obj.projects = Object.create(null);
 
-      _myProjectsModel.forEach(function(project){
+      _myProjectsModel.forEach(function (project) {
         obj.projects[project.get('projectID')] = {
-          projectTitle:project.get('projectTitle'),
-          projectID:project.get('projectID'),
-          projectDescription:project.get('projectDescription'),
-          role:project.get('role'),
-          startDate:project.get('startDate'),
-          endData:project.get('endDate')
+          projectTitle      : project.get('projectTitle'),
+          projectID         : project.get('projectID'),
+          projectDescription: project.get('projectDescription'),
+          role              : project.get('role'),
+          startDate         : project.get('startDate'),
+          endData           : project.get('endDate')
         };
       });
 
@@ -73,14 +73,15 @@ define('TT.View.TTSubViewModuleCommon',
 
     /**
      * Build an array of table > tr's that pertain to project data
+     * @param prefix For timecard: 'tc_p_', for assignments: 'asn_p_'
      */
-    function buildProjectRows() {
-      _projectRows = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'tr').filter(function(row) {
+    function buildProjectRows(prefix) {
+      _projectRows = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'tr').filter(function (row) {
         var rowid = row.getAttribute('id');
-        if(!rowid) {
+        if (!rowid) {
           return false;
         }
-        return rowid.indexOf('tc_p_') === 0;
+        return rowid.indexOf(prefix) === 0;
       });
     }
 
@@ -95,8 +96,8 @@ define('TT.View.TTSubViewModuleCommon',
     function getProjectRowData() {
       var arry = [];
       this.getProjectRows().forEach(function (row) {
-        var id = row.getAttribute('id').split('tc_p_')[1],
-          obj = Object.create(null);
+        var id  = row.getAttribute('id').split('tc_p_')[1],
+            obj = Object.create(null);
         obj[id] = _domUtils.captureFormData(row);
         arry.push(obj);
       });
@@ -112,17 +113,23 @@ define('TT.View.TTSubViewModuleCommon',
 
       elIDStr = parseProjectID(elIDStr);
 
-      row = this.getProjectRows().filter(function(rowEl) {
-        if(rowEl.getAttribute('id').indexOf(elIDStr) > 0) {
+      row = this.getProjectRows().filter(function (rowEl) {
+        if (rowEl.getAttribute('id').indexOf(elIDStr) > 0) {
           return true;
         }
         return false;
       });
 
-      if(row) {
+      if (row) {
         animTimeLine = new TimelineLite();
-        animTimeLine.to(row, 0.25, {boxShadow:"0 0 2px 2px rgba(0,94,184,0.25) inset", ease:Circ.easeOut});
-        animTimeLine.to(row, 0.5, {boxShadow:"0 0 0px 0px rgba(0,94,184,0) inset", ease:Circ.easeOut});
+        animTimeLine.to(row, 0.25, {
+          boxShadow: "0 0 2px 2px rgba(0,94,184,0.25) inset",
+          ease     : Circ.easeOut
+        });
+        animTimeLine.to(row, 0.5, {
+          boxShadow: "0 0 0px 0px rgba(0,94,184,0) inset",
+          ease     : Circ.easeOut
+        });
         animTimeLine.play();
       }
     }
@@ -141,11 +148,11 @@ define('TT.View.TTSubViewModuleCommon',
      * Disable all elements on the form
      */
     function disableForm() {
-      var inputs = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
-        selects =  _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
-        formElements = inputs.concat(selects);
+      var inputs       = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
+          selects      = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
+          formElements = inputs.concat(selects);
 
-      formElements.forEach(function(els) {
+      formElements.forEach(function (els) {
         els.disabled = true;
       });
 
@@ -155,11 +162,11 @@ define('TT.View.TTSubViewModuleCommon',
      * Enable all elements on the form
      */
     function enableForm() {
-      var inputs = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
-        selects =  _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
-        formElements = inputs.concat(selects);
+      var inputs       = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'input'),
+          selects      = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'select'),
+          formElements = inputs.concat(selects);
 
-      formElements.forEach(function(els) {
+      formElements.forEach(function (els) {
         els.disabled = false;
       });
 
@@ -170,7 +177,7 @@ define('TT.View.TTSubViewModuleCommon',
     //----------------------------------------------------------------------------
 
     function showAlert(message) {
-      _messageBoxIDs.push(TT.view().alert(message));
+      _messageBoxIDs.push(TT.view().mbCreator().alert('Alert', message));
     }
 
     function closeAllAlerts() {
@@ -184,21 +191,18 @@ define('TT.View.TTSubViewModuleCommon',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeCommon = initializeCommon;
-    exports.setProjectsModel = setProjectsModel;
-    exports.getProjectsModel = getProjectsModel;
+    exports.initializeCommon             = initializeCommon;
+    exports.setProjectsModel             = setProjectsModel;
+    exports.getProjectsModel             = getProjectsModel;
     exports.updateStateFromProjectsModel = updateStateFromProjectsModel;
-
-    exports.showAlert = showAlert;
-    exports.closeAllAlerts = closeAllAlerts;
-
-    exports.buildProjectRows = buildProjectRows;
-    exports.getProjectRows = getProjectRows;
-    exports.getProjectRowData = getProjectRowData;
-    exports.flashProjectRow = flashProjectRow;
-    exports.parseProjectID = parseProjectID;
-
-    exports.disableForm = disableForm;
-    exports.enableForm = enableForm;
+    exports.showAlert                    = showAlert;
+    exports.closeAllAlerts               = closeAllAlerts;
+    exports.buildProjectRows             = buildProjectRows;
+    exports.getProjectRows               = getProjectRows;
+    exports.getProjectRowData            = getProjectRowData;
+    exports.flashProjectRow              = flashProjectRow;
+    exports.parseProjectID               = parseProjectID;
+    exports.disableForm                  = disableForm;
+    exports.enableForm                   = enableForm;
 
   });

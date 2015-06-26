@@ -88,10 +88,11 @@ BEGIN Templates for Views
                 <thead>
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col" class="column-20pct center-column">Start Date</th>
-                    <th scope="col" class="column-20pct center-column">End Date</th>
-                    <th scope="col" class="column-10pct center-column">Primary Role</th>
-                    <th scope="col" class="column-20pct right-column"></th>
+                    <th scope="col" style="width: 120px" class="center-column">Start Date</th>
+                    <th scope="col" style="width: 120px" class="center-column">End Date</th>
+                    <th scope="col" style="width: 120px" class="center-column">Primary Role</th>
+                    <th scope="col" style="width: 75px" class="center-column">Expected Alloc</th>
+                    <th scope="col" style="width: 120px" class="center-column"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -99,13 +100,13 @@ BEGIN Templates for Views
                         <tr id="asn_p_<%= project.projectID%>">
                             <th><%= project.projectTitle %></th>
                             <td class="center-column">
-                                <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                                <input name="startDate" id="asn_p_start_<%= project.projectID%>" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
                             </td>
                             <td class="center-column">
-                                <input id="input-text" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
+                                <input name="endDate" id="asn_p_end_<%= project.projectID%>" type="text" placeholder="mm/dd" style="width: 100px" class="subtle">
                             </td>
                             <td class="center-column">
-                                <select id="input-select" class="subtle">
+                                <select name="primaryRole" id="asm_p_role_<%= project.projectID%>" class="subtle">
                                     <option>Consult</option>
                                     <option>Analysis</option>
                                     <option>Design</option>
@@ -115,8 +116,11 @@ BEGIN Templates for Views
                                     <option>Evaluate</option>
                                 </select>
                             </td>
-                            <td class="right-column">
-                                <button class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
+                            <td class="center-column">
+                                <input name="allocation" id="asn_p_alloc_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                            </td>
+                            <td class="center-column">
+                                <button id="asm_p_removebtn_<%= project.projectID%>" class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
                             </td>
                         </tr>
                     <% }); %>

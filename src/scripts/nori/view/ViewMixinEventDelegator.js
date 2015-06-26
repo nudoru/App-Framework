@@ -16,43 +16,49 @@
 
 define('Nori.View.ViewMixinEventDelegator',
   function (require, module, exports) {
-    var _events,
-      _eventSubscribers;
+    var _eventsMap,
+        _eventSubscribers;
 
-    function setEvents(events) {
-      _events = events;
+    function setEvents(evtObj) {
+      _eventsMap = evtObj;
     }
 
     function getEvents() {
-      return _events;
+      return _eventsMap;
     }
 
     /**
      * Automates setting events on DOM elements.
-     * 'evtStr selector':callback,
+     * 'evtStr selector':callback
+     * 'evtStr selector, evtStr selector': sharedCallback
      */
     function delegateEvents() {
-      if (!_events) {
+      if (!_eventsMap) {
         return;
       }
 
       _eventSubscribers = Object.create(null);
 
-      for (var event in _events) {
+      for (var evtStrings in _eventsMap) {
+        if (_eventsMap.hasOwnProperty(evtStrings)) {
 
+          var mappings = evtStrings.split(',');
 
-        if (_events.hasOwnProperty(event)) {
+          mappings.forEach(function(evtMap) {
+            evtMap = evtMap.trim();
 
-          var eventStr = event.split(' ')[0],
-            selector = event.split(' ')[1],
-            element = document.querySelector(selector);
+            var eventStr = evtMap.split(' ')[0].trim(),
+                selector = evtMap.split(' ')[1].trim(),
+                element  = document.querySelector(selector);
 
-          if (!element) {
-            console.log('Cannot add event to invalid DOM element: ' + selector);
-            continue;
-          }
+            if (!element) {
+              console.log('Cannot add event to invalid DOM element: ' + selector);
+            } else {
+              _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(_eventsMap[evtStrings]);
+            }
 
-          _eventSubscribers[event] = Rx.Observable.fromEvent(element, eventStr).subscribe(_events[event]);
+          });
+
         }
       }
     }
@@ -61,7 +67,7 @@ define('Nori.View.ViewMixinEventDelegator',
      * Cleanly remove events
      */
     function undelegateEvents() {
-      if (!_events) {
+      if (!_eventsMap) {
         return;
       }
 
@@ -73,9 +79,9 @@ define('Nori.View.ViewMixinEventDelegator',
       _eventSubscribers = Object.create(null);
     }
 
-    exports.setEvents = setEvents;
-    exports.getEvents = getEvents;
+    exports.setEvents        = setEvents;
+    exports.getEvents        = getEvents;
     exports.undelegateEvents = undelegateEvents;
-    exports.delegateEvents = delegateEvents;
+    exports.delegateEvents   = delegateEvents;
   });
 

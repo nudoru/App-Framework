@@ -2,17 +2,17 @@ define('TT.View.TimeCardView',
   function (require, module, exports) {
 
     var _self,
-      _columnNames = ['alloc', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-      _columnObj = Object.create(null),
-      _cardTotal = 0,
-      _submitButtonEl,
-      _submitButtonLabelEl,
-      _isSubmitted = false,
-      _isLocked = false,
-      _lockedStatusEl,
-      _inProgressStatusEl,
-      _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _toolTip = require('Nudoru.Component.ToolTipView');
+        _columnNames = ['alloc', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+        _columnObj   = Object.create(null),
+        _cardTotal   = 0,
+        _submitButtonEl,
+        _submitButtonLabelEl,
+        _isSubmitted = false,
+        _isLocked    = false,
+        _lockedStatusEl,
+        _inProgressStatusEl,
+        _domUtils    = require('Nudoru.Browser.DOMUtils'),
+        _toolTip     = require('Nudoru.Component.ToolTipView');
 
     //--------------------------------------------------------------------------
     // Core
@@ -28,11 +28,10 @@ define('TT.View.TimeCardView',
         this.setProjectsModel();
         this.initializeSubView(initObj);
         this.setEvents({
-          'change #tc_p_table': handleInputChangeEvent,
-          'click #tc_btn-submit': handleTimeCardSubmit,
-          'click #tc_btn-prevwk': handleNotImpl,
-          'click #tc_btn-nextwk': handleNotImpl,
-          'click #tc_btn-unlock': handleUnlockTimeCard
+          'change #tc_p_table'  : handleInputChangeEvent,
+          'click #tc_btn-submit': handleTimeCardSubmitClick,
+          'click #tc_btn-unlock': handleUnlockTimeCardClick,
+          'click #tc_btn-prevwk, click #tc_btn-nextwk': showNotImplemented
         });
       }
     }
@@ -48,19 +47,18 @@ define('TT.View.TimeCardView',
      * Render and set from the DOM elements
      */
     function viewDidMount() {
-      _inProgressStatusEl = document.getElementById('tc_status_inprogress');
-      _lockedStatusEl = document.getElementById('tc_status_locked');
-
-      _submitButtonEl = document.getElementById('tc_btn-submit');
+      _inProgressStatusEl  = document.getElementById('tc_status_inprogress');
+      _lockedStatusEl      = document.getElementById('tc_status_locked');
+      _submitButtonEl      = document.getElementById('tc_btn-submit');
       _submitButtonLabelEl = document.getElementById('tc_btn-submit-label');
 
       buildFieldList();
-      this.buildProjectRows();
+      this.buildProjectRows('tc_p_');
       updateColumnSums();
       setProjectToolTips();
 
       unlockCard();
-      updateCardStatusText('Testing!');
+      updateCardStatusText('Inprogress');
     }
 
     /**
@@ -70,15 +68,18 @@ define('TT.View.TimeCardView',
       this.closeAllAlerts();
     }
 
+    //--------------------------------------------------------------------------
+    // UI
+    //--------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------
-    // Custom
-    //--------------------------------------------------------------------------
+    /**
+     * Updates the status LI>SPAN text to show status of the current card
+     */
 
     function updateCardStatusText(text) {
       var textEl;
 
-      if(_isLocked || _isSubmitted) {
+      if (_isLocked || _isSubmitted) {
         textEl = _lockedStatusEl.querySelector('span');
       } else {
         textEl = _inProgressStatusEl.querySelector('span');
@@ -86,6 +87,73 @@ define('TT.View.TimeCardView',
 
       textEl.innerHTML = text;
     }
+
+    /**
+     * Update sums, data when a field changes and looses focus
+     * @param evt
+     */
+    function handleInputChangeEvent(evt) {
+      _self.flashProjectRow(evt.target.getAttribute('id'));
+      updateColumnSums();
+
+      // DEBUG
+      _self.getProjectRowData();
+    }
+
+    /**
+     * When the submit button is clicked
+     */
+    function handleTimeCardSubmitClick() {
+      if (_isSubmitted || _isLocked) {
+        _self.showAlert('Unlock the time card to make edits and submit changes.');
+        return;
+      }
+
+      if (_cardTotal < 30) {
+        _self.showAlert('Whoa there! ' + _cardTotal + ' hours doesn\'t seem quite right. Please enter atleast 30 hours to submit.');
+        return;
+      }
+
+      promptForCardSubmit();
+    }
+
+    /**
+     * If the time card was previously submitted
+     */
+    function handleUnlockTimeCardClick() {
+      promptForCardUnlock();
+    }
+
+    /**
+     * Set tool tips to display on hover of project name
+     */
+    function setProjectToolTips() {
+      var allTrEls = document.querySelectorAll('tr');
+      Array.prototype.slice.call(allTrEls, 0).map(function (el) {
+        var rowID = el.getAttribute('id');
+        if (rowID) {
+          if (rowID.indexOf('tc_p_') === 0) {
+            var projectID     = rowID.split('tc_p_')[1],
+                projectDesc   = _self.getState().projects[projectID].projectDescription,
+                headingCellEl = el.querySelector('th');
+
+            _toolTip.add({
+              title   : '',
+              content : projectDesc,
+              position: 'B',
+              targetEl: headingCellEl,
+              type    : 'information',
+              width   : 400
+            });
+          }
+        }
+
+      });
+    }
+
+    //--------------------------------------------------------------------------
+    // Card data
+    //--------------------------------------------------------------------------
 
     /**
      * Build an array of all of the form fields on the screen
@@ -97,11 +165,12 @@ define('TT.View.TimeCardView',
       });
 
       _columnNames.forEach(function (col, i) {
-        _columnObj[col] = Object.create(null);
+        _columnObj[col]          = Object.create(null);
         _columnObj[col].fieldIDs = allInputIDs.filter(function (id) {
           return id.indexOf(col) > 0;
         });
-        _columnObj[col].sumEl = document.getElementById('tc_sum_' + col);
+        _columnObj[col].sumEl    = document.getElementById('tc_sum_' + col);
+        // The first column is the allocation column
         _columnObj[col].type = i === 0 ? '%' : 'hrs';
       });
 
@@ -118,7 +187,7 @@ define('TT.View.TimeCardView',
       var sum = 0;
       idList.forEach(function (id) {
         var inputValue = document.getElementById(id).value,
-          valueFloat = parseFloat(inputValue);
+            valueFloat = parseFloat(inputValue);
         sum += valueFloat || 0;
         if (!valueFloat) {
           if (inputValue.length) {
@@ -130,20 +199,6 @@ define('TT.View.TimeCardView',
 
       });
       return sum;
-    }
-
-    /**
-     * Update sums, data when a field changes and looses focus
-     * @param evt
-     */
-    function handleInputChangeEvent(evt) {
-      // visual indicator
-      _self.flashProjectRow(evt.target.getAttribute('id'));
-
-      updateColumnSums();
-
-      // DEBUG
-      _self.getProjectRowData();
     }
 
     /**
@@ -184,20 +239,7 @@ define('TT.View.TimeCardView',
 
     }
 
-    /**
-     * When the submit button is clicked
-     */
-    function handleTimeCardSubmit() {
-      if(_isSubmitted || _isLocked) {
-        _self.showAlert('Unlock the time card to make edits and submit changes.');
-        return;
-      }
-
-      if (_cardTotal < 30) {
-        _self.showAlert('Whoa there! ' + _cardTotal + ' hours doesn\'t seem quite right. Please enter atleast 30 hours to submit.');
-        return;
-      }
-
+    function promptForCardSubmit() {
       TT.view().mbCreator().confirm('Read to submit this time card?',
         'Only submit your time card when all data for the week has been entered. Editing a submitted time card will require justification.<br><br>Ready to submit?',
         function () {
@@ -205,16 +247,16 @@ define('TT.View.TimeCardView',
           _isSubmitted = true;
 
           TT.view().addMessageBox({
-            title: 'Success',
+            title  : 'Success',
             content: 'Your ' + _cardTotal + ' hours were submitted successfully! Thanks for all you do. +1xp earned.',
-            type: 'default',
-            modal: true,
+            type   : 'default',
+            modal  : true,
             buttons: [
               {
                 label: 'Got it',
-                id: 'close',
-                type: 'positive',
-                icon: 'thumbs-up'
+                id   : 'close',
+                type : 'positive',
+                icon : 'thumbs-up'
               }
             ]
           });
@@ -222,44 +264,14 @@ define('TT.View.TimeCardView',
         true);
     }
 
-    /**
-     * If the time card was previously submitted
-     */
-    function handleUnlockTimeCard() {
+    function promptForCardUnlock() {
       TT.view().mbCreator().prompt('Modify Time Card',
         'This time card has been submitted. Please let us know why you\'re modifying it.',
-        function(data) {
+        function (data) {
           _isSubmitted = false;
           unlockCard();
         },
         true);
-    }
-
-    /**
-     * Set tool tips to display on hover of project name
-     */
-    function setProjectToolTips() {
-      var allTrEls = document.querySelectorAll('tr');
-      Array.prototype.slice.call(allTrEls, 0).map(function (el) {
-        var rowID = el.getAttribute('id');
-        if (rowID) {
-          if (rowID.indexOf('tc_p_') === 0) {
-            var projectID = rowID.split('tc_p_')[1],
-              projectDesc = _self.getState().projects[projectID].projectDescription,
-              headingCellEl = el.querySelector('th');
-
-            _toolTip.add({
-              title: '',
-              content: projectDesc,
-              position: 'R',
-              targetEl: headingCellEl,
-              type: 'information',
-              width: 400
-            });
-          }
-        }
-
-      });
     }
 
     function lockCard() {
@@ -279,18 +291,18 @@ define('TT.View.TimeCardView',
     }
 
     /**
-     * Generic error function
+     * Show a message for buttons that don't do anything yet
      */
-    function handleNotImpl() {
-      TT.view().mbCreator().alert('Oooops!','This doesn\'t work yet');
+    function showNotImplemented() {
+      _self.showAlert('This doesn\'t work yet');
     }
 
     //--------------------------------------------------------------------------
     // API
     //--------------------------------------------------------------------------
 
-    exports.initialize = initialize;
-    exports.viewWillUpdate = viewWillUpdate;
-    exports.viewDidMount = viewDidMount;
+    exports.initialize      = initialize;
+    exports.viewWillUpdate  = viewWillUpdate;
+    exports.viewDidMount    = viewDidMount;
     exports.viewWillUnmount = viewWillUnmount;
   });
