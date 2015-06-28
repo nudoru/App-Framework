@@ -33,8 +33,8 @@ define('TT.View.AssignmentsView',
     function viewDidMount() {
       this.buildProjectRows(_prefix);
       this.setProjectHeaderRowToolTips(_prefix);
-      buildDateFieldsList();
-      buildRemoveButtons();
+      _dateFields = getDateFieldsList();
+      assignRemoveButtonEvents();
     }
 
     /**
@@ -86,7 +86,11 @@ define('TT.View.AssignmentsView',
      * @param projectID
      */
     function addNewAssignment(projectID) {
-      _self.showAlert('If this was implemented, I\'d add the project with ID ' + projectID);
+      if(!projectID) {
+        return;
+      }
+      var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
+      _self.showAlert('If this was implemented, I\'d add the project ' + projectTitle);
     }
 
     /**
@@ -94,14 +98,15 @@ define('TT.View.AssignmentsView',
      * @param projectID
      */
     function removeAssignment(projectID) {
-      _self.showAlert('If this was implemented, I\'d remove the project with ID ' + projectID);
+      var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
+      _self.showAlert('If this was implemented, I\'d remove the project ' + projectTitle);
     }
 
     /**
      * Build a list of all start and end date input fields
      */
-    function buildDateFieldsList() {
-      _dateFields = _domUtils.getQSElementsAsArray(_self.getDOMElement(), 'input').filter(function (inputEl) {
+    function getDateFieldsList() {
+      return _domUtils.getQSElementsAsArray(_self.getDOMElement(), 'input').filter(function (inputEl) {
         var id = inputEl.getAttribute('id');
         if (!id) {
           return false;
@@ -113,7 +118,7 @@ define('TT.View.AssignmentsView',
     /**
      * Configure the remove buttons
      */
-    function buildRemoveButtons() {
+    function assignRemoveButtonEvents() {
       var buttons = _domUtils.getQSElementsAsArray(_self.getDOMElement(), 'button').filter(function (inputEl) {
           var id = inputEl.getAttribute('id');
           if (!id) {

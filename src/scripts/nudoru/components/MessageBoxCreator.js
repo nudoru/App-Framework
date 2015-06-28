@@ -72,7 +72,7 @@ define('Nudoru.Component.MessageBoxCreator',
     }
 
     function choice(title, message, selections, okCB, modal) {
-      var selectHTML = '<select style="width:400px;height:100px" name="selection" autofocus="true" size="10">';
+      var selectHTML = '<select class="spaced" style="width:450px;height:200px" name="selection" autofocus="true" size="20">';
 
         selections.forEach(function(opt) {
           selectHTML += '<option value="'+opt.value+'" '+(opt.selected==='true' ? 'selected' : '')+'>'+opt.label+'</option>';
@@ -85,7 +85,7 @@ define('Nudoru.Component.MessageBoxCreator',
         content: '<p class="text-center padding-bottom-double">'+message+'</p><div class="text-center">'+selectHTML+'</div>',
         type: _messageBoxView.type().DEFAULT,
         modal: modal,
-        width: 450,
+        width: 500,
         buttons: [
           {
             label: 'Cancel',
@@ -94,8 +94,8 @@ define('Nudoru.Component.MessageBoxCreator',
             icon: 'times'
           },
           {
-            label: 'Proceed',
-            id: 'proceed',
+            label: 'OK',
+            id: 'ok',
             type: 'positive',
             icon: 'check',
             onClick: okCB

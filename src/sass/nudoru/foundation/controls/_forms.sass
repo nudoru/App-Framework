@@ -93,6 +93,11 @@ input.subtle
   box-shadow: inset -1px -1px 0 #fff
   background-color: rgba(255,255,255,.5)
 
+select.spaced
+  @extend %body-text
+  line-height: $double-base-line-height
+  option
+    padding: $half-base-line-height
 
 .input-focus
   animation: inputFocusAnim ease-out .5s

@@ -97,10 +97,19 @@ define('TT.Model.TimeTrackerAppModel',
           value   : map.get('id'),
           label   : map.get('title'),
           selected: 'false'
-        })
+        });
       });
 
       return arry;
+    }
+
+    /**
+     * Retrieve the project matching the ID
+     * @param id
+     * @returns {*|void|*|T}
+     */
+    function getProjectMapForID(id) {
+      return _projectsCollection.getMap(id);
     }
 
     //----------------------------------------------------------------------------
@@ -126,5 +135,5 @@ define('TT.Model.TimeTrackerAppModel',
     exports.handleModelDataChanged           = handleModelDataChanged;
     exports.handleUpdateModelData            = handleUpdateModelData;
     exports.getProjectsAndIDList             = getProjectsAndIDList;
-
+    exports.getProjectMapForID               = getProjectMapForID;
   });

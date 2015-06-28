@@ -52,7 +52,7 @@ define('TT.View.TimeCardView',
       _submitButtonEl      = document.getElementById('tc_btn-submit');
       _submitButtonLabelEl = document.getElementById('tc_btn-submit-label');
 
-      buildColumnFieldsList();
+      buildColumnFieldsObject();
       this.buildProjectRows(_prefix);
       this.setProjectHeaderRowToolTips(_prefix);
       updateColumnSums();
@@ -130,7 +130,7 @@ define('TT.View.TimeCardView',
     /**
      * Build an array of all of the form fields on the screen
      */
-    function buildColumnFieldsList() {
+    function buildColumnFieldsObject() {
       var allInputEls = _self.getDOMElement().querySelectorAll('input');
       var allInputIDs = Array.prototype.slice.call(allInputEls, 0).map(function (el) {
         return el.getAttribute('id');

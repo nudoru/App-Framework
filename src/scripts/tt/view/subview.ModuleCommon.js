@@ -77,7 +77,11 @@ define('TT.View.ModuleCommon',
      * @param prefix For timecard: 'tc_p_', for assignments: 'asn_p_'
      */
     function buildProjectRows(prefix) {
-      _projectRows = _domUtils.getQSElementsAsArray(this.getDOMElement(), 'tr').filter(function (row) {
+      _projectRows = getTRElementsWithIDMatchingPrefix.call(this,prefix);
+    }
+
+    function getTRElementsWithIDMatchingPrefix(prefix) {
+      return _domUtils.getQSElementsAsArray(this.getDOMElement(), 'tr').filter(function (row) {
         var rowid = row.getAttribute('id');
         if (!rowid) {
           return false;
