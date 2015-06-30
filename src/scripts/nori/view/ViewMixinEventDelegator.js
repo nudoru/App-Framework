@@ -6,9 +6,10 @@
  *
  * Example:
  * this.setEvents({
- *        'click #btn_main_projects':handleProjectsButton,
- *        'click #btn_main_people':handlePeopleButton,
- *        'click #btn_main_help':handleHelpButton
+ *        'click #btn_main_projects': handleProjectsButton,
+ *        'click #btn_main_people': handlePeopleButton,
+ *        'click #btn_main_help': handleHelpButton
+ *        'click #btn_foo, click #btn_bar': handleFooBarButtons
  *      });
  * this.delegateEvents();
  *
