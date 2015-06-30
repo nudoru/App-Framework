@@ -103,6 +103,8 @@ module.exports = function (grunt) {
           'src/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
           'src/scripts/vendor/lodash.min.js',
           'src/scripts/vendor/rxjs/rx.lite.compat.min.js',
+          'src/scripts/vendor/moment.min.js',
+          'src/scripts/vendor/pikaday.js'
         ],
         dest: 'bin/scripts/libs.js'
       },

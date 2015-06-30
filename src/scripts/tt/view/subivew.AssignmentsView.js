@@ -2,10 +2,11 @@ define('TT.View.AssignmentsView',
   function (require, module, exports) {
 
     var _self,
-        _prefix     = 'asn_p_',
-        _dateFields = [],
+        _prefix        = 'asn_p_',
+        _dateFields    = [],
         _removeButtons = [],
-        _domUtils   = require('Nudoru.Browser.DOMUtils');
+        _datePickers   = [],
+        _domUtils      = require('Nudoru.Browser.DOMUtils');
 
     function initialize(initObj) {
       _self = this;
@@ -34,6 +35,7 @@ define('TT.View.AssignmentsView',
       this.setProjectHeaderRowToolTips(_prefix);
       _dateFields = getDateFieldsList();
       assignRemoveButtonEvents();
+      assignDatePickers();
     }
 
     /**
@@ -42,7 +44,7 @@ define('TT.View.AssignmentsView',
     function viewWillUnmount() {
       this.closeAllAlerts();
 
-      _removeButtons.forEach(function(buttonObj) {
+      _removeButtons.forEach(function (buttonObj) {
         buttonObj.subscriber.dispose();
       });
 
@@ -85,7 +87,7 @@ define('TT.View.AssignmentsView',
      * @param projectID
      */
     function addNewAssignment(projectID) {
-      if(!projectID) {
+      if (!projectID) {
         return;
       }
       var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
@@ -99,7 +101,7 @@ define('TT.View.AssignmentsView',
     function promptToRemoveProject(projectID) {
       var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
       TT.view().mbCreator().confirm('Are you sure?',
-        'Archiving the entered data for <strong>'+projectTitle+'</strong> will remove it from your active list. You will no longer be able to enter time against it or see it on your forecast view.<br><br>Ready to archive this assignment?',
+        'Archiving the entered data for <strong>' + projectTitle + '</strong> will remove it from your active list. You will no longer be able to enter time against it or see it on your forecast view.<br><br>Ready to archive this assignment?',
         function () {
           handleArchiveProject(projectID);
         },
@@ -128,29 +130,50 @@ define('TT.View.AssignmentsView',
      * Configure the remove buttons
      */
     function assignRemoveButtonEvents() {
-      var buttons = _domUtils.getQSElementsAsArray(_self.getDOMElement(), 'button').filter(function (inputEl) {
-          var id = inputEl.getAttribute('id');
-          if (!id) {
-            return false;
-          }
-          return id.indexOf('removebtn') > 0 ;
-        }),
-        projectIDs = buttons.map(function(buttonEl) {
-          return _.last(buttonEl.getAttribute('id').split('_'));
-        });
+      var buttons    = _domUtils.getQSElementsAsArray(_self.getDOMElement(), 'button').filter(function (inputEl) {
+            var id = inputEl.getAttribute('id');
+            if (!id) {
+              return false;
+            }
+            return id.indexOf('removebtn') > 0;
+          }),
+          projectIDs = buttons.map(function (buttonEl) {
+            return _.last(buttonEl.getAttribute('id').split('_'));
+          });
 
-      buttons.forEach(function(buttonEl, i) {
+      buttons.forEach(function (buttonEl, i) {
         _removeButtons.push({
-          buttonEl: buttonEl,
-          projectID: projectIDs[i],
+          buttonEl  : buttonEl,
+          projectID : projectIDs[i],
           subscriber: Rx.Observable.fromEvent(buttonEl, 'click').subscribe(
-            function() {
+            function () {
               promptToRemoveProject(projectIDs[i]);
             }
           )
         });
       });
 
+    }
+
+    /**
+     * Create and assign Pikaday picker instances to all of the start and end date fields
+     * See docs https://github.com/dbushell/Pikaday
+     * Refer to momentjs formatting http://momentjs.com
+     */
+    function assignDatePickers() {
+      _dateFields.forEach(function (el) {
+        var picker = new Pikaday({
+          field: el,
+          format: 'l',
+          disableWeekends: true,
+          onSelect       : function() {
+            //el.value = picker.toString();
+            el.value = picker.getMoment().format('l')
+          }
+        });
+        //el.parentNode.insertBefore(picker.el, el.nextSibling);
+        _datePickers.push(picker);
+      });
     }
 
     function showNotImplementedWarning() {
