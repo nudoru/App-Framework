@@ -42,9 +42,9 @@ define('TT.View.TimeTrackerAppView',
       TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.CapacityForecastView');
 
       // Decorate the base subview modules with additional common functionality
-      _self.decorateSubViewController('Assignments', [requireNew('TT.View.ModuleCommon')]);
-      _self.decorateSubViewController('Timecard', [requireNew('TT.View.ModuleCommon')]);
-      _self.decorateSubViewController('Forecast', [requireNew('TT.View.ModuleCommon')]);
+      _self.extendSubViewController('Assignments', [requireNew('TT.View.ModuleCommon')]);
+      _self.extendSubViewController('Timecard', [requireNew('TT.View.ModuleCommon')]);
+      _self.extendSubViewController('Forecast', [requireNew('TT.View.ModuleCommon')]);
 
     }
 

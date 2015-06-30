@@ -14,7 +14,6 @@ define('TT.View.AssignmentsView',
         this.initializeSubView(initObj);
         this.setEvents({
           'change #asn_p_table'  : handleInputChangeEvent,
-          'click #asn_btn-update': showNotImplementedWarning,
           'click #asn_btn-addnew': handleAddNewClick
         });
       }
@@ -97,7 +96,17 @@ define('TT.View.AssignmentsView',
      * Remove an assignment from the current user
      * @param projectID
      */
-    function removeAssignment(projectID) {
+    function promptToRemoveProject(projectID) {
+      var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
+      TT.view().mbCreator().confirm('Are you sure?',
+        'Archiving the entered data for <strong>'+projectTitle+'</strong> will remove it from your active list. You will no longer be able to enter time against it or see it on your forecast view.<br><br>Ready to archive this assignment?',
+        function () {
+          handleArchiveProject(projectID);
+        },
+        true);
+    }
+
+    function handleArchiveProject(projectID) {
       var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
       _self.showAlert('If this was implemented, I\'d remove the project ' + projectTitle);
     }
@@ -136,7 +145,7 @@ define('TT.View.AssignmentsView',
           projectID: projectIDs[i],
           subscriber: Rx.Observable.fromEvent(buttonEl, 'click').subscribe(
             function() {
-              removeAssignment(projectIDs[i]);
+              promptToRemoveProject(projectIDs[i]);
             }
           )
         });

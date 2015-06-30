@@ -72,7 +72,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param templateID
      * @param extras
      */
-    function decorateSubViewController(templateID, extras) {
+    function extendSubViewController(templateID, extras) {
       var subview = _subViewMapping[templateID];
 
       if (!subview) {
@@ -167,5 +167,5 @@ define('Nori.View.ViewMixinSubViewRoutes',
     exports.mapRouteView = mapRouteView;
     exports.showRouteView = showRouteView;
     exports.updateView = updateView;
-    exports.decorateSubViewController = decorateSubViewController;
+    exports.extendSubViewController = extendSubViewController;
   });

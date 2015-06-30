@@ -120,7 +120,7 @@ BEGIN Templates for Views
                                 <input name="allocation" id="asn_p_alloc_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                             </td>
                             <td class="center-column">
-                                <button id="asm_p_removebtn_<%= project.projectID%>" class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Remove</button>
+                                <button id="asm_p_removebtn_<%= project.projectID%>" class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Archive</button>
                             </td>
                         </tr>
                     <% }); %>
@@ -128,11 +128,11 @@ BEGIN Templates for Views
             </table>
             <section class="panel-message-footer margin-top-double">
                 <h1 class="icon-left"><i class="fa fa-lightbulb-o"></i>Keep in Mind ...</h1>
-                <p>Placeholder</p>
+                <p>Information is saved as soon as it's entered into the form. Primary role is the key task that you are performing on the project. It may vary weekly so capture that on the Time Card. Enter your expected allocation for the projct here and update it weekly on the time card to affect your true time spent.</p>
             </section>
-            <section class="panel-footer">
-                <button id="asn_btn-addnew" class="button-icon-left pull-left"><i class="fa fa-plus-circle"></i>Add New Assignment</button>
-                <button id="asn_btn-update" class="button-success icon-right">Update<i class="fa fa-check"></i></button>
+            <section class="panel-footer text-center">
+                <button id="asn_btn-addnew" class="button-icon-left"><i class="fa fa-plus-circle"></i>Add New Assignment</button>
+                <!--<button id="asn_btn-update" class="button-success icon-right">Update<i class="fa fa-check"></i></button>-->
             </section>
         </section>
     </div>
