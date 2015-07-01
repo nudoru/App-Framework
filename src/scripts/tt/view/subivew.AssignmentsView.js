@@ -6,7 +6,8 @@ define('TT.View.AssignmentsView',
         _dateFields    = [],
         _removeButtons = [],
         _datePickers   = [],
-        _domUtils      = require('Nudoru.Browser.DOMUtils');
+        _domUtils      = require('Nudoru.Browser.DOMUtils'),
+        _ttEvents      = require('TT.Events.TTEventCreator');
 
     function initialize(initObj) {
       _self = this;
@@ -63,8 +64,7 @@ define('TT.View.AssignmentsView',
     function handleInputChangeEvent(evt) {
       _self.flashProjectRow(evt.target.getAttribute('id'));
 
-      // DEBUG
-      console.log(_self.getProjectRowData(_prefix));
+      _ttEvents.updateAssignments(_self.getProjectRowData(_prefix));
     }
 
     /**
@@ -77,21 +77,9 @@ define('TT.View.AssignmentsView',
         'Select a new project to add to your active list and click Proceed',
         projects,
         function (project) {
-          addNewAssignment(project.selection);
+          _ttEvents.addAssignment(project.selection);
         },
         true);
-    }
-
-    /**
-     * Add a new assignment to the current user
-     * @param projectID
-     */
-    function addNewAssignment(projectID) {
-      if (!projectID) {
-        return;
-      }
-      var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
-      _self.showAlert('If this was implemented, I\'d add the project ' + projectTitle);
     }
 
     /**
@@ -103,14 +91,9 @@ define('TT.View.AssignmentsView',
       TT.view().mbCreator().confirm('Are you sure?',
         'Archiving the entered data for <strong>' + projectTitle + '</strong> will remove it from your active list. You will no longer be able to enter time against it or see it on your forecast view.<br><br>Ready to archive this assignment?',
         function () {
-          handleArchiveProject(projectID);
+          _ttEvents.archiveAssignment(projectID);
         },
         true);
-    }
-
-    function handleArchiveProject(projectID) {
-      var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
-      _self.showAlert('If this was implemented, I\'d remove the project ' + projectTitle);
     }
 
     /**
@@ -163,12 +146,13 @@ define('TT.View.AssignmentsView',
     function assignDatePickers() {
       _dateFields.forEach(function (el) {
         var picker = new Pikaday({
-          field: el,
-          format: 'l',
+          field          : el,
+          format         : 'l',
           disableWeekends: true,
-          onSelect       : function() {
+          minDate        : new Date(2014, 0, 1), // Jan 1, 2014
+          onSelect       : function () {
             //el.value = picker.toString();
-            el.value = picker.getMoment().format('l')
+            el.value = picker.getMoment().format('l');
           }
         });
         //el.parentNode.insertBefore(picker.el, el.nextSibling);

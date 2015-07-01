@@ -2,7 +2,7 @@ define('TT.View.TimeCardView',
   function (require, module, exports) {
 
     var _self,
-        _prefix = 'tc_p_',
+        _prefix      = 'tc_p_',
         _columnNames = ['alloc', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
         _columnObj   = Object.create(null),
         _cardTotal   = 0,
@@ -12,7 +12,8 @@ define('TT.View.TimeCardView',
         _isLocked    = false,
         _lockedStatusEl,
         _inProgressStatusEl,
-        _domUtils    = require('Nudoru.Browser.DOMUtils');
+        _domUtils    = require('Nudoru.Browser.DOMUtils'),
+        _ttEvents    = require('TT.Events.TTEventCreator');
 
     //--------------------------------------------------------------------------
     // Core
@@ -31,7 +32,8 @@ define('TT.View.TimeCardView',
           'change #tc_p_table'  : handleInputChangeEvent,
           'click #tc_btn-submit': handleTimeCardSubmitClick,
           'click #tc_btn-unlock': handleUnlockTimeCardClick,
-          'click #tc_btn-prevwk, click #tc_btn-nextwk': showNotImplementedWarning
+          'click #tc_btn-prevwk': handlePreviousWeekClick,
+          'click #tc_btn-nextwk': handleNextWeekClick
         });
       }
     }
@@ -96,8 +98,7 @@ define('TT.View.TimeCardView',
       _self.flashProjectRow(evt.target.getAttribute('id'));
       updateColumnSums();
 
-      // DEBUG
-      console.log(_self.getProjectRowData(_prefix));
+      _ttEvents.updateTimeCard(_self.getProjectRowData(_prefix));
     }
 
     /**
@@ -123,6 +124,7 @@ define('TT.View.TimeCardView',
     function handleUnlockTimeCardClick() {
       promptForCardUnlock();
     }
+
     //--------------------------------------------------------------------------
     // Card data
     //--------------------------------------------------------------------------
@@ -260,6 +262,14 @@ define('TT.View.TimeCardView',
       _domUtils.removeClass(_submitButtonEl, 'button-disabled');
       _domUtils.removeClass(_inProgressStatusEl, 'hidden');
       _domUtils.addClass(_lockedStatusEl, 'hidden');
+    }
+
+    function handlePreviousWeekClick() {
+      _ttEvents.goWeekBackward();
+    }
+
+    function handleNextWeekClick() {
+      _ttEvents.goWeekForward();
     }
 
     /**

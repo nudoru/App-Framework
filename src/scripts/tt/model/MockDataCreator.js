@@ -3,7 +3,9 @@ define('TT.Model.MockDataCreator',
   function(require, module, exports) {
     "use strict";
 
-    var _id = 1,
+    var _projectId = 100,
+        _assignmentId = 1000,
+        _personId = 10,
       _people= [],
       _projects = [],
       _assignments = [],
@@ -32,9 +34,9 @@ define('TT.Model.MockDataCreator',
 
       _lorem.initialize();
 
-      var numPeople = 6,
-          numProjects = 500,
-          numAssignments = 25;
+      var numPeople = 1,
+          numProjects = 50,
+          numAssignments = 5;
 
       for(var a = 0; a<10; a++) {
         _possibleManagers.push(_lorem.getFLName());
@@ -50,7 +52,7 @@ define('TT.Model.MockDataCreator',
       }
 
       for(var k = 0; k<numAssignments; k++) {
-        _assignments.push(createAssignment());
+        _assignments.push(createAssignment(k));
       }
 
       localStorage['mockTTData.people'] = JSON.stringify(_people);
@@ -60,7 +62,7 @@ define('TT.Model.MockDataCreator',
 
     function createPerson() {
       return {
-        id: _lorem.fakeGUID(),
+        id: (_personId++).toString(),
         name: _lorem.getFLName(),
         manager: _arrayUtils.rndElement(_possibleManagers),
         type: 'type_b',
@@ -80,7 +82,7 @@ define('TT.Model.MockDataCreator',
 
     function createProject() {
       return {
-        id: _lorem.fakeGUID(),
+        id: (_projectId++).toString(),
         title: _stringUtils.toTitleCase(_lorem.getText(2,6)),
         description: getParas(2),
         status: 'active',
@@ -100,13 +102,19 @@ define('TT.Model.MockDataCreator',
 
     }
 
-    function createAssignment() {
+    function createAssignment(projectIdx) {
 
       var person = _arrayUtils.rndElement(_people),
-          project = _arrayUtils.rndElement(_projects);
+          project;
+
+      if(truthy(projectIdx)) {
+        project = _projects[projectIdx];
+      } else {
+        project = _arrayUtils.rndElement(_projects);
+      }
 
       return {
-        id: _lorem.fakeGUID(),
+        id: (_assignmentId++).toString(),
         resourceID: person.id,
         resourceName: person.name,
         projectID: project.id,

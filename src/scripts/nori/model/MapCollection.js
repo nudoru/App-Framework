@@ -77,7 +77,7 @@ define('Nori.Model.MapCollection',
     }
 
     function remove(storeID) {
-      var currIdx = getMapIndex(store.getID());
+      var currIdx = getMapIndex(storeID);
       if (currIdx >= 0) {
         _children[currIdx].setParentCollection(null);
         _children[currIdx] = null;
@@ -105,6 +105,7 @@ define('Nori.Model.MapCollection',
      */
     function getMapIndex(storeID) {
       return _children.map(function (store) {
+        console.log(store.getID());
         return store.getID();
       }).indexOf(storeID);
     }

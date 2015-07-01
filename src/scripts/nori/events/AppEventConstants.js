@@ -23,9 +23,9 @@ define('Nori.Events.AppEventConstants',
 
 //define('Nori.Events.AppEventConstants',
 //  function (require, module, exports) {
-//    var objUtils = require('Nudoru.Core.ObjectUtils');
+//    var objUtils = require('Nudoru.Core.ObjectUtils'), consts;
 //
-//    exports = _.merge({}, objUtils.keyMirror({
+//    exports = objUtils.keyMirror({
 //      APP_INITIALIZED: null,
 //      MODEL_DATA_WAITING: null,
 //      MODEL_DATA_READY: null,
@@ -42,9 +42,7 @@ define('Nori.Events.AppEventConstants',
 //      ROUTE_CHANGED: null,
 //      CHANGE_ROUTE: null,
 //      SUBVIEW_STORE_STATE: null
-//    }));
-//
-//    console.log(exports);
+//    });
 //
 //  });
 

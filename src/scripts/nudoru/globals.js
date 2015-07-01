@@ -11,3 +11,7 @@ function existy(x) {
 function truthy(x) {
   return (x !== false) && existy(x);
 }
+
+function falsey(x) {
+  return !truthy(x);
+}

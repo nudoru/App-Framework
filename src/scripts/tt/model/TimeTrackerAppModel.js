@@ -11,7 +11,9 @@ define('TT.Model.TimeTrackerAppModel',
         _assignmentsCollection,
         _currentUserMap,
         _currentUserProjectsCollection,
-        _appEvents      = require('Nori.Events.AppEventCreator');
+        _appEvents      = require('Nori.Events.AppEventCreator'),
+        _dispatcher            = require('Nori.Utils.Dispatcher'),
+        _ttEventConstants     = require('TT.Events.TTEventConstants');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -40,15 +42,69 @@ define('TT.Model.TimeTrackerAppModel',
 
       //_currentUserMap.set({test:'dummy'});
       //_appEvents.updateModelData('model',{foo:'bar'});
+
+      _dispatcher.subscribe(_ttEventConstants.ADD_ASSIGNMENT, handleAddAssignment);
+      _dispatcher.subscribe(_ttEventConstants.ARCHIVE_ASSIGNMENT, handleArchiveAssignment);
+      _dispatcher.subscribe(_ttEventConstants.UPDATE_ASSIGNMENTS, handleUpdateAssignments);
+      _dispatcher.subscribe(_ttEventConstants.SUBMIT_TIMECARD, handleSubmitTimeCard);
+      _dispatcher.subscribe(_ttEventConstants.UNLOCK_TIMECARD, handleUnlockTimeCard);
+      _dispatcher.subscribe(_ttEventConstants.UPDATE_TIMECARD, handleUpdateTimeCard);
+      _dispatcher.subscribe(_ttEventConstants.TIMECARD_WEEKFORWARD, handleWeekForward);
+      _dispatcher.subscribe(_ttEventConstants.TIMECARD_WEEKBACKWARD, handleWeekBackward);
     }
 
+    //----------------------------------------------------------------------------
+    //  Handle Events
+    //----------------------------------------------------------------------------
+
     function handleModelDataChanged(dataObj) {
-      console.log('TT, handlemodeldatachange', dataObj);
+      console.log('handleModelDataChanged', dataObj.payload);
     }
 
     function handleUpdateModelData(dataObj) {
-      console.log('TT, handleupdatemodeldata', dataObj);
+      console.log('handleUpdateModelData', dataObj.payload);
     }
+
+    function handleAddAssignment(dataObj) {
+      console.log('handleAddAssignment',dataObj.payload);
+    }
+
+    function handleArchiveAssignment(dataObj) {
+      console.log('handleArchiveAssignment',dataObj.payload);
+      if(dataObj.payload) {
+        //console.log(_currentUserProjectsCollection.toJSON());
+        _currentUserProjectsCollection.remove(dataObj);
+        //console.log(_currentUserProjectsCollection.toJSON());
+      }
+    }
+
+    function handleUpdateAssignments(dataObj) {
+      console.log('handleUpdateAssignments',dataObj.payload);
+    }
+
+    function handleSubmitTimeCard(dataObj) {
+      console.log('handleSubmitTimeCard',dataObj.payload);
+    }
+
+    function handleUnlockTimeCard(dataObj) {
+      console.log('handleUnlockTimeCard',dataObj.payload);
+    }
+
+    function handleUpdateTimeCard(dataObj) {
+      console.log('handleUpdateTimeCard',dataObj.payload);
+    }
+
+    function handleWeekForward(dataObj) {
+      console.log('handleWeekForward',dataObj.payload);
+    }
+
+    function handleWeekBackward(dataObj) {
+      console.log('handleWeekBackward',dataObj.payload);
+    }
+
+    //----------------------------------------------------------------------------
+    //  Data Handling
+    //----------------------------------------------------------------------------
 
     /**
      * Create model data
@@ -70,10 +126,6 @@ define('TT.Model.TimeTrackerAppModel',
 
       _currentUserProjectsCollection = _self.createMapCollection({id: 'myprojects'});
       _currentUserProjectsCollection.addMapsFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserMap.get('name')));
-
-      //_myProjects.forEach(function (store) {
-      //  console.log(store.get('projectTitle'));
-      //})
     }
 
     /**
@@ -109,6 +161,7 @@ define('TT.Model.TimeTrackerAppModel',
      * @returns {*|void|*|T}
      */
     function getProjectMapForID(id) {
+      console.log('getmap for',id);
       return _projectsCollection.getMap(id);
     }
 
