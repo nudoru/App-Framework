@@ -82,11 +82,6 @@ define('Nudoru.Component.ToolTipView',
       tooltipObj.width = tooltipObj.element.getBoundingClientRect().width;
       tooltipObj.height = tooltipObj.element.getBoundingClientRect().height;
 
-      // set 3d rotation
-      TweenLite.set(tooltipObj.element, {
-        css: { rotationX:  _endRotationTransform}
-      });
-
       assignEventsToTargetEl(tooltipObj);
       positionToolTip(tooltipObj);
 
@@ -221,7 +216,6 @@ define('Nudoru.Component.ToolTipView',
 
     function transitionIn(el) {
       TweenLite.to(el,0.25, {autoAlpha: 1,
-         rotationX: 0,
         scaleY: 1,
         ease: Circ.easeOut
       });
@@ -229,7 +223,6 @@ define('Nudoru.Component.ToolTipView',
 
     function transitionOut(el) {
       TweenLite.to(el, 0.15, {
-         rotationX:  _endRotationTransform,
         autoAlpha: 0,
         scaleY: 1,
         ease: Circ.easeIn

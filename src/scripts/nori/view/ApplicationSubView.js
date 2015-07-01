@@ -70,8 +70,9 @@ define('Nori.View.ApplicationSubView',
       });
 
       if(_isMounted) {
-        render();
-        mount();
+        this.unmount();
+        this.render();
+        this.mount();
       }
       this.viewDidUpdate();
     }
@@ -92,14 +93,19 @@ define('Nori.View.ApplicationSubView',
      * @returns {*}
      */
     function render() {
-      this.viewWillRender();
+      if(this.viewWillRender) {
+        this.viewWillRender();
+      }
 
       _children.forEach(function renderChild(child) {
         child.render();
       });
 
       _html = _templateObj(_state);
-      this.viewDidRender();
+
+      if(this.viewDidRender) {
+        this.viewDidRender();
+      }
     }
 
     function viewDidRender() {
@@ -121,7 +127,10 @@ define('Nori.View.ApplicationSubView',
       if(!_html) {
         throw new Error('SubView '+_id+' cannot mount with no HTML. Call render() first');
       }
-      this.viewWillMount();
+
+      if(this.viewWillMount) {
+        this.viewWillMount();
+      }
 
       _isMounted = true;
 
@@ -135,7 +144,9 @@ define('Nori.View.ApplicationSubView',
         }
       }).bind(this));
 
-      this.viewDidMount();
+      if(this.viewDidMount) {
+        this.viewDidMount();
+      }
     }
 
     /**
@@ -169,8 +180,6 @@ define('Nori.View.ApplicationSubView',
     function viewDidUnmount() {
       // stub
     }
-
-
 
     /**
      * Remove a view and cleanup

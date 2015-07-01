@@ -13,11 +13,11 @@ define('TT.Events.TTEventCreator',
       });
     };
 
-    exports.archiveAssignment = function(projectID) {
+    exports.archiveAssignment = function(assignmentID) {
       _dispatcher.publish({
         type: _ttEventConstants.ARCHIVE_ASSIGNMENT,
         payload: {
-          projectID: projectID
+          assignmentID: assignmentID
         }
       });
     };

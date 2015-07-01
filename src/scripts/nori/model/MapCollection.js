@@ -82,6 +82,7 @@ define('Nori.Model.MapCollection',
         _children[currIdx].setParentCollection(null);
         _children[currIdx] = null;
         _children.splice(currIdx, 1);
+        dispatchChange(_id);
       } else {
         console.log(_id + ' remove, model not in collection: ' + storeID);
       }
@@ -105,7 +106,6 @@ define('Nori.Model.MapCollection',
      */
     function getMapIndex(storeID) {
       return _children.map(function (store) {
-        console.log(store.getID());
         return store.getID();
       }).indexOf(storeID);
     }

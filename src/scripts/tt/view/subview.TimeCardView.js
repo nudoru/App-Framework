@@ -26,7 +26,7 @@ define('TT.View.TimeCardView',
     function initialize(initObj) {
       _self = this;
       if (!this.isInitialized()) {
-        this.setProjectsModel();
+        this.setAssignmentsModel();
         this.initializeSubView(initObj);
         this.setEvents({
           'change #tc_p_table'  : handleInputChangeEvent,
@@ -55,8 +55,8 @@ define('TT.View.TimeCardView',
       _submitButtonLabelEl = document.getElementById('tc_btn-submit-label');
 
       buildColumnFieldsObject();
-      this.buildProjectRows(_prefix);
-      this.setProjectHeaderRowToolTips(_prefix);
+      this.buildAssignmentRows(_prefix);
+      this.setProjectTitleCellToolTips(_prefix);
       updateColumnSums();
 
       unlockCard();
@@ -95,10 +95,10 @@ define('TT.View.TimeCardView',
      * @param evt
      */
     function handleInputChangeEvent(evt) {
-      _self.flashProjectRow(evt.target.getAttribute('id'));
+      _self.flashAssignmentRow(evt.target.getAttribute('id'));
       updateColumnSums();
 
-      _ttEvents.updateTimeCard(_self.getProjectRowData(_prefix));
+      _ttEvents.updateTimeCard(_self.getAssignmentRowData(_prefix));
     }
 
     /**

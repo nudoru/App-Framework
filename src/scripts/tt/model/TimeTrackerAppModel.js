@@ -10,7 +10,7 @@ define('TT.Model.TimeTrackerAppModel',
         _projectsCollection,
         _assignmentsCollection,
         _currentUserMap,
-        _currentUserProjectsCollection,
+        _currentUserAssignmentsCollection,
         _appEvents      = require('Nori.Events.AppEventCreator'),
         _dispatcher            = require('Nori.Utils.Dispatcher'),
         _ttEventConstants     = require('TT.Events.TTEventConstants');
@@ -23,8 +23,8 @@ define('TT.Model.TimeTrackerAppModel',
       return _currentUserMap;
     }
 
-    function getCurrentUserProjectsCollection() {
-      return _currentUserProjectsCollection;
+    function getCurrentUserAssignmentsCollection() {
+      return _currentUserAssignmentsCollection;
     }
 
     //----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ define('TT.Model.TimeTrackerAppModel',
       console.log('handleArchiveAssignment',dataObj.payload);
       if(dataObj.payload) {
         //console.log(_currentUserProjectsCollection.toJSON());
-        _currentUserProjectsCollection.remove(dataObj);
+        _currentUserAssignmentsCollection.remove(dataObj.payload.assignmentID);
         //console.log(_currentUserProjectsCollection.toJSON());
       }
     }
@@ -114,9 +114,9 @@ define('TT.Model.TimeTrackerAppModel',
 
       loadApplicationData();
 
-      _peopleCollection      = _self.createMapCollection({id: 'peopleset'});
-      _projectsCollection    = _self.createMapCollection({id: 'projectsset'});
-      _assignmentsCollection = _self.createMapCollection({id: 'assignmentsset'});
+      _peopleCollection      = _self.createMapCollection({id: 'peopleCollection'});
+      _projectsCollection    = _self.createMapCollection({id: 'projectsCollection'});
+      _assignmentsCollection = _self.createMapCollection({id: 'assignmentsCollection'});
 
       _peopleCollection.addFromObjArray(_peopleSourceData, 'id', false);
       _projectsCollection.addFromObjArray(_projectsSourceData, 'id', false);
@@ -124,8 +124,8 @@ define('TT.Model.TimeTrackerAppModel',
 
       _currentUserMap = _peopleCollection.getFirst();
 
-      _currentUserProjectsCollection = _self.createMapCollection({id: 'myprojects'});
-      _currentUserProjectsCollection.addMapsFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserMap.get('name')));
+      _currentUserAssignmentsCollection = _self.createMapCollection({id: 'currentUserAssignments'});
+      _currentUserAssignmentsCollection.addMapsFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserMap.get('name')));
     }
 
     /**
@@ -160,9 +160,8 @@ define('TT.Model.TimeTrackerAppModel',
      * @param id
      * @returns {*|void|*|T}
      */
-    function getProjectMapForID(id) {
-      console.log('getmap for',id);
-      return _projectsCollection.getMap(id);
+    function getAssignmentMapForID(id) {
+      return _currentUserAssignmentsCollection.getMap(id);
     }
 
     //----------------------------------------------------------------------------
@@ -184,9 +183,9 @@ define('TT.Model.TimeTrackerAppModel',
 
     exports.initialize                       = initialize;
     exports.getCurrentUserModel              = getCurrentUserModel;
-    exports.getCurrentUserProjectsCollection = getCurrentUserProjectsCollection;
+    exports.getCurrentUserAssignmentsCollection = getCurrentUserAssignmentsCollection;
     exports.handleModelDataChanged           = handleModelDataChanged;
     exports.handleUpdateModelData            = handleUpdateModelData;
     exports.getProjectsAndIDList             = getProjectsAndIDList;
-    exports.getProjectMapForID               = getProjectMapForID;
+    exports.getAssignmentMapForID               = getAssignmentMapForID;
   });

@@ -7,8 +7,8 @@ define('TT.View.ModuleCommon',
   function (require, module, exports) {
 
     var _messageBoxIDs = [],
-        _myProjectsModel,
-        _projectRows   = [],
+        _myAssignmentsModel,
+        _assignmentRows   = [],
         _domUtils      = require('Nudoru.Browser.DOMUtils'),
         _toolTip       = require('Nudoru.Component.ToolTipView');
 
@@ -24,12 +24,12 @@ define('TT.View.ModuleCommon',
     //  Projects Model
     //----------------------------------------------------------------------------
 
-    function setProjectsModel() {
-      _myProjectsModel = TT.model().getCurrentUserProjectsCollection();
+    function setAssignmentsModel() {
+      _myAssignmentsModel = TT.model().getCurrentUserAssignmentsCollection();
     }
 
-    function getProjectsModel() {
-      return _myProjectsModel;
+    function getAssignmentsModel() {
+      return _myAssignmentsModel;
     }
 
     /*
@@ -49,16 +49,17 @@ define('TT.View.ModuleCommon',
     function updateStateFromProjectsModel() {
       var obj = Object.create(null);
 
-      obj.projects = Object.create(null);
+      obj.assignments = Object.create(null);
 
-      _myProjectsModel.forEach(function (project) {
-        obj.projects[project.get('projectID')] = {
-          projectTitle      : project.get('projectTitle'),
-          projectID         : project.get('projectID'),
-          projectDescription: project.get('projectDescription'),
-          role              : project.get('role'),
-          startDate         : project.get('startDate'),
-          endData           : project.get('endDate')
+      _myAssignmentsModel.forEach(function (assignment) {
+        obj.assignments[assignment.get('id')] = {
+          assignmentID      : assignment.get('id'),
+          projectTitle      : assignment.get('projectTitle'),
+          projectID         : assignment.get('projectID'),
+          projectDescription: assignment.get('projectDescription'),
+          role              : assignment.get('role'),
+          startDate         : assignment.get('startDate'),
+          endData           : assignment.get('endDate')
         };
       });
 
@@ -76,8 +77,8 @@ define('TT.View.ModuleCommon',
      * Build an array of table > tr's that pertain to project data
      * @param prefix For timecard: 'tc_p_', for assignments: 'asn_p_'
      */
-    function buildProjectRows(prefix) {
-      _projectRows = getTRElementsWithIDMatchingPrefix.call(this,prefix);
+    function buildAssignmentRows(prefix) {
+      _assignmentRows = getTRElementsWithIDMatchingPrefix.call(this,prefix);
     }
 
     function getTRElementsWithIDMatchingPrefix(prefix) {
@@ -90,18 +91,18 @@ define('TT.View.ModuleCommon',
       });
     }
 
-    function getProjectRows() {
-      return _projectRows;
+    function getAssignmentRows() {
+      return _assignmentRows;
     }
 
     /**
      * Returns an array of objects: key is ID, prop is object of form data inputs
      * @returns {Array}
      */
-    function getProjectRowData(prefix) {
+    function getAssignmentRowData(prefix) {
       var packet = Object.create(null),
           arry   = [];
-      this.getProjectRows().forEach(function (row) {
+      this.getAssignmentRows().forEach(function (row) {
         var id  = row.getAttribute('id').split(prefix)[1],
             obj = Object.create(null);
         obj[id] = _domUtils.captureFormData(row);
@@ -118,15 +119,15 @@ define('TT.View.ModuleCommon',
     /**
      * Set tool tips to display on hover of project name
      */
-    function setProjectHeaderRowToolTips(prefix) {
+    function setProjectTitleCellToolTips(prefix) {
       var state = this.getState();
-      this.getProjectRows().forEach(function (el) {
+      this.getAssignmentRows().forEach(function (el) {
         var projectID     = el.getAttribute('id').split(prefix)[1],
             headingCellEl = el.querySelector('th');
 
         _toolTip.add({
           title   : '',
-          content : state.projects[projectID].projectDescription,
+          content : state.assignments[projectID].projectDescription,
           position: 'B',
           targetEl: headingCellEl,
           type    : 'information',
@@ -139,12 +140,12 @@ define('TT.View.ModuleCommon',
      * Visual indicator, flash the
      * @param elIDStr
      */
-    function flashProjectRow(elIDStr) {
+    function flashAssignmentRow(elIDStr) {
       var row, animTimeLine;
 
       elIDStr = parseProjectID(elIDStr);
 
-      row = this.getProjectRows().filter(function (rowEl) {
+      row = this.getAssignmentRows().filter(function (rowEl) {
         if (rowEl.getAttribute('id').indexOf(elIDStr) > 0) {
           return true;
         }
@@ -223,16 +224,16 @@ define('TT.View.ModuleCommon',
     //----------------------------------------------------------------------------
 
     exports.initializeCommon             = initializeCommon;
-    exports.setProjectsModel             = setProjectsModel;
-    exports.getProjectsModel             = getProjectsModel;
+    exports.setAssignmentsModel             = setAssignmentsModel;
+    exports.getAssignmentsModel             = getAssignmentsModel;
     exports.updateStateFromProjectsModel = updateStateFromProjectsModel;
     exports.showAlert                    = showAlert;
     exports.closeAllAlerts               = closeAllAlerts;
-    exports.buildProjectRows             = buildProjectRows;
-    exports.getProjectRows               = getProjectRows;
-    exports.getProjectRowData            = getProjectRowData;
-    exports.setProjectHeaderRowToolTips  = setProjectHeaderRowToolTips;
-    exports.flashProjectRow              = flashProjectRow;
+    exports.buildAssignmentRows             = buildAssignmentRows;
+    exports.getAssignmentRows               = getAssignmentRows;
+    exports.getAssignmentRowData            = getAssignmentRowData;
+    exports.setProjectTitleCellToolTips  = setProjectTitleCellToolTips;
+    exports.flashAssignmentRow              = flashAssignmentRow;
     exports.parseProjectID               = parseProjectID;
     exports.disableForm                  = disableForm;
     exports.enableForm                   = enableForm;

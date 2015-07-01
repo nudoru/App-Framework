@@ -82,15 +82,19 @@ define('Nori.View.ViewMixinSubViewRoutes',
       subview.controller = Nori.extendWithArray(subview.controller, extras);
     }
 
-    function bindAllFunctions(obj) {
-      for (var func in obj) {
-        if (obj.hasOwnProperty(func)) {
-          if (_.isFunction(func)) {
-            _.bindAll(obj, func);
-          }
-        }
-      }
-    }
+    /**
+     * Unused
+     * @param obj
+     */
+    //function bindAllFunctions(obj) {
+    //  for (var func in obj) {
+    //    if (obj.hasOwnProperty(func)) {
+    //      if (_.isFunction(func)) {
+    //        _.bindAll(obj, func);
+    //      }
+    //    }
+    //  }
+    //}
 
     /**
      * Update subview based on a change in bound model data

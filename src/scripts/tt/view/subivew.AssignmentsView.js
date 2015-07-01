@@ -12,12 +12,13 @@ define('TT.View.AssignmentsView',
     function initialize(initObj) {
       _self = this;
       if (!this.isInitialized()) {
-        this.setProjectsModel();
+        this.setAssignmentsModel();
         this.initializeSubView(initObj);
         this.setEvents({
           'change #asn_p_table'  : handleInputChangeEvent,
           'click #asn_btn-addnew': handleAddNewClick
         });
+        TT.registerViewForModelChanges('currentUserAssignments',this.getID());
       }
     }
 
@@ -32,8 +33,8 @@ define('TT.View.AssignmentsView',
      * Render and set from the DOM elements
      */
     function viewDidMount() {
-      this.buildProjectRows(_prefix);
-      this.setProjectHeaderRowToolTips(_prefix);
+      this.buildAssignmentRows(_prefix);
+      this.setProjectTitleCellToolTips(_prefix);
       _dateFields = getDateFieldsList();
       assignRemoveButtonEvents();
       assignDatePickers();
@@ -62,9 +63,9 @@ define('TT.View.AssignmentsView',
      * @param evt
      */
     function handleInputChangeEvent(evt) {
-      _self.flashProjectRow(evt.target.getAttribute('id'));
+      _self.flashAssignmentRow(evt.target.getAttribute('id'));
 
-      _ttEvents.updateAssignments(_self.getProjectRowData(_prefix));
+      _ttEvents.updateAssignments(_self.getAssignmentRowData(_prefix));
     }
 
     /**
@@ -84,14 +85,14 @@ define('TT.View.AssignmentsView',
 
     /**
      * Remove an assignment from the current user
-     * @param projectID
+     * @param assignmentID
      */
-    function promptToRemoveProject(projectID) {
-      var projectTitle = TT.model().getProjectMapForID(projectID).get('title');
+    function promptToRemoveAssignment(assignmentID) {
+      var projectTitle = TT.model().getAssignmentMapForID(assignmentID).get('projectTitle');
       TT.view().mbCreator().confirm('Are you sure?',
         'Archiving the entered data for <strong>' + projectTitle + '</strong> will remove it from your active list. You will no longer be able to enter time against it or see it on your forecast view.<br><br>Ready to archive this assignment?',
         function () {
-          _ttEvents.archiveAssignment(projectID);
+          _ttEvents.archiveAssignment(assignmentID);
         },
         true);
     }
@@ -130,7 +131,7 @@ define('TT.View.AssignmentsView',
           projectID : projectIDs[i],
           subscriber: Rx.Observable.fromEvent(buttonEl, 'click').subscribe(
             function () {
-              promptToRemoveProject(projectIDs[i]);
+              promptToRemoveAssignment(projectIDs[i]);
             }
           )
         });

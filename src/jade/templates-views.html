@@ -58,9 +58,9 @@ BEGIN Templates for Views
             </section>
             <table id="fc_p_table" class="table table-rows-zebra">
                 <tbody>
-                <% _.forOwn(projects, function(project, key) { %>
-                    <tr id="fc_p_<%= project.projectID%>">
-                        <th class="center-column"><%= project.projectTitle %></th>
+                <% _.forOwn(assignments, function(assignment, key) { %>
+                    <tr id="fc_p_<%= assignment.assignmentID%>">
+                        <th class="center-column"><%= assignment.projectTitle %></th>
                     </tr>
                 <% }); %>
                 </tbody>
@@ -96,17 +96,17 @@ BEGIN Templates for Views
                 </tr>
                 </thead>
                 <tbody>
-                    <% _.forOwn(projects, function(project, key) { %>
-                        <tr id="asn_p_<%= project.projectID%>">
-                            <th><%= project.projectTitle %></th>
+                    <% _.forOwn(assignments, function(assignment, key) { %>
+                        <tr id="asn_p_<%= assignment.assignmentID%>">
+                            <th><%= assignment.projectTitle %></th>
                             <td class="center-column">
-                                <input name="startDate" id="asn_p_start_<%= project.projectID%>" type="text" placeholder="" style="width: 100px" class="subtle">
+                                <input name="startDate" id="asn_p_start_<%= assignment.assignmentID%>" type="text" placeholder="" style="width: 100px" class="subtle">
                             </td>
                             <td class="center-column">
-                                <input name="endDate" id="asn_p_end_<%= project.projectID%>" type="text" placeholder="" style="width: 100px" class="subtle">
+                                <input name="endDate" id="asn_p_end_<%= assignment.assignmentID%>" type="text" placeholder="" style="width: 100px" class="subtle">
                             </td>
                             <td class="center-column">
-                                <select name="primaryRole" id="asm_p_role_<%= project.projectID%>" class="subtle">
+                                <select name="primaryRole" id="asm_p_role_<%= assignment.assignmentID%>" class="subtle">
                                     <option>Consult</option>
                                     <option>Analysis</option>
                                     <option>Design</option>
@@ -117,10 +117,10 @@ BEGIN Templates for Views
                                 </select>
                             </td>
                             <td class="center-column">
-                                <input name="allocation" id="asn_p_alloc_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                                <input name="allocation" id="asn_p_alloc_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                             </td>
                             <td class="center-column">
-                                <button id="asm_p_removebtn_<%= project.projectID%>" class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Archive</button>
+                                <button id="asm_p_removebtn_<%= assignment.assignmentID%>" class="button-small button-icon-left button-neutral-light"><i class="fa fa-archive"></i>Archive</button>
                             </td>
                         </tr>
                     <% }); %>
@@ -177,29 +177,29 @@ BEGIN Templates for Views
                 </tr>
                 </thead>
                 <tbody>
-                <% _.forOwn(projects, function(project, key) { %>
-                    <tr id="tc_p_<%= project.projectID%>">
-                        <th><%= project.projectTitle %></th>
+                <% _.forOwn(assignments, function(assignment, key) { %>
+                    <tr id="tc_p_<%= assignment.assignmentID%>">
+                        <th><%= assignment.projectTitle %></th>
                         <td class="center-column">
-                            <input name="allocation" id="tc_p_alloc_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                            <input name="allocation" id="tc_p_alloc_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                         </td>
                         <td class="center-column">
-                            <input name="monday" id="tc_p_monday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                            <input name="monday" id="tc_p_monday_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                         </td>
                         <td class="center-column">
-                            <input name="tuesday" id="tc_p_tuesday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                            <input name="tuesday" id="tc_p_tuesday_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                         </td>
                         <td class="center-column">
-                            <input name="wednesday" id="tc_p_wednesday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                            <input name="wednesday" id="tc_p_wednesday_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                         </td>
                         <td class="center-column">
-                            <input name="thursday" id="tc_p_thursday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                            <input name="thursday" id="tc_p_thursday_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                         </td>
                         <td class="center-column">
-                            <input name="friday" id="tc_p_friday_<%= project.projectID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
+                            <input name="friday" id="tc_p_friday_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="" style="width: 40px" class="subtle">
                         </td>
                         <td class="center-column">
-                            <select name="worktype" id="tc_p_work_<%= project.projectID%>" class="input-select" class="subtle">
+                            <select name="worktype" id="tc_p_work_<%= assignment.assignmentID%>" class="input-select" class="subtle">
                                 <option></option>
                                 <option>Consult</option>
                                 <option>Analysis</option>
@@ -212,7 +212,7 @@ BEGIN Templates for Views
                             </select>
                         </td>
                         <td class="center-column">
-                            <input name="comments" id="tc_p_comment_<%= project.projectID%>" class="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
+                            <input name="comments" id="tc_p_comment_<%= assignment.assignmentID%>" class="input-text" type="text" placeholder="Comment" style="width: 178px" class="subtle">
                         </td>
                     </tr>
                 <% }); %>
