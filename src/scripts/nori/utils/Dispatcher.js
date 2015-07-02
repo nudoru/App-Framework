@@ -29,6 +29,14 @@ define('Nori.Utils.Dispatcher',
      * @returns {*}
      */
     function subscribe(evtStr, handler, once) {
+      if(falsey(evtStr)) {
+        throw new Error('Fasley event string passed for handler', handler);
+      }
+
+      if(falsey(handler)) {
+        throw new Error('Fasley handler passed for event string', evtStr);
+      }
+
       _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
 
        var subject = new Rx.Subject();

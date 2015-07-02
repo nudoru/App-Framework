@@ -1,11 +1,15 @@
 define('TT.Events.TTEventConstants',
   function (require, module, exports) {
-    exports.ADD_ASSIGNMENT = 'ADD_ASSIGNMENT';
-    exports.ARCHIVE_ASSIGNMENT = 'ARCHIVE_ASSIGNMENT';
-    exports.UPDATE_ASSIGNMENTS = 'UPDATE_ASSIGNMENTS';
-    exports.SUBMIT_TIMECARD = 'SUBMIT_TIMECARD';
-    exports.UNLOCK_TIMECARD = 'UNLOCK_TIMECARD';
-    exports.UPDATE_TIMECARD = 'UPDATE_TIMECARD';
-    exports.TIMECARD_WEEKFORWARD = 'TIMECARD_WEEKFORWARD';
-    exports.TIMECARD_WEEKBACKWARD = 'TIMECARD_WEEKBACKWARD';
+    var objUtils = require('Nudoru.Core.ObjectUtils');
+
+    _.merge(exports, objUtils.keyMirror({
+      ADD_ASSIGNMENT       : null,
+      ARCHIVE_ASSIGNMENT   : null,
+      UPDATE_ASSIGNMENTS   : null,
+      SUBMIT_TIMECARD      : null,
+      UNLOCK_TIMECARD      : null,
+      UPDATE_TIMECARD      : null,
+      TIMECARD_WEEKFORWARD : null,
+      TIMECARD_WEEKBACKWARD: null
+    }));
   });
