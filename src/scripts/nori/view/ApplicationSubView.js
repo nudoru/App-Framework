@@ -6,27 +6,27 @@ define('Nori.View.ApplicationSubView',
   function (require, module, exports) {
 
     var _isInitialized = false,
-      _initObj,
-      _id,
-      _templateObj,
-      _html,
-      _DOMElement,
-      _mountPoint,
-      _state = {},
-      _children = [],
-      _isMounted = false,
-      _appEvents = require('Nori.Events.AppEventCreator');
+        _initObj,
+        _id,
+        _templateObj,
+        _html,
+        _DOMElement,
+        _mountPoint,
+        _state         = {},
+        _children      = [],
+        _isMounted     = false,
+        _appEvents     = require('Nori.Events.AppEventCreator');
 
     /**
      * Initialization
      * @param initObj
      */
     function initializeSubView(initObj) {
-      if(!isInitialized()) {
-        _initObj = initObj;
-        _id = initObj.id;
+      if (!isInitialized()) {
+        _initObj     = initObj;
+        _id          = initObj.id;
         _templateObj = initObj.template;
-        _mountPoint = initObj.mountPoint;
+        _mountPoint  = initObj.mountPoint;
       }
       this.update();
       _isInitialized = true;
@@ -63,18 +63,33 @@ define('Nori.View.ApplicationSubView',
      * @returns {*}
      */
     function update() {
+      // make a copy of last state
+      var previousState = _.merge({}, this.getState());
+
+      // state will update here
       this.viewWillUpdate();
 
       _children.forEach(function updateChild(child) {
         child.update();
       });
 
-      if(_isMounted) {
-        this.unmount();
-        this.render();
-        this.mount();
+      if (_isMounted) {
+        if (this.viewShouldRender(previousState)) {
+          this.unmount();
+          this.render();
+          this.mount();
+        }
       }
+
       this.viewDidUpdate();
+    }
+
+    /**
+     * Determin if the view should rerender on update
+     * @returns {boolean}
+     */
+    function viewShouldRender(previousState) {
+      return true;
     }
 
     /**
@@ -93,7 +108,7 @@ define('Nori.View.ApplicationSubView',
      * @returns {*}
      */
     function render() {
-      if(this.viewWillRender) {
+      if (this.viewWillRender) {
         this.viewWillRender();
       }
 
@@ -103,7 +118,7 @@ define('Nori.View.ApplicationSubView',
 
       _html = _templateObj(_state);
 
-      if(this.viewDidRender) {
+      if (this.viewDidRender) {
         this.viewDidRender();
       }
     }
@@ -124,11 +139,11 @@ define('Nori.View.ApplicationSubView',
      * @param mountEl
      */
     function mount() {
-      if(!_html) {
-        throw new Error('SubView '+_id+' cannot mount with no HTML. Call render() first');
+      if (!_html) {
+        throw new Error('SubView ' + _id + ' cannot mount with no HTML. Call render() first');
       }
 
-      if(this.viewWillMount) {
+      if (this.viewWillMount) {
         this.viewWillMount();
       }
 
@@ -136,15 +151,15 @@ define('Nori.View.ApplicationSubView',
 
       // Go out to the standard render function. DOM element is returned in callback
       // Needs to be bound to 'this' context
-      _appEvents.renderView(_mountPoint, _html, _id, (function(domEl) {
+      _appEvents.renderView(_mountPoint, _html, _id, (function (domEl) {
         setDOMElement(domEl);
         // from the ViewMixinEventDelegator
-        if(this.delegateEvents) {
+        if (this.delegateEvents) {
           this.delegateEvents();
         }
       }).bind(this));
 
-      if(this.viewDidMount) {
+      if (this.viewDidMount) {
         this.viewDidMount();
       }
     }
@@ -169,7 +184,7 @@ define('Nori.View.ApplicationSubView',
       _appEvents.renderView(_mountPoint, '', _id);
 
       // from the ViewMixinEventDelegator
-      if(this.undelegateEvents) {
+      if (this.undelegateEvents) {
         this.undelegateEvents();
       }
 
@@ -233,7 +248,6 @@ define('Nori.View.ApplicationSubView',
     }
 
 
-
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -241,32 +255,33 @@ define('Nori.View.ApplicationSubView',
     exports.initializeSubView = initializeSubView;
 
     exports.isInitialized = isInitialized;
-    exports.setState = setState;
-    exports.getState = getState;
-    exports.getID = getID;
-    exports.getTemplate = getTemplate;
-    exports.getHTML = getHTML;
-    exports.setHTML = setHTML;
+    exports.setState      = setState;
+    exports.getState      = getState;
+    exports.getID         = getID;
+    exports.getTemplate   = getTemplate;
+    exports.getHTML       = getHTML;
+    exports.setHTML       = setHTML;
     exports.getDOMElement = getDOMElement;
     exports.setDOMElement = setDOMElement;
 
     exports.viewWillUpdate = viewWillUpdate;
-    exports.update = update;
-    exports.viewDidUpdate = viewDidUpdate;
+    exports.update         = update;
+    exports.viewDidUpdate  = viewDidUpdate;
 
-    exports.viewWillRender = viewWillRender;
-    exports.render = render;
-    exports.viewDidRender = viewDidRender;
+    exports.viewShouldRender = viewShouldRender;
+    exports.viewWillRender   = viewWillRender;
+    exports.render           = render;
+    exports.viewDidRender    = viewDidRender;
 
     exports.viewWillMount = viewWillMount;
-    exports.mount = mount;
-    exports.viewDidMount = viewDidMount;
+    exports.mount         = mount;
+    exports.viewDidMount  = viewDidMount;
 
     exports.viewWillUnmount = viewWillUnmount;
-    exports.unmount = unmount;
-    exports.viewDidUnmount = viewDidUnmount;
+    exports.unmount         = unmount;
+    exports.viewDidUnmount  = viewDidUnmount;
 
-    exports.addChild = addChild;
+    exports.addChild    = addChild;
     exports.removeChild = removeChild;
     exports.getChildren = getChildren;
 

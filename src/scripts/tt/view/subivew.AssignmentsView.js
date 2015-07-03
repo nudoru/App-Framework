@@ -30,6 +30,18 @@ define('TT.View.AssignmentsView',
     }
 
     /**
+     * When state updates, trigger rerender only if the number of assignments change
+     * @param previousState
+     * @returns {boolean}
+     */
+    function viewShouldRender(previousState) {
+      var prevNumAssignments = Object.keys(previousState.assignments).length,
+          newNumAssignments = Object.keys(this.getState().assignments).length;
+
+      return prevNumAssignments !== newNumAssignments;
+    }
+
+    /**
      * Render and set from the DOM elements
      */
     function viewDidMount() {
@@ -171,6 +183,7 @@ define('TT.View.AssignmentsView',
 
     exports.initialize      = initialize;
     exports.viewWillUpdate  = viewWillUpdate;
+    exports.viewShouldRender = viewShouldRender;
     exports.viewDidMount    = viewDidMount;
     exports.viewWillUnmount = viewWillUnmount;
   });

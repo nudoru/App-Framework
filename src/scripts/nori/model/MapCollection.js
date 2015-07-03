@@ -57,7 +57,7 @@ define('Nori.Model.MapCollection',
 
         add(Nori.model().createMap({id: id, silent: silent, store: obj}));
       });
-
+      dispatchChange(_id);
     }
 
     function getID() {
@@ -74,6 +74,8 @@ define('Nori.Model.MapCollection',
       } else {
         _children.push(store);
       }
+
+      dispatchChange(_id);
     }
 
     function remove(storeID) {

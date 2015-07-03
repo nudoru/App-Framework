@@ -2,7 +2,6 @@ define('TT.Model.TimeTrackerAppModel',
   function (require, module, exports) {
 
     var _self,
-        _mockDataSource = require('TT.Model.MockDataCreator'),
         _peopleSourceData,
         _projectsSourceData,
         _assignmentsSourceData,
@@ -11,9 +10,10 @@ define('TT.Model.TimeTrackerAppModel',
         _assignmentsCollection,
         _currentUserMap,
         _currentUserAssignmentsCollection,
-        _appEvents      = require('Nori.Events.AppEventCreator'),
-        _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _ttEventConstants     = require('TT.Events.TTEventConstants');
+        _dataCreator   = require('TT.Model.MockDataCreator'),
+        _appEvents        = require('Nori.Events.AppEventCreator'),
+        _dispatcher       = require('Nori.Utils.Dispatcher'),
+        _ttEventConstants = require('TT.Events.TTEventConstants');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -66,12 +66,25 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     function handleAddAssignment(dataObj) {
-      console.log('handleAddAssignment',dataObj.payload);
+      //console.log('handleAddAssignment', dataObj.payload);
+
+      var projectID = dataObj.payload.projectID;
+
+      if(hasAssignmentProjectID(projectID)) {
+        console.log('A project with id '+projectID+' already exists as an assignment');
+        return;
+      }
+
+      var project = _projectsCollection.getMap(projectID).toObject(),
+          person = _currentUserMap.toObject(),
+          assignment = _dataCreator.createAssignment(person, project);
+
+      _currentUserAssignmentsCollection.addFromObjArray([assignment], 'id', false);
     }
 
     function handleArchiveAssignment(dataObj) {
-      console.log('handleArchiveAssignment',dataObj.payload);
-      if(dataObj.payload) {
+      //console.log('handleArchiveAssignment', dataObj.payload);
+      if (dataObj.payload) {
         //console.log(_currentUserProjectsCollection.toJSON());
         _currentUserAssignmentsCollection.remove(dataObj.payload.assignmentID);
         //console.log(_currentUserProjectsCollection.toJSON());
@@ -79,27 +92,27 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     function handleUpdateAssignments(dataObj) {
-      console.log('handleUpdateAssignments',dataObj.payload);
+      console.log('handleUpdateAssignments', dataObj.payload);
     }
 
     function handleSubmitTimeCard(dataObj) {
-      console.log('handleSubmitTimeCard',dataObj.payload);
+      console.log('handleSubmitTimeCard', dataObj.payload);
     }
 
     function handleUnlockTimeCard(dataObj) {
-      console.log('handleUnlockTimeCard',dataObj.payload);
+      console.log('handleUnlockTimeCard', dataObj.payload);
     }
 
     function handleUpdateTimeCard(dataObj) {
-      console.log('handleUpdateTimeCard',dataObj.payload);
+      console.log('handleUpdateTimeCard', dataObj.payload);
     }
 
     function handleWeekForward(dataObj) {
-      console.log('handleWeekForward',dataObj.payload);
+      console.log('handleWeekForward', dataObj.payload);
     }
 
     function handleWeekBackward(dataObj) {
-      console.log('handleWeekBackward',dataObj.payload);
+      console.log('handleWeekBackward', dataObj.payload);
     }
 
     //----------------------------------------------------------------------------
@@ -110,7 +123,7 @@ define('TT.Model.TimeTrackerAppModel',
      * Create model data
      */
     function createMapStores() {
-      _mockDataSource.initialize();
+      _dataCreator.initialize();
 
       loadApplicationData();
 
@@ -164,6 +177,17 @@ define('TT.Model.TimeTrackerAppModel',
       return _currentUserAssignmentsCollection.getMap(id);
     }
 
+    /**
+     * Return true if a project with ID exists as an assignment already
+     * @param projectID
+     * @returns {*}
+     */
+    function hasAssignmentProjectID(projectID) {
+      return _currentUserAssignmentsCollection.filter(function(map) {
+        return projectID === map.get('projectID');
+      }).length;
+    }
+
     //----------------------------------------------------------------------------
     //  Utility
     //----------------------------------------------------------------------------
@@ -181,11 +205,11 @@ define('TT.Model.TimeTrackerAppModel',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize                       = initialize;
-    exports.getCurrentUserModel              = getCurrentUserModel;
+    exports.initialize                          = initialize;
+    exports.getCurrentUserModel                 = getCurrentUserModel;
     exports.getCurrentUserAssignmentsCollection = getCurrentUserAssignmentsCollection;
-    exports.handleModelDataChanged           = handleModelDataChanged;
-    exports.handleUpdateModelData            = handleUpdateModelData;
-    exports.getProjectsAndIDList             = getProjectsAndIDList;
+    exports.handleModelDataChanged              = handleModelDataChanged;
+    exports.handleUpdateModelData               = handleUpdateModelData;
+    exports.getProjectsAndIDList                = getProjectsAndIDList;
     exports.getAssignmentMapForID               = getAssignmentMapForID;
   });

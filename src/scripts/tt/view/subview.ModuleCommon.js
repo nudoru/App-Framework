@@ -128,7 +128,7 @@ define('TT.View.ModuleCommon',
         _toolTip.add({
           title   : '',
           content : state.assignments[projectID].projectDescription,
-          position: 'B',
+          position: 'R',
           targetEl: headingCellEl,
           type    : 'information',
           width   : 350
