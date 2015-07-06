@@ -70,7 +70,7 @@ define('Nori.Model.Map',
       _changed = true;
 
       if (!silentSet) {
-        dispatchChange();
+        dispatchChange('set_key');
       }
     }
 
@@ -226,7 +226,9 @@ define('Nori.Model.Map',
     /**
      * On change, emit event globally
      */
-    function dispatchChange() {
+    function dispatchChange(type) {
+      type = type || 'map';
+
       if (!_silent) {
         _appEvents.modelChanged({
           id: _id,
@@ -236,8 +238,8 @@ define('Nori.Model.Map',
 
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
-          id: _id
-        });
+          id: _id,
+        }, type);
       }
 
     }

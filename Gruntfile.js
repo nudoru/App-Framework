@@ -180,6 +180,7 @@ module.exports = function (grunt) {
         '-W014': true,
         '-W030': true,
         '-W061': true,
+        '-W083': true,
         force: true,
         curly: true,
         eqeqeq: true,

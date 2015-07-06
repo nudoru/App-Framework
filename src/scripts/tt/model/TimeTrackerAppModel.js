@@ -10,7 +10,7 @@ define('TT.Model.TimeTrackerAppModel',
         _assignmentsCollection,
         _currentUserMap,
         _currentUserAssignmentsCollection,
-        _dataCreator   = require('TT.Model.MockDataCreator'),
+        _dataCreator      = require('TT.Model.MockDataCreator'),
         _appEvents        = require('Nori.Events.AppEventCreator'),
         _dispatcher       = require('Nori.Utils.Dispatcher'),
         _ttEventConstants = require('TT.Events.TTEventConstants');
@@ -70,13 +70,13 @@ define('TT.Model.TimeTrackerAppModel',
 
       var projectID = dataObj.payload.projectID;
 
-      if(hasAssignmentProjectID(projectID)) {
-        console.log('A project with id '+projectID+' already exists as an assignment');
+      if (hasAssignmentProjectID(projectID)) {
+        console.log('A project with id ' + projectID + ' already exists as an assignment');
         return;
       }
 
-      var project = _projectsCollection.getMap(projectID).toObject(),
-          person = _currentUserMap.toObject(),
+      var project    = _projectsCollection.getMap(projectID).toObject(),
+          person     = _currentUserMap.toObject(),
           assignment = _dataCreator.createAssignment(person, project);
 
       _currentUserAssignmentsCollection.addFromObjArray([assignment], 'id', false);
@@ -91,8 +91,18 @@ define('TT.Model.TimeTrackerAppModel',
       }
     }
 
+    /**
+     * Data object payload.data will have a state and form object
+     * Form has one key, assignment id, and value is object with keys: allocation, endDate, primaryCole, startDate
+     * @param dataObj
+     */
     function handleUpdateAssignments(dataObj) {
-      console.log('handleUpdateAssignments', dataObj.payload);
+      //console.log('handleUpdateAssignments', dataObj.payload.data.state);
+      dataObj.payload.data.form.forEach(function (dataRow) {
+        //console.log(dataRow);
+        var assignmentID = Object.keys(dataRow)[0];
+        updateAssignmentData(assignmentID, dataRow[assignmentID]);
+      });
     }
 
     function handleSubmitTimeCard(dataObj) {
@@ -183,9 +193,22 @@ define('TT.Model.TimeTrackerAppModel',
      * @returns {*}
      */
     function hasAssignmentProjectID(projectID) {
-      return _currentUserAssignmentsCollection.filter(function(map) {
+      return _currentUserAssignmentsCollection.filter(function (map) {
         return projectID === map.get('projectID');
       }).length;
+    }
+
+    /**
+     *
+     * @param id
+     */
+    function updateAssignmentData(id, data) {
+      getAssignmentMapForID(id).set({
+        'startDate' : data.startDate,
+        'endDate'   : data.endDate,
+        'role'      : data.primaryRole,
+        'allocation': data.allocation
+      });
     }
 
     //----------------------------------------------------------------------------

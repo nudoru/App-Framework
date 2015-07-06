@@ -50,6 +50,12 @@ define('TT.View.AssignmentsView',
       _dateFields = getDateFieldsList();
       assignRemoveButtonEvents();
       assignDatePickers();
+
+      populateFormData();
+
+      if(this.getAssignmentRows().length === 0) {
+        this.showAlert('You don\'t have any active assignments. Click on the <strong>Add New Assignment</strong> button to add them.');
+      }
     }
 
     /**
@@ -69,6 +75,18 @@ define('TT.View.AssignmentsView',
     // Custom
     //--------------------------------------------------------------------------
 
+    function populateFormData() {
+      var assignments = _self.getState().assignments,
+        assignmentIDs = Object.keys(assignments);
+
+      assignmentIDs.forEach(function(aid) {
+        var assignment = assignments[aid];
+        document.getElementById('asn_p_start_'+aid).value = assignment.startDate;
+        document.getElementById('asn_p_end_'+aid).value = assignment.endDate;
+        document.getElementById('asn_p_role_'+aid).value = assignment.role;
+        document.getElementById('asn_p_alloc_'+aid).value = assignment.allocation;
+      });
+    }
 
     /**
      * Update sums, data when a field changes and looses focus

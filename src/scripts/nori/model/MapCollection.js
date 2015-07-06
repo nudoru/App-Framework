@@ -57,7 +57,7 @@ define('Nori.Model.MapCollection',
 
         add(Nori.model().createMap({id: id, silent: silent, store: obj}));
       });
-      dispatchChange(_id);
+      dispatchChange(_id, 'add_map');
     }
 
     function getID() {
@@ -75,7 +75,7 @@ define('Nori.Model.MapCollection',
         _children.push(store);
       }
 
-      dispatchChange(_id);
+      dispatchChange(_id, 'add_map');
     }
 
     function remove(storeID) {
@@ -84,7 +84,7 @@ define('Nori.Model.MapCollection',
         _children[currIdx].setParentCollection(null);
         _children[currIdx] = null;
         _children.splice(currIdx, 1);
-        dispatchChange(_id);
+        dispatchChange(_id, 'remove_map');
       } else {
         console.log(_id + ' remove, model not in collection: ' + storeID);
       }
@@ -115,10 +115,12 @@ define('Nori.Model.MapCollection',
     /**
      * On change, emit event globally
      */
-    function dispatchChange(data) {
+    function dispatchChange(data, type) {
       if (!_silent) {
+        type = type || '';
         _appEvents.modelChanged({
           id: _id,
+          type: type,
           mapType: 'collection',
           mapID: data.id
         });

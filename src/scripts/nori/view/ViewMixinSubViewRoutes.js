@@ -126,6 +126,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
         mountPoint: subview.mountPoint
       });
 
+      subview.controller.update();
       subview.controller.render();
       subview.controller.mount();
     }

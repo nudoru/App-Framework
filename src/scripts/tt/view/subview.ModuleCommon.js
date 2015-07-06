@@ -59,7 +59,8 @@ define('TT.View.ModuleCommon',
           projectDescription: assignment.get('projectDescription'),
           role              : assignment.get('role'),
           startDate         : assignment.get('startDate'),
-          endData           : assignment.get('endDate')
+          endDate           : assignment.get('endDate'),
+          allocation        : assignment.get('allocation')
         };
       });
 
@@ -109,9 +110,10 @@ define('TT.View.ModuleCommon',
         arry.push(obj);
       });
 
-      packet.year      = this.getState().calendar.currentYear;
-      packet.weekNum   = this.getState().calendar.currentWeekNum;
-      packet.inputData = arry;
+      //packet.year      = this.getState().calendar.currentYear;
+      //packet.weekNum   = this.getState().calendar.currentWeekNum;
+      packet.state = this.getState();
+      packet.form = arry;
 
       return packet;
     }
