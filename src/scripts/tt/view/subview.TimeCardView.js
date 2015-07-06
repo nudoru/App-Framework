@@ -35,6 +35,7 @@ define('TT.View.TimeCardView',
           'click #tc_btn-prevwk': handlePreviousWeekClick,
           'click #tc_btn-nextwk': handleNextWeekClick
         });
+        TT.registerViewForModelChanges('timeModel',this.getID());
       }
     }
 
@@ -139,7 +140,7 @@ define('TT.View.TimeCardView',
 
       assignmentIDs.forEach(function (aid) {
         var assignment = assignments[aid],
-            weekData   = assignment.weekData['current'];
+            weekData   = assignment.weekData[_self.getState().calendar.date];
 
         if (weekData) {
           console.log(aid, weekData);

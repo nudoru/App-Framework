@@ -66,11 +66,9 @@ define('TT.View.ModuleCommon',
       });
 
       // TESTING
-      obj.calendar = {
-        currentYear   : '2015',
-        currentWeekNum: '12',
-        currentWeek   : 'June 15-June 19'
-      };
+      obj.calendar = TT.model().getTimeModelObj();
+
+      console.log(obj.calendar);
 
       this.setState(obj);
     }

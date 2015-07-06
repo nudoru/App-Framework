@@ -7,7 +7,7 @@ define('TT.Model.TimeModel',
 
     function initialize() {
       _moment = moment();
-      _id     = 'timemodel';
+      _id     = 'timeModel';
     }
 
     function getCurrentWeek() {

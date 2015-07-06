@@ -72,7 +72,7 @@ define('TT.Model.TimeTrackerAppModel',
      * @param dataObj
      */
     function handleModelDataChanged(dataObj) {
-      console.log('handleModelDataChanged', dataObj.payload);
+      //console.log('handleModelDataChanged', dataObj.payload);
     }
 
     /**
@@ -239,7 +239,7 @@ define('TT.Model.TimeTrackerAppModel',
      * @param id
      */
     function updateAssignmentTimeCardData(id, data) {
-      getAssignmentMapForID(id).setKeyProp('timeCardData', 'current', data);
+      getAssignmentMapForID(id).setKeyProp('timeCardData', getTimeModelObj().date, data);
     }
 
     //----------------------------------------------------------------------------
