@@ -115,13 +115,11 @@ define('TT.Model.MockDataCreator',
         projectID         : project.id,
         projectTitle      : project.title,
         projectDescription: project.description,
-        startDate         : '1/1/2015',
-        endDate           : '12/31/2015',
-        role              : _arrayUtils.rndElement(_possibleTasks),
-        allocation        : '77',
-        comments          : '',
-        timeData          : '',
-        allocationData    : ''
+        startDate         : '',
+        endDate           : '',
+        role              : person.primaryRole,
+        allocation        : '10',
+        timeCardData      : {}
       };
     }
 

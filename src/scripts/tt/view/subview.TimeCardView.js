@@ -57,15 +57,16 @@ define('TT.View.TimeCardView',
       buildColumnFieldsObject();
       this.buildAssignmentRows(_prefix);
       this.setProjectTitleCellToolTips(_prefix);
+
+      populateFormData();
       updateColumnSums();
 
       // TODO add logic for previously submitted time
       unlockCard();
       updateCardStatusText('In progress');
 
-      populateFormData();
 
-      if(this.getAssignmentRows().length === 0) {
+      if (this.getAssignmentRows().length === 0) {
         this.showAlert('You don\'t have any active assignments. Click on the <strong>Assignments</strong> button to add them and then return here to enter hours.');
       }
     }
@@ -133,15 +134,28 @@ define('TT.View.TimeCardView',
     }
 
     function populateFormData() {
-      var assignments = _self.getState().assignments,
+      var assignments   = _self.getState().assignments,
           assignmentIDs = Object.keys(assignments);
 
-      assignmentIDs.forEach(function(aid) {
-        var assignment = assignments[aid];
-        //document.getElementById('asn_p_start_'+aid).value = assignment.startDate;
-        //document.getElementById('asn_p_end_'+aid).value = assignment.endDate;
-        //document.getElementById('asn_p_role_'+aid).value = assignment.role;
-        //document.getElementById('asn_p_alloc_'+aid).value = assignment.allocation;
+      assignmentIDs.forEach(function (aid) {
+        var assignment = assignments[aid],
+            weekData   = assignment.weekData['current'];
+
+        if (weekData) {
+          console.log(aid, weekData);
+          document.getElementById('tc_p_alloc_' + aid).value     = weekData.allocation;
+          document.getElementById('tc_p_monday_' + aid).value    = weekData.monday;
+          document.getElementById('tc_p_tuesday_' + aid).value   = weekData.tuesday;
+          document.getElementById('tc_p_wednesday_' + aid).value = weekData.wednesday;
+          document.getElementById('tc_p_thursday_' + aid).value  = weekData.thursday;
+          document.getElementById('tc_p_friday_' + aid).value    = weekData.friday;
+          document.getElementById('tc_p_work_' + aid).value      = weekData.worktype;
+          document.getElementById('tc_p_comment_' + aid).value   = weekData.comments;
+        } else {
+          console.log('No data for week');
+        }
+
+
       });
     }
 

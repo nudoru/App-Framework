@@ -60,11 +60,12 @@ define('TT.View.ModuleCommon',
           role              : assignment.get('role'),
           startDate         : assignment.get('startDate'),
           endDate           : assignment.get('endDate'),
-          allocation        : assignment.get('allocation')
+          allocation        : assignment.get('allocation'),
+          weekData          : assignment.get('timeCardData')
         };
       });
 
-      // TEST
+      // TESTING
       obj.calendar = {
         currentYear   : '2015',
         currentWeekNum: '12',

@@ -57,10 +57,18 @@ define('TT.Model.TimeTrackerAppModel',
     //  Handle Events
     //----------------------------------------------------------------------------
 
+    /**
+     * The model data was changed
+     * @param dataObj
+     */
     function handleModelDataChanged(dataObj) {
-      console.log('handleModelDataChanged', dataObj.payload);
+      //console.log('handleModelDataChanged', dataObj.payload);
     }
 
+    /**
+     * Execute and action to change the model data
+     * @param dataObj
+     */
     function handleUpdateModelData(dataObj) {
       console.log('handleUpdateModelData', dataObj.payload);
     }
@@ -99,7 +107,6 @@ define('TT.Model.TimeTrackerAppModel',
     function handleUpdateAssignments(dataObj) {
       //console.log('handleUpdateAssignments', dataObj.payload.data.state);
       dataObj.payload.data.form.forEach(function (dataRow) {
-        //console.log(dataRow);
         var assignmentID = Object.keys(dataRow)[0];
         updateAssignmentData(assignmentID, dataRow[assignmentID]);
       });
@@ -114,7 +121,11 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     function handleUpdateTimeCard(dataObj) {
-      console.log('handleUpdateTimeCard', dataObj.payload);
+      //console.log('handleUpdateTimeCard', dataObj.payload);
+      dataObj.payload.data.form.forEach(function (dataRow) {
+        var assignmentID = Object.keys(dataRow)[0];
+        updateAssignmentTimeCardData(assignmentID, dataRow[assignmentID]);
+      });
     }
 
     function handleWeekForward(dataObj) {
@@ -199,7 +210,7 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     /**
-     *
+     * Update assignment data
      * @param id
      */
     function updateAssignmentData(id, data) {
@@ -209,6 +220,14 @@ define('TT.Model.TimeTrackerAppModel',
         'role'      : data.primaryRole,
         'allocation': data.allocation
       });
+    }
+
+    /**
+     * Update assignment timecard data
+     * @param id
+     */
+    function updateAssignmentTimeCardData(id, data) {
+      getAssignmentMapForID(id).setKeyProp('timeCardData','current',data);
     }
 
     //----------------------------------------------------------------------------
