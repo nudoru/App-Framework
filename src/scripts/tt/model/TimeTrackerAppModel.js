@@ -10,6 +10,7 @@ define('TT.Model.TimeTrackerAppModel',
         _assignmentsCollection,
         _currentUserMap,
         _currentUserAssignmentsCollection,
+        _timeModel        = require('TT.Model.TimeModel'),
         _dataCreator      = require('TT.Model.MockDataCreator'),
         _appEvents        = require('Nori.Events.AppEventCreator'),
         _dispatcher       = require('Nori.Utils.Dispatcher'),
@@ -27,6 +28,15 @@ define('TT.Model.TimeTrackerAppModel',
       return _currentUserAssignmentsCollection;
     }
 
+    function getTimeModelObj() {
+      return {
+        currentWeek: _timeModel.getCurrentWeek(),
+        currentYear: _timeModel.getCurrentYear(),
+        date       : _timeModel.getDateString(),
+        prettyDate : _timeModel.getPrettyDateString()
+      };
+    }
+
     //----------------------------------------------------------------------------
     //
     //----------------------------------------------------------------------------
@@ -36,14 +46,14 @@ define('TT.Model.TimeTrackerAppModel',
       this.initializeApplicationModel();
       this.subscribeToModelEvents();
 
+      _timeModel.initialize();
+
       createMapStores();
 
       _appEvents.applicationModelInitialized();
 
-      //_currentUserMap.set({test:'dummy'});
-      //_appEvents.updateModelData('model',{foo:'bar'});
-
-      _dispatcher.subscribe(_ttEventConstants.ADD_ASSIGNMENT, handleAddAssignment);
+      _dispatcher.subscribe(_ttEventConstants.ADD_ASSIGNMENT,
+        handleAddAssignment);
       _dispatcher.subscribe(_ttEventConstants.ARCHIVE_ASSIGNMENT, handleArchiveAssignment);
       _dispatcher.subscribe(_ttEventConstants.UPDATE_ASSIGNMENTS, handleUpdateAssignments);
       _dispatcher.subscribe(_ttEventConstants.SUBMIT_TIMECARD, handleSubmitTimeCard);
@@ -62,7 +72,7 @@ define('TT.Model.TimeTrackerAppModel',
      * @param dataObj
      */
     function handleModelDataChanged(dataObj) {
-      //console.log('handleModelDataChanged', dataObj.payload);
+      console.log('handleModelDataChanged', dataObj.payload);
     }
 
     /**
@@ -129,11 +139,13 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     function handleWeekForward(dataObj) {
-      console.log('handleWeekForward', dataObj.payload);
+      //console.log('handleWeekForward', dataObj.payload);
+      _timeModel.forwardWeek();
     }
 
     function handleWeekBackward(dataObj) {
-      console.log('handleWeekBackward', dataObj.payload);
+      //console.log('handleWeekBackward', dataObj.payload);
+      _timeModel.backwardWeek();
     }
 
     //----------------------------------------------------------------------------
@@ -227,7 +239,7 @@ define('TT.Model.TimeTrackerAppModel',
      * @param id
      */
     function updateAssignmentTimeCardData(id, data) {
-      getAssignmentMapForID(id).setKeyProp('timeCardData','current',data);
+      getAssignmentMapForID(id).setKeyProp('timeCardData', 'current', data);
     }
 
     //----------------------------------------------------------------------------
@@ -250,6 +262,7 @@ define('TT.Model.TimeTrackerAppModel',
     exports.initialize                          = initialize;
     exports.getCurrentUserModel                 = getCurrentUserModel;
     exports.getCurrentUserAssignmentsCollection = getCurrentUserAssignmentsCollection;
+    exports.getTimeModelObj                     = getTimeModelObj;
     exports.handleModelDataChanged              = handleModelDataChanged;
     exports.handleUpdateModelData               = handleUpdateModelData;
     exports.getProjectsAndIDList                = getProjectsAndIDList;
