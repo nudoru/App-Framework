@@ -42,7 +42,7 @@ define('TT.Model.MockDataCreator',
 
       var numPeople      = 1,
           numProjects    = 50,
-          numAssignments = 5;
+          numAssignments = 0;
 
       for (var a = 0; a < 10; a++) {
         _possibleManagers.push(_lorem.getFLName());
@@ -119,7 +119,8 @@ define('TT.Model.MockDataCreator',
         endDate           : '',
         role              : person.primaryRole,
         allocation        : '10',
-        timeCardData      : {}
+        timeCardData      : {},
+        submitHistory     : {}
       };
     }
 

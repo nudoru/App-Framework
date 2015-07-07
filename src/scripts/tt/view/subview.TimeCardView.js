@@ -66,11 +66,19 @@ define('TT.View.TimeCardView',
       unlockCard();
       updateCardStatusText('In progress');
 
-
       if (this.getAssignmentRows().length === 0) {
         this.showAlert('You don\'t have any active assignments. Click on the <strong>Assignments</strong> button to add them and then return here to enter hours.');
       }
     }
+
+    //function updateOnLockStatus() {
+    //  var assignments   = _self.getState().assignments,
+    //      assignmentIDs = Object.keys(assignments);
+    //
+    //  assignmentIDs.forEach(function (aid) {
+    //    var assignment = assignments[aid],
+    //        weekData   = assignment.weekData[_self.getState().calendar.date];
+    //}
 
     /**
      * View is going away, remove anything that it created: Cleanup
@@ -153,7 +161,7 @@ define('TT.View.TimeCardView',
           document.getElementById('tc_p_work_' + aid).value      = weekData.worktype;
           document.getElementById('tc_p_comment_' + aid).value   = weekData.comments;
         } else {
-          console.log('No data for week');
+          //console.log('No data for week');
         }
 
 
@@ -252,8 +260,7 @@ define('TT.View.TimeCardView',
       TT.view().mbCreator().confirm('Read to submit this time card?',
         'Only submit your time card when all data for the week has been entered. Editing a submitted time card will require justification.<br><br>Ready to submit?',
         function () {
-          lockCard();
-          _isSubmitted = true;
+          submitCard();
 
           TT.view().addMessageBox({
             title  : 'Success',
@@ -277,10 +284,23 @@ define('TT.View.TimeCardView',
       TT.view().mbCreator().prompt('Modify Time Card',
         'This time card has been submitted. Please let us know why you\'re modifying it.',
         function (data) {
-          _isSubmitted = false;
-          unlockCard();
+          unSubmitCard(data.response);
         },
         true);
+    }
+
+    function submitCard() {
+      lockCard();
+      _isSubmitted = true;
+
+      _ttEvents.submitTimeCard();
+    }
+
+    function unSubmitCard(comments) {
+      unlockCard();
+      _isSubmitted = false;
+
+      _ttEvents.unSubmitTimeCard(comments);
     }
 
     function lockCard() {
@@ -305,13 +325,6 @@ define('TT.View.TimeCardView',
 
     function handleNextWeekClick() {
       _ttEvents.goWeekForward();
-    }
-
-    /**
-     * Show a message for buttons that don't do anything yet
-     */
-    function showNotImplementedWarning() {
-      _self.showAlert('This doesn\'t work yet');
     }
 
     //--------------------------------------------------------------------------

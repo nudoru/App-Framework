@@ -31,20 +31,17 @@ define('TT.Events.TTEventCreator',
       });
     };
 
-    exports.submitTimeCard = function(week) {
+    exports.submitTimeCard = function() {
       _dispatcher.publish({
         type: _ttEventConstants.SUBMIT_TIMECARD,
-        payload: {
-          week: week
-        }
+        payload: {}
       });
     };
 
-    exports.unlockTimeCard = function(week, comments) {
+    exports.unSubmitTimeCard = function(comments) {
       _dispatcher.publish({
         type: _ttEventConstants.UNLOCK_TIMECARD,
         payload: {
-          week: week,
           comments: comments
         }
       });

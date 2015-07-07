@@ -6,11 +6,11 @@
 define('TT.View.ModuleCommon',
   function (require, module, exports) {
 
-    var _messageBoxIDs = [],
+    var _messageBoxIDs  = [],
         _myAssignmentsModel,
-        _assignmentRows   = [],
-        _domUtils      = require('Nudoru.Browser.DOMUtils'),
-        _toolTip       = require('Nudoru.Component.ToolTipView');
+        _assignmentRows = [],
+        _domUtils       = require('Nudoru.Browser.DOMUtils'),
+        _toolTip        = require('Nudoru.Component.ToolTipView');
 
     function initializeCommon() {
       //
@@ -32,20 +32,7 @@ define('TT.View.ModuleCommon',
       return _myAssignmentsModel;
     }
 
-    /*
-     id: _lorem.fakeGUID(),
-     resourceID: person.id,
-     resourceName: person.name,
-     projectID: project.id,
-     projectTitle: project.title,
-     startDate: _lorem.getDate().string,
-     endDate: _lorem.getDate().string,
-     role: person.primaryRole,
-     allocation: _numberUtils.rndNumber(10, 25).toString(),
-     comments: _lorem.getText(3,6),
-     timeData: '',
-     allocationData: ''
-     */
+
     function updateStateFromProjectsModel() {
       var obj = Object.create(null);
 
@@ -61,14 +48,12 @@ define('TT.View.ModuleCommon',
           startDate         : assignment.get('startDate'),
           endDate           : assignment.get('endDate'),
           allocation        : assignment.get('allocation'),
-          weekData          : assignment.get('timeCardData')
+          weekData          : assignment.get('timeCardData'),
+          submitHistory     : assignment.get('submitHistory')
         };
       });
 
-      // TESTING
       obj.calendar = TT.model().getTimeModelObj();
-
-      console.log(obj.calendar);
 
       this.setState(obj);
     }
@@ -78,7 +63,7 @@ define('TT.View.ModuleCommon',
      * @param prefix For timecard: 'tc_p_', for assignments: 'asn_p_'
      */
     function buildAssignmentRows(prefix) {
-      _assignmentRows = getTRElementsWithIDMatchingPrefix.call(this,prefix);
+      _assignmentRows = getTRElementsWithIDMatchingPrefix.call(this, prefix);
     }
 
     function getTRElementsWithIDMatchingPrefix(prefix) {
@@ -109,10 +94,8 @@ define('TT.View.ModuleCommon',
         arry.push(obj);
       });
 
-      //packet.year      = this.getState().calendar.currentYear;
-      //packet.weekNum   = this.getState().calendar.currentWeekNum;
       packet.state = this.getState();
-      packet.form = arry;
+      packet.form  = arry;
 
       return packet;
     }
@@ -225,18 +208,17 @@ define('TT.View.ModuleCommon',
     //----------------------------------------------------------------------------
 
     exports.initializeCommon             = initializeCommon;
-    exports.setAssignmentsModel             = setAssignmentsModel;
-    exports.getAssignmentsModel             = getAssignmentsModel;
+    exports.setAssignmentsModel          = setAssignmentsModel;
+    exports.getAssignmentsModel          = getAssignmentsModel;
     exports.updateStateFromProjectsModel = updateStateFromProjectsModel;
     exports.showAlert                    = showAlert;
     exports.closeAllAlerts               = closeAllAlerts;
-    exports.buildAssignmentRows             = buildAssignmentRows;
-    exports.getAssignmentRows               = getAssignmentRows;
-    exports.getAssignmentRowData            = getAssignmentRowData;
+    exports.buildAssignmentRows          = buildAssignmentRows;
+    exports.getAssignmentRows            = getAssignmentRows;
+    exports.getAssignmentRowData         = getAssignmentRowData;
     exports.setProjectTitleCellToolTips  = setProjectTitleCellToolTips;
-    exports.flashAssignmentRow              = flashAssignmentRow;
+    exports.flashAssignmentRow           = flashAssignmentRow;
     exports.parseProjectID               = parseProjectID;
     exports.disableForm                  = disableForm;
     exports.enableForm                   = enableForm;
-
   });

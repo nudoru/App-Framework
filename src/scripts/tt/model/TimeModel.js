@@ -10,6 +10,10 @@ define('TT.Model.TimeModel',
       _id     = 'timeModel';
     }
 
+    function now() {
+      return moment().format('YY.M.D,h:m:s:a');
+    }
+
     function getCurrentWeek() {
       return _moment.week();
     }
@@ -59,6 +63,7 @@ define('TT.Model.TimeModel',
     }
 
     exports.initialize          = initialize;
+    exports.now                 = now;
     exports.getPrettyDateString = getPrettyDateString;
     exports.getDateString       = getDateString;
     exports.getCurrentWeek      = getCurrentWeek;

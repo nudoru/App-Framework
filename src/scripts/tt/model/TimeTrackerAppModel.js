@@ -37,6 +37,10 @@ define('TT.Model.TimeTrackerAppModel',
       };
     }
 
+    function getNow() {
+      return _timeModel.now();
+    }
+
     //----------------------------------------------------------------------------
     //
     //----------------------------------------------------------------------------
@@ -123,15 +127,17 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     function handleSubmitTimeCard(dataObj) {
-      console.log('handleSubmitTimeCard', dataObj.payload);
+      //console.log('handleSubmitTimeCard', dataObj.payload);
+      submitCurrentTimeCard();
     }
 
     function handleUnlockTimeCard(dataObj) {
-      console.log('handleUnlockTimeCard', dataObj.payload);
+      //console.log('handleUnlockTimeCard', dataObj.payload.comments);
+      unlockCurrentTimeCard(dataObj.payload.comments);
     }
 
     function handleUpdateTimeCard(dataObj) {
-      //console.log('handleUpdateTimeCard', dataObj.payload);
+      console.log('handleUpdateTimeCard', dataObj.payload);
       dataObj.payload.data.form.forEach(function (dataRow) {
         var assignmentID = Object.keys(dataRow)[0];
         updateAssignmentTimeCardData(assignmentID, dataRow[assignmentID]);
@@ -240,6 +246,23 @@ define('TT.Model.TimeTrackerAppModel',
      */
     function updateAssignmentTimeCardData(id, data) {
       getAssignmentMapForID(id).setKeyProp('timeCardData', getTimeModelObj().date, data);
+      //console.log(getAssignmentMapForID(id).getKeyProp('timeCardData', getTimeModelObj().date));
+    }
+
+    function submitCurrentTimeCard() {
+      //getAssignmentMapForID(id).setKeyProp('submitHistory', getTimeModelObj().date, {
+      //  locked: true,
+      //  date: getNow(),
+      //  comments: 'First submit'
+      //});
+    }
+
+    function unlockCurrentTimeCard(comments) {
+      //getAssignmentMapForID(id).setKeyProp('submitHistory', getTimeModelObj().date, {
+      //  locked: false,
+      //  date: getNow(),
+      //  comments: comments
+      //});
     }
 
     //----------------------------------------------------------------------------
@@ -263,6 +286,7 @@ define('TT.Model.TimeTrackerAppModel',
     exports.getCurrentUserModel                 = getCurrentUserModel;
     exports.getCurrentUserAssignmentsCollection = getCurrentUserAssignmentsCollection;
     exports.getTimeModelObj                     = getTimeModelObj;
+    exports.getNow                              = getNow;
     exports.handleModelDataChanged              = handleModelDataChanged;
     exports.handleUpdateModelData               = handleUpdateModelData;
     exports.getProjectsAndIDList                = getProjectsAndIDList;
