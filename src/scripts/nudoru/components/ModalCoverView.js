@@ -44,20 +44,20 @@ define('Nudoru.Component.ModalCoverView',
       hide(true);
     }
 
-    function showModalCover(animate) {
+    function showModalCover(shouldAnimate) {
       _isVisible = true;
-      var duration = animate ? 0.25 : 0;
+      var duration = shouldAnimate ? 0.25 : 0;
       TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease: Quad.easeOut});
     }
 
-    function show(animate) {
+    function show(shouldAnimate) {
       if (_isVisible) {
         return;
       }
 
       _isHard = false;
 
-      showModalCover(animate);
+      showModalCover(shouldAnimate);
       TweenLite.to(_modalCloseButtonEl, duration * 2, {
         autoAlpha: 1,
         top: 22,
@@ -70,26 +70,26 @@ define('Nudoru.Component.ModalCoverView',
 
     /**
      * A 'hard' modal view cannot be dismissed with a click, must be via code
-     * @param animate
+     * @param shouldAnimate
      */
-    function showHard(animate) {
+    function showHard(shouldAnimate) {
       if (_isVisible) {
         return;
       }
 
       _isHard = true;
 
-      showModalCover(animate);
+      showModalCover(shouldAnimate);
       TweenLite.to(_modalCloseButtonEl, 0, {autoAlpha: 0});
     }
 
-    function hide(animate) {
+    function hide(shouldAnimate) {
       if (!_isVisible) {
         return;
       }
       _isVisible = false;
       _isHard = false;
-      var duration = animate ? 0.25 : 0;
+      var duration = shouldAnimate ? 0.25 : 0;
       TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
       TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease: Quad.easeOut});
       TweenLite.to(_modalCloseButtonEl, duration / 2, {
@@ -101,10 +101,23 @@ define('Nudoru.Component.ModalCoverView',
       _dispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
     }
 
+    function setOpacity(opacity) {
+      if(opacity < 0 || opacity > 1) {
+        console.log('Nudoru.Component.ModalCoverView: setOpacity: opacity should be between 0 and 1');
+        opacity = 1;
+      }
+      TweenLite.to(_modalBackgroundEl, 0.25, {alpha: opacity, ease:Quad.easeOut});
+    }
+
+    function setColor(r,g,b) {
+      TweenLite.to(_modalBackgroundEl, 0.25, {backgroundColor:'rgb('+r+','+g+','+b+')', ease:Quad.easeOut});
+    }
+
     exports.initialize = initialize;
     exports.show = show;
     exports.showHard = showHard;
     exports.hide = hide;
     exports.visible = getIsVisible;
-
+    exports.setOpacity = setOpacity;
+    exports.setColor = setColor;
   });

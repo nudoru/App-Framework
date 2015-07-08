@@ -45,7 +45,7 @@ define('Nudoru.Component.ToolTipView',
         'TL': 'tooltip__topleft'
       },
       _mountPoint,
-      _template = require('Nudoru.Component.NTemplate'),
+      _template = require('Nudoru.Component.Templating'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _componentUtils = require('Nudoru.Component.ComponentViewUtils');
 

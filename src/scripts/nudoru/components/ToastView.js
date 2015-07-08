@@ -24,7 +24,7 @@ define('Nudoru.Component.ToastView',
         'danger' : 'toast__danger'
       },
       _mountPoint,
-      _template = require('Nudoru.Component.NTemplate'),
+      _template = require('Nudoru.Component.Templating'),
       _browserInfo = require('Nudoru.Browser.BrowserInfo'),
       _domUtils = require('Nudoru.Browser.DOMUtils'),
       _componentUtils = require('Nudoru.Component.ComponentViewUtils');

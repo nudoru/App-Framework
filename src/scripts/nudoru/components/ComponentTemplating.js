@@ -3,22 +3,8 @@
 
  Matt Perkins
  4/7/15
-
- Refer - http://ejohn.org/blog/javascript-micro-templating/
-
- Performance
- Before cache
- 10000 x NTemplate.getTemplate('template__item-tile')          = 2218.643ms
- 10000 x NTemplate.asElement('template__item-tile', testObj)   = 3294.082ms
-
- Template HTML Caching
- 10000 x NTemplate.getTemplate('template__item-tile')          = 1904.079ms
-
- Template HTML and Template Caching
- 10000 x NTemplate.getTemplate('template__item-tile')          = 0.3ms
- 10000 x NTemplate.asElement('template__item-tile', testObj)   = 614.038ms
  */
-define('Nudoru.Component.NTemplate',
+define('Nudoru.Component.Templating',
   function(require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
