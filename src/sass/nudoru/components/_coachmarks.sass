@@ -1,0 +1,14 @@
+#coachmarks__container
+  z-index: $z-index-choachmark-container
+
+%coachmark__shape-base
+  position: absolute
+  border: 2px solid #fff
+  background-color: $color-nocolor
+
+.coachmark__shape-circle
+  @extend %coachmark__shape-base
+  border-radius: 50%
+
+.coachmark__shape-rect
+  @extend %coachmark__shape-base

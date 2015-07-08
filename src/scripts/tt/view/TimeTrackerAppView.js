@@ -8,9 +8,10 @@ define('TT.View.TimeTrackerAppView',
   function (require, module, exports) {
 
     var _self,
-      _moduleNavView = require('TT.View.ModuleNavView'),
-      _toolTip = require('Nudoru.Component.ToolTipView'),
-      _appEvents = require('Nori.Events.AppEventCreator');
+        _helpView      = require('Nudoru.Component.CoachMarksView'),
+        _moduleNavView = require('TT.View.ModuleNavView'),
+        _toolTip       = require('Nudoru.Component.ToolTipView'),
+        _appEvents     = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       _self = this;
@@ -20,8 +21,10 @@ define('TT.View.TimeTrackerAppView',
       mapRoutes();
       mapComponentViews();
       configureUIEvents();
+      configureHelpCoachmarks();
       //configureToolTips();
 
+      _helpView.initialize('#coachmarks__container');
       _moduleNavView.initialize();
       _appEvents.applicationViewInitialized();
     }
@@ -59,88 +62,101 @@ define('TT.View.TimeTrackerAppView',
     function configureUIEvents() {
       _self.setEvents({
         'click #btn_main_projects': handleProjectsButton,
-        'click #btn_main_people': handlePeopleButton,
-        'click #btn_main_help': handleHelpButton
+        'click #btn_main_people'  : handlePeopleButton,
+        'click #btn_main_help'    : handleHelpButton
       });
       _self.delegateEvents();
     }
 
     function handleProjectsButton() {
       _self.addMessageBox({
-        title: 'Projects',
+        title  : 'Projects',
         content: 'This feature is still in development!',
-        type: 'default',
-        modal: true,
-        width: 350
+        type   : 'default',
+        modal  : true,
+        width  : 350
       });
     }
 
     function handlePeopleButton() {
       _self.addMessageBox({
-        title: 'People',
+        title  : 'People',
         content: 'This feature is still in development!',
-        type: 'default',
-        modal: true,
-        width: 350
+        type   : 'default',
+        modal  : true,
+        width  : 350
       });
     }
 
     function handleHelpButton() {
-      _self.addMessageBox({
-        title: 'How Do I?',
-        content: 'This feature is still in development!',
-        type: 'information',
-        modal: true,
-        width: 550
+      //_self.addMessageBox({
+      //  title  : 'How Do I?',
+      //  content: 'This feature is still in development!',
+      //  type   : 'information',
+      //  modal  : true,
+      //  width  : 550
+      //});
+      _helpView.show();
+    }
+
+    function configureHelpCoachmarks() {
+      _helpView.outlineElement('#btn_assignments', {
+        shape: 'circle',
+        gutter: 5,
+        label: 'Click here to see your current assignments and to add new ones or archive old ones',
+        style: 'tooltip',
+        position: 'R'
       });
+      //_helpView.outlineElement('#btn_timecard');
+      //_helpView.outlineElement('#btn_forecast');
     }
 
     function configureToolTips() {
       _toolTip.add({
-        title: '',
-        content: 'View Projects List',
+        title   : '',
+        content : 'View Projects List',
         position: 'B',
         targetEl: _buttonProjects,
-        type: 'information',
-        width: 75
+        type    : 'information',
+        width   : 75
       });
       _toolTip.add({
-        title: '',
-        content: 'View People List',
+        title   : '',
+        content : 'View People List',
         position: 'B',
         targetEl: _buttonPeople,
-        type: 'information',
-        width: 75
+        type    : 'information',
+        width   : 75
       });
       _toolTip.add({
-        title: '',
-        content: 'Access information for performing common tasks',
+        title   : '',
+        content : 'Access information for performing common tasks',
         position: 'B',
         targetEl: _buttonHelp,
-        type: 'information',
-        width: 75
+        type    : 'information',
+        width   : 75
       });
 
       _toolTip.add({
-        title: '',
-        content: 'Add and remove assignments from your active list',
+        title   : '',
+        content : 'Add and remove assignments from your active list',
         position: 'R',
         targetEl: document.getElementById('btn_assignments'),
-        type: 'information'
+        type    : 'information'
       });
       _toolTip.add({
-        title: '',
-        content: 'Log time to assignments on your active list',
+        title   : '',
+        content : 'Log time to assignments on your active list',
         position: 'R',
         targetEl: document.getElementById('btn_timecard'),
-        type: 'information'
+        type    : 'information'
       });
       _toolTip.add({
-        title: '',
-        content: 'View capacity based on your estimated alloation',
+        title   : '',
+        content : 'View capacity based on your estimated alloation',
         position: 'R',
         targetEl: document.getElementById('btn_forecast'),
-        type: 'information'
+        type    : 'information'
       });
     }
 
@@ -152,8 +168,8 @@ define('TT.View.TimeTrackerAppView',
       _moduleNavView.highlightModule(newRoute.route);
     }
 
-    exports.initialize = initialize;
-    exports.render = render;
+    exports.initialize          = initialize;
+    exports.render              = render;
     exports.updateOnRouteChange = updateOnRouteChange;
 
   });
