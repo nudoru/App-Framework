@@ -7,8 +7,8 @@ define('Nudoru.Component.CoachMarksView',
         _markedObjects   = [],
         _mountPoint,
         _modalCloseSubscriber,
-        _shapeTemplate   = '<div id="#js__coachmark-element-<%= id%>" class="coachmark__shape-<%= props.shape%>"></div>',
-        _template        = require('Nudoru.Component.Templating'),
+        _shapeTemplateHTML = '<div id="#js__coachmark-element-<%= id%>" class="coachmark__shape-<%= props.shape%>"></div>',
+        _shapeTemplate,
         _modal           = require('Nudoru.Component.ModalCoverView'),
         _domUtils        = require('Nudoru.Browser.DOMUtils'),
         _componentUtils  = require('Nudoru.Component.ComponentViewUtils'),
@@ -17,12 +17,14 @@ define('Nudoru.Component.CoachMarksView',
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
+      _shapeTemplate = _.template(_shapeTemplateHTML);
     }
 
     function outlineElement(selector, props) {
       var el = document.querySelector(selector);
       _markedObjects.push({
         targetElement: el,
+        targetElPros: el.getBoundingClientRect(),
         id           : _highestZ++,
         shape        : null,
         label        : null,
@@ -33,12 +35,16 @@ define('Nudoru.Component.CoachMarksView',
     function renderMarkedObjects() {
       _markedObjects.forEach(function (object) {
         console.log(object);
+        object.shape = _domUtils.HTMLStrToNode(_shapeTemplate(object));
+
+        _mountPoint.appendChild(object.child);
       });
     }
 
     function show() {
       _modalCloseSubscriber = _dispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hide);
       _modal.show(true);
+      renderMarkedObjects();
     }
 
     function hide() {
