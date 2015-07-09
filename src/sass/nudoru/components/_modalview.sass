@@ -8,14 +8,16 @@
 
 .modal__close-button
   position: absolute
-  top: $double-base-line-height
-  left: $double-base-line-height
+  bottom: $base-line-height
+  left: 50%
+  margin-left: -20px
   width: 40px
   height: 40px
   font-size: 2rem
   color: rgba(255,255,255,.75)
   cursor: pointer
+  text-shadow: 0 0 10px rgba(0,0,0,.5)
   &:hover
     color: rgba(255,255,255,1)
-  +respond-to(max-width, $tablet-mobile-break)
-    left: $base-line-height
+  //+respond-to(max-width, $tablet-mobile-break)
+  //  left: $base-line-height

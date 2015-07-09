@@ -84,7 +84,7 @@ define('Nudoru.Component.MessageBoxView',
 
       // Show the modal cover
       if (initObj.modal) {
-        _modal.showHard(true);
+        _modal.showNonDismissable(true);
       }
 
       return boxObj.id;

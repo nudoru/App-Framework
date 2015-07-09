@@ -1,6 +1,6 @@
 /**
  * Created 2/?/15
- * Last updated 5/5/15
+ * Last updated 7/9/15
  */
 
 define('Nudoru.Component.ModalCoverView',
@@ -11,7 +11,7 @@ define('Nudoru.Component.ModalCoverView',
         _modalCloseButtonEl,
         _modalClickStream,
         _isVisible,
-        _isHard,
+        _notDismissable,
         _dispatcher      = require('Nudoru.Component.Dispatcher'),
         _componentEvents = require('Nudoru.Component.ComponentEvents'),
         _browserInfo     = require('Nudoru.Browser.BrowserInfo');
@@ -40,7 +40,7 @@ define('Nudoru.Component.ModalCoverView',
     }
 
     function onModalClick() {
-      if (_isHard) return;
+      if (_notDismissable) return;
       hide(true);
     }
 
@@ -55,14 +55,16 @@ define('Nudoru.Component.ModalCoverView',
         return;
       }
 
-      _isHard = false;
+      _notDismissable = false;
 
       showModalCover(shouldAnimate);
-      TweenLite.to(_modalCloseButtonEl, 0.5, {
+
+      TweenLite.set(_modalCloseButtonEl, {scale: 2, alpha: 0});
+      TweenLite.to(_modalCloseButtonEl, 1, {
         autoAlpha: 1,
-        top      : 22,
-        ease     : Back.easeOut,
-        delay    : 2
+        scale: 1,
+        ease     : Bounce.easeOut,
+        delay    : 1
       });
 
       _dispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
@@ -72,12 +74,12 @@ define('Nudoru.Component.ModalCoverView',
      * A 'hard' modal view cannot be dismissed with a click, must be via code
      * @param shouldAnimate
      */
-    function showHard(shouldAnimate) {
+    function showNonDismissable(shouldAnimate) {
       if (_isVisible) {
         return;
       }
 
-      _isHard = true;
+      _notDismissable = true;
 
       showModalCover(shouldAnimate);
       TweenLite.to(_modalCloseButtonEl, 0, {autoAlpha: 0});
@@ -88,13 +90,12 @@ define('Nudoru.Component.ModalCoverView',
         return;
       }
       _isVisible   = false;
-      _isHard      = false;
+      _notDismissable      = false;
       var duration = shouldAnimate ? 0.25 : 0;
       TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
       TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease: Quad.easeOut});
       TweenLite.to(_modalCloseButtonEl, duration / 2, {
         autoAlpha: 0,
-        top      : -50,
         ease     : Quad.easeOut
       });
 
@@ -121,7 +122,7 @@ define('Nudoru.Component.ModalCoverView',
 
     exports.initialize = initialize;
     exports.show       = show;
-    exports.showHard   = showHard;
+    exports.showNonDismissable   = showNonDismissable;
     exports.hide       = hide;
     exports.visible    = getIsVisible;
     exports.setOpacity = setOpacity;

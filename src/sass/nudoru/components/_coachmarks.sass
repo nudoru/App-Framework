@@ -1,10 +1,13 @@
 #coachmarks__container
+  position: absolute
   z-index: $z-index-choachmark-container
 
 %coachmark__shape-base
   position: absolute
   border: 2px solid #fff
-  background-color: $color-nocolor
+  background-color: rgba(255,255,255,.15)
+  box-shadow: 0 2px 5px rgba(0,0,0,.25)
+  cusor: pointer
 
 .coachmark__shape-circle
   @extend %coachmark__shape-base
@@ -12,3 +15,11 @@
 
 .coachmark__shape-rect
   @extend %coachmark__shape-base
+  border-radius: 5px
+
+.coachmark__shape-none
+  border: 1px solid $color-nocolor
+  //background-color: rgba(255,255,255,.15)
+  +gradient-vertical(rgba(255,255,255,.15), rgba(255,255,255,.0))
+  //box-shadow: 0 2px 5px rgba(0,0,0,.25)
+  border-radius: 5px

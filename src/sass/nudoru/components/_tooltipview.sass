@@ -5,6 +5,7 @@ $arrow-side-trans: 5px solid transparent
 $arrow-side-color: 5px solid
 
 #tooltip__container
+  position: absolute
   z-index: $z-index-tooltip-container
 
 .tooltip__item
@@ -64,6 +65,21 @@ $arrow-side-color: 5px solid
 .tooltip__danger
   +tooltip-variation($control-danger-color)
 
+.tooltip__coachmark
+  +tooltip-variation(rgba(0,0,0,.75))
+  border: 1px solid #fff
+  .arrow
+    display: none
+  .tooltip__item-content
+    h1, p
+      @extend .h6-alternate
+      margin: 0
+      padding: 0
+      line-height: $double-base-line-height
+      color: #fff
+      text-shadow: 0 2px 5px rgba(0,0,0,.25)
+
+
 .tooltip__top
   .arrow
     bottom: -$half-base-line-height
@@ -79,6 +95,7 @@ $arrow-side-color: 5px solid
 .tooltip__right
   .arrow
     left: -$half-base-line-height
+    top: 5px
 
 .tooltip__bottomright
   border-radius: $tooltip-point-border-radius $tooltip-border-radius $tooltip-border-radius $tooltip-border-radius
@@ -102,6 +119,7 @@ $arrow-side-color: 5px solid
 .tooltip__left
   .arrow
     right: -$half-base-line-height
+    top: 5px
   p
     text-align: right
 

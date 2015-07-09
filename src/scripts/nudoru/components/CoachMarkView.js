@@ -1,43 +1,78 @@
+/**
+ * Created by matt on 7/9/15
+ * last updated 7/9/15
+ */
+
 define('Nudoru.Component.CoachMarksView',
   function (require, module, exports) {
 
-    var _children        = [],
-        _counter         = 0,
-        _highestZ        = 1000,
-        _markedObjects   = [],
+    var _counter           = 1,
+        _markedObjects     = [],
+        _gutter            = 5,
+        _labelWidth        = 250,
         _mountPoint,
         _modalCloseSubscriber,
-        _shapeTemplateHTML = '<div id="#js__coachmark-element-<%= id%>" class="coachmark__shape-<%= props.shape%>"></div>',
+        _shapeTemplateHTML = '<div id="#js__coachmark-shape-<%= id%>" class="coachmark__shape-<%= props.shape%>"></div>',
         _shapeTemplate,
-        _modal           = require('Nudoru.Component.ModalCoverView'),
-        _domUtils        = require('Nudoru.Browser.DOMUtils'),
-        _componentUtils  = require('Nudoru.Component.ComponentViewUtils'),
-        _dispatcher      = require('Nudoru.Component.Dispatcher'),
-        _componentEvents = require('Nudoru.Component.ComponentEvents');
+        _toolTip           = require('Nudoru.Component.ToolTipView'),
+        _modal             = require('Nudoru.Component.ModalCoverView'),
+        _domUtils          = require('Nudoru.Browser.DOMUtils'),
+        _dispatcher        = require('Nudoru.Component.Dispatcher'),
+        _componentEvents   = require('Nudoru.Component.ComponentEvents');
 
     function initialize(elID) {
-      _mountPoint = document.getElementById(elID);
+      _mountPoint    = document.getElementById(elID);
       _shapeTemplate = _.template(_shapeTemplateHTML);
     }
 
     function outlineElement(selector, props) {
-      var el = document.querySelector(selector);
       _markedObjects.push({
-        targetElement: el,
-        targetElPros: el.getBoundingClientRect(),
-        id           : _highestZ++,
-        shape        : null,
-        label        : null,
-        props        : props
+        targetSelector: selector,
+        id            : _counter++,
+        shape         : null,
+        label         : null,
+        props         : props
       });
     }
 
     function renderMarkedObjects() {
-      _markedObjects.forEach(function (object) {
-        console.log(object);
-        object.shape = _domUtils.HTMLStrToNode(_shapeTemplate(object));
+      _markedObjects.forEach(function (object, i) {
+        var el      = document.querySelector(object.targetSelector),
+            elProps = el.getBoundingClientRect(),
+            shape   = _domUtils.HTMLStrToNode(_shapeTemplate(object)),
+            tooltip;
 
-        _mountPoint.appendChild(object.child);
+        object.shape = shape;
+
+        _mountPoint.appendChild(object.shape);
+
+        TweenLite.set(object.shape, {
+          alpha : 0,
+          x     : elProps.left - _gutter,
+          y     : elProps.top - _gutter,
+          width : object.props.width || elProps.width + (_gutter * 2),
+          height: object.props.height || elProps.height + (_gutter * 2)
+        });
+
+        tooltip = _toolTip.add({
+          title        : '',
+          content      : object.props.label,
+          position     : object.props.labelPosition,
+          targetEl     : object.shape,
+          width        : object.props.labelWidth || _labelWidth,
+          gutter       : 2,
+          alwaysVisible: true,
+          type         : 'coachmark'
+        });
+
+        TweenLite.set(tooltip, {alpha:0});
+
+        TweenLite.to([tooltip, object.shape], 1, {
+          alpha: 1,
+          ease : Quad.easeOut,
+          delay: 0.5 * i
+        });
+
       });
     }
 
@@ -52,6 +87,13 @@ define('Nudoru.Component.CoachMarksView',
       _modal.hide(true);
       _modalCloseSubscriber.dispose();
       _modalCloseSubscriber = null;
+
+      _markedObjects.forEach(function (object) {
+        TweenLite.killDelayedCallsTo(object.shape);
+        _toolTip.remove(object.shape);
+        _mountPoint.removeChild(object.shape);
+        delete object.shape;
+      });
     }
 
     exports.initialize     = initialize;

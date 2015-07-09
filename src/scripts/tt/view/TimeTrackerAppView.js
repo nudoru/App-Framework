@@ -24,7 +24,7 @@ define('TT.View.TimeTrackerAppView',
       configureHelpCoachmarks();
       //configureToolTips();
 
-      _helpView.initialize('#coachmarks__container');
+      _helpView.initialize('coachmarks__container');
       _moduleNavView.initialize();
       _appEvents.applicationViewInitialized();
     }
@@ -37,9 +37,6 @@ define('TT.View.TimeTrackerAppView',
       // TODO fix this duplicate controller view
       TT.mapRouteView('/', 'Timecard', 'TT.View.TimeCardView');
 
-      // TESTING routes
-      //TT.mapRouteView('/controls', 'ControlsTesting', 'TT.View.ControlsTestingSubView');
-
       TT.mapRouteView('/Assignments', 'Assignments', 'TT.View.AssignmentsView');
       TT.mapRouteView('/Timecard', 'Timecard', 'TT.View.TimeCardView');
       TT.mapRouteView('/Forecast', 'Forecast', 'TT.View.CapacityForecastView');
@@ -48,7 +45,6 @@ define('TT.View.TimeTrackerAppView',
       _self.extendSubViewController('Assignments', [requireNew('TT.View.ModuleCommon')]);
       _self.extendSubViewController('Timecard', [requireNew('TT.View.ModuleCommon')]);
       _self.extendSubViewController('Forecast', [requireNew('TT.View.ModuleCommon')]);
-
     }
 
     function render() {
@@ -89,74 +85,34 @@ define('TT.View.TimeTrackerAppView',
     }
 
     function handleHelpButton() {
-      //_self.addMessageBox({
-      //  title  : 'How Do I?',
-      //  content: 'This feature is still in development!',
-      //  type   : 'information',
-      //  modal  : true,
-      //  width  : 550
-      //});
       _helpView.show();
     }
 
+    /**
+     * Configure the coach marks help
+     */
     function configureHelpCoachmarks() {
-      _helpView.outlineElement('#btn_assignments', {
-        shape: 'circle',
-        gutter: 5,
-        label: 'Click here to see your current assignments and to add new ones or archive old ones',
-        style: 'tooltip',
-        position: 'R'
+      _helpView.outlineElement('#module_navigation', {
+        shape: 'rect',
+        label: 'Access different module of the application: Adding and removing projects, entering time weekly and viewing your capacity (coming soon). ',
+        labelWidth: 200,
+        labelPosition: 'R'
       });
-      //_helpView.outlineElement('#btn_timecard');
-      //_helpView.outlineElement('#btn_forecast');
-    }
-
-    function configureToolTips() {
-      _toolTip.add({
-        title   : '',
-        content : 'View Projects List',
-        position: 'B',
-        targetEl: _buttonProjects,
-        type    : 'information',
-        width   : 75
+      _helpView.outlineElement('#main_navigation', {
+        shape: 'rect',
+        label: 'Access the master projects and people SharePoint lists.',
+        labelPosition: 'B'
       });
-      _toolTip.add({
-        title   : '',
-        content : 'View People List',
-        position: 'B',
-        targetEl: _buttonPeople,
-        type    : 'information',
-        width   : 75
+      _helpView.outlineElement('#userprofilepanel', {
+        shape: 'rect',
+        label: 'Information about you.',
+        labelPosition: 'B'
       });
-      _toolTip.add({
-        title   : '',
-        content : 'Access information for performing common tasks',
-        position: 'B',
-        targetEl: _buttonHelp,
-        type    : 'information',
-        width   : 75
-      });
-
-      _toolTip.add({
-        title   : '',
-        content : 'Add and remove assignments from your active list',
-        position: 'R',
-        targetEl: document.getElementById('btn_assignments'),
-        type    : 'information'
-      });
-      _toolTip.add({
-        title   : '',
-        content : 'Log time to assignments on your active list',
-        position: 'R',
-        targetEl: document.getElementById('btn_timecard'),
-        type    : 'information'
-      });
-      _toolTip.add({
-        title   : '',
-        content : 'View capacity based on your estimated alloation',
-        position: 'R',
-        targetEl: document.getElementById('btn_forecast'),
-        type    : 'information'
+      _helpView.outlineElement('#contents', {
+        shape: 'rect',
+        label: 'Different application modules will appear here.',
+        labelPosition: 'B',
+        height: 200
       });
     }
 
