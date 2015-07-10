@@ -104,7 +104,6 @@ define('TT.Model.MockDataCreator',
         teamLeading   : 'Dev Team',
         duration      : _numberUtils.rndNumber(1, 5).toString()
       };
-
     }
 
     function createAssignment(person, project) {
@@ -112,6 +111,7 @@ define('TT.Model.MockDataCreator',
         id                : (++_assignmentId).toString(),
         resourceID        : person.id,
         resourceName      : person.name,
+        active            : true,
         projectID         : project.id,
         projectTitle      : '[a'+_assignmentId+'] '+ project.title,
         projectDescription: project.description,

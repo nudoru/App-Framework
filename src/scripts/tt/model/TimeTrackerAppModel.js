@@ -52,12 +52,11 @@ define('TT.Model.TimeTrackerAppModel',
 
       _timeModel.initialize();
 
-      createMapStores();
+      createDataCollections();
 
       _appEvents.applicationModelInitialized();
 
-      _dispatcher.subscribe(_ttEventConstants.ADD_ASSIGNMENT,
-        handleAddAssignment);
+      _dispatcher.subscribe(_ttEventConstants.ADD_ASSIGNMENT, handleAddAssignment);
       _dispatcher.subscribe(_ttEventConstants.ARCHIVE_ASSIGNMENT, handleArchiveAssignment);
       _dispatcher.subscribe(_ttEventConstants.UPDATE_ASSIGNMENTS, handleUpdateAssignments);
       _dispatcher.subscribe(_ttEventConstants.SUBMIT_TIMECARD, handleSubmitTimeCard);
@@ -115,9 +114,7 @@ define('TT.Model.TimeTrackerAppModel',
     function handleArchiveAssignment(dataObj) {
       //console.log('handleArchiveAssignment', dataObj.payload);
       if (dataObj.payload) {
-        //console.log(_currentUserProjectsCollection.toJSON());
         _currentUserAssignmentsCollection.remove(dataObj.payload.assignmentID);
-        //console.log(_currentUserProjectsCollection.toJSON());
       }
 
       publishUpdateNotification('Project successfully archived.');
@@ -177,10 +174,10 @@ define('TT.Model.TimeTrackerAppModel',
     /**
      * Create model data
      */
-    function createMapStores() {
+    function createDataCollections() {
       _dataCreator.initialize();
 
-      loadApplicationData();
+      loadMockApplicationData();
 
       _peopleCollection      = _self.createMapCollection({id: 'peopleCollection'});
       _projectsCollection    = _self.createMapCollection({id: 'projectsCollection'});
@@ -190,16 +187,18 @@ define('TT.Model.TimeTrackerAppModel',
       _projectsCollection.addFromObjArray(_projectsSourceData, 'id', false);
       _assignmentsCollection.addFromObjArray(_assignmentsSourceData, 'id', false);
 
+      // Mock - just pull the first user
       _currentUserMap = _peopleCollection.getFirst();
 
       _currentUserAssignmentsCollection = _self.createMapCollection({id: 'currentUserAssignments'});
+      // Build the current user assignments from assignments where the resource name is the current user
       _currentUserAssignmentsCollection.addMapsFromArray(_assignmentsCollection.filterByKey('resourceName', _currentUserMap.get('name')));
     }
 
     /**
      * Gets the data objects from the source
      */
-    function loadApplicationData() {
+    function loadMockApplicationData() {
       _peopleSourceData      = JSON.parse(getLocalStorageObject('mockTTData.people'));
       _projectsSourceData    = JSON.parse(getLocalStorageObject('mockTTData.projects'));
       _assignmentsSourceData = JSON.parse(getLocalStorageObject('mockTTData.assignments'));
