@@ -8,10 +8,12 @@ define('TT.View.TimeTrackerAppView',
   function (require, module, exports) {
 
     var _self,
-        _helpView      = require('Nudoru.Component.CoachMarksView'),
-        _moduleNavView = require('TT.View.ModuleNavView'),
-        _toolTip       = require('Nudoru.Component.ToolTipView'),
-        _appEvents     = require('Nori.Events.AppEventCreator');
+        _helpView              = require('Nudoru.Component.CoachMarksView'),
+        _moduleNavView         = require('TT.View.ModuleNavView'),
+        _appEvents             = require('Nori.Events.AppEventCreator'),
+        _dispatcher            = require('Nori.Utils.Dispatcher'),
+        _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     function initialize() {
       _self = this;
@@ -22,10 +24,12 @@ define('TT.View.TimeTrackerAppView',
       mapComponentViews();
       configureUIEvents();
       configureHelpCoachmarks();
-      //configureToolTips();
 
       _helpView.initialize('coachmarks__container');
       _moduleNavView.initialize();
+
+      configureApplicationViewEvents();
+
       _appEvents.applicationViewInitialized();
     }
 
@@ -64,6 +68,16 @@ define('TT.View.TimeTrackerAppView',
       _self.delegateEvents();
     }
 
+    function configureApplicationViewEvents() {
+      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function (payload) {
+        _self.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+      });
+
+      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function (payload) {
+        _self.alert(payload.payload.message, payload.payload.title);
+      });
+    }
+
     function handleProjectsButton() {
       _self.addMessageBox({
         title  : 'Projects',
@@ -93,25 +107,25 @@ define('TT.View.TimeTrackerAppView',
      */
     function configureHelpCoachmarks() {
       _helpView.outlineElement('#module_navigation', {
-        shape: 'rect',
-        label: 'Access different module of the application: Adding and removing projects, entering time weekly and viewing your capacity (coming soon). ',
-        labelWidth: 200,
+        shape        : 'rect',
+        label        : 'Access different module of the application: Adding and removing projects, entering time weekly and viewing your capacity (coming soon). ',
+        labelWidth   : 200,
         labelPosition: 'R'
       });
       _helpView.outlineElement('#userprofilepanel', {
-        shape: 'rect',
-        label: 'Information about you.',
+        shape        : 'rect',
+        label        : 'Information about you.',
         labelPosition: 'B'
       });
       _helpView.outlineElement('#contents', {
-        shape: 'rect',
-        label: 'Different application modules will appear here.',
+        shape        : 'rect',
+        label        : 'Different application modules will appear here.',
         labelPosition: 'B',
-        height: 200
+        height       : 200
       });
       _helpView.outlineElement('#main_navigation', {
-        shape: 'rect',
-        label: 'Access the master projects and people SharePoint lists.',
+        shape        : 'rect',
+        label        : 'Access the master projects and people SharePoint lists.',
         labelPosition: 'B'
       });
     }

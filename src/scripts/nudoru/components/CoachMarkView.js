@@ -83,8 +83,10 @@ define('Nudoru.Component.CoachMarksView',
       renderMarkedObjects();
     }
 
+    /**
+     * Hide triggered by clicking on the modal mask or the modal close button
+     */
     function hide() {
-      console.log('coachmarks hide');
       _modal.hide(true);
       _modalCloseSubscriber.dispose();
       _modalCloseSubscriber = null;

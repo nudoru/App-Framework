@@ -2,13 +2,13 @@ define('Nori.View.ApplicationView',
   function (require, module, exports) {
 
     var _appContainerEl,
-      _appEl,
-      _renderer = require('Nori.View.Renderer'),
-      _notificationView = require('Nudoru.Component.ToastView'),
-      _toolTipView = require('Nudoru.Component.ToolTipView'),
-      _messageBoxView = require('Nudoru.Component.MessageBoxView'),
-      _messageBoxCreator = require('Nudoru.Component.MessageBoxCreator'),
-      _modalCoverView = require('Nudoru.Component.ModalCoverView');
+        _appEl,
+        _renderer          = require('Nori.View.Renderer'),
+        _notificationView  = require('Nudoru.Component.ToastView'),
+        _toolTipView       = require('Nudoru.Component.ToolTipView'),
+        _messageBoxView    = require('Nudoru.Component.MessageBoxView'),
+        _messageBoxCreator = require('Nudoru.Component.MessageBoxCreator'),
+        _modalCoverView    = require('Nudoru.Component.ModalCoverView');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -35,7 +35,7 @@ define('Nori.View.ApplicationView',
 
     function initializeApplicationElements() {
       _appContainerEl = document.getElementById('app__container');
-      _appEl = document.getElementById('app__contents');
+      _appEl          = document.getElementById('app__contents');
     }
 
     function initializeComponents() {
@@ -78,8 +78,8 @@ define('Nori.View.ApplicationView',
      * Show a popup message box
      * @param message
      */
-    function showAlert(message) {
-      return mbCreator().alert('Alert',message);
+    function alert(message, title) {
+      return mbCreator().alert(title || 'Alert', message);
     }
 
     /**
@@ -95,10 +95,10 @@ define('Nori.View.ApplicationView',
      * @param title The title
      * @param message The message
      */
-    function showNotification(message, title, type) {
+    function notify(message, title, type) {
       return addNotification({
-        title: title || "Notification",
-        type: type || _notificationView.type().DEFAULT,
+        title  : title || '',
+        type   : type || _notificationView.type().DEFAULT,
         message: message
       });
     }
@@ -107,8 +107,8 @@ define('Nori.View.ApplicationView',
      * After app initialization, remove the loading message
      */
     function removeLoadingMessage() {
-      var cover = document.getElementById('initialization__cover'),
-        message = document.getElementsByClassName('initialization__message')[0];
+      var cover   = document.getElementById('initialization__cover'),
+          message = document.getElementsByClassName('initialization__message')[0];
 
       TweenLite.to(cover, 1, {
         alpha: 0, ease: Quad.easeOut, onComplete: function () {
@@ -127,19 +127,18 @@ define('Nori.View.ApplicationView',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeApplicationView = initializeApplicationView;
+    exports.initializeApplicationView     = initializeApplicationView;
     exports.initializeApplicationElements = initializeApplicationElements;
-    exports.initializeComponents = initializeComponents;
-
-    exports.mbCreator = mbCreator;
-    exports.addMessageBox = addMessageBox;
-    exports.removeMessageBox = removeMessageBox;
-    exports.addNotification = addNotification;
-    exports.alert = showAlert;
-    exports.notify = showNotification;
+    exports.initializeComponents          = initializeComponents;
+    exports.mbCreator            = mbCreator;
+    exports.addMessageBox        = addMessageBox;
+    exports.removeMessageBox     = removeMessageBox;
+    exports.addNotification      = addNotification;
+    exports.alert                = alert;
+    exports.notify               = notify;
     exports.removeLoadingMessage = removeLoadingMessage;
-    exports.layoutUI = layoutUI;
-    exports.getAppContainerEl = getAppContainerEl;
-    exports.getAppEl = getAppEl;
+    exports.layoutUI             = layoutUI;
+    exports.getAppContainerEl    = getAppContainerEl;
+    exports.getAppEl             = getAppEl;
 
   });

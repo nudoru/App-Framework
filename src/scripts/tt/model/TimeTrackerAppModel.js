@@ -65,6 +65,12 @@ define('TT.Model.TimeTrackerAppModel',
       _dispatcher.subscribe(_ttEventConstants.UPDATE_TIMECARD, handleUpdateTimeCard);
       _dispatcher.subscribe(_ttEventConstants.TIMECARD_WEEKFORWARD, handleWeekForward);
       _dispatcher.subscribe(_ttEventConstants.TIMECARD_WEEKBACKWARD, handleWeekBackward);
+
+      publishUpdateNotification('Mock data created successfully');
+    }
+
+    function publishUpdateNotification(message) {
+      _appEvents.notifyUser('Model', message);
     }
 
     //----------------------------------------------------------------------------
@@ -102,6 +108,8 @@ define('TT.Model.TimeTrackerAppModel',
           assignment = _dataCreator.createAssignment(person, project);
 
       _currentUserAssignmentsCollection.addFromObjArray([assignment], 'id', false);
+
+      publishUpdateNotification('Project successfully added to assignments.');
     }
 
     function handleArchiveAssignment(dataObj) {
@@ -111,6 +119,8 @@ define('TT.Model.TimeTrackerAppModel',
         _currentUserAssignmentsCollection.remove(dataObj.payload.assignmentID);
         //console.log(_currentUserProjectsCollection.toJSON());
       }
+
+      publishUpdateNotification('Project successfully archived.');
     }
 
     /**
@@ -124,16 +134,20 @@ define('TT.Model.TimeTrackerAppModel',
         var assignmentID = Object.keys(dataRow)[0];
         updateAssignmentData(assignmentID, dataRow[assignmentID]);
       });
+
+      publishUpdateNotification('Assignments updated successfully.');
     }
 
     function handleSubmitTimeCard(dataObj) {
       //console.log('handleSubmitTimeCard', dataObj.payload);
       submitCurrentTimeCard();
+      publishUpdateNotification('Time card submitted successfully ');
     }
 
     function handleUnlockTimeCard(dataObj) {
       //console.log('handleUnlockTimeCard', dataObj.payload.comments);
       unlockCurrentTimeCard(dataObj.payload.comments);
+      publishUpdateNotification('Time card unlocked successfully ');
     }
 
     function handleUpdateTimeCard(dataObj) {
@@ -142,6 +156,8 @@ define('TT.Model.TimeTrackerAppModel',
         var assignmentID = Object.keys(dataRow)[0];
         updateAssignmentTimeCardData(assignmentID, dataRow[assignmentID]);
       });
+
+      publishUpdateNotification('Time card updated successfully.');
     }
 
     function handleWeekForward(dataObj) {
@@ -212,7 +228,7 @@ define('TT.Model.TimeTrackerAppModel',
      * [{value:'data1',selected:'false',label:'Data 1'}, ...]
      */
     function getNonAssignedProjectsAndIDList() {
-      return getProjectsAndIDList().filter(function(project) {
+      return getProjectsAndIDList().filter(function (project) {
         return !hasAssignmentProjectID(project.value);
       });
     }

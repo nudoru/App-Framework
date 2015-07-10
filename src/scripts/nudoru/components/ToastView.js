@@ -37,7 +37,7 @@ define('Nudoru.Component.ToastView',
     function add(initObj) {
       initObj.type = initObj.type || _types.DEFAULT;
 
-      var toastObj = createToastObject(initObj.title, initObj.content);
+      var toastObj = createToastObject(initObj.title, initObj.message);
 
       _children.push(toastObj);
 
