@@ -42,7 +42,7 @@ define('TT.Model.MockDataCreator',
 
       var numPeople      = 1,
           numProjects    = 50,
-          numAssignments = 25;
+          numAssignments = 5;
 
       for (var a = 0; a < 10; a++) {
         _possibleManagers.push(_lorem.getFLName());
@@ -87,8 +87,8 @@ define('TT.Model.MockDataCreator',
 
     function createMockProject() {
       return {
-        id            : (_projectId++).toString(),
-        title         : _stringUtils.toTitleCase(_lorem.getText(2, 6)),
+        id            : (++_projectId).toString(),
+        title         : '[p'+_projectId+'] '+_stringUtils.toTitleCase(_lorem.getText(2, 6)),
         description   : getParas(2),
         status        : 'active',
         workType      : 'Develop',
@@ -109,11 +109,11 @@ define('TT.Model.MockDataCreator',
 
     function createAssignment(person, project) {
       return {
-        id                : (_assignmentId++).toString(),
+        id                : (++_assignmentId).toString(),
         resourceID        : person.id,
         resourceName      : person.name,
         projectID         : project.id,
-        projectTitle      : project.title,
+        projectTitle      : '[a'+_assignmentId+'] '+ project.title,
         projectDescription: project.description,
         startDate         : '',
         endDate           : '',

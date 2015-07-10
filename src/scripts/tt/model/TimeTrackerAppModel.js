@@ -208,6 +208,16 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     /**
+     * Used by Assignments view add assignment popup. Format
+     * [{value:'data1',selected:'false',label:'Data 1'}, ...]
+     */
+    function getNonAssignedProjectsAndIDList() {
+      return getProjectsAndIDList().filter(function(project) {
+        return !hasAssignmentProjectID(project.value);
+      });
+    }
+
+    /**
      * Retrieve the project matching the ID
      * @param id
      * @returns {*|void|*|T}
@@ -290,5 +300,6 @@ define('TT.Model.TimeTrackerAppModel',
     exports.handleModelDataChanged              = handleModelDataChanged;
     exports.handleUpdateModelData               = handleUpdateModelData;
     exports.getProjectsAndIDList                = getProjectsAndIDList;
+    exports.getNonAssignedProjectsAndIDList     = getNonAssignedProjectsAndIDList;
     exports.getAssignmentMapForID               = getAssignmentMapForID;
   });

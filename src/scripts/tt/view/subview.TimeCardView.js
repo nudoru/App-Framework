@@ -85,6 +85,7 @@ define('TT.View.TimeCardView',
      */
     function viewWillUnmount() {
       this.closeAllAlerts();
+      this.removeProjectTitleCellToolTips();
     }
 
     //--------------------------------------------------------------------------

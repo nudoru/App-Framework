@@ -32,7 +32,6 @@ define('TT.View.ModuleCommon',
       return _myAssignmentsModel;
     }
 
-
     function updateStateFromProjectsModel() {
       var obj = Object.create(null);
 
@@ -117,6 +116,15 @@ define('TT.View.ModuleCommon',
           type    : 'information',
           width   : 350
         });
+      });
+    }
+
+    /**
+     * Remove tool tips to display on hover of project name
+     */
+    function removeProjectTitleCellToolTips() {
+      this.getAssignmentRows().forEach(function (el) {
+        _toolTip.remove(el.querySelector('th'));
       });
     }
 
@@ -217,6 +225,7 @@ define('TT.View.ModuleCommon',
     exports.getAssignmentRows            = getAssignmentRows;
     exports.getAssignmentRowData         = getAssignmentRowData;
     exports.setProjectTitleCellToolTips  = setProjectTitleCellToolTips;
+    exports.removeProjectTitleCellToolTips  = removeProjectTitleCellToolTips;
     exports.flashAssignmentRow           = flashAssignmentRow;
     exports.parseProjectID               = parseProjectID;
     exports.disableForm                  = disableForm;

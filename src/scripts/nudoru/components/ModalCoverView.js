@@ -48,6 +48,7 @@ define('Nudoru.Component.ModalCoverView',
       _isVisible   = true;
       var duration = shouldAnimate ? 0.25 : 0;
       TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease: Quad.easeOut});
+      TweenLite.to(_modalBackgroundEl, duration, {alpha: 1, ease: Quad.easeOut});
     }
 
     function show(shouldAnimate) {

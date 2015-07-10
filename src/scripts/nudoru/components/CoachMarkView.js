@@ -60,7 +60,7 @@ define('Nudoru.Component.CoachMarksView',
           position     : object.props.labelPosition,
           targetEl     : object.shape,
           width        : object.props.labelWidth || _labelWidth,
-          gutter       : 2,
+          gutter       : 3,
           alwaysVisible: true,
           type         : 'coachmark'
         });
@@ -79,6 +79,7 @@ define('Nudoru.Component.CoachMarksView',
     function show() {
       _modalCloseSubscriber = _dispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hide);
       _modal.show(true);
+      _modal.setOpacity(0.25);
       renderMarkedObjects();
     }
 

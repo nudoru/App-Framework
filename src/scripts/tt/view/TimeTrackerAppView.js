@@ -98,11 +98,6 @@ define('TT.View.TimeTrackerAppView',
         labelWidth: 200,
         labelPosition: 'R'
       });
-      _helpView.outlineElement('#main_navigation', {
-        shape: 'rect',
-        label: 'Access the master projects and people SharePoint lists.',
-        labelPosition: 'B'
-      });
       _helpView.outlineElement('#userprofilepanel', {
         shape: 'rect',
         label: 'Information about you.',
@@ -113,6 +108,11 @@ define('TT.View.TimeTrackerAppView',
         label: 'Different application modules will appear here.',
         labelPosition: 'B',
         height: 200
+      });
+      _helpView.outlineElement('#main_navigation', {
+        shape: 'rect',
+        label: 'Access the master projects and people SharePoint lists.',
+        labelPosition: 'B'
       });
     }
 

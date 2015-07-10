@@ -3,6 +3,8 @@ define('TT.View.AssignmentsView',
 
     var _self,
         _prefix        = 'asn_p_',
+        _columnNames = ['alloc'],
+        _columnObj   = Object.create(null),
         _dateFields    = [],
         _removeButtons = [],
         _datePickers   = [],
@@ -53,6 +55,9 @@ define('TT.View.AssignmentsView',
 
       populateFormData();
 
+      buildColumnFieldsObject();
+      updateColumnSums();
+
       if(this.getAssignmentRows().length === 0) {
         this.showAlert('You don\'t have any active assignments. Click on the <strong>Add New Assignment</strong> button to add them.');
       }
@@ -63,6 +68,8 @@ define('TT.View.AssignmentsView',
      */
     function viewWillUnmount() {
       this.closeAllAlerts();
+
+      this.removeProjectTitleCellToolTips();
 
       _removeButtons.forEach(function (buttonObj) {
         buttonObj.subscriber.dispose();
@@ -94,6 +101,7 @@ define('TT.View.AssignmentsView',
      */
     function handleInputChangeEvent(evt) {
       _self.flashAssignmentRow(evt.target.getAttribute('id'));
+      updateColumnSums();
 
       _ttEvents.updateAssignments(_self.getAssignmentRowData(_prefix));
     }
@@ -102,7 +110,7 @@ define('TT.View.AssignmentsView',
      * Add a new project to the list
      */
     function handleAddNewClick() {
-      var projects = TT.model().getProjectsAndIDList();
+      var projects = TT.model().getNonAssignedProjectsAndIDList();
 
       TT.view().mbCreator().choice('Add Project',
         'Select a new project to add to your active list and click Proceed',
@@ -191,8 +199,75 @@ define('TT.View.AssignmentsView',
       });
     }
 
-    function showNotImplementedWarning() {
-      _self.showAlert('This doesn\'t work yet');
+    /**
+     * Build an array of all of the form fields on the screen
+     */
+    function buildColumnFieldsObject() {
+      var allInputEls = _self.getDOMElement().querySelectorAll('input');
+      var allInputIDs = Array.prototype.slice.call(allInputEls, 0).map(function (el) {
+        return el.getAttribute('id');
+      });
+
+      _columnNames.forEach(function (col, i) {
+        _columnObj[col]          = Object.create(null);
+        _columnObj[col].fieldIDs = allInputIDs.filter(function (id) {
+          return id.indexOf(col) > 0;
+        });
+        _columnObj[col].sumEl    = document.getElementById('asn_sum_' + col);
+        // The first column is the allocation column
+        _columnObj[col].type = i === 0 ? '%' : 'hrs';
+      });
+
+    }
+
+    /**
+     * Get a sum for a column of input fields
+     * If the field has a NaN value, set it to 0
+     * If it's ok, set the field to the parsed value, '6t' => '6'
+     * @param idList
+     * @returns {number}
+     */
+    function sumFieldGroup(idList) {
+      var sum = 0;
+      idList.forEach(function (id) {
+        var inputValue = document.getElementById(id).value,
+            valueFloat = parseFloat(inputValue);
+        sum += valueFloat || 0;
+        if (!valueFloat) {
+          if (inputValue.length) {
+            document.getElementById(id).value = '0';
+          }
+        } else {
+          document.getElementById(id).value = valueFloat;
+        }
+
+      });
+      return sum;
+    }
+
+    /**
+     * Itterate over the columns and sum them all
+     */
+    function updateColumnSums() {
+      _cardTotal = 0;
+
+      for (var col in _columnObj) {
+        var sum = sumFieldGroup(_columnObj[col].fieldIDs), isWarn = false;
+        if (_columnObj[col].type === '%') {
+          if (sum > 100) {
+            isWarn = true;
+          }
+        }
+        _columnObj[col].sumEl.innerHTML = sum + ' ' + _columnObj[col].type;
+
+        if (isWarn) {
+          _domUtils.addClass(_columnObj[col].sumEl, 'label-warning');
+        } else {
+          _domUtils.removeClass(_columnObj[col].sumEl, 'label-warning');
+        }
+
+      }
+
     }
 
     //--------------------------------------------------------------------------
