@@ -14,7 +14,6 @@ define('TT.View.AssignmentsView',
     function initialize(initObj) {
       _self = this;
       if (!this.isInitialized()) {
-        this.setAssignmentsModel();
         this.initializeSubView(initObj);
         this.setEvents({
           'change #asn_p_table'  : handleInputChangeEvent,

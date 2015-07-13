@@ -7,7 +7,6 @@ define('TT.View.ModuleCommon',
   function (require, module, exports) {
 
     var _messageBoxIDs  = [],
-        _myAssignmentsModel,
         _assignmentRows = [],
         _domUtils       = require('Nudoru.Browser.DOMUtils'),
         _toolTip        = require('Nudoru.Component.ToolTipView');
@@ -17,41 +16,37 @@ define('TT.View.ModuleCommon',
     }
 
     //----------------------------------------------------------------------------
-    //  Date Model
+    //  Model
     //----------------------------------------------------------------------------
 
-    //----------------------------------------------------------------------------
-    //  Projects Model
-    //----------------------------------------------------------------------------
-
-    function setAssignmentsModel() {
-      _myAssignmentsModel = TT.model().getCurrentUserAssignmentsCollection();
-    }
-
-    function getAssignmentsModel() {
-      return _myAssignmentsModel;
-    }
-
+    /**
+     * Rebuild the state object for the View. Called from update() -> viewWillUpdate()
+     */
     function updateStateFromProjectsModel() {
       var obj = Object.create(null);
 
+      // Will hold active assignments, key is assignment ID
       obj.assignments = Object.create(null);
 
-      _myAssignmentsModel.forEach(function (assignment) {
-        obj.assignments[assignment.get('id')] = {
-          assignmentID      : assignment.get('id'),
-          projectTitle      : assignment.get('projectTitle'),
-          projectID         : assignment.get('projectID'),
-          projectDescription: assignment.get('projectDescription'),
-          role              : assignment.get('role'),
-          startDate         : assignment.get('startDate'),
-          endDate           : assignment.get('endDate'),
-          allocation        : assignment.get('allocation'),
-          weekData          : assignment.get('timeCardData'),
-          submitHistory     : assignment.get('submitHistory')
-        };
+      // will get all assignments where the current user is assigned
+      TT.model().getAssignmentsForCurrentUser().forEach(function (assignment) {
+        if(assignment.get('active') === true) {
+          obj.assignments[assignment.get('id')] = {
+            assignmentID      : assignment.get('id'),
+            projectTitle      : assignment.get('projectTitle'),
+            projectID         : assignment.get('projectID'),
+            projectDescription: assignment.get('projectDescription'),
+            role              : assignment.get('role'),
+            startDate         : assignment.get('startDate'),
+            endDate           : assignment.get('endDate'),
+            allocation        : assignment.get('allocation'),
+            weekData          : assignment.get('timeCardData'),
+            submitHistory     : assignment.get('submitHistory')
+          };
+        }
       });
 
+      // calendar is the common MomentJS instance
       obj.calendar = TT.model().getTimeModelObj();
 
       this.setState(obj);
@@ -216,8 +211,6 @@ define('TT.View.ModuleCommon',
     //----------------------------------------------------------------------------
 
     exports.initializeCommon             = initializeCommon;
-    exports.setAssignmentsModel          = setAssignmentsModel;
-    exports.getAssignmentsModel          = getAssignmentsModel;
     exports.updateStateFromProjectsModel = updateStateFromProjectsModel;
     exports.showAlert                    = showAlert;
     exports.closeAllAlerts               = closeAllAlerts;

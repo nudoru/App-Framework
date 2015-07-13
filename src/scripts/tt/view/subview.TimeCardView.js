@@ -26,7 +26,6 @@ define('TT.View.TimeCardView',
     function initialize(initObj) {
       _self = this;
       if (!this.isInitialized()) {
-        this.setAssignmentsModel();
         this.initializeSubView(initObj);
         this.setEvents({
           'change #tc_p_table'  : handleInputChangeEvent,

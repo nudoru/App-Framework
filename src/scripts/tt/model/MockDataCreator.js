@@ -40,9 +40,9 @@ define('TT.Model.MockDataCreator',
 
       _lorem.initialize();
 
-      var numPeople      = 1,
-          numProjects    = 50,
-          numAssignments = 5;
+      var numPeople      = 50,
+          numProjects    = 500,
+          numAssignments = 80;
 
       for (var a = 0; a < 10; a++) {
         _possibleManagers.push(_lorem.getFLName());
@@ -57,8 +57,12 @@ define('TT.Model.MockDataCreator',
       }
 
       for (var k = 0; k < numAssignments; k++) {
-        _assignments.push(createAssignment(_people[0], _projects[k]));
+        _assignments.push(createAssignment(_arrayUtils.rndElement(_people), _arrayUtils.rndElement(_projects)));
       }
+
+      //for (var k = 0; k < numAssignments; k++) {
+      //  _assignments.push(createAssignment(_people[0], _projects[k]));
+      //}
 
       localStorage['mockTTData.people']      = JSON.stringify(_people);
       localStorage['mockTTData.projects']    = JSON.stringify(_projects);
