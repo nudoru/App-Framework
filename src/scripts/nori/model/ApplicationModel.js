@@ -60,7 +60,7 @@ define('Nori.Model.ApplicationModel',
      * @returns {*}
      */
     function createMap(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('Nori.Model.Map'), extras]); //
+      var m = Nori.extendWithArray({},[requireNew('Nori.Model.Map'), extras]);
       m.initialize(initObj);
       _appMapList[initObj.id] = m;
       return m;

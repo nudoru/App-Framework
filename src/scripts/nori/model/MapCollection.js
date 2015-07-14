@@ -6,10 +6,11 @@
 define('Nori.Model.MapCollection',
   function (require, module, exports) {
 
-    var _id,
-      _children = [],
-      _silent = false,
-      _appEvents = require('Nori.Events.AppEventCreator');
+    var _self,
+        _id,
+        _children  = [],
+        _silent    = false,
+        _appEvents = require('Nori.Events.AppEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -20,13 +21,14 @@ define('Nori.Model.MapCollection',
         throw new Error('ModelCollection must be init\'d with an id');
       }
 
-      _id = initObj.id;
+      _self   = this;
+      _id     = initObj.id;
       _silent = initObj.silent || false;
 
-      // BUG - call with this scope, calling from Nori.init scope is Window
-      //if(initObj.models) {
-      //  addMapsFromArray.call(this, initObj.models);
-      //}
+      // TODO test
+      if(initObj.models) {
+        addMapsFromArray.call(_self, initObj.models);
+      }
     }
 
     /**
@@ -67,7 +69,7 @@ define('Nori.Model.MapCollection',
     function add(store) {
       var currIdx = getMapIndex(store.getID());
 
-      store.setParentCollection(this);
+      store.setParentCollection(_self);
 
       if (currIdx >= 0) {
         _children[currIdx] = store;
@@ -119,14 +121,14 @@ define('Nori.Model.MapCollection',
       if (!_silent) {
         type = type || '';
         _appEvents.modelChanged({
-          id: _id,
-          type: type,
+          id     : _id,
+          type   : type,
           mapType: 'collection',
-          mapID: data.id
+          mapID  : data.id
         });
       }
 
-      // what will this send up?
+      // TODO Collections of Collections
       //if(_parentCollection) {
       //  _parentCollection.dispatchChange({id:_id, store:getMap()});
       //}
@@ -225,27 +227,27 @@ define('Nori.Model.MapCollection',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
-    exports.getID = getID;
-    exports.add = add;
-    exports.addMapsFromArray = addMapsFromArray;
-    exports.addFromObjArray = addFromObjArray;
-    exports.remove = remove;
-    exports.getMap = getMap;
-    exports.hasMap = hasMap;
-    exports.size = size;
-    exports.getFirst = getFirst;
-    exports.getLast = getLast;
-    exports.getAtIndex = getAtIndex;
-    exports.filter = filter;
-    exports.filterByKey = filterByKey;
-    exports.forEach = forEach;
-    exports.map = map;
-    exports.entries = entries;
-    exports.save = save;
-    exports.destroy = destroy;
-    exports.toJSON = toJSON;
-    exports.dispatchChange = dispatchChange;
+    exports.initialize          = initialize;
+    exports.getID               = getID;
+    exports.add                 = add;
+    exports.addMapsFromArray    = addMapsFromArray;
+    exports.addFromObjArray     = addFromObjArray;
+    exports.remove              = remove;
+    exports.getMap              = getMap;
+    exports.hasMap              = hasMap;
+    exports.size                = size;
+    exports.getFirst            = getFirst;
+    exports.getLast             = getLast;
+    exports.getAtIndex          = getAtIndex;
+    exports.filter              = filter;
+    exports.filterByKey         = filterByKey;
+    exports.forEach             = forEach;
+    exports.map                 = map;
+    exports.entries             = entries;
+    exports.save                = save;
+    exports.destroy             = destroy;
+    exports.toJSON              = toJSON;
+    exports.dispatchChange      = dispatchChange;
     exports.setParentCollection = setParentCollection;
     exports.getParentCollection = getParentCollection;
 

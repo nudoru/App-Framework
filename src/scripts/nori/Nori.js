@@ -140,6 +140,8 @@ var Nori = (function () {
    * @param modelID
    */
   function notifyViewsOfModelUpdate(modelID) {
+    //console.log('Model update: ',modelID);
+
     var viewArry = _modelViewBindingMap[modelID];
 
     if (viewArry) {

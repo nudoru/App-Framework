@@ -11,7 +11,11 @@ define('TT.Model.TimeModel',
     }
 
     function now() {
-      return moment().format('YY.M.D,h:m:s:a');
+      return moment().format('YY-M-D@h:m:s a');
+    }
+
+    function prettyNow() {
+      return moment().format('MMM Do YYYY, h:m a');
     }
 
     function getCurrentWeek() {
@@ -53,7 +57,6 @@ define('TT.Model.TimeModel',
     }
 
     function dispatchChange() {
-      //debug();
       _appEvents.modelChanged({
         id     : _id,
         type   : 'time_move',
@@ -64,6 +67,7 @@ define('TT.Model.TimeModel',
 
     exports.initialize          = initialize;
     exports.now                 = now;
+    exports.prettyNow           = prettyNow;
     exports.getPrettyDateString = getPrettyDateString;
     exports.getDateString       = getDateString;
     exports.getCurrentWeek      = getCurrentWeek;

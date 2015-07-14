@@ -2,18 +2,26 @@ define('TT.View.TimeCardView',
   function (require, module, exports) {
 
     var _self,
-        _prefix      = 'tc_p_',
-        _columnNames = ['alloc', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-        _columnObj   = Object.create(null),
-        _cardTotal   = 0,
+        _prefix          = 'tc_p_',
+        _columnNames     = ['alloc', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+        _columnObj       = Object.create(null),
+        _cardTotal       = 0,
         _submitButtonEl,
         _submitButtonLabelEl,
-        _isSubmitted = false,
-        _isLocked    = false,
+        _isLocked        = false,
         _lockedStatusEl,
         _inProgressStatusEl,
-        _domUtils    = require('Nudoru.Browser.DOMUtils'),
-        _ttEvents    = require('TT.Events.TTEventCreator');
+        _domUtils        = require('Nudoru.Browser.DOMUtils'),
+        _ttEvents        = require('TT.Events.TTEventCreator'),
+        _arrayUtils      = require('Nudoru.Core.ArrayUtils'),
+        _successMessages = ['Thanks for all you do!',
+          '"What ever you\'re goal is in life, embrace it visualize it, and for it will be yours."',
+          'Success is 1% inspiration, 98% perspiration and 2% attention to detail.',
+          '"Land is always on the mind of a flying bird."',
+          '"Do or do not, there is no try." -Yoda',
+          '"Life is not easy for any of us. But what of that? We must have perseverance and above all confidence in ourselves. We must believe that we are gifted for something and that this thing must be attained." -Marie Curie',
+          '"Perseverance is not a long race; it is many short races one after the other." -Walter Elliot'
+        ];
 
     //--------------------------------------------------------------------------
     // Core
@@ -34,7 +42,7 @@ define('TT.View.TimeCardView',
           'click #tc_btn-prevwk': handlePreviousWeekClick,
           'click #tc_btn-nextwk': handleNextWeekClick
         });
-        TT.registerViewForModelChanges('timeModel',this.getID());
+        TT.registerViewForModelChanges('timeModel', this.getID());
       }
     }
 
@@ -61,23 +69,19 @@ define('TT.View.TimeCardView',
       populateFormData();
       updateColumnSums();
 
-      // TODO add logic for previously submitted time
-      unlockCard();
-      updateCardStatusText('In progress');
+
+      if (TT.model().isCurrentWeekTimeCardLocked()) {
+        lockCard();
+        updateCardStatusText(TT.model().getCurrentTimeCardSubmitMetaData().time);
+      } else {
+        unlockCard();
+        updateCardStatusText('In progress');
+      }
 
       if (this.getAssignmentRows().length === 0) {
         this.showAlert('You don\'t have any active assignments. Click on the <strong>Assignments</strong> button to add them and then return here to enter hours.');
       }
     }
-
-    //function updateOnLockStatus() {
-    //  var assignments   = _self.getState().assignments,
-    //      assignmentIDs = Object.keys(assignments);
-    //
-    //  assignmentIDs.forEach(function (aid) {
-    //    var assignment = assignments[aid],
-    //        weekData   = assignment.weekData[_self.getState().calendar.date];
-    //}
 
     /**
      * View is going away, remove anything that it created: Cleanup
@@ -98,7 +102,7 @@ define('TT.View.TimeCardView',
     function updateCardStatusText(text) {
       var textEl;
 
-      if (_isLocked || _isSubmitted) {
+      if (_isLocked) {
         textEl = _lockedStatusEl.querySelector('span');
       } else {
         textEl = _inProgressStatusEl.querySelector('span');
@@ -122,7 +126,7 @@ define('TT.View.TimeCardView',
      * When the submit button is clicked
      */
     function handleTimeCardSubmitClick() {
-      if (_isSubmitted || _isLocked) {
+      if (_isLocked) {
         _self.showAlert('Unlock the time card to make edits and submit changes.');
         return;
       }
@@ -264,7 +268,7 @@ define('TT.View.TimeCardView',
 
           TT.view().addMessageBox({
             title  : 'Success',
-            content: 'Your ' + _cardTotal + ' hours were submitted successfully! Thanks for all you do. +1xp earned.',
+            content: 'Your ' + _cardTotal + ' hours were submitted successfully! <br><br>' + _arrayUtils.rndElement(_successMessages),
             type   : 'default',
             modal  : true,
             buttons: [
@@ -276,6 +280,8 @@ define('TT.View.TimeCardView',
               }
             ]
           });
+
+          updateCardStatusText(TT.model().getCurrentTimeCardSubmitMetaData().time);
         },
         true);
     }
@@ -291,15 +297,11 @@ define('TT.View.TimeCardView',
 
     function submitCard() {
       lockCard();
-      _isSubmitted = true;
-
       _ttEvents.submitTimeCard();
     }
 
     function unSubmitCard(comments) {
       unlockCard();
-      _isSubmitted = false;
-
       _ttEvents.unSubmitTimeCard(comments);
     }
 

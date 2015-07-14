@@ -161,9 +161,6 @@ define('Nori.Model.Map',
      * @returns {Array}
      */
     function keys() {
-      //return entries().map(function(entry) {
-      //  return entry.key;
-      //});
       return Object.keys(_map);
     }
 
@@ -232,28 +229,6 @@ define('Nori.Model.Map',
     }
 
     /**
-     * Validates the map properties
-     * key: {required: true|false, minLength: num, maxLength: num}
-     * @param vObj
-     */
-    function validate(vObj) {
-      return true;
-
-      //var validation = {};
-      //
-      //for(var prop in vObj) {
-      //  // TODO test map hasownprop
-      //  var tests = vObj[prop],
-      //      mapProp = _map[prop];
-      //  for(var testProp in tests) {
-      //    console.log('test '+prop+', for: '+testProp);
-      //  }
-      //}
-      //
-      //return validation;
-    }
-
-    /**
      * On change, emit event globally
      */
     function dispatchChange(type) {
@@ -268,7 +243,7 @@ define('Nori.Model.Map',
 
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
-          id: _id,
+          id: _id
         }, type);
       }
 
@@ -319,7 +294,6 @@ define('Nori.Model.Map',
     exports.getAtIndex          = getAtIndex;
     exports.toObject            = toObject;
     exports.transform           = transform;
-    exports.validate            = validate;
     exports.save                = save;
     exports.destroy             = destroy;
     exports.toJSON              = toJSON;

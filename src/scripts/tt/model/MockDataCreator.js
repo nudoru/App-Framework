@@ -85,7 +85,8 @@ define('TT.Model.MockDataCreator',
         inActiveDate  : '',
         keySkills     : _arrayUtils.rndElement(_possibleTasks),
         comments      : 'No comments',
-        photoURL      : 'img/animals/kowala.jpg'
+        photoURL      : 'img/animals/kowala.jpg',
+        timeCardHistory: {}
       };
     }
 
@@ -123,8 +124,7 @@ define('TT.Model.MockDataCreator',
         endDate           : '',
         role              : person.primaryRole,
         allocation        : '10',
-        timeCardData      : {},
-        submitHistory     : {}
+        timeCardData      : {}
       };
     }
 

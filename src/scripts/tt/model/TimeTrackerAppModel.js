@@ -36,6 +36,10 @@ define('TT.Model.TimeTrackerAppModel',
       return _timeModel.now();
     }
 
+    function getPrettyNow() {
+      return _timeModel.prettyNow();
+    }
+
     //----------------------------------------------------------------------------
     //
     //----------------------------------------------------------------------------
@@ -227,14 +231,14 @@ define('TT.Model.TimeTrackerAppModel',
     }
 
     /**
-     * Return true if a project with ID exists as an assignment already
+     * Returns the assignment for the given project ID
      * @param projectID
-     * @returns {*}
+     * @returns {T}
      */
-    function hasAssignmentProjectID(projectID) {
+    function getAssignmentMapForProjectID(projectID) {
       return getAssignmentsForCurrentUser().filter(function (map) {
         return projectID === map.get('projectID');
-      }).length;
+      })[0];
     }
 
     /**
@@ -244,8 +248,18 @@ define('TT.Model.TimeTrackerAppModel',
      */
     function hasActiveAssignmentProjectID(projectID) {
       return getAssignmentsForCurrentUser().filter(function (map) {
-        // TODO, support active === true
-        return projectID === map.get('projectID');
+        return map.get('active') === true && projectID === map.get('projectID');
+      }).length;
+    }
+
+    /**
+     * Return true if a project with ID exists as an assignment already
+     * @param projectID
+     * @returns {*}
+     */
+    function hasInactiveAssignmentProjectID(projectID) {
+      return getAssignmentsForCurrentUser().filter(function (map) {
+        return map.get('active') === false && projectID === map.get('projectID');
       }).length;
     }
 
@@ -255,33 +269,43 @@ define('TT.Model.TimeTrackerAppModel',
      */
     function updateAssignmentData(id, data) {
       getAssignmentMapForID(id).set({
-        'startDate' : data.startDate,Sim
+        'startDate' : data.startDate,
         'endDate'   : data.endDate,
         'role'      : data.primaryRole,
         'allocation': data.allocation
       });
     }
 
-    // TODO
+    /**
+     * Adds an assignment to the active list
+     * Either reactive an archived project or create a new assignment and add it
+     * @param projectID
+     */
     function addAssignmentForCurrentUser(projectID) {
-      if (hasAssignmentProjectID(projectID)) {
-        console.log('A project with id ' + projectID + ' already exists as an assignment');
+      if (hasActiveAssignmentProjectID(projectID)) {
+        console.log('A project with id ' + projectID + ' already exists as an active assignment');
         return;
       }
 
-      var project    = _projectsCollection.getMap(projectID).toObject(),
-          person     = _currentUserMap.toObject(),
-          assignment = _dataCreator.createAssignment(person, project);
+      if (hasInactiveAssignmentProjectID(projectID)) {
+        getAssignmentMapForProjectID(projectID).set({active: true});
+        publishUpdateNotification('Project successfully unarchived.');
+      } else {
+        var project    = _projectsCollection.getMap(projectID).toObject(),
+            person     = _currentUserMap.toObject(),
+            assignment = _dataCreator.createAssignment(person, project);
 
-      //_currentUserAssignmentsCollection.addFromObjArray([assignment], 'id', false);
-
-      publishUpdateNotification('Project successfully added to assignments.');
+        _assignmentsCollection.addFromObjArray([assignment], 'id', false);
+        publishUpdateNotification('Project successfully added to assignments.');
+      }
     }
 
-
-    // TODO get assignment by ID, make sure user is assigned, set status to inactive
+    /**
+     * Set and assignment to inactive
+     * @param assignmentID
+     */
     function archiveAssignmentForCurrentUser(assignmentID) {
-      _currentUserAssignmentsCollection.remove(assignmentID);
+      _assignmentsCollection.getMap(assignmentID).set({active: false});
       publishUpdateNotification('Project successfully archived.');
     }
 
@@ -303,29 +327,51 @@ define('TT.Model.TimeTrackerAppModel',
     //----------------------------------------------------------------------------
 
     /**
-     * Update assignment timecard data
+     * Update assignment timecard data. Data added to the 'timeCardData' key as
+     * a new key/value '2015_29':form_data
      * @param id
      */
+    // TODO set it as JSON data?
     function updateAssignmentTimeCardData(id, data) {
       getAssignmentMapForID(id).setKeyProp('timeCardData', getTimeModelObj().date, data);
-      //console.log(getAssignmentMapForID(id).getKeyProp('timeCardData', getTimeModelObj().date));
+    }
+
+    function isCurrentWeekTimeCardLocked() {
+      var currentWeek = _currentUserMap.getKeyProp('timeCardHistory', getTimeModelObj().date);
+
+      if(currentWeek) {
+        return currentWeek.submitted;
+      }
+
+      return false;
+    }
+
+    function getCurrentTimeCardSubmitMetaData() {
+      var obj = {};
+      if(isCurrentWeekTimeCardLocked()) {
+        obj = _.merge({},_currentUserMap.getKeyProp('timeCardHistory', getTimeModelObj().date));
+      }
+      return obj;
     }
 
     function submitCurrentTimeCard() {
-      //getAssignmentMapForID(id).setKeyProp('submitHistory', getTimeModelObj().date, {
-      //  locked: true,
-      //  date: getNow(),
-      //  comments: 'First submit'
-      //});
+      _currentUserMap.setKeyProp('timeCardHistory', getTimeModelObj().date, {
+        submitted: true,
+        time     : getPrettyNow()
+      });
+
+      console.log(JSON.stringify(_currentUserMap.get('timeCardHistory')));
       publishUpdateNotification('Time card submitted successfully ');
     }
 
     function unlockCurrentTimeCard(comments) {
-      //getAssignmentMapForID(id).setKeyProp('submitHistory', getTimeModelObj().date, {
-      //  locked: false,
-      //  date: getNow(),
-      //  comments: comments
-      //});
+      _currentUserMap.setKeyProp('timeCardHistory', getTimeModelObj().date, {
+        submitted: false,
+        comments : comments,
+        time     : getPrettyNow()
+      });
+
+      console.log(JSON.stringify(_currentUserMap.get('timeCardHistory')));
       publishUpdateNotification('Time card unlocked successfully ');
     }
 
@@ -335,7 +381,7 @@ define('TT.Model.TimeTrackerAppModel',
         updateAssignmentTimeCardData(assignmentID, dataRow[assignmentID]);
       });
 
-      publishUpdateNotification('Time card updated successfully.');
+      //publishUpdateNotification('Time card updated successfully.');
     }
 
     //----------------------------------------------------------------------------
@@ -365,4 +411,6 @@ define('TT.Model.TimeTrackerAppModel',
     exports.getNonAssignedProjectsAndIDList = getNonAssignedProjectsAndIDList;
     exports.getAssignmentMapForID           = getAssignmentMapForID;
     exports.getAssignmentsForCurrentUser    = getAssignmentsForCurrentUser;
+    exports.isCurrentWeekTimeCardLocked     = isCurrentWeekTimeCardLocked;
+    exports.getCurrentTimeCardSubmitMetaData = getCurrentTimeCardSubmitMetaData;
   });
