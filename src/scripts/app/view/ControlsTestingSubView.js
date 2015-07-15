@@ -2,7 +2,7 @@
  * A template for a subview/route controller
  */
 
-define('TT.View.ControlsTestingSubView',
+define('APP.View.ControlsTestingSubView',
   function (require, module, exports) {
 
     var _lIpsum = require('Nudoru.Browser.NLorem'),

@@ -27,7 +27,7 @@ module.exports = function (grunt) {
           '!jade',
           '!jade/templates.html',
           '!scripts/nori/**/*.js',
-          '!scripts/tt/**/*.js',
+          '!scripts/app/**/*.js',
           '!scripts/nudoru/**/*.js',
           '!scripts/vendor/**/*.js',
           '!scripts/vendor/**/*.map',
@@ -147,7 +147,7 @@ module.exports = function (grunt) {
 
       app: {
         src: [
-          'src/scripts/tt/**/*.js',
+          'src/scripts/app/**/*.js',
           'src/scripts/app.js'
         ],
         dest: 'bin/scripts/app.js'

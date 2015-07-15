@@ -12,49 +12,11 @@ html
     include templates-views.html
   body
     header#header
-      .logo
-        i.fa.fa-rocket
-      .title
-        h1
-          em Time
-          |  Management
-      nav#main_navigation
-        button.button-small.button-neutral-light.icon-left#btn_main_projects
-          i.fa.fa-table
-          | Projects
-        button.button-small.button-neutral-light.icon-left#btn_main_people
-          i.fa.fa-users
-          | People
-        //button.button-small.button-neutral-light.icon-left#btn_main_dashboard
-          i.fa.fa-dashboard
-          | Dashboard
-        button.button-small.icon-left#btn_main_help
-          i.fa.fa-life-bouy
-          | How Do I?
     #app__container
       #drawer
-        .content
-          ul.list-round-buttons#module_navigation
-            li
-              .button#btn_assignments
-                i.fa.fa-cubes
-              .label Assignments
-            li
-              .button#btn_timecard
-                i.fa.fa-list
-              .label Time Card
-            li
-              .button#btn_forecast
-                i.fa.fa-area-chart
-              .label Cap. Forecast
       #app__contents
         section
           .padded-content
-            //section
-              include timeentry
-              include forecast
-              include assignments
-            section#userprofilepanel
             section#contents
     #initialization__cover
       .initialization__message

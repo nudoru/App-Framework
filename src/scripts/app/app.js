@@ -1,4 +1,4 @@
-define('TT.TimeTrackerApplication',
+define('APP.Application',
   function (require, module, exports) {
 
     var _self,
@@ -10,21 +10,21 @@ define('TT.TimeTrackerApplication',
 
       _self = this;
 
-      appModel = this.createApplicationModel(require('TT.Model.TimeTrackerAppModel'));
-      appView = this.createApplicationView(require('TT.View.TimeTrackerAppView'));
+      appModel = this.createApplicationModel(require('APP.Model.AppModel'));
+      appView = this.createApplicationView(require('APP.View.AppView'));
 
       this.initializeApplication({model:appModel, view:appView});
 
-      configureTTEvents();
+      configureAPPEvents();
 
       this.view().initialize();
       this.model().initialize();
       this.view().removeLoadingMessage();
       this.view().render();
-      this.setCurrentRoute(TT.router().getCurrentRoute());
+      this.setCurrentRoute(APP.router().getCurrentRoute());
     }
 
-    function configureTTEvents() {
+    function configureAPPEvents() {
       _dispatcher.subscribe(_appEventConstants.ROUTE_CHANGED, function(payload) {
         _self.view().updateOnRouteChange(payload.payload);
       });
