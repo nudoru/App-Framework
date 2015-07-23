@@ -24,8 +24,7 @@ module.exports = function (grunt) {
           '!**/*.jade',
           '!**/*.md',
           '!sass/**',
-          '!jade',
-          '!jade/templates.html',
+          '!jade/**',
           '!scripts/nori/**/*.js',
           '!scripts/app/**/*.js',
           '!scripts/nudoru/**/*.js',
@@ -53,7 +52,7 @@ module.exports = function (grunt) {
           cssDir: 'bin/css',
           environment: 'production',
           //compressed, expanded
-          outputStyle: 'expanded'
+          outputStyle: 'compressed'
         }
       }
     },
