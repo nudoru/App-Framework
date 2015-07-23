@@ -34,24 +34,3 @@
 
 =drow-shadow-hard($foreColor: #ccc, $shadowColor: #777)
   text-shadow: 1px 1px $foreColor, 2px 2px $shadowColor
-
-=box-shadow-exp($distance: 5px, $blur: 5px, $spread: 0px, $color: 0, $alpha: 0.03)
-  -webkit-box-shadow: $distance $distance $blur $spread rgba($color, $color, $color, $alpha)
-  -moz-box-shadow: $distance $distance $blur $spread rgba($color, $color, $color, $alpha)
-  box-shadow: $distance $distance $blur $spread rgba($color, $color, $color, $alpha)
-
-=box-shadow($shadow)
-  -webkit-box-shadow: $shadow // iOS <4.3 & Android <4.1
-  box-shadow: $shadow
-
-=standard-shadow
-  +box-shadow-exp(3px, 10px, 0px, 0, .25)
-
-=standard-soft-shadow
-  +box-shadow-exp(1px, 5px, 0px, 0, .1)
-
-=standard-text-shadow
-  text-shadow: 0px -1px 0px rgba(0,0,0,.3)
-
-=standard-text-shadow-light
-  text-shadow: 0px 1px 0px rgba(255,255,255,.4)

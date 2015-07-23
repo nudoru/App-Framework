@@ -1,0 +1,31 @@
+%horizontal-list
+  ul
+    overflow: hidden
+    margin: 0
+    padding: 0
+    position: relative
+    li
+      list-style: none
+      float: left
+
+%plain-list
+  margin: 0
+  padding: 0
+  list-style: none
+
+.plain-list
+  @extend %plain-list
+
+.plain-horizontal-list
+  @extend .plain-list
+  li
+    display: inline
+
+.comma-separated-list
+  @extend .plain-horizontal-list
+  li
+    &:after
+      content: ", "
+    &:last-of-type
+      &:after
+        content: ""

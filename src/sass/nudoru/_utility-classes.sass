@@ -1,22 +1,3 @@
-%full-background-coverage
-  position: fixed
-  top: 0
-  left: 0
-  bottom: 0
-  right: 0
-
-%vertical-align
-  position: relative
-  top: 50%
-  -webkit-transform: translateY(-50%)
-  -ms-transform: translateY(-50%)
-  transform: translateY(-50%)
-
-%overflow-ellipsis
-  white-space: nowrap
-  overflow: hidden
-  text-overflow: ellipsis
-
 .ignore-pointer-events
   pointer-events: none
 
@@ -60,24 +41,6 @@
   height: auto
   max-width: 100%
 
-.plain-list
-  list-style: none
-  padding-left: 0
-
-.plain-horizontal-list
-  @extend .plain-list
-  li
-    display: inline
-
-.comma-separated-list
-  @extend .plain-horizontal-list
-  li
-    &:after
-      content: ", "
-    &:last-of-type
-      &:after
-        content: ""
-
 .vertical-center
   position: relative
   top: 50%
@@ -94,12 +57,6 @@
 
 .all-inline
   display: inline !important
-
-.icon-left
-  margin-right: $base-line-height
-
-.icon-right
-  margin-left: $base-line-height
 
 .padded
   padding: $base-line-height

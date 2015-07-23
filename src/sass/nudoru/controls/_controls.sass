@@ -1,3 +1,9 @@
+$control-font: $font-content !default
+
+//------------------------------------------------------------------------------
+//  Spacing
+//------------------------------------------------------------------------------
+
 $control-padding: $base-line-height !default
 $control-padding-small: $half-base-line-height !default
 $control-margin: $base-line-height !default
@@ -5,13 +11,24 @@ $control-margin: $base-line-height !default
 $control-form-element-height: 33px
 $control-button-height: $control-form-element-height
 
+$control-border: 1px solid $color-white-grey-line !default
+$control-border-radius: 3px !default
+$control-panel-border-radius: $control-border-radius !default
+$control-button-border-radius: 500px !default
+
+$control-border-radius-large: 10px
+$control-border-radius-small: 3px
+
+//------------------------------------------------------------------------------
+//  Colors
+//------------------------------------------------------------------------------
+
 $control-primary-color: $light-blue !default
 $control-primary-color-dark: $dark-blue !default
 $control-container-color: rgb(255,255,255) !default
 $control-header-color: $color-white-grey-fill !default
 $control-footer-color: $color-white-grey-fill !default
 
-// colors from Bootstrap
 $control-success-color: rgb(92,184,92)
 $control-success-color-dark: scale-lightness($control-success-color, -20%)
 $control-warning-color: rgb(240,173,78)
@@ -23,21 +40,21 @@ $control-info-color-dark: scale-lightness($control-info-color, -20%)
 $control-neutral-color: $light-warm-grey
 $control-neutral-color-dark: scale-lightness($control-neutral-color, -20%)
 
-$control-font: $font-content !default
 $control-font-color: rgb(100,100,100) !default
 $control-font-neg-color: rgb(255,255,255) !default
+$control-table-zebra-color: rgb(240,240,240)
+
+//------------------------------------------------------------------------------
+//  Properties
+//------------------------------------------------------------------------------
 
 $control-font-text-shadow: 0 1px 0 rgba(0,0,0,.25)
 $control-font-neg-text-shadow: 0 1px 0 rgba(0,0,0,.45)
-
-$control-border: 1px solid $color-white-grey-line !default
-$control-border-radius: 3px !default
-$control-panel-border-radius: $control-border-radius !default
-$control-button-border-radius: 500px !default
-
 $control-shadow: 0 5px 5px -4px rgba(0,0,0,.25) !default
 
-$control-table-zebra-color: rgb(240,240,240)
+//------------------------------------------------------------------------------
+//  General Mixins
+//------------------------------------------------------------------------------
 
 =control-emboss-shadow
   text-shadow: -1px -1px 0 rgba(0,0,0,.15), 1px 1px 0 rgba(255,255,255,.1)
@@ -49,6 +66,10 @@ $control-table-zebra-color: rgb(240,240,240)
   box-shadow: none
   text-shadow: none
   cursor: default
+
+//------------------------------------------------------------------------------
+//  Basics
+//------------------------------------------------------------------------------
 
 .icon-left
   i.fa
@@ -62,43 +83,13 @@ $control-table-zebra-color: rgb(240,240,240)
   margin-top: $half-base-line-height
   margin-bottom: $half-base-line-height
   padding: $base-line-height
-  border-radius: $border-radius-large
+  border-radius: $control-border-radius-large
   border: $control-border
   background-color: $color-white-grey-fill
 
 .well-dark
   @extend .well
   background-color: rgba(0,0,0,.05)
-
-.sidebar
-  margin-top: $half-base-line-height
-  margin-bottom: $half-base-line-height
-  padding: $base-line-height
-  border-radius: $border-radius-small
-  border: $control-border
-  background-color: $color-white-grey-fill
-  box-shadow: inset 1px 1px 0 #fff
-  text-shadow: 0 1px 0 #fff
-  @extend %small-headers
-  h1,h2,h3,h4,h5,h6
-    color: $control-primary-color-dark
-  p
-    @extend %body-text-small
-
-.control-border-top
-  border-top: $control-border
-
-.control-border-right
-  border-right: $control-border
-
-.control-border-bottom
-  border-bottom: $control-border
-
-.control-border-left
-  border-left: $control-border
-
-.control-background-light
-  +gradient-vertical($color-white-grey-fill, scale-lightness($color-white-grey-fill, 25%))
 
 @import "labels"
 @import "panels"

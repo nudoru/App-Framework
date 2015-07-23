@@ -1,3 +1,20 @@
+//------------------------------------------------------------------------------
+//  Typography and uniform spacing
+//------------------------------------------------------------------------------
+
+$font-header: 'Titillium', 'Helvetica Neue', Helvetica, Arial, sans-serif
+$font-content: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
+
+$base-font-size: .9rem !default
+$base-line-height: .688rem //11px
+$half-base-line-height: ($base-line-height * .5)
+$double-base-line-height: ($base-line-height * 2)
+$triple-base-line-height: ($base-line-height * 3)
+
+//------------------------------------------------------------------------------
+//  Colors
+//------------------------------------------------------------------------------
+
 $light-blue: rgb(0,169,224)
 $dark-blue: rgb(0,94,184)
 $light-teal: rgb(0,156,166)
@@ -15,55 +32,28 @@ $dark-warm-grey: rgb(110,98,89)
 $light-beige: rgb(191,187,153)
 $dark-beige: rgb(155,148,95)
 
-//$line-height-multiplier: 1.4 // 140%
-$base-font-size: .9rem !default
-
-// equivilent to 11px
-$base-line-height: .688rem
-$half-base-line-height: ($base-line-height * .5) !default
-$double-base-line-height: ($base-line-height * 2) !default
-$triple-base-line-height: ($base-line-height * 3) !default
-
-$border-radius: $half-base-line-height
-
-$font-header: 'Titillium', 'Helvetica Neue', Helvetica, Arial, sans-serif
-$font-content: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
-
-$column-gap-two: $double-base-line-height !default
-
-$grid-padding: $double-base-line-height !default
-
-$color-bg-header: rgb(255,255,255)
-$color-bg-content: scale-lightness($light-warm-grey, 90%)
-
-$base-grey: $dark-warm-grey
-$text-color: scale-lightness($base-grey, -10%)
-
+$color-nocolor: transparent
+$text-color: scale-lightness($dark-warm-grey, -10%)
 $color-text-header: $text-color
 $color-text-content: $text-color
-
 $color-link: $dark-blue
 $color-link-hover: $light-blue
 $color-link-active: $light-blue
 $color-link-visited: scale-lightness($dark-blue, -25%)
-
-$tablet-mobile-break: 750px
-$phone-mobile-break: 475px
-
-$component-border-radius: 0
-$border-radius-button: 50px
-
-$border-radius-large: 10px
-$border-radius-small: 3px
-
-$color-nocolor: transparent
-
-$color-quiet: #ddd !default
-$color-loud: #000 !default
-
-$color-borders: #666 !default
-
 $color-white-grey-fill: scale-lightness($light-warm-grey, 95%)
 $color-white-grey-line: scale-lightness($light-warm-grey, 80%)
 
-$standard-border-props: 1px solid $color-white-grey-line !default
+//------------------------------------------------------------------------------
+//  Other measures
+//------------------------------------------------------------------------------
+
+$border-radius: $half-base-line-height
+$column-gap-two: $double-base-line-height !default
+$grid-padding: $double-base-line-height !default
+
+//------------------------------------------------------------------------------
+//  Responsive
+//------------------------------------------------------------------------------
+
+$tablet-mobile-break: 750px
+$phone-mobile-break: 475px

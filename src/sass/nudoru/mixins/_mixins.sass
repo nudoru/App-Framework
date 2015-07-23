@@ -4,73 +4,6 @@
 @import "mixins-gradients"
 @import "mixins-shadows"
 
-=rotate($deg)
-  -moz-transform: rotate(#{$deg}deg)
-  -webkit-transform: rotate(#{$deg}deg)
-  -o-transform: rotate(#{$deg}deg)
-  -ms-transform: rotate(#{$deg}deg)
-  transform: rotate(#{$deg}deg)
-
-%horizontal-list
-  ul
-    overflow: hidden
-    margin: 0
-    padding: 0
-    position: relative
-    li
-      list-style: none
-      float: left
-
-=nav-bar($height)
-  @extend %horizontal-list
-  ul
-    li
-      margin: 0
-    a
-      display: block
-      padding: 0 $double-base-line-height
-      height: $height
-      line-height: $height
-
-%relative-area
-  position: relative
-  overflow: hidden
-
-%main-area-padding
-  padding: $base-line-height $double-base-line-height
-
-%plain-list
-  margin: 0
-  padding: 0
-  list-style: none
-
-%prevent-text-selection
-  -webkit-touch-callout: none
-  -webkit-user-select: none
-  -khtml-user-select: none
-  -moz-user-select: none
-  -ms-user-select: none
-  user-select: none
-
-//.placeholder-image
-//  background: #ccc
-//  padding: 1em
-//  font-size: 1.4em
-//  color: #aaa
-//  text-align: center
-//  &:after
-//    content: "Place holder"
-//
-//.photo-border
-//  margin: .5em
-//  border: 10px solid #ffffff
-//  box-shadow: 2px 2px 10px 0px rgba(0,0,0,.15)
-//
-//.photo-border-small
-//  margin: $half-base-line-height
-//  border: 5px solid #ffffff
-//  box-shadow: 2px 2px 10px 0px rgba(0,0,0,.15)
-
 =image-cover
   -webkit-background-size: cover
   -moz-background-size: cover
@@ -81,17 +14,19 @@
   background: url($url) no-repeat center center fixed
   +image-cover
   
-.img-responsive
-  display: block
-  height: auto
-  width: 100%
+%full-background-coverage
+  position: fixed
+  top: 0
+  left: 0
+  bottom: 0
+  right: 0
 
-
-
-%menu-button
-  border: none
-  background: none
-  width: 100%
+%vertical-align-middle
+  position: relative
+  top: 50%
+  -webkit-transform: translateY(-50%)
+  -ms-transform: translateY(-50%)
+  transform: translateY(-50%)
 
 =respond-to($type, $query)
   @media ($type: $query)
@@ -100,36 +35,3 @@
 =max-width($width: $screen-md)
   @media screen and (max-width: #{$width}px)
     @content
-
-// Based on Medium https://medium.com/designing-medium/crafting-link-underlines-on-medium-7c03a9274f9
-// http://codepen.io/ghepting/pen/tLnHK/
-
-//$background-color: #fff !default
-//$link-color: #333 !default
-//$link-color-active: #55abad !default
-//$link-underline-color: $link-color !default
-//$link-underline-color-active: $link-color-active !default
-
-
-//a.custom
-//  text-decoration: none
-//  position: relative
-//  @if $breaking-underlines
-//    text-shadow: -1px -1px 0 $background-color, 1px -1px 0 $background-color, -1px 1px 0 $background-color, 1px 1px 0 $background-color
-//  +underline($link-color)
-//  @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi)
-//    +underline($link-color, 0.5)
-//  &:hover, &:focus
-//    +underline($link-color-active)
-//    @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi)
-//      +underline($link-color-active, 0.5)
-
-$link-underline-width: 1px !default
-$link-underline-offset: 2px !default
-$breaking-underlines: true !default
-
-=breaking-underline($background: #fff)
-  text-shadow: -1px -1px 0 $background, 1px -1px 0 $background, -1px 1px 0 $background, 1px 1px 0 $background
-
-=underline($color: $color-link, $weight: $link-underline-width, $offset: $link-underline-offset)
-  background-image: linear-gradient(bottom, transparent, transparent $offset, $color $offset, $color ($offset + $weight), transparent ($offset + $weight))
