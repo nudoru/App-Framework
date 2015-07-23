@@ -2,25 +2,23 @@ define('APP.View.AppView',
   function (require, module, exports) {
 
     var _self,
-        _appEvents             = require('Nori.Events.AppEventCreator'),
-        _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.AppEventConstants'),
-        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
+        _appEvents = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       _self = this;
-      _self.initializeApplicationView();
+
+      _self.initializeApplicationView(['applicationscaffold','applicationcomponentsscaffold']);
       _self.setRouteViewMountPoint('#contents');
 
-      APP.mapRouteView('/', '', 'APP.View.');
-
-      //_self.setEvents({
-      //  'click #btn_main_projects': handleProjectsButton
-      //});
-      //_self.delegateEvents();
+      APP.mapRouteView('/', 'default', 'APP.View.AppSubView');
 
       _appEvents.applicationViewInitialized();
     }
 
-    exports.initialize          = initialize;
+    function render() {
+      // implement
+    }
+
+    exports.initialize = initialize;
+    exports.render     = render;
   });

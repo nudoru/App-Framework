@@ -3,7 +3,7 @@ html
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
-    title App
+    title Application
     meta(name='viewport', content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no')
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name='apple-mobile-web-app-status-bar-style', content='black-translucent')
@@ -11,25 +11,6 @@ html
     include templates-components.html
     include templates-views.html
   body
-    header#header
-    #app__container
-      #drawer
-      #app__contents
-        section
-          .padded-content
-            section#contents
-    #initialization__cover
-      .initialization__message
-        h1 Please Wait ...
-        img(src='img/loading_squares_g.gif' alt='Loading Spinner').loader
-    #tooltip__container
-    #modal__cover
-      .modal__background
-      .modal__close-button
-        i.fa.fa-remove
-    #coachmarks__container
-    #messagebox__container
-    #toast__container
     script(src='scripts/config.js')
     script(src='scripts/libs.min.js')
     script(src='scripts/nudoru.core.js')

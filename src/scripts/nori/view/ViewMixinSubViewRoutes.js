@@ -5,12 +5,12 @@
 define('Nori.View.ViewMixinSubViewRoutes',
   function (require, module, exports) {
 
-    var _template = require('Nori.Utils.Templating'),
-      _routeViewMountPoint,
-      _subViewMapping = Object.create(null),
-      _currentRouteViewID,
-      _subViewHTMLTemplatePrefix = 'template__',
-      _appEvents = require('Nori.Events.AppEventCreator');
+    var _template                  = require('Nori.Utils.Templating'),
+        _routeViewMountPoint,
+        _subViewMapping            = Object.create(null),
+        _currentRouteViewID,
+        _subViewHTMLTemplatePrefix = 'template__',
+        _appEvents                 = require('Nori.Events.AppEventCreator');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -38,9 +38,9 @@ define('Nori.View.ViewMixinSubViewRoutes',
     function mapView(templateID, controllerModID, isRoute, mountPoint) {
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller: createSubView(requireNew(controllerModID)),
-        isRouteView: isRoute,
-        mountPoint: mountPoint
+        controller  : createSubView(requireNew(controllerModID)),
+        isRouteView : isRoute,
+        mountPoint  : mountPoint
       };
     }
 
@@ -121,8 +121,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
       }
 
       subview.controller.initialize({
-        id: templateID,
-        template: subview.htmlTemplate,
+        id        : templateID,
+        template  : subview.htmlTemplate,
         mountPoint: subview.mountPoint
       });
 
@@ -164,13 +164,13 @@ define('Nori.View.ViewMixinSubViewRoutes',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.setRouteViewMountPoint = setRouteViewMountPoint;
-    exports.template = getTemplate;
-    exports.createSubView = createSubView;
-    exports.mapView = mapView;
-    exports.showView = showView;
-    exports.mapRouteView = mapRouteView;
-    exports.showRouteView = showRouteView;
-    exports.updateView = updateView;
+    exports.setRouteViewMountPoint  = setRouteViewMountPoint;
+    exports.template                = getTemplate;
+    exports.createSubView           = createSubView;
+    exports.mapView                 = mapView;
+    exports.showView                = showView;
+    exports.mapRouteView            = mapRouteView;
+    exports.showRouteView           = showRouteView;
+    exports.updateView              = updateView;
     exports.extendSubViewController = extendSubViewController;
   });

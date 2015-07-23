@@ -9,32 +9,32 @@ define('Nori.View.ViewMixinMultiDevice',
   function (require, module, exports) {
 
     var _drawerEl,
-      _drawerToggleButtonEl,
-      _drawerToggleButtonStream,
-      _appEl,
-      _browserResizeStream,
-      _isMobile,
-      _tabletBreakWidth,
-      _phoneBreakWidth,
-      _drawerWidth,
-      _isDrawerOpen,
-      _currentViewPortSize,
-      _appEventConstants = require('Nori.Events.AppEventConstants'),
-      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _dispatcher = require('Nudoru.events.EventDispatcher');
+        _drawerToggleButtonEl,
+        _drawerToggleButtonStream,
+        _appEl,
+        _browserResizeStream,
+        _isMobile,
+        _tabletBreakWidth,
+        _phoneBreakWidth,
+        _drawerWidth,
+        _isDrawerOpen,
+        _currentViewPortSize,
+        _appEventConstants = require('Nori.Events.AppEventConstants'),
+        _browserInfo       = require('Nudoru.Browser.BrowserInfo'),
+        _dispatcher        = require('Nudoru.events.EventDispatcher');
 
     function initializeMultiDeviceView(initObj) {
-      _isMobile = false;
+      _isMobile         = false;
       _tabletBreakWidth = 750;
-      _phoneBreakWidth = 475;
-      _drawerWidth = 250;
-      _isDrawerOpen = false;
+      _phoneBreakWidth  = 475;
+      _drawerWidth      = 250;
+      _isDrawerOpen     = false;
 
-      _appEl = document.getElementById('app__contents');
-      _drawerEl = document.getElementById('drawer');
+      _appEl                = document.getElementById('app__contents');
+      _drawerEl             = document.getElementById('drawer');
       _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
 
-      if(_drawerEl) {
+      if (_drawerEl) {
         TweenLite.to(_drawerEl, 0, {x: _drawerWidth * -1});
       }
 
@@ -49,7 +49,7 @@ define('Nori.View.ViewMixinMultiDevice',
           handleViewPortResize();
         });
 
-      if(_drawerToggleButtonEl) {
+      if (_drawerToggleButtonEl) {
         _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, 'change')
           .subscribe(function () {
             toggleDrawer();
@@ -64,7 +64,7 @@ define('Nori.View.ViewMixinMultiDevice',
 
     function setViewPortSize() {
       _currentViewPortSize = {
-        width: window.innerWidth,
+        width : window.innerWidth,
         height: window.innerHeight
       };
     }
@@ -118,7 +118,7 @@ define('Nori.View.ViewMixinMultiDevice',
     }
 
     exports.initializeMultiDeviceView = initializeMultiDeviceView;
-    exports.openDrawer = openDrawer;
-    exports.closeDrawer = closeDrawer;
-    exports.checkForMobile = checkForMobile;
-});
+    exports.openDrawer                = openDrawer;
+    exports.closeDrawer               = closeDrawer;
+    exports.checkForMobile            = checkForMobile;
+  });

@@ -2,13 +2,13 @@ define('Nori.View.ViewMixinBrowserEvents',
   function (require, module, exports) {
 
     var _currentViewPortSize,
-      _currentViewPortScroll,
-      _uiUpdateLayoutStream,
-      _browserScrollStream,
-      _browserResizeStream,
-      _positionUIElementsOnChangeCB,
-      _dispatcher = require('Nori.Utils.Dispatcher'),
-      _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
+        _currentViewPortScroll,
+        _uiUpdateLayoutStream,
+        _browserScrollStream,
+        _browserResizeStream,
+        _positionUIElementsOnChangeCB,
+        _dispatcher    = require('Nori.Utils.Dispatcher'),
+        _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
 
 
     //----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ define('Nori.View.ViewMixinBrowserEvents',
      */
     function configureUIStreams() {
       var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
-        uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
+          uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
       // UI layout happens immediately, while resize and scroll is throttled
       _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
@@ -80,7 +80,7 @@ define('Nori.View.ViewMixinBrowserEvents',
      */
     function setCurrentViewPortSize() {
       _currentViewPortSize = {
-        width: window.innerWidth,
+        width : window.innerWidth,
         height: window.innerHeight
       };
     }
@@ -96,10 +96,10 @@ define('Nori.View.ViewMixinBrowserEvents',
       var scrollEL = _mainScrollEl ? _mainScrollEl : document.body;
 
       var left = scrollEL.scrollLeft,
-        top = scrollEL.scrollTop;
+          top  = scrollEL.scrollTop;
 
       left = left ? left : 0;
-      top = top ? top : 0;
+      top  = top ? top : 0;
 
       _currentViewPortScroll = {left: left, top: top};
     }
@@ -118,11 +118,11 @@ define('Nori.View.ViewMixinBrowserEvents',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeEventStreams = initializeEventStreams;
+    exports.initializeEventStreams          = initializeEventStreams;
     exports.setPositionUIElementsOnChangeCB = setPositionUIElementsOnChangeCB;
-    exports.getMainScrollingView = getMainScrollingView;
-    exports.setMainScrollingView = setMainScrollingView;
-    exports.getCurrentViewPortSize = getCurrentViewPortSize;
-    exports.getCurrentViewPortScroll = getCurrentViewPortScroll;
+    exports.getMainScrollingView            = getMainScrollingView;
+    exports.setMainScrollingView            = setMainScrollingView;
+    exports.getCurrentViewPortSize          = getCurrentViewPortSize;
+    exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
 
   });

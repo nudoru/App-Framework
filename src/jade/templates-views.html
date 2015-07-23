@@ -1,37 +1,50 @@
 <!--
-BEGIN Templates for Views
+BEGIN Templates for Sub Views
 -->
-<script id="template__ControlsTesting" type="text/template">
+
+
+
+<script id="template__default" type="text/template">
     <div class="padded-content">
-        <h1 class="h3-alternate">Route Testing</h1>
-        <ul class="plain-list">
-            <li>
-                <button id="action-five">Route testing one</button>
-            </li>
-            <li>
-                <button id="action-six">Route testing two</button>
-            </li>
-        </ul>
-        <hr>
-        <h1 class="h3-alternate">Mock Components</h1>
-        <ul class="plain-list">
-            <li>
-                <button id="action-one">Modal message</button>
-            </li>
-            <li>
-                <button id="action-two">Message</button>
-            </li>
-            <li>
-                <button id="action-three">Notification</button>
-            </li>
-            <li style="margin-left: 400px">
-                <button id="action-four">Tool tip</button>
-            </li>
-        </ul>
+        <h1>Blank Appliation</h1>
     </div>
 </script>
 
+<!--
+END Templates for Sub Views
+-->
 
 <!--
-END Templates for Views
+BEGIN Templates for Application Structure
+-->
+
+<script id="template__applicationscaffold" type="text/template">
+    <div id="app__container">
+        <div id="drawer"></div>
+        <div id="app__contents">
+            <section id="contents"></section>
+        </div>
+    </div>
+</script>
+
+<script id="template__applicationcomponentsscaffold" type="text/template">
+    <div id="app__components">
+        <div id="initialization__cover">
+            <div class="initialization__message">
+                <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">
+            </div>
+        </div>
+        <div id="tooltip__container"></div>
+        <div id="modal__cover">
+            <div class="modal__background"></div>
+            <div class="modal__close-button"><i class="fa fa-remove"></i></div>
+        </div>
+        <div id="coachmarks__container"></div>
+        <div id="messagebox__container"></div>
+        <div id="toast__container"></div>
+    </div>
+</script>
+
+<!--
+END Templates for Application Structure
 -->

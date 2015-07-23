@@ -7,11 +7,11 @@
  Refer - http://ejohn.org/blog/javascript-micro-templating/
  */
 define('Nori.Utils.Templating',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
-      _templateCache = Object.create(null),
-      _DOMUtils = require('Nudoru.Browser.DOMUtils');
+        _templateCache     = Object.create(null),
+        _DOMUtils          = require('Nudoru.Browser.DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -19,21 +19,21 @@ define('Nori.Utils.Templating',
      * @returns {*}
      */
     function getSource(id) {
-      if(_templateHTMLCache[id]) {
+      if (_templateHTMLCache[id]) {
         return _templateHTMLCache[id];
       }
 
-      var src = document.getElementById(id),
-        srchtml = '',
-        cleanhtml = '';
+      var src       = document.getElementById(id),
+          srchtml   = '',
+          cleanhtml = '';
 
-      if(src) {
+      if (src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('Nudoru.Core.NTemplate, template not found: "'+id+'"');
+        throw new Error('Nudoru.Core.NTemplate, template not found: "' + id + '"');
       }
 
-      cleanhtml = cleanTemplateHTML(srchtml);
+      cleanhtml              = cleanTemplateHTML(srchtml);
       _templateHTMLCache[id] = cleanhtml;
       return cleanhtml;
     }
@@ -44,10 +44,10 @@ define('Nori.Utils.Templating',
      * @returns {*}
      */
     function getTemplate(id) {
-      if(_templateCache[id]) {
+      if (_templateCache[id]) {
         return _templateCache[id];
       }
-      var templ = _.template(getSource(id));
+      var templ          = _.template(getSource(id));
       _templateCache[id] = templ;
       return templ;
     }
@@ -81,9 +81,9 @@ define('Nori.Utils.Templating',
       return str.trim();
     }
 
-    exports.getSource = getSource;
+    exports.getSource   = getSource;
     exports.getTemplate = getTemplate;
-    exports.asHTML = asHTML;
-    exports.asElement = asElement;
+    exports.asHTML      = asHTML;
+    exports.asElement   = asElement;
 
   });

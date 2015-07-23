@@ -1,9 +1,11 @@
 define('Nori.View.ApplicationView',
   function (require, module, exports) {
 
-    var _appContainerEl,
+    var _self,
+        _appContainerEl,
         _appEl,
         _renderer          = require('Nori.View.Renderer'),
+        _domUtils          = require('Nudoru.Browser.DOMUtils'),
         _notificationView  = require('Nudoru.Component.ToastView'),
         _toolTipView       = require('Nudoru.Component.ToolTipView'),
         _messageBoxView    = require('Nudoru.Component.MessageBoxView'),
@@ -26,11 +28,23 @@ define('Nori.View.ApplicationView',
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initializeApplicationView() {
+    function initializeApplicationView(scaffoldTemplates) {
+      _self = this;
+
       _renderer.initialize();
+
+      attachApplicationScaffolding(scaffoldTemplates);
 
       initializeApplicationElements();
       initializeComponents();
+    }
+
+    function attachApplicationScaffolding(templates) {
+      var bodyEl = document.querySelector('body');
+
+      templates.forEach(function (templ) {
+        bodyEl.appendChild(_domUtils.HTMLStrToNode(_self.template().getSource('template__' + templ, {})));
+      });
     }
 
     function initializeApplicationElements() {
@@ -130,15 +144,15 @@ define('Nori.View.ApplicationView',
     exports.initializeApplicationView     = initializeApplicationView;
     exports.initializeApplicationElements = initializeApplicationElements;
     exports.initializeComponents          = initializeComponents;
-    exports.mbCreator            = mbCreator;
-    exports.addMessageBox        = addMessageBox;
-    exports.removeMessageBox     = removeMessageBox;
-    exports.addNotification      = addNotification;
-    exports.alert                = alert;
-    exports.notify               = notify;
-    exports.removeLoadingMessage = removeLoadingMessage;
-    exports.layoutUI             = layoutUI;
-    exports.getAppContainerEl    = getAppContainerEl;
-    exports.getAppEl             = getAppEl;
+    exports.mbCreator                     = mbCreator;
+    exports.addMessageBox                 = addMessageBox;
+    exports.removeMessageBox              = removeMessageBox;
+    exports.addNotification               = addNotification;
+    exports.alert                         = alert;
+    exports.notify                        = notify;
+    exports.removeLoadingMessage          = removeLoadingMessage;
+    exports.layoutUI                      = layoutUI;
+    exports.getAppContainerEl             = getAppContainerEl;
+    exports.getAppEl                      = getAppEl;
 
   });

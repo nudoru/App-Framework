@@ -5,55 +5,31 @@
 @import "compass/reset"
 
 @import "vendor/font-awesome/font-awesome"
-@import "vendor/pikaday"
 
-@import "app/fonts/opensans"
-@import "app/fonts/titillium"
-//@import "app/fonts/museoslab"
-
+// Font vars set in nudoru/_variables.sass
+@import "nudoru/fonts/opensans"
+@import "nudoru/fonts/titillium"
 
 // Measure test line
 // Lorem ipsum dolor sit amet, consectetuer adipiscing elit accumsan
 // http://modularscale.com/scale/?px1=16&px2=11&ra1=1.618&ra2=0
 
-@import "app/branding"
 @import "nudoru/variables"
-@import "app/view/variables"
-
 @import "nudoru/foundation/mixins/mixins"
 @import "nudoru/foundation/tags"
 @import "nudoru/foundation/utility-classes"
 @import "nudoru/foundation/paper-shadows"
 @import "nudoru/foundation/div-columns"
-
 @import "nudoru/foundation/controls/controls"
-
 @import "nudoru/foundation/typography"
-
-$z-index-main-header: 1000
-$z-index-main-footer: 1005
-$z-index-full-screen: 1010
-$z-index-modal-cover: 1020
-//$z-index-float-image-cover: 1025
-$z-index-choachmark-container: 1030
-$z-index-tooltip-container: 1035
-$z-index-messagebox-cover: 1085
-$z-index-toast-container: 1090
-$z-index-initialization: 1100
 
 @import "nudoru/components/modalview"
 @import "nudoru/components/messageboxview"
 @import "nudoru/components/toastview"
-@import "nudoru/components/tooltipview"
-@import "nudoru/components/coachmarks"
+//@import "nudoru/components/tooltipview"
+//@import "nudoru/components/coachmarks"
 //@import "nudoru/components/floatimage"
 //@import "nudoru/components/ddmainnavigation"
-
-//@import "app/view/drawer-spinner-menu"
-@import "app/view/header"
-@import "app/view/contents"
-@import "app/view/footer"
-@import "app/view/drawer"
 
 .ignore-pointer-events
   pointer-events: none
@@ -86,14 +62,15 @@ $z-index-initialization: 1100
     width: 25px
     height: 25px
 
-// To support the mobile app / drawer structure
+// Some options to support the mobile app / drawer structure
 
 body
   overflow: hidden
+  background-color: rgb(245,245,245)
 
 #app__container
   position: fixed
-  top: $header-height
+  top: 0
   left: 0
   right: 0
   bottom: 0
@@ -104,7 +81,6 @@ body
   bottom: 100%
   min-height: 100%
   top: 0
-  left: $drawer-width
+  left: 0
   right: 0
-  background-color: rgb(245,245,245)
   overflow-y: auto

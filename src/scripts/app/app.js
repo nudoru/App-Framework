@@ -1,9 +1,7 @@
 define('APP.Application',
   function (require, module, exports) {
 
-    var _self,
-      _appEventConstants = require('Nori.Events.AppEventConstants'),
-      _dispatcher = require('Nori.Utils.Dispatcher');
+    var _self;
 
     function initialize() {
       var appModel, appView;
@@ -15,19 +13,15 @@ define('APP.Application',
 
       this.initializeApplication({model:appModel, view:appView});
 
-      configureAPPEvents();
-
       this.view().initialize();
       this.model().initialize();
+
+      // Could wait for model initialization to complete
       this.view().removeLoadingMessage();
       this.view().render();
-      this.setCurrentRoute(APP.router().getCurrentRoute());
-    }
 
-    function configureAPPEvents() {
-      _dispatcher.subscribe(_appEventConstants.ROUTE_CHANGED, function(payload) {
-        _self.view().updateOnRouteChange(payload.payload);
-      });
+      // Start it with the route in the URL
+      this.setCurrentRoute(APP.router().getCurrentRoute());
     }
 
     //----------------------------------------------------------------------------
