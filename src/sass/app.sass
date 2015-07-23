@@ -4,35 +4,8 @@
 @import "compass/css3/opacity"
 @import "compass/reset"
 
-@import "vendor/font-awesome/font-awesome"
-
-// Font vars set in nudoru/_variables.sass
-@import "nudoru/fonts/opensans"
-@import "nudoru/fonts/titillium"
-
-// Measure test line
-// Lorem ipsum dolor sit amet, consectetuer adipiscing elit accumsan
-// http://modularscale.com/scale/?px1=16&px2=11&ra1=1.618&ra2=0
-
-@import "nudoru/variables"
-@import "nudoru/foundation/mixins/mixins"
-@import "nudoru/foundation/tags"
-@import "nudoru/foundation/utility-classes"
-@import "nudoru/foundation/div-columns"
-@import "nudoru/foundation/controls/controls"
-@import "nudoru/foundation/typography"
-
-@import "nudoru/components/modalview"
-@import "nudoru/components/messageboxview"
-@import "nudoru/components/toastview"
-@import "nudoru/components/tooltipview"
-// Disabled
-//@import "nudoru/components/coachmarks"
-//@import "nudoru/components/floatimage"
-//@import "nudoru/components/ddmainnavigation"
-
-.ignore-pointer-events
-  pointer-events: none
+@import "nudoru/nudoru"
+@import "nudoru.components/nudoru.components"
 
 #initialization__cover
   @extend %full-background-coverage
@@ -84,5 +57,3 @@ body
   left: 0
   right: 0
   overflow-y: auto
-
-#contents
