@@ -13,7 +13,6 @@ $table-cell-padding: 3px
 
   caption
     @extend %header-4
-    //margin: 0
     border-bottom: $control-border
 
   th, td
@@ -133,7 +132,6 @@ tr.row-header-inline
 
 .table-rows-zebra
   tbody tr:nth-child(odd)
-    //background-color: $control-table-zebra-color
     +gradient-vertical($control-table-zebra-color, scale-lightness($control-table-zebra-color, 75%))
 
 

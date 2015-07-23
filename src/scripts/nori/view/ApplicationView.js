@@ -121,12 +121,12 @@ define('Nori.View.ApplicationView',
      * After app initialization, remove the loading message
      */
     function removeLoadingMessage() {
-      var cover   = document.getElementById('initialization__cover'),
-          message = document.getElementsByClassName('initialization__message')[0];
+      var cover   = document.querySelector('#initialization__cover'),
+          message = document.querySelector('.initialization__message');
 
       TweenLite.to(cover, 1, {
         alpha: 0, ease: Quad.easeOut, onComplete: function () {
-          document.body.removeChild(cover);
+          cover.parentNode.removeChild(cover);
         }
       });
 

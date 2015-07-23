@@ -12,6 +12,10 @@ define('APP.View.AppView',
 
       APP.mapRouteView('/', 'default', 'APP.View.AppSubView');
 
+      // For testing
+      APP.mapRouteView('/styles', 'debug-styletest', 'APP.View.AppSubView');
+      APP.mapRouteView('/comps', 'debug-components', 'APP.View.AppSubView');
+
       _appEvents.applicationViewInitialized();
     }
 
