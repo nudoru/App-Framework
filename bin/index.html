@@ -70,8 +70,8 @@ BEGIN Templates for Sub Views
 -->
 
 <script id="template__default" type="text/template">
-    <div class="padded-content">
-        <h1>Hello.</h1>
+    <div class="padded">
+        <h1>Welcome to the blank application!</h1>
     </div>
 </script>
 
@@ -86,6 +86,13 @@ BEGIN Templates for Application Structure
 <script id="template__applicationscaffold" type="text/template">
     <div id="app__container">
         <div id="app__contents">
+            <header>
+                <div class="app__header-logo"
+                <h1>Appliation</h1>
+            </header>
+            <section class="app__hero">
+                <h1>This is the hero!</h1>
+            </section>
             <section id="contents"></section>
         </div>
     </div>
@@ -103,7 +110,7 @@ BEGIN Templates for Application Structure
             <div class="modal__background"></div>
             <div class="modal__close-button"><i class="fa fa-remove"></i></div>
         </div>
-        <div id="coachmarks__container"></div>
+        <!--<div id="coachmarks__container"></div>-->
         <div id="messagebox__container"></div>
         <div id="toast__container"></div>
     </div>

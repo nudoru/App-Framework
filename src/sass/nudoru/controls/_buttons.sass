@@ -1,7 +1,7 @@
 %button
   +transition-all()
   +control-emboss-shadow
-  @extend .label-small
+  @extend .label
   font-family: $font-header
   height: $control-button-height
   padding: 0 $double-base-line-height
@@ -93,14 +93,15 @@ button
 
 .button-neutral
   color: #fff
-  background-color: $light-warm-grey
+  background-color: $color-base-light
   &:hover, &:active
-    background-color: $dark-warm-grey
+    background-color: $color-base-dark
 
 .button-neutral-light
   @extend .button-neutral
   background-color: rgba(255,255,255,.2)
-  color: $dark-warm-grey
+  color: $color-base-dark
+  border: 1px solid $color-base-light
   box-shadow: none
   text-shadow: none
   &:hover, &:active

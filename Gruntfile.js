@@ -210,7 +210,7 @@ module.exports = function (grunt) {
       },
 
       html: {
-        files: ['src/jade/**/*.jade'],
+        files: ['src/jade/**/*.jade', 'src/jade/**/*.html'],
         tasks: ['jade'],
         options: {
           spawn: false

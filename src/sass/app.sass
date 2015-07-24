@@ -6,11 +6,21 @@
 @import "nudoru/nudoru"
 @import "nudoru.components/nudoru.components"
 
+//------------------------------------------------------------------------------
+//  Variables
+//------------------------------------------------------------------------------
+
 $z-index-initialization: 1100
+
+//------------------------------------------------------------------------------
+//  Scaffold
+//------------------------------------------------------------------------------
+
+// Some options to support the mobile app / drawer structure
 
 body
   overflow: hidden
-  background-color: rgb(245,245,245)
+  background: url('../img/light_toast.png')
 
 #app__container
   position: fixed
@@ -28,6 +38,10 @@ body
   left: 0
   right: 0
   overflow-y: auto
+
+//------------------------------------------------------------------------------
+//  Elements
+//------------------------------------------------------------------------------
 
 #initialization__cover
   @extend %full-background-coverage
@@ -56,6 +70,3 @@ body
     display: inline-block
     width: 25px
     height: 25px
-
-// Some options to support the mobile app / drawer structure
-

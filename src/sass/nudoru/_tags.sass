@@ -12,13 +12,12 @@ body
   margin: 0
   padding: 0
   font-size: 100%
-  //line-height: $base-line-height
   min-height: 100%
   //font-size: 62.5%; // easier to reference em'partials as pixel equiviants - 1em = 10px
   // prevent Safari from adjusting for readability
   -webkit-text-size-adjust: none
   font-family: $font-content
-  color: $text-color
+  color: $color-text
 
 h1
   @extend %header-1
@@ -51,7 +50,7 @@ blockquote
   margin-left: $double-base-line-height
   margin-right: $double-base-line-height
   padding: $base-line-height
-  background-color: rgba(0,0,0,.05)
+  background-color: $color-shaded
   font-family: $font-header
   font-size: 1.4rem
   font-weight: 300
@@ -60,7 +59,7 @@ blockquote
 pre
   +force-break-all-words
   padding: $base-line-height
-  background-color: rgba(0,0,0,.05)
+  background-color: $color-shaded
 
 a
   +transition-all

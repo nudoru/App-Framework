@@ -5,8 +5,25 @@
 $font-header: 'Roboto Condensed', 'Helvetica Neue', Helvetica, Arial, sans-serif
 $font-content: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif
 
-$base-font-size: .9rem
-$base-line-height: .688rem //11px
+//Modular scale http://www.modularscale.com/?16,960&px&1.618&sass&text
+$ms-10: 11.089rem
+$ms-9: 8.755rem
+$ms-8: 6.854rem
+$ms-7: 5.411rem
+$ms-6: 4.236rem
+$ms-5: 3.344rem
+$ms-4: 2.618rem
+$ms-3: 2.067rem
+$ms-2: 1.618rem
+$ms-1: 1.277rem
+$ms-0: 1rem
+$ms--1: 0.618rem
+$ms--2: 0.382rem
+$ms--3: 0.236rem
+$ms--4: 0.146rem
+
+$base-font-size: $ms-0
+$base-line-height: $ms--1
 $half-base-line-height: ($base-line-height * .5)
 $double-base-line-height: ($base-line-height * 2)
 $triple-base-line-height: ($base-line-height * 3)
@@ -14,6 +31,8 @@ $triple-base-line-height: ($base-line-height * 3)
 //------------------------------------------------------------------------------
 //  Colors
 //------------------------------------------------------------------------------
+
+// Google's Matieral has a great palette https://www.google.com/design/spec/style/color.html#color-color-palette
 
 $light-blue: rgb(0,169,224)
 $dark-blue: rgb(0,94,184)
@@ -29,19 +48,27 @@ $light-grey: rgb(117,120,123)
 $dark-grey: rgb(83,86,90)
 $light-warm-grey: rgb(150,140,131)
 $dark-warm-grey: rgb(110,98,89)
+$light-cool-grey: rgba(120, 144, 156, 1.0)
+$dark-cool-grey: rgba(84, 110, 122, 1.0)
 $light-beige: rgb(191,187,153)
 $dark-beige: rgb(155,148,95)
 
 $color-nocolor: transparent
-$text-color: scale-lightness($dark-warm-grey, -10%)
-$color-text-header: $text-color
-$color-text-content: $text-color
+$color-base-light: $light-warm-grey
+$color-base-dark: $dark-warm-grey
+
+$color-text: $color-base-dark
+$color-text-header: $color-text
+$color-text-content: $color-text
+
 $color-link: $dark-blue
 $color-link-hover: $light-blue
 $color-link-active: $light-blue
 $color-link-visited: scale-lightness($dark-blue, -25%)
-$color-white-grey-fill: scale-lightness($light-warm-grey, 95%)
-$color-white-grey-line: scale-lightness($light-warm-grey, 80%)
+
+$color-shaded: scale-lightness($color-base-light, 85%)
+$color-white-grey-fill: scale-lightness($color-base-light, 95%)
+$color-white-grey-line: scale-lightness($color-base-light, 80%)
 
 //------------------------------------------------------------------------------
 //  Other measures

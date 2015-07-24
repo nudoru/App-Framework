@@ -2,7 +2,9 @@
 // base styles are in _tags.sass
 // Mixins are in mixins/_mixins-typography.sass
 
-=header-base($fontSize, $lineHeight: $double-base-line-height, $marginBottom: $base-line-height)
+
+
+=header-base($fontSize, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
   margin: 0
   padding: 0
   margin-bottom: $marginBottom
@@ -13,52 +15,47 @@
   text-rendering: optimizeLegibility
 
 %header-1
-  +header-base(1.8rem, $triple-base-line-height)
-  padding-bottom: $double-base-line-height
+  +header-base($ms-5, $triple-base-line-height, $triple-base-line-height)
   font-weight: 300
 
 %header-2
-  +header-base(1.62rem)
-  padding-bottom: $double-base-line-height
+  +header-base($ms-4, $triple-base-line-height, $triple-base-line-height)
   font-weight: 300
 
 %header-3
-  +header-base(1.2rem)
-  padding-bottom: $half-base-line-height
+  +header-base($ms-3, $triple-base-line-height, $triple-base-line-height)
   font-weight: 300
 
 %header-4
-  +header-base(1rem)
-  padding-bottom: $half-base-line-height
+  +header-base($ms-2)
   font-weight: 400
 
 %header-5
-  +header-base(.69rem)
+  +header-base($ms-1)
   text-transform: uppercase
   font-weight: 400
 
 %header-6
-  +header-base(.62rem)
+  +header-base($ms-0)
   text-transform: uppercase
   font-weight: 700
 
-=paragraph-base($fontSize: $base-font-size, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
+=paragraph-base($size: $ms-1, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
   font-family: $font-content
-  font-size: $fontSize
+  font-size: $size
   line-height: $lineHeight
   font-weight: 400
   margin-top: 0
   margin-bottom: $marginBottom
 
-// TO-DO using $base-font-size here isn't working - why?
 %body-text
-  +paragraph-base(.9rem, $double-base-line-height+$half-base-line-height, $double-base-line-height)
+  +paragraph-base($base-font-size, $double-base-line-height+$half-base-line-height, $double-base-line-height)
 
 %body-text-small
-  +paragraph-base(.8rem, $triple-base-line-height, $double-base-line-height)
+  +paragraph-base($ms--1, $triple-base-line-height, $double-base-line-height)
 
 %body-text-big
-  +paragraph-base(1rem, $triple-base-line-height, $double-base-line-height)
+  +paragraph-base($ms-2, $triple-base-line-height, $double-base-line-height)
 
 %small-headers
   h1
@@ -72,43 +69,39 @@
 
 %header-alternate
   font-family: $font-content
-  color: $dark-warm-grey
   margin-bottom: $double-base-line-height
   padding-bottom: 0
   padding-top: $half-base-line-height
-  em
-    color: $dark-blue
-    font-style: normal
 
 .h1-alternate
   @extend %header-alternate
-  font-size: 2.2rem
+  font-size: $ms-3
   font-weight: 300
 
 .h2-alternate
   @extend %header-alternate
-  font-size: 2rem
+  font-size: $ms-2
   font-weight: 300
 
 .h3-alternate
   @extend %header-alternate
-  font-size: 1.6rem
+  font-size: $ms-1
   font-weight: 300
 
 .h4-alternate
   @extend %header-alternate
-  font-size: 1.2rem
+  font-size: $ms-0
   font-weight: 400
 
 .h5-alternate
   @extend %header-alternate
-  font-size: 1rem
-  font-weight: 400
+  font-size: $ms-0
+  font-weight: 700
 
 .h6-alternate
   @extend %header-alternate
-  font-size: .8rem
-  font-weight: 400
+  font-size: $ms--1
+  font-weight: 700
 
 %compressed-paragraph
   display: inline
