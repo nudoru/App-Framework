@@ -4138,13 +4138,17 @@ body {
 }
 
 .app__hero {
-  background: url("../img/wood_1.jpg");
+  background: url("../img/shattered-island.gif");
   display: block;
   width: 100%;
   overflow: hidden;
+  padding-top: 1.854rem;
+  padding-bottom: 1.854rem;
 }
 .app__hero h1, .app__hero h2, .app__hero h3, .app__hero h4, .app__hero h5 h6, .app__hero p, .app__hero li {
   color: #fff;
+  text-align: center;
+  text-shadow: 0 2px 0 #000;
 }
 .app__hero h1 {
   margin: 0;
@@ -4152,7 +4156,7 @@ body {
 }
 
 .app__content {
-  margin-top: 1.854rem;
+  margin-top: -0.618rem;
   margin-bottom: 1.854rem;
 }
 .app__content .app__column {
