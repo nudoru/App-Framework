@@ -8,6 +8,27 @@
 
 $z-index-initialization: 1100
 
+body
+  overflow: hidden
+  background-color: rgb(245,245,245)
+
+#app__container
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  overflow: hidden
+
+#app__contents
+  position: absolute
+  bottom: 100%
+  min-height: 100%
+  top: 0
+  left: 0
+  right: 0
+  overflow-y: auto
+
 #initialization__cover
   @extend %full-background-coverage
   z-index: $z-index-initialization
@@ -38,23 +59,3 @@ $z-index-initialization: 1100
 
 // Some options to support the mobile app / drawer structure
 
-body
-  overflow: hidden
-  background-color: rgb(245,245,245)
-
-#app__container
-  position: fixed
-  top: 0
-  left: 0
-  right: 0
-  bottom: 0
-  overflow: hidden
-
-#app__contents
-  position: absolute
-  bottom: 100%
-  min-height: 100%
-  top: 0
-  left: 0
-  right: 0
-  overflow-y: auto

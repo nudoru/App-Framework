@@ -353,8 +353,7 @@ define('Nori.Utils.Dispatcher',
       }
 
       var src       = document.getElementById(id),
-          srchtml   = '',
-          cleanhtml = '';
+          srchtml, cleanhtml;
 
       if (src) {
         srchtml = src.innerHTML;

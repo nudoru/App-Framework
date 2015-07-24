@@ -24,8 +24,7 @@ define('Nori.Utils.Templating',
       }
 
       var src       = document.getElementById(id),
-          srchtml   = '',
-          cleanhtml = '';
+          srchtml, cleanhtml;
 
       if (src) {
         srchtml = src.innerHTML;

@@ -52,7 +52,7 @@ module.exports = function (grunt) {
           cssDir: 'bin/css',
           environment: 'production',
           //compressed, expanded
-          outputStyle: 'compressed'
+          outputStyle: 'expanded'
         }
       }
     },
