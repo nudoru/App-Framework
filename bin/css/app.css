@@ -2361,9 +2361,10 @@ h1 {
   font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.8rem;
   font-weight: 400;
-  line-height: 1.376rem;
+  line-height: 2.064rem;
   text-rendering: optimizeLegibility;
   padding-bottom: 1.376rem;
+  font-weight: 300;
 }
 
 h2 {
@@ -2376,6 +2377,7 @@ h2 {
   line-height: 1.376rem;
   text-rendering: optimizeLegibility;
   padding-bottom: 1.376rem;
+  font-weight: 300;
 }
 
 .panel-message-footer h1, h3 {
@@ -2388,6 +2390,7 @@ h2 {
   line-height: 1.376rem;
   text-rendering: optimizeLegibility;
   padding-bottom: 0.344rem;
+  font-weight: 300;
 }
 
 .panel-message-footer h2, h4, legend, .table caption {
@@ -2400,6 +2403,7 @@ h2 {
   line-height: 1.376rem;
   text-rendering: optimizeLegibility;
   padding-bottom: 0.344rem;
+  font-weight: 400;
 }
 
 .panel-message-footer h3, h5 {
@@ -2412,7 +2416,7 @@ h2 {
   line-height: 1.376rem;
   text-rendering: optimizeLegibility;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .panel-message-footer h4, .panel-message-footer h5, .panel-message-footer h6, h6 {
@@ -3051,7 +3055,7 @@ hr {
 }
 
 .label-small, .panel-header h1, .messagebox__default .header h1, .panel-footer h1, .messagebox__default .footer h1, button, .button-important {
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .label-information, .label-success, .label-warning, .label-danger {
@@ -3364,7 +3368,7 @@ input[type=color]:focus,
 input[type=file]:focus,
 select:focus, textarea:focus {
   border: 1px solid #005eb8;
-  box-shadow: 0 0 10px #00a9e0;
+  box-shadow: 0 0 20px #00a9e0;
 }
 
 input[type=text],
@@ -3487,7 +3491,7 @@ select:focus, textarea:focus {
     transform: scaleX(1) scaleY(1);
   }
   25% {
-    transform: scaleX(1.1) scaleY(1.1);
+    transform: scaleX(1.05) scaleY(1.05);
   }
   100% {
     transform: scaleX(1) scaleY(1);
@@ -3498,7 +3502,7 @@ select:focus, textarea:focus {
     -moz-transform: scaleX(1) scaleY(1);
   }
   25% {
-    -moz-transform: scaleX(1.1) scaleY(1.1);
+    -moz-transform: scaleX(1.05) scaleY(1.05);
   }
   100% {
     -moz-transform: scaleX(1) scaleY(1);
@@ -3509,7 +3513,7 @@ select:focus, textarea:focus {
     -webkit-transform: scaleX(1) scaleY(1);
   }
   25% {
-    -webkit-transform: scaleX(1.1) scaleY(1.1);
+    -webkit-transform: scaleX(1.05) scaleY(1.05);
   }
   100% {
     -webkit-transform: scaleX(1) scaleY(1);
@@ -3520,7 +3524,7 @@ select:focus, textarea:focus {
     -ms-transform: scaleX(1) scaleY(1);
   }
   25% {
-    -ms-transform: scaleX(1.1) scaleY(1.1);
+    -ms-transform: scaleX(1.05) scaleY(1.05);
   }
   100% {
     -ms-transform: scaleX(1) scaleY(1);
