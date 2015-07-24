@@ -1,47 +1,49 @@
+
+
 // based on css-tricks.com/dont-overthink-it-grids/ and Twitter Bootstrap
 
-.cell-grid
-  padding: 1em
-  color: #ddd
-  background-color: rgba(0,0,0,.15)
-  border: 1px solid rgba(0,0,0,.25)
-  border-radius: .5em
+$grid-padding: $double-base-line-height
 
-.grid-row-borders
+.grid__row-borders
   .row-grid
     border-bottom: 1px solid rgba(0,0,0,.25)
     &:last-of-type
       border-bottom: none
 
-.grid-column-borders
-  [class*='col-']
+.grid__column-borders
+  [class*='grid__col-']
     border-right: 1px solid rgba(0,0,0,.25)
     &:last-of-type
       border-right: none
 
-.grid-t-borders
-  text-align: center
-  @extend .grid-row-borders
-  @extend .grid-column-borders
+.grid-padded
+  padding: $grid-padding 0 $grid-padding $grid-padding
 
-.grid-960 
-  width: 960px
+.grid-test-shaded
+  [class*='grid__col-']
+    background-color: rgba(0,0,0,.05)
+    border: 1px solid rgba(0,0,0,.1) !important
+    text-align: center
+    padding: $base-line-height
 
-.container-grid
+.grid__12-container
   margin: 0 0 0 0
   &:after
     content: ""
     display: table
     clear: both
 
-[class*='col-'] 
+.grid__960
+  width: 960px
+  
+[class*='grid__col-'] 
   float: left
   min-height: 1px
   padding-right: $grid-padding
-  .grid &:last-of-type
+  &:last-of-type
     padding-right: 0
 
-.row-grid
+.grid__row
   width: 100%
   position: relative
   overflow: hidden
@@ -50,151 +52,147 @@
     display: table
     clear: both
 
-.col-1 
+.grid__col-1 
   width: 8.333333333333332%
 
-.col-2
+.grid__col-2
   width: 16.666666666666664%
 
-.col-3
+.grid__col-3
   width: 25%
 
-.col-4
+.grid__col-4
   width: 33.33333333333333%
 
-.col-5
+.grid__col-5
   width: 41.66666666666667%
 
-.col-6
+.grid__col-6
   width: 50%
 
-.col-7
+.grid__col-7
   width: 58.333333333333336%
 
-.col-8
+.grid__col-8
   width: 66.66666666666666%
 
-.col-9
+.grid__col-9
   width: 75%
 
-.col-10
+.grid__col-10
   width: 83.33333333333334%
 
-.col-11
+.grid__col-11
   width: 91.66666666666666%
 
-.col-12
+.grid__col-12
   width: 100%
 
-.col-push-0
+.grid__col-push-0
   left: auto
 
-.col-push-1
+.grid__col-push-1
   left: 8.333333333333332%
 
-.col-push-2
+.grid__col-push-2
   left: 16.666666666666664%
 
-.col-push-3
+.grid__col-push-3
   left: 25%
 
-.col-push-4
+.grid__col-push-4
   left: 33.33333333333333%
 
-.col-push-5
+.grid__col-push-5
   left: 41.66666666666667%
 
-.col-push-6
+.grid__col-push-6
   left: 50%
 
-.col-push-7
+.grid__col-push-7
   left: 58.333333333333336%
 
-.col-push-8
+.grid__col-push-8
   left: 66.66666666666666%
 
-.col-push-9
+.grid__col-push-9
   left: 75%
 
-.col-push-10
+.grid__col-push-10
   left: 83.33333333333334%
 
-.col-push-11
+.grid__col-push-11
   left: 91.66666666666666%
 
-.col-pull-0
+.grid__col-pull-0
   right: auto
 
-.col-pull-1
+.grid__col-pull-1
   right: 8.333333333333332%
 
-.col-pull-2
+.grid__col-pull-2
   right: 16.666666666666664%
 
-.col-pull-3
+.grid__col-pull-3
   right: 25%
 
-.col-pull-4
+.grid__col-pull-4
   right: 33.33333333333333%
 
-.col-pull-5
+.grid__col-pull-5
   right: 41.66666666666667%
 
-.col-pull-6
+.grid__col-pull-6
   right: 50%
 
-.col-pull-7
+.grid__col-pull-7
   right: 58.333333333333336%
 
-.col-pull-8
+.grid__col-pull-8
   right: 66.66666666666666%
 
-.col-pull-9
+.grid__col-pull-9
   right: 75%
 
-.col-pull-10
+.grid__col-pull-10
   right: 83.33333333333334%
 
-.col-pull-11
+.grid__col-pull-11
   right: 91.66666666666666%
 
-.col-offset-0
+.grid__col-offset-0
   margin-left: 0
 
-.col-offset-1
+.grid__col-offset-1
   margin-left: 8.333333333333332%
 
-.col-offset-2
+.grid__col-offset-2
   margin-left: 16.666666666666664%
 
-.col-offset-3
+.grid__col-offset-3
   margin-left: 25%
 
-.col-offset-4
+.grid__col-offset-4
   margin-left: 33.33333333333333%
 
-.col-offset-5
+.grid__col-offset-5
   margin-left: 41.66666666666667%
 
-.col-offset-6
+.grid__col-offset-6
   margin-left: 50%
 
-.col-offset-7
+.grid__col-offset-7
   margin-left: 58.333333333333336%
 
-.col-offset-8
+.grid__col-offset-8
   margin-left: 66.66666666666666%
 
-.col-offset-9
+.grid__col-offset-9
   margin-left: 75%
 
-.col-offset-10
+.grid__col-offset-10
   margin-left: 83.33333333333334%
 
-.col-offset-11
+.grid__col-offset-11
   margin-left: 91.66666666666666%
 
-.grid-pad 
-  padding: $grid-padding 0 $grid-padding $grid-padding
-  [class*='col-']:last-of-type
-    padding-right: $grid-padding

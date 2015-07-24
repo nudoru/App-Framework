@@ -1,4 +1,4 @@
-%horizontal-list
+%list-horizontal
   ul
     overflow: hidden
     margin: 0
@@ -8,21 +8,21 @@
       list-style: none
       float: left
 
-%plain-list
+%list-plain
   margin: 0
   padding: 0
   list-style: none
 
-.plain-list
-  @extend %plain-list
+.list-plain
+  @extend %list-plain
 
-.plain-horizontal-list
-  @extend .plain-list
+.list-plain-horizontal
+  @extend .list-plain
   li
     display: inline
 
-.comma-separated-list
-  @extend .plain-horizontal-list
+.list-comma-separated
+  @extend .list-plain-horizontal
   li
     &:after
       content: ", "

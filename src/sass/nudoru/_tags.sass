@@ -41,9 +41,6 @@ h6
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt
   @extend %body-text
 
-p:last-of-type
-  margin-bottom: 0
-
 strong
   font-weight: 700
 
@@ -56,6 +53,9 @@ blockquote
   padding: $base-line-height
   background-color: rgba(0,0,0,.05)
   font-family: $font-header
+  font-size: 1.4rem
+  font-weight: 300
+  line-height: $triple-base-line-height
 
 pre
   +force-break-all-words

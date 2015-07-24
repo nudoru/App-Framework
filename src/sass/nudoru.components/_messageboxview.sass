@@ -14,12 +14,13 @@ $message-box-footer-height: $base-line-height * 4
       background-color: $downcolor
 
 %base-messagebox
-  @extend .panel-border
+  @extend .panel
+  @extend .panel__border
   position: absolute
   border: none
   box-shadow: 0 15px 25px -3px rgba(0,0,0,.35)
   .header
-    @extend .panel-header
+    @extend .panel__header
     text-align: center
     border-bottom: none
     background-color: $color-nocolor
@@ -36,7 +37,7 @@ $message-box-footer-height: $base-line-height * 4
     p
       font-size: 1rem
   .footer
-    @extend .panel-footer
+    @extend .panel__footer
     padding: 0
     height: $message-box-footer-height
     box-shadow: inset 0 5px 10px rgba(0,0,0,.05)

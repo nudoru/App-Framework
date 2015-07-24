@@ -9,20 +9,20 @@
   transform: $transforms
 
 // rotate
-=rotate ($deg) 
-  @include transform(rotate($deg))
+=rotate($deg)
+  +transform(rotate($deg))
 
 // scale
 =scale($scale) 
-  @include transform(scale($scale))
+  +transform(scale($scale))
 
 // translate
-=translate ($x, $y) 
-  @include transform(translate($x, $y))
+=translate($x, $y)
+  +transform(translate($x, $y))
 
 // skew
-=skew ($x, $y) 
-  @include transform(skew($x, $y))
+=skew($x, $y)
+  +transform(skew($x, $y))
 
 //transform origin
 =transform-origin ($origin) 

@@ -9,16 +9,14 @@
   @extend %panel-base
   background-color: #fff
 
-.panel-border
-  @extend .panel
+.panel__border
   border: $control-border
   border-radius: $control-border-radius
 
-.panel-shadow
-  @extend .panel-border
-  +one-edge-shadow-faint
+.panel__shadow
+  +slight-panel__shadow
 
-%panel-header-footer-base
+%panel__header-footer-base
   overflow: hidden
   display: block
   margin-right: -$control-margin
@@ -36,14 +34,14 @@
     float: right
 
 
-.panel-header
-  @extend %panel-header-footer-base
+.panel__header
+  @extend %panel__header-footer-base
   margin-top: -$control-margin
   margin-bottom: $control-margin
   border-bottom: $control-border
   background-color: $control-header-color
 
-.panel-message-footer
+.panel__footer-message
   overflow: hidden
   display: block
   margin-right: -$control-margin
@@ -62,8 +60,8 @@
     font-size: .9rem
     line-height: $double-base-line-height
 
-.panel-footer
-  @extend %panel-header-footer-base
+.panel__footer
+  @extend %panel__header-footer-base
   margin-top: $control-margin
   margin-bottom: -$control-margin
   border-top: $control-border

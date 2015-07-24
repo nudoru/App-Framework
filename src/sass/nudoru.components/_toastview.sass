@@ -5,7 +5,8 @@
   z-index: $z-index-toast-container
 
 .toast__item
-  @extend .panel-border
+  @extend .panel
+  @extend .panel__border
   border: 1px solid rgba(0,0,0,.1)
   background-color: #fff
   display: table
@@ -15,7 +16,6 @@
   width: 250px
   padding: 0
   overflow: hidden
-  +one-edge-shadow-large
 
 .toast__item-content, .toast__item-controls
   padding: $base-line-height
