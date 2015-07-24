@@ -2,8 +2,6 @@
 // base styles are in _tags.sass
 // Mixins are in mixins/_mixins-typography.sass
 
-
-
 =header-base($fontSize, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
   margin: 0
   padding: 0
@@ -28,16 +26,14 @@
 
 %header-4
   +header-base($ms-2)
-  font-weight: 400
+  font-weight: 300
 
 %header-5
   +header-base($ms-1)
-  text-transform: uppercase
   font-weight: 400
 
 %header-6
   +header-base($ms-0)
-  text-transform: uppercase
   font-weight: 700
 
 =paragraph-base($size: $ms-1, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
@@ -91,12 +87,12 @@
 .h4-alternate
   @extend %header-alternate
   font-size: $ms-0
-  font-weight: 400
+  font-weight: 700
 
 .h5-alternate
   @extend %header-alternate
   font-size: $ms-0
-  font-weight: 700
+  font-weight: 400
 
 .h6-alternate
   @extend %header-alternate

@@ -2395,7 +2395,7 @@ h2 {
   font-weight: 400;
   line-height: 1.236rem;
   text-rendering: optimizeLegibility;
-  font-weight: 400;
+  font-weight: 300;
 }
 
 .panel__footer-message h3, h5 {
@@ -2407,7 +2407,6 @@ h2 {
   font-weight: 400;
   line-height: 1.236rem;
   text-rendering: optimizeLegibility;
-  text-transform: uppercase;
   font-weight: 400;
 }
 
@@ -2420,7 +2419,6 @@ h2 {
   font-weight: 400;
   line-height: 1.236rem;
   text-rendering: optimizeLegibility;
-  text-transform: uppercase;
   font-weight: 700;
 }
 
@@ -2490,12 +2488,12 @@ select, textarea, select.spaced {
 
 .h4-alternate {
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .h5-alternate, tr.row-header-inline td, .tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p {
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .h6-alternate {
@@ -2612,6 +2610,7 @@ ol {
 }
 
 li {
+  margin-left: 0.618rem;
   margin-bottom: 0rem;
 }
 
@@ -2650,13 +2649,13 @@ hr {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.list-plain, .list-plain-horizontal, .list-comma-separated {
+.list-plain, .list-plain-horizontal, .list-comma-separated, .app__header-nav {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.list-plain-horizontal li, .list-comma-separated li {
+.list-plain-horizontal li, .list-comma-separated li, .app__header-nav li {
   display: inline;
 }
 
@@ -4091,4 +4090,72 @@ body {
   display: inline-block;
   width: 25px;
   height: 25px;
+}
+
+.app__column {
+  display: block;
+  width: 90%;
+  margin: 0 auto;
+  padding: 1.236rem;
+}
+
+.app__header {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
+}
+.app__header h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.277rem;
+  line-height: 1.277rem;
+}
+
+.app__header-logo {
+  float: left;
+  margin-right: 0.618rem;
+}
+.app__header-logo i.fa {
+  color: #968c83;
+  font-size: 1.277rem;
+  line-height: 1.277rem;
+}
+
+.app__header-nav {
+  float: right;
+}
+.app__header-nav li {
+  margin-right: 1.236rem;
+}
+.app__header-nav li:last-of-type {
+  margin-right: 0;
+}
+.app__header-nav li a {
+  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-decoration: none;
+}
+
+.app__hero {
+  background: url("../img/wood_1.jpg");
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+.app__hero h1, .app__hero h2, .app__hero h3, .app__hero h4, .app__hero h5 h6, .app__hero p, .app__hero li {
+  color: #fff;
+}
+.app__hero h1 {
+  margin: 0;
+  padding: 0;
+}
+
+.app__content {
+  margin-top: 1.854rem;
+  margin-bottom: 1.854rem;
+}
+.app__content .app__column {
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
 }

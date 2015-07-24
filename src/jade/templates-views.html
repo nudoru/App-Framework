@@ -19,14 +19,17 @@ BEGIN Templates for Application Structure
 <script id="template__applicationscaffold" type="text/template">
     <div id="app__container">
         <div id="app__contents">
-            <header>
-                <div class="app__header-logo"
-                <h1>Appliation</h1>
+            <header class="app__header">
+                <div class="app__column">
+                    <div class="app__header-logo"><i class="fa fa-cogs"></i></div>
+                    <h1>Appliation</h1>
+                </div>
             </header>
-            <section class="app__hero">
-                <h1>This is the hero!</h1>
+            <section class="app__content">
+                <div class="app__column">
+                    <section id="contents"></section>
+                </div>
             </section>
-            <section id="contents"></section>
         </div>
     </div>
 </script>

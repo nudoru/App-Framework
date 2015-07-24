@@ -11,6 +11,13 @@
 //------------------------------------------------------------------------------
 
 $z-index-initialization: 1100
+$app-column-width: 90%
+
+=light-texture
+  background: url('../img/light_toast.png')
+
+=dark-texture
+  background: url('../img/wood_1.jpg')
 
 //------------------------------------------------------------------------------
 //  Scaffold
@@ -20,7 +27,7 @@ $z-index-initialization: 1100
 
 body
   overflow: hidden
-  background: url('../img/light_toast.png')
+  +light-texture
 
 #app__container
   position: fixed
@@ -70,3 +77,63 @@ body
     display: inline-block
     width: 25px
     height: 25px
+
+//------------------------------------------------------------------------------
+//  App Stuff
+//------------------------------------------------------------------------------
+
+.app__column
+  display: block
+  width: $app-column-width
+  margin: 0 auto
+  padding: $double-base-line-height
+
+.app__header
+  display: block
+  width: 100%
+  overflow: hidden
+  background-color: #fff
+  +shadow__panel-slight
+  h1
+    margin: 0
+    padding: 0
+    font-size: $ms-1
+    line-height: $ms-1
+
+.app__header-logo
+  float: left
+  margin-right: $base-line-height
+  i.fa
+    color: $color-base-light
+    font-size: $ms-1
+    line-height: $ms-1
+
+.app__header-nav
+  float: right
+  @extend .list-plain-horizontal
+  li
+    margin-right: $double-base-line-height
+    &:last-of-type
+      margin-right: 0
+    a
+      font-family: $font-header
+      text-decoration: none
+
+.app__hero
+  +dark-texture
+  display: block
+  width: 100%
+  overflow: hidden
+  h1,h2,h3,h4,h5 h6,p,li
+    color: #fff
+  h1
+    margin: 0
+    padding: 0
+
+.app__content
+  margin-top: $triple-base-line-height
+  margin-bottom: $triple-base-line-height
+  .app__column
+    background-color: #fff
+    +shadow__panel-slight
+
