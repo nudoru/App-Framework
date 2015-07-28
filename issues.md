@@ -1,3 +1,8 @@
+# TODO
+
+## SASS
+[ ] Slow down animated fade on text inputs
+
 # Issues
 
 ## JS

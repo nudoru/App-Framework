@@ -2256,16 +2256,16 @@ define('Nori.Utils.Dispatcher',
     exports.extendSubViewController = extendSubViewController;
   });;var Nori = (function () {
   var _config,
-    _model,
-    _view,
-    _dispatcherCommandMap = Object.create(null),
-    _modelViewBindingMap = Object.create(null),
-    _appEvents = require('Nori.Events.AppEventCreator'),
-    _appEventConstants = require('Nori.Events.AppEventConstants'),
-    _browserEvents = require('Nudoru.Browser.BrowserEventConstants'),
-    _objectUtils = require('Nudoru.Core.ObjectUtils'),
-    _dispatcher = require('Nori.Utils.Dispatcher'),
-    _router = require('Nori.Utils.Router');
+      _model,
+      _view,
+      _dispatcherCommandMap = Object.create(null),
+      _modelViewBindingMap  = Object.create(null),
+      _appEvents            = require('Nori.Events.AppEventCreator'),
+      _appEventConstants    = require('Nori.Events.AppEventConstants'),
+      _browserEvents        = require('Nudoru.Browser.BrowserEventConstants'),
+      _objectUtils          = require('Nudoru.Core.ObjectUtils'),
+      _dispatcher           = require('Nori.Utils.Dispatcher'),
+      _router               = require('Nori.Utils.Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -2331,12 +2331,14 @@ define('Nori.Utils.Dispatcher',
    * Initialize the global vars
    */
   function initializeConfig() {
+    var configDataObj = APP_CONFIG_DATA || {};
+
     _config = {
-      appConfig: APP_CONFIG_DATA,
-      routes: [],
+      appConfig   : configDataObj,
+      routes      : [],
       currentRoute: {
         route: '/',
-        data: undefined
+        data : undefined
       }
     };
   }
@@ -2356,7 +2358,6 @@ define('Nori.Utils.Dispatcher',
     });
   }
 
-
   //----------------------------------------------------------------------------
   //  Model binding
   //----------------------------------------------------------------------------
@@ -2368,6 +2369,10 @@ define('Nori.Utils.Dispatcher',
    * @param viewID
    */
   function registerViewForModelChanges(modelID, viewID) {
+    if (!modelID || !viewID) {
+      throw new Error('Nori, registerViewForModelChanges: Model ID and View ID must be defined.', modelID, viewID);
+    }
+
     var viewArry = _modelViewBindingMap[modelID];
 
     if (viewArry) {
@@ -2396,8 +2401,6 @@ define('Nori.Utils.Dispatcher',
    * @param modelID
    */
   function notifyViewsOfModelUpdate(modelID) {
-    //console.log('Model update: ',modelID);
-
     var viewArry = _modelViewBindingMap[modelID];
 
     if (viewArry) {
@@ -2579,24 +2582,24 @@ define('Nori.Utils.Dispatcher',
   //----------------------------------------------------------------------------
 
   return {
-    initializeApplication: initializeApplication,
-    config: getConfig,
-    dispatcher: getDispatcher,
-    router: getRouter,
-    model: getModel,
-    view: getView,
-    createApplication: createApplication,
-    createApplicationModel: createApplicationModel,
-    createApplicationView: createApplicationView,
-    setCurrentRoute: setCurrentRoute,
-    getCurrentRoute: getCurrentRoute,
-    mapRouteView: mapRouteView,
-    mapRouteCommand: mapRouteCommand,
-    mapEventCommand: mapEventCommand,
-    extend: extend,
-    extendWithArray: extendWithArray,
+    initializeApplication      : initializeApplication,
+    config                     : getConfig,
+    dispatcher                 : getDispatcher,
+    router                     : getRouter,
+    model                      : getModel,
+    view                       : getView,
+    createApplication          : createApplication,
+    createApplicationModel     : createApplicationModel,
+    createApplicationView      : createApplicationView,
+    setCurrentRoute            : setCurrentRoute,
+    getCurrentRoute            : getCurrentRoute,
+    mapRouteView               : mapRouteView,
+    mapRouteCommand            : mapRouteCommand,
+    mapEventCommand            : mapEventCommand,
+    extend                     : extend,
+    extendWithArray            : extendWithArray,
     registerViewForModelChanges: registerViewForModelChanges,
-    handleModelUpdate: handleModelUpdate
+    handleModelUpdate          : handleModelUpdate
   };
 
 }
