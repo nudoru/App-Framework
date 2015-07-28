@@ -100,7 +100,7 @@ define('APP.Application',
       if(!this.isInitialized()) {
         _self = this;
         this.initializeSubView(initObj);
-        // associate with stores
+        // associate with stores and custom inin below here
         //APP.registerViewForModelChanges('SomeCollection', this.getID());
       }
     }
@@ -128,6 +128,12 @@ define('APP.Application',
      */
     function viewDidMount() {
       // good place to assign events or post render
+      /*
+       _self.setEvents({
+       'click #button-id': handleButton
+       });
+       _self.delegateEvents();
+       */
     }
 
     /**

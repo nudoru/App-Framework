@@ -1,3 +1,8 @@
+/**
+ * Template for an app subview or module. Override lifecycle function hooks.
+ * Extended from Nori.View.ApplicationSubView
+ */
+
 define('APP.View.AppSubView',
   function (require, module, exports) {
 
@@ -11,7 +16,7 @@ define('APP.View.AppSubView',
       if(!this.isInitialized()) {
         _self = this;
         this.initializeSubView(initObj);
-        // associate with stores
+        // associate with stores and custom inin below here
         //APP.registerViewForModelChanges('SomeCollection', this.getID());
       }
     }
@@ -39,6 +44,12 @@ define('APP.View.AppSubView',
      */
     function viewDidMount() {
       // good place to assign events or post render
+      /*
+       _self.setEvents({
+       'click #button-id': handleButton
+       });
+       _self.delegateEvents();
+       */
     }
 
     /**

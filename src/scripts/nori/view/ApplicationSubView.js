@@ -1,5 +1,6 @@
 /**
- * A template for a subviews
+ * Base module for app subviews for components
+ * Must be extended with custom modules
  */
 
 define('Nori.View.ApplicationSubView',
