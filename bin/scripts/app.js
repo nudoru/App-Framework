@@ -30,6 +30,28 @@ define('APP.Application',
 
     exports.initialize = initialize;
 
+  });;define('App.Events.EventConstants',
+  function (require, module, exports) {
+    var objUtils = require('Nudoru.Core.ObjectUtils');
+
+    _.merge(exports, objUtils.keyMirror({
+      SOMETHING_HAPPENED: null
+    }));
+  });;define('App.Events.EventCreator',
+  function (require, module, exports) {
+
+    var _dispatcher     = require('Nori.Utils.Dispatcher'),
+        _eventConstants = require('App.Events.EventConstants');
+
+    exports.someEvent = function (data) {
+      _dispatcher.publish({
+        type   : _eventConstants.SOMETHING_HAPPENED,
+        payload: {
+          theData: data
+        }
+      });
+    };
+
   });;define('APP.Model.AppModel',
   function (require, module, exports) {
 
@@ -68,16 +90,29 @@ define('APP.Application',
 ;define('APP.View.AppSubView',
   function (require, module, exports) {
 
+    var _self;
+
+    /**
+     * Initialize subview
+     * @param initObj {id, template, mountPoint}
+     */
     function initialize(initObj) {
       if(!this.isInitialized()) {
-        // associate with stores
-
+        _self = this;
         this.initializeSubView(initObj);
+        // associate with stores
+        //APP.registerViewForModelChanges('SomeCollection', this.getID());
       }
     }
 
+    /**
+     * Update has been triggered due a change in the registered model
+     */
     function viewWillUpdate() {
       // Update state from stores
+      var obj = Object.create(null);
+      // build it
+      _self.setState(obj);
     }
 
     // Example of custom render
@@ -88,35 +123,47 @@ define('APP.Application',
     //  this.viewDidRender();
     //}
 
-    //function viewDidMount() {
-    //  // good place to assign events or post render
-    //}
-    //
-    //function viewWillUnmount() {
-    //  // remove events
-    //}
+    /**
+     * Updated view has been rendered and added to the DOM. Manipulate it here
+     */
+    function viewDidMount() {
+      // good place to assign events or post render
+    }
+
+    /**
+     * Remove event handlers and perform other cleanup
+     */
+    function viewWillUnmount() {
+      // remove events
+    }
 
     exports.initialize = initialize;
     exports.viewWillUpdate = viewWillUpdate;
+    exports.viewDidMount = viewDidMount;
+    exports.viewWillUnmount = viewWillUnmount;
 
+    // Other possible lifecycle hooks
     //exports.viewDidUpdate = viewDidUpdate;
     //exports.viewWillRender = viewWillRender;
     //exports.viewDidRender = viewDidRender;
     //exports.viewWillMount = viewWillMount;
-    //exports.viewDidMount = viewDidMount;
-    //exports.viewWillUnmount = viewWillUnmount;
     //exports.viewDidUnmount = viewDidUnmount;
   });;define('APP.View.AppView',
   function (require, module, exports) {
 
     var _self,
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.AppEventCreator'),
+        _dispatcher            = require('Nori.Utils.Dispatcher'),
+        _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     function initialize() {
       _self = this;
 
       _self.initializeApplicationView(['applicationscaffold','applicationcomponentsscaffold']);
       _self.setRouteViewMountPoint('#contents');
+
+      configureApplicationViewEvents();
 
       APP.mapRouteView('/', 'default', 'APP.View.AppSubView');
 
@@ -129,7 +176,22 @@ define('APP.Application',
     }
 
     function render() {
-      // implement
+      /*
+      _self.setEvents({
+        'click #button-id': handleButton
+      });
+      _self.delegateEvents();
+      */
+    }
+
+    function configureApplicationViewEvents() {
+      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function (payload) {
+        _self.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+      });
+
+      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function (payload) {
+        _self.alert(payload.payload.message, payload.payload.title);
+      });
     }
 
     exports.initialize = initialize;

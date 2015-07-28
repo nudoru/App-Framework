@@ -1059,6 +1059,10 @@ define('Nori.Utils.Dispatcher',
       dispatchChange(_id, 'add_map');
     }
 
+    /**
+     * Remove a store from the collection
+     * @param storeID
+     */
     function remove(storeID) {
       var currIdx = getMapIndex(storeID);
       if (currIdx >= 0) {
@@ -1069,6 +1073,18 @@ define('Nori.Utils.Dispatcher',
       } else {
         console.log(_id + ' remove, model not in collection: ' + storeID);
       }
+    }
+
+    /**
+     * Remove all stores from the array
+     */
+    function removeAll() {
+      _children.forEach(function(map) {
+        map.setParentCollection(null);
+      });
+
+      _children = [];
+      dispatchChange(_id, 'remove_map');
     }
 
     /**
@@ -1212,6 +1228,7 @@ define('Nori.Utils.Dispatcher',
     exports.addMapsFromArray    = addMapsFromArray;
     exports.addFromObjArray     = addFromObjArray;
     exports.remove              = remove;
+    exports.removeAll           = removeAll;
     exports.getMap              = getMap;
     exports.hasMap              = hasMap;
     exports.size                = size;
@@ -2143,20 +2160,6 @@ define('Nori.Utils.Dispatcher',
     }
 
     /**
-     * Unused
-     * @param obj
-     */
-    //function bindAllFunctions(obj) {
-    //  for (var func in obj) {
-    //    if (obj.hasOwnProperty(func)) {
-    //      if (_.isFunction(func)) {
-    //        _.bindAll(obj, func);
-    //      }
-    //    }
-    //  }
-    //}
-
-    /**
      * Update subview based on a change in bound model data
      * @param viewID
      */
@@ -2214,10 +2217,26 @@ define('Nori.Utils.Dispatcher',
       if (_currentRouteViewID) {
         _subViewMapping[_currentRouteViewID].controller.unmount();
       }
-
       _currentRouteViewID = '';
-
       //document.querySelector(_routeViewMountPoint).innerHTML = '';
+    }
+
+    /**
+     * Sugar for the mapView
+     * @param templateID
+     * @param controllerModID
+     * @param mountPoint
+     */
+    function createComponent(templateID, controllerModID, mountPoint) {
+      mapView(templateID, controllerModID, false, mountPoint);
+    }
+
+    /**
+     * Sugar for showView
+     * @param templateID
+     */
+    function renderComponent(templateID) {
+      showView(templateID);
     }
 
     //----------------------------------------------------------------------------
@@ -2227,6 +2246,8 @@ define('Nori.Utils.Dispatcher',
     exports.setRouteViewMountPoint  = setRouteViewMountPoint;
     exports.template                = getTemplate;
     exports.createSubView           = createSubView;
+    exports.createComponent         = createComponent;
+    exports.renderComponent         = renderComponent;
     exports.mapView                 = mapView;
     exports.showView                = showView;
     exports.mapRouteView            = mapRouteView;

@@ -80,6 +80,10 @@ define('Nori.Model.MapCollection',
       dispatchChange(_id, 'add_map');
     }
 
+    /**
+     * Remove a store from the collection
+     * @param storeID
+     */
     function remove(storeID) {
       var currIdx = getMapIndex(storeID);
       if (currIdx >= 0) {
@@ -90,6 +94,18 @@ define('Nori.Model.MapCollection',
       } else {
         console.log(_id + ' remove, model not in collection: ' + storeID);
       }
+    }
+
+    /**
+     * Remove all stores from the array
+     */
+    function removeAll() {
+      _children.forEach(function(map) {
+        map.setParentCollection(null);
+      });
+
+      _children = [];
+      dispatchChange(_id, 'remove_map');
     }
 
     /**
@@ -233,6 +249,7 @@ define('Nori.Model.MapCollection',
     exports.addMapsFromArray    = addMapsFromArray;
     exports.addFromObjArray     = addFromObjArray;
     exports.remove              = remove;
+    exports.removeAll           = removeAll;
     exports.getMap              = getMap;
     exports.hasMap              = hasMap;
     exports.size                = size;
