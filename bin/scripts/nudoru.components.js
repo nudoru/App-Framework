@@ -319,43 +319,44 @@ define('Nudoru.Component.CoachMarksView',
 
     var _messageBoxView = require('Nudoru.Component.MessageBoxView');
 
-    function alert(title,message,modal) {
+    function alert(title, message, modal, cb) {
       return _messageBoxView.add({
-        title: title,
-        content: '<p>'+message+'</p>',
-        type: _messageBoxView.type().DEFAULT,
-        modal: modal,
-        width: 400,
+        title  : title,
+        content: '<p>' + message + '</p>',
+        type   : _messageBoxView.type().DANGER,
+        modal  : modal,
+        width  : 400,
         buttons: [
           {
-            label: 'Close',
-            id: 'Close',
-            type: 'default',
-            icon: 'times'
+            label  : 'Close',
+            id     : 'Close',
+            type   : '',
+            icon   : 'times',
+            onClick: cb
           }
-      ]
+        ]
       })
     }
 
     function confirm(title, message, okCB, modal) {
       return _messageBoxView.add({
-        title: title,
-        content: '<p>'+message+'</p>',
-        type: _messageBoxView.type().DEFAULT,
-        modal: modal,
-        width: 400,
+        title  : title,
+        content: '<p>' + message + '</p>',
+        type   : _messageBoxView.type().DEFAULT,
+        modal  : modal,
+        width  : 400,
         buttons: [
           {
             label: 'Cancel',
-            id: 'Cancel',
-            type: 'negative',
-            icon: 'times'
+            id   : 'Cancel',
+            type : 'negative',
+            icon : 'times'
           },
           {
-            label: 'Proceed',
-            id: 'proceed',
-            type: 'positive',
-            icon: 'check',
+            label  : 'Proceed',
+            id     : 'proceed',
+            type   : 'positive',
+            icon   : 'check',
             onClick: okCB
           }
         ]
@@ -364,23 +365,23 @@ define('Nudoru.Component.CoachMarksView',
 
     function prompt(title, message, okCB, modal) {
       return _messageBoxView.add({
-        title: title,
-        content: '<p class="text-center padding-bottom-double">'+message+'</p><textarea name="response" class="input-text" type="text" style="width:400px; height:75px; resize: none" autofocus="true"></textarea>',
-        type: _messageBoxView.type().DEFAULT,
-        modal: modal,
-        width: 450,
+        title  : title,
+        content: '<p class="text-center padding-bottom-double">' + message + '</p><textarea name="response" class="input-text" type="text" style="width:400px; height:75px; resize: none" autofocus="true"></textarea>',
+        type   : _messageBoxView.type().DEFAULT,
+        modal  : modal,
+        width  : 450,
         buttons: [
           {
             label: 'Cancel',
-            id: 'Cancel',
-            type: 'negative',
-            icon: 'times'
+            id   : 'Cancel',
+            type : 'negative',
+            icon : 'times'
           },
           {
-            label: 'Proceed',
-            id: 'proceed',
-            type: 'positive',
-            icon: 'check',
+            label  : 'Proceed',
+            id     : 'proceed',
+            type   : 'positive',
+            icon   : 'check',
             onClick: okCB
           }
         ]
@@ -390,70 +391,70 @@ define('Nudoru.Component.CoachMarksView',
     function choice(title, message, selections, okCB, modal) {
       var selectHTML = '<select class="spaced" style="width:450px;height:200px" name="selection" autofocus="true" size="20">';
 
-        selections.forEach(function(opt) {
-          selectHTML += '<option value="'+opt.value+'" '+(opt.selected==='true' ? 'selected' : '')+'>'+opt.label+'</option>';
-        });
+      selections.forEach(function (opt) {
+        selectHTML += '<option value="' + opt.value + '" ' + (opt.selected === 'true' ? 'selected' : '') + '>' + opt.label + '</option>';
+      });
 
-        selectHTML += '</select>';
+      selectHTML += '</select>';
 
       return _messageBoxView.add({
-        title: title,
-        content: '<p class="text-center padding-bottom-double">'+message+'</p><div class="text-center">'+selectHTML+'</div>',
-        type: _messageBoxView.type().DEFAULT,
-        modal: modal,
-        width: 500,
+        title  : title,
+        content: '<p class="text-center padding-bottom-double">' + message + '</p><div class="text-center">' + selectHTML + '</div>',
+        type   : _messageBoxView.type().DEFAULT,
+        modal  : modal,
+        width  : 500,
         buttons: [
           {
             label: 'Cancel',
-            id: 'Cancel',
-            type: 'negative',
-            icon: 'times'
+            id   : 'Cancel',
+            type : 'negative',
+            icon : 'times'
           },
           {
-            label: 'OK',
-            id: 'ok',
-            type: 'positive',
-            icon: 'check',
+            label  : 'OK',
+            id     : 'ok',
+            type   : 'positive',
+            icon   : 'check',
             onClick: okCB
           }
         ]
       });
     }
 
-    exports.alert = alert;
+    exports.alert   = alert;
     exports.confirm = confirm;
-    exports.prompt = prompt;
-    exports.choice = choice;
+    exports.prompt  = prompt;
+    exports.choice  = choice;
 
   });;define('Nudoru.Component.MessageBoxView',
   function (require, module, exports) {
 
-    var _children = [],
-      _counter = 0,
-      _highestZ = 1000,
-      _defaultWidth = 400,
-      _types = {
-        DEFAULT: 'default',
-        INFORMATION: 'information',
-        SUCCESS: 'success',
-        WARNING: 'warning',
-        DANGER: 'danger'
-      },
-      _typeStyleMap = {
-        'default': '',
-        'information': 'messagebox__information',
-        'success': 'messagebox__success',
-        'warning': 'messagebox__warning',
-        'danger': 'messagebox__danger'
-      },
-      _mountPoint,
-      _buttonIconTemplateID = 'template__messagebox--button-icon',
-      _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
-      _template = require('Nudoru.Component.Templating'),
-      _modal = require('Nudoru.Component.ModalCoverView'),
-      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
+    var _children               = [],
+        _counter                = 0,
+        _highestZ               = 1000,
+        _defaultWidth           = 400,
+        _types                  = {
+          DEFAULT    : 'default',
+          INFORMATION: 'information',
+          SUCCESS    : 'success',
+          WARNING    : 'warning',
+          DANGER     : 'danger'
+        },
+        _typeStyleMap           = {
+          'default'    : '',
+          'information': 'messagebox__information',
+          'success'    : 'messagebox__success',
+          'warning'    : 'messagebox__warning',
+          'danger'     : 'messagebox__danger'
+        },
+        _mountPoint,
+        _buttonIconTemplateID   = 'template__messagebox--button-icon',
+        _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
+        _template               = require('Nudoru.Component.Templating'),
+        _modal                  = require('Nudoru.Component.ModalCoverView'),
+        _browserInfo            = require('Nudoru.Browser.BrowserInfo'),
+        _domUtils               = require('Nudoru.Browser.DOMUtils'),
+        _componentUtils         = require('Nudoru.Component.ComponentViewUtils');
 
     /**
      * Initialize and set the mount point / box container
@@ -469,8 +470,8 @@ define('Nudoru.Component.CoachMarksView',
      * @returns {*}
      */
     function add(initObj) {
-      var type = initObj.type || _types.DEFAULT,
-        boxObj = createBoxObject(initObj);
+      var type   = initObj.type || _types.DEFAULT,
+          boxObj = createBoxObject(initObj);
 
       // setup
       _children.push(boxObj);
@@ -484,7 +485,7 @@ define('Nudoru.Component.CoachMarksView',
       TweenLite.set(boxObj.element, {
         css: {
           zIndex: _highestZ,
-          width: initObj.width ? initObj.width : _defaultWidth
+          width : initObj.width ? initObj.width : _defaultWidth
         }
       });
 
@@ -493,8 +494,8 @@ define('Nudoru.Component.CoachMarksView',
 
       // Make it draggable
       Draggable.create('#' + boxObj.id, {
-        bounds: window,
-        onPress:function() {
+        bounds : window,
+        onPress: function () {
           _highestZ = Draggable.zIndex;
         }
       });
@@ -527,18 +528,18 @@ define('Nudoru.Component.CoachMarksView',
      * @returns {{dataObj: *, id: string, modal: (*|boolean), element: *, streams: Array}}
      */
     function createBoxObject(initObj) {
-      var id = 'js__messagebox-' + (_counter++).toString(),
-        obj = {
-          dataObj: initObj,
-          id: id,
-          modal: initObj.modal,
-          element: _template.asElement('template__messagebox--default', {
-            id: id,
-            title: initObj.title,
-            content: initObj.content
-          }),
-          streams: []
-        };
+      var id  = 'js__messagebox-' + (_counter++).toString(),
+          obj = {
+            dataObj: initObj,
+            id     : id,
+            modal  : initObj.modal,
+            element: _template.asElement('template__messagebox--default', {
+              id     : id,
+              title  : initObj.title,
+              content: initObj.content
+            }),
+            streams: []
+          };
 
       return obj;
     }
@@ -551,13 +552,13 @@ define('Nudoru.Component.CoachMarksView',
       var buttonData = boxObj.dataObj.buttons;
 
       // default button if none
-      if(!buttonData) {
+      if (!buttonData) {
         buttonData = [{
-            label: 'Close',
-            type: '',
-            icon: 'times',
-            id: 'default-close'
-          }];
+          label: 'Close',
+          type : '',
+          icon : 'times',
+          id   : 'default-close'
+        }];
       }
 
       var buttonContainer = boxObj.element.querySelector('.footer-buttons');
@@ -569,9 +570,9 @@ define('Nudoru.Component.CoachMarksView',
 
         var buttonEl;
 
-        if(buttonObj.hasOwnProperty('icon')) {
+        if (buttonObj.hasOwnProperty('icon')) {
           buttonEl = _template.asElement(_buttonIconTemplateID, buttonObj);
-        }  else {
+        } else {
           buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
         }
 
@@ -579,8 +580,10 @@ define('Nudoru.Component.CoachMarksView',
 
         var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
           .subscribe(function () {
-            if(buttonObj.hasOwnProperty('onClick')) {
-              buttonObj.onClick.call(this, captureFormData(boxObj.id));
+            if (buttonObj.hasOwnProperty('onClick')) {
+              if (buttonObj.onClick) {
+                buttonObj.onClick.call(this, captureFormData(boxObj.id));
+              }
             }
             remove(boxObj.id);
           });
@@ -604,7 +607,7 @@ define('Nudoru.Component.CoachMarksView',
      */
     function remove(id) {
       var idx = getObjIndexByID(id),
-        boxObj;
+          boxObj;
 
       if (idx > -1) {
         boxObj = _children[idx];
@@ -618,7 +621,12 @@ define('Nudoru.Component.CoachMarksView',
      */
     function transitionIn(el) {
       TweenLite.to(el, 0, {alpha: 0, rotationX: 45, scale: 2});
-      TweenLite.to(el,0.5, {alpha: 1, rotationX: 0, scale: 1, ease: Circ.easeOut});
+      TweenLite.to(el, 0.5, {
+        alpha    : 1,
+        rotationX: 0,
+        scale    : 1,
+        ease     : Circ.easeOut
+      });
     }
 
     /**
@@ -627,10 +635,10 @@ define('Nudoru.Component.CoachMarksView',
      */
     function transitionOut(el) {
       TweenLite.to(el, 0.25, {
-        alpha: 0,
+        alpha    : 0,
         rotationX: -45,
-        scale: 0.25,
-        ease: Circ.easeIn, onComplete: function () {
+        scale    : 0.25,
+        ease     : Circ.easeIn, onComplete: function () {
           onTransitionOutComplete(el);
         }
       });
@@ -641,10 +649,10 @@ define('Nudoru.Component.CoachMarksView',
      * @param el
      */
     function onTransitionOutComplete(el) {
-      var idx = getObjIndexByID(el.getAttribute('id')),
-        boxObj = _children[idx];
+      var idx    = getObjIndexByID(el.getAttribute('id')),
+          boxObj = _children[idx];
 
-      boxObj.streams.forEach(function(stream) {
+      boxObj.streams.forEach(function (stream) {
         stream.dispose();
       });
 
@@ -681,7 +689,9 @@ define('Nudoru.Component.CoachMarksView',
      * @returns {number}
      */
     function getObjIndexByID(id) {
-      return _children.map(function(child) { return child.id; }).indexOf(id);
+      return _children.map(function (child) {
+        return child.id;
+      }).indexOf(id);
     }
 
     /**
@@ -690,13 +700,15 @@ define('Nudoru.Component.CoachMarksView',
      * @returns {number}
      */
     function getObjByID(id) {
-      return _children.filter(function(child) { return child.id === id; })[0];
+      return _children.filter(function (child) {
+        return child.id === id;
+      })[0];
     }
 
     exports.initialize = initialize;
-    exports.add = add;
-    exports.remove = remove;
-    exports.type = function () {
+    exports.add        = add;
+    exports.remove     = remove;
+    exports.type       = function () {
       return _types
     };
 

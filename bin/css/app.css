@@ -2916,6 +2916,83 @@ hr {
   margin-left: 91.66667%;
 }
 
+.divcol__container {
+  display: table;
+  table-layout: fixed;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.divcol__half-left, .half-right, .divcol__one-third-left, .divcol__one-third-right, .divcol__two-thirds-left, .divcol__two-thirds-right, .divcol__one-fourth-left, .divcol__one-fourth-right, .divcol__three-fourths-left, .divcol__three-fourths-right, .divcol__one-sixth-left, .divcol__one-sixth-right, .divcol__one-eighth-left, .divcol__one-eighth-right {
+  display: table-cell;
+  position: relative;
+  overflow: hidden;
+  vertical-align: top;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.divcol__half-left {
+  width: 50%;
+}
+
+.half-right {
+  width: 50%;
+}
+
+.divcol__one-third-left {
+  width: 33.33333%;
+}
+
+.divcol__one-third-right {
+  width: 33.33333%;
+}
+
+.divcol__two-thirds-left {
+  width: 66.66667%;
+}
+
+.divcol__two-thirds-right {
+  width: 66.66667%;
+}
+
+.divcol__one-fourth-left {
+  width: 25%;
+}
+
+.divcol__one-fourth-right {
+  width: 25%;
+}
+
+.divcol__three-fourths-left {
+  width: 75%;
+}
+
+.divcol__three-fourths-right {
+  width: 75%;
+}
+
+.divcol__one-sixth-left {
+  width: 16.66666%;
+}
+
+.divcol__one-sixth-right {
+  width: 16.66666%;
+}
+
+.divcol__one-eighth-left {
+  width: 12.5%;
+}
+
+.divcol__one-eighth-right {
+  width: 12.5%;
+}
+
 .icon-left i.fa {
   margin-right: 0.618rem;
 }
