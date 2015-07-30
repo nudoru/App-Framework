@@ -3,6 +3,7 @@
 @import "mixins-typography"
 @import "mixins-gradients"
 @import "mixins-shadows"
+@import "mixins-responsive"
 
 =image-cover
   -webkit-background-size: cover
@@ -27,11 +28,3 @@
   -webkit-transform: translateY(-50%)
   -ms-transform: translateY(-50%)
   transform: translateY(-50%)
-
-=respond-to($type, $query)
-  @media ($type: $query)
-    @content
-
-=max-width($width: $screen-md)
-  @media screen and (max-width: #{$width}px)
-    @content

@@ -1,0 +1,20 @@
+$mqbp-desktop-large: 1200px !default
+$mqbp-desktop-medium: 1000px !default
+$mqbp-tablet-mobile: 750px !default
+$mqbp-phone-mobile: 475px !default
+
+// Media query variables from Trello style guide
+$mq-highdensity: "only screen and (-webkit-min-device-pixel-ratio: 1.5)", "only screen and (min--moz-device-pixel-ratio: 1.5)","only screen and (-o-min-device-pixel-ratio: 3/2)", "only screen and (min-device-pixel-ratio: 1.5)"
+$mq-small: "only screen and (max-width: 750px)"
+$mq-medium: "only screen and (min-width: 751px) and (max-width: 900px)"
+$mq-large: "only screen and (min-width: 901px) and (max-width: 1280px)"
+$mq-extra-large: "only screen and (min-width: 1281px)"
+$mq-print: "print"
+
+=respond-to($type, $query)
+  @media ($type: $query)
+    @content
+
+=max-width($width: $mqbp-tablet-mobile)
+  @media screen and (max-width: $width)
+    @content
