@@ -1,7 +1,7 @@
 define('APP.Model.AppModel',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _appEvents  = require('Nori.Events.AppEventCreator'),
         _dispatcher = require('Nori.Utils.Dispatcher');
 
@@ -10,7 +10,7 @@ define('APP.Model.AppModel',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      _self = this;
+      _this = this;
       _appEvents.applicationModelInitialized();
     }
 

@@ -1,12 +1,12 @@
 define('APP.Application',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     function initialize() {
       var appModel, appView;
 
-      _self = this;
+      _this = this;
 
       appModel = this.createApplicationModel(require('APP.Model.AppModel'));
       appView = this.createApplicationView(require('APP.View.AppView'));

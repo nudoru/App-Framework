@@ -566,26 +566,26 @@ define('Nori.Utils.Dispatcher',
   });;define('Nori.Model.ApplicationModel',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
       _appMapCollectionList = Object.create(null),
       _appMapList = Object.create(null),
       _appEventConstants = require('Nori.Events.AppEventConstants'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
     function initializeApplicationModel() {
-      _self = this;
+      _this = this;
     }
 
     function subscribeToModelEvents() {
-      if (!_self) {
+      if (!_this) {
         throw new Error('Nori.Model.ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
       }
 
       _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
-        _self.handleModelDataChanged(payload);
+        _this.handleModelDataChanged(payload);
       });
       _dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
-        _self.handleUpdateModelData(payload);
+        _this.handleUpdateModelData(payload);
       });
     }
 
@@ -985,7 +985,7 @@ define('Nori.Utils.Dispatcher',
   });;define('Nori.Model.MapCollection',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _id,
         _children  = [],
         _silent    = false,
@@ -1000,13 +1000,13 @@ define('Nori.Utils.Dispatcher',
         throw new Error('ModelCollection must be init\'d with an id');
       }
 
-      _self   = this;
+      _this   = this;
       _id     = initObj.id;
       _silent = initObj.silent || false;
 
       // TODO test
       if(initObj.models) {
-        addMapsFromArray.call(_self, initObj.models);
+        addMapsFromArray.call(_this, initObj.models);
       }
     }
 
@@ -1048,7 +1048,7 @@ define('Nori.Utils.Dispatcher',
     function add(store) {
       var currIdx = getMapIndex(store.getID());
 
-      store.setParentCollection(_self);
+      store.setParentCollection(_this);
 
       if (currIdx >= 0) {
         _children[currIdx] = store;
@@ -1533,7 +1533,7 @@ define('Nori.Utils.Dispatcher',
   });;define('Nori.View.ApplicationView',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _appContainerEl,
         _appEl,
         _renderer          = require('Nori.View.Renderer'),
@@ -1561,7 +1561,7 @@ define('Nori.Utils.Dispatcher',
     //----------------------------------------------------------------------------
 
     function initializeApplicationView(scaffoldTemplates) {
-      _self = this;
+      _this = this;
 
       _renderer.initialize();
 
@@ -1575,7 +1575,7 @@ define('Nori.Utils.Dispatcher',
       var bodyEl = document.querySelector('body');
 
       templates.forEach(function (templ) {
-        bodyEl.appendChild(_domUtils.HTMLStrToNode(_self.template().getSource('template__' + templ, {})));
+        bodyEl.appendChild(_domUtils.HTMLStrToNode(_this.template().getSource('template__' + templ, {})));
       });
     }
 
@@ -2289,7 +2289,7 @@ define('Nori.Utils.Dispatcher',
    * Initialize the global vars
    */
   function initializeConfig() {
-    var configDataObj = APP_CONFIG_DATA || {};
+    var configDataObj = window.APP_CONFIG_DATA || {};
 
     _config = {
       appConfig   : configDataObj,

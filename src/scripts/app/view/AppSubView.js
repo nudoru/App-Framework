@@ -6,7 +6,7 @@
 define('APP.View.AppSubView',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     /**
      * Initialize subview
@@ -14,7 +14,7 @@ define('APP.View.AppSubView',
      */
     function initialize(initObj) {
       if(!this.isInitialized()) {
-        _self = this;
+        _this = this;
         this.initializeSubView(initObj);
         // associate with stores and custom inin below here
         //APP.registerViewForModelChanges('SomeCollection', this.getID());
@@ -28,7 +28,7 @@ define('APP.View.AppSubView',
       // Update state from stores
       var obj = Object.create(null);
       // build it
-      _self.setState(obj);
+      _this.setState(obj);
     }
 
     // Example of custom render
@@ -45,10 +45,10 @@ define('APP.View.AppSubView',
     function viewDidMount() {
       // good place to assign events or post render
       /*
-       _self.setEvents({
+       _this.setEvents({
        'click #button-id': handleButton
        });
-       _self.delegateEvents();
+       _this.delegateEvents();
        */
     }
 

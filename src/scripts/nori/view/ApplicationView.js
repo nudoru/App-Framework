@@ -1,7 +1,7 @@
 define('Nori.View.ApplicationView',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _appContainerEl,
         _appEl,
         _renderer          = require('Nori.View.Renderer'),
@@ -29,7 +29,7 @@ define('Nori.View.ApplicationView',
     //----------------------------------------------------------------------------
 
     function initializeApplicationView(scaffoldTemplates) {
-      _self = this;
+      _this = this;
 
       _renderer.initialize();
 
@@ -43,7 +43,7 @@ define('Nori.View.ApplicationView',
       var bodyEl = document.querySelector('body');
 
       templates.forEach(function (templ) {
-        bodyEl.appendChild(_domUtils.HTMLStrToNode(_self.template().getSource('template__' + templ, {})));
+        bodyEl.appendChild(_domUtils.HTMLStrToNode(_this.template().getSource('template__' + templ, {})));
       });
     }
 

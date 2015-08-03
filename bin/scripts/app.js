@@ -1,12 +1,12 @@
 define('APP.Application',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     function initialize() {
       var appModel, appView;
 
-      _self = this;
+      _this = this;
 
       appModel = this.createApplicationModel(require('APP.Model.AppModel'));
       appView = this.createApplicationView(require('APP.View.AppView'));
@@ -55,7 +55,7 @@ define('APP.Application',
   });;define('APP.Model.AppModel',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _appEvents  = require('Nori.Events.AppEventCreator'),
         _dispatcher = require('Nori.Utils.Dispatcher');
 
@@ -64,7 +64,7 @@ define('APP.Application',
     //----------------------------------------------------------------------------
 
     function initialize() {
-      _self = this;
+      _this = this;
       _appEvents.applicationModelInitialized();
     }
 
@@ -90,7 +90,7 @@ define('APP.Application',
 ;define('APP.View.AppSubView',
   function (require, module, exports) {
 
-    var _self;
+    var _this;
 
     /**
      * Initialize subview
@@ -98,7 +98,7 @@ define('APP.Application',
      */
     function initialize(initObj) {
       if(!this.isInitialized()) {
-        _self = this;
+        _this = this;
         this.initializeSubView(initObj);
         // associate with stores and custom inin below here
         //APP.registerViewForModelChanges('SomeCollection', this.getID());
@@ -112,7 +112,7 @@ define('APP.Application',
       // Update state from stores
       var obj = Object.create(null);
       // build it
-      _self.setState(obj);
+      _this.setState(obj);
     }
 
     // Example of custom render
@@ -129,10 +129,10 @@ define('APP.Application',
     function viewDidMount() {
       // good place to assign events or post render
       /*
-       _self.setEvents({
+       _this.setEvents({
        'click #button-id': handleButton
        });
-       _self.delegateEvents();
+       _this.delegateEvents();
        */
     }
 
@@ -157,17 +157,17 @@ define('APP.Application',
   });;define('APP.View.AppView',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _appEvents = require('Nori.Events.AppEventCreator'),
         _dispatcher            = require('Nori.Utils.Dispatcher'),
         _appEventConstants     = require('Nori.Events.AppEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     function initialize() {
-      _self = this;
+      _this = this;
 
-      _self.initializeApplicationView(['applicationscaffold','applicationcomponentsscaffold']);
-      _self.setRouteViewMountPoint('#contents');
+      _this.initializeApplicationView(['applicationscaffold','applicationcomponentsscaffold']);
+      _this.setRouteViewMountPoint('#contents');
 
       configureApplicationViewEvents();
 
@@ -183,20 +183,20 @@ define('APP.Application',
 
     function render() {
       /*
-      _self.setEvents({
+      _this.setEvents({
         'click #button-id': handleButton
       });
-      _self.delegateEvents();
+      _this.delegateEvents();
       */
     }
 
     function configureApplicationViewEvents() {
       _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function (payload) {
-        _self.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+        _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
       _dispatcher.subscribe(_appEventConstants.ALERT_USER, function (payload) {
-        _self.alert(payload.payload.message, payload.payload.title);
+        _this.alert(payload.payload.message, payload.payload.title);
       });
     }
 

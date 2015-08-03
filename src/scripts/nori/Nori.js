@@ -75,7 +75,7 @@ var Nori = (function () {
    * Initialize the global vars
    */
   function initializeConfig() {
-    var configDataObj = APP_CONFIG_DATA || {};
+    var configDataObj = window.APP_CONFIG_DATA || {};
 
     _config = {
       appConfig   : configDataObj,

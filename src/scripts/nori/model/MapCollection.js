@@ -6,7 +6,7 @@
 define('Nori.Model.MapCollection',
   function (require, module, exports) {
 
-    var _self,
+    var _this,
         _id,
         _children  = [],
         _silent    = false,
@@ -21,13 +21,13 @@ define('Nori.Model.MapCollection',
         throw new Error('ModelCollection must be init\'d with an id');
       }
 
-      _self   = this;
+      _this   = this;
       _id     = initObj.id;
       _silent = initObj.silent || false;
 
       // TODO test
       if(initObj.models) {
-        addMapsFromArray.call(_self, initObj.models);
+        addMapsFromArray.call(_this, initObj.models);
       }
     }
 
@@ -69,7 +69,7 @@ define('Nori.Model.MapCollection',
     function add(store) {
       var currIdx = getMapIndex(store.getID());
 
-      store.setParentCollection(_self);
+      store.setParentCollection(_this);
 
       if (currIdx >= 0) {
         _children[currIdx] = store;
