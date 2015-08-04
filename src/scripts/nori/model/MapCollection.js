@@ -148,14 +148,10 @@ define('Nori.Model.MapCollection',
       //if(_parentCollection) {
       //  _parentCollection.dispatchChange({id:_id, store:getMap()});
       //}
-
     }
 
     function hasMap(storeID) {
-      if (_children[storeID]) {
-        return true;
-      }
-      return false;
+      return _children[storeID];
     }
 
     /**

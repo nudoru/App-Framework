@@ -3,7 +3,7 @@ define('APP.Application',
 
     var _this,
         _appEventConstants = require('Nori.Events.AppEventConstants'),
-      _dispatcher = require('Nori.Utils.Dispatcher');
+        _dispatcher        = require('Nori.Utils.Dispatcher');
 
     /**
      * Application bootstrapper. Create the model and views and pass to the app
@@ -17,11 +17,12 @@ define('APP.Application',
       // 1
       this.initializeApplication({
         model: this.createApplicationModel(require('APP.Model.AppModel')),
-        view: this.createApplicationView(require('APP.View.AppView'))
+        view : this.createApplicationView(require('APP.View.AppView'))
       });
 
       // 2
       this.view().initialize();
+      // model will acquire data as needed and dispatch event when complete
       this.model().initialize();
     }
 

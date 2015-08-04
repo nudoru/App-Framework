@@ -45,8 +45,7 @@ var Nori = (function () {
 
   /**
    * Init the app and inject the model and view
-   * @param model
-   * @param view
+   * @param initObj view, model
    */
   function initializeApplication(initObj) {
     initializeConfig();
@@ -55,14 +54,12 @@ var Nori = (function () {
     if (initObj.view) {
       _view = initObj.view;
     } else {
-      console.log('Nori, no view. Creating default.');
       _view = createApplicationView({});
     }
 
     if (initObj.model) {
       _model = initObj.model;
     } else {
-      console.log('Nori, no model. Creating default.');
       _model = createApplicationModel({});
     }
 
@@ -210,9 +207,9 @@ var Nori = (function () {
    * @param evt The event string
    * @param cmdModuleName Module name of a command object, req execute(dataObj) function
    */
-  function mapEventCommand(evt, cmdModuleName) {
-    _dispatcherCommandMap[evt] = _dispatcher.subscribeCommand(evt, cmdModuleName);
-  }
+  //function mapEventCommand(evt, cmdModuleName) {
+  //  _dispatcherCommandMap[evt] = _dispatcher.subscribeCommand(evt, cmdModuleName);
+  //}
 
   /**
    * Set the router to execute the command when on the route
@@ -220,14 +217,14 @@ var Nori = (function () {
    * @param templateID
    * @param command
    */
-  function mapRouteCommand(route, templateID, command) {
-    _router.when(route, {
-      templateID: templateID,
-      controller: function executeRouteCommand(dataObj) {
-        command.execute(dataObj);
-      }
-    });
-  }
+  //function mapRouteCommand(route, templateID, command) {
+  //  _router.when(route, {
+  //    templateID: templateID,
+  //    controller: function executeRouteCommand(dataObj) {
+  //      command.execute(dataObj);
+  //    }
+  //  });
+  //}
 
   /**
    * Maps a route to a view controller
@@ -266,14 +263,20 @@ var Nori = (function () {
 
   /**
    * Merges objects
-   * @param dest Destination object
-   * @param src Source
+   * @param base Destination object
+   * @param extra Source
    * @returns {*}
    */
   function extend(base, extra) {
     return _.assign({}, base, extra);
   }
 
+  /**
+   * Merges a collection of objects
+   * @param base
+   * @param extArry
+   * @returns {*}
+   */
   function extendWithArray(base, extArry) {
     while (extArry.length) {
       base = _.assign(base, extArry.shift());
@@ -336,8 +339,8 @@ var Nori = (function () {
     setCurrentRoute            : setCurrentRoute,
     getCurrentRoute            : getCurrentRoute,
     mapRouteView               : mapRouteView,
-    mapRouteCommand            : mapRouteCommand,
-    mapEventCommand            : mapEventCommand,
+    //mapRouteCommand            : mapRouteCommand,
+    //mapEventCommand            : mapEventCommand,
     extend                     : extend,
     extendWithArray            : extendWithArray,
     registerViewForModelChanges: registerViewForModelChanges,

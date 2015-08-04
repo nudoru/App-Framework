@@ -43,14 +43,14 @@ define('Nori.Utils.Dispatcher',
      * @param once will complete/dispose after one fire
      * @returns {*}
      */
-    function subscribeCommand(evtStr, cmdModule, once) {
-      var cmd = require(cmdModule);
-      if (cmd.hasOwnProperty('execute')) {
-        return subscribe(evtStr, cmd.execute, once);
-      } else {
-        throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
-      }
-    }
+    //function subscribeCommand(evtStr, cmdModule, once) {
+    //  var cmd = require(cmdModule);
+    //  if (cmd.hasOwnProperty('execute')) {
+    //    return subscribe(evtStr, cmd.execute, once);
+    //  } else {
+    //    throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
+    //  }
+    //}
 
     /**
      * Publish a event to all subscribers
@@ -169,7 +169,7 @@ define('Nori.Utils.Dispatcher',
 
     exports.subscribe          = subscribe;
     exports.unsubscribe        = unsubscribe;
-    exports.subscribeCommand   = subscribeCommand;
+    //exports.subscribeCommand   = subscribeCommand;
     exports.publish            = publish;
     exports.getLog             = getLog;
     exports.registerReceiver   = registerReceiver;
@@ -1083,14 +1083,10 @@ define('Nori.Utils.Dispatcher',
       //if(_parentCollection) {
       //  _parentCollection.dispatchChange({id:_id, store:getMap()});
       //}
-
     }
 
     function hasMap(storeID) {
-      if (_children[storeID]) {
-        return true;
-      }
-      return false;
+      return _children[storeID];
     }
 
     /**
@@ -2215,8 +2211,7 @@ define('Nori.Utils.Dispatcher',
 
   /**
    * Init the app and inject the model and view
-   * @param model
-   * @param view
+   * @param initObj view, model
    */
   function initializeApplication(initObj) {
     initializeConfig();
@@ -2225,14 +2220,12 @@ define('Nori.Utils.Dispatcher',
     if (initObj.view) {
       _view = initObj.view;
     } else {
-      console.log('Nori, no view. Creating default.');
       _view = createApplicationView({});
     }
 
     if (initObj.model) {
       _model = initObj.model;
     } else {
-      console.log('Nori, no model. Creating default.');
       _model = createApplicationModel({});
     }
 
@@ -2380,9 +2373,9 @@ define('Nori.Utils.Dispatcher',
    * @param evt The event string
    * @param cmdModuleName Module name of a command object, req execute(dataObj) function
    */
-  function mapEventCommand(evt, cmdModuleName) {
-    _dispatcherCommandMap[evt] = _dispatcher.subscribeCommand(evt, cmdModuleName);
-  }
+  //function mapEventCommand(evt, cmdModuleName) {
+  //  _dispatcherCommandMap[evt] = _dispatcher.subscribeCommand(evt, cmdModuleName);
+  //}
 
   /**
    * Set the router to execute the command when on the route
@@ -2390,14 +2383,14 @@ define('Nori.Utils.Dispatcher',
    * @param templateID
    * @param command
    */
-  function mapRouteCommand(route, templateID, command) {
-    _router.when(route, {
-      templateID: templateID,
-      controller: function executeRouteCommand(dataObj) {
-        command.execute(dataObj);
-      }
-    });
-  }
+  //function mapRouteCommand(route, templateID, command) {
+  //  _router.when(route, {
+  //    templateID: templateID,
+  //    controller: function executeRouteCommand(dataObj) {
+  //      command.execute(dataObj);
+  //    }
+  //  });
+  //}
 
   /**
    * Maps a route to a view controller
@@ -2436,14 +2429,20 @@ define('Nori.Utils.Dispatcher',
 
   /**
    * Merges objects
-   * @param dest Destination object
-   * @param src Source
+   * @param base Destination object
+   * @param extra Source
    * @returns {*}
    */
   function extend(base, extra) {
     return _.assign({}, base, extra);
   }
 
+  /**
+   * Merges a collection of objects
+   * @param base
+   * @param extArry
+   * @returns {*}
+   */
   function extendWithArray(base, extArry) {
     while (extArry.length) {
       base = _.assign(base, extArry.shift());
@@ -2506,8 +2505,8 @@ define('Nori.Utils.Dispatcher',
     setCurrentRoute            : setCurrentRoute,
     getCurrentRoute            : getCurrentRoute,
     mapRouteView               : mapRouteView,
-    mapRouteCommand            : mapRouteCommand,
-    mapEventCommand            : mapEventCommand,
+    //mapRouteCommand            : mapRouteCommand,
+    //mapEventCommand            : mapEventCommand,
     extend                     : extend,
     extendWithArray            : extendWithArray,
     registerViewForModelChanges: registerViewForModelChanges,

@@ -59,14 +59,14 @@ define('Nori.Utils.Dispatcher',
      * @param once will complete/dispose after one fire
      * @returns {*}
      */
-    function subscribeCommand(evtStr, cmdModule, once) {
-      var cmd = require(cmdModule);
-      if (cmd.hasOwnProperty('execute')) {
-        return subscribe(evtStr, cmd.execute, once);
-      } else {
-        throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
-      }
-    }
+    //function subscribeCommand(evtStr, cmdModule, once) {
+    //  var cmd = require(cmdModule);
+    //  if (cmd.hasOwnProperty('execute')) {
+    //    return subscribe(evtStr, cmd.execute, once);
+    //  } else {
+    //    throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
+    //  }
+    //}
 
     /**
      * Publish a event to all subscribers
@@ -185,7 +185,7 @@ define('Nori.Utils.Dispatcher',
 
     exports.subscribe          = subscribe;
     exports.unsubscribe        = unsubscribe;
-    exports.subscribeCommand   = subscribeCommand;
+    //exports.subscribeCommand   = subscribeCommand;
     exports.publish            = publish;
     exports.getLog             = getLog;
     exports.registerReceiver   = registerReceiver;
