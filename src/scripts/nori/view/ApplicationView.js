@@ -40,6 +40,10 @@ define('Nori.View.ApplicationView',
     }
 
     function attachApplicationScaffolding(templates) {
+      if(!templates) {
+        return;
+      }
+
       var bodyEl = document.querySelector('body');
 
       templates.forEach(function (templ) {
