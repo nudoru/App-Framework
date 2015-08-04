@@ -1,11 +1,19 @@
 define('APP.Application',
   function (require, module, exports) {
 
+    var _this,
+        _appEventConstants = require('Nori.Events.AppEventConstants'),
+      _dispatcher = require('Nori.Utils.Dispatcher');
+
     /**
      * Application bootstrapper. Create the model and views and pass to the app
      * to initialize.
      */
     function initialize() {
+      _this = this;
+
+      _dispatcher.subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized);
+
       // 1
       this.initializeApplication({
         model: this.createApplicationModel(require('APP.Model.AppModel')),
@@ -15,14 +23,17 @@ define('APP.Application',
       // 2
       this.view().initialize();
       this.model().initialize();
+    }
 
-      // 3 Add code to wait for model initialization to complete if required
-      // else, start the view
-      this.view().removeLoadingMessage();
-      this.view().render();
+    function onModelInitialized() {
+      _dispatcher.unsubscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized);
+
+      // 3
+      _this.view().removeLoadingMessage();
+      _this.view().render();
 
       // 4 Start it with the route in the current URL
-      this.setCurrentRoute(APP.router().getCurrentRoute());
+      _this.setCurrentRoute(APP.router().getCurrentRoute());
     }
 
     exports.initialize = initialize;

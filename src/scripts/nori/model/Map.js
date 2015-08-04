@@ -217,7 +217,7 @@ define('Nori.Model.Map',
      * @param tObj {currentProp, newProp}
      */
     function transform(tObj) {
-      var transformed = {};
+      var transformed = Object.create(null);
 
       for (var prop in tObj) {
         if (_map.hasOwnProperty(prop)) {

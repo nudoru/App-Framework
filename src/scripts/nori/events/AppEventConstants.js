@@ -4,6 +4,8 @@ define('Nori.Events.AppEventConstants',
 
     _.merge(exports, objUtils.keyMirror({
       APP_INITIALIZED        : null,
+      APP_MODEL_INITIALIZED  : null,
+      APP_VIEW_INITIALIZED   : null,
       ALERT_USER             : null,
       WARN_USER              : null,
       NOTIFY_USER            : null,

@@ -403,6 +403,8 @@ define('Nori.Utils.Dispatcher',
 
     _.merge(exports, objUtils.keyMirror({
       APP_INITIALIZED        : null,
+      APP_MODEL_INITIALIZED  : null,
+      APP_VIEW_INITIALIZED   : null,
       ALERT_USER             : null,
       WARN_USER              : null,
       NOTIFY_USER            : null,
@@ -853,7 +855,7 @@ define('Nori.Utils.Dispatcher',
      * @param tObj {currentProp, newProp}
      */
     function transform(tObj) {
-      var transformed = {};
+      var transformed = Object.create(null);
 
       for (var prop in tObj) {
         if (_map.hasOwnProperty(prop)) {
