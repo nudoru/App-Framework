@@ -25,16 +25,29 @@ define('Nori.Utils.Dispatcher',
      * Add an event as observable
      * @param evtStr Event name string
      * @param handler onNext() subscription function
+     * @param onceOrContext optional, either the context to execute the hander or once bool
      * @param once will complete/dispose after one fire
      * @returns {*}
      */
-    function subscribe(evtStr, handler, once) {
+    function subscribe(evtStr, handler, onceOrContext, once) {
+      var handlerContext = window;
+
+      //console.log('dispatcher subscribe', evtStr, handler, onceOrContext, once);
+
       if (falsey(evtStr)) {
         throw new Error('Fasley event string passed for handler', handler);
       }
 
       if (falsey(handler)) {
         throw new Error('Fasley handler passed for event string', evtStr);
+      }
+
+      if (onceOrContext || onceOrContext === false) {
+        if (onceOrContext === true || onceOrContext === false) {
+          once = onceOrContext;
+        } else {
+          handlerContext = onceOrContext;
+        }
       }
 
       _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
@@ -45,11 +58,12 @@ define('Nori.Utils.Dispatcher',
         once    : once,
         priority: 0,
         handler : handler,
+        context : handlerContext,
         subject : subject,
         type    : 0
       });
 
-      return subject.subscribe(handler);
+      return subject.subscribe(handler.bind(handlerContext));
     }
 
     /**
@@ -183,8 +197,8 @@ define('Nori.Utils.Dispatcher',
       }
     }
 
-    exports.subscribe          = subscribe;
-    exports.unsubscribe        = unsubscribe;
+    exports.subscribe   = subscribe;
+    exports.unsubscribe = unsubscribe;
     //exports.subscribeCommand   = subscribeCommand;
     exports.publish            = publish;
     exports.getLog             = getLog;

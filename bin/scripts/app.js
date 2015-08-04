@@ -12,7 +12,7 @@ define('APP.Application',
     function initialize() {
       _this = this;
 
-      _dispatcher.subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized);
+      _dispatcher.subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
 
       // 1
       this.initializeApplication({
@@ -26,16 +26,27 @@ define('APP.Application',
       this.model().initialize();
     }
 
+    /**
+     * When model data has been loaded
+     */
     function onModelInitialized() {
       _dispatcher.unsubscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized);
 
       // 3
-      _this.view().removeLoadingMessage();
-      _this.view().render();
+      this.view().removeLoadingMessage();
+      this.view().render();
 
       // 4 Start it with the route in the current URL
-      _this.setCurrentRoute(APP.router().getCurrentRoute());
+      this.setCurrentRoute(APP.router().getCurrentRoute());
     }
+
+    //----------------------------------------------------------------------------
+    //  Handle server or incoming events
+    //----------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
 
@@ -109,13 +120,14 @@ define('APP.Application',
       if(!this.isInitialized()) {
         _this = this;
         this.initializeSubView(initObj);
-        // associate with stores and custom inin below here
-        //APP.registerViewForModelChanges('SomeCollection', this.getID());
+        // associate with stores. viewWillUpdate() fires when it changes
+        //APP.bindToMap('SomeCollection', this.getID());
+        // custom init below here
       }
     }
 
     /**
-     * Update has been triggered due a change in the registered model
+     * Update has been triggered due a change in the bound model
      */
     function viewWillUpdate() {
       // Update state from stores
@@ -172,6 +184,10 @@ define('APP.Application',
         _appEventConstants     = require('Nori.Events.AppEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
+    //----------------------------------------------------------------------------
+    //  Initialization
+    //----------------------------------------------------------------------------
+
     function initialize() {
       _this = this;
 
@@ -200,14 +216,22 @@ define('APP.Application',
     }
 
     function configureApplicationViewEvents() {
-      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function (payload) {
+      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
         _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
-      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function (payload) {
+      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
         _this.alert(payload.payload.message, payload.payload.title);
       });
     }
+
+    //----------------------------------------------------------------------------
+    //  Custom
+    //----------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
     exports.render     = render;

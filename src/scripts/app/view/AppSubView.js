@@ -16,13 +16,14 @@ define('APP.View.AppSubView',
       if(!this.isInitialized()) {
         _this = this;
         this.initializeSubView(initObj);
-        // associate with stores and custom inin below here
-        //APP.registerViewForModelChanges('SomeCollection', this.getID());
+        // associate with stores. viewWillUpdate() fires when it changes
+        //APP.bindToMap('SomeCollection', this.getID());
+        // custom init below here
       }
     }
 
     /**
-     * Update has been triggered due a change in the registered model
+     * Update has been triggered due a change in the bound model
      */
     function viewWillUpdate() {
       // Update state from stores

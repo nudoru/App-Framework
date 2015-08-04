@@ -1,3 +1,7 @@
+/**
+ * Application controller
+ */
+
 define('APP.Application',
   function (require, module, exports) {
 
@@ -12,7 +16,7 @@ define('APP.Application',
     function initialize() {
       _this = this;
 
-      _dispatcher.subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized);
+      _dispatcher.subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
 
       // 1
       this.initializeApplication({
@@ -26,16 +30,27 @@ define('APP.Application',
       this.model().initialize();
     }
 
+    /**
+     * When model data has been loaded
+     */
     function onModelInitialized() {
       _dispatcher.unsubscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized);
 
       // 3
-      _this.view().removeLoadingMessage();
-      _this.view().render();
+      this.view().removeLoadingMessage();
+      this.view().render();
 
       // 4 Start it with the route in the current URL
-      _this.setCurrentRoute(APP.router().getCurrentRoute());
+      this.setCurrentRoute(APP.router().getCurrentRoute());
     }
+
+    //----------------------------------------------------------------------------
+    //  Handle server or incoming events
+    //----------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
 

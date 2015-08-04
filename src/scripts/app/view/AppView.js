@@ -7,6 +7,10 @@ define('APP.View.AppView',
         _appEventConstants     = require('Nori.Events.AppEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
+    //----------------------------------------------------------------------------
+    //  Initialization
+    //----------------------------------------------------------------------------
+
     function initialize() {
       _this = this;
 
@@ -35,14 +39,22 @@ define('APP.View.AppView',
     }
 
     function configureApplicationViewEvents() {
-      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function (payload) {
+      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
         _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
-      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function (payload) {
+      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
         _this.alert(payload.payload.message, payload.payload.title);
       });
     }
+
+    //----------------------------------------------------------------------------
+    //  Custom
+    //----------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
     exports.render     = render;
