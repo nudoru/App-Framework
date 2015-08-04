@@ -17,7 +17,7 @@ define('APP.View.AppSubView',
         _this = this;
         this.initializeSubView(initObj);
         // associate with stores. viewWillUpdate() fires when it changes
-        //APP.bindToMap('SomeCollection', this.getID());
+        //this.bindMap('SomeCollection');
         // custom init below here
       }
     }

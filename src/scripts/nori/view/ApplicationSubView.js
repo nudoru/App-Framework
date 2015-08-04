@@ -34,6 +34,14 @@ define('Nori.View.ApplicationSubView',
     }
 
     /**
+     * Bind updates to the map ID to this view's update
+     * @param mapID
+     */
+    function bindMap(mapID) {
+      Nori.bindToMap(mapID, this.getID());
+    }
+
+    /**
      * Add a child
      * @param child
      */
@@ -264,6 +272,8 @@ define('Nori.View.ApplicationSubView',
     exports.setHTML       = setHTML;
     exports.getDOMElement = getDOMElement;
     exports.setDOMElement = setDOMElement;
+
+    exports.bindMap       = bindMap;
 
     exports.viewWillUpdate = viewWillUpdate;
     exports.update         = update;
