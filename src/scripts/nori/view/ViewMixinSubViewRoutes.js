@@ -32,13 +32,17 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * Map a route to a module view controller
      * The controller module is extended from the Nori.View.BaseSubView module
      * @param templateID
-     * @param controllerModID
+     * @param controllerModule
      * @param route True | False, is is a subview
      */
-    function mapView(templateID, controllerModID, isRoute, mountPoint) {
+    function mapView(templateID, controllerModule, isRoute, mountPoint) {
+      if(typeof controllerModule === 'string') {
+        controllerModule = requireNew(controllerModule);
+      }
+
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller  : createSubView(requireNew(controllerModID)),
+        controller  : createSubView(controllerModule),
         isRouteView : isRoute,
         mountPoint  : mountPoint
       };
@@ -61,10 +65,10 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * Map a route to a module view controller
      * The controller module is extended from the Nori.View.BaseSubView module
      * @param templateID
-     * @param controllerModID
+     * @param controllerModule
      */
-    function mapRouteView(templateID, controllerModID) {
-      mapView(templateID, controllerModID, true, _routeViewMountPoint);
+    function mapRouteView(templateID, controllerModule) {
+      mapView(templateID, controllerModule, true, _routeViewMountPoint);
     }
 
     /**
@@ -141,7 +145,6 @@ define('Nori.View.ViewMixinSubViewRoutes',
         _subViewMapping[_currentRouteViewID].controller.unmount();
       }
       _currentRouteViewID = '';
-      //document.querySelector(_routeViewMountPoint).innerHTML = '';
     }
 
     /**
