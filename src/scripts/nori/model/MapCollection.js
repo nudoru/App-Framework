@@ -26,7 +26,7 @@ define('Nori.Model.MapCollection',
       _silent = initObj.silent || false;
 
       // TODO test
-      if(initObj.models) {
+      if (initObj.models) {
         addMapsFromArray.call(_this, initObj.models);
       }
     }
@@ -50,6 +50,29 @@ define('Nori.Model.MapCollection',
       oArry.forEach(function (obj) {
 
         var id;
+
+        if (obj.hasOwnProperty(idKey)) {
+          id = obj[idKey];
+        } else {
+          id = _id + 'child' + _children.length;
+        }
+
+        add(Nori.model().createMap({id: id, silent: silent, store: obj}));
+      });
+      dispatchChange(_id, 'add_map');
+    }
+
+
+    function addFromJSONArray(json, idKey, silent) {
+      json.forEach(function (jstr) {
+
+        var id, obj;
+
+        try {
+          obj = JSON.parse(jstr);
+        } catch (e) {
+          throw new Error('MapCollection, error parsing JSON:', jstr, e);
+        }
 
         if (obj.hasOwnProperty(idKey)) {
           id = obj[idKey];
@@ -100,7 +123,7 @@ define('Nori.Model.MapCollection',
      * Remove all stores from the array
      */
     function removeAll() {
-      _children.forEach(function(map) {
+      _children.forEach(function (map) {
         map.setParentCollection(null);
       });
 
@@ -144,7 +167,7 @@ define('Nori.Model.MapCollection',
         });
       }
 
-      // TODO Collections of Collections
+      // TODO Implement collections of collections
       //if(_parentCollection) {
       //  _parentCollection.dispatchChange({id:_id, store:getMap()});
       //}
@@ -215,14 +238,6 @@ define('Nori.Model.MapCollection',
       return arry;
     }
 
-    function save() {
-      //
-    }
-
-    function destroy() {
-      //
-    }
-
     function toJSON() {
       return JSON.stringify(_children);
     }
@@ -244,6 +259,7 @@ define('Nori.Model.MapCollection',
     exports.add                 = add;
     exports.addMapsFromArray    = addMapsFromArray;
     exports.addFromObjArray     = addFromObjArray;
+    exports.addFromJSONArray    = addFromJSONArray;
     exports.remove              = remove;
     exports.removeAll           = removeAll;
     exports.getMap              = getMap;
@@ -257,8 +273,6 @@ define('Nori.Model.MapCollection',
     exports.forEach             = forEach;
     exports.map                 = map;
     exports.entries             = entries;
-    exports.save                = save;
-    exports.destroy             = destroy;
     exports.toJSON              = toJSON;
     exports.dispatchChange      = dispatchChange;
     exports.setParentCollection = setParentCollection;

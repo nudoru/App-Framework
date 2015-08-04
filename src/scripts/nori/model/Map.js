@@ -9,7 +9,7 @@ define('Nori.Model.Map',
     var _id,
         _changed   = false,
         _entries   = [],
-        _map       = {},
+        _map       = Object.create(null),
         _silent    = false,
         _parentCollection,
         _appEvents = require('Nori.Events.AppEventCreator');
@@ -28,12 +28,25 @@ define('Nori.Model.Map',
       _silent = initObj.silent || false;
 
       if (initObj.store) {
-        // set inital data silently
-        //set(initObj.store, {silent: true});
         _changed = true;
         _map     = initObj.store;
+      } else if (initObj.json) {
+        setJSON(initObj.json);
       }
 
+    }
+
+    /**
+     * Set map store from a JSON object
+     * @param jstr
+     */
+    function setJSON(jstr) {
+      _changed = true;
+      try {
+        _map = JSON.parse(jstr);
+      } catch (e) {
+        throw new Error('MapCollection, error parsing JSON:', jstr, e);
+      }
     }
 
     function getID() {
@@ -249,15 +262,6 @@ define('Nori.Model.Map',
 
     }
 
-    function save() {
-      //
-    }
-
-    function destroy() {
-      _map              = null;
-      _parentCollection = null;
-    }
-
     function toJSON() {
       return JSON.stringify(_map);
     }
@@ -278,6 +282,7 @@ define('Nori.Model.Map',
     exports.getID               = getID;
     exports.clear               = clear;
     exports.changed             = getChanged;
+    exports.setJSON             = setJSON;
     exports.set                 = set;
     exports.setKeyProp          = setKeyProp;
     exports.get                 = get;
@@ -294,8 +299,6 @@ define('Nori.Model.Map',
     exports.getAtIndex          = getAtIndex;
     exports.toObject            = toObject;
     exports.transform           = transform;
-    exports.save                = save;
-    exports.destroy             = destroy;
     exports.toJSON              = toJSON;
     exports.setParentCollection = setParentCollection;
     exports.getParentCollection = getParentCollection;
