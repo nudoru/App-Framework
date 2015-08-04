@@ -84,32 +84,6 @@ define('Nori.Model.ApplicationModel',
       return _appMapCollectionList[storeID];
     }
 
-    /**
-     * Itterate over the keys in the specified model and build an object of the
-     * matching key/value pairs
-     * @param sID
-     * @param keysArry
-     * @returns {Object}
-     */
-    //function getKeysFromMap(store, keysArry) {
-    //  var keysMap = Object.create();
-    //
-    //  // if the arg is a string, then it must be an ID
-    //  if (typeof store === 'string') {
-    //    store = getMap(sID);
-    //  }
-    //
-    //  keysArry.forEach(function getKey(key) {
-    //    if (store.has(key)) {
-    //      keysMap[key] = store.get(key);
-    //    } else {
-    //      keysMap[key] = 'ERR:' + key;
-    //    }
-    //  });
-    //
-    //  return keysMap;
-    //}
-
     exports.initializeApplicationModel = initializeApplicationModel;
     exports.subscribeToModelEvents = subscribeToModelEvents;
     exports.handleModelDataChanged = handleModelDataChanged;
@@ -118,6 +92,4 @@ define('Nori.Model.ApplicationModel',
     exports.createMap = createMap;
     exports.getMap = getMap;
     exports.getMapCollection = getMapCollection;
-    //exports.getKeysFromMap = getKeysFromMap;
-
   });

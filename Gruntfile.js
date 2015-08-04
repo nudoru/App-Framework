@@ -145,7 +145,7 @@ module.exports = function (grunt) {
       app: {
         src: [
           'src/scripts/app/**/*.js',
-          'src/scripts/app.js'
+          'src/scripts/main.js'
         ],
         dest: 'bin/scripts/app.js'
       }

@@ -75,10 +75,8 @@ var Nori = (function () {
    * Initialize the global vars
    */
   function initializeConfig() {
-    var configDataObj = window.APP_CONFIG_DATA || {};
-
     _config = {
-      appConfig   : configDataObj,
+      appConfig   : window.APP_CONFIG_DATA || {},
       routes      : [],
       currentRoute: {
         route: '/',

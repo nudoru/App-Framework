@@ -1,32 +1,29 @@
 define('APP.Application',
   function (require, module, exports) {
 
-    var _this;
-
+    /**
+     * Application bootstrapper. Create the model and views and pass to the app
+     * to initialize.
+     */
     function initialize() {
-      var appModel, appView;
+      // 1
+      this.initializeApplication({
+        model: this.createApplicationModel(require('APP.Model.AppModel')),
+        view: this.createApplicationView(require('APP.View.AppView'))
+      });
 
-      _this = this;
-
-      appModel = this.createApplicationModel(require('APP.Model.AppModel'));
-      appView = this.createApplicationView(require('APP.View.AppView'));
-
-      this.initializeApplication({model:appModel, view:appView});
-
+      // 2
       this.view().initialize();
       this.model().initialize();
 
-      // Could wait for model initialization to complete
+      // 3 Add code to wait for model initialization to complete if required
+      // else, start the view
       this.view().removeLoadingMessage();
       this.view().render();
 
-      // Start it with the route in the URL
+      // 4 Start it with the route in the current URL
       this.setCurrentRoute(APP.router().getCurrentRoute());
     }
-
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
 
     exports.initialize = initialize;
 

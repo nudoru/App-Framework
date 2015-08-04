@@ -8,18 +8,18 @@
  {
  type: EVT_TYPE,
  payload: {
-    key: value
-  }
+ key: value
+ }
  }
 
-*/
+ */
 
 define('Nori.Utils.Dispatcher',
   function (require, module, exports) {
-    var _subjectMap = {},
+    var _subjectMap  = {},
         _receiverMap = {},
-        _id = 0,
-        _log = [];
+        _id          = 0,
+        _log         = [];
 
     /**
      * Add an event as observable
@@ -29,44 +29,28 @@ define('Nori.Utils.Dispatcher',
      * @returns {*}
      */
     function subscribe(evtStr, handler, once) {
-      if(falsey(evtStr)) {
+      if (falsey(evtStr)) {
         throw new Error('Fasley event string passed for handler', handler);
       }
 
-      if(falsey(handler)) {
+      if (falsey(handler)) {
         throw new Error('Fasley handler passed for event string', evtStr);
       }
 
       _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
 
-       var subject = new Rx.Subject();
+      var subject = new Rx.Subject();
 
       _subjectMap[evtStr].push({
-        once: once,
+        once    : once,
         priority: 0,
-        handler: handler,
-        subject: subject,
-        type: 0
+        handler : handler,
+        subject : subject,
+        type    : 0
       });
 
       return subject.subscribe(handler);
     }
-
-
-    //function createSubscribeSubject(evtStr, handler, once) {
-    //  _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
-    //
-    //  var subject = new Rx.Subject();
-    //
-    //  _subjectMap[evtStr].push({
-    //    once: once,
-    //    priority: 0,
-    //    subject: subject,
-    //    type: 1
-    //  });
-    //
-    //  return subject;
-    //}
 
     /**
      * Maps a module/command's execute() function as the handler for onNext
@@ -77,10 +61,10 @@ define('Nori.Utils.Dispatcher',
      */
     function subscribeCommand(evtStr, cmdModule, once) {
       var cmd = require(cmdModule);
-      if(cmd.hasOwnProperty('execute')) {
+      if (cmd.hasOwnProperty('execute')) {
         return subscribe(evtStr, cmd.execute, once);
       } else {
-        throw new Error('Emitter cannot map '+evtStr+' to command '+cmdModule+': must have execute()');
+        throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
       }
     }
 
@@ -95,19 +79,17 @@ define('Nori.Utils.Dispatcher',
 
       var subscribers = _subjectMap[payloadObj.type], i;
 
-      if(!subscribers) {
-        //console.log('!> ',payloadObj);
+      if (!subscribers) {
         return;
       }
 
       _log.push(payloadObj);
-      //console.log('>> ',payloadObj);
 
       i = subscribers.length;
 
       while (i--) {
         var subjObj = subscribers[i];
-        if(subjObj.type === 0) {
+        if (subjObj.type === 0) {
           subjObj.subject.onNext(payloadObj);
         }
         if (subjObj.once) {
@@ -127,11 +109,11 @@ define('Nori.Utils.Dispatcher',
       }
 
       var subscribers = _subjectMap[evtStr],
-        handlerIdx = -1;
+          handlerIdx  = -1;
 
       for (var i = 0, len = subscribers.length; i < len; i++) {
         if (subscribers[i].handler === handler) {
-          handlerIdx = i;
+          handlerIdx     = i;
           subscribers[i].subject.onCompleted();
           subscribers[i].subject.dispose();
           subscribers[i] = null;
@@ -173,9 +155,9 @@ define('Nori.Utils.Dispatcher',
      * @returns {string}
      */
     function registerReceiver(handler) {
-      var id = 'ID_'+_id++;
+      var id           = 'ID_' + _id++;
       _receiverMap[id] = {
-        id: id,
+        id     : id,
         handler: handler
       };
       return id;
@@ -186,7 +168,7 @@ define('Nori.Utils.Dispatcher',
      * @param payload
      */
     function dispatchToReceivers(payload) {
-      for(var id in _receiverMap) {
+      for (var id in _receiverMap) {
         _receiverMap[id].handler(payload);
       }
     }
@@ -196,17 +178,17 @@ define('Nori.Utils.Dispatcher',
      * @param id
      */
     function unregisterReceiver(id) {
-      if(_receiverMap.hasOwnProperty(id)) {
+      if (_receiverMap.hasOwnProperty(id)) {
         delete _receiverMap[id];
       }
     }
 
-    exports.subscribe = subscribe;
-    exports.unsubscribe = unsubscribe;
-    exports.subscribeCommand = subscribeCommand;
-    exports.publish = publish;
-    exports.getLog = getLog;
-    exports.registerReceiver = registerReceiver;
+    exports.subscribe          = subscribe;
+    exports.unsubscribe        = unsubscribe;
+    exports.subscribeCommand   = subscribeCommand;
+    exports.publish            = publish;
+    exports.getLog             = getLog;
+    exports.registerReceiver   = registerReceiver;
     exports.unregisterReceiver = unregisterReceiver;
 
   });

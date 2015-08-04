@@ -15,8 +15,8 @@
 define('Nori.Utils.Router',
   function (require, module, exports) {
 
-    var _routeMap = Object.create(null),
-      _appEvents = require('Nori.Events.AppEventCreator');
+    var _routeMap  = Object.create(null),
+        _appEvents = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -51,11 +51,11 @@ define('Nori.Utils.Router',
      * @returns {{route: string, query: {}}}
      */
     function getCurrentRoute() {
-      var fragment = getURLFragment(),
-        parts = fragment.split('?'),
-        route = '/' + parts[0],
-        queryStr = decodeURIComponent(parts[1]),
-        queryStrObj = parseQueryStr(queryStr);
+      var fragment    = getURLFragment(),
+          parts       = fragment.split('?'),
+          route       = '/' + parts[0],
+          queryStr    = decodeURIComponent(parts[1]),
+          queryStrObj = parseQueryStr(queryStr);
 
       return {route: route, data: queryStrObj};
     }
@@ -75,11 +75,11 @@ define('Nori.Utils.Router',
      * @returns {{}}
      */
     function parseQueryStr(queryStr) {
-      var obj = {},
-        parts = queryStr.split('&');
+      var obj   = {},
+          parts = queryStr.split('&');
 
       parts.forEach(function (pairStr) {
-        var pairArr = pairStr.split('=');
+        var pairArr     = pairStr.split('=');
         obj[pairArr[0]] = pairArr[1];
       });
 
@@ -96,9 +96,9 @@ define('Nori.Utils.Router',
 
       if (routeObj) {
         routeObj.controller.call(window, {
-          route: route,
+          route     : route,
           templateID: routeObj.templateID,
-          queryData: queryStrObj
+          queryData : queryStrObj
         });
       } else {
         console.log('No Route mapped for: "' + route + '"');
@@ -112,7 +112,7 @@ define('Nori.Utils.Router',
      */
     function setRoute(route, dataObj) {
       var path = route,
-        data = [];
+          data = [];
       if (dataObj !== null && dataObj !== undefined) {
         path += "?";
         for (var prop in dataObj) {
@@ -148,10 +148,10 @@ define('Nori.Utils.Router',
       window.location.hash = path;
     }
 
-    exports.initialize = initialize;
-    exports.when = when;
+    exports.initialize      = initialize;
+    exports.when            = when;
     exports.getCurrentRoute = getCurrentRoute;
     exports.runCurrentRoute = runCurrentRoute;
-    exports.setRoute = setRoute;
+    exports.setRoute        = setRoute;
 
   });

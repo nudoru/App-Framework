@@ -1,9 +1,9 @@
 define('Nori.Utils.Dispatcher',
   function (require, module, exports) {
-    var _subjectMap = {},
+    var _subjectMap  = {},
         _receiverMap = {},
-        _id = 0,
-        _log = [];
+        _id          = 0,
+        _log         = [];
 
     /**
      * Add an event as observable
@@ -13,44 +13,28 @@ define('Nori.Utils.Dispatcher',
      * @returns {*}
      */
     function subscribe(evtStr, handler, once) {
-      if(falsey(evtStr)) {
+      if (falsey(evtStr)) {
         throw new Error('Fasley event string passed for handler', handler);
       }
 
-      if(falsey(handler)) {
+      if (falsey(handler)) {
         throw new Error('Fasley handler passed for event string', evtStr);
       }
 
       _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
 
-       var subject = new Rx.Subject();
+      var subject = new Rx.Subject();
 
       _subjectMap[evtStr].push({
-        once: once,
+        once    : once,
         priority: 0,
-        handler: handler,
-        subject: subject,
-        type: 0
+        handler : handler,
+        subject : subject,
+        type    : 0
       });
 
       return subject.subscribe(handler);
     }
-
-
-    //function createSubscribeSubject(evtStr, handler, once) {
-    //  _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
-    //
-    //  var subject = new Rx.Subject();
-    //
-    //  _subjectMap[evtStr].push({
-    //    once: once,
-    //    priority: 0,
-    //    subject: subject,
-    //    type: 1
-    //  });
-    //
-    //  return subject;
-    //}
 
     /**
      * Maps a module/command's execute() function as the handler for onNext
@@ -61,10 +45,10 @@ define('Nori.Utils.Dispatcher',
      */
     function subscribeCommand(evtStr, cmdModule, once) {
       var cmd = require(cmdModule);
-      if(cmd.hasOwnProperty('execute')) {
+      if (cmd.hasOwnProperty('execute')) {
         return subscribe(evtStr, cmd.execute, once);
       } else {
-        throw new Error('Emitter cannot map '+evtStr+' to command '+cmdModule+': must have execute()');
+        throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
       }
     }
 
@@ -79,19 +63,17 @@ define('Nori.Utils.Dispatcher',
 
       var subscribers = _subjectMap[payloadObj.type], i;
 
-      if(!subscribers) {
-        //console.log('!> ',payloadObj);
+      if (!subscribers) {
         return;
       }
 
       _log.push(payloadObj);
-      //console.log('>> ',payloadObj);
 
       i = subscribers.length;
 
       while (i--) {
         var subjObj = subscribers[i];
-        if(subjObj.type === 0) {
+        if (subjObj.type === 0) {
           subjObj.subject.onNext(payloadObj);
         }
         if (subjObj.once) {
@@ -111,11 +93,11 @@ define('Nori.Utils.Dispatcher',
       }
 
       var subscribers = _subjectMap[evtStr],
-        handlerIdx = -1;
+          handlerIdx  = -1;
 
       for (var i = 0, len = subscribers.length; i < len; i++) {
         if (subscribers[i].handler === handler) {
-          handlerIdx = i;
+          handlerIdx     = i;
           subscribers[i].subject.onCompleted();
           subscribers[i].subject.dispose();
           subscribers[i] = null;
@@ -157,9 +139,9 @@ define('Nori.Utils.Dispatcher',
      * @returns {string}
      */
     function registerReceiver(handler) {
-      var id = 'ID_'+_id++;
+      var id           = 'ID_' + _id++;
       _receiverMap[id] = {
-        id: id,
+        id     : id,
         handler: handler
       };
       return id;
@@ -170,7 +152,7 @@ define('Nori.Utils.Dispatcher',
      * @param payload
      */
     function dispatchToReceivers(payload) {
-      for(var id in _receiverMap) {
+      for (var id in _receiverMap) {
         _receiverMap[id].handler(payload);
       }
     }
@@ -180,24 +162,24 @@ define('Nori.Utils.Dispatcher',
      * @param id
      */
     function unregisterReceiver(id) {
-      if(_receiverMap.hasOwnProperty(id)) {
+      if (_receiverMap.hasOwnProperty(id)) {
         delete _receiverMap[id];
       }
     }
 
-    exports.subscribe = subscribe;
-    exports.unsubscribe = unsubscribe;
-    exports.subscribeCommand = subscribeCommand;
-    exports.publish = publish;
-    exports.getLog = getLog;
-    exports.registerReceiver = registerReceiver;
+    exports.subscribe          = subscribe;
+    exports.unsubscribe        = unsubscribe;
+    exports.subscribeCommand   = subscribeCommand;
+    exports.publish            = publish;
+    exports.getLog             = getLog;
+    exports.registerReceiver   = registerReceiver;
     exports.unregisterReceiver = unregisterReceiver;
 
   });;define('Nori.Utils.Router',
   function (require, module, exports) {
 
-    var _routeMap = Object.create(null),
-      _appEvents = require('Nori.Events.AppEventCreator');
+    var _routeMap  = Object.create(null),
+        _appEvents = require('Nori.Events.AppEventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -232,11 +214,11 @@ define('Nori.Utils.Dispatcher',
      * @returns {{route: string, query: {}}}
      */
     function getCurrentRoute() {
-      var fragment = getURLFragment(),
-        parts = fragment.split('?'),
-        route = '/' + parts[0],
-        queryStr = decodeURIComponent(parts[1]),
-        queryStrObj = parseQueryStr(queryStr);
+      var fragment    = getURLFragment(),
+          parts       = fragment.split('?'),
+          route       = '/' + parts[0],
+          queryStr    = decodeURIComponent(parts[1]),
+          queryStrObj = parseQueryStr(queryStr);
 
       return {route: route, data: queryStrObj};
     }
@@ -256,11 +238,11 @@ define('Nori.Utils.Dispatcher',
      * @returns {{}}
      */
     function parseQueryStr(queryStr) {
-      var obj = {},
-        parts = queryStr.split('&');
+      var obj   = {},
+          parts = queryStr.split('&');
 
       parts.forEach(function (pairStr) {
-        var pairArr = pairStr.split('=');
+        var pairArr     = pairStr.split('=');
         obj[pairArr[0]] = pairArr[1];
       });
 
@@ -277,9 +259,9 @@ define('Nori.Utils.Dispatcher',
 
       if (routeObj) {
         routeObj.controller.call(window, {
-          route: route,
+          route     : route,
           templateID: routeObj.templateID,
-          queryData: queryStrObj
+          queryData : queryStrObj
         });
       } else {
         console.log('No Route mapped for: "' + route + '"');
@@ -293,7 +275,7 @@ define('Nori.Utils.Dispatcher',
      */
     function setRoute(route, dataObj) {
       var path = route,
-        data = [];
+          data = [];
       if (dataObj !== null && dataObj !== undefined) {
         path += "?";
         for (var prop in dataObj) {
@@ -329,11 +311,11 @@ define('Nori.Utils.Dispatcher',
       window.location.hash = path;
     }
 
-    exports.initialize = initialize;
-    exports.when = when;
+    exports.initialize      = initialize;
+    exports.when            = when;
     exports.getCurrentRoute = getCurrentRoute;
     exports.runCurrentRoute = runCurrentRoute;
-    exports.setRoute = setRoute;
+    exports.setRoute        = setRoute;
 
   });;define('Nori.Utils.Templating',
   function (require, module, exports) {
@@ -649,32 +631,6 @@ define('Nori.Utils.Dispatcher',
       return _appMapCollectionList[storeID];
     }
 
-    /**
-     * Itterate over the keys in the specified model and build an object of the
-     * matching key/value pairs
-     * @param sID
-     * @param keysArry
-     * @returns {Object}
-     */
-    //function getKeysFromMap(store, keysArry) {
-    //  var keysMap = Object.create();
-    //
-    //  // if the arg is a string, then it must be an ID
-    //  if (typeof store === 'string') {
-    //    store = getMap(sID);
-    //  }
-    //
-    //  keysArry.forEach(function getKey(key) {
-    //    if (store.has(key)) {
-    //      keysMap[key] = store.get(key);
-    //    } else {
-    //      keysMap[key] = 'ERR:' + key;
-    //    }
-    //  });
-    //
-    //  return keysMap;
-    //}
-
     exports.initializeApplicationModel = initializeApplicationModel;
     exports.subscribeToModelEvents = subscribeToModelEvents;
     exports.handleModelDataChanged = handleModelDataChanged;
@@ -683,8 +639,6 @@ define('Nori.Utils.Dispatcher',
     exports.createMap = createMap;
     exports.getMap = getMap;
     exports.getMapCollection = getMapCollection;
-    //exports.getKeysFromMap = getKeysFromMap;
-
   });;define('Nori.Model.Map',
   function (require, module, exports) {
 
@@ -2289,10 +2243,8 @@ define('Nori.Utils.Dispatcher',
    * Initialize the global vars
    */
   function initializeConfig() {
-    var configDataObj = window.APP_CONFIG_DATA || {};
-
     _config = {
-      appConfig   : configDataObj,
+      appConfig   : window.APP_CONFIG_DATA || {},
       routes      : [],
       currentRoute: {
         route: '/',
