@@ -1548,6 +1548,10 @@ define('Nori.Utils.Dispatcher',
     }
 
     function attachApplicationScaffolding(templates) {
+      if(!templates) {
+        return;
+      }
+
       var bodyEl = document.querySelector('body');
 
       templates.forEach(function (templ) {
@@ -2288,6 +2292,39 @@ define('Nori.Utils.Dispatcher',
   }
 
   //----------------------------------------------------------------------------
+  // Functional utils from Mithril
+  //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
+  //----------------------------------------------------------------------------
+
+  // http://mithril.js.org/mithril.prop.html
+  function prop(store) {
+    var gettersetter = function () {
+      if (arguments.length) {
+        store = arguments[0];
+      }
+      return store;
+    };
+
+    gettersetter.toJSON = function () {
+      return store;
+    };
+
+    return gettersetter;
+  }
+
+  // http://mithril.js.org/mithril.withAttr.html
+  function withAttr(prop, callback, context) {
+    return function (e) {
+      e = e || event;
+
+      var currentTarget = e.currentTarget || this,
+          cntx          = context || this;
+
+      callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
+    };
+  }
+
+  //----------------------------------------------------------------------------
   //  Model binding
   //----------------------------------------------------------------------------
 
@@ -2517,24 +2554,25 @@ define('Nori.Utils.Dispatcher',
   //----------------------------------------------------------------------------
 
   return {
-    initializeApplication      : initializeApplication,
-    config                     : getConfig,
-    dispatcher                 : getDispatcher,
-    router                     : getRouter,
-    model                      : getModel,
-    view                       : getView,
-    createApplication          : createApplication,
-    createApplicationModel     : createApplicationModel,
-    createApplicationView      : createApplicationView,
-    setCurrentRoute            : setCurrentRoute,
-    getCurrentRoute            : getCurrentRoute,
-    mapRouteView               : mapRouteView,
+    initializeApplication : initializeApplication,
+    config                : getConfig,
+    dispatcher            : getDispatcher,
+    router                : getRouter,
+    model                 : getModel,
+    view                  : getView,
+    createApplication     : createApplication,
+    createApplicationModel: createApplicationModel,
+    createApplicationView : createApplicationView,
+    setCurrentRoute       : setCurrentRoute,
+    getCurrentRoute       : getCurrentRoute,
+    mapRouteView          : mapRouteView,
     //mapRouteCommand            : mapRouteCommand,
     //mapEventCommand            : mapEventCommand,
-    extend                     : extend,
-    extendWithArray            : extendWithArray,
-    bindToMap: bindToMap,
-    handleModelUpdate          : handleModelUpdate
+    extend                : extend,
+    extendWithArray       : extendWithArray,
+    bindToMap             : bindToMap,
+    handleModelUpdate     : handleModelUpdate,
+    prop                  : prop
   };
 
 }

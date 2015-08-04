@@ -30,8 +30,6 @@ define('APP.Application',
      * When model data has been loaded
      */
     function onModelInitialized() {
-      _dispatcher.unsubscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized);
-
       // 3
       this.view().removeLoadingMessage();
       this.view().render();
