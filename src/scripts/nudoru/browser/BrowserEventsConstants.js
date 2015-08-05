@@ -1,6 +1,12 @@
 define('Nudoru.Browser.BrowserEventConstants',
-  function(require, module, exports) {
-    module.exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
-    module.exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
-    module.exports.BROWSER_SCROLLED = 'BROWSER_SCROLLED';
+  function (require, module, exports) {
+
+    var objUtils = require('Nudoru.Core.ObjectUtils');
+
+    _.merge(module.exports, objUtils.keyMirror({
+      URL_HASH_CHANGED: null,
+      BROWSER_RESIZED : null,
+      BROWSER_SCROLLED: null
+    }));
+
   });
