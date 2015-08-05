@@ -17,7 +17,7 @@
  * @param moduleCode
  */
 function define(id, moduleCode) {
-  if(id in define.cache) {
+  if (id in define.cache) {
     return;
   }
   define.cache[id] = moduleCode;
@@ -35,15 +35,14 @@ function require(id) {
     return require.cache[id];
   }
 
-  var moduleCode = define.cache[id],
-    exports = {},
-    module = {exports: exports};
+  var moduleCode    = define.cache[id],
+      exports       = {},
+      module        = {exports: exports};
 
-  if(!moduleCode) {
-    throw new Error('Require: module not found: "'+id+'"');
+  if (!moduleCode) {
+    throw new Error('Require: module not found: "' + id + '"');
   }
 
-  // TODO set scope to exports instead of moduleCode?
   moduleCode.call(moduleCode, require, module, exports);
   require.cache[id] = module.exports;
   return module.exports;
@@ -58,11 +57,11 @@ require.cache = Object.create(null);
  */
 function requireNew(id) {
   var moduleCode = define.cache[id],
-    exports = {},
-    module = {exports: exports};
+      exports    = {},
+      module     = {exports: exports};
 
-  if(!moduleCode) {
-    throw new Error('requireNew: module not found: "'+id+'"');
+  if (!moduleCode) {
+    throw new Error('requireNew: module not found: "' + id + '"');
   }
 
   moduleCode.call(moduleCode, require, module, exports);
@@ -77,11 +76,11 @@ function requireNew(id) {
  */
 function requireExtend(id, extendProps) {
   var moduleCode = define.cache[id],
-    exports = {},
-    module = {exports: exports};
+      exports    = {},
+      module     = {exports: exports};
 
-  if(!moduleCode) {
-    throw new Error('requireNew: module not found: "'+id+'"');
+  if (!moduleCode) {
+    throw new Error('requireNew: module not found: "' + id + '"');
   }
 
   moduleCode.call(moduleCode, require, module, exports);
@@ -108,7 +107,7 @@ define('Nudoru.Core.ArrayUtils',
 
     var _numberUtils = require('Nudoru.Core.NumberUtils');
 
-    module.exports.isArray = function(test) {
+    module.exports.isArray = function (test) {
       return Object.prototype.toString.call(test) === "[object Array]";
     };
 
@@ -128,9 +127,9 @@ define('Nudoru.Core.ArrayUtils',
     // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
     module.exports.unique = function (arry) {
       var o = {},
-        i,
-        l = arry.length,
-        r = [];
+          i,
+          l = arry.length,
+          r = [];
       for (i = 0; i < l; i += 1) {
         o[arry[i]] = arry[i];
       }
@@ -157,8 +156,8 @@ define('Nudoru.Core.ArrayUtils',
 
     module.exports.getRandomSetOfElements = function (srcarry, max) {
       var arry = [],
-        i = 0,
-        len = _numberUtils.rndNumber(1, max);
+          i    = 0,
+          len  = _numberUtils.rndNumber(1, max);
 
       for (; i < len; i++) {
         arry.push(this.rndElement(srcarry));
@@ -172,8 +171,8 @@ define('Nudoru.Core.ArrayUtils',
 
       arr1.forEach(function (value) {
         var present = false,
-          i = 0,
-          len = arr2.length;
+            i       = 0,
+            len     = arr2.length;
 
         for (; i < len; i++) {
           if (value === arr2[i]) {
@@ -214,7 +213,7 @@ define('Nudoru.Core.NumberUtils',
 
     module.exports.distanceTL = function (point1, point2) {
       var xd = (point2.left - point1.left),
-        yd = (point2.top - point1.top);
+          yd = (point2.top - point1.top);
 
       return Math.sqrt((xd * xd) + (yd * yd));
     };
@@ -222,7 +221,7 @@ define('Nudoru.Core.NumberUtils',
   });
 
 define('Nudoru.Core.ObjectUtils',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     /**
      * Test for
@@ -231,15 +230,15 @@ define('Nudoru.Core.ObjectUtils',
      * @param obj
      * @returns {boolean}
      */
-    module.exports.isNull = function(obj) {
+    module.exports.isNull = function (obj) {
       var isnull = false;
 
-      if(falsey(obj)) {
+      if (falsey(obj)) {
         return true;
       }
 
-      for(var prop in obj) {
-        if(prop === undefined || obj[prop] === undefined) isnull = true;
+      for (var prop in obj) {
+        if (prop === undefined || obj[prop] === undefined) isnull = true;
         break;
       }
 
@@ -252,7 +251,7 @@ define('Nudoru.Core.ObjectUtils',
       };
     };
 
-    module.exports.searchObjects = function(obj, key, val) {
+    module.exports.searchObjects = function (obj, key, val) {
       var objects = [];
       for (var i in obj) {
         if (typeof obj[i] === 'object') {
@@ -265,9 +264,9 @@ define('Nudoru.Core.ObjectUtils',
     };
 
     module.exports.getObjectFromString = function (obj, str) {
-      var i = 0,
-        path = str.split('.'),
-        len = path.length;
+      var i    = 0,
+          path = str.split('.'),
+          len  = path.length;
 
       for (; i < len; i++) {
         obj = obj[path[i]];
@@ -287,7 +286,7 @@ define('Nudoru.Core.ObjectUtils',
     };
 
     // extend and deep extend from http://youmightnotneedjquery.com/
-    module.exports.extend = function(out) {
+    module.exports.extend = function (out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -305,7 +304,7 @@ define('Nudoru.Core.ObjectUtils',
       return out;
     };
 
-    module.exports.deepExtend = function(out) {
+    module.exports.deepExtend = function (out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -338,18 +337,18 @@ define('Nudoru.Core.ObjectUtils',
      * @param prototype
      * @returns New object using prototype.methods as source
      */
-    module.exports.basicFactory = function(prototype) {
+    module.exports.basicFactory = function (prototype) {
       var proto = prototype,
-        obj = Object.create(proto.methods);
+          obj   = Object.create(proto.methods);
 
-      if(proto.hasOwnProperty('closure')) {
-        proto.closures.forEach(function(closure) {
+      if (proto.hasOwnProperty('closure')) {
+        proto.closures.forEach(function (closure) {
           closure.call(obj);
         });
       }
 
-      if(proto.hasOwnProperty('state')) {
-        for(var key in proto.state) {
+      if (proto.hasOwnProperty('state')) {
+        for (var key in proto.state) {
           obj[key] = proto.state[key];
         }
       }
@@ -393,7 +392,7 @@ define('Nudoru.Core.ObjectUtils',
      * @param {object} obj
      * @return {object}
      */
-    module.exports.keyMirror = function(obj) {
+    module.exports.keyMirror = function (obj) {
       var ret = {};
       var key;
       if (!(obj instanceof Object && !Array.isArray(obj))) {
@@ -411,23 +410,23 @@ define('Nudoru.Core.ObjectUtils',
 
 
 define('Nudoru.Core.StringUtils',
-  function(require, module, exports){
+  function (require, module, exports) {
 
-    module.exports.capitalizeFirstLetter = function(str) {
+    module.exports.capitalizeFirstLetter = function (str) {
       return str.charAt(0).toUpperCase() + str.substring(1);
     };
 
-    module.exports.toTitleCase = function(str) {
-      return str.replace(/\w\S*/g, function(txt){
+    module.exports.toTitleCase = function (str) {
+      return str.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1);
       });
     };
 
-    module.exports.removeTags = function(str) {
+    module.exports.removeTags = function (str) {
       return str.replace(/(<([^>]+)>)/ig, '');
     };
 
-    module.exports.ellipses = function(len) {
+    module.exports.ellipses = function (len) {
       return (this.length > len) ? this.substr(0, len) + "..." : this;
     };
 

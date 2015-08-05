@@ -27,7 +27,7 @@
  * @param moduleCode
  */
 function define(id, moduleCode) {
-  if(id in define.cache) {
+  if (id in define.cache) {
     return;
   }
   define.cache[id] = moduleCode;
@@ -45,15 +45,14 @@ function require(id) {
     return require.cache[id];
   }
 
-  var moduleCode = define.cache[id],
-    exports = {},
-    module = {exports: exports};
+  var moduleCode    = define.cache[id],
+      exports       = {},
+      module        = {exports: exports};
 
-  if(!moduleCode) {
-    throw new Error('Require: module not found: "'+id+'"');
+  if (!moduleCode) {
+    throw new Error('Require: module not found: "' + id + '"');
   }
 
-  // TODO set scope to exports instead of moduleCode?
   moduleCode.call(moduleCode, require, module, exports);
   require.cache[id] = module.exports;
   return module.exports;
@@ -68,11 +67,11 @@ require.cache = Object.create(null);
  */
 function requireNew(id) {
   var moduleCode = define.cache[id],
-    exports = {},
-    module = {exports: exports};
+      exports    = {},
+      module     = {exports: exports};
 
-  if(!moduleCode) {
-    throw new Error('requireNew: module not found: "'+id+'"');
+  if (!moduleCode) {
+    throw new Error('requireNew: module not found: "' + id + '"');
   }
 
   moduleCode.call(moduleCode, require, module, exports);
@@ -87,11 +86,11 @@ function requireNew(id) {
  */
 function requireExtend(id, extendProps) {
   var moduleCode = define.cache[id],
-    exports = {},
-    module = {exports: exports};
+      exports    = {},
+      module     = {exports: exports};
 
-  if(!moduleCode) {
-    throw new Error('requireNew: module not found: "'+id+'"');
+  if (!moduleCode) {
+    throw new Error('requireNew: module not found: "' + id + '"');
   }
 
   moduleCode.call(moduleCode, require, module, exports);

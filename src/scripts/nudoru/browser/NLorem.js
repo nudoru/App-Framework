@@ -1,18 +1,18 @@
 define('Nudoru.Browser.NLorem',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
-    var _currentText = [],
-      _textSets = [],
-      _maleFirstNames = [],
-      _femaleFirstNames = [],
-      _lastNames = [],
-      _punctuation = [],
-      _months,
-      _days,
-      _initialized = false,
-      _arrayUtils = require('Nudoru.Core.ArrayUtils'),
-      _stringUtils = require('Nudoru.Core.StringUtils'),
-      _numberUtils = require('Nudoru.Core.NumberUtils');
+    var _currentText      = [],
+        _textSets         = [],
+        _maleFirstNames   = [],
+        _femaleFirstNames = [],
+        _lastNames        = [],
+        _punctuation      = [],
+        _months,
+        _days,
+        _initialized      = false,
+        _arrayUtils       = require('Nudoru.Core.ArrayUtils'),
+        _stringUtils      = require('Nudoru.Core.StringUtils'),
+        _numberUtils      = require('Nudoru.Core.NumberUtils');
 
     _textSets = [
       "Perhaps a re-engineering of your current world view will re-energize your online nomenclature to enable a new holistic interactive enterprise internet communication solution Upscaling the resurgent networking exchange solutions, achieving a breakaway systemic electronic data interchange system synchronization, thereby exploiting technical environments for mission critical broad based capacity constrained systems Fundamentally transforming well designed actionable information whose semantic content is virtually null To more fully clarify the current exchange, a few aggregate issues will require addressing to facilitate this distributed communication venue In integrating non-aligned structures into existing legacy systems, a holistic gateway blueprint is a backward compatible packaging tangible"
@@ -24,53 +24,53 @@ define('Nudoru.Browser.NLorem',
 
     _femaleFirstNames = 'Elizabeth Ann Helen Margaret Ellen Catherine Lily Florence Ada Lou Ethel Emily Ruth Rose Frances Alice Bertha Clara Mabel Minnie Grace Jane Evelyn Gertrude Edna Pearl Laura Hazel Edith Esther Harriet Sarah May Matilda Martha Myrtle Josephin Maud Agnes Keri Julia Irene Mildred Cora'.split(' ');
 
-    _punctuation = ['.','.','.','.','?','!'];
+    _punctuation = ['.', '.', '.', '.', '?', '!'];
 
-    _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    _months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-    _days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    _days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
     function initialize() {
-      if(_initialized) return;
+      if (_initialized) return;
       setCurrentTextSet(0);
       _initialized = true;
     }
 
     function setCurrentTextSet(index) {
       var _current = _textSets[index].toLowerCase();
-      _currentText= _current.split(' ');
+      _currentText = _current.split(' ');
     }
 
-    function getSentence(min,max) {
+    function getSentence(min, max) {
       var sentence = getText(min, max);
 
       return _stringUtils.capitalizeFirstLetter(sentence) + getRandomItem(_punctuation);
     }
 
     function getParagraph(min, max) {
-      var str = "",
-        delim = " ",
-        len = _numberUtils.rndNumber(min, max),
-        i= 0;
+      var str   = "",
+          delim = " ",
+          len   = _numberUtils.rndNumber(min, max),
+          i     = 0;
 
-      for(; i<len; i++) {
-        if(i === len-1) {
+      for (; i < len; i++) {
+        if (i === len - 1) {
           delim = "";
         }
-        str += getSentence(1,10) + delim;
+        str += getSentence(1, 10) + delim;
       }
 
       return str;
     }
 
     function getText(min, max) {
-      var str = "",
-        delim = " ",
-        len = _numberUtils.rndNumber(min, max),
-        i= 0;
+      var str   = "",
+          delim = " ",
+          len   = _numberUtils.rndNumber(min, max),
+          i     = 0;
 
-      for(; i<len; i++) {
-        if(i === len-1) {
+      for (; i < len; i++) {
+        if (i === len - 1) {
           delim = "";
         }
         str += getRandomItem(_currentText) + delim;
@@ -81,12 +81,12 @@ define('Nudoru.Browser.NLorem',
 
     function getRandomItem(arry) {
       var min = 0;
-      var max = arry.length-1;
+      var max = arry.length - 1;
       return arry[_numberUtils.rndNumber(min, max)];
     }
 
     function getFirstName() {
-      return _numberUtils.rndNumber(0,1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
+      return _numberUtils.rndNumber(0, 1) ? getRandomItem(_maleFirstNames) : getRandomItem(_femaleFirstNames);
     }
 
     function getLastName() {
@@ -106,18 +106,18 @@ define('Nudoru.Browser.NLorem',
      * @returns {{monthNumber: *, monthName: *, monthDay, weekDayNumber: *, weekDay: *, year}}
      */
     function getDate() {
-      var month = _numberUtils.rndNumber(0,11),
-        wkday = _numberUtils.rndNumber(0,4),
-        date = {
-        monthNumber: month + 1,
-        monthName: _months[month],
-        monthDay: _numberUtils.rndNumber(1,28),
-        weekDayNumber: wkday + 1,
-        weekDay: _days[wkday],
-        year: _arrayUtils.rndElement(['2010','2011','2012','2013','2014','2015','2016'])
-      };
+      var month = _numberUtils.rndNumber(0, 11),
+          wkday = _numberUtils.rndNumber(0, 4),
+          date  = {
+            monthNumber  : month + 1,
+            monthName    : _months[month],
+            monthDay     : _numberUtils.rndNumber(1, 28),
+            weekDayNumber: wkday + 1,
+            weekDay      : _days[wkday],
+            year         : _arrayUtils.rndElement(['2010', '2011', '2012', '2013', '2014', '2015', '2016'])
+          };
 
-      date.string = date.monthName+' '+date.monthDay+', '+date.year;
+      date.string = date.monthName + ' ' + date.monthDay + ', ' + date.year;
 
       return date;
 
@@ -133,16 +133,17 @@ define('Nudoru.Browser.NLorem',
           .toString(16)
           .substring(1);
       }
+
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    module.exports.initialize = initialize;
-    module.exports.getText = getText;
-    module.exports.getSentence = getSentence;
+    module.exports.initialize   = initialize;
+    module.exports.getText      = getText;
+    module.exports.getSentence  = getSentence;
     module.exports.getParagraph = getParagraph;
-    module.exports.getFLName = getFLName;
-    module.exports.getLFName = getLFName;
-    module.exports.getDate = getDate;
-    module.exports.fakeGUID = fakeGUID;
+    module.exports.getFLName    = getFLName;
+    module.exports.getLFName    = getLFName;
+    module.exports.getDate      = getDate;
+    module.exports.fakeGUID     = fakeGUID;
 
   });

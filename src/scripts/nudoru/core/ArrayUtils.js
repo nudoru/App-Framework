@@ -3,7 +3,7 @@ define('Nudoru.Core.ArrayUtils',
 
     var _numberUtils = require('Nudoru.Core.NumberUtils');
 
-    module.exports.isArray = function(test) {
+    module.exports.isArray = function (test) {
       return Object.prototype.toString.call(test) === "[object Array]";
     };
 
@@ -23,9 +23,9 @@ define('Nudoru.Core.ArrayUtils',
     // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
     module.exports.unique = function (arry) {
       var o = {},
-        i,
-        l = arry.length,
-        r = [];
+          i,
+          l = arry.length,
+          r = [];
       for (i = 0; i < l; i += 1) {
         o[arry[i]] = arry[i];
       }
@@ -52,8 +52,8 @@ define('Nudoru.Core.ArrayUtils',
 
     module.exports.getRandomSetOfElements = function (srcarry, max) {
       var arry = [],
-        i = 0,
-        len = _numberUtils.rndNumber(1, max);
+          i    = 0,
+          len  = _numberUtils.rndNumber(1, max);
 
       for (; i < len; i++) {
         arry.push(this.rndElement(srcarry));
@@ -67,8 +67,8 @@ define('Nudoru.Core.ArrayUtils',
 
       arr1.forEach(function (value) {
         var present = false,
-          i = 0,
-          len = arr2.length;
+            i       = 0,
+            len     = arr2.length;
 
         for (; i < len; i++) {
           if (value === arr2[i]) {

@@ -1,5 +1,5 @@
 define('Nudoru.Core.ObjectUtils',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
     /**
      * Test for
@@ -8,15 +8,15 @@ define('Nudoru.Core.ObjectUtils',
      * @param obj
      * @returns {boolean}
      */
-    module.exports.isNull = function(obj) {
+    module.exports.isNull = function (obj) {
       var isnull = false;
 
-      if(falsey(obj)) {
+      if (falsey(obj)) {
         return true;
       }
 
-      for(var prop in obj) {
-        if(prop === undefined || obj[prop] === undefined) isnull = true;
+      for (var prop in obj) {
+        if (prop === undefined || obj[prop] === undefined) isnull = true;
         break;
       }
 
@@ -29,7 +29,7 @@ define('Nudoru.Core.ObjectUtils',
       };
     };
 
-    module.exports.searchObjects = function(obj, key, val) {
+    module.exports.searchObjects = function (obj, key, val) {
       var objects = [];
       for (var i in obj) {
         if (typeof obj[i] === 'object') {
@@ -42,9 +42,9 @@ define('Nudoru.Core.ObjectUtils',
     };
 
     module.exports.getObjectFromString = function (obj, str) {
-      var i = 0,
-        path = str.split('.'),
-        len = path.length;
+      var i    = 0,
+          path = str.split('.'),
+          len  = path.length;
 
       for (; i < len; i++) {
         obj = obj[path[i]];
@@ -64,7 +64,7 @@ define('Nudoru.Core.ObjectUtils',
     };
 
     // extend and deep extend from http://youmightnotneedjquery.com/
-    module.exports.extend = function(out) {
+    module.exports.extend = function (out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -82,7 +82,7 @@ define('Nudoru.Core.ObjectUtils',
       return out;
     };
 
-    module.exports.deepExtend = function(out) {
+    module.exports.deepExtend = function (out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -115,18 +115,18 @@ define('Nudoru.Core.ObjectUtils',
      * @param prototype
      * @returns New object using prototype.methods as source
      */
-    module.exports.basicFactory = function(prototype) {
+    module.exports.basicFactory = function (prototype) {
       var proto = prototype,
-        obj = Object.create(proto.methods);
+          obj   = Object.create(proto.methods);
 
-      if(proto.hasOwnProperty('closure')) {
-        proto.closures.forEach(function(closure) {
+      if (proto.hasOwnProperty('closure')) {
+        proto.closures.forEach(function (closure) {
           closure.call(obj);
         });
       }
 
-      if(proto.hasOwnProperty('state')) {
-        for(var key in proto.state) {
+      if (proto.hasOwnProperty('state')) {
+        for (var key in proto.state) {
           obj[key] = proto.state[key];
         }
       }
@@ -170,7 +170,7 @@ define('Nudoru.Core.ObjectUtils',
      * @param {object} obj
      * @return {object}
      */
-    module.exports.keyMirror = function(obj) {
+    module.exports.keyMirror = function (obj) {
       var ret = {};
       var key;
       if (!(obj instanceof Object && !Array.isArray(obj))) {
