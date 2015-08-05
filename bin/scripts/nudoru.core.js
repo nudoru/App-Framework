@@ -216,6 +216,28 @@ function falsey(x) {
   });;define('Nudoru.Core.ObjectUtils',
   function(require, module, exports) {
 
+    /**
+     * Test for
+     * Object {"": undefined}
+     * Object {undefined: undefined}
+     * @param obj
+     * @returns {boolean}
+     */
+    exports.isNull = function(obj) {
+      var isnull = false;
+
+      if(falsey(obj)) {
+        return true;
+      }
+
+      for(var prop in obj) {
+        if(prop === undefined || obj[prop] === undefined) isnull = true;
+        break;
+      }
+
+      return isnull;
+    };
+
     exports.dynamicSort = function (property) {
       return function (a, b) {
         return a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;

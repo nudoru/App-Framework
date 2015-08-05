@@ -16,7 +16,8 @@ define('Nori.Utils.Router',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
-        _appEvents = require('Nori.Events.NoriEventCreator');
+        _objUtils = require('Nudoru.Core.ObjectUtils'),
+        _noriEvents = require('Nori.Events.NoriEventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -40,7 +41,7 @@ define('Nori.Utils.Router',
      * @param evt
      */
     function onHashChange(evt) {
-      _appEvents.urlHashChanged({
+      _noriEvents.urlHashChanged({
         routeObj: getCurrentRoute(),
         fragment: getURLFragment()
       });
@@ -56,6 +57,11 @@ define('Nori.Utils.Router',
           route       = '/' + parts[0],
           queryStr    = decodeURIComponent(parts[1]),
           queryStrObj = parseQueryStr(queryStr);
+
+      if(queryStr==='=undefined') {
+        queryStr = '';
+        queryStrObj = {};
+      }
 
       return {route: route, data: queryStrObj};
     }
@@ -113,7 +119,7 @@ define('Nori.Utils.Router',
     function setRoute(route, dataObj) {
       var path = route,
           data = [];
-      if (dataObj !== null && dataObj !== undefined) {
+      if (!_objUtils.isNull(dataObj)) {
         path += "?";
         for (var prop in dataObj) {
           if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
@@ -123,7 +129,7 @@ define('Nori.Utils.Router',
         path += data.join('&');
       }
 
-      //console.log('Router, setting URL fragment to: ' + path);
+      console.log('Router, setting URL fragment to: ',path);
 
       updateURLFragment(path);
     }
