@@ -2,9 +2,9 @@ define('APP.View.AppView',
   function (require, module, exports) {
 
     var _this,
-        _appEvents = require('Nori.Events.AppEventCreator'),
+        _appEvents = require('Nori.Events.NoriEventCreator'),
         _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _appEventConstants     = require('Nori.Events.NoriEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     //----------------------------------------------------------------------------

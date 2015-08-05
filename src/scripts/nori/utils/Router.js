@@ -16,7 +16,7 @@ define('Nori.Utils.Router',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.NoriEventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);

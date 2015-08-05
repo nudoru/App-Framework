@@ -4,7 +4,7 @@ define('Nori.Model.ApplicationModel',
     var _this,
       _appMapCollectionList = Object.create(null),
       _appMapList = Object.create(null),
-      _appEventConstants = require('Nori.Events.AppEventConstants'),
+      _appEventConstants = require('Nori.Events.NoriEventConstants'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
     function initializeApplicationModel() {

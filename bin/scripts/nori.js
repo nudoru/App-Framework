@@ -193,7 +193,7 @@ define('Nori.Utils.Dispatcher',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.NoriEventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -411,7 +411,7 @@ define('Nori.Utils.Dispatcher',
     exports.asElement   = asElement;
 
   });
-;define('Nori.Events.AppEventConstants',
+;define('Nori.Events.NoriEventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
@@ -440,11 +440,11 @@ define('Nori.Utils.Dispatcher',
       RENDER_VIEW            : null
     }));
 
-  });;define('Nori.Events.AppEventCreator',
+  });;define('Nori.Events.NoriEventCreator',
   function (require, module, exports) {
 
     var _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _appEventConstants     = require('Nori.Events.NoriEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     exports.applicationInitialized = function (payload) {
@@ -567,7 +567,7 @@ define('Nori.Utils.Dispatcher',
     var _this,
       _appMapCollectionList = Object.create(null),
       _appMapList = Object.create(null),
-      _appEventConstants = require('Nori.Events.AppEventConstants'),
+      _appEventConstants = require('Nori.Events.NoriEventConstants'),
       _dispatcher = require('Nori.Utils.Dispatcher');
 
     function initializeApplicationModel() {
@@ -661,10 +661,10 @@ define('Nori.Utils.Dispatcher',
     var _id,
         _changed   = false,
         _entries   = [],
-        _map       = {},
+        _map       = Object.create(null),
         _silent    = false,
         _parentCollection,
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.NoriEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -680,12 +680,25 @@ define('Nori.Utils.Dispatcher',
       _silent = initObj.silent || false;
 
       if (initObj.store) {
-        // set inital data silently
-        //set(initObj.store, {silent: true});
         _changed = true;
         _map     = initObj.store;
+      } else if (initObj.json) {
+        setJSON(initObj.json);
       }
 
+    }
+
+    /**
+     * Set map store from a JSON object
+     * @param jstr
+     */
+    function setJSON(jstr) {
+      _changed = true;
+      try {
+        _map = JSON.parse(jstr);
+      } catch (e) {
+        throw new Error('MapCollection, error parsing JSON:', jstr, e);
+      }
     }
 
     function getID() {
@@ -901,15 +914,6 @@ define('Nori.Utils.Dispatcher',
 
     }
 
-    function save() {
-      //
-    }
-
-    function destroy() {
-      _map              = null;
-      _parentCollection = null;
-    }
-
     function toJSON() {
       return JSON.stringify(_map);
     }
@@ -930,6 +934,7 @@ define('Nori.Utils.Dispatcher',
     exports.getID               = getID;
     exports.clear               = clear;
     exports.changed             = getChanged;
+    exports.setJSON             = setJSON;
     exports.set                 = set;
     exports.setKeyProp          = setKeyProp;
     exports.get                 = get;
@@ -946,8 +951,6 @@ define('Nori.Utils.Dispatcher',
     exports.getAtIndex          = getAtIndex;
     exports.toObject            = toObject;
     exports.transform           = transform;
-    exports.save                = save;
-    exports.destroy             = destroy;
     exports.toJSON              = toJSON;
     exports.setParentCollection = setParentCollection;
     exports.getParentCollection = getParentCollection;
@@ -959,7 +962,7 @@ define('Nori.Utils.Dispatcher',
         _id,
         _children  = [],
         _silent    = false,
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.NoriEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -975,7 +978,7 @@ define('Nori.Utils.Dispatcher',
       _silent = initObj.silent || false;
 
       // TODO test
-      if(initObj.models) {
+      if (initObj.models) {
         addMapsFromArray.call(_this, initObj.models);
       }
     }
@@ -999,6 +1002,29 @@ define('Nori.Utils.Dispatcher',
       oArry.forEach(function (obj) {
 
         var id;
+
+        if (obj.hasOwnProperty(idKey)) {
+          id = obj[idKey];
+        } else {
+          id = _id + 'child' + _children.length;
+        }
+
+        add(Nori.model().createMap({id: id, silent: silent, store: obj}));
+      });
+      dispatchChange(_id, 'add_map');
+    }
+
+
+    function addFromJSONArray(json, idKey, silent) {
+      json.forEach(function (jstr) {
+
+        var id, obj;
+
+        try {
+          obj = JSON.parse(jstr);
+        } catch (e) {
+          throw new Error('MapCollection, error parsing JSON:', jstr, e);
+        }
 
         if (obj.hasOwnProperty(idKey)) {
           id = obj[idKey];
@@ -1049,7 +1075,7 @@ define('Nori.Utils.Dispatcher',
      * Remove all stores from the array
      */
     function removeAll() {
-      _children.forEach(function(map) {
+      _children.forEach(function (map) {
         map.setParentCollection(null);
       });
 
@@ -1093,7 +1119,7 @@ define('Nori.Utils.Dispatcher',
         });
       }
 
-      // TODO Collections of Collections
+      // TODO Implement collections of collections
       //if(_parentCollection) {
       //  _parentCollection.dispatchChange({id:_id, store:getMap()});
       //}
@@ -1164,14 +1190,6 @@ define('Nori.Utils.Dispatcher',
       return arry;
     }
 
-    function save() {
-      //
-    }
-
-    function destroy() {
-      //
-    }
-
     function toJSON() {
       return JSON.stringify(_children);
     }
@@ -1193,6 +1211,7 @@ define('Nori.Utils.Dispatcher',
     exports.add                 = add;
     exports.addMapsFromArray    = addMapsFromArray;
     exports.addFromObjArray     = addFromObjArray;
+    exports.addFromJSONArray    = addFromJSONArray;
     exports.remove              = remove;
     exports.removeAll           = removeAll;
     exports.getMap              = getMap;
@@ -1206,8 +1225,6 @@ define('Nori.Utils.Dispatcher',
     exports.forEach             = forEach;
     exports.map                 = map;
     exports.entries             = entries;
-    exports.save                = save;
-    exports.destroy             = destroy;
     exports.toJSON              = toJSON;
     exports.dispatchChange      = dispatchChange;
     exports.setParentCollection = setParentCollection;
@@ -1226,7 +1243,7 @@ define('Nori.Utils.Dispatcher',
         _state         = {},
         _children      = [],
         _isMounted     = false,
-        _appEvents     = require('Nori.Events.AppEventCreator');
+        _appEvents     = require('Nori.Events.NoriEventCreator');
 
     /**
      * Initialization
@@ -1670,8 +1687,8 @@ define('Nori.Utils.Dispatcher',
   });;define('Nori.View.Renderer',
   function (require, module, exports) {
 
-    var _appEvents         = require('Nori.Events.AppEventCreator'),
-        _appEventConstants = require('Nori.Events.AppEventConstants'),
+    var _appEvents         = require('Nori.Events.NoriEventCreator'),
+        _appEventConstants = require('Nori.Events.NoriEventConstants'),
         _dispatcher        = require('Nori.Utils.Dispatcher'),
         _domUtils          = require('Nudoru.Browser.DOMUtils');
 
@@ -1915,7 +1932,7 @@ define('Nori.Utils.Dispatcher',
         _drawerWidth,
         _isDrawerOpen,
         _currentViewPortSize,
-        _appEventConstants = require('Nori.Events.AppEventConstants'),
+        _appEventConstants = require('Nori.Events.NoriEventConstants'),
         _browserInfo       = require('Nudoru.Browser.BrowserInfo'),
         _dispatcher        = require('Nudoru.events.EventDispatcher');
 
@@ -2025,7 +2042,7 @@ define('Nori.Utils.Dispatcher',
         _subViewMapping            = Object.create(null),
         _currentRouteViewID,
         _subViewHTMLTemplatePrefix = 'template__',
-        _appEvents                 = require('Nori.Events.AppEventCreator');
+        _appEvents                 = require('Nori.Events.NoriEventCreator');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -2047,13 +2064,17 @@ define('Nori.Utils.Dispatcher',
      * Map a route to a module view controller
      * The controller module is extended from the Nori.View.BaseSubView module
      * @param templateID
-     * @param controllerModID
+     * @param controllerModule
      * @param route True | False, is is a subview
      */
-    function mapView(templateID, controllerModID, isRoute, mountPoint) {
+    function mapView(templateID, controllerModule, isRoute, mountPoint) {
+      if(typeof controllerModule === 'string') {
+        controllerModule = requireNew(controllerModule);
+      }
+
       _subViewMapping[templateID] = {
         htmlTemplate: _template.getTemplate(_subViewHTMLTemplatePrefix + templateID),
-        controller  : createSubView(requireNew(controllerModID)),
+        controller  : createSubView(controllerModule),
         isRouteView : isRoute,
         mountPoint  : mountPoint
       };
@@ -2076,10 +2097,10 @@ define('Nori.Utils.Dispatcher',
      * Map a route to a module view controller
      * The controller module is extended from the Nori.View.BaseSubView module
      * @param templateID
-     * @param controllerModID
+     * @param controllerModule
      */
-    function mapRouteView(templateID, controllerModID) {
-      mapView(templateID, controllerModID, true, _routeViewMountPoint);
+    function mapRouteView(templateID, controllerModule) {
+      mapView(templateID, controllerModule, true, _routeViewMountPoint);
     }
 
     /**
@@ -2156,7 +2177,6 @@ define('Nori.Utils.Dispatcher',
         _subViewMapping[_currentRouteViewID].controller.unmount();
       }
       _currentRouteViewID = '';
-      //document.querySelector(_routeViewMountPoint).innerHTML = '';
     }
 
     /**
@@ -2196,10 +2216,10 @@ define('Nori.Utils.Dispatcher',
   var _config,
       _model,
       _view,
-      _dispatcherCommandMap = Object.create(null),
+      //_dispatcherCommandMap = Object.create(null),
       _modelViewBindingMap  = Object.create(null),
-      _appEvents            = require('Nori.Events.AppEventCreator'),
-      _appEventConstants    = require('Nori.Events.AppEventConstants'),
+      _appEvents            = require('Nori.Events.NoriEventCreator'),
+      _appEventConstants    = require('Nori.Events.NoriEventConstants'),
       _browserEvents        = require('Nudoru.Browser.BrowserEventConstants'),
       _objectUtils          = require('Nudoru.Core.ObjectUtils'),
       _dispatcher           = require('Nori.Utils.Dispatcher'),
@@ -2572,7 +2592,8 @@ define('Nori.Utils.Dispatcher',
     extendWithArray       : extendWithArray,
     bindToMap             : bindToMap,
     handleModelUpdate     : handleModelUpdate,
-    prop                  : prop
+    prop                  : prop,
+    withAttr              : withAttr
   };
 
 }

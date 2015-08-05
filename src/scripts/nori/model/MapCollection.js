@@ -10,7 +10,7 @@ define('Nori.Model.MapCollection',
         _id,
         _children  = [],
         _silent    = false,
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.NoriEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization

@@ -16,7 +16,7 @@ define('Nori.View.ApplicationSubView',
         _state         = {},
         _children      = [],
         _isMounted     = false,
-        _appEvents     = require('Nori.Events.AppEventCreator');
+        _appEvents     = require('Nori.Events.NoriEventCreator');
 
     /**
      * Initialization

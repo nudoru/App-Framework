@@ -12,7 +12,7 @@ define('Nori.Model.Map',
         _map       = Object.create(null),
         _silent    = false,
         _parentCollection,
-        _appEvents = require('Nori.Events.AppEventCreator');
+        _appEvents = require('Nori.Events.NoriEventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization

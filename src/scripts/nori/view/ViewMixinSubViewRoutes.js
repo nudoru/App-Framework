@@ -10,7 +10,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
         _subViewMapping            = Object.create(null),
         _currentRouteViewID,
         _subViewHTMLTemplatePrefix = 'template__',
-        _appEvents                 = require('Nori.Events.AppEventCreator');
+        _appEvents                 = require('Nori.Events.NoriEventCreator');
 
     /**
      * Set the location for the view to append, any contents will be removed prior

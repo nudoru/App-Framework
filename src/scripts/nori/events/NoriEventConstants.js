@@ -1,4 +1,4 @@
-define('Nori.Events.AppEventConstants',
+define('Nori.Events.NoriEventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 

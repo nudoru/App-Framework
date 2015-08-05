@@ -2,10 +2,10 @@ var Nori = (function () {
   var _config,
       _model,
       _view,
-      _dispatcherCommandMap = Object.create(null),
+      //_dispatcherCommandMap = Object.create(null),
       _modelViewBindingMap  = Object.create(null),
-      _appEvents            = require('Nori.Events.AppEventCreator'),
-      _appEventConstants    = require('Nori.Events.AppEventConstants'),
+      _appEvents            = require('Nori.Events.NoriEventCreator'),
+      _appEventConstants    = require('Nori.Events.NoriEventConstants'),
       _browserEvents        = require('Nudoru.Browser.BrowserEventConstants'),
       _objectUtils          = require('Nudoru.Core.ObjectUtils'),
       _dispatcher           = require('Nori.Utils.Dispatcher'),
@@ -378,7 +378,8 @@ var Nori = (function () {
     extendWithArray       : extendWithArray,
     bindToMap             : bindToMap,
     handleModelUpdate     : handleModelUpdate,
-    prop                  : prop
+    prop                  : prop,
+    withAttr              : withAttr
   };
 
 }

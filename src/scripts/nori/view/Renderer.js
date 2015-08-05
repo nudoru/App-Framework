@@ -7,8 +7,8 @@
 define('Nori.View.Renderer',
   function (require, module, exports) {
 
-    var _appEvents         = require('Nori.Events.AppEventCreator'),
-        _appEventConstants = require('Nori.Events.AppEventConstants'),
+    var _appEvents         = require('Nori.Events.NoriEventCreator'),
+        _appEventConstants = require('Nori.Events.NoriEventConstants'),
         _dispatcher        = require('Nori.Utils.Dispatcher'),
         _domUtils          = require('Nudoru.Browser.DOMUtils');
 

@@ -2,7 +2,7 @@ define('APP.Application',
   function (require, module, exports) {
 
     var _this,
-        _appEventConstants = require('Nori.Events.AppEventConstants'),
+        _appEventConstants = require('Nori.Events.NoriEventConstants'),
         _dispatcher        = require('Nori.Utils.Dispatcher');
 
     /**
@@ -74,7 +74,7 @@ define('APP.Application',
   function (require, module, exports) {
 
     var _this,
-        _appEvents  = require('Nori.Events.AppEventCreator'),
+        _appEvents  = require('Nori.Events.NoriEventCreator'),
         _dispatcher = require('Nori.Utils.Dispatcher');
 
     //----------------------------------------------------------------------------
@@ -177,9 +177,9 @@ define('APP.Application',
   function (require, module, exports) {
 
     var _this,
-        _appEvents = require('Nori.Events.AppEventCreator'),
+        _appEvents = require('Nori.Events.NoriEventCreator'),
         _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.AppEventConstants'),
+        _appEventConstants     = require('Nori.Events.NoriEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     //----------------------------------------------------------------------------
@@ -239,7 +239,7 @@ define('APP.Application',
     var _lIpsum            = require('Nudoru.Browser.NLorem'),
         _toolTip           = require('Nudoru.Component.ToolTipView'),
         _dispatcher        = require('Nori.Utils.Dispatcher'),
-        _appEventConstants = require('Nori.Events.AppEventConstants'),
+        _appEventConstants = require('Nori.Events.NoriEventConstants'),
         _actionOneEl,
         _actionTwoEl,
         _actionThreeEl,

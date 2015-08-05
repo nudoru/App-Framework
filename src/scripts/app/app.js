@@ -6,7 +6,7 @@ define('APP.Application',
   function (require, module, exports) {
 
     var _this,
-        _appEventConstants = require('Nori.Events.AppEventConstants'),
+        _appEventConstants = require('Nori.Events.NoriEventConstants'),
         _dispatcher        = require('Nori.Utils.Dispatcher');
 
     /**
