@@ -48,14 +48,18 @@ define('APP.Application',
 
     module.exports.initialize = initialize;
 
-  });;define('App.Events.EventConstants',
+  });
+
+define('App.Events.EventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
     _.merge(exports, objUtils.keyMirror({
       SOMETHING_HAPPENED: null
     }));
-  });;define('App.Events.EventCreator',
+  });
+
+define('App.Events.EventCreator',
   function (require, module, exports) {
 
     var _dispatcher     = require('Nori.Utils.Dispatcher'),
@@ -70,7 +74,9 @@ define('APP.Application',
       });
     };
 
-  });;define('APP.Model.AppModel',
+  });
+
+define('APP.Model.AppModel',
   function (require, module, exports) {
 
     var _this,
@@ -105,7 +111,9 @@ define('APP.Application',
 
     module.exports.initialize = initialize;
   });
-;define('APP.View.AppSubView',
+
+
+define('APP.View.AppSubView',
   function (require, module, exports) {
 
     var _this;
@@ -173,7 +181,9 @@ define('APP.Application',
     //module.exports.viewDidRender = viewDidRender;
     //module.exports.viewWillMount = viewWillMount;
     //module.exports.viewDidUnmount = viewDidUnmount;
-  });;define('APP.View.AppView',
+  });
+
+define('APP.View.AppView',
   function (require, module, exports) {
 
     var _this,
@@ -233,7 +243,9 @@ define('APP.Application',
 
     module.exports.initialize = initialize;
     module.exports.render     = render;
-  });;define('APP.View.DebugControlsTestingSubView',
+  });
+
+define('APP.View.DebugControlsTestingSubView',
   function (require, module, exports) {
 
     var _lIpsum            = require('Nudoru.Browser.NLorem'),
@@ -381,7 +393,9 @@ define('APP.Application',
     module.exports.initialize   = initialize;
     module.exports.viewDidMount = viewDidMount;
 
-  });;(function () {
+  });
+
+(function () {
 
   var _browserInfo = require('Nudoru.Browser.BrowserInfo');
 

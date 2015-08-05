@@ -189,7 +189,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.registerReceiver   = registerReceiver;
     module.exports.unregisterReceiver = unregisterReceiver;
 
-  });;define('Nori.Utils.Router',
+  });
+
+define('Nori.Utils.Router',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
@@ -337,7 +339,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.runCurrentRoute = runCurrentRoute;
     module.exports.setRoute        = setRoute;
 
-  });;define('Nori.Utils.Templating',
+  });
+
+define('Nori.Utils.Templating',
   function (require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
@@ -417,7 +421,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.asElement   = asElement;
 
   });
-;define('Nori.Events.NoriEventConstants',
+
+
+define('Nori.Events.NoriEventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
@@ -446,7 +452,9 @@ define('Nori.Utils.Dispatcher',
       RENDER_VIEW            : null
     }));
 
-  });;define('Nori.Events.NoriEventCreator',
+  });
+
+define('Nori.Events.NoriEventCreator',
   function (require, module, exports) {
 
     var _dispatcher            = require('Nori.Utils.Dispatcher'),
@@ -567,7 +575,9 @@ define('Nori.Utils.Dispatcher',
       });
     };
 
-  });;define('Nori.Model.ApplicationModel',
+  });
+
+define('Nori.Model.ApplicationModel',
   function (require, module, exports) {
 
     var _this,
@@ -661,7 +671,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.createMap = createMap;
     module.exports.getMap = getMap;
     module.exports.getMapCollection = getMapCollection;
-  });;define('Nori.Model.Map',
+  });
+
+define('Nori.Model.Map',
   function (require, module, exports) {
 
     var _id,
@@ -966,7 +978,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.setParentCollection = setParentCollection;
     module.exports.getParentCollection = getParentCollection;
 
-  });;define('Nori.Model.MapCollection',
+  });
+
+define('Nori.Model.MapCollection',
   function (require, module, exports) {
 
     var _this,
@@ -1259,7 +1273,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.setParentCollection = setParentCollection;
     module.exports.getParentCollection = getParentCollection;
 
-  });;define('Nori.View.ApplicationSubView',
+  });
+
+define('Nori.View.ApplicationSubView',
   function (require, module, exports) {
 
     var _isInitialized = false,
@@ -1552,7 +1568,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.removeChild = removeChild;
     module.exports.getChildren = getChildren;
 
-  });;define('Nori.View.ApplicationView',
+  });
+
+define('Nori.View.ApplicationView',
   function (require, module, exports) {
 
     var _this,
@@ -1713,7 +1731,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.getAppContainerEl             = getAppContainerEl;
     module.exports.getAppEl                      = getAppEl;
 
-  });;define('Nori.View.Renderer',
+  });
+
+define('Nori.View.Renderer',
   function (require, module, exports) {
 
     var _appEvents         = require('Nori.Events.NoriEventCreator'),
@@ -1749,7 +1769,9 @@ define('Nori.Utils.Dispatcher',
 
     module.exports.initialize = initialize;
 
-  });;define('Nori.View.ViewMixinBrowserEvents',
+  });
+
+define('Nori.View.ViewMixinBrowserEvents',
   function (require, module, exports) {
 
     var _currentViewPortSize,
@@ -1876,7 +1898,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.getCurrentViewPortSize          = getCurrentViewPortSize;
     module.exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
 
-  });;define('Nori.View.ViewMixinEventDelegator',
+  });
+
+define('Nori.View.ViewMixinEventDelegator',
   function (require, module, exports) {
     var _eventsMap,
         _eventSubscribers;
@@ -1947,7 +1971,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.delegateEvents   = delegateEvents;
   });
 
-;define('Nori.View.ViewMixinMultiDevice',
+
+
+define('Nori.View.ViewMixinMultiDevice',
   function (require, module, exports) {
 
     var _drawerEl,
@@ -2063,7 +2089,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.openDrawer                = openDrawer;
     module.exports.closeDrawer               = closeDrawer;
     module.exports.checkForMobile            = checkForMobile;
-  });;define('Nori.View.ViewMixinSubViewRoutes',
+  });
+
+define('Nori.View.ViewMixinSubViewRoutes',
   function (require, module, exports) {
 
     var _template                  = require('Nori.Utils.Templating'),
@@ -2241,7 +2269,9 @@ define('Nori.Utils.Dispatcher',
     module.exports.showRouteView           = showRouteView;
     module.exports.updateView              = updateView;
     module.exports.applyMixin = applyMixin;
-  });;var Nori = (function () {
+  });
+
+var Nori = (function () {
   var _config,
       _model,
       _view,

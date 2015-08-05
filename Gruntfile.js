@@ -84,12 +84,9 @@ module.exports = function (grunt) {
     concat: {
       options: {
         stripBanners: true,
+        //banner: '"use strict";\n', // Breaks RxJS
         sourceMap: true,
-        separator: ';'
-        //process: function(src, filepath) {
-        //  return '// Source: ' + filepath + '\n' +
-        //    src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
-        //}
+        separator: '\n\n'
       },
 
 
@@ -112,7 +109,8 @@ module.exports = function (grunt) {
           'src/scripts/nudoru/globals.js',
           'src/scripts/nudoru/core/*.js'
         ],
-        dest: 'bin/scripts/nudoru.core.js'
+        dest: 'bin/scripts/nudoru.core.js',
+
       },
 
       nudorubrowser: {

@@ -87,7 +87,9 @@ function requireExtend(id, extendProps) {
   moduleCode.call(moduleCode, require, module, exports);
   _.assign(module.exports, extendProps);
   return module.exports;
-};// from: https://github.com/funjs/book-source/blob/master/chapter01.js
+}
+
+// from: https://github.com/funjs/book-source/blob/master/chapter01.js
 
 function existy(x) {
   return x != null;
@@ -99,7 +101,9 @@ function truthy(x) {
 
 function falsey(x) {
   return !truthy(x);
-};define('Nudoru.Core.ArrayUtils',
+}
+
+define('Nudoru.Core.ArrayUtils',
   function (require, module, exports) {
 
     var _numberUtils = require('Nudoru.Core.NumberUtils');
@@ -187,7 +191,9 @@ function falsey(x) {
       return dif;
     };
 
-  });;define('Nudoru.Core.NumberUtils',
+  });
+
+define('Nudoru.Core.NumberUtils',
   function (require, module, exports) {
 
     module.exports.isInteger = function (str) {
@@ -213,7 +219,9 @@ function falsey(x) {
       return Math.sqrt((xd * xd) + (yd * yd));
     };
 
-  });;define('Nudoru.Core.ObjectUtils',
+  });
+
+define('Nudoru.Core.ObjectUtils',
   function(require, module, exports) {
 
     /**
@@ -400,7 +408,9 @@ function falsey(x) {
     };
 
   });
-;define('Nudoru.Core.StringUtils',
+
+
+define('Nudoru.Core.StringUtils',
   function(require, module, exports){
 
     module.exports.capitalizeFirstLetter = function(str) {

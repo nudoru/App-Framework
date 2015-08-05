@@ -99,7 +99,9 @@ define('Nudoru.Component.CoachMarksView',
     module.exports.show           = show;
     module.exports.hide           = hide;
 
-  });;define('Nudoru.Component.Dispatcher',
+  });
+
+define('Nudoru.Component.Dispatcher',
   function (require, module, exports) {
     var _subjectMap = {};
 
@@ -178,12 +180,16 @@ define('Nudoru.Component.CoachMarksView',
     module.exports.publish = publish;
     module.exports.dispose = dispose;
 
-  });;define('Nudoru.Component.ComponentEvents',
+  });
+
+define('Nudoru.Component.ComponentEvents',
   function(require, module, exports) {
     module.exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
     module.exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
     module.exports.MENU_SELECT = 'MENU_SELECT';
-  });;define('Nudoru.Component.Templating',
+  });
+
+define('Nudoru.Component.Templating',
   function(require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
@@ -264,7 +270,9 @@ define('Nudoru.Component.CoachMarksView',
     module.exports.asElement = asElement;
 
   });
-;define('Nudoru.Component.ComponentViewUtils',
+
+
+define('Nudoru.Component.ComponentViewUtils',
   function (require, module, exports) {
 
     /**
@@ -314,7 +322,9 @@ define('Nudoru.Component.CoachMarksView',
     module.exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
 
   });
-;define('Nudoru.Component.MessageBoxCreator',
+
+
+define('Nudoru.Component.MessageBoxCreator',
   function (require, module, exports) {
 
     var _messageBoxView = require('Nudoru.Component.MessageBoxView');
@@ -426,7 +436,9 @@ define('Nudoru.Component.CoachMarksView',
     module.exports.prompt  = prompt;
     module.exports.choice  = choice;
 
-  });;define('Nudoru.Component.MessageBoxView',
+  });
+
+define('Nudoru.Component.MessageBoxView',
   function (require, module, exports) {
 
     var _children               = [],
@@ -712,7 +724,9 @@ define('Nudoru.Component.CoachMarksView',
       return _types
     };
 
-  });;define('Nudoru.Component.ModalCoverView',
+  });
+
+define('Nudoru.Component.ModalCoverView',
   function (require, module, exports) {
     var _mountPoint      = document,
         _modalCoverEl,
@@ -837,7 +851,9 @@ define('Nudoru.Component.CoachMarksView',
     module.exports.visible    = getIsVisible;
     module.exports.setOpacity = setOpacity;
     module.exports.setColor   = setColor;
-  });;define('Nudoru.Component.ToastView',
+  });
+
+define('Nudoru.Component.ToastView',
   function (require, module, exports) {
 
     var _children = [],
@@ -979,7 +995,9 @@ define('Nudoru.Component.CoachMarksView',
     module.exports.remove = remove;
     module.exports.type = function() { return _types };
 
-  });;define('Nudoru.Component.ToolTipView',
+  });
+
+define('Nudoru.Component.ToolTipView',
   function (require, module, exports) {
 
     var _children             = [],

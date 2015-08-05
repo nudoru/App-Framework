@@ -9,7 +9,9 @@ define('Nudoru.Browser.BrowserEventConstants',
       BROWSER_SCROLLED: null
     }));
 
-  });;define('Nudoru.Browser.BrowserInfo',
+  });
+
+define('Nudoru.Browser.BrowserInfo',
   function (require, module, exports) {
 
     module.exports.appVersion = navigator.appVersion;
@@ -76,7 +78,9 @@ define('Nudoru.Browser.BrowserEventConstants',
       return this.mobile.any() ? "touchmove" : "mousemove";
     };
 
-  });;define('Nudoru.Browser.DOMUtils',
+  });
+
+define('Nudoru.Browser.DOMUtils',
   function (require, module, exports) {
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     // element must be entirely on screen
@@ -255,7 +259,9 @@ define('Nudoru.Browser.BrowserEventConstants',
 
     };
 
-  });;define('Nudoru.Browser.NLorem',
+  });
+
+define('Nudoru.Browser.NLorem',
   function(require, module, exports) {
 
     var _currentText = [],
@@ -402,7 +408,9 @@ define('Nudoru.Browser.BrowserEventConstants',
     module.exports.getDate = getDate;
     module.exports.fakeGUID = fakeGUID;
 
-  });;define('Nudoru.Browser.TouchUtils',
+  });
+
+define('Nudoru.Browser.TouchUtils',
   function(require, module, exports) {
 
     // https://github.com/filamentgroup/tappy/blob/master/tappy.js
