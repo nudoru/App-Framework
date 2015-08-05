@@ -665,7 +665,7 @@ define('Nori.Utils.Dispatcher',
   function (require, module, exports) {
 
     var _id,
-        _changed   = false,
+        _dirty     = false,
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
@@ -686,8 +686,8 @@ define('Nori.Utils.Dispatcher',
       _silent = initObj.silent || false;
 
       if (initObj.store) {
-        _changed = true;
-        _map     = initObj.store;
+        _dirty = true;
+        _map   = initObj.store;
       } else if (initObj.json) {
         setJSON(initObj.json);
       }
@@ -699,7 +699,7 @@ define('Nori.Utils.Dispatcher',
      * @param jstr
      */
     function setJSON(jstr) {
-      _changed = true;
+      _dirty = true;
       try {
         _map = JSON.parse(jstr);
       } catch (e) {
@@ -712,12 +712,16 @@ define('Nori.Utils.Dispatcher',
     }
 
     function clear() {
-      _map     = {};
-      _changed = true;
+      _map   = {};
+      _dirty = true;
     }
 
-    function getChanged() {
-      return _changed;
+    function isDirty() {
+      return _dirty;
+    }
+
+    function markClean() {
+      _dirty = false;
     }
 
     /**
@@ -738,7 +742,7 @@ define('Nori.Utils.Dispatcher',
       }
 
       // Mark changed
-      _changed = true;
+      _dirty = true;
 
       if (!silentSet) {
         dispatchChange('set_key');
@@ -754,7 +758,7 @@ define('Nori.Utils.Dispatcher',
     function setKeyProp(key, prop, data, silent) {
       _map[key][prop] = data;
 
-      _changed = true;
+      _dirty = true;
       dispatchChange('set_key');
     }
 
@@ -804,7 +808,7 @@ define('Nori.Utils.Dispatcher',
      * @returns {Array}
      */
     function entries() {
-      if (!_changed && _entries) {
+      if (!_dirty && _entries) {
         return _entries;
       }
 
@@ -814,7 +818,7 @@ define('Nori.Utils.Dispatcher',
       }
 
       _entries = arry;
-      _changed = false;
+      _dirty   = false;
 
       return arry;
     }
@@ -939,7 +943,8 @@ define('Nori.Utils.Dispatcher',
     exports.initialize          = initialize;
     exports.getID               = getID;
     exports.clear               = clear;
-    exports.changed             = getChanged;
+    exports.isDirty             = isDirty;
+    exports.markClean           = markClean;
     exports.setJSON             = setJSON;
     exports.set                 = set;
     exports.setKeyProp          = setKeyProp;
@@ -987,6 +992,22 @@ define('Nori.Utils.Dispatcher',
       if (initObj.models) {
         addMapsFromArray.call(_this, initObj.models);
       }
+    }
+
+    function isDirty() {
+      var dirty = false;
+      forEach(function checkDirty(map) {
+        if (map.isDirty()) {
+          dirty = true;
+        }
+      });
+      return dirty;
+    }
+
+    function markClean() {
+      forEach(function checkDirty(map) {
+        map.markClean();
+      });
     }
 
     /**
@@ -1214,6 +1235,8 @@ define('Nori.Utils.Dispatcher',
 
     exports.initialize          = initialize;
     exports.getID               = getID;
+    exports.isDirty             = isDirty;
+    exports.markClean           = markClean;
     exports.add                 = add;
     exports.addMapsFromArray    = addMapsFromArray;
     exports.addFromObjArray     = addFromObjArray;

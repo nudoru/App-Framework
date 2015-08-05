@@ -31,6 +31,22 @@ define('Nori.Model.MapCollection',
       }
     }
 
+    function isDirty() {
+      var dirty = false;
+      forEach(function checkDirty(map) {
+        if (map.isDirty()) {
+          dirty = true;
+        }
+      });
+      return dirty;
+    }
+
+    function markClean() {
+      forEach(function checkDirty(map) {
+        map.markClean();
+      });
+    }
+
     /**
      * Add an array of Model instances
      * @param sArry
@@ -256,6 +272,8 @@ define('Nori.Model.MapCollection',
 
     exports.initialize          = initialize;
     exports.getID               = getID;
+    exports.isDirty             = isDirty;
+    exports.markClean           = markClean;
     exports.add                 = add;
     exports.addMapsFromArray    = addMapsFromArray;
     exports.addFromObjArray     = addFromObjArray;

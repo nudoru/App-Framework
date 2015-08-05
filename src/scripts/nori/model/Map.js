@@ -7,7 +7,7 @@ define('Nori.Model.Map',
   function (require, module, exports) {
 
     var _id,
-        _changed   = false,
+        _dirty     = false,
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
@@ -28,8 +28,8 @@ define('Nori.Model.Map',
       _silent = initObj.silent || false;
 
       if (initObj.store) {
-        _changed = true;
-        _map     = initObj.store;
+        _dirty = true;
+        _map   = initObj.store;
       } else if (initObj.json) {
         setJSON(initObj.json);
       }
@@ -41,7 +41,7 @@ define('Nori.Model.Map',
      * @param jstr
      */
     function setJSON(jstr) {
-      _changed = true;
+      _dirty = true;
       try {
         _map = JSON.parse(jstr);
       } catch (e) {
@@ -54,12 +54,16 @@ define('Nori.Model.Map',
     }
 
     function clear() {
-      _map     = {};
-      _changed = true;
+      _map   = {};
+      _dirty = true;
     }
 
-    function getChanged() {
-      return _changed;
+    function isDirty() {
+      return _dirty;
+    }
+
+    function markClean() {
+      _dirty = false;
     }
 
     /**
@@ -80,7 +84,7 @@ define('Nori.Model.Map',
       }
 
       // Mark changed
-      _changed = true;
+      _dirty = true;
 
       if (!silentSet) {
         dispatchChange('set_key');
@@ -96,7 +100,7 @@ define('Nori.Model.Map',
     function setKeyProp(key, prop, data, silent) {
       _map[key][prop] = data;
 
-      _changed = true;
+      _dirty = true;
       dispatchChange('set_key');
     }
 
@@ -146,7 +150,7 @@ define('Nori.Model.Map',
      * @returns {Array}
      */
     function entries() {
-      if (!_changed && _entries) {
+      if (!_dirty && _entries) {
         return _entries;
       }
 
@@ -156,7 +160,7 @@ define('Nori.Model.Map',
       }
 
       _entries = arry;
-      _changed = false;
+      _dirty   = false;
 
       return arry;
     }
@@ -281,7 +285,8 @@ define('Nori.Model.Map',
     exports.initialize          = initialize;
     exports.getID               = getID;
     exports.clear               = clear;
-    exports.changed             = getChanged;
+    exports.isDirty             = isDirty;
+    exports.markClean           = markClean;
     exports.setJSON             = setJSON;
     exports.set                 = set;
     exports.setKeyProp          = setKeyProp;
