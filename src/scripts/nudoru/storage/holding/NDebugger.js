@@ -5,7 +5,7 @@ define('Nudoru.Core.NDebugger',
     var _messages = [],
         _broadcast = true;
 
-    exports.log = function(text, source) {
+    module.exports.log = function(text, source) {
       _messages.push({
         source: source,
         text: text

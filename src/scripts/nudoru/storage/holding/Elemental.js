@@ -162,12 +162,12 @@ define('ElementalCollection',
       _children.splice(idx, 1);
     }
 
-    exports.create = create;
-    exports.prependChild = prependChild;
-    exports.appendChild = appendChild;
-    exports.removeChild = removeChild;
-    exports.getChildren = getChildren;
-    exports.getChildByID = getChildByID;
+    module.exports.create = create;
+    module.exports.prependChild = prependChild;
+    module.exports.appendChild = appendChild;
+    module.exports.removeChild = removeChild;
+    module.exports.getChildren = getChildren;
+    module.exports.getChildByID = getChildByID;
 
   });
 
@@ -285,18 +285,18 @@ define('ElementalElement',
       cb.apply(this,[_DOMElement, _id, _currentState]);
     }
 
-    exports.create = create;
-    exports.update = update;
-    exports.render = render;
-    exports.mount = mount;
-    exports.unmount = unmount;
-    exports.getID = getID;
-    exports.getDOMElement = getDOMElement;
-    exports.setWillRender = setWillRender;
-    exports.setDidRender = setDidRender;
-    exports.setWillMount = setWillMount;
-    exports.setDidMount = setDidMount;
-    exports.setWillUnMount = setWillUnMount;
-    exports.setDidUnMount = setDidUnMount;
+    module.exports.create = create;
+    module.exports.update = update;
+    module.exports.render = render;
+    module.exports.mount = mount;
+    module.exports.unmount = unmount;
+    module.exports.getID = getID;
+    module.exports.getDOMElement = getDOMElement;
+    module.exports.setWillRender = setWillRender;
+    module.exports.setDidRender = setDidRender;
+    module.exports.setWillMount = setWillMount;
+    module.exports.setDidMount = setDidMount;
+    module.exports.setWillUnMount = setWillUnMount;
+    module.exports.setDidUnMount = setDidUnMount;
 
   });

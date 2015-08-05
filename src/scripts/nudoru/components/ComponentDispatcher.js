@@ -78,9 +78,9 @@ define('Nudoru.Component.Dispatcher',
       _subjectMap = {};
     }
     
-    exports.subscribe = subscribe;
-    exports.subscribeCommand = subscribeCommand;
-    exports.publish = publish;
-    exports.dispose = dispose;
+    module.exports.subscribe = subscribe;
+    module.exports.subscribeCommand = subscribeCommand;
+    module.exports.publish = publish;
+    module.exports.dispose = dispose;
 
   });

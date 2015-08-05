@@ -81,7 +81,7 @@ define('Nudoru.events.EventCommandMap',
       return callback !== undefined;
     }
 
-    exports.map = map;
-    exports.unmap = unmap;
+    module.exports.map = map;
+    module.exports.unmap = unmap;
 
   });

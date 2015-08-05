@@ -121,11 +121,11 @@ define('Nudoru.Component.ModalCoverView',
       });
     }
 
-    exports.initialize = initialize;
-    exports.show       = show;
-    exports.showNonDismissable   = showNonDismissable;
-    exports.hide       = hide;
-    exports.visible    = getIsVisible;
-    exports.setOpacity = setOpacity;
-    exports.setColor   = setColor;
+    module.exports.initialize = initialize;
+    module.exports.show       = show;
+    module.exports.showNonDismissable   = showNonDismissable;
+    module.exports.hide       = hide;
+    module.exports.visible    = getIsVisible;
+    module.exports.setOpacity = setOpacity;
+    module.exports.setColor   = setColor;
   });

@@ -59,8 +59,8 @@ define('Nudoru.Component.DDMenuBarView',
       });
     }
 
-    exports.initialize = initialize;
-    exports.resetAllSelections = resetAllSelections;
-    exports.setMenuSelections = setMenuSelections;
+    module.exports.initialize = initialize;
+    module.exports.resetAllSelections = resetAllSelections;
+    module.exports.setMenuSelections = setMenuSelections;
 
   });

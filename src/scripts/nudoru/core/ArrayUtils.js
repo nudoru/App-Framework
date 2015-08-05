@@ -3,12 +3,12 @@ define('Nudoru.Core.ArrayUtils',
 
     var _numberUtils = require('Nudoru.Core.NumberUtils');
 
-    exports.isArray = function(test) {
+    module.exports.isArray = function(test) {
       return Object.prototype.toString.call(test) === "[object Array]";
     };
 
     // Reference: http://jhusain.github.io/learnrx/index.html
-    exports.mergeAll = function () {
+    module.exports.mergeAll = function () {
       var results = [];
 
       this.forEach(function (subArr) {
@@ -21,7 +21,7 @@ define('Nudoru.Core.ArrayUtils',
     };
 
     // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
-    exports.unique = function (arry) {
+    module.exports.unique = function (arry) {
       var o = {},
         i,
         l = arry.length,
@@ -35,22 +35,22 @@ define('Nudoru.Core.ArrayUtils',
       return r;
     };
 
-    exports.removeIndex = function (arr, idx) {
+    module.exports.removeIndex = function (arr, idx) {
       return arr.splice(idx, 1);
     };
 
-    exports.removeItem = function (arr, item) {
+    module.exports.removeItem = function (arr, item) {
       var idx = arr.indexOf(item);
       if (idx > -1) {
         arr.splice(idx, 1);
       }
     };
 
-    exports.rndElement = function (arry) {
+    module.exports.rndElement = function (arry) {
       return arry[_numberUtils.rndNumber(0, arry.length - 1)];
     };
 
-    exports.getRandomSetOfElements = function (srcarry, max) {
+    module.exports.getRandomSetOfElements = function (srcarry, max) {
       var arry = [],
         i = 0,
         len = _numberUtils.rndNumber(1, max);
@@ -62,7 +62,7 @@ define('Nudoru.Core.ArrayUtils',
       return arry;
     };
 
-    exports.getDifferences = function (arr1, arr2) {
+    module.exports.getDifferences = function (arr1, arr2) {
       var dif = [];
 
       arr1.forEach(function (value) {

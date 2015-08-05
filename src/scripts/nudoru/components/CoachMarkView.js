@@ -99,9 +99,9 @@ define('Nudoru.Component.CoachMarksView',
       });
     }
 
-    exports.initialize     = initialize;
-    exports.outlineElement = outlineElement;
-    exports.show           = show;
-    exports.hide           = hide;
+    module.exports.initialize     = initialize;
+    module.exports.outlineElement = outlineElement;
+    module.exports.show           = show;
+    module.exports.hide           = hide;
 
   });

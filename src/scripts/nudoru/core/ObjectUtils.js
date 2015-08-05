@@ -8,7 +8,7 @@ define('Nudoru.Core.ObjectUtils',
      * @param obj
      * @returns {boolean}
      */
-    exports.isNull = function(obj) {
+    module.exports.isNull = function(obj) {
       var isnull = false;
 
       if(falsey(obj)) {
@@ -23,13 +23,13 @@ define('Nudoru.Core.ObjectUtils',
       return isnull;
     };
 
-    exports.dynamicSort = function (property) {
+    module.exports.dynamicSort = function (property) {
       return function (a, b) {
         return a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
       };
     };
 
-    exports.searchObjects = function(obj, key, val) {
+    module.exports.searchObjects = function(obj, key, val) {
       var objects = [];
       for (var i in obj) {
         if (typeof obj[i] === 'object') {
@@ -41,7 +41,7 @@ define('Nudoru.Core.ObjectUtils',
       return objects;
     };
 
-    exports.getObjectFromString = function (obj, str) {
+    module.exports.getObjectFromString = function (obj, str) {
       var i = 0,
         path = str.split('.'),
         len = path.length;
@@ -52,7 +52,7 @@ define('Nudoru.Core.ObjectUtils',
       return obj;
     };
 
-    exports.getObjectIndexFromId = function (obj, id) {
+    module.exports.getObjectIndexFromId = function (obj, id) {
       if (typeof obj === "object") {
         for (var i = 0; i < obj.length; i++) {
           if (typeof obj[i] !== "undefined" && typeof obj[i].id !== "undefined" && obj[i].id === id) {
@@ -64,7 +64,7 @@ define('Nudoru.Core.ObjectUtils',
     };
 
     // extend and deep extend from http://youmightnotneedjquery.com/
-    exports.extend = function(out) {
+    module.exports.extend = function(out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -82,7 +82,7 @@ define('Nudoru.Core.ObjectUtils',
       return out;
     };
 
-    exports.deepExtend = function(out) {
+    module.exports.deepExtend = function(out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -95,7 +95,7 @@ define('Nudoru.Core.ObjectUtils',
         for (var key in obj) {
           if (obj.hasOwnProperty(key)) {
             if (typeof obj[key] === 'object') {
-              exports.deepExtend(out[key], obj[key]);
+              module.exports.deepExtend(out[key], obj[key]);
             } else {
               out[key] = obj[key];
             }
@@ -115,7 +115,7 @@ define('Nudoru.Core.ObjectUtils',
      * @param prototype
      * @returns New object using prototype.methods as source
      */
-    exports.basicFactory = function(prototype) {
+    module.exports.basicFactory = function(prototype) {
       var proto = prototype,
         obj = Object.create(proto.methods);
 
@@ -170,7 +170,7 @@ define('Nudoru.Core.ObjectUtils',
      * @param {object} obj
      * @return {object}
      */
-    exports.keyMirror = function(obj) {
+    module.exports.keyMirror = function(obj) {
       var ret = {};
       var key;
       if (!(obj instanceof Object && !Array.isArray(obj))) {

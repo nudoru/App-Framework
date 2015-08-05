@@ -1,22 +1,22 @@
 define('Nudoru.Browser.BrowserInfo',
   function (require, module, exports) {
 
-    exports.appVersion = navigator.appVersion;
-    exports.userAgent = navigator.userAgent;
-    exports.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
-    exports.isIE6 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 6");
-    exports.isIE7 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 7");
-    exports.isIE8 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 8");
-    exports.isIE9 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 9");
-    exports.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
-    exports.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
-    exports.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
-    exports.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
+    module.exports.appVersion = navigator.appVersion;
+    module.exports.userAgent = navigator.userAgent;
+    module.exports.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
+    module.exports.isIE6 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 6");
+    module.exports.isIE7 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 7");
+    module.exports.isIE8 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 8");
+    module.exports.isIE9 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 9");
+    module.exports.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
+    module.exports.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
+    module.exports.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
+    module.exports.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
 
-    exports.hasTouch = 'ontouchstart' in document.documentElement;
-    exports.notSupported = this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9;
+    module.exports.hasTouch = 'ontouchstart' in document.documentElement;
+    module.exports.notSupported = this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9;
 
-    exports.mobile = {
+    module.exports.mobile = {
       Android: function () {
         return navigator.userAgent.match(/Android/i);
       },
@@ -45,23 +45,23 @@ define('Nudoru.Browser.BrowserInfo',
     };
 
     // TODO filter for IE > 9
-    exports.enhanced = function() {
+    module.exports.enhanced = function() {
       return !_browserInfo.isIE && !_browserInfo.mobile.any();
     };
 
-    exports.mouseDownEvtStr = function () {
+    module.exports.mouseDownEvtStr = function () {
       return this.mobile.any() ? "touchstart" : "mousedown";
     };
 
-    exports.mouseUpEvtStr = function () {
+    module.exports.mouseUpEvtStr = function () {
       return this.mobile.any() ? "touchend" : "mouseup";
     };
 
-    exports.mouseClickEvtStr = function () {
+    module.exports.mouseClickEvtStr = function () {
       return this.mobile.any() ? "touchend" : "click";
     };
 
-    exports.mouseMoveEvtStr = function () {
+    module.exports.mouseMoveEvtStr = function () {
       return this.mobile.any() ? "touchmove" : "mousemove";
     };
 

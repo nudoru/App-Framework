@@ -1,7 +1,7 @@
 define('Nudoru.Core.NCookie',
   function(require, module, exports) {
 
-    exports.create = function(name, value, days) {
+    module.exports.create = function(name, value, days) {
       var expires = "", date;
       if (days) {
         date = new Date();
@@ -11,7 +11,7 @@ define('Nudoru.Core.NCookie',
       document.cookie = name + "=" + value + expires + "; path=/";
     };
 
-    exports.read = function(name) {
+    module.exports.read = function(name) {
       var nameEQ = name + "=",
         ca = document.cookie.split(';'),
         i,
@@ -29,8 +29,8 @@ define('Nudoru.Core.NCookie',
       return null;
     };
 
-    exports.remove = function(name) {
-      exports.create(name, '', -1);
+    module.exports.remove = function(name) {
+      module.exports.create(name, '', -1);
     };
 
   });

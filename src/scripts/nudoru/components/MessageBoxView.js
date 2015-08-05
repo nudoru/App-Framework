@@ -283,10 +283,10 @@ define('Nudoru.Component.MessageBoxView',
       })[0];
     }
 
-    exports.initialize = initialize;
-    exports.add        = add;
-    exports.remove     = remove;
-    exports.type       = function () {
+    module.exports.initialize = initialize;
+    module.exports.add        = add;
+    module.exports.remove     = remove;
+    module.exports.type       = function () {
       return _types
     };
 

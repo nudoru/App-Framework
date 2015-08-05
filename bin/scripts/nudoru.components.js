@@ -94,10 +94,10 @@ define('Nudoru.Component.CoachMarksView',
       });
     }
 
-    exports.initialize     = initialize;
-    exports.outlineElement = outlineElement;
-    exports.show           = show;
-    exports.hide           = hide;
+    module.exports.initialize     = initialize;
+    module.exports.outlineElement = outlineElement;
+    module.exports.show           = show;
+    module.exports.hide           = hide;
 
   });;define('Nudoru.Component.Dispatcher',
   function (require, module, exports) {
@@ -173,16 +173,16 @@ define('Nudoru.Component.CoachMarksView',
       _subjectMap = {};
     }
     
-    exports.subscribe = subscribe;
-    exports.subscribeCommand = subscribeCommand;
-    exports.publish = publish;
-    exports.dispose = dispose;
+    module.exports.subscribe = subscribe;
+    module.exports.subscribeCommand = subscribeCommand;
+    module.exports.publish = publish;
+    module.exports.dispose = dispose;
 
   });;define('Nudoru.Component.ComponentEvents',
   function(require, module, exports) {
-    exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
-    exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
-    exports.MENU_SELECT = 'MENU_SELECT';
+    module.exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
+    module.exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
+    module.exports.MENU_SELECT = 'MENU_SELECT';
   });;define('Nudoru.Component.Templating',
   function(require, module, exports) {
 
@@ -258,10 +258,10 @@ define('Nudoru.Component.CoachMarksView',
       return str.trim();
     }
 
-    exports.getSource = getSource;
-    exports.getTemplate = getTemplate;
-    exports.asHTML = asHTML;
-    exports.asElement = asElement;
+    module.exports.getSource = getSource;
+    module.exports.getTemplate = getTemplate;
+    module.exports.asHTML = asHTML;
+    module.exports.asElement = asElement;
 
   });
 ;define('Nudoru.Component.ComponentViewUtils',
@@ -309,9 +309,9 @@ define('Nudoru.Component.CoachMarksView',
       });
     }
 
-    exports.apply3DToContainer = apply3DToContainer;
-    exports.apply3DToComponentElement = apply3DToComponentElement;
-    exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
+    module.exports.apply3DToContainer = apply3DToContainer;
+    module.exports.apply3DToComponentElement = apply3DToComponentElement;
+    module.exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
 
   });
 ;define('Nudoru.Component.MessageBoxCreator',
@@ -421,10 +421,10 @@ define('Nudoru.Component.CoachMarksView',
       });
     }
 
-    exports.alert   = alert;
-    exports.confirm = confirm;
-    exports.prompt  = prompt;
-    exports.choice  = choice;
+    module.exports.alert   = alert;
+    module.exports.confirm = confirm;
+    module.exports.prompt  = prompt;
+    module.exports.choice  = choice;
 
   });;define('Nudoru.Component.MessageBoxView',
   function (require, module, exports) {
@@ -705,10 +705,10 @@ define('Nudoru.Component.CoachMarksView',
       })[0];
     }
 
-    exports.initialize = initialize;
-    exports.add        = add;
-    exports.remove     = remove;
-    exports.type       = function () {
+    module.exports.initialize = initialize;
+    module.exports.add        = add;
+    module.exports.remove     = remove;
+    module.exports.type       = function () {
       return _types
     };
 
@@ -830,13 +830,13 @@ define('Nudoru.Component.CoachMarksView',
       });
     }
 
-    exports.initialize = initialize;
-    exports.show       = show;
-    exports.showNonDismissable   = showNonDismissable;
-    exports.hide       = hide;
-    exports.visible    = getIsVisible;
-    exports.setOpacity = setOpacity;
-    exports.setColor   = setColor;
+    module.exports.initialize = initialize;
+    module.exports.show       = show;
+    module.exports.showNonDismissable   = showNonDismissable;
+    module.exports.hide       = hide;
+    module.exports.visible    = getIsVisible;
+    module.exports.setOpacity = setOpacity;
+    module.exports.setColor   = setColor;
   });;define('Nudoru.Component.ToastView',
   function (require, module, exports) {
 
@@ -974,10 +974,10 @@ define('Nudoru.Component.CoachMarksView',
       return _children.map(function(child) { return child.id; }).indexOf(id);
     }
 
-    exports.initialize = initialize;
-    exports.add = add;
-    exports.remove = remove;
-    exports.type = function() { return _types };
+    module.exports.initialize = initialize;
+    module.exports.add = add;
+    module.exports.remove = remove;
+    module.exports.type = function() { return _types };
 
   });;define('Nudoru.Component.ToolTipView',
   function (require, module, exports) {
@@ -1238,13 +1238,13 @@ define('Nudoru.Component.CoachMarksView',
       });
     }
 
-    exports.initialize = initialize;
-    exports.add        = add;
-    exports.remove     = remove;
-    exports.type       = function () {
+    module.exports.initialize = initialize;
+    module.exports.add        = add;
+    module.exports.remove     = remove;
+    module.exports.type       = function () {
       return _types
     };
-    exports.position   = function () {
+    module.exports.position   = function () {
       return _positions
     };
 

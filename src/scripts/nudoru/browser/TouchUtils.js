@@ -2,7 +2,7 @@ define('Nudoru.Browser.TouchUtils',
   function(require, module, exports) {
 
     // https://github.com/filamentgroup/tappy/blob/master/tappy.js
-    exports.getCoords = function( evt ){
+    module.exports.getCoords = function( evt ){
       var ev = evt.originalEvent || evt,
         touches = ev.touches || ev.targetTouches;
 

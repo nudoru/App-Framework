@@ -277,13 +277,13 @@ define('Nudoru.Component.DDMenuView',
       _fadeOutComplete = true;
     }
 
-    exports.initialize = initialize;
-    exports.getElement = getElement;
-    exports.getValue = getValue;
-    exports.open = open;
-    exports.close = close;
-    exports.toggleMenu = toggleMenu;
-    exports.setSelections = setSelections;
-    exports.deselectAllItems = deselectAllItems;
+    module.exports.initialize = initialize;
+    module.exports.getElement = getElement;
+    module.exports.getValue = getValue;
+    module.exports.open = open;
+    module.exports.close = close;
+    module.exports.toggleMenu = toggleMenu;
+    module.exports.setSelections = setSelections;
+    module.exports.deselectAllItems = deselectAllItems;
 
   });

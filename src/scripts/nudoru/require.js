@@ -17,7 +17,7 @@
  * Example:
  *  define('moduleID',
  *    function(require, module, exports){
- *       exports.method = function(str) {
+ *       module.exports.method = function(str) {
  *         //
  *       };
   *  });

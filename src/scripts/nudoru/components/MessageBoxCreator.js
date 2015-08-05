@@ -105,9 +105,9 @@ define('Nudoru.Component.MessageBoxCreator',
       });
     }
 
-    exports.alert   = alert;
-    exports.confirm = confirm;
-    exports.prompt  = prompt;
-    exports.choice  = choice;
+    module.exports.alert   = alert;
+    module.exports.confirm = confirm;
+    module.exports.prompt  = prompt;
+    module.exports.choice  = choice;
 
   });

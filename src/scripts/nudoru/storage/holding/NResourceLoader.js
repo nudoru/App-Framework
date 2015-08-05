@@ -73,7 +73,7 @@ define('Nudoru.Core.NResourceLoader',
       onErrorCallback.call(currentResource);
     }
 
-    exports.getPercentLoaded = getPercentDependenciesLoaded;
-    exports.load = load;
+    module.exports.getPercentLoaded = getPercentDependenciesLoaded;
+    module.exports.load = load;
 
   });

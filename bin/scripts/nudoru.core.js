@@ -7,7 +7,7 @@
  * Example:
  *  define('moduleID',
  *    function(require, module, exports){
- *       exports.method = function(str) {
+ *       module.exports.method = function(str) {
  *         //
  *       };
   *  });
@@ -104,12 +104,12 @@ function falsey(x) {
 
     var _numberUtils = require('Nudoru.Core.NumberUtils');
 
-    exports.isArray = function(test) {
+    module.exports.isArray = function(test) {
       return Object.prototype.toString.call(test) === "[object Array]";
     };
 
     // Reference: http://jhusain.github.io/learnrx/index.html
-    exports.mergeAll = function () {
+    module.exports.mergeAll = function () {
       var results = [];
 
       this.forEach(function (subArr) {
@@ -122,7 +122,7 @@ function falsey(x) {
     };
 
     // http://www.shamasis.net/2009/09/fast-algorithm-to-find-unique-items-in-javascript-array/
-    exports.unique = function (arry) {
+    module.exports.unique = function (arry) {
       var o = {},
         i,
         l = arry.length,
@@ -136,22 +136,22 @@ function falsey(x) {
       return r;
     };
 
-    exports.removeIndex = function (arr, idx) {
+    module.exports.removeIndex = function (arr, idx) {
       return arr.splice(idx, 1);
     };
 
-    exports.removeItem = function (arr, item) {
+    module.exports.removeItem = function (arr, item) {
       var idx = arr.indexOf(item);
       if (idx > -1) {
         arr.splice(idx, 1);
       }
     };
 
-    exports.rndElement = function (arry) {
+    module.exports.rndElement = function (arry) {
       return arry[_numberUtils.rndNumber(0, arry.length - 1)];
     };
 
-    exports.getRandomSetOfElements = function (srcarry, max) {
+    module.exports.getRandomSetOfElements = function (srcarry, max) {
       var arry = [],
         i = 0,
         len = _numberUtils.rndNumber(1, max);
@@ -163,7 +163,7 @@ function falsey(x) {
       return arry;
     };
 
-    exports.getDifferences = function (arr1, arr2) {
+    module.exports.getDifferences = function (arr1, arr2) {
       var dif = [];
 
       arr1.forEach(function (value) {
@@ -190,23 +190,23 @@ function falsey(x) {
   });;define('Nudoru.Core.NumberUtils',
   function (require, module, exports) {
 
-    exports.isInteger = function (str) {
+    module.exports.isInteger = function (str) {
       return (/^-?\d+$/.test(str));
     };
 
-    exports.rndNumber = function (min, max) {
+    module.exports.rndNumber = function (min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    exports.clamp = function (val, min, max) {
+    module.exports.clamp = function (val, min, max) {
       return Math.max(min, Math.min(max, val));
     };
 
-    exports.inRange = function (val, min, max) {
+    module.exports.inRange = function (val, min, max) {
       return val > min && val < max
     };
 
-    exports.distanceTL = function (point1, point2) {
+    module.exports.distanceTL = function (point1, point2) {
       var xd = (point2.left - point1.left),
         yd = (point2.top - point1.top);
 
@@ -223,7 +223,7 @@ function falsey(x) {
      * @param obj
      * @returns {boolean}
      */
-    exports.isNull = function(obj) {
+    module.exports.isNull = function(obj) {
       var isnull = false;
 
       if(falsey(obj)) {
@@ -238,13 +238,13 @@ function falsey(x) {
       return isnull;
     };
 
-    exports.dynamicSort = function (property) {
+    module.exports.dynamicSort = function (property) {
       return function (a, b) {
         return a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
       };
     };
 
-    exports.searchObjects = function(obj, key, val) {
+    module.exports.searchObjects = function(obj, key, val) {
       var objects = [];
       for (var i in obj) {
         if (typeof obj[i] === 'object') {
@@ -256,7 +256,7 @@ function falsey(x) {
       return objects;
     };
 
-    exports.getObjectFromString = function (obj, str) {
+    module.exports.getObjectFromString = function (obj, str) {
       var i = 0,
         path = str.split('.'),
         len = path.length;
@@ -267,7 +267,7 @@ function falsey(x) {
       return obj;
     };
 
-    exports.getObjectIndexFromId = function (obj, id) {
+    module.exports.getObjectIndexFromId = function (obj, id) {
       if (typeof obj === "object") {
         for (var i = 0; i < obj.length; i++) {
           if (typeof obj[i] !== "undefined" && typeof obj[i].id !== "undefined" && obj[i].id === id) {
@@ -279,7 +279,7 @@ function falsey(x) {
     };
 
     // extend and deep extend from http://youmightnotneedjquery.com/
-    exports.extend = function(out) {
+    module.exports.extend = function(out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -297,7 +297,7 @@ function falsey(x) {
       return out;
     };
 
-    exports.deepExtend = function(out) {
+    module.exports.deepExtend = function(out) {
       out = out || {};
 
       for (var i = 1; i < arguments.length; i++) {
@@ -310,7 +310,7 @@ function falsey(x) {
         for (var key in obj) {
           if (obj.hasOwnProperty(key)) {
             if (typeof obj[key] === 'object') {
-              exports.deepExtend(out[key], obj[key]);
+              module.exports.deepExtend(out[key], obj[key]);
             } else {
               out[key] = obj[key];
             }
@@ -330,7 +330,7 @@ function falsey(x) {
      * @param prototype
      * @returns New object using prototype.methods as source
      */
-    exports.basicFactory = function(prototype) {
+    module.exports.basicFactory = function(prototype) {
       var proto = prototype,
         obj = Object.create(proto.methods);
 
@@ -385,7 +385,7 @@ function falsey(x) {
      * @param {object} obj
      * @return {object}
      */
-    exports.keyMirror = function(obj) {
+    module.exports.keyMirror = function(obj) {
       var ret = {};
       var key;
       if (!(obj instanceof Object && !Array.isArray(obj))) {
@@ -403,21 +403,21 @@ function falsey(x) {
 ;define('Nudoru.Core.StringUtils',
   function(require, module, exports){
 
-    exports.capitalizeFirstLetter = function(str) {
+    module.exports.capitalizeFirstLetter = function(str) {
       return str.charAt(0).toUpperCase() + str.substring(1);
     };
 
-    exports.toTitleCase = function(str) {
+    module.exports.toTitleCase = function(str) {
       return str.replace(/\w\S*/g, function(txt){
         return txt.charAt(0).toUpperCase() + txt.substr(1);
       });
     };
 
-    exports.removeTags = function(str) {
+    module.exports.removeTags = function(str) {
       return str.replace(/(<([^>]+)>)/ig, '');
     };
 
-    exports.ellipses = function(len) {
+    module.exports.ellipses = function(len) {
       return (this.length > len) ? this.substr(0, len) + "..." : this;
     };
 

@@ -1,27 +1,27 @@
 define('Nudoru.Browser.BrowserEventConstants',
   function(require, module, exports) {
-    exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
-    exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
-    exports.BROWSER_SCROLLED = 'BROWSER_SCROLLED';
+    module.exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
+    module.exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
+    module.exports.BROWSER_SCROLLED = 'BROWSER_SCROLLED';
   });;define('Nudoru.Browser.BrowserInfo',
   function (require, module, exports) {
 
-    exports.appVersion = navigator.appVersion;
-    exports.userAgent = navigator.userAgent;
-    exports.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
-    exports.isIE6 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 6");
-    exports.isIE7 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 7");
-    exports.isIE8 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 8");
-    exports.isIE9 = exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 9");
-    exports.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
-    exports.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
-    exports.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
-    exports.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
+    module.exports.appVersion = navigator.appVersion;
+    module.exports.userAgent = navigator.userAgent;
+    module.exports.isIE = -1 < navigator.userAgent.indexOf("MSIE ");
+    module.exports.isIE6 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 6");
+    module.exports.isIE7 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 7");
+    module.exports.isIE8 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 8");
+    module.exports.isIE9 = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 9");
+    module.exports.isFF = -1 < navigator.userAgent.indexOf("Firefox/");
+    module.exports.isChrome = -1 < navigator.userAgent.indexOf("Chrome/");
+    module.exports.isMac = -1 < navigator.userAgent.indexOf("Macintosh;");
+    module.exports.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
 
-    exports.hasTouch = 'ontouchstart' in document.documentElement;
-    exports.notSupported = this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9;
+    module.exports.hasTouch = 'ontouchstart' in document.documentElement;
+    module.exports.notSupported = this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9;
 
-    exports.mobile = {
+    module.exports.mobile = {
       Android: function () {
         return navigator.userAgent.match(/Android/i);
       },
@@ -50,23 +50,23 @@ define('Nudoru.Browser.BrowserEventConstants',
     };
 
     // TODO filter for IE > 9
-    exports.enhanced = function() {
+    module.exports.enhanced = function() {
       return !_browserInfo.isIE && !_browserInfo.mobile.any();
     };
 
-    exports.mouseDownEvtStr = function () {
+    module.exports.mouseDownEvtStr = function () {
       return this.mobile.any() ? "touchstart" : "mousedown";
     };
 
-    exports.mouseUpEvtStr = function () {
+    module.exports.mouseUpEvtStr = function () {
       return this.mobile.any() ? "touchend" : "mouseup";
     };
 
-    exports.mouseClickEvtStr = function () {
+    module.exports.mouseClickEvtStr = function () {
       return this.mobile.any() ? "touchend" : "click";
     };
 
-    exports.mouseMoveEvtStr = function () {
+    module.exports.mouseMoveEvtStr = function () {
       return this.mobile.any() ? "touchmove" : "mousemove";
     };
 
@@ -74,7 +74,7 @@ define('Nudoru.Browser.BrowserEventConstants',
   function (require, module, exports) {
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     // element must be entirely on screen
-    exports.isElementEntirelyInViewport = function (el) {
+    module.exports.isElementEntirelyInViewport = function (el) {
       var rect = el.getBoundingClientRect();
       return (
         rect.top >= 0 &&
@@ -85,7 +85,7 @@ define('Nudoru.Browser.BrowserEventConstants',
     };
 
     // element may be partialy on screen
-    exports.isElementInViewport = function (el) {
+    module.exports.isElementInViewport = function (el) {
       var rect = el.getBoundingClientRect();
       return rect.bottom > 0 &&
         rect.right > 0 &&
@@ -93,11 +93,11 @@ define('Nudoru.Browser.BrowserEventConstants',
         rect.top < (window.innerHeight || document.documentElement.clientHeight);
     };
 
-    exports.isDomObj = function (obj) {
+    module.exports.isDomObj = function (obj) {
       return !!(obj.nodeType || (obj === window));
     };
 
-    exports.position = function (el) {
+    module.exports.position = function (el) {
       return {
         left: el.offsetLeft,
         top : el.offsetTop
@@ -105,7 +105,7 @@ define('Nudoru.Browser.BrowserEventConstants',
     };
 
     // from http://jsperf.com/jquery-offset-vs-offsetparent-loop
-    exports.offset = function (el) {
+    module.exports.offset = function (el) {
       var ol = 0,
           ot = 0;
       if (el.offsetParent) {
@@ -120,20 +120,20 @@ define('Nudoru.Browser.BrowserEventConstants',
       };
     };
 
-    exports.removeAllElements = function (el) {
+    module.exports.removeAllElements = function (el) {
       while (el.firstChild) {
         el.removeChild(el.firstChild);
       }
     };
 
     //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
-    exports.HTMLStrToNode = function (str) {
+    module.exports.HTMLStrToNode = function (str) {
       var temp       = document.createElement('div');
       temp.innerHTML = str;
       return temp.firstChild;
     };
 
-    exports.wrapElement = function (wrapperStr, el) {
+    module.exports.wrapElement = function (wrapperStr, el) {
       var wrapperEl = this.HTMLStrToNode(wrapperStr),
           elParent  = el.parentNode;
 
@@ -143,7 +143,7 @@ define('Nudoru.Browser.BrowserEventConstants',
     };
 
     // http://stackoverflow.com/questions/15329167/closest-ancestor-matching-selector-using-native-dom
-    exports.closest = function (el, selector) {
+    module.exports.closest = function (el, selector) {
       var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
       while (el) {
         if (matchesSelector.bind(el)(selector)) {
@@ -156,7 +156,7 @@ define('Nudoru.Browser.BrowserEventConstants',
     };
 
     // from youmightnotneedjquery.com
-    exports.hasClass = function (el, className) {
+    module.exports.hasClass = function (el, className) {
       if (el.classList) {
         el.classList.contains(className);
       } else {
@@ -164,7 +164,7 @@ define('Nudoru.Browser.BrowserEventConstants',
       }
     };
 
-    exports.addClass = function (el, className) {
+    module.exports.addClass = function (el, className) {
       if (el.classList) {
         el.classList.add(className);
       } else {
@@ -172,7 +172,7 @@ define('Nudoru.Browser.BrowserEventConstants',
       }
     };
 
-    exports.removeClass = function (el, className) {
+    module.exports.removeClass = function (el, className) {
       if (el.classList) {
         el.classList.remove(className);
       } else {
@@ -180,7 +180,7 @@ define('Nudoru.Browser.BrowserEventConstants',
       }
     };
 
-    exports.toggleClass = function (el, className) {
+    module.exports.toggleClass = function (el, className) {
       if (this.hasClass(el, className)) {
         this.removeClass(el, className);
       } else {
@@ -191,11 +191,11 @@ define('Nudoru.Browser.BrowserEventConstants',
     /**
      * Get an array of elements in the container returned as Array instead of a Node list
      */
-    exports.getQSElementsAsArray = function (el, cls) {
+    module.exports.getQSElementsAsArray = function (el, cls) {
       return Array.prototype.slice.call(el.querySelectorAll(cls), 0);
     };
 
-    exports.centerElementInViewPort = function (el) {
+    module.exports.centerElementInViewPort = function (el) {
       var vpH = window.innerHeight,
           vpW = window.innerWidth,
           elR = el.getBoundingClientRect(),
@@ -211,7 +211,7 @@ define('Nudoru.Browser.BrowserEventConstants',
      * @param el
      * @returns {null}
      */
-    exports.captureFormData = function (el) {
+    module.exports.captureFormData = function (el) {
       var dataObj = Object.create(null),
           textareaEls, inputEls, selectEls;
 
@@ -387,20 +387,20 @@ define('Nudoru.Browser.BrowserEventConstants',
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    exports.initialize = initialize;
-    exports.getText = getText;
-    exports.getSentence = getSentence;
-    exports.getParagraph = getParagraph;
-    exports.getFLName = getFLName;
-    exports.getLFName = getLFName;
-    exports.getDate = getDate;
-    exports.fakeGUID = fakeGUID;
+    module.exports.initialize = initialize;
+    module.exports.getText = getText;
+    module.exports.getSentence = getSentence;
+    module.exports.getParagraph = getParagraph;
+    module.exports.getFLName = getFLName;
+    module.exports.getLFName = getLFName;
+    module.exports.getDate = getDate;
+    module.exports.fakeGUID = fakeGUID;
 
   });;define('Nudoru.Browser.TouchUtils',
   function(require, module, exports) {
 
     // https://github.com/filamentgroup/tappy/blob/master/tappy.js
-    exports.getCoords = function( evt ){
+    module.exports.getCoords = function( evt ){
       var ev = evt.originalEvent || evt,
         touches = ev.touches || ev.targetTouches;
 

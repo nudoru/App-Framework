@@ -136,13 +136,13 @@ define('Nudoru.Browser.NLorem',
       return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
-    exports.initialize = initialize;
-    exports.getText = getText;
-    exports.getSentence = getSentence;
-    exports.getParagraph = getParagraph;
-    exports.getFLName = getFLName;
-    exports.getLFName = getLFName;
-    exports.getDate = getDate;
-    exports.fakeGUID = fakeGUID;
+    module.exports.initialize = initialize;
+    module.exports.getText = getText;
+    module.exports.getSentence = getSentence;
+    module.exports.getParagraph = getParagraph;
+    module.exports.getFLName = getFLName;
+    module.exports.getLFName = getLFName;
+    module.exports.getDate = getDate;
+    module.exports.fakeGUID = fakeGUID;
 
   });

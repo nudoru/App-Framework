@@ -48,8 +48,8 @@ define('Nudoru.Component.ComponentViewUtils',
       });
     }
 
-    exports.apply3DToContainer = apply3DToContainer;
-    exports.apply3DToComponentElement = apply3DToComponentElement;
-    exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
+    module.exports.apply3DToContainer = apply3DToContainer;
+    module.exports.apply3DToComponentElement = apply3DToComponentElement;
+    module.exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
 
   });

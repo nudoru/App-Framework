@@ -86,8 +86,8 @@ define('Nudoru.events.EventDispatcher',
       }
     }
 
-    exports.subscribe = subscribe;
-    exports.unsubscribe = unsubscribe;
-    exports.publish = publish;
+    module.exports.subscribe = subscribe;
+    module.exports.unsubscribe = unsubscribe;
+    module.exports.publish = publish;
 
   });

@@ -1,6 +1,6 @@
 define('Nudoru.Browser.BrowserEventConstants',
   function(require, module, exports) {
-    exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
-    exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
-    exports.BROWSER_SCROLLED = 'BROWSER_SCROLLED';
+    module.exports.URL_HASH_CHANGED = 'URL_HASH_CHANGED';
+    module.exports.BROWSER_RESIZED = 'BROWSER_RESIZED';
+    module.exports.BROWSER_SCROLLED = 'BROWSER_SCROLLED';
   });

@@ -296,10 +296,10 @@ define('Nudoru.Component.FloatImageView',
     /**
      * Public API
      */
-    exports.initialize = initialize;
-    exports.apply = apply;
-    exports.setScrollingView = setScrollingView;
-    exports.remove = remove;
+    module.exports.initialize = initialize;
+    module.exports.apply = apply;
+    module.exports.setScrollingView = setScrollingView;
+    module.exports.remove = remove;
 
 
   });

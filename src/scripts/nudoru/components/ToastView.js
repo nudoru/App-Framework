@@ -140,9 +140,9 @@ define('Nudoru.Component.ToastView',
       return _children.map(function(child) { return child.id; }).indexOf(id);
     }
 
-    exports.initialize = initialize;
-    exports.add = add;
-    exports.remove = remove;
-    exports.type = function() { return _types };
+    module.exports.initialize = initialize;
+    module.exports.add = add;
+    module.exports.remove = remove;
+    module.exports.type = function() { return _types };
 
   });

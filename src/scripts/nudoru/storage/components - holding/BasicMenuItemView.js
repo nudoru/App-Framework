@@ -102,15 +102,15 @@ define('Nudoru.Component.BasicMenuItemView',
       }
     }
 
-    exports.initialize = initialize;
-    exports.getElement = getElement;
-    exports.getLabel = getLabel;
-    exports.getValue = getValue;
-    exports.select = select;
-    exports.showOverEffect = showOverEffect;
-    exports.showOutEffect = showOutEffect;
-    exports.showDepressEffect = showDepressEffect;
-    exports.deselect = deselect;
-    exports.toggleSelect = toggleSelect;
+    module.exports.initialize = initialize;
+    module.exports.getElement = getElement;
+    module.exports.getLabel = getLabel;
+    module.exports.getValue = getValue;
+    module.exports.select = select;
+    module.exports.showOverEffect = showOverEffect;
+    module.exports.showOutEffect = showOutEffect;
+    module.exports.showDepressEffect = showDepressEffect;
+    module.exports.deselect = deselect;
+    module.exports.toggleSelect = toggleSelect;
 
   });

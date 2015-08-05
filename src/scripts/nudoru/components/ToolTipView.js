@@ -262,13 +262,13 @@ define('Nudoru.Component.ToolTipView',
       });
     }
 
-    exports.initialize = initialize;
-    exports.add        = add;
-    exports.remove     = remove;
-    exports.type       = function () {
+    module.exports.initialize = initialize;
+    module.exports.add        = add;
+    module.exports.remove     = remove;
+    module.exports.type       = function () {
       return _types
     };
-    exports.position   = function () {
+    module.exports.position   = function () {
       return _positions
     };
 
