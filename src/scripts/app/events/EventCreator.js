@@ -4,7 +4,7 @@ define('App.Events.EventCreator',
     var _dispatcher     = require('Nori.Utils.Dispatcher'),
         _eventConstants = require('App.Events.EventConstants');
 
-    exports.someEvent = function (data) {
+    module.exports.someEvent = function (data) {
       _dispatcher.publish({
         type   : _eventConstants.SOMETHING_HAPPENED,
         payload: {

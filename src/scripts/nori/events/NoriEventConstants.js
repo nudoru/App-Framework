@@ -2,7 +2,7 @@ define('Nori.Events.NoriEventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
-    _.merge(exports, objUtils.keyMirror({
+    _.merge(module.exports, objUtils.keyMirror({
       APP_INITIALIZED        : null,
       APP_MODEL_INITIALIZED  : null,
       APP_VIEW_INITIALIZED   : null,

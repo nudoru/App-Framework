@@ -147,7 +147,7 @@ define('APP.View.DebugControlsTestingSubView',
 
     }
 
-    exports.initialize   = initialize;
-    exports.viewDidMount = viewDidMount;
+    module.exports.initialize   = initialize;
+    module.exports.viewDidMount = viewDidMount;
 
   });

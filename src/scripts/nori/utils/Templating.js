@@ -80,9 +80,9 @@ define('Nori.Utils.Templating',
       return str.trim();
     }
 
-    exports.getSource   = getSource;
-    exports.getTemplate = getTemplate;
-    exports.asHTML      = asHTML;
-    exports.asElement   = asElement;
+    module.exports.getSource   = getSource;
+    module.exports.getTemplate = getTemplate;
+    module.exports.asHTML      = asHTML;
+    module.exports.asElement   = asElement;
 
   });

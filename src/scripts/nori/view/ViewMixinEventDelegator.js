@@ -80,9 +80,9 @@ define('Nori.View.ViewMixinEventDelegator',
       _eventSubscribers = Object.create(null);
     }
 
-    exports.setEvents        = setEvents;
-    exports.getEvents        = getEvents;
-    exports.undelegateEvents = undelegateEvents;
-    exports.delegateEvents   = delegateEvents;
+    module.exports.setEvents        = setEvents;
+    module.exports.getEvents        = getEvents;
+    module.exports.undelegateEvents = undelegateEvents;
+    module.exports.delegateEvents   = delegateEvents;
   });
 

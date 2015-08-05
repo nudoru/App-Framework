@@ -181,13 +181,13 @@ define('Nori.Utils.Dispatcher',
       }
     }
 
-    exports.subscribe   = subscribe;
-    exports.unsubscribe = unsubscribe;
-    //exports.subscribeCommand   = subscribeCommand;
-    exports.publish            = publish;
-    exports.getLog             = getLog;
-    exports.registerReceiver   = registerReceiver;
-    exports.unregisterReceiver = unregisterReceiver;
+    module.exports.subscribe   = subscribe;
+    module.exports.unsubscribe = unsubscribe;
+    //module.exports.subscribeCommand   = subscribeCommand;
+    module.exports.publish            = publish;
+    module.exports.getLog             = getLog;
+    module.exports.registerReceiver   = registerReceiver;
+    module.exports.unregisterReceiver = unregisterReceiver;
 
   });;define('Nori.Utils.Router',
   function (require, module, exports) {
@@ -331,11 +331,11 @@ define('Nori.Utils.Dispatcher',
       window.location.hash = path;
     }
 
-    exports.initialize      = initialize;
-    exports.when            = when;
-    exports.getCurrentRoute = getCurrentRoute;
-    exports.runCurrentRoute = runCurrentRoute;
-    exports.setRoute        = setRoute;
+    module.exports.initialize      = initialize;
+    module.exports.when            = when;
+    module.exports.getCurrentRoute = getCurrentRoute;
+    module.exports.runCurrentRoute = runCurrentRoute;
+    module.exports.setRoute        = setRoute;
 
   });;define('Nori.Utils.Templating',
   function (require, module, exports) {
@@ -411,17 +411,17 @@ define('Nori.Utils.Dispatcher',
       return str.trim();
     }
 
-    exports.getSource   = getSource;
-    exports.getTemplate = getTemplate;
-    exports.asHTML      = asHTML;
-    exports.asElement   = asElement;
+    module.exports.getSource   = getSource;
+    module.exports.getTemplate = getTemplate;
+    module.exports.asHTML      = asHTML;
+    module.exports.asElement   = asElement;
 
   });
 ;define('Nori.Events.NoriEventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
-    _.merge(exports, objUtils.keyMirror({
+    _.merge(module.exports, objUtils.keyMirror({
       APP_INITIALIZED        : null,
       APP_MODEL_INITIALIZED  : null,
       APP_VIEW_INITIALIZED   : null,
@@ -453,14 +453,14 @@ define('Nori.Utils.Dispatcher',
         _appEventConstants     = require('Nori.Events.NoriEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
-    exports.applicationInitialized = function (payload) {
+    module.exports.applicationInitialized = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.APP_INITIALIZED,
         payload: payload
       });
     };
 
-    exports.notifyUser = function (title, message, type) {
+    module.exports.notifyUser = function (title, message, type) {
       _dispatcher.publish({
         type   : _appEventConstants.NOTIFY_USER,
         payload: {
@@ -471,7 +471,7 @@ define('Nori.Utils.Dispatcher',
       });
     };
 
-    exports.alertUser = function (title, message, type) {
+    module.exports.alertUser = function (title, message, type) {
       _dispatcher.publish({
         type   : _appEventConstants.ALERT_USER,
         payload: {
@@ -482,7 +482,7 @@ define('Nori.Utils.Dispatcher',
       });
     };
 
-    exports.warnUser = function (title, message, type) {
+    module.exports.warnUser = function (title, message, type) {
       _dispatcher.publish({
         type   : _appEventConstants.WARN_USER,
         payload: {
@@ -493,42 +493,42 @@ define('Nori.Utils.Dispatcher',
       });
     };
 
-    exports.applicationModelInitialized = function (payload) {
+    module.exports.applicationModelInitialized = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.APP_MODEL_INITIALIZED,
         payload: payload
       });
     };
 
-    exports.applicationViewInitialized = function (payload) {
+    module.exports.applicationViewInitialized = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.APP_VIEW_INITIALIZED,
         payload: payload
       });
     };
 
-    exports.urlHashChanged = function (payload) {
+    module.exports.urlHashChanged = function (payload) {
       _dispatcher.publish({
         type   : _browserEventConstants.URL_HASH_CHANGED,
         payload: payload
       });
     };
 
-    exports.viewChanged = function (payload) {
+    module.exports.viewChanged = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.VIEW_CHANGED,
         payload: payload
       });
     };
 
-    exports.routeChanged = function (payload) {
+    module.exports.routeChanged = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.ROUTE_CHANGED,
         payload: payload
       });
     };
 
-    exports.updateModelData = function (modelID, data) {
+    module.exports.updateModelData = function (modelID, data) {
       _dispatcher.publish({
         type   : _appEventConstants.UPDATE_MODEL_DATA,
         payload: {
@@ -538,14 +538,14 @@ define('Nori.Utils.Dispatcher',
       });
     };
 
-    exports.modelChanged = function (payload) {
+    module.exports.modelChanged = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.MODEL_DATA_CHANGED,
         payload: payload
       });
     };
 
-    exports.renderView = function (targetSelector, htmlStr, id, callback) {
+    module.exports.renderView = function (targetSelector, htmlStr, id, callback) {
       _dispatcher.publish({
         type   : _appEventConstants.RENDER_VIEW,
         payload: {
@@ -557,7 +557,7 @@ define('Nori.Utils.Dispatcher',
       });
     };
 
-    exports.viewRendered = function (targetSelector, id) {
+    module.exports.viewRendered = function (targetSelector, id) {
       _dispatcher.publish({
         type   : _appEventConstants.VIEW_RENDERED,
         payload: {
@@ -653,23 +653,23 @@ define('Nori.Utils.Dispatcher',
       return _appMapCollectionList[storeID];
     }
 
-    exports.initializeApplicationModel = initializeApplicationModel;
-    exports.subscribeToModelEvents = subscribeToModelEvents;
-    exports.handleModelDataChanged = handleModelDataChanged;
-    exports.handleUpdateModelData = handleUpdateModelData;
-    exports.createMapCollection = createMapCollection;
-    exports.createMap = createMap;
-    exports.getMap = getMap;
-    exports.getMapCollection = getMapCollection;
+    module.exports.initializeApplicationModel = initializeApplicationModel;
+    module.exports.subscribeToModelEvents = subscribeToModelEvents;
+    module.exports.handleModelDataChanged = handleModelDataChanged;
+    module.exports.handleUpdateModelData = handleUpdateModelData;
+    module.exports.createMapCollection = createMapCollection;
+    module.exports.createMap = createMap;
+    module.exports.getMap = getMap;
+    module.exports.getMapCollection = getMapCollection;
   });;define('Nori.Model.Map',
   function (require, module, exports) {
 
     var _id,
+        _parentCollection,
         _dirty     = false,
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
-        _parentCollection,
         _appEvents = require('Nori.Events.NoriEventCreator');
 
     //----------------------------------------------------------------------------
@@ -940,37 +940,38 @@ define('Nori.Utils.Dispatcher',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize          = initialize;
-    exports.getID               = getID;
-    exports.clear               = clear;
-    exports.isDirty             = isDirty;
-    exports.markClean           = markClean;
-    exports.setJSON             = setJSON;
-    exports.set                 = set;
-    exports.setKeyProp          = setKeyProp;
-    exports.get                 = get;
-    exports.getKeyProp          = getKeyProp;
-    exports.has                 = has;
-    exports.remove              = remove;
-    exports.keys                = keys;
-    exports.values              = values;
-    exports.entries             = entries;
-    exports.filterValues        = filterValues;
-    exports.size                = size;
-    exports.getFirst            = getFirst;
-    exports.getLast             = getLast;
-    exports.getAtIndex          = getAtIndex;
-    exports.toObject            = toObject;
-    exports.transform           = transform;
-    exports.toJSON              = toJSON;
-    exports.setParentCollection = setParentCollection;
-    exports.getParentCollection = getParentCollection;
+    module.exports.initialize          = initialize;
+    module.exports.getID               = getID;
+    module.exports.clear               = clear;
+    module.exports.isDirty             = isDirty;
+    module.exports.markClean           = markClean;
+    module.exports.setJSON             = setJSON;
+    module.exports.set                 = set;
+    module.exports.setKeyProp          = setKeyProp;
+    module.exports.get                 = get;
+    module.exports.getKeyProp          = getKeyProp;
+    module.exports.has                 = has;
+    module.exports.remove              = remove;
+    module.exports.keys                = keys;
+    module.exports.values              = values;
+    module.exports.entries             = entries;
+    module.exports.filterValues        = filterValues;
+    module.exports.size                = size;
+    module.exports.getFirst            = getFirst;
+    module.exports.getLast             = getLast;
+    module.exports.getAtIndex          = getAtIndex;
+    module.exports.toObject            = toObject;
+    module.exports.transform           = transform;
+    module.exports.toJSON              = toJSON;
+    module.exports.setParentCollection = setParentCollection;
+    module.exports.getParentCollection = getParentCollection;
 
   });;define('Nori.Model.MapCollection',
   function (require, module, exports) {
 
     var _this,
         _id,
+        _parentCollection,
         _children  = [],
         _silent    = false,
         _appEvents = require('Nori.Events.NoriEventCreator');
@@ -1146,10 +1147,9 @@ define('Nori.Utils.Dispatcher',
         });
       }
 
-      // TODO Implement collections of collections
-      //if(_parentCollection) {
-      //  _parentCollection.dispatchChange({id:_id, store:getMap()});
-      //}
+      if(_parentCollection) {
+        _parentCollection.dispatchChange({id:_id, store:getMap()});
+      }
     }
 
     function hasMap(storeID) {
@@ -1233,31 +1233,31 @@ define('Nori.Utils.Dispatcher',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize          = initialize;
-    exports.getID               = getID;
-    exports.isDirty             = isDirty;
-    exports.markClean           = markClean;
-    exports.add                 = add;
-    exports.addMapsFromArray    = addMapsFromArray;
-    exports.addFromObjArray     = addFromObjArray;
-    exports.addFromJSONArray    = addFromJSONArray;
-    exports.remove              = remove;
-    exports.removeAll           = removeAll;
-    exports.getMap              = getMap;
-    exports.hasMap              = hasMap;
-    exports.size                = size;
-    exports.getFirst            = getFirst;
-    exports.getLast             = getLast;
-    exports.getAtIndex          = getAtIndex;
-    exports.filter              = filter;
-    exports.filterByKey         = filterByKey;
-    exports.forEach             = forEach;
-    exports.map                 = map;
-    exports.entries             = entries;
-    exports.toJSON              = toJSON;
-    exports.dispatchChange      = dispatchChange;
-    exports.setParentCollection = setParentCollection;
-    exports.getParentCollection = getParentCollection;
+    module.exports.initialize          = initialize;
+    module.exports.getID               = getID;
+    module.exports.isDirty             = isDirty;
+    module.exports.markClean           = markClean;
+    module.exports.add                 = add;
+    module.exports.addMapsFromArray    = addMapsFromArray;
+    module.exports.addFromObjArray     = addFromObjArray;
+    module.exports.addFromJSONArray    = addFromJSONArray;
+    module.exports.remove              = remove;
+    module.exports.removeAll           = removeAll;
+    module.exports.getMap              = getMap;
+    module.exports.hasMap              = hasMap;
+    module.exports.size                = size;
+    module.exports.getFirst            = getFirst;
+    module.exports.getLast             = getLast;
+    module.exports.getAtIndex          = getAtIndex;
+    module.exports.filter              = filter;
+    module.exports.filterByKey         = filterByKey;
+    module.exports.forEach             = forEach;
+    module.exports.map                 = map;
+    module.exports.entries             = entries;
+    module.exports.toJSON              = toJSON;
+    module.exports.dispatchChange      = dispatchChange;
+    module.exports.setParentCollection = setParentCollection;
+    module.exports.getParentCollection = getParentCollection;
 
   });;define('Nori.View.ApplicationSubView',
   function (require, module, exports) {
@@ -1517,40 +1517,40 @@ define('Nori.Utils.Dispatcher',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeSubView = initializeSubView;
+    module.exports.initializeSubView = initializeSubView;
 
-    exports.isInitialized = isInitialized;
-    exports.setState      = setState;
-    exports.getState      = getState;
-    exports.getID         = getID;
-    exports.getTemplate   = getTemplate;
-    exports.getHTML       = getHTML;
-    exports.setHTML       = setHTML;
-    exports.getDOMElement = getDOMElement;
-    exports.setDOMElement = setDOMElement;
+    module.exports.isInitialized = isInitialized;
+    module.exports.setState      = setState;
+    module.exports.getState      = getState;
+    module.exports.getID         = getID;
+    module.exports.getTemplate   = getTemplate;
+    module.exports.getHTML       = getHTML;
+    module.exports.setHTML       = setHTML;
+    module.exports.getDOMElement = getDOMElement;
+    module.exports.setDOMElement = setDOMElement;
 
-    exports.bindMap       = bindMap;
+    module.exports.bindMap = bindMap;
 
-    exports.viewWillUpdate = viewWillUpdate;
-    exports.update         = update;
-    exports.viewDidUpdate  = viewDidUpdate;
+    module.exports.viewWillUpdate = viewWillUpdate;
+    module.exports.update         = update;
+    module.exports.viewDidUpdate  = viewDidUpdate;
 
-    exports.viewShouldRender = viewShouldRender;
-    exports.viewWillRender   = viewWillRender;
-    exports.render           = render;
-    exports.viewDidRender    = viewDidRender;
+    module.exports.viewShouldRender = viewShouldRender;
+    module.exports.viewWillRender   = viewWillRender;
+    module.exports.render           = render;
+    module.exports.viewDidRender    = viewDidRender;
 
-    exports.viewWillMount = viewWillMount;
-    exports.mount         = mount;
-    exports.viewDidMount  = viewDidMount;
+    module.exports.viewWillMount = viewWillMount;
+    module.exports.mount         = mount;
+    module.exports.viewDidMount  = viewDidMount;
 
-    exports.viewWillUnmount = viewWillUnmount;
-    exports.unmount         = unmount;
-    exports.viewDidUnmount  = viewDidUnmount;
+    module.exports.viewWillUnmount = viewWillUnmount;
+    module.exports.unmount         = unmount;
+    module.exports.viewDidUnmount  = viewDidUnmount;
 
-    exports.addChild    = addChild;
-    exports.removeChild = removeChild;
-    exports.getChildren = getChildren;
+    module.exports.addChild    = addChild;
+    module.exports.removeChild = removeChild;
+    module.exports.getChildren = getChildren;
 
   });;define('Nori.View.ApplicationView',
   function (require, module, exports) {
@@ -1699,19 +1699,19 @@ define('Nori.Utils.Dispatcher',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeApplicationView     = initializeApplicationView;
-    exports.initializeApplicationElements = initializeApplicationElements;
-    exports.initializeComponents          = initializeComponents;
-    exports.mbCreator                     = mbCreator;
-    exports.addMessageBox                 = addMessageBox;
-    exports.removeMessageBox              = removeMessageBox;
-    exports.addNotification               = addNotification;
-    exports.alert                         = alert;
-    exports.notify                        = notify;
-    exports.removeLoadingMessage          = removeLoadingMessage;
-    exports.layoutUI                      = layoutUI;
-    exports.getAppContainerEl             = getAppContainerEl;
-    exports.getAppEl                      = getAppEl;
+    module.exports.initializeApplicationView     = initializeApplicationView;
+    module.exports.initializeApplicationElements = initializeApplicationElements;
+    module.exports.initializeComponents          = initializeComponents;
+    module.exports.mbCreator                     = mbCreator;
+    module.exports.addMessageBox                 = addMessageBox;
+    module.exports.removeMessageBox              = removeMessageBox;
+    module.exports.addNotification               = addNotification;
+    module.exports.alert                         = alert;
+    module.exports.notify                        = notify;
+    module.exports.removeLoadingMessage          = removeLoadingMessage;
+    module.exports.layoutUI                      = layoutUI;
+    module.exports.getAppContainerEl             = getAppContainerEl;
+    module.exports.getAppEl                      = getAppEl;
 
   });;define('Nori.View.Renderer',
   function (require, module, exports) {
@@ -1747,7 +1747,7 @@ define('Nori.Utils.Dispatcher',
       _appEvents.viewRendered(targetSelector, payload.payload.id);
     }
 
-    exports.initialize = initialize;
+    module.exports.initialize = initialize;
 
   });;define('Nori.View.ViewMixinBrowserEvents',
   function (require, module, exports) {
@@ -1869,12 +1869,12 @@ define('Nori.Utils.Dispatcher',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeEventStreams          = initializeEventStreams;
-    exports.setPositionUIElementsOnChangeCB = setPositionUIElementsOnChangeCB;
-    exports.getMainScrollingView            = getMainScrollingView;
-    exports.setMainScrollingView            = setMainScrollingView;
-    exports.getCurrentViewPortSize          = getCurrentViewPortSize;
-    exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
+    module.exports.initializeEventStreams          = initializeEventStreams;
+    module.exports.setPositionUIElementsOnChangeCB = setPositionUIElementsOnChangeCB;
+    module.exports.getMainScrollingView            = getMainScrollingView;
+    module.exports.setMainScrollingView            = setMainScrollingView;
+    module.exports.getCurrentViewPortSize          = getCurrentViewPortSize;
+    module.exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
 
   });;define('Nori.View.ViewMixinEventDelegator',
   function (require, module, exports) {
@@ -1941,10 +1941,10 @@ define('Nori.Utils.Dispatcher',
       _eventSubscribers = Object.create(null);
     }
 
-    exports.setEvents        = setEvents;
-    exports.getEvents        = getEvents;
-    exports.undelegateEvents = undelegateEvents;
-    exports.delegateEvents   = delegateEvents;
+    module.exports.setEvents        = setEvents;
+    module.exports.getEvents        = getEvents;
+    module.exports.undelegateEvents = undelegateEvents;
+    module.exports.delegateEvents   = delegateEvents;
   });
 
 ;define('Nori.View.ViewMixinMultiDevice',
@@ -2059,10 +2059,10 @@ define('Nori.Utils.Dispatcher',
       TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
     }
 
-    exports.initializeMultiDeviceView = initializeMultiDeviceView;
-    exports.openDrawer                = openDrawer;
-    exports.closeDrawer               = closeDrawer;
-    exports.checkForMobile            = checkForMobile;
+    module.exports.initializeMultiDeviceView = initializeMultiDeviceView;
+    module.exports.openDrawer                = openDrawer;
+    module.exports.closeDrawer               = closeDrawer;
+    module.exports.checkForMobile            = checkForMobile;
   });;define('Nori.View.ViewMixinSubViewRoutes',
   function (require, module, exports) {
 
@@ -2137,7 +2137,7 @@ define('Nori.Utils.Dispatcher',
      * @param templateID
      * @param extras
      */
-    function extendSubViewController(templateID, extras) {
+    function applyMixin(templateID, extras) {
       var subview = _subViewMapping[templateID];
 
       if (!subview) {
@@ -2230,17 +2230,17 @@ define('Nori.Utils.Dispatcher',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.setRouteViewMountPoint  = setRouteViewMountPoint;
-    exports.template                = getTemplate;
-    exports.createSubView           = createSubView;
-    exports.createComponent         = createComponent;
-    exports.renderComponent         = renderComponent;
-    exports.mapView                 = mapView;
-    exports.showView                = showView;
-    exports.mapRouteView            = mapRouteView;
-    exports.showRouteView           = showRouteView;
-    exports.updateView              = updateView;
-    exports.extendSubViewController = extendSubViewController;
+    module.exports.setRouteViewMountPoint  = setRouteViewMountPoint;
+    module.exports.template                = getTemplate;
+    module.exports.createSubView           = createSubView;
+    module.exports.createComponent         = createComponent;
+    module.exports.renderComponent         = renderComponent;
+    module.exports.mapView                 = mapView;
+    module.exports.showView                = showView;
+    module.exports.mapRouteView            = mapRouteView;
+    module.exports.showRouteView           = showRouteView;
+    module.exports.updateView              = updateView;
+    module.exports.applyMixin = applyMixin;
   });;var Nori = (function () {
   var _config,
       _model,

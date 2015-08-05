@@ -50,6 +50,6 @@ define('APP.Application',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
+    module.exports.initialize = initialize;
 
   });

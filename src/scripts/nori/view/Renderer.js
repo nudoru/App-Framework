@@ -38,6 +38,6 @@ define('Nori.View.Renderer',
       _appEvents.viewRendered(targetSelector, payload.payload.id);
     }
 
-    exports.initialize = initialize;
+    module.exports.initialize = initialize;
 
   });

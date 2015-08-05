@@ -56,6 +56,6 @@ define('APP.View.AppView',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
-    exports.render     = render;
+    module.exports.initialize = initialize;
+    module.exports.render     = render;
   });

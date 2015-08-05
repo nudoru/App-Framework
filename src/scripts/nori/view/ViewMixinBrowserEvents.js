@@ -118,11 +118,11 @@ define('Nori.View.ViewMixinBrowserEvents',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeEventStreams          = initializeEventStreams;
-    exports.setPositionUIElementsOnChangeCB = setPositionUIElementsOnChangeCB;
-    exports.getMainScrollingView            = getMainScrollingView;
-    exports.setMainScrollingView            = setMainScrollingView;
-    exports.getCurrentViewPortSize          = getCurrentViewPortSize;
-    exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
+    module.exports.initializeEventStreams          = initializeEventStreams;
+    module.exports.setPositionUIElementsOnChangeCB = setPositionUIElementsOnChangeCB;
+    module.exports.getMainScrollingView            = getMainScrollingView;
+    module.exports.setMainScrollingView            = setMainScrollingView;
+    module.exports.getCurrentViewPortSize          = getCurrentViewPortSize;
+    module.exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
 
   });

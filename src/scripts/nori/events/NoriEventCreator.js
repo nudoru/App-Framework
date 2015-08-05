@@ -5,14 +5,14 @@ define('Nori.Events.NoriEventCreator',
         _appEventConstants     = require('Nori.Events.NoriEventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
-    exports.applicationInitialized = function (payload) {
+    module.exports.applicationInitialized = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.APP_INITIALIZED,
         payload: payload
       });
     };
 
-    exports.notifyUser = function (title, message, type) {
+    module.exports.notifyUser = function (title, message, type) {
       _dispatcher.publish({
         type   : _appEventConstants.NOTIFY_USER,
         payload: {
@@ -23,7 +23,7 @@ define('Nori.Events.NoriEventCreator',
       });
     };
 
-    exports.alertUser = function (title, message, type) {
+    module.exports.alertUser = function (title, message, type) {
       _dispatcher.publish({
         type   : _appEventConstants.ALERT_USER,
         payload: {
@@ -34,7 +34,7 @@ define('Nori.Events.NoriEventCreator',
       });
     };
 
-    exports.warnUser = function (title, message, type) {
+    module.exports.warnUser = function (title, message, type) {
       _dispatcher.publish({
         type   : _appEventConstants.WARN_USER,
         payload: {
@@ -45,42 +45,42 @@ define('Nori.Events.NoriEventCreator',
       });
     };
 
-    exports.applicationModelInitialized = function (payload) {
+    module.exports.applicationModelInitialized = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.APP_MODEL_INITIALIZED,
         payload: payload
       });
     };
 
-    exports.applicationViewInitialized = function (payload) {
+    module.exports.applicationViewInitialized = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.APP_VIEW_INITIALIZED,
         payload: payload
       });
     };
 
-    exports.urlHashChanged = function (payload) {
+    module.exports.urlHashChanged = function (payload) {
       _dispatcher.publish({
         type   : _browserEventConstants.URL_HASH_CHANGED,
         payload: payload
       });
     };
 
-    exports.viewChanged = function (payload) {
+    module.exports.viewChanged = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.VIEW_CHANGED,
         payload: payload
       });
     };
 
-    exports.routeChanged = function (payload) {
+    module.exports.routeChanged = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.ROUTE_CHANGED,
         payload: payload
       });
     };
 
-    exports.updateModelData = function (modelID, data) {
+    module.exports.updateModelData = function (modelID, data) {
       _dispatcher.publish({
         type   : _appEventConstants.UPDATE_MODEL_DATA,
         payload: {
@@ -90,14 +90,14 @@ define('Nori.Events.NoriEventCreator',
       });
     };
 
-    exports.modelChanged = function (payload) {
+    module.exports.modelChanged = function (payload) {
       _dispatcher.publish({
         type   : _appEventConstants.MODEL_DATA_CHANGED,
         payload: payload
       });
     };
 
-    exports.renderView = function (targetSelector, htmlStr, id, callback) {
+    module.exports.renderView = function (targetSelector, htmlStr, id, callback) {
       _dispatcher.publish({
         type   : _appEventConstants.RENDER_VIEW,
         payload: {
@@ -109,7 +109,7 @@ define('Nori.Events.NoriEventCreator',
       });
     };
 
-    exports.viewRendered = function (targetSelector, id) {
+    module.exports.viewRendered = function (targetSelector, id) {
       _dispatcher.publish({
         type   : _appEventConstants.VIEW_RENDERED,
         payload: {

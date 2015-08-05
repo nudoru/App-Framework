@@ -197,12 +197,12 @@ define('Nori.Utils.Dispatcher',
       }
     }
 
-    exports.subscribe   = subscribe;
-    exports.unsubscribe = unsubscribe;
-    //exports.subscribeCommand   = subscribeCommand;
-    exports.publish            = publish;
-    exports.getLog             = getLog;
-    exports.registerReceiver   = registerReceiver;
-    exports.unregisterReceiver = unregisterReceiver;
+    module.exports.subscribe   = subscribe;
+    module.exports.unsubscribe = unsubscribe;
+    //module.exports.subscribeCommand   = subscribeCommand;
+    module.exports.publish            = publish;
+    module.exports.getLog             = getLog;
+    module.exports.registerReceiver   = registerReceiver;
+    module.exports.unregisterReceiver = unregisterReceiver;
 
   });

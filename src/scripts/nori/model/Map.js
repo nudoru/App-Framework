@@ -7,11 +7,11 @@ define('Nori.Model.Map',
   function (require, module, exports) {
 
     var _id,
+        _parentCollection,
         _dirty     = false,
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
-        _parentCollection,
         _appEvents = require('Nori.Events.NoriEventCreator');
 
     //----------------------------------------------------------------------------
@@ -282,30 +282,30 @@ define('Nori.Model.Map',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize          = initialize;
-    exports.getID               = getID;
-    exports.clear               = clear;
-    exports.isDirty             = isDirty;
-    exports.markClean           = markClean;
-    exports.setJSON             = setJSON;
-    exports.set                 = set;
-    exports.setKeyProp          = setKeyProp;
-    exports.get                 = get;
-    exports.getKeyProp          = getKeyProp;
-    exports.has                 = has;
-    exports.remove              = remove;
-    exports.keys                = keys;
-    exports.values              = values;
-    exports.entries             = entries;
-    exports.filterValues        = filterValues;
-    exports.size                = size;
-    exports.getFirst            = getFirst;
-    exports.getLast             = getLast;
-    exports.getAtIndex          = getAtIndex;
-    exports.toObject            = toObject;
-    exports.transform           = transform;
-    exports.toJSON              = toJSON;
-    exports.setParentCollection = setParentCollection;
-    exports.getParentCollection = getParentCollection;
+    module.exports.initialize          = initialize;
+    module.exports.getID               = getID;
+    module.exports.clear               = clear;
+    module.exports.isDirty             = isDirty;
+    module.exports.markClean           = markClean;
+    module.exports.setJSON             = setJSON;
+    module.exports.set                 = set;
+    module.exports.setKeyProp          = setKeyProp;
+    module.exports.get                 = get;
+    module.exports.getKeyProp          = getKeyProp;
+    module.exports.has                 = has;
+    module.exports.remove              = remove;
+    module.exports.keys                = keys;
+    module.exports.values              = values;
+    module.exports.entries             = entries;
+    module.exports.filterValues        = filterValues;
+    module.exports.size                = size;
+    module.exports.getFirst            = getFirst;
+    module.exports.getLast             = getLast;
+    module.exports.getAtIndex          = getAtIndex;
+    module.exports.toObject            = toObject;
+    module.exports.transform           = transform;
+    module.exports.toJSON              = toJSON;
+    module.exports.setParentCollection = setParentCollection;
+    module.exports.getParentCollection = getParentCollection;
 
   });

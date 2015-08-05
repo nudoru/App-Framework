@@ -117,8 +117,8 @@ define('Nori.View.ViewMixinMultiDevice',
       TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
     }
 
-    exports.initializeMultiDeviceView = initializeMultiDeviceView;
-    exports.openDrawer                = openDrawer;
-    exports.closeDrawer               = closeDrawer;
-    exports.checkForMobile            = checkForMobile;
+    module.exports.initializeMultiDeviceView = initializeMultiDeviceView;
+    module.exports.openDrawer                = openDrawer;
+    module.exports.closeDrawer               = closeDrawer;
+    module.exports.checkForMobile            = checkForMobile;
   });

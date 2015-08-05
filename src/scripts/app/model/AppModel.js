@@ -31,5 +31,5 @@ define('APP.Model.AppModel',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
+    module.exports.initialize = initialize;
   });

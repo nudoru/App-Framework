@@ -145,18 +145,18 @@ define('Nori.View.ApplicationView',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeApplicationView     = initializeApplicationView;
-    exports.initializeApplicationElements = initializeApplicationElements;
-    exports.initializeComponents          = initializeComponents;
-    exports.mbCreator                     = mbCreator;
-    exports.addMessageBox                 = addMessageBox;
-    exports.removeMessageBox              = removeMessageBox;
-    exports.addNotification               = addNotification;
-    exports.alert                         = alert;
-    exports.notify                        = notify;
-    exports.removeLoadingMessage          = removeLoadingMessage;
-    exports.layoutUI                      = layoutUI;
-    exports.getAppContainerEl             = getAppContainerEl;
-    exports.getAppEl                      = getAppEl;
+    module.exports.initializeApplicationView     = initializeApplicationView;
+    module.exports.initializeApplicationElements = initializeApplicationElements;
+    module.exports.initializeComponents          = initializeComponents;
+    module.exports.mbCreator                     = mbCreator;
+    module.exports.addMessageBox                 = addMessageBox;
+    module.exports.removeMessageBox              = removeMessageBox;
+    module.exports.addNotification               = addNotification;
+    module.exports.alert                         = alert;
+    module.exports.notify                        = notify;
+    module.exports.removeLoadingMessage          = removeLoadingMessage;
+    module.exports.layoutUI                      = layoutUI;
+    module.exports.getAppContainerEl             = getAppContainerEl;
+    module.exports.getAppEl                      = getAppEl;
 
   });

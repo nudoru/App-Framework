@@ -60,15 +60,15 @@ define('APP.View.AppSubView',
       // remove events
     }
 
-    exports.initialize = initialize;
-    exports.viewWillUpdate = viewWillUpdate;
-    exports.viewDidMount = viewDidMount;
-    exports.viewWillUnmount = viewWillUnmount;
+    module.exports.initialize = initialize;
+    module.exports.viewWillUpdate = viewWillUpdate;
+    module.exports.viewDidMount = viewDidMount;
+    module.exports.viewWillUnmount = viewWillUnmount;
 
     // Other possible lifecycle hooks
-    //exports.viewDidUpdate = viewDidUpdate;
-    //exports.viewWillRender = viewWillRender;
-    //exports.viewDidRender = viewDidRender;
-    //exports.viewWillMount = viewWillMount;
-    //exports.viewDidUnmount = viewDidUnmount;
+    //module.exports.viewDidUpdate = viewDidUpdate;
+    //module.exports.viewWillRender = viewWillRender;
+    //module.exports.viewDidRender = viewDidRender;
+    //module.exports.viewWillMount = viewWillMount;
+    //module.exports.viewDidUnmount = viewDidUnmount;
   });

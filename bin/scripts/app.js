@@ -46,7 +46,7 @@ define('APP.Application',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
+    module.exports.initialize = initialize;
 
   });;define('App.Events.EventConstants',
   function (require, module, exports) {
@@ -61,7 +61,7 @@ define('APP.Application',
     var _dispatcher     = require('Nori.Utils.Dispatcher'),
         _eventConstants = require('App.Events.EventConstants');
 
-    exports.someEvent = function (data) {
+    module.exports.someEvent = function (data) {
       _dispatcher.publish({
         type   : _eventConstants.SOMETHING_HAPPENED,
         payload: {
@@ -103,7 +103,7 @@ define('APP.Application',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
+    module.exports.initialize = initialize;
   });
 ;define('APP.View.AppSubView',
   function (require, module, exports) {
@@ -162,17 +162,17 @@ define('APP.Application',
       // remove events
     }
 
-    exports.initialize = initialize;
-    exports.viewWillUpdate = viewWillUpdate;
-    exports.viewDidMount = viewDidMount;
-    exports.viewWillUnmount = viewWillUnmount;
+    module.exports.initialize = initialize;
+    module.exports.viewWillUpdate = viewWillUpdate;
+    module.exports.viewDidMount = viewDidMount;
+    module.exports.viewWillUnmount = viewWillUnmount;
 
     // Other possible lifecycle hooks
-    //exports.viewDidUpdate = viewDidUpdate;
-    //exports.viewWillRender = viewWillRender;
-    //exports.viewDidRender = viewDidRender;
-    //exports.viewWillMount = viewWillMount;
-    //exports.viewDidUnmount = viewDidUnmount;
+    //module.exports.viewDidUpdate = viewDidUpdate;
+    //module.exports.viewWillRender = viewWillRender;
+    //module.exports.viewDidRender = viewDidRender;
+    //module.exports.viewWillMount = viewWillMount;
+    //module.exports.viewDidUnmount = viewDidUnmount;
   });;define('APP.View.AppView',
   function (require, module, exports) {
 
@@ -231,8 +231,8 @@ define('APP.Application',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize = initialize;
-    exports.render     = render;
+    module.exports.initialize = initialize;
+    module.exports.render     = render;
   });;define('APP.View.DebugControlsTestingSubView',
   function (require, module, exports) {
 
@@ -378,8 +378,8 @@ define('APP.Application',
 
     }
 
-    exports.initialize   = initialize;
-    exports.viewDidMount = viewDidMount;
+    module.exports.initialize   = initialize;
+    module.exports.viewDidMount = viewDidMount;
 
   });;(function () {
 

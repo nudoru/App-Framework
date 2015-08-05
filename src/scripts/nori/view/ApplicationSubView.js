@@ -261,39 +261,39 @@ define('Nori.View.ApplicationSubView',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initializeSubView = initializeSubView;
+    module.exports.initializeSubView = initializeSubView;
 
-    exports.isInitialized = isInitialized;
-    exports.setState      = setState;
-    exports.getState      = getState;
-    exports.getID         = getID;
-    exports.getTemplate   = getTemplate;
-    exports.getHTML       = getHTML;
-    exports.setHTML       = setHTML;
-    exports.getDOMElement = getDOMElement;
-    exports.setDOMElement = setDOMElement;
+    module.exports.isInitialized = isInitialized;
+    module.exports.setState      = setState;
+    module.exports.getState      = getState;
+    module.exports.getID         = getID;
+    module.exports.getTemplate   = getTemplate;
+    module.exports.getHTML       = getHTML;
+    module.exports.setHTML       = setHTML;
+    module.exports.getDOMElement = getDOMElement;
+    module.exports.setDOMElement = setDOMElement;
 
-    exports.bindMap       = bindMap;
+    module.exports.bindMap = bindMap;
 
-    exports.viewWillUpdate = viewWillUpdate;
-    exports.update         = update;
-    exports.viewDidUpdate  = viewDidUpdate;
+    module.exports.viewWillUpdate = viewWillUpdate;
+    module.exports.update         = update;
+    module.exports.viewDidUpdate  = viewDidUpdate;
 
-    exports.viewShouldRender = viewShouldRender;
-    exports.viewWillRender   = viewWillRender;
-    exports.render           = render;
-    exports.viewDidRender    = viewDidRender;
+    module.exports.viewShouldRender = viewShouldRender;
+    module.exports.viewWillRender   = viewWillRender;
+    module.exports.render           = render;
+    module.exports.viewDidRender    = viewDidRender;
 
-    exports.viewWillMount = viewWillMount;
-    exports.mount         = mount;
-    exports.viewDidMount  = viewDidMount;
+    module.exports.viewWillMount = viewWillMount;
+    module.exports.mount         = mount;
+    module.exports.viewDidMount  = viewDidMount;
 
-    exports.viewWillUnmount = viewWillUnmount;
-    exports.unmount         = unmount;
-    exports.viewDidUnmount  = viewDidUnmount;
+    module.exports.viewWillUnmount = viewWillUnmount;
+    module.exports.unmount         = unmount;
+    module.exports.viewDidUnmount  = viewDidUnmount;
 
-    exports.addChild    = addChild;
-    exports.removeChild = removeChild;
-    exports.getChildren = getChildren;
+    module.exports.addChild    = addChild;
+    module.exports.removeChild = removeChild;
+    module.exports.getChildren = getChildren;
 
   });

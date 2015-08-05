@@ -76,7 +76,7 @@ define('Nori.View.ViewMixinSubViewRoutes',
      * @param templateID
      * @param extras
      */
-    function extendSubViewController(templateID, extras) {
+    function applyMixin(templateID, extras) {
       var subview = _subViewMapping[templateID];
 
       if (!subview) {
@@ -169,15 +169,15 @@ define('Nori.View.ViewMixinSubViewRoutes',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.setRouteViewMountPoint  = setRouteViewMountPoint;
-    exports.template                = getTemplate;
-    exports.createSubView           = createSubView;
-    exports.createComponent         = createComponent;
-    exports.renderComponent         = renderComponent;
-    exports.mapView                 = mapView;
-    exports.showView                = showView;
-    exports.mapRouteView            = mapRouteView;
-    exports.showRouteView           = showRouteView;
-    exports.updateView              = updateView;
-    exports.extendSubViewController = extendSubViewController;
+    module.exports.setRouteViewMountPoint  = setRouteViewMountPoint;
+    module.exports.template                = getTemplate;
+    module.exports.createSubView           = createSubView;
+    module.exports.createComponent         = createComponent;
+    module.exports.renderComponent         = renderComponent;
+    module.exports.mapView                 = mapView;
+    module.exports.showView                = showView;
+    module.exports.mapRouteView            = mapRouteView;
+    module.exports.showRouteView           = showRouteView;
+    module.exports.updateView              = updateView;
+    module.exports.applyMixin = applyMixin;
   });

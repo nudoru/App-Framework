@@ -154,10 +154,10 @@ define('Nori.Utils.Router',
       window.location.hash = path;
     }
 
-    exports.initialize      = initialize;
-    exports.when            = when;
-    exports.getCurrentRoute = getCurrentRoute;
-    exports.runCurrentRoute = runCurrentRoute;
-    exports.setRoute        = setRoute;
+    module.exports.initialize      = initialize;
+    module.exports.when            = when;
+    module.exports.getCurrentRoute = getCurrentRoute;
+    module.exports.runCurrentRoute = runCurrentRoute;
+    module.exports.setRoute        = setRoute;
 
   });

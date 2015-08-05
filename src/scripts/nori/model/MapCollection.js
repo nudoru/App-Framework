@@ -8,6 +8,7 @@ define('Nori.Model.MapCollection',
 
     var _this,
         _id,
+        _parentCollection,
         _children  = [],
         _silent    = false,
         _appEvents = require('Nori.Events.NoriEventCreator');
@@ -183,10 +184,9 @@ define('Nori.Model.MapCollection',
         });
       }
 
-      // TODO Implement collections of collections
-      //if(_parentCollection) {
-      //  _parentCollection.dispatchChange({id:_id, store:getMap()});
-      //}
+      if(_parentCollection) {
+        _parentCollection.dispatchChange({id:_id, store:getMap()});
+      }
     }
 
     function hasMap(storeID) {
@@ -270,30 +270,30 @@ define('Nori.Model.MapCollection',
     //  API
     //----------------------------------------------------------------------------
 
-    exports.initialize          = initialize;
-    exports.getID               = getID;
-    exports.isDirty             = isDirty;
-    exports.markClean           = markClean;
-    exports.add                 = add;
-    exports.addMapsFromArray    = addMapsFromArray;
-    exports.addFromObjArray     = addFromObjArray;
-    exports.addFromJSONArray    = addFromJSONArray;
-    exports.remove              = remove;
-    exports.removeAll           = removeAll;
-    exports.getMap              = getMap;
-    exports.hasMap              = hasMap;
-    exports.size                = size;
-    exports.getFirst            = getFirst;
-    exports.getLast             = getLast;
-    exports.getAtIndex          = getAtIndex;
-    exports.filter              = filter;
-    exports.filterByKey         = filterByKey;
-    exports.forEach             = forEach;
-    exports.map                 = map;
-    exports.entries             = entries;
-    exports.toJSON              = toJSON;
-    exports.dispatchChange      = dispatchChange;
-    exports.setParentCollection = setParentCollection;
-    exports.getParentCollection = getParentCollection;
+    module.exports.initialize          = initialize;
+    module.exports.getID               = getID;
+    module.exports.isDirty             = isDirty;
+    module.exports.markClean           = markClean;
+    module.exports.add                 = add;
+    module.exports.addMapsFromArray    = addMapsFromArray;
+    module.exports.addFromObjArray     = addFromObjArray;
+    module.exports.addFromJSONArray    = addFromJSONArray;
+    module.exports.remove              = remove;
+    module.exports.removeAll           = removeAll;
+    module.exports.getMap              = getMap;
+    module.exports.hasMap              = hasMap;
+    module.exports.size                = size;
+    module.exports.getFirst            = getFirst;
+    module.exports.getLast             = getLast;
+    module.exports.getAtIndex          = getAtIndex;
+    module.exports.filter              = filter;
+    module.exports.filterByKey         = filterByKey;
+    module.exports.forEach             = forEach;
+    module.exports.map                 = map;
+    module.exports.entries             = entries;
+    module.exports.toJSON              = toJSON;
+    module.exports.dispatchChange      = dispatchChange;
+    module.exports.setParentCollection = setParentCollection;
+    module.exports.getParentCollection = getParentCollection;
 
   });

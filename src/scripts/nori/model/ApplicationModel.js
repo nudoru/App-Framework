@@ -84,12 +84,12 @@ define('Nori.Model.ApplicationModel',
       return _appMapCollectionList[storeID];
     }
 
-    exports.initializeApplicationModel = initializeApplicationModel;
-    exports.subscribeToModelEvents = subscribeToModelEvents;
-    exports.handleModelDataChanged = handleModelDataChanged;
-    exports.handleUpdateModelData = handleUpdateModelData;
-    exports.createMapCollection = createMapCollection;
-    exports.createMap = createMap;
-    exports.getMap = getMap;
-    exports.getMapCollection = getMapCollection;
+    module.exports.initializeApplicationModel = initializeApplicationModel;
+    module.exports.subscribeToModelEvents = subscribeToModelEvents;
+    module.exports.handleModelDataChanged = handleModelDataChanged;
+    module.exports.handleUpdateModelData = handleUpdateModelData;
+    module.exports.createMapCollection = createMapCollection;
+    module.exports.createMap = createMap;
+    module.exports.getMap = getMap;
+    module.exports.getMapCollection = getMapCollection;
   });
