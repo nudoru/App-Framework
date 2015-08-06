@@ -1,6 +1,6 @@
 (function () {
 
-  var _browserInfo = require('Nudoru.Browser.BrowserInfo');
+  var _browserInfo = require('nudoru/browser/BrowserInfo');
 
   if(_browserInfo.notSupported || _browserInfo.isIE9) {
     // Lock out older browsers
@@ -10,7 +10,7 @@
     window.onload = function() {
 
       // Create the application instance
-      window.APP = Nori.createApplication(require('APP.Application'));
+      window.APP = Nori.createApplication(require('app/App'));
 
       // Kick off the bootstrapping process
       APP.initialize();
