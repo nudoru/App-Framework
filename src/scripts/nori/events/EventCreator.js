@@ -3,7 +3,7 @@ define('nori/events/EventCreator',
 
     var _dispatcher            = require('nori/utils/Dispatcher'),
         _appEventConstants     = require('nori/events/EventConstants'),
-        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
+        _browserEventConstants = require('nudoru/browser/EventConstants');
 
     module.exports.applicationInitialized = function (payload) {
       _dispatcher.publish({

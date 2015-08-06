@@ -1,7 +1,7 @@
-define('Nudoru.Core.ArrayUtils',
+define('nudoru/core/ArrayUtils',
   function (require, module, exports) {
 
-    var _numberUtils = require('Nudoru.Core.NumberUtils');
+    var _numberUtils = require('nudoru/core/NumberUtils');
 
     module.exports.isArray = function (test) {
       return Object.prototype.toString.call(test) === "[object Array]";

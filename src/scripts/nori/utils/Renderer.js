@@ -10,7 +10,7 @@ define('nori/utils/Renderer',
     var _appEvents         = require('nori/events/EventCreator'),
         _appEventConstants = require('nori/events/EventConstants'),
         _dispatcher        = require('nori/utils/Dispatcher'),
-        _domUtils          = require('Nudoru.Browser.DOMUtils');
+        _domUtils          = require('nudoru/browser/DOMUtils');
 
     function initialize() {
       _dispatcher.subscribe(_appEventConstants.RENDER_VIEW, render);

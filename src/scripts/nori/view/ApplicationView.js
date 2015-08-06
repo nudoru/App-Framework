@@ -5,12 +5,12 @@ define('nori/view/ApplicationView',
         _appContainerEl,
         _appEl,
         _renderer          = require('nori/utils/Renderer'),
-        _domUtils          = require('Nudoru.Browser.DOMUtils'),
-        _notificationView  = require('Nudoru.Component.ToastView'),
-        _toolTipView       = require('Nudoru.Component.ToolTipView'),
-        _messageBoxView    = require('Nudoru.Component.MessageBoxView'),
-        _messageBoxCreator = require('Nudoru.Component.MessageBoxCreator'),
-        _modalCoverView    = require('Nudoru.Component.ModalCoverView');
+        _domUtils          = require('nudoru/browser/DOMUtils'),
+        _notificationView  = require('nudoru/component/ToastView'),
+        _toolTipView       = require('nudoru/component/ToolTipView'),
+        _messageBoxView    = require('nudoru/component/MessageBoxView'),
+        _messageBoxCreator = require('nudoru/component/MessageBoxCreator'),
+        _modalCoverView    = require('nudoru/component/ModalCoverView');
 
     //----------------------------------------------------------------------------
     //  Accessors

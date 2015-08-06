@@ -4,7 +4,7 @@
  * Created by matt on 5/5/15
  */
 
-define('Nudoru.Component.MessageBoxView',
+define('nudoru/component/MessageBoxView',
   function (require, module, exports) {
 
     var _children               = [],
@@ -28,11 +28,11 @@ define('Nudoru.Component.MessageBoxView',
         _mountPoint,
         _buttonIconTemplateID   = 'template__messagebox--button-icon',
         _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
-        _template               = require('Nudoru.Component.Templating'),
-        _modal                  = require('Nudoru.Component.ModalCoverView'),
-        _browserInfo            = require('Nudoru.Browser.BrowserInfo'),
-        _domUtils               = require('Nudoru.Browser.DOMUtils'),
-        _componentUtils         = require('Nudoru.Component.ComponentViewUtils');
+        _template               = require('nudoru/component/Templating'),
+        _modal                  = require('nudoru/component/ModalCoverView'),
+        _browserInfo            = require('nudoru/browser/BrowserInfo'),
+        _domUtils               = require('nudoru/browser/DOMUtils'),
+        _componentUtils         = require('nudoru/component/ComponentViewUtils');
 
     /**
      * Initialize and set the mount point / box container

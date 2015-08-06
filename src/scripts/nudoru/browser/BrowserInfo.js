@@ -1,4 +1,4 @@
-define('Nudoru.Browser.BrowserInfo',
+define('nudoru/browser/BrowserInfo',
   function (require, module, exports) {
 
     module.exports.appVersion  = navigator.appVersion;

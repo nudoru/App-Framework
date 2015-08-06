@@ -3,31 +3,31 @@
  * last updated 5/5/15
  */
 
-define('Nudoru.Component.ToastView',
+define('nudoru/component/ToastView',
   function (require, module, exports) {
 
-    var _children = [],
-      _counter = 0,
-      _defaultExpireDuration = 7000,
-      _types = {
-        DEFAULT : 'default',
-        INFORMATION : 'information',
-        SUCCESS: 'success',
-        WARNING: 'warning',
-        DANGER: 'danger'
-      },
-      _typeStyleMap = {
-        'default' : '',
-        'information' : 'toast__information',
-        'success' : 'toast__success',
-        'warning' : 'toast__warning',
-        'danger' : 'toast__danger'
-      },
-      _mountPoint,
-      _template = require('Nudoru.Component.Templating'),
-      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
+    var _children              = [],
+        _counter               = 0,
+        _defaultExpireDuration = 7000,
+        _types                 = {
+          DEFAULT    : 'default',
+          INFORMATION: 'information',
+          SUCCESS    : 'success',
+          WARNING    : 'warning',
+          DANGER     : 'danger'
+        },
+        _typeStyleMap          = {
+          'default'    : '',
+          'information': 'toast__information',
+          'success'    : 'toast__success',
+          'warning'    : 'toast__warning',
+          'danger'     : 'toast__danger'
+        },
+        _mountPoint,
+        _template              = require('nudoru/component/Templating'),
+        _browserInfo           = require('nudoru/browser/BrowserInfo'),
+        _domUtils              = require('nudoru/browser/DOMUtils'),
+        _componentUtils        = require('nudoru/component/ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -48,9 +48,9 @@ define('Nudoru.Component.ToastView',
       _componentUtils.apply3DToContainer(_mountPoint);
       _componentUtils.apply3DToComponentElement(toastObj.element);
 
-      var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
-        expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+      var closeBtn         = toastObj.element.querySelector('.toast__item-controls > button'),
+          closeBtnSteam    = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
+          expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
       toastObj.defaultButtonStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
         .subscribe(function () {
@@ -63,29 +63,29 @@ define('Nudoru.Component.ToastView',
     }
 
     function assignTypeClassToElement(type, element) {
-      if(type !== 'default') {
+      if (type !== 'default') {
         _domUtils.addClass(element, _typeStyleMap[type]);
       }
     }
 
     function createToastObject(title, message) {
-      var id = 'js__toast-toastitem-' + (_counter++).toString(),
-        obj = {
-          id: id,
-          element: _template.asElement('template__component--toast', {
-            id: id,
-            title: title,
-            message: message
-          }),
-          defaultButtonStream: null
-        };
+      var id  = 'js__toast-toastitem-' + (_counter++).toString(),
+          obj = {
+            id                 : id,
+            element            : _template.asElement('template__component--toast', {
+              id     : id,
+              title  : title,
+              message: message
+            }),
+            defaultButtonStream: null
+          };
 
       return obj;
     }
 
     function remove(id) {
       var idx = getObjIndexByID(id),
-        toast;
+          toast;
 
       if (idx > -1) {
         toast = _children[idx];
@@ -103,16 +103,16 @@ define('Nudoru.Component.ToastView',
     function transitionOut(el) {
       TweenLite.to(el, 0.25, {
         rotationX: -45,
-        alpha: 0,
-        ease: Quad.easeIn, onComplete: function () {
+        alpha    : 0,
+        ease     : Quad.easeIn, onComplete: function () {
           onTransitionOutComplete(el);
         }
       });
     }
 
     function onTransitionOutComplete(el) {
-      var idx = getObjIndexByID(el.getAttribute('id')),
-          toastObj = _children[idx];
+      var idx        = getObjIndexByID(el.getAttribute('id')),
+          toastObj   = _children[idx];
 
       toastObj.defaultButtonStream.dispose();
 
@@ -123,8 +123,8 @@ define('Nudoru.Component.ToastView',
 
     function rearrange(ignore) {
       var i = _children.length - 1,
-        current,
-        y = 0;
+          current,
+          y = 0;
 
       for (; i > -1; i--) {
         if (i === ignore) {
@@ -137,12 +137,16 @@ define('Nudoru.Component.ToastView',
     }
 
     function getObjIndexByID(id) {
-      return _children.map(function(child) { return child.id; }).indexOf(id);
+      return _children.map(function (child) {
+        return child.id;
+      }).indexOf(id);
     }
 
     module.exports.initialize = initialize;
-    module.exports.add = add;
-    module.exports.remove = remove;
-    module.exports.type = function() { return _types };
+    module.exports.add        = add;
+    module.exports.remove     = remove;
+    module.exports.type       = function () {
+      return _types
+    };
 
   });

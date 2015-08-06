@@ -2,9 +2,9 @@
  Matt Perkins, 5/17/15
  Based on
  https://github.com/Reactive-Extensions/RxJS/blob/master/doc/howdoi/eventemitter.md
-*/
+ */
 
-define('Nudoru.Component.Dispatcher',
+define('nudoru/component/Dispatcher',
   function (require, module, exports) {
     var _subjectMap = {};
 
@@ -19,7 +19,7 @@ define('Nudoru.Component.Dispatcher',
       _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
 
       _subjectMap[evtStr] = {
-        once: once,
+        once   : once,
         handler: handler,
         subject: new Rx.Subject()
       };
@@ -36,10 +36,10 @@ define('Nudoru.Component.Dispatcher',
      */
     function subscribeCommand(evtStr, cmdModule, once) {
       var cmd = require(cmdModule);
-      if(cmd.hasOwnProperty('execute')) {
+      if (cmd.hasOwnProperty('execute')) {
         return subscribe(evtStr, cmd.execute, once);
       } else {
-        throw new Error('Emitter cannot map '+evtStr+' to command '+cmdModule+': must have execute()');
+        throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
       }
     }
 
@@ -51,13 +51,13 @@ define('Nudoru.Component.Dispatcher',
     function publish(evtStr, data) {
       var subjObj = _subjectMap[evtStr];
 
-      if(!subjObj) {
+      if (!subjObj) {
         return;
       }
 
       subjObj.subject.onNext(data);
 
-      if(subjObj.once) {
+      if (subjObj.once) {
         subjObj.subject.onCompleted();
         subjObj.subject.dispose();
         subjObj = null;
@@ -77,10 +77,10 @@ define('Nudoru.Component.Dispatcher',
 
       _subjectMap = {};
     }
-    
-    module.exports.subscribe = subscribe;
+
+    module.exports.subscribe        = subscribe;
     module.exports.subscribeCommand = subscribeCommand;
-    module.exports.publish = publish;
-    module.exports.dispose = dispose;
+    module.exports.publish          = publish;
+    module.exports.dispose          = dispose;
 
   });

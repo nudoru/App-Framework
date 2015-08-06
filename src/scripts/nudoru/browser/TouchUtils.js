@@ -1,4 +1,4 @@
-define('Nudoru.Browser.TouchUtils',
+define('nudoru/browser/TouchUtils',
   function (require, module, exports) {
 
     // https://github.com/filamentgroup/tappy/blob/master/tappy.js

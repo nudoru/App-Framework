@@ -10,29 +10,29 @@
  - RxJS
  */
 
-define('Nudoru.Component.FloatImageView',
+define('nudoru/component/FloatImageView',
   function (require, module, exports) {
 
-    var _mountPoint = document,
-      _coverDivID = 'floatimage__cover',
-      _floatingImageClass = '.floatimage__srcimage',
-      _zoomedImageClass = 'floatimage__zoomedimage',
-      _viewPortCoverEl,
-      _viewPortCoverClickStream,
-      _captionEl,
-      _currentImageElement,
-      _scrollingView = _mountPoint.body,
-      _fancyEffects = false,
-      _DOMUtils = require('Nudoru.Browser.DOMUtils'),
-      _numberUtils = require('Nudoru.Core.NumberUtils'),
-      _browserInfo = require('Nudoru.Browser.BrowserInfo');
+    var _mountPoint         = document,
+        _coverDivID         = 'floatimage__cover',
+        _floatingImageClass = '.floatimage__srcimage',
+        _zoomedImageClass   = 'floatimage__zoomedimage',
+        _viewPortCoverEl,
+        _viewPortCoverClickStream,
+        _captionEl,
+        _currentImageElement,
+        _scrollingView      = _mountPoint.body,
+        _fancyEffects       = false,
+        _DOMUtils           = require('nudoru/browser/DOMUtils'),
+        _numberUtils        = require('nudoru/core/NumberUtils'),
+        _browserInfo        = require('nudoru/browser/BrowserInfo');
 
     /**
      * Entry point, initialize elements and hide cover
      */
     function initialize() {
       _viewPortCoverEl = _mountPoint.getElementById(_coverDivID);
-      _captionEl = _viewPortCoverEl.querySelector('.floatimage__caption');
+      _captionEl       = _viewPortCoverEl.querySelector('.floatimage__caption');
 
       _fancyEffects = !_browserInfo.isIE && !_browserInfo.mobile.any();
 
@@ -73,12 +73,12 @@ define('Nudoru.Component.FloatImageView',
       if (_fancyEffects) {
         TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
           scale: 1.10,
-          ease: Circ.easeOut
+          ease : Circ.easeOut
         });
       } else {
         TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
           scale: 1.10,
-          ease: Circ.easeOut
+          ease : Circ.easeOut
         });
 
       }
@@ -88,12 +88,12 @@ define('Nudoru.Component.FloatImageView',
       if (_fancyEffects) {
         TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
           scale: 1,
-          ease: Circ.easeOut
+          ease : Circ.easeOut
         });
       } else {
         TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
           scale: 1,
-          ease: Circ.easeOut
+          ease : Circ.easeOut
         });
       }
 
@@ -120,25 +120,25 @@ define('Nudoru.Component.FloatImageView',
       }
 
       // Calculations
-      var vpFill = 0.75,
-        imgSrc = _currentImageElement.getAttribute('src'),
-        imgAlt = _currentImageElement.getAttribute('alt'),
-        imgWidth = _currentImageElement.clientWidth,
-        imgHeight = _currentImageElement.clientHeight,
-        imgPosition = _DOMUtils.offset(_currentImageElement),
-        imgRatio = imgWidth / imgHeight,
-        imgTargetScale = 1,
-        vpWidth = window.innerWidth,
-        vpHeight = window.innerHeight,
-        vpScrollTop = _scrollingView.scrollTop,
-        vpScrollLeft = _scrollingView.scrollLeft,
-        vpRatio = vpWidth / vpHeight,
-        imgOriginX = imgPosition.left - vpScrollLeft,
-        imgOriginY = imgPosition.top - vpScrollTop,
-        imgTargetX,
-        imgTargetY,
-        imgTargetWidth,
-        imgTargetHeight;
+      var vpFill         = 0.75,
+          imgSrc         = _currentImageElement.getAttribute('src'),
+          imgAlt         = _currentImageElement.getAttribute('alt'),
+          imgWidth       = _currentImageElement.clientWidth,
+          imgHeight      = _currentImageElement.clientHeight,
+          imgPosition    = _DOMUtils.offset(_currentImageElement),
+          imgRatio       = imgWidth / imgHeight,
+          imgTargetScale = 1,
+          vpWidth        = window.innerWidth,
+          vpHeight       = window.innerHeight,
+          vpScrollTop    = _scrollingView.scrollTop,
+          vpScrollLeft   = _scrollingView.scrollLeft,
+          vpRatio        = vpWidth / vpHeight,
+          imgOriginX     = imgPosition.left - vpScrollLeft,
+          imgOriginY     = imgPosition.top - vpScrollTop,
+          imgTargetX,
+          imgTargetY,
+          imgTargetWidth,
+          imgTargetHeight;
 
       if (vpRatio > imgRatio) {
         imgTargetScale = vpHeight * vpFill / imgHeight;
@@ -146,7 +146,7 @@ define('Nudoru.Component.FloatImageView',
         imgTargetScale = vpWidth * vpFill / imgWidth;
       }
 
-      imgTargetWidth = imgWidth * imgTargetScale;
+      imgTargetWidth  = imgWidth * imgTargetScale;
       imgTargetHeight = imgHeight * imgTargetScale;
 
       imgTargetX = (vpWidth / 2) - (imgTargetWidth / 2) - imgPosition.left + vpScrollLeft;
@@ -155,10 +155,10 @@ define('Nudoru.Component.FloatImageView',
       var zoomImage = _DOMUtils.HTMLStrToNode('<div class="' + _zoomedImageClass + '"></div>');
 
       zoomImage.style.backgroundImage = 'url("' + imgSrc + '")';
-      zoomImage.style.left = imgOriginX + 'px';
-      zoomImage.style.top = imgOriginY + 'px';
-      zoomImage.style.width = imgWidth + 'px';
-      zoomImage.style.height = imgHeight + 'px';
+      zoomImage.style.left            = imgOriginX + 'px';
+      zoomImage.style.top             = imgOriginY + 'px';
+      zoomImage.style.width           = imgWidth + 'px';
+      zoomImage.style.height          = imgHeight + 'px';
 
       _viewPortCoverEl.appendChild(zoomImage);
 
@@ -168,52 +168,52 @@ define('Nudoru.Component.FloatImageView',
       if (_fancyEffects) {
         // further from the center, the create the effect
         var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
-          origin;
+            origin;
 
         if (startingRot <= 0) {
           startingRot = Math.min(startingRot, -20);
-          origin = 'left top';
+          origin      = 'left top';
         } else {
           startingRot = Math.max(startingRot, 20);
-          origin = 'right top';
+          origin      = 'right top';
         }
 
         TweenLite.set(zoomImage, {
           css: {
             transformPerspective: 1000,
-            transformStyle: "preserve-3d",
-            backfaceVisibility: "hidden"
+            transformStyle      : "preserve-3d",
+            backfaceVisibility  : "hidden"
           }
         });
 
         // For the 'tear down effect'
         var tl = new TimelineLite();
         tl.to(zoomImage, 0.25, {
-          rotationZ: -15,
-          rotationY: startingRot,
+          rotationZ      : -15,
+          rotationY      : startingRot,
           transformOrigin: origin,
-          y: '+50',
-          ease: Back.easeInOut
+          y              : '+50',
+          ease           : Back.easeInOut
         });
         tl.to(zoomImage, 0.5, {
-          rotationZ: 0,
-          rotationY: 0,
+          rotationZ      : 0,
+          rotationY      : 0,
           transformOrigin: origin,
-          width: imgTargetWidth,
-          height: imgTargetHeight,
-          x: imgTargetX,
-          y: imgTargetY,
-          ease: Quad.easeOut
+          width          : imgTargetWidth,
+          height         : imgTargetHeight,
+          x              : imgTargetX,
+          y              : imgTargetY,
+          ease           : Quad.easeOut
         });
 
       } else {
         TweenLite.to(zoomImage, 0.5, {
           rotationY: 0,
-          width: imgTargetWidth,
-          height: imgTargetHeight,
-          x: imgTargetX,
-          y: imgTargetY,
-          ease: Circ.easeOut
+          width    : imgTargetWidth,
+          height   : imgTargetHeight,
+          x        : imgTargetX,
+          y        : imgTargetY,
+          ease     : Circ.easeOut
         });
       }
 
@@ -277,8 +277,8 @@ define('Nudoru.Component.FloatImageView',
       }
 
       TweenLite.to(_viewPortCoverEl, 0.25, {
-        autoAlpha: 0,
-        ease: Circ.easeOut,
+        autoAlpha : 0,
+        ease      : Circ.easeOut,
         onComplete: hideFloatImageCoverComplete
       });
     }
@@ -296,10 +296,10 @@ define('Nudoru.Component.FloatImageView',
     /**
      * Public API
      */
-    module.exports.initialize = initialize;
-    module.exports.apply = apply;
+    module.exports.initialize       = initialize;
+    module.exports.apply            = apply;
     module.exports.setScrollingView = setScrollingView;
-    module.exports.remove = remove;
+    module.exports.remove           = remove;
 
 
   });

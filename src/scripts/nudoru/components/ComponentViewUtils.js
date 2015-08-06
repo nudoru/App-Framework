@@ -3,7 +3,7 @@
  * last updated 5/5/15
  */
 
-define('Nudoru.Component.ComponentViewUtils',
+define('nudoru/component/ComponentViewUtils',
   function (require, module, exports) {
 
     /**
@@ -13,7 +13,7 @@ define('Nudoru.Component.ComponentViewUtils',
     function apply3DToContainer(el) {
       TweenLite.set(el, {
         css: {
-          perspective: 800,
+          perspective      : 800,
           perspectiveOrigin: '50% 50%'
         }
       });
@@ -26,9 +26,9 @@ define('Nudoru.Component.ComponentViewUtils',
     function apply3DToComponentElement(el) {
       TweenLite.set(el, {
         css: {
-          transformStyle: "preserve-3d",
+          transformStyle    : "preserve-3d",
           backfaceVisibility: "hidden",
-          transformOrigin: '50% 50%'
+          transformOrigin   : '50% 50%'
         }
       });
     }
@@ -40,16 +40,16 @@ define('Nudoru.Component.ComponentViewUtils',
     function applyUnique3DToComponentElement(el) {
       TweenLite.set(el, {
         css: {
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
+          transformStyle      : "preserve-3d",
+          backfaceVisibility  : "hidden",
           transformPerspective: 600,
-          transformOrigin: '50% 50%'
+          transformOrigin     : '50% 50%'
         }
       });
     }
 
-    module.exports.apply3DToContainer = apply3DToContainer;
-    module.exports.apply3DToComponentElement = apply3DToComponentElement;
+    module.exports.apply3DToContainer              = apply3DToContainer;
+    module.exports.apply3DToComponentElement       = apply3DToComponentElement;
     module.exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
 
   });

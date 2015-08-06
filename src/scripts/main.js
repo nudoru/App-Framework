@@ -1,6 +1,6 @@
 (function () {
 
-  var _browserInfo = require('Nudoru.Browser.BrowserInfo');
+  var _browserInfo = require('nudoru/browser/BrowserInfo');
 
   if(_browserInfo.notSupported || _browserInfo.isIE9) {
     // Lock out older browsers

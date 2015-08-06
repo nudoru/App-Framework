@@ -1,17 +1,4 @@
-define('Nudoru.Browser.BrowserEventConstants',
-  function (require, module, exports) {
-
-    var objUtils = require('Nudoru.Core.ObjectUtils');
-
-    _.merge(module.exports, objUtils.keyMirror({
-      URL_HASH_CHANGED: null,
-      BROWSER_RESIZED : null,
-      BROWSER_SCROLLED: null
-    }));
-
-  });
-
-define('Nudoru.Browser.BrowserInfo',
+define('nudoru/browser/BrowserInfo',
   function (require, module, exports) {
 
     module.exports.appVersion  = navigator.appVersion;
@@ -80,7 +67,7 @@ define('Nudoru.Browser.BrowserInfo',
 
   });
 
-define('Nudoru.Browser.DOMUtils',
+define('nudoru/browser/DOMUtils',
   function (require, module, exports) {
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     // element must be entirely on screen
@@ -261,7 +248,20 @@ define('Nudoru.Browser.DOMUtils',
 
   });
 
-define('Nudoru.Browser.NLorem',
+define('nudoru/browser/EventConstants',
+  function (require, module, exports) {
+
+    var objUtils = require('nudoru/core/ObjectUtils');
+
+    _.merge(module.exports, objUtils.keyMirror({
+      URL_HASH_CHANGED: null,
+      BROWSER_RESIZED : null,
+      BROWSER_SCROLLED: null
+    }));
+
+  });
+
+define('nudoru/browser/NLorem',
   function (require, module, exports) {
 
     var _currentText      = [],
@@ -273,9 +273,9 @@ define('Nudoru.Browser.NLorem',
         _months,
         _days,
         _initialized      = false,
-        _arrayUtils       = require('Nudoru.Core.ArrayUtils'),
-        _stringUtils      = require('Nudoru.Core.StringUtils'),
-        _numberUtils      = require('Nudoru.Core.NumberUtils');
+        _arrayUtils       = require('nudoru/core/ArrayUtils'),
+        _stringUtils      = require('nudoru/core/StringUtils'),
+        _numberUtils      = require('nudoru/core/NumberUtils');
 
     _textSets = [
       "Perhaps a re-engineering of your current world view will re-energize your online nomenclature to enable a new holistic interactive enterprise internet communication solution Upscaling the resurgent networking exchange solutions, achieving a breakaway systemic electronic data interchange system synchronization, thereby exploiting technical environments for mission critical broad based capacity constrained systems Fundamentally transforming well designed actionable information whose semantic content is virtually null To more fully clarify the current exchange, a few aggregate issues will require addressing to facilitate this distributed communication venue In integrating non-aligned structures into existing legacy systems, a holistic gateway blueprint is a backward compatible packaging tangible"
@@ -411,7 +411,7 @@ define('Nudoru.Browser.NLorem',
 
   });
 
-define('Nudoru.Browser.TouchUtils',
+define('nudoru/browser/TouchUtils',
   function (require, module, exports) {
 
     // https://github.com/filamentgroup/tappy/blob/master/tappy.js

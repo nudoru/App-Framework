@@ -16,7 +16,7 @@ define('nori/utils/Router',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
-        _objUtils = require('Nudoru.Core.ObjectUtils'),
+        _objUtils = require('nudoru/core/ObjectUtils'),
         _noriEvents = require('nori/events/EventCreator');
 
     function initialize() {

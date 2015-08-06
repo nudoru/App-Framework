@@ -1,4 +1,4 @@
-define('Nudoru.Core.NResourceLoader',
+define('nudoru/core/NResourceLoader',
   function(require, module, exports) {
 
     var resources = [],

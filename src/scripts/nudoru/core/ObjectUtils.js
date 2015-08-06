@@ -1,4 +1,4 @@
-define('Nudoru.Core.ObjectUtils',
+define('nudoru/core/ObjectUtils',
   function (require, module, exports) {
 
     /**

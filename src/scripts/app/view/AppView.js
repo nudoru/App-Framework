@@ -5,7 +5,7 @@ define('app/view/AppView',
         _appEvents = require('nori/events/EventCreator'),
         _dispatcher            = require('nori/utils/Dispatcher'),
         _appEventConstants     = require('nori/events/EventConstants'),
-        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
+        _browserEventConstants = require('nudoru/browser/EventConstants');
 
     //----------------------------------------------------------------------------
     //  Initialization

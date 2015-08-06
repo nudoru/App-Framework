@@ -3,7 +3,7 @@
  * last updated 7/9/15
  */
 
-define('Nudoru.Component.CoachMarksView',
+define('nudoru/component/CoachMarksView',
   function (require, module, exports) {
 
     var _counter           = 1,
@@ -14,11 +14,11 @@ define('Nudoru.Component.CoachMarksView',
         _modalCloseSubscriber,
         _shapeTemplateHTML = '<div id="#js__coachmark-shape-<%= id%>" class="coachmark__shape-<%= props.shape%>"></div>',
         _shapeTemplate,
-        _toolTip           = require('Nudoru.Component.ToolTipView'),
-        _modal             = require('Nudoru.Component.ModalCoverView'),
-        _domUtils          = require('Nudoru.Browser.DOMUtils'),
-        _dispatcher        = require('Nudoru.Component.Dispatcher'),
-        _componentEvents   = require('Nudoru.Component.ComponentEvents');
+        _toolTip           = require('nudoru/component/ToolTipView'),
+        _modal             = require('nudoru/component/ModalCoverView'),
+        _domUtils          = require('nudoru/browser/DOMUtils'),
+        _dispatcher        = require('nudoru/component/Dispatcher'),
+        _componentEvents   = require('nudoru/component/ComponentEvents');
 
     function initialize(elID) {
       _mountPoint    = document.getElementById(elID);

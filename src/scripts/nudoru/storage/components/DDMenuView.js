@@ -2,7 +2,7 @@
 //  A menu
 //----------------------------------------------------------------------------
 
-define('Nudoru.Component.DDMenuView',
+define('nudoru/component/DDMenuView',
   function(require, module, exports) {
 
     var _visible = false,
@@ -22,11 +22,11 @@ define('Nudoru.Component.DDMenuView',
       _touchDeltaTolerance = 10,
       _shouldProcessTouchEnd = false,
       _eventDispatcher = require('Nudoru.events.EventDispatcher'),
-      _DOMUtils = require('Nudoru.Browser.DOMUtils'),
-      _touchUtils = require('Nudoru.Browser.TouchUtils'),
-      _componentEvents = require('Nudoru.Component.ComponentEvents'),
-      _template = require('Nudoru.Component.NTemplate'),
-      _browserInfo = require('Nudoru.Browser.BrowserInfo');
+      _DOMUtils = require('nudoru/browser/DOMUtils'),
+      _touchUtils = require('nudoru/browser/TouchUtils'),
+      _componentEvents = require('nudoru/component/ComponentEvents'),
+      _template = require('nudoru/component/NTemplate'),
+      _browserInfo = require('nudoru/browser/BrowserInfo');
 
     function initialize(idata, keep) {
       _data = idata;
@@ -58,7 +58,7 @@ define('Nudoru.Component.DDMenuView',
     }
 
     function buildMenuItems(item) {
-      var menuitem = requireNew('Nudoru.Component.BasicMenuItemView');
+      var menuitem = requireNew('nudoru/component/BasicMenuItemView');
       menuitem.initialize(item);
       _ddMenuEl.appendChild(menuitem.getElement());
       _children.push(menuitem);

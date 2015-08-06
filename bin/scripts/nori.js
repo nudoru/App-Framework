@@ -197,7 +197,7 @@ define('nori/utils/Renderer',
     var _appEvents         = require('nori/events/EventCreator'),
         _appEventConstants = require('nori/events/EventConstants'),
         _dispatcher        = require('nori/utils/Dispatcher'),
-        _domUtils          = require('Nudoru.Browser.DOMUtils');
+        _domUtils          = require('nudoru/browser/DOMUtils');
 
     function initialize() {
       _dispatcher.subscribe(_appEventConstants.RENDER_VIEW, render);
@@ -233,7 +233,7 @@ define('nori/utils/Router',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
-        _objUtils = require('Nudoru.Core.ObjectUtils'),
+        _objUtils = require('nudoru/core/ObjectUtils'),
         _noriEvents = require('nori/events/EventCreator');
 
     function initialize() {
@@ -384,7 +384,7 @@ define('nori/utils/Templating',
 
     var _templateHTMLCache = Object.create(null),
         _templateCache     = Object.create(null),
-        _DOMUtils          = require('Nudoru.Browser.DOMUtils');
+        _DOMUtils          = require('nudoru/browser/DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -402,7 +402,7 @@ define('nori/utils/Templating',
       if (src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('Nudoru.Core.NTemplate, template not found: "' + id + '"');
+        throw new Error('nudoru/core/NTemplate, template not found: "' + id + '"');
       }
 
       cleanhtml              = cleanTemplateHTML(srchtml);
@@ -463,7 +463,7 @@ define('nori/utils/Templating',
 
 define('nori/events/EventConstants',
   function (require, module, exports) {
-    var objUtils = require('Nudoru.Core.ObjectUtils');
+    var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
       APP_INITIALIZED        : null,
@@ -497,7 +497,7 @@ define('nori/events/EventCreator',
 
     var _dispatcher            = require('nori/utils/Dispatcher'),
         _appEventConstants     = require('nori/events/EventConstants'),
-        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
+        _browserEventConstants = require('nudoru/browser/EventConstants');
 
     module.exports.applicationInitialized = function (payload) {
       _dispatcher.publish({
@@ -1615,12 +1615,12 @@ define('nori/view/ApplicationView',
         _appContainerEl,
         _appEl,
         _renderer          = require('nori/utils/Renderer'),
-        _domUtils          = require('Nudoru.Browser.DOMUtils'),
-        _notificationView  = require('Nudoru.Component.ToastView'),
-        _toolTipView       = require('Nudoru.Component.ToolTipView'),
-        _messageBoxView    = require('Nudoru.Component.MessageBoxView'),
-        _messageBoxCreator = require('Nudoru.Component.MessageBoxCreator'),
-        _modalCoverView    = require('Nudoru.Component.ModalCoverView');
+        _domUtils          = require('nudoru/browser/DOMUtils'),
+        _notificationView  = require('nudoru/component/ToastView'),
+        _toolTipView       = require('nudoru/component/ToolTipView'),
+        _messageBoxView    = require('nudoru/component/MessageBoxView'),
+        _messageBoxCreator = require('nudoru/component/MessageBoxCreator'),
+        _modalCoverView    = require('nudoru/component/ModalCoverView');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -1781,7 +1781,7 @@ define('nori/view/MixinBrowserEvents',
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
         _dispatcher    = require('nori/utils/Dispatcher'),
-        _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
+        _browserEvents = require('nudoru/browser/EventConstants');
 
 
     //----------------------------------------------------------------------------
@@ -1988,7 +1988,7 @@ define('nori/view/MixinMultiDevice',
         _isDrawerOpen,
         _currentViewPortSize,
         _appEventConstants = require('nori/events/EventConstants'),
-        _browserInfo       = require('Nudoru.Browser.BrowserInfo'),
+        _browserInfo       = require('nudoru/browser/BrowserInfo'),
         _dispatcher        = require('Nudoru.events.EventDispatcher');
 
     function initializeMultiDeviceView(initObj) {
@@ -2279,8 +2279,8 @@ var Nori = (function () {
       _modelViewBindingMap  = Object.create(null),
       _appEvents            = require('nori/events/EventCreator'),
       _appEventConstants    = require('nori/events/EventConstants'),
-      _browserEvents        = require('Nudoru.Browser.BrowserEventConstants'),
-      _objectUtils          = require('Nudoru.Core.ObjectUtils'),
+      _browserEvents        = require('nudoru/browser/EventConstants'),
+      _objectUtils          = require('nudoru/core/ObjectUtils'),
       _dispatcher           = require('nori/utils/Dispatcher'),
       _router               = require('nori/utils/Router');
 

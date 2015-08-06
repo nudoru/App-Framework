@@ -52,7 +52,7 @@ define('app/App',
 
 define('app/events/EventConstants',
   function (require, module, exports) {
-    var objUtils = require('Nudoru.Core.ObjectUtils');
+    var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(exports, objUtils.keyMirror({
       SOMETHING_HAPPENED: null
@@ -190,7 +190,7 @@ define('app/view/AppView',
         _appEvents = require('nori/events/EventCreator'),
         _dispatcher            = require('nori/utils/Dispatcher'),
         _appEventConstants     = require('nori/events/EventConstants'),
-        _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
+        _browserEventConstants = require('nudoru/browser/EventConstants');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -248,8 +248,8 @@ define('app/view/AppView',
 define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
-    var _lIpsum            = require('Nudoru.Browser.NLorem'),
-        _toolTip           = require('Nudoru.Component.ToolTipView'),
+    var _lIpsum            = require('nudoru/browser/NLorem'),
+        _toolTip           = require('nudoru/component/ToolTipView'),
         _dispatcher        = require('nori/utils/Dispatcher'),
         _appEventConstants = require('nori/events/EventConstants'),
         _actionOneEl,
@@ -397,7 +397,7 @@ define('app/view/DebugControlsTestingSubView',
 
 (function () {
 
-  var _browserInfo = require('Nudoru.Browser.BrowserInfo');
+  var _browserInfo = require('nudoru/browser/BrowserInfo');
 
   if(_browserInfo.notSupported || _browserInfo.isIE9) {
     // Lock out older browsers

@@ -3,7 +3,7 @@
  * Last updated 7/9/15
  */
 
-define('Nudoru.Component.ModalCoverView',
+define('nudoru/component/ModalCoverView',
   function (require, module, exports) {
     var _mountPoint      = document,
         _modalCoverEl,
@@ -12,9 +12,9 @@ define('Nudoru.Component.ModalCoverView',
         _modalClickStream,
         _isVisible,
         _notDismissable,
-        _dispatcher      = require('Nudoru.Component.Dispatcher'),
-        _componentEvents = require('Nudoru.Component.ComponentEvents'),
-        _browserInfo     = require('Nudoru.Browser.BrowserInfo');
+        _dispatcher      = require('nudoru/component/Dispatcher'),
+        _componentEvents = require('nudoru/component/ComponentEvents'),
+        _browserInfo     = require('nudoru/browser/BrowserInfo');
 
     function initialize() {
 
@@ -105,7 +105,7 @@ define('Nudoru.Component.ModalCoverView',
 
     function setOpacity(opacity) {
       if (opacity < 0 || opacity > 1) {
-        console.log('Nudoru.Component.ModalCoverView: setOpacity: opacity should be between 0 and 1');
+        console.log('nudoru/component/ModalCoverView: setOpacity: opacity should be between 0 and 1');
         opacity = 1;
       }
       TweenLite.to(_modalBackgroundEl, 0.25, {

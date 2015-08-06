@@ -20,7 +20,7 @@ define('nori/view/MixinMultiDevice',
         _isDrawerOpen,
         _currentViewPortSize,
         _appEventConstants = require('nori/events/EventConstants'),
-        _browserInfo       = require('Nudoru.Browser.BrowserInfo'),
+        _browserInfo       = require('nudoru/browser/BrowserInfo'),
         _dispatcher        = require('Nudoru.events.EventDispatcher');
 
     function initializeMultiDeviceView(initObj) {

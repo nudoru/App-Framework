@@ -6,8 +6,8 @@ var Nori = (function () {
       _modelViewBindingMap  = Object.create(null),
       _appEvents            = require('nori/events/EventCreator'),
       _appEventConstants    = require('nori/events/EventConstants'),
-      _browserEvents        = require('Nudoru.Browser.BrowserEventConstants'),
-      _objectUtils          = require('Nudoru.Core.ObjectUtils'),
+      _browserEvents        = require('nudoru/browser/EventConstants'),
+      _objectUtils          = require('nudoru/core/ObjectUtils'),
       _dispatcher           = require('nori/utils/Dispatcher'),
       _router               = require('nori/utils/Router');
 

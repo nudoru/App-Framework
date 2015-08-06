@@ -1,4 +1,4 @@
-define('Nudoru.Component.CoachMarksView',
+define('nudoru/component/CoachMarksView',
   function (require, module, exports) {
 
     var _counter           = 1,
@@ -9,11 +9,11 @@ define('Nudoru.Component.CoachMarksView',
         _modalCloseSubscriber,
         _shapeTemplateHTML = '<div id="#js__coachmark-shape-<%= id%>" class="coachmark__shape-<%= props.shape%>"></div>',
         _shapeTemplate,
-        _toolTip           = require('Nudoru.Component.ToolTipView'),
-        _modal             = require('Nudoru.Component.ModalCoverView'),
-        _domUtils          = require('Nudoru.Browser.DOMUtils'),
-        _dispatcher        = require('Nudoru.Component.Dispatcher'),
-        _componentEvents   = require('Nudoru.Component.ComponentEvents');
+        _toolTip           = require('nudoru/component/ToolTipView'),
+        _modal             = require('nudoru/component/ModalCoverView'),
+        _domUtils          = require('nudoru/browser/DOMUtils'),
+        _dispatcher        = require('nudoru/component/Dispatcher'),
+        _componentEvents   = require('nudoru/component/ComponentEvents');
 
     function initialize(elID) {
       _mountPoint    = document.getElementById(elID);
@@ -101,7 +101,7 @@ define('Nudoru.Component.CoachMarksView',
 
   });
 
-define('Nudoru.Component.Dispatcher',
+define('nudoru/component/Dispatcher',
   function (require, module, exports) {
     var _subjectMap = {};
 
@@ -116,7 +116,7 @@ define('Nudoru.Component.Dispatcher',
       _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
 
       _subjectMap[evtStr] = {
-        once: once,
+        once   : once,
         handler: handler,
         subject: new Rx.Subject()
       };
@@ -133,10 +133,10 @@ define('Nudoru.Component.Dispatcher',
      */
     function subscribeCommand(evtStr, cmdModule, once) {
       var cmd = require(cmdModule);
-      if(cmd.hasOwnProperty('execute')) {
+      if (cmd.hasOwnProperty('execute')) {
         return subscribe(evtStr, cmd.execute, once);
       } else {
-        throw new Error('Emitter cannot map '+evtStr+' to command '+cmdModule+': must have execute()');
+        throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
       }
     }
 
@@ -148,13 +148,13 @@ define('Nudoru.Component.Dispatcher',
     function publish(evtStr, data) {
       var subjObj = _subjectMap[evtStr];
 
-      if(!subjObj) {
+      if (!subjObj) {
         return;
       }
 
       subjObj.subject.onNext(data);
 
-      if(subjObj.once) {
+      if (subjObj.once) {
         subjObj.subject.onCompleted();
         subjObj.subject.dispose();
         subjObj = null;
@@ -174,27 +174,27 @@ define('Nudoru.Component.Dispatcher',
 
       _subjectMap = {};
     }
-    
-    module.exports.subscribe = subscribe;
+
+    module.exports.subscribe        = subscribe;
     module.exports.subscribeCommand = subscribeCommand;
-    module.exports.publish = publish;
-    module.exports.dispose = dispose;
+    module.exports.publish          = publish;
+    module.exports.dispose          = dispose;
 
   });
 
-define('Nudoru.Component.ComponentEvents',
+define('nudoru/component/ComponentEvents',
   function(require, module, exports) {
     module.exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
     module.exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
     module.exports.MENU_SELECT = 'MENU_SELECT';
   });
 
-define('Nudoru.Component.Templating',
-  function(require, module, exports) {
+define('nudoru/component/Templating',
+  function (require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
-      _templateCache = Object.create(null),
-      _DOMUtils = require('Nudoru.Browser.DOMUtils');
+        _templateCache     = Object.create(null),
+        _DOMUtils          = require('nudoru/browser/DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -202,21 +202,21 @@ define('Nudoru.Component.Templating',
      * @returns {*}
      */
     function getSource(id) {
-      if(_templateHTMLCache[id]) {
+      if (_templateHTMLCache[id]) {
         return _templateHTMLCache[id];
       }
 
-      var src = document.getElementById(id),
-        srchtml = '',
-        cleanhtml = '';
+      var src       = document.getElementById(id),
+          srchtml   = '',
+          cleanhtml = '';
 
-      if(src) {
+      if (src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('Nudoru.Core.NTemplate, template not found: "'+id+'"');
+        throw new Error('nudoru/core/NTemplate, template not found: "' + id + '"');
       }
 
-      cleanhtml = cleanTemplateHTML(srchtml);
+      cleanhtml              = cleanTemplateHTML(srchtml);
       _templateHTMLCache[id] = cleanhtml;
       return cleanhtml;
     }
@@ -227,10 +227,10 @@ define('Nudoru.Component.Templating',
      * @returns {*}
      */
     function getTemplate(id) {
-      if(_templateCache[id]) {
+      if (_templateCache[id]) {
         return _templateCache[id];
       }
-      var templ = _.template(getSource(id));
+      var templ          = _.template(getSource(id));
       _templateCache[id] = templ;
       return templ;
     }
@@ -264,15 +264,15 @@ define('Nudoru.Component.Templating',
       return str.trim();
     }
 
-    module.exports.getSource = getSource;
+    module.exports.getSource   = getSource;
     module.exports.getTemplate = getTemplate;
-    module.exports.asHTML = asHTML;
-    module.exports.asElement = asElement;
+    module.exports.asHTML      = asHTML;
+    module.exports.asElement   = asElement;
 
   });
 
 
-define('Nudoru.Component.ComponentViewUtils',
+define('nudoru/component/ComponentViewUtils',
   function (require, module, exports) {
 
     /**
@@ -282,7 +282,7 @@ define('Nudoru.Component.ComponentViewUtils',
     function apply3DToContainer(el) {
       TweenLite.set(el, {
         css: {
-          perspective: 800,
+          perspective      : 800,
           perspectiveOrigin: '50% 50%'
         }
       });
@@ -295,9 +295,9 @@ define('Nudoru.Component.ComponentViewUtils',
     function apply3DToComponentElement(el) {
       TweenLite.set(el, {
         css: {
-          transformStyle: "preserve-3d",
+          transformStyle    : "preserve-3d",
           backfaceVisibility: "hidden",
-          transformOrigin: '50% 50%'
+          transformOrigin   : '50% 50%'
         }
       });
     }
@@ -309,25 +309,319 @@ define('Nudoru.Component.ComponentViewUtils',
     function applyUnique3DToComponentElement(el) {
       TweenLite.set(el, {
         css: {
-          transformStyle: "preserve-3d",
-          backfaceVisibility: "hidden",
+          transformStyle      : "preserve-3d",
+          backfaceVisibility  : "hidden",
           transformPerspective: 600,
-          transformOrigin: '50% 50%'
+          transformOrigin     : '50% 50%'
         }
       });
     }
 
-    module.exports.apply3DToContainer = apply3DToContainer;
-    module.exports.apply3DToComponentElement = apply3DToComponentElement;
+    module.exports.apply3DToContainer              = apply3DToContainer;
+    module.exports.apply3DToComponentElement       = apply3DToComponentElement;
     module.exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
 
   });
 
 
-define('Nudoru.Component.MessageBoxCreator',
+define('nudoru/component/FloatImageView',
   function (require, module, exports) {
 
-    var _messageBoxView = require('Nudoru.Component.MessageBoxView');
+    var _mountPoint         = document,
+        _coverDivID         = 'floatimage__cover',
+        _floatingImageClass = '.floatimage__srcimage',
+        _zoomedImageClass   = 'floatimage__zoomedimage',
+        _viewPortCoverEl,
+        _viewPortCoverClickStream,
+        _captionEl,
+        _currentImageElement,
+        _scrollingView      = _mountPoint.body,
+        _fancyEffects       = false,
+        _DOMUtils           = require('nudoru/browser/DOMUtils'),
+        _numberUtils        = require('nudoru/core/NumberUtils'),
+        _browserInfo        = require('nudoru/browser/BrowserInfo');
+
+    /**
+     * Entry point, initialize elements and hide cover
+     */
+    function initialize() {
+      _viewPortCoverEl = _mountPoint.getElementById(_coverDivID);
+      _captionEl       = _viewPortCoverEl.querySelector('.floatimage__caption');
+
+      _fancyEffects = !_browserInfo.isIE && !_browserInfo.mobile.any();
+
+      hideFloatImageCover();
+
+      _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, _browserInfo.mouseClickEvtStr())
+        .subscribe(function () {
+          hideFloatImageCover();
+        });
+    }
+
+    /**
+     * Apply functionality to div/container of div>img 's
+     * @param container
+     */
+    function apply(container) {
+      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
+
+        _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
+
+        el.addEventListener(_browserInfo.mouseClickEvtStr(), onImageClick, false);
+
+        //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
+
+        if (!_browserInfo.mobile.any()) {
+          el.addEventListener('mouseover', onImageOver, false);
+          el.addEventListener('mouseout', onImageOut, false);
+        }
+
+      });
+    }
+
+    function setScrollingView(el) {
+      _scrollingView = el;
+    }
+
+    function onImageOver(evt) {
+      if (_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
+          scale: 1.10,
+          ease : Circ.easeOut
+        });
+      } else {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
+          scale: 1.10,
+          ease : Circ.easeOut
+        });
+
+      }
+    }
+
+    function onImageOut(evt) {
+      if (_fancyEffects) {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
+          scale: 1,
+          ease : Circ.easeOut
+        });
+      } else {
+        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
+          scale: 1,
+          ease : Circ.easeOut
+        });
+      }
+
+    }
+
+    /**
+     * Show the image when the image element is clicked
+     * @param evt
+     */
+    function onImageClick(evt) {
+      showImage(evt.target);
+    }
+
+    /**
+     * Present the image that was clicked
+     * @param imageEl
+     */
+    function showImage(imageEl) {
+      // Will happen if you click on the icon
+      if (imageEl.tagName.toLowerCase() === 'div') {
+        _currentImageElement = imageEl.querySelector('img');
+      } else {
+        _currentImageElement = imageEl;
+      }
+
+      // Calculations
+      var vpFill         = 0.75,
+          imgSrc         = _currentImageElement.getAttribute('src'),
+          imgAlt         = _currentImageElement.getAttribute('alt'),
+          imgWidth       = _currentImageElement.clientWidth,
+          imgHeight      = _currentImageElement.clientHeight,
+          imgPosition    = _DOMUtils.offset(_currentImageElement),
+          imgRatio       = imgWidth / imgHeight,
+          imgTargetScale = 1,
+          vpWidth        = window.innerWidth,
+          vpHeight       = window.innerHeight,
+          vpScrollTop    = _scrollingView.scrollTop,
+          vpScrollLeft   = _scrollingView.scrollLeft,
+          vpRatio        = vpWidth / vpHeight,
+          imgOriginX     = imgPosition.left - vpScrollLeft,
+          imgOriginY     = imgPosition.top - vpScrollTop,
+          imgTargetX,
+          imgTargetY,
+          imgTargetWidth,
+          imgTargetHeight;
+
+      if (vpRatio > imgRatio) {
+        imgTargetScale = vpHeight * vpFill / imgHeight;
+      } else {
+        imgTargetScale = vpWidth * vpFill / imgWidth;
+      }
+
+      imgTargetWidth  = imgWidth * imgTargetScale;
+      imgTargetHeight = imgHeight * imgTargetScale;
+
+      imgTargetX = (vpWidth / 2) - (imgTargetWidth / 2) - imgPosition.left + vpScrollLeft;
+      imgTargetY = (vpHeight / 2) - (imgTargetHeight / 2) - imgPosition.top + vpScrollTop;
+
+      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="' + _zoomedImageClass + '"></div>');
+
+      zoomImage.style.backgroundImage = 'url("' + imgSrc + '")';
+      zoomImage.style.left            = imgOriginX + 'px';
+      zoomImage.style.top             = imgOriginY + 'px';
+      zoomImage.style.width           = imgWidth + 'px';
+      zoomImage.style.height          = imgHeight + 'px';
+
+      _viewPortCoverEl.appendChild(zoomImage);
+
+      // fade source image on screen
+      TweenLite.to(_currentImageElement, 0.25, {alpha: 0, ease: Circ.easeOut});
+
+      if (_fancyEffects) {
+        // further from the center, the create the effect
+        var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
+            origin;
+
+        if (startingRot <= 0) {
+          startingRot = Math.min(startingRot, -20);
+          origin      = 'left top';
+        } else {
+          startingRot = Math.max(startingRot, 20);
+          origin      = 'right top';
+        }
+
+        TweenLite.set(zoomImage, {
+          css: {
+            transformPerspective: 1000,
+            transformStyle      : "preserve-3d",
+            backfaceVisibility  : "hidden"
+          }
+        });
+
+        // For the 'tear down effect'
+        var tl = new TimelineLite();
+        tl.to(zoomImage, 0.25, {
+          rotationZ      : -15,
+          rotationY      : startingRot,
+          transformOrigin: origin,
+          y              : '+50',
+          ease           : Back.easeInOut
+        });
+        tl.to(zoomImage, 0.5, {
+          rotationZ      : 0,
+          rotationY      : 0,
+          transformOrigin: origin,
+          width          : imgTargetWidth,
+          height         : imgTargetHeight,
+          x              : imgTargetX,
+          y              : imgTargetY,
+          ease           : Quad.easeOut
+        });
+
+      } else {
+        TweenLite.to(zoomImage, 0.5, {
+          rotationY: 0,
+          width    : imgTargetWidth,
+          height   : imgTargetHeight,
+          x        : imgTargetX,
+          y        : imgTargetY,
+          ease     : Circ.easeOut
+        });
+      }
+
+      showFloatImageCover();
+
+      // Caption
+      if (imgAlt.length >= 1) {
+        _captionEl.innerHTML = '<p>' + imgAlt + '</p>';
+      } else {
+        _captionEl.innerHTML = '';
+      }
+
+    }
+
+    /**
+     * Remove functionality to div/container of div>img 's
+     * @param container
+     */
+    function remove(container) {
+      if (!container) {
+        return;
+      }
+
+      _scrollingView = _mountPoint.body;
+
+      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
+        el.removeEventListener('click', onImageClick);
+        if (!_browserInfo.mobile.any()) {
+          el.removeEventListener('mouseover', onImageOver);
+          el.removeEventListener('mouseout', onImageOut);
+        }
+      });
+    }
+
+    /**
+     * Get an array of elements in the container returned as Array instead of a Node list
+     * @param container
+     * @returns {*}
+     */
+    function getFloatingElementsInContainerAsArray(container) {
+      if (!_DOMUtils.isDomObj(container)) {
+        return [];
+      }
+      return _DOMUtils.getQSElementsAsArray(container, _floatingImageClass);
+    }
+
+    /**
+     * Show the div covering the UI
+     */
+    function showFloatImageCover() {
+      TweenLite.to(_viewPortCoverEl, 0.25, {autoAlpha: 1, ease: Circ.easeOut});
+    }
+
+    /**
+     * Hide the div covering the UI
+     */
+    function hideFloatImageCover() {
+      if (_currentImageElement) {
+        TweenLite.to(_currentImageElement, 0.1, {alpha: 1, ease: Circ.easeOut});
+        _currentImageElement = null;
+      }
+
+      TweenLite.to(_viewPortCoverEl, 0.25, {
+        autoAlpha : 0,
+        ease      : Circ.easeOut,
+        onComplete: hideFloatImageCoverComplete
+      });
+    }
+
+    /**
+     * The enlarged image is present during the cover fade out, remove it when that's completed
+     */
+    function hideFloatImageCoverComplete() {
+      var zoomedImage = _viewPortCoverEl.querySelector('.' + _zoomedImageClass);
+      if (zoomedImage) {
+        _viewPortCoverEl.removeChild(zoomedImage);
+      }
+    }
+
+    /**
+     * Public API
+     */
+    module.exports.initialize       = initialize;
+    module.exports.apply            = apply;
+    module.exports.setScrollingView = setScrollingView;
+    module.exports.remove           = remove;
+
+
+  });
+
+define('nudoru/component/MessageBoxCreator',
+  function (require, module, exports) {
+
+    var _messageBoxView = require('nudoru/component/MessageBoxView');
 
     function alert(title, message, modal, cb) {
       return _messageBoxView.add({
@@ -438,7 +732,7 @@ define('Nudoru.Component.MessageBoxCreator',
 
   });
 
-define('Nudoru.Component.MessageBoxView',
+define('nudoru/component/MessageBoxView',
   function (require, module, exports) {
 
     var _children               = [],
@@ -462,11 +756,11 @@ define('Nudoru.Component.MessageBoxView',
         _mountPoint,
         _buttonIconTemplateID   = 'template__messagebox--button-icon',
         _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
-        _template               = require('Nudoru.Component.Templating'),
-        _modal                  = require('Nudoru.Component.ModalCoverView'),
-        _browserInfo            = require('Nudoru.Browser.BrowserInfo'),
-        _domUtils               = require('Nudoru.Browser.DOMUtils'),
-        _componentUtils         = require('Nudoru.Component.ComponentViewUtils');
+        _template               = require('nudoru/component/Templating'),
+        _modal                  = require('nudoru/component/ModalCoverView'),
+        _browserInfo            = require('nudoru/browser/BrowserInfo'),
+        _domUtils               = require('nudoru/browser/DOMUtils'),
+        _componentUtils         = require('nudoru/component/ComponentViewUtils');
 
     /**
      * Initialize and set the mount point / box container
@@ -726,7 +1020,7 @@ define('Nudoru.Component.MessageBoxView',
 
   });
 
-define('Nudoru.Component.ModalCoverView',
+define('nudoru/component/ModalCoverView',
   function (require, module, exports) {
     var _mountPoint      = document,
         _modalCoverEl,
@@ -735,9 +1029,9 @@ define('Nudoru.Component.ModalCoverView',
         _modalClickStream,
         _isVisible,
         _notDismissable,
-        _dispatcher      = require('Nudoru.Component.Dispatcher'),
-        _componentEvents = require('Nudoru.Component.ComponentEvents'),
-        _browserInfo     = require('Nudoru.Browser.BrowserInfo');
+        _dispatcher      = require('nudoru/component/Dispatcher'),
+        _componentEvents = require('nudoru/component/ComponentEvents'),
+        _browserInfo     = require('nudoru/browser/BrowserInfo');
 
     function initialize() {
 
@@ -828,7 +1122,7 @@ define('Nudoru.Component.ModalCoverView',
 
     function setOpacity(opacity) {
       if (opacity < 0 || opacity > 1) {
-        console.log('Nudoru.Component.ModalCoverView: setOpacity: opacity should be between 0 and 1');
+        console.log('nudoru/component/ModalCoverView: setOpacity: opacity should be between 0 and 1');
         opacity = 1;
       }
       TweenLite.to(_modalBackgroundEl, 0.25, {
@@ -853,31 +1147,31 @@ define('Nudoru.Component.ModalCoverView',
     module.exports.setColor   = setColor;
   });
 
-define('Nudoru.Component.ToastView',
+define('nudoru/component/ToastView',
   function (require, module, exports) {
 
-    var _children = [],
-      _counter = 0,
-      _defaultExpireDuration = 7000,
-      _types = {
-        DEFAULT : 'default',
-        INFORMATION : 'information',
-        SUCCESS: 'success',
-        WARNING: 'warning',
-        DANGER: 'danger'
-      },
-      _typeStyleMap = {
-        'default' : '',
-        'information' : 'toast__information',
-        'success' : 'toast__success',
-        'warning' : 'toast__warning',
-        'danger' : 'toast__danger'
-      },
-      _mountPoint,
-      _template = require('Nudoru.Component.Templating'),
-      _browserInfo = require('Nudoru.Browser.BrowserInfo'),
-      _domUtils = require('Nudoru.Browser.DOMUtils'),
-      _componentUtils = require('Nudoru.Component.ComponentViewUtils');
+    var _children              = [],
+        _counter               = 0,
+        _defaultExpireDuration = 7000,
+        _types                 = {
+          DEFAULT    : 'default',
+          INFORMATION: 'information',
+          SUCCESS    : 'success',
+          WARNING    : 'warning',
+          DANGER     : 'danger'
+        },
+        _typeStyleMap          = {
+          'default'    : '',
+          'information': 'toast__information',
+          'success'    : 'toast__success',
+          'warning'    : 'toast__warning',
+          'danger'     : 'toast__danger'
+        },
+        _mountPoint,
+        _template              = require('nudoru/component/Templating'),
+        _browserInfo           = require('nudoru/browser/BrowserInfo'),
+        _domUtils              = require('nudoru/browser/DOMUtils'),
+        _componentUtils        = require('nudoru/component/ComponentViewUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -898,9 +1192,9 @@ define('Nudoru.Component.ToastView',
       _componentUtils.apply3DToContainer(_mountPoint);
       _componentUtils.apply3DToComponentElement(toastObj.element);
 
-      var closeBtn = toastObj.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
-        expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+      var closeBtn         = toastObj.element.querySelector('.toast__item-controls > button'),
+          closeBtnSteam    = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
+          expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
 
       toastObj.defaultButtonStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
         .subscribe(function () {
@@ -913,29 +1207,29 @@ define('Nudoru.Component.ToastView',
     }
 
     function assignTypeClassToElement(type, element) {
-      if(type !== 'default') {
+      if (type !== 'default') {
         _domUtils.addClass(element, _typeStyleMap[type]);
       }
     }
 
     function createToastObject(title, message) {
-      var id = 'js__toast-toastitem-' + (_counter++).toString(),
-        obj = {
-          id: id,
-          element: _template.asElement('template__component--toast', {
-            id: id,
-            title: title,
-            message: message
-          }),
-          defaultButtonStream: null
-        };
+      var id  = 'js__toast-toastitem-' + (_counter++).toString(),
+          obj = {
+            id                 : id,
+            element            : _template.asElement('template__component--toast', {
+              id     : id,
+              title  : title,
+              message: message
+            }),
+            defaultButtonStream: null
+          };
 
       return obj;
     }
 
     function remove(id) {
       var idx = getObjIndexByID(id),
-        toast;
+          toast;
 
       if (idx > -1) {
         toast = _children[idx];
@@ -953,16 +1247,16 @@ define('Nudoru.Component.ToastView',
     function transitionOut(el) {
       TweenLite.to(el, 0.25, {
         rotationX: -45,
-        alpha: 0,
-        ease: Quad.easeIn, onComplete: function () {
+        alpha    : 0,
+        ease     : Quad.easeIn, onComplete: function () {
           onTransitionOutComplete(el);
         }
       });
     }
 
     function onTransitionOutComplete(el) {
-      var idx = getObjIndexByID(el.getAttribute('id')),
-          toastObj = _children[idx];
+      var idx        = getObjIndexByID(el.getAttribute('id')),
+          toastObj   = _children[idx];
 
       toastObj.defaultButtonStream.dispose();
 
@@ -973,8 +1267,8 @@ define('Nudoru.Component.ToastView',
 
     function rearrange(ignore) {
       var i = _children.length - 1,
-        current,
-        y = 0;
+          current,
+          y = 0;
 
       for (; i > -1; i--) {
         if (i === ignore) {
@@ -987,23 +1281,27 @@ define('Nudoru.Component.ToastView',
     }
 
     function getObjIndexByID(id) {
-      return _children.map(function(child) { return child.id; }).indexOf(id);
+      return _children.map(function (child) {
+        return child.id;
+      }).indexOf(id);
     }
 
     module.exports.initialize = initialize;
-    module.exports.add = add;
-    module.exports.remove = remove;
-    module.exports.type = function() { return _types };
+    module.exports.add        = add;
+    module.exports.remove     = remove;
+    module.exports.type       = function () {
+      return _types
+    };
 
   });
 
-define('Nudoru.Component.ToolTipView',
+define('nudoru/component/ToolTipView',
   function (require, module, exports) {
 
-    var _children             = [],
-        _counter              = 0,
-        _defaultWidth         = 200,
-        _types                = {
+    var _children     = [],
+        _counter      = 0,
+        _defaultWidth = 200,
+        _types        = {
           DEFAULT    : 'default',
           INFORMATION: 'information',
           SUCCESS    : 'success',
@@ -1011,7 +1309,7 @@ define('Nudoru.Component.ToolTipView',
           DANGER     : 'danger',
           COACHMARK  : 'coachmark'
         },
-        _typeStyleMap         = {
+        _typeStyleMap = {
           'default'    : '',
           'information': 'tooltip__information',
           'success'    : 'tooltip__success',
@@ -1019,7 +1317,7 @@ define('Nudoru.Component.ToolTipView',
           'danger'     : 'tooltip__danger',
           'coachmark'  : 'tooltip__coachmark'
         },
-        _positions            = {
+        _positions    = {
           T : 'T',
           TR: 'TR',
           R : 'R',
@@ -1029,7 +1327,7 @@ define('Nudoru.Component.ToolTipView',
           L : 'L',
           TL: 'TL'
         },
-        _positionMap          = {
+        _positionMap  = {
           'T' : 'tooltip__top',
           'TR': 'tooltip__topright',
           'R' : 'tooltip__right',
@@ -1040,8 +1338,8 @@ define('Nudoru.Component.ToolTipView',
           'TL': 'tooltip__topleft'
         },
         _mountPoint,
-        _template             = require('Nudoru.Component.Templating'),
-        _domUtils             = require('Nudoru.Browser.DOMUtils');
+        _template     = require('nudoru/component/Templating'),
+        _domUtils     = require('nudoru/browser/DOMUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -1103,7 +1401,7 @@ define('Nudoru.Component.ToolTipView',
             position     : position,
             targetEl     : target,
             alwaysVisible: alwaysVisible || false,
-            gutter: gutter || 15,
+            gutter       : gutter || 15,
             elOverStream : null,
             elOutStream  : null,
             height       : 0,

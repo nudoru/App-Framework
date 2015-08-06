@@ -8,7 +8,7 @@ define('nori/view/MixinBrowserEvents',
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
         _dispatcher    = require('nori/utils/Dispatcher'),
-        _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
+        _browserEvents = require('nudoru/browser/EventConstants');
 
 
     //----------------------------------------------------------------------------

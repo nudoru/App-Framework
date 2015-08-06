@@ -3,13 +3,13 @@
  * last updated 7/9/15
  */
 
-define('Nudoru.Component.ToolTipView',
+define('nudoru/component/ToolTipView',
   function (require, module, exports) {
 
-    var _children             = [],
-        _counter              = 0,
-        _defaultWidth         = 200,
-        _types                = {
+    var _children     = [],
+        _counter      = 0,
+        _defaultWidth = 200,
+        _types        = {
           DEFAULT    : 'default',
           INFORMATION: 'information',
           SUCCESS    : 'success',
@@ -17,7 +17,7 @@ define('Nudoru.Component.ToolTipView',
           DANGER     : 'danger',
           COACHMARK  : 'coachmark'
         },
-        _typeStyleMap         = {
+        _typeStyleMap = {
           'default'    : '',
           'information': 'tooltip__information',
           'success'    : 'tooltip__success',
@@ -25,7 +25,7 @@ define('Nudoru.Component.ToolTipView',
           'danger'     : 'tooltip__danger',
           'coachmark'  : 'tooltip__coachmark'
         },
-        _positions            = {
+        _positions    = {
           T : 'T',
           TR: 'TR',
           R : 'R',
@@ -35,7 +35,7 @@ define('Nudoru.Component.ToolTipView',
           L : 'L',
           TL: 'TL'
         },
-        _positionMap          = {
+        _positionMap  = {
           'T' : 'tooltip__top',
           'TR': 'tooltip__topright',
           'R' : 'tooltip__right',
@@ -46,8 +46,8 @@ define('Nudoru.Component.ToolTipView',
           'TL': 'tooltip__topleft'
         },
         _mountPoint,
-        _template             = require('Nudoru.Component.Templating'),
-        _domUtils             = require('Nudoru.Browser.DOMUtils');
+        _template     = require('nudoru/component/Templating'),
+        _domUtils     = require('nudoru/browser/DOMUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -109,7 +109,7 @@ define('Nudoru.Component.ToolTipView',
             position     : position,
             targetEl     : target,
             alwaysVisible: alwaysVisible || false,
-            gutter: gutter || 15,
+            gutter       : gutter || 15,
             elOverStream : null,
             elOutStream  : null,
             height       : 0,

@@ -4,12 +4,12 @@
  Matt Perkins
  4/7/15
  */
-define('Nudoru.Component.Templating',
-  function(require, module, exports) {
+define('nudoru/component/Templating',
+  function (require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
-      _templateCache = Object.create(null),
-      _DOMUtils = require('Nudoru.Browser.DOMUtils');
+        _templateCache     = Object.create(null),
+        _DOMUtils          = require('nudoru/browser/DOMUtils');
 
     /**
      * Get the template html from the script tag with id
@@ -17,21 +17,21 @@ define('Nudoru.Component.Templating',
      * @returns {*}
      */
     function getSource(id) {
-      if(_templateHTMLCache[id]) {
+      if (_templateHTMLCache[id]) {
         return _templateHTMLCache[id];
       }
 
-      var src = document.getElementById(id),
-        srchtml = '',
-        cleanhtml = '';
+      var src       = document.getElementById(id),
+          srchtml   = '',
+          cleanhtml = '';
 
-      if(src) {
+      if (src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('Nudoru.Core.NTemplate, template not found: "'+id+'"');
+        throw new Error('nudoru/core/NTemplate, template not found: "' + id + '"');
       }
 
-      cleanhtml = cleanTemplateHTML(srchtml);
+      cleanhtml              = cleanTemplateHTML(srchtml);
       _templateHTMLCache[id] = cleanhtml;
       return cleanhtml;
     }
@@ -42,10 +42,10 @@ define('Nudoru.Component.Templating',
      * @returns {*}
      */
     function getTemplate(id) {
-      if(_templateCache[id]) {
+      if (_templateCache[id]) {
         return _templateCache[id];
       }
-      var templ = _.template(getSource(id));
+      var templ          = _.template(getSource(id));
       _templateCache[id] = templ;
       return templ;
     }
@@ -79,9 +79,9 @@ define('Nudoru.Component.Templating',
       return str.trim();
     }
 
-    module.exports.getSource = getSource;
+    module.exports.getSource   = getSource;
     module.exports.getTemplate = getTemplate;
-    module.exports.asHTML = asHTML;
-    module.exports.asElement = asElement;
+    module.exports.asHTML      = asHTML;
+    module.exports.asElement   = asElement;
 
   });
