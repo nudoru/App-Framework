@@ -102,6 +102,22 @@ function falsey(x) {
   return !truthy(x);
 }
 
+function isFunction(object) {
+  return typeof object === "function";
+}
+
+function isObject(object) {
+  return type.call(object) === "[object Object]";
+}
+
+function isString(object) {
+  return type.call(object) === "[object String]";
+}
+
+var isArray = Array.isArray || function (object) {
+    return type.call(object) === "[object Array]";
+  };
+
 define('nudoru/core/ArrayUtils',
   function (require, module, exports) {
 

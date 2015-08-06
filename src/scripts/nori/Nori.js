@@ -104,6 +104,10 @@ var Nori = (function () {
 
   // http://mithril.js.org/mithril.prop.html
   function prop(store) {
+    if(isFunction(store.then)) {
+
+    }
+
     var gettersetter = function () {
       if (arguments.length) {
         store = arguments[0];

@@ -618,40 +618,69 @@ define('nori/events/EventCreator',
 define('nori/service/rest',
   function (require, module, exports) {
 
-    function request(reqObj, success, error) {
+    /**
+     * Ajax requst using Promises
+     * @param reqObj
+     * @param success
+     * @param error
+     */
+    function request(reqObj) {
       var xhr    = new XMLHttpRequest(),
           json   = reqObj.json || false,
           method = reqObj.method.toUpperCase() || 'GET',
           url    = reqObj.url,
           data   = reqObj.data || null;
 
-      xhr.open(method, url, true, reqObj.user, reqObj.password);
+      return new Promise(function (resolve, reject) {
+        xhr.open(method, url, true, reqObj.user, reqObj.password);
 
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            try {
-              success.call(window, JSON.parse(xhr.responseText));
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                if (json) {
+                  resolve(JSON.parse(xhr.responseText));
+                } else {
+                  resolve(xhr.responseText);
+                }
+              }
+              catch (e) {
+                handleError('Result', 'Error parsing JSON result');
+              }
+            } else {
+              handleError(xhr.status, xhr.statusText);
             }
-            catch (e) {
-              error.call(window, reqObj);
-            }
-          } else {
-            error.call(window, reqObj);
           }
+        };
+
+        xhr.onerror   = function () {
+          return handleError('Network error');
+        };
+        xhr.ontimeout = function () {
+          return handleError('Timeout');
+        };
+        xhr.onabort   = function () {
+          return handleError('About');
+        };
+
+        // set non json header? 'application/x-www-form-urlencoded; charset=UTF-8'
+        if (json && method !== "GET") {
+          xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+        } else if (json && method === "GET") {
+          xhr.setRequestHeader("Accept", "application/json, text/*");
         }
-      };
 
-      if (json && method !== "GET") {
-        xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-      } else if (json && method === "GET") {
-        xhr.setRequestHeader("Accept", "application/json, text/*");
-      }
+        xhr.send(data);
 
-      xhr.send(data);
+        function handleError(type, message) {
+          message = message || '';
+          reject(type + ' ' + message);
+        }
+      });
+
     }
 
-    module.exports.request = request;
+    module.exports.request   = request;
 
   });
 
@@ -2417,6 +2446,10 @@ var Nori = (function () {
 
   // http://mithril.js.org/mithril.prop.html
   function prop(store) {
+    if(isFunction(store.then)) {
+
+    }
+
     var gettersetter = function () {
       if (arguments.length) {
         store = arguments[0];
