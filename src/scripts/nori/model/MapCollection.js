@@ -3,7 +3,7 @@
  */
 
 
-define('Nori.Model.MapCollection',
+define('nori/model/MapCollection',
   function (require, module, exports) {
 
     var _this,
@@ -11,7 +11,7 @@ define('Nori.Model.MapCollection',
         _parentCollection,
         _children  = [],
         _silent    = false,
-        _appEvents = require('Nori.Events.NoriEventCreator');
+        _appEvents = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization

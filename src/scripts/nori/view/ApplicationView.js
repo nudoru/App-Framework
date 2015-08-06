@@ -1,10 +1,10 @@
-define('Nori.View.ApplicationView',
+define('nori/view/ApplicationView',
   function (require, module, exports) {
 
     var _this,
         _appContainerEl,
         _appEl,
-        _renderer          = require('Nori.View.Renderer'),
+        _renderer          = require('nori/utils/Renderer'),
         _domUtils          = require('Nudoru.Browser.DOMUtils'),
         _notificationView  = require('Nudoru.Component.ToastView'),
         _toolTipView       = require('Nudoru.Component.ToolTipView'),

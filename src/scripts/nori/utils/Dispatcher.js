@@ -14,7 +14,7 @@
 
  */
 
-define('Nori.Utils.Dispatcher',
+define('nori/utils/Dispatcher',
   function (require, module, exports) {
     var _subjectMap  = {},
         _receiverMap = {},

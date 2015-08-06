@@ -2,12 +2,12 @@
  * Application controller
  */
 
-define('APP.Application',
+define('app/App',
   function (require, module, exports) {
 
     var _this,
-        _appEventConstants = require('Nori.Events.NoriEventConstants'),
-        _dispatcher        = require('Nori.Utils.Dispatcher');
+        _appEventConstants = require('nori/events/EventConstants'),
+        _dispatcher        = require('nori/utils/Dispatcher');
 
     /**
      * Application bootstrapper. Create the model and views and pass to the app
@@ -20,8 +20,8 @@ define('APP.Application',
 
       // 1
       this.initializeApplication({
-        model: this.createApplicationModel(require('APP.Model.AppModel')),
-        view : this.createApplicationView(require('APP.View.AppView'))
+        model: this.createApplicationModel(require('app/model/AppModel')),
+        view : this.createApplicationView(require('app/view/AppView'))
       });
 
       // 2

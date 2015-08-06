@@ -12,12 +12,12 @@
  *
  */
 
-define('Nori.Utils.Router',
+define('nori/utils/Router',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
         _objUtils = require('Nudoru.Core.ObjectUtils'),
-        _noriEvents = require('Nori.Events.NoriEventCreator');
+        _noriEvents = require('nori/events/EventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);

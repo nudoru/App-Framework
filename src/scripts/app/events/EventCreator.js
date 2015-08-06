@@ -1,8 +1,8 @@
-define('App.Events.EventCreator',
+define('app/events/EventCreator',
   function (require, module, exports) {
 
-    var _dispatcher     = require('Nori.Utils.Dispatcher'),
-        _eventConstants = require('App.Events.EventConstants');
+    var _dispatcher     = require('nori/utils/Dispatcher'),
+        _eventConstants = require('app/events/EventConstants');
 
     module.exports.someEvent = function (data) {
       _dispatcher.publish({

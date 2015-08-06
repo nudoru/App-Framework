@@ -1,9 +1,9 @@
-define('APP.Model.AppModel',
+define('app/model/AppModel',
   function (require, module, exports) {
 
     var _this,
-        _appEvents  = require('Nori.Events.NoriEventCreator'),
-        _dispatcher = require('Nori.Utils.Dispatcher');
+        _appEvents  = require('nori/events/EventCreator'),
+        _dispatcher = require('nori/utils/Dispatcher');
 
     //----------------------------------------------------------------------------
     //  Init

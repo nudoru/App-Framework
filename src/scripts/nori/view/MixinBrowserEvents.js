@@ -1,4 +1,4 @@
-define('Nori.View.ViewMixinBrowserEvents',
+define('nori/view/MixinBrowserEvents',
   function (require, module, exports) {
 
     var _currentViewPortSize,
@@ -7,7 +7,7 @@ define('Nori.View.ViewMixinBrowserEvents',
         _browserScrollStream,
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
-        _dispatcher    = require('Nori.Utils.Dispatcher'),
+        _dispatcher    = require('nori/utils/Dispatcher'),
         _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
 
 

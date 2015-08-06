@@ -2,15 +2,15 @@
  * Mixin view that allows for sub view and route mapping and display
  */
 
-define('Nori.View.ViewMixinSubViewRoutes',
+define('nori/view/MixinSubViewRoutes',
   function (require, module, exports) {
 
-    var _template                  = require('Nori.Utils.Templating'),
+    var _template                  = require('nori/utils/Templating'),
         _routeViewMountPoint,
         _subViewMapping            = Object.create(null),
         _currentRouteViewID,
         _subViewHTMLTemplatePrefix = 'template__',
-        _appEvents                 = require('Nori.Events.NoriEventCreator');
+        _appEvents                 = require('nori/events/EventCreator');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -55,8 +55,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
      */
     function createSubView(extras) {
       return Nori.extendWithArray({}, [
-        requireNew('Nori.View.ApplicationSubView'),
-        requireNew('Nori.View.ViewMixinEventDelegator'),
+        requireNew('nori/view/ApplicationSubView'),
+        requireNew('nori/view/MixinEventDelegator'),
         extras
       ]);
     }

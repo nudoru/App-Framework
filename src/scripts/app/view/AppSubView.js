@@ -3,7 +3,7 @@
  * Extended from Nori.View.ApplicationSubView
  */
 
-define('APP.View.AppSubView',
+define('app/view/AppSubView',
   function (require, module, exports) {
 
     var _this;

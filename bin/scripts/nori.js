@@ -1,4 +1,4 @@
-define('Nori.Utils.Dispatcher',
+define('nori/utils/Dispatcher',
   function (require, module, exports) {
     var _subjectMap  = {},
         _receiverMap = {},
@@ -191,12 +191,50 @@ define('Nori.Utils.Dispatcher',
 
   });
 
-define('Nori.Utils.Router',
+define('nori/utils/Renderer',
+  function (require, module, exports) {
+
+    var _appEvents         = require('nori/events/EventCreator'),
+        _appEventConstants = require('nori/events/EventConstants'),
+        _dispatcher        = require('nori/utils/Dispatcher'),
+        _domUtils          = require('Nudoru.Browser.DOMUtils');
+
+    function initialize() {
+      _dispatcher.subscribe(_appEventConstants.RENDER_VIEW, render);
+    }
+
+    function render(payload) {
+      var targetSelector = payload.payload.target,
+          html           = payload.payload.html,
+          domEl,
+          mountPoint     = document.querySelector(targetSelector),
+          cb             = payload.payload.callback;
+
+      mountPoint.innerHTML = '';
+
+      if (html) {
+        domEl = _domUtils.HTMLStrToNode(html);
+        mountPoint.appendChild(domEl);
+      }
+
+      // Send the created DOM element back to the caller
+      if (cb) {
+        cb(domEl);
+      }
+
+      _appEvents.viewRendered(targetSelector, payload.payload.id);
+    }
+
+    module.exports.initialize = initialize;
+
+  });
+
+define('nori/utils/Router',
   function (require, module, exports) {
 
     var _routeMap  = Object.create(null),
         _objUtils = require('Nudoru.Core.ObjectUtils'),
-        _noriEvents = require('Nori.Events.NoriEventCreator');
+        _noriEvents = require('nori/events/EventCreator');
 
     function initialize() {
       window.addEventListener('hashchange', onHashChange, false);
@@ -341,7 +379,7 @@ define('Nori.Utils.Router',
 
   });
 
-define('Nori.Utils.Templating',
+define('nori/utils/Templating',
   function (require, module, exports) {
 
     var _templateHTMLCache = Object.create(null),
@@ -423,7 +461,7 @@ define('Nori.Utils.Templating',
   });
 
 
-define('Nori.Events.NoriEventConstants',
+define('nori/events/EventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
@@ -454,11 +492,11 @@ define('Nori.Events.NoriEventConstants',
 
   });
 
-define('Nori.Events.NoriEventCreator',
+define('nori/events/EventCreator',
   function (require, module, exports) {
 
-    var _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.NoriEventConstants'),
+    var _dispatcher            = require('nori/utils/Dispatcher'),
+        _appEventConstants     = require('nori/events/EventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     module.exports.applicationInitialized = function (payload) {
@@ -577,14 +615,14 @@ define('Nori.Events.NoriEventCreator',
 
   });
 
-define('Nori.Model.ApplicationModel',
+define('nori/model/ApplicationModel',
   function (require, module, exports) {
 
     var _this,
       _appMapCollectionList = Object.create(null),
       _appMapList = Object.create(null),
-      _appEventConstants = require('Nori.Events.NoriEventConstants'),
-      _dispatcher = require('Nori.Utils.Dispatcher');
+      _appEventConstants = require('nori/events/EventConstants'),
+      _dispatcher = require('nori/utils/Dispatcher');
 
     function initializeApplicationModel() {
       _this = this;
@@ -592,7 +630,7 @@ define('Nori.Model.ApplicationModel',
 
     function subscribeToModelEvents() {
       if (!_this) {
-        throw new Error('Nori.Model.ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
+        throw new Error('nori/model/ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
       }
 
       _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
@@ -626,7 +664,7 @@ define('Nori.Model.ApplicationModel',
      * @returns {*}
      */
     function createMapCollection(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('Nori.Model.MapCollection'), extras]);
+      var m = Nori.extendWithArray({},[requireNew('nori/model/MapCollection'), extras]);
       m.initialize(initObj);
       _appMapCollectionList[initObj.id] = m;
       return m;
@@ -639,7 +677,7 @@ define('Nori.Model.ApplicationModel',
      * @returns {*}
      */
     function createMap(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('Nori.Model.Map'), extras]);
+      var m = Nori.extendWithArray({},[requireNew('nori/model/Map'), extras]);
       m.initialize(initObj);
       _appMapList[initObj.id] = m;
       return m;
@@ -673,7 +711,7 @@ define('Nori.Model.ApplicationModel',
     module.exports.getMapCollection = getMapCollection;
   });
 
-define('Nori.Model.Map',
+define('nori/model/Map',
   function (require, module, exports) {
 
     var _id,
@@ -682,7 +720,7 @@ define('Nori.Model.Map',
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
-        _appEvents = require('Nori.Events.NoriEventCreator');
+        _appEvents = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -980,7 +1018,7 @@ define('Nori.Model.Map',
 
   });
 
-define('Nori.Model.MapCollection',
+define('nori/model/MapCollection',
   function (require, module, exports) {
 
     var _this,
@@ -988,7 +1026,7 @@ define('Nori.Model.MapCollection',
         _parentCollection,
         _children  = [],
         _silent    = false,
-        _appEvents = require('Nori.Events.NoriEventCreator');
+        _appEvents = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -1275,7 +1313,7 @@ define('Nori.Model.MapCollection',
 
   });
 
-define('Nori.View.ApplicationSubView',
+define('nori/view/ApplicationSubView',
   function (require, module, exports) {
 
     var _isInitialized = false,
@@ -1288,7 +1326,7 @@ define('Nori.View.ApplicationSubView',
         _state         = {},
         _children      = [],
         _isMounted     = false,
-        _appEvents     = require('Nori.Events.NoriEventCreator');
+        _appEvents     = require('nori/events/EventCreator');
 
     /**
      * Initialization
@@ -1570,13 +1608,13 @@ define('Nori.View.ApplicationSubView',
 
   });
 
-define('Nori.View.ApplicationView',
+define('nori/view/ApplicationView',
   function (require, module, exports) {
 
     var _this,
         _appContainerEl,
         _appEl,
-        _renderer          = require('Nori.View.Renderer'),
+        _renderer          = require('nori/utils/Renderer'),
         _domUtils          = require('Nudoru.Browser.DOMUtils'),
         _notificationView  = require('Nudoru.Component.ToastView'),
         _toolTipView       = require('Nudoru.Component.ToolTipView'),
@@ -1733,45 +1771,7 @@ define('Nori.View.ApplicationView',
 
   });
 
-define('Nori.View.Renderer',
-  function (require, module, exports) {
-
-    var _appEvents         = require('Nori.Events.NoriEventCreator'),
-        _appEventConstants = require('Nori.Events.NoriEventConstants'),
-        _dispatcher        = require('Nori.Utils.Dispatcher'),
-        _domUtils          = require('Nudoru.Browser.DOMUtils');
-
-    function initialize() {
-      _dispatcher.subscribe(_appEventConstants.RENDER_VIEW, render);
-    }
-
-    function render(payload) {
-      var targetSelector = payload.payload.target,
-          html           = payload.payload.html,
-          domEl,
-          mountPoint     = document.querySelector(targetSelector),
-          cb             = payload.payload.callback;
-
-      mountPoint.innerHTML = '';
-
-      if (html) {
-        domEl = _domUtils.HTMLStrToNode(html);
-        mountPoint.appendChild(domEl);
-      }
-
-      // Send the created DOM element back to the caller
-      if (cb) {
-        cb(domEl);
-      }
-
-      _appEvents.viewRendered(targetSelector, payload.payload.id);
-    }
-
-    module.exports.initialize = initialize;
-
-  });
-
-define('Nori.View.ViewMixinBrowserEvents',
+define('nori/view/MixinBrowserEvents',
   function (require, module, exports) {
 
     var _currentViewPortSize,
@@ -1780,7 +1780,7 @@ define('Nori.View.ViewMixinBrowserEvents',
         _browserScrollStream,
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
-        _dispatcher    = require('Nori.Utils.Dispatcher'),
+        _dispatcher    = require('nori/utils/Dispatcher'),
         _browserEvents = require('Nudoru.Browser.BrowserEventConstants');
 
 
@@ -1900,7 +1900,7 @@ define('Nori.View.ViewMixinBrowserEvents',
 
   });
 
-define('Nori.View.ViewMixinEventDelegator',
+define('nori/view/MixinEventDelegator',
   function (require, module, exports) {
     var _eventsMap,
         _eventSubscribers;
@@ -1973,7 +1973,7 @@ define('Nori.View.ViewMixinEventDelegator',
 
 
 
-define('Nori.View.ViewMixinMultiDevice',
+define('nori/view/MixinMultiDevice',
   function (require, module, exports) {
 
     var _drawerEl,
@@ -1987,7 +1987,7 @@ define('Nori.View.ViewMixinMultiDevice',
         _drawerWidth,
         _isDrawerOpen,
         _currentViewPortSize,
-        _appEventConstants = require('Nori.Events.NoriEventConstants'),
+        _appEventConstants = require('nori/events/EventConstants'),
         _browserInfo       = require('Nudoru.Browser.BrowserInfo'),
         _dispatcher        = require('Nudoru.events.EventDispatcher');
 
@@ -2091,15 +2091,15 @@ define('Nori.View.ViewMixinMultiDevice',
     module.exports.checkForMobile            = checkForMobile;
   });
 
-define('Nori.View.ViewMixinSubViewRoutes',
+define('nori/view/MixinSubViewRoutes',
   function (require, module, exports) {
 
-    var _template                  = require('Nori.Utils.Templating'),
+    var _template                  = require('nori/utils/Templating'),
         _routeViewMountPoint,
         _subViewMapping            = Object.create(null),
         _currentRouteViewID,
         _subViewHTMLTemplatePrefix = 'template__',
-        _appEvents                 = require('Nori.Events.NoriEventCreator');
+        _appEvents                 = require('nori/events/EventCreator');
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -2144,8 +2144,8 @@ define('Nori.View.ViewMixinSubViewRoutes',
      */
     function createSubView(extras) {
       return Nori.extendWithArray({}, [
-        requireNew('Nori.View.ApplicationSubView'),
-        requireNew('Nori.View.ViewMixinEventDelegator'),
+        requireNew('nori/view/ApplicationSubView'),
+        requireNew('nori/view/MixinEventDelegator'),
         extras
       ]);
     }
@@ -2277,12 +2277,12 @@ var Nori = (function () {
       _view,
       //_dispatcherCommandMap = Object.create(null),
       _modelViewBindingMap  = Object.create(null),
-      _appEvents            = require('Nori.Events.NoriEventCreator'),
-      _appEventConstants    = require('Nori.Events.NoriEventConstants'),
+      _appEvents            = require('nori/events/EventCreator'),
+      _appEventConstants    = require('nori/events/EventConstants'),
       _browserEvents        = require('Nudoru.Browser.BrowserEventConstants'),
       _objectUtils          = require('Nudoru.Core.ObjectUtils'),
-      _dispatcher           = require('Nori.Utils.Dispatcher'),
-      _router               = require('Nori.Utils.Router');
+      _dispatcher           = require('nori/utils/Dispatcher'),
+      _router               = require('nori/utils/Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -2609,7 +2609,7 @@ var Nori = (function () {
    */
   function createApplicationModel(extras) {
     return extendWithArray({}, [
-      require('Nori.Model.ApplicationModel'),
+      require('nori/model/ApplicationModel'),
       extras
     ]);
   }
@@ -2621,9 +2621,9 @@ var Nori = (function () {
    */
   function createApplicationView(extras) {
     return extendWithArray({}, [
-      require('Nori.View.ApplicationView'),
-      require('Nori.View.ViewMixinSubViewRoutes'),
-      requireNew('Nori.View.ViewMixinEventDelegator'),
+      require('nori/view/ApplicationView'),
+      require('nori/view/MixinSubViewRoutes'),
+      requireNew('nori/view/MixinEventDelegator'),
       extras
     ]);
   }

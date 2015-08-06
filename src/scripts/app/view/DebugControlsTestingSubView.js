@@ -2,13 +2,13 @@
  * A template for a subview/route controller
  */
 
-define('APP.View.DebugControlsTestingSubView',
+define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
     var _lIpsum            = require('Nudoru.Browser.NLorem'),
         _toolTip           = require('Nudoru.Component.ToolTipView'),
-        _dispatcher        = require('Nori.Utils.Dispatcher'),
-        _appEventConstants = require('Nori.Events.NoriEventConstants'),
+        _dispatcher        = require('nori/utils/Dispatcher'),
+        _appEventConstants = require('nori/events/EventConstants'),
         _actionOneEl,
         _actionTwoEl,
         _actionThreeEl,

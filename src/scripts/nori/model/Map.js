@@ -3,7 +3,7 @@
  */
 
 
-define('Nori.Model.Map',
+define('nori/model/Map',
   function (require, module, exports) {
 
     var _id,
@@ -12,7 +12,7 @@ define('Nori.Model.Map',
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
-        _appEvents = require('Nori.Events.NoriEventCreator');
+        _appEvents = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
     //  Initialization

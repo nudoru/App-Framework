@@ -1,10 +1,10 @@
-define('APP.View.AppView',
+define('app/view/AppView',
   function (require, module, exports) {
 
     var _this,
-        _appEvents = require('Nori.Events.NoriEventCreator'),
-        _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.NoriEventConstants'),
+        _appEvents = require('nori/events/EventCreator'),
+        _dispatcher            = require('nori/utils/Dispatcher'),
+        _appEventConstants     = require('nori/events/EventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     //----------------------------------------------------------------------------
@@ -19,12 +19,12 @@ define('APP.View.AppView',
 
       configureApplicationViewEvents();
 
-      APP.mapRouteView('/', 'default', 'APP.View.AppSubView');
+      APP.mapRouteView('/', 'default', 'app/view/AppSubView');
 
       // For testing
-      APP.mapRouteView('/styles', 'debug-styletest', 'APP.View.AppSubView');
-      APP.mapRouteView('/controls', 'debug-controls', 'APP.View.AppSubView');
-      APP.mapRouteView('/comps', 'debug-components', 'APP.View.DebugControlsTestingSubView');
+      APP.mapRouteView('/styles', 'debug-styletest', 'app/view/AppSubView');
+      APP.mapRouteView('/controls', 'debug-controls', 'app/view/AppSubView');
+      APP.mapRouteView('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
       _appEvents.applicationViewInitialized();
     }

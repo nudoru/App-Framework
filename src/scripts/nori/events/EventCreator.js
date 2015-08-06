@@ -1,8 +1,8 @@
-define('Nori.Events.NoriEventCreator',
+define('nori/events/EventCreator',
   function (require, module, exports) {
 
-    var _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.NoriEventConstants'),
+    var _dispatcher            = require('nori/utils/Dispatcher'),
+        _appEventConstants     = require('nori/events/EventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     module.exports.applicationInitialized = function (payload) {

@@ -15,7 +15,7 @@
  *
  */
 
-define('Nori.View.ViewMixinEventDelegator',
+define('nori/view/MixinEventDelegator',
   function (require, module, exports) {
     var _eventsMap,
         _eventSubscribers;

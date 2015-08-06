@@ -3,7 +3,7 @@
  * Must be extended with custom modules
  */
 
-define('Nori.View.ApplicationSubView',
+define('nori/view/ApplicationSubView',
   function (require, module, exports) {
 
     var _isInitialized = false,
@@ -16,7 +16,7 @@ define('Nori.View.ApplicationSubView',
         _state         = {},
         _children      = [],
         _isMounted     = false,
-        _appEvents     = require('Nori.Events.NoriEventCreator');
+        _appEvents     = require('nori/events/EventCreator');
 
     /**
      * Initialization

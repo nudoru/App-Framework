@@ -1,11 +1,11 @@
-define('Nori.Model.ApplicationModel',
+define('nori/model/ApplicationModel',
   function (require, module, exports) {
 
     var _this,
       _appMapCollectionList = Object.create(null),
       _appMapList = Object.create(null),
-      _appEventConstants = require('Nori.Events.NoriEventConstants'),
-      _dispatcher = require('Nori.Utils.Dispatcher');
+      _appEventConstants = require('nori/events/EventConstants'),
+      _dispatcher = require('nori/utils/Dispatcher');
 
     function initializeApplicationModel() {
       _this = this;
@@ -13,7 +13,7 @@ define('Nori.Model.ApplicationModel',
 
     function subscribeToModelEvents() {
       if (!_this) {
-        throw new Error('Nori.Model.ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
+        throw new Error('nori/model/ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
       }
 
       _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
@@ -47,7 +47,7 @@ define('Nori.Model.ApplicationModel',
      * @returns {*}
      */
     function createMapCollection(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('Nori.Model.MapCollection'), extras]);
+      var m = Nori.extendWithArray({},[requireNew('nori/model/MapCollection'), extras]);
       m.initialize(initObj);
       _appMapCollectionList[initObj.id] = m;
       return m;
@@ -60,7 +60,7 @@ define('Nori.Model.ApplicationModel',
      * @returns {*}
      */
     function createMap(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('Nori.Model.Map'), extras]);
+      var m = Nori.extendWithArray({},[requireNew('nori/model/Map'), extras]);
       m.initialize(initObj);
       _appMapList[initObj.id] = m;
       return m;

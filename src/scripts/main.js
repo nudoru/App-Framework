@@ -10,7 +10,7 @@
     window.onload = function() {
 
       // Create the application instance
-      window.APP = Nori.createApplication(require('APP.Application'));
+      window.APP = Nori.createApplication(require('app/App'));
 
       // Kick off the bootstrapping process
       APP.initialize();

@@ -1,9 +1,9 @@
-define('APP.Application',
+define('app/App',
   function (require, module, exports) {
 
     var _this,
-        _appEventConstants = require('Nori.Events.NoriEventConstants'),
-        _dispatcher        = require('Nori.Utils.Dispatcher');
+        _appEventConstants = require('nori/events/EventConstants'),
+        _dispatcher        = require('nori/utils/Dispatcher');
 
     /**
      * Application bootstrapper. Create the model and views and pass to the app
@@ -16,8 +16,8 @@ define('APP.Application',
 
       // 1
       this.initializeApplication({
-        model: this.createApplicationModel(require('APP.Model.AppModel')),
-        view : this.createApplicationView(require('APP.View.AppView'))
+        model: this.createApplicationModel(require('app/model/AppModel')),
+        view : this.createApplicationView(require('app/view/AppView'))
       });
 
       // 2
@@ -50,7 +50,7 @@ define('APP.Application',
 
   });
 
-define('App.Events.EventConstants',
+define('app/events/EventConstants',
   function (require, module, exports) {
     var objUtils = require('Nudoru.Core.ObjectUtils');
 
@@ -59,11 +59,11 @@ define('App.Events.EventConstants',
     }));
   });
 
-define('App.Events.EventCreator',
+define('app/events/EventCreator',
   function (require, module, exports) {
 
-    var _dispatcher     = require('Nori.Utils.Dispatcher'),
-        _eventConstants = require('App.Events.EventConstants');
+    var _dispatcher     = require('nori/utils/Dispatcher'),
+        _eventConstants = require('app/events/EventConstants');
 
     module.exports.someEvent = function (data) {
       _dispatcher.publish({
@@ -76,12 +76,12 @@ define('App.Events.EventCreator',
 
   });
 
-define('APP.Model.AppModel',
+define('app/model/AppModel',
   function (require, module, exports) {
 
     var _this,
-        _appEvents  = require('Nori.Events.NoriEventCreator'),
-        _dispatcher = require('Nori.Utils.Dispatcher');
+        _appEvents  = require('nori/events/EventCreator'),
+        _dispatcher = require('nori/utils/Dispatcher');
 
     //----------------------------------------------------------------------------
     //  Init
@@ -113,7 +113,7 @@ define('APP.Model.AppModel',
   });
 
 
-define('APP.View.AppSubView',
+define('app/view/AppSubView',
   function (require, module, exports) {
 
     var _this;
@@ -183,13 +183,13 @@ define('APP.View.AppSubView',
     //module.exports.viewDidUnmount = viewDidUnmount;
   });
 
-define('APP.View.AppView',
+define('app/view/AppView',
   function (require, module, exports) {
 
     var _this,
-        _appEvents = require('Nori.Events.NoriEventCreator'),
-        _dispatcher            = require('Nori.Utils.Dispatcher'),
-        _appEventConstants     = require('Nori.Events.NoriEventConstants'),
+        _appEvents = require('nori/events/EventCreator'),
+        _dispatcher            = require('nori/utils/Dispatcher'),
+        _appEventConstants     = require('nori/events/EventConstants'),
         _browserEventConstants = require('Nudoru.Browser.BrowserEventConstants');
 
     //----------------------------------------------------------------------------
@@ -204,12 +204,12 @@ define('APP.View.AppView',
 
       configureApplicationViewEvents();
 
-      APP.mapRouteView('/', 'default', 'APP.View.AppSubView');
+      APP.mapRouteView('/', 'default', 'app/view/AppSubView');
 
       // For testing
-      APP.mapRouteView('/styles', 'debug-styletest', 'APP.View.AppSubView');
-      APP.mapRouteView('/controls', 'debug-controls', 'APP.View.AppSubView');
-      APP.mapRouteView('/comps', 'debug-components', 'APP.View.DebugControlsTestingSubView');
+      APP.mapRouteView('/styles', 'debug-styletest', 'app/view/AppSubView');
+      APP.mapRouteView('/controls', 'debug-controls', 'app/view/AppSubView');
+      APP.mapRouteView('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
       _appEvents.applicationViewInitialized();
     }
@@ -245,13 +245,13 @@ define('APP.View.AppView',
     module.exports.render     = render;
   });
 
-define('APP.View.DebugControlsTestingSubView',
+define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
     var _lIpsum            = require('Nudoru.Browser.NLorem'),
         _toolTip           = require('Nudoru.Component.ToolTipView'),
-        _dispatcher        = require('Nori.Utils.Dispatcher'),
-        _appEventConstants = require('Nori.Events.NoriEventConstants'),
+        _dispatcher        = require('nori/utils/Dispatcher'),
+        _appEventConstants = require('nori/events/EventConstants'),
         _actionOneEl,
         _actionTwoEl,
         _actionThreeEl,
@@ -407,7 +407,7 @@ define('APP.View.DebugControlsTestingSubView',
     window.onload = function() {
 
       // Create the application instance
-      window.APP = Nori.createApplication(require('APP.Application'));
+      window.APP = Nori.createApplication(require('app/App'));
 
       // Kick off the bootstrapping process
       APP.initialize();

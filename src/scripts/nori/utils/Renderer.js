@@ -4,12 +4,12 @@
  * TODO - implement virutal-dom https://github.com/Matt-Esch/virtual-dom
  */
 
-define('Nori.View.Renderer',
+define('nori/utils/Renderer',
   function (require, module, exports) {
 
-    var _appEvents         = require('Nori.Events.NoriEventCreator'),
-        _appEventConstants = require('Nori.Events.NoriEventConstants'),
-        _dispatcher        = require('Nori.Utils.Dispatcher'),
+    var _appEvents         = require('nori/events/EventCreator'),
+        _appEventConstants = require('nori/events/EventConstants'),
+        _dispatcher        = require('nori/utils/Dispatcher'),
         _domUtils          = require('Nudoru.Browser.DOMUtils');
 
     function initialize() {
