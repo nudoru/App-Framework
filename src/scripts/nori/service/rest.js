@@ -55,7 +55,7 @@ define('nori/service/rest',
         if (json && method !== "GET") {
           xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
         } else if (json && method === "GET") {
-          xhr.setRequestHeader("Accept", "application/json, text/*");
+          xhr.setRequestHeader("Accept", "application/json, text/*; odata=verbose");  // odata param for Sharepoint
         }
 
         xhr.send(data);
