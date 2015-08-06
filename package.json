@@ -33,5 +33,9 @@
     "lint": "jshint src/scripts/nori/",
     "build": "grunt build --verbose",
     "test": "mocha test/"
+  },
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.1"
   }
 }
