@@ -22,7 +22,7 @@ define('nori/events/EventCreator',
           message: message,
           type   : type || 'default'
         }
-      }
+      };
 
       Nori.dispatcher().publish(evtObj);
       return evtObj;

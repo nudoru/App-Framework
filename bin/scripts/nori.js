@@ -553,7 +553,7 @@ define('nori/events/EventCreator',
           message: message,
           type   : type || 'default'
         }
-      }
+      };
 
       Nori.dispatcher().publish(evtObj);
       return evtObj;
@@ -798,7 +798,7 @@ define('nori/model/ApplicationModel',
     var _this,
       _appMapCollectionList = Object.create(null),
       _appMapList = Object.create(null),
-      _appEventConstants = require('nori/events/EventConstants')
+      _appEventConstants = require('nori/events/EventConstants');
 
     function initializeApplicationModel() {
       _this = this;
@@ -2817,7 +2817,6 @@ var Nori = (function () {
     router                : getRouter,
     model                 : getModel,
     view                  : getView,
-    dispatcher            : getDispatcher,
     createApplication     : createApplication,
     createApplicationModel: createApplicationModel,
     createApplicationView : createApplicationView,

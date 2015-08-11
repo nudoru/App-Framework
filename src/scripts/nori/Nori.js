@@ -370,7 +370,6 @@ var Nori = (function () {
     router                : getRouter,
     model                 : getModel,
     view                  : getView,
-    dispatcher            : getDispatcher,
     createApplication     : createApplication,
     createApplicationModel: createApplicationModel,
     createApplicationView : createApplicationView,
