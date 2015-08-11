@@ -16,10 +16,14 @@
 
 define('nori/utils/Dispatcher',
   function (require, module, exports) {
-    var _subjectMap  = {},
-        _receiverMap = {},
-        _id          = 0,
-        _log         = [];
+    var _subjectMap     = {},
+        _receiverMap    = {},
+        _id             = 0,
+        _log            = [],
+        _queue          = [],
+        _timerObservable,
+        _timerSubscription,
+        _timerPausable;
 
     /**
      * Add an event as observable
@@ -83,31 +87,74 @@ define('nori/utils/Dispatcher',
     //}
 
     /**
-     * Publish a event to all subscribers
+     * Initialize the event processing timer or resume a paused timer
+     */
+    function initTimer() {
+      if(_timerObservable) {
+        _timerPausable.onNext(true);
+        return;
+      }
+
+      _timerPausable = new Rx.Subject();
+      _timerObservable = Rx.Observable.interval(1).pausable(_timerPausable);
+      _timerSubscription = _timerObservable.subscribe(processNextEvent);
+    }
+
+    /**
+     * Shift next event to handle off of the queue and dispatch it
+     */
+    function processNextEvent() {
+      var evt = _queue.shift();
+      if(evt) {
+        //console.log('Procesing event: ',evt);
+        dispatchToReceivers(evt);
+        dispatchToSubscribers(evt);
+      } else {
+        _timerPausable.onNext(false);
+      }
+    }
+
+    /**
+     * Push event to the stack and begin execution
      * @param payloadObj type:String, payload:data
      * @param data
      */
     function publish(payloadObj) {
+      _log.push(payloadObj);
+      _queue.push(payloadObj);
 
-      dispatchToReceivers(payloadObj);
+      initTimer();
+    }
 
-      var subscribers = _subjectMap[payloadObj.type], i;
+    /**
+     * Send the payload to all receivers
+     * @param payload
+     */
+    function dispatchToReceivers(payload) {
+      for (var id in _receiverMap) {
+        _receiverMap[id].handler(payload);
+      }
+    }
 
+    /**
+     * Subscribers receive all payloads for a given event type while handlers are targeted
+     * @param payload
+     */
+    function dispatchToSubscribers(payload) {
+      var subscribers = _subjectMap[payload.type], i;
       if (!subscribers) {
         return;
       }
-
-      _log.push(payloadObj);
 
       i = subscribers.length;
 
       while (i--) {
         var subjObj = subscribers[i];
         if (subjObj.type === 0) {
-          subjObj.subject.onNext(payloadObj);
+          subjObj.subject.onNext(payload);
         }
         if (subjObj.once) {
-          unsubscribe(payloadObj.type, subjObj.handler);
+          unsubscribe(payload.type, subjObj.handler);
         }
       }
     }
@@ -177,15 +224,6 @@ define('nori/utils/Dispatcher',
       return id;
     }
 
-    /**
-     * Send the payload to all receivers
-     * @param payload
-     */
-    function dispatchToReceivers(payload) {
-      for (var id in _receiverMap) {
-        _receiverMap[id].handler(payload);
-      }
-    }
 
     /**
      * Remove a receiver handler

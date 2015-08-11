@@ -37,7 +37,7 @@ define('app/App',
       // 4 Start it with the route in the current URL
       this.setCurrentRoute(APP.router().getCurrentRoute());
 
-      restTesting();
+      //restTesting();
     }
 
     function restTesting() {
