@@ -2,8 +2,7 @@ define('app/App',
   function (require, module, exports) {
 
     var _this,
-        _appEventConstants = require('nori/events/EventConstants'),
-        _dispatcher        = require('nori/utils/Dispatcher');
+        _appEventConstants = require('nori/events/EventConstants');
 
     /**
      * Application bootstrapper. Create the model and views and pass to the app
@@ -12,7 +11,7 @@ define('app/App',
     function initialize() {
       _this = this;
 
-      _dispatcher.subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
+      Nori.dispatcher().subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
 
       // 1
       this.initializeApplication({
@@ -120,8 +119,7 @@ define('app/model/AppModel',
   function (require, module, exports) {
 
     var _this,
-        _appEvents  = require('nori/events/EventCreator'),
-        _dispatcher = require('nori/utils/Dispatcher');
+        _appEvents  = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
     //  Init
@@ -228,7 +226,6 @@ define('app/view/AppView',
 
     var _this,
         _appEvents = require('nori/events/EventCreator'),
-        _dispatcher            = require('nori/utils/Dispatcher'),
         _appEventConstants     = require('nori/events/EventConstants'),
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
@@ -264,11 +261,11 @@ define('app/view/AppView',
     }
 
     function configureApplicationViewEvents() {
-      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
         _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
-      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
         _this.alert(payload.payload.message, payload.payload.title);
       });
     }
@@ -290,7 +287,6 @@ define('app/view/DebugControlsTestingSubView',
 
     var _lIpsum            = require('nudoru/browser/NLorem'),
         _toolTip           = require('nudoru/component/ToolTipView'),
-        _dispatcher        = require('nori/utils/Dispatcher'),
         _appEventConstants = require('nori/events/EventConstants'),
         _actionOneEl,
         _actionTwoEl,
@@ -412,7 +408,7 @@ define('app/view/DebugControlsTestingSubView',
       });
 
       _actionFiveEl.addEventListener('click', function actFour(e) {
-        _dispatcher.publish({
+        Nori.dispatcher().publish({
           type   : _appEventConstants.CHANGE_ROUTE,
           payload: {
             route: '/one',
@@ -422,7 +418,7 @@ define('app/view/DebugControlsTestingSubView',
       });
 
       _actionSixEl.addEventListener('click', function actFour(e) {
-        _dispatcher.publish({
+        Nori.dispatcher().publish({
           type   : _appEventConstants.CHANGE_ROUTE,
           payload: {route: '/two'}
         });

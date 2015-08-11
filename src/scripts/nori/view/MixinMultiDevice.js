@@ -19,9 +19,8 @@ define('nori/view/MixinMultiDevice',
         _drawerWidth,
         _isDrawerOpen,
         _currentViewPortSize,
-        _appEventConstants = require('nori/events/EventConstants'),
-        _browserInfo       = require('nudoru/browser/BrowserInfo'),
-        _dispatcher        = require('Nudoru.events.EventDispatcher');
+        _appEvents = require('nori/events/EventCreator'),
+        _browserInfo       = require('nudoru/browser/BrowserInfo');
 
     function initializeMultiDeviceView(initObj) {
       _isMobile         = false;
@@ -85,7 +84,7 @@ define('nori/view/MixinMultiDevice',
         return;
       }
       _isMobile = true;
-      _dispatcher.publish(_appEventConstants.VIEW_CHANGE_TO_MOBILE);
+      _appEvents.viewChangedToMobile();
     }
 
     function switchToDesktopView() {
@@ -94,7 +93,7 @@ define('nori/view/MixinMultiDevice',
       }
       _isMobile = false;
       closeDrawer();
-      _dispatcher.publish(_appEventConstants.VIEW_CHANGE_TO_DESKTOP);
+      _appEvents.viewChangedToDesktop();
     }
 
     function toggleDrawer() {

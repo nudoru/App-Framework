@@ -3,7 +3,6 @@ define('app/view/AppView',
 
     var _this,
         _appEvents = require('nori/events/EventCreator'),
-        _dispatcher            = require('nori/utils/Dispatcher'),
         _appEventConstants     = require('nori/events/EventConstants'),
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
@@ -39,11 +38,11 @@ define('app/view/AppView',
     }
 
     function configureApplicationViewEvents() {
-      _dispatcher.subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
         _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
-      _dispatcher.subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
         _this.alert(payload.payload.message, payload.payload.title);
       });
     }

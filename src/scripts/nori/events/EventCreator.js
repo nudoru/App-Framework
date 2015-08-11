@@ -96,6 +96,19 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
+    module.exports.changeRoute = function (route, data) {
+      var evtObj = {
+        type   : _appEventConstants.CHANGE_ROUTE,
+        payload: {
+          route: route,
+          data : data
+        }
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
     module.exports.routeChanged = function (payload) {
       var evtObj = {
         type   : _appEventConstants.ROUTE_CHANGED,
@@ -151,6 +164,26 @@ define('nori/events/EventCreator',
           target: targetSelector,
           id    : id
         }
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.viewChangedToMobile = function(payload) {
+      var evtObj = {
+        type: _appEventConstants.VIEW_CHANGE_TO_MOBILE,
+         payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.viewChangedToDesktop = function(payload) {
+      var evtObj = {
+        type: _appEventConstants.VIEW_CHANGE_TO_DESKTOP,
+        payload: payload
       };
 
       Nori.dispatcher().publish(evtObj);

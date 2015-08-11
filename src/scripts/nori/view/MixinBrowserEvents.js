@@ -7,7 +7,6 @@ define('nori/view/MixinBrowserEvents',
         _browserScrollStream,
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
-        _dispatcher    = require('nori/utils/Dispatcher'),
         _browserEvents = require('nudoru/browser/EventConstants');
 
 
@@ -64,11 +63,11 @@ define('nori/view/MixinBrowserEvents',
     //----------------------------------------------------------------------------
 
     function handleViewPortResize() {
-      _dispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
+      Nori.dispatcher().publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
     }
 
     function handleViewPortScroll() {
-      _dispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+      Nori.dispatcher().publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
     }
 
     function getCurrentViewPortSize() {

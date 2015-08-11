@@ -234,11 +234,10 @@ define('nori/utils/Renderer',
 
     var _appEvents         = require('nori/events/EventCreator'),
         _appEventConstants = require('nori/events/EventConstants'),
-        _dispatcher        = require('nori/utils/Dispatcher'),
         _domUtils          = require('nudoru/browser/DOMUtils');
 
     function initialize() {
-      _dispatcher.subscribe(_appEventConstants.RENDER_VIEW, render);
+      Nori.dispatcher().subscribe(_appEventConstants.RENDER_VIEW, render);
     }
 
     function render(payload) {
@@ -628,6 +627,19 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
+    module.exports.changeRoute = function (route, data) {
+      var evtObj = {
+        type   : _appEventConstants.CHANGE_ROUTE,
+        payload: {
+          route: route,
+          data : data
+        }
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
     module.exports.routeChanged = function (payload) {
       var evtObj = {
         type   : _appEventConstants.ROUTE_CHANGED,
@@ -683,6 +695,26 @@ define('nori/events/EventCreator',
           target: targetSelector,
           id    : id
         }
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.viewChangedToMobile = function(payload) {
+      var evtObj = {
+        type: _appEventConstants.VIEW_CHANGE_TO_MOBILE,
+         payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.viewChangedToDesktop = function(payload) {
+      var evtObj = {
+        type: _appEventConstants.VIEW_CHANGE_TO_DESKTOP,
+        payload: payload
       };
 
       Nori.dispatcher().publish(evtObj);
@@ -766,8 +798,7 @@ define('nori/model/ApplicationModel',
     var _this,
       _appMapCollectionList = Object.create(null),
       _appMapList = Object.create(null),
-      _appEventConstants = require('nori/events/EventConstants'),
-      _dispatcher = require('nori/utils/Dispatcher');
+      _appEventConstants = require('nori/events/EventConstants')
 
     function initializeApplicationModel() {
       _this = this;
@@ -1925,7 +1956,6 @@ define('nori/view/MixinBrowserEvents',
         _browserScrollStream,
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
-        _dispatcher    = require('nori/utils/Dispatcher'),
         _browserEvents = require('nudoru/browser/EventConstants');
 
 
@@ -1982,11 +2012,11 @@ define('nori/view/MixinBrowserEvents',
     //----------------------------------------------------------------------------
 
     function handleViewPortResize() {
-      _dispatcher.publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
+      Nori.dispatcher().publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
     }
 
     function handleViewPortScroll() {
-      _dispatcher.publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+      Nori.dispatcher().publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
     }
 
     function getCurrentViewPortSize() {
@@ -2132,9 +2162,8 @@ define('nori/view/MixinMultiDevice',
         _drawerWidth,
         _isDrawerOpen,
         _currentViewPortSize,
-        _appEventConstants = require('nori/events/EventConstants'),
-        _browserInfo       = require('nudoru/browser/BrowserInfo'),
-        _dispatcher        = require('Nudoru.events.EventDispatcher');
+        _appEvents = require('nori/events/EventCreator'),
+        _browserInfo       = require('nudoru/browser/BrowserInfo');
 
     function initializeMultiDeviceView(initObj) {
       _isMobile         = false;
@@ -2198,7 +2227,7 @@ define('nori/view/MixinMultiDevice',
         return;
       }
       _isMobile = true;
-      _dispatcher.publish(_appEventConstants.VIEW_CHANGE_TO_MOBILE);
+      _appEvents.viewChangedToMobile();
     }
 
     function switchToDesktopView() {
@@ -2207,7 +2236,7 @@ define('nori/view/MixinMultiDevice',
       }
       _isMobile = false;
       closeDrawer();
-      _dispatcher.publish(_appEventConstants.VIEW_CHANGE_TO_DESKTOP);
+      _appEvents.viewChangedToDesktop();
     }
 
     function toggleDrawer() {
