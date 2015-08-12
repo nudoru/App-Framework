@@ -1,3 +1,8 @@
+/**
+ * Based on Flux Actions
+ * For more information and guidelines: https://github.com/acdlite/flux-standard-action
+ */
+
 define('app/events/EventCreator',
   function (require, module, exports) {
 

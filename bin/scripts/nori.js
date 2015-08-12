@@ -503,6 +503,8 @@ define('nori/events/EventConstants',
     var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
+      APP_WARNING            : null,
+      APP_ERROR              : null,
       APP_INITIALIZED        : null,
       APP_MODEL_INITIALIZED  : null,
       APP_VIEW_INITIALIZED   : null,
@@ -534,6 +536,30 @@ define('nori/events/EventCreator',
 
     var _appEventConstants     = require('nori/events/EventConstants'),
         _browserEventConstants = require('nudoru/browser/EventConstants');
+
+    module.exports.applicationWarning = function (message) {
+      var evtObj = {
+        type   : _appEventConstants.APP_WARNING,
+        error  : false,
+        payload: {
+          message: message
+        }
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.applicationError = function (message) {
+      var evtObj = {
+        type   : _appEventConstants.APP_ERROR,
+        error  : true,
+        payload: new Error(message)
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
 
     module.exports.applicationInitialized = function (payload) {
       var evtObj = {
@@ -701,19 +727,9 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
-    module.exports.viewChangedToMobile = function(payload) {
+    module.exports.viewChangedToMobile = function (payload) {
       var evtObj = {
-        type: _appEventConstants.VIEW_CHANGE_TO_MOBILE,
-         payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.viewChangedToDesktop = function(payload) {
-      var evtObj = {
-        type: _appEventConstants.VIEW_CHANGE_TO_DESKTOP,
+        type   : _appEventConstants.VIEW_CHANGE_TO_MOBILE,
         payload: payload
       };
 
@@ -721,9 +737,9 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
-    module.exports.browserScrolled = function(payload) {
+    module.exports.viewChangedToDesktop = function (payload) {
       var evtObj = {
-        type: _browserEventConstants.BROWSER_SCROLLED,
+        type   : _appEventConstants.VIEW_CHANGE_TO_DESKTOP,
         payload: payload
       };
 
@@ -731,9 +747,19 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
-    module.exports.browserResized = function(payload) {
+    module.exports.browserScrolled = function (payload) {
       var evtObj = {
-        type: _browserEventConstants.BROWSER_RESIZED,
+        type   : _browserEventConstants.BROWSER_SCROLLED,
+        payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.browserResized = function (payload) {
+      var evtObj = {
+        type   : _browserEventConstants.BROWSER_RESIZED,
         payload: payload
       };
 
