@@ -7,14 +7,14 @@ define('nori/view/MixinBrowserEvents',
         _browserScrollStream,
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
-        _browserEvents = require('nudoru/browser/EventConstants');
+        _appEvents = require('nori/events/EventCreator');
 
 
     //----------------------------------------------------------------------------
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initializeEventStreams() {
+    function initializeBrowserWindowEventStreams() {
       setCurrentViewPortSize();
       setCurrentViewPortScroll();
       configureUIStreams();
@@ -63,11 +63,11 @@ define('nori/view/MixinBrowserEvents',
     //----------------------------------------------------------------------------
 
     function handleViewPortResize() {
-      Nori.dispatcher().publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
+      _appEvents.browserResized(_currentViewPortSize);
     }
 
     function handleViewPortScroll() {
-      Nori.dispatcher().publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+      _appEvents.browserScrolled(_currentViewPortScroll);
     }
 
     function getCurrentViewPortSize() {
@@ -117,11 +117,11 @@ define('nori/view/MixinBrowserEvents',
     //  API
     //----------------------------------------------------------------------------
 
-    module.exports.initializeEventStreams          = initializeEventStreams;
-    module.exports.setPositionUIElementsOnChangeCB = setPositionUIElementsOnChangeCB;
-    module.exports.getMainScrollingView            = getMainScrollingView;
-    module.exports.setMainScrollingView            = setMainScrollingView;
-    module.exports.getCurrentViewPortSize          = getCurrentViewPortSize;
-    module.exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
+    module.exports.initializeBrowserWindowEventStreams = initializeBrowserWindowEventStreams;
+    module.exports.setPositionUIElementsOnChangeCB     = setPositionUIElementsOnChangeCB;
+    module.exports.getMainScrollingView                = getMainScrollingView;
+    module.exports.setMainScrollingView                = setMainScrollingView;
+    module.exports.getCurrentViewPortSize              = getCurrentViewPortSize;
+    module.exports.getCurrentViewPortScroll            = getCurrentViewPortScroll;
 
   });

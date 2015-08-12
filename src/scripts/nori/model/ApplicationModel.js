@@ -15,10 +15,10 @@ define('nori/model/ApplicationModel',
         throw new Error('nori/model/ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
       }
 
-      _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
         _this.handleModelDataChanged(payload);
       });
-      _dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
         _this.handleUpdateModelData(payload);
       });
     }

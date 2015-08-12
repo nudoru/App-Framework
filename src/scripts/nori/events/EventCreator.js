@@ -190,4 +190,24 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
+    module.exports.browserScrolled = function(payload) {
+      var evtObj = {
+        type: _browserEventConstants.BROWSER_SCROLLED,
+        payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.browserResized = function(payload) {
+      var evtObj = {
+        type: _browserEventConstants.BROWSER_RESIZED,
+        payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
   });

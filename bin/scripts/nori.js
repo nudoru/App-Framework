@@ -721,6 +721,26 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
+    module.exports.browserScrolled = function(payload) {
+      var evtObj = {
+        type: _browserEventConstants.BROWSER_SCROLLED,
+        payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
+    module.exports.browserResized = function(payload) {
+      var evtObj = {
+        type: _browserEventConstants.BROWSER_RESIZED,
+        payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
   });
 
 define('nori/service/rest',
@@ -809,10 +829,10 @@ define('nori/model/ApplicationModel',
         throw new Error('nori/model/ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
       }
 
-      _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
         _this.handleModelDataChanged(payload);
       });
-      _dispatcher.subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
+      Nori.dispatcher().subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
         _this.handleUpdateModelData(payload);
       });
     }
@@ -1956,14 +1976,14 @@ define('nori/view/MixinBrowserEvents',
         _browserScrollStream,
         _browserResizeStream,
         _positionUIElementsOnChangeCB,
-        _browserEvents = require('nudoru/browser/EventConstants');
+        _appEvents = require('nori/events/EventCreator');
 
 
     //----------------------------------------------------------------------------
     //  Initialization
     //----------------------------------------------------------------------------
 
-    function initializeEventStreams() {
+    function initializeBrowserWindowEventStreams() {
       setCurrentViewPortSize();
       setCurrentViewPortScroll();
       configureUIStreams();
@@ -2012,11 +2032,11 @@ define('nori/view/MixinBrowserEvents',
     //----------------------------------------------------------------------------
 
     function handleViewPortResize() {
-      Nori.dispatcher().publish(_browserEvents.BROWSER_RESIZED, _currentViewPortSize);
+      _appEvents.browserResized(_currentViewPortSize);
     }
 
     function handleViewPortScroll() {
-      Nori.dispatcher().publish(_browserEvents.BROWSER_SCROLLED, _currentViewPortScroll);
+      _appEvents.browserScrolled(_currentViewPortScroll);
     }
 
     function getCurrentViewPortSize() {
@@ -2066,12 +2086,12 @@ define('nori/view/MixinBrowserEvents',
     //  API
     //----------------------------------------------------------------------------
 
-    module.exports.initializeEventStreams          = initializeEventStreams;
-    module.exports.setPositionUIElementsOnChangeCB = setPositionUIElementsOnChangeCB;
-    module.exports.getMainScrollingView            = getMainScrollingView;
-    module.exports.setMainScrollingView            = setMainScrollingView;
-    module.exports.getCurrentViewPortSize          = getCurrentViewPortSize;
-    module.exports.getCurrentViewPortScroll        = getCurrentViewPortScroll;
+    module.exports.initializeBrowserWindowEventStreams = initializeBrowserWindowEventStreams;
+    module.exports.setPositionUIElementsOnChangeCB     = setPositionUIElementsOnChangeCB;
+    module.exports.getMainScrollingView                = getMainScrollingView;
+    module.exports.setMainScrollingView                = setMainScrollingView;
+    module.exports.getCurrentViewPortSize              = getCurrentViewPortSize;
+    module.exports.getCurrentViewPortScroll            = getCurrentViewPortScroll;
 
   });
 
