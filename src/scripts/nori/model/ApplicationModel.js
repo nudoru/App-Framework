@@ -1,9 +1,8 @@
 define('nori/model/ApplicationModel',
   function (require, module, exports) {
 
-    var _this,
-      _appMapCollectionList = Object.create(null),
-      _appMapList = Object.create(null);
+    var _mapCollectionList = Object.create(null),
+        _mapList           = Object.create(null);
 
     /**
      * Create a new model collection and initalize
@@ -12,9 +11,10 @@ define('nori/model/ApplicationModel',
      * @returns {*}
      */
     function createMapCollection(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('nori/model/MapCollection'), extras]);
+      var m = Nori.extendWithArray({}, [requireNew('nori/model/MapCollection'), extras]);
+
       m.initialize(initObj);
-      _appMapCollectionList[initObj.id] = m;
+      _mapCollectionList[initObj.id] = m;
       return m;
     }
 
@@ -25,9 +25,10 @@ define('nori/model/ApplicationModel',
      * @returns {*}
      */
     function createMap(initObj, extras) {
-      var m = Nori.extendWithArray({},[requireNew('nori/model/Map'), extras]);
+      var m = Nori.extendWithArray({}, [requireNew('nori/model/Map'), extras]);
+
       m.initialize(initObj);
-      _appMapList[initObj.id] = m;
+      _mapList[initObj.id] = m;
       return m;
     }
 
@@ -37,7 +38,7 @@ define('nori/model/ApplicationModel',
      * @returns {void|*}
      */
     function getMap(storeID) {
-      return _appMapList[storeID];
+      return _mapList[storeID];
     }
 
     /**
@@ -46,11 +47,11 @@ define('nori/model/ApplicationModel',
      * @returns {void|*}
      */
     function getMapCollection(storeID) {
-      return _appMapCollectionList[storeID];
+      return _mapCollectionList[storeID];
     }
 
     module.exports.createMapCollection = createMapCollection;
-    module.exports.createMap = createMap;
-    module.exports.getMap = getMap;
-    module.exports.getMapCollection = getMapCollection;
+    module.exports.createMap           = createMap;
+    module.exports.getMap              = getMap;
+    module.exports.getMapCollection    = getMapCollection;
   });

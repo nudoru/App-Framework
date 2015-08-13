@@ -168,13 +168,11 @@ define('app/model/AppModel',
     function initialize() {
       _this = this;
 
-      initializeReducers();
+      //initializeReducers();
 
       // load data and then dispatch this
       _noriEvents.applicationModelInitialized();
     }
-
-
 
     //----------------------------------------------------------------------------
     //  State / reducers
@@ -192,7 +190,7 @@ define('app/model/AppModel',
      * Handle possible state changes after reducers run
      */
     function handleStateMutation() {
-      //
+      console.log('handle possible state mutation');
     }
 
     /**
@@ -212,19 +210,6 @@ define('app/model/AppModel',
         default:
           return state;
       }
-    }
-
-    //----------------------------------------------------------------------------
-    //  Utility
-    //----------------------------------------------------------------------------
-
-    /**
-     * Utility function
-     * @param obj
-     * @returns {*}
-     */
-    function getLocalStorageObject(obj) {
-      return localStorage[obj];
     }
 
     //----------------------------------------------------------------------------
