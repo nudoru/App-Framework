@@ -182,6 +182,9 @@ define('app/model/AppModel',
       _this = this;
       Nori.dispatcher().registerReceiver(receiveEvents);
 
+      testReducerIdea();
+
+      // load data and then dispatch this
       _noriEvents.applicationModelInitialized();
     }
 
@@ -194,8 +197,42 @@ define('app/model/AppModel',
       // setState(reducerFunction(getCurrentState(), eventObject));
     }
 
+    function testReducerIdea() {
+      var _stateReducers = [],
+          _myState       = {someProp: 'important'};
+
+      function reducer(state, event) {
+        state = state || {}; // default value
+        console.log('reduce', state, event);
+        switch (event.type) {
+          case 'DO_THE_THING':
+            return _.assign({}, state, {prop: event.payload});
+          default:
+            return state;
+        }
+      }
+
+      function combineReducers(reducerArray) {
+        _stateReducers = reducerArray;
+      }
+
+      function update(state, event) {
+        state = state || {};
+        _stateReducers.forEach(function (reducerFunc) {
+          state = reducerFunc(state, event);
+        });
+        return state;
+      }
+
+      combineReducers([reducer, reducer, reducer]);
+
+      _myState = update(_myState, {type: 'DO_THE_THING', payload: 'test'});
+      console.log(_myState);
+    }
+
     /**
      * Experimental reducer function based on Redux
+     * Model state isn't modified, current state is passed in and mutated state returned
      * https://gaearon.github.io/redux/docs/basics/Reducers.html
      */
 
