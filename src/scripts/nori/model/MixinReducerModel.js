@@ -90,7 +90,6 @@ define('nori/model/MixinReducerModel',
      * Template reducer function
      * Model state isn't modified, current state is passed in and mutated state returned
      */
-
     function templateReducerFunction(state, event) {
       state = state || {};
       switch (event.type) {
@@ -102,46 +101,6 @@ define('nori/model/MixinReducerModel',
           return state;
       }
     }
-
-    /*
-     function testReducerIdea() {
-     var ,
-     _myState       = {someProp: 'important'};
-
-     function reducer(state, event) {
-     state = state || {}; // default value
-     console.log('reduce', state, event);
-     switch (event.type) {
-     case 'DO_THE_THING':
-     return _.assign({}, state, {prop: event.payload});
-     default:
-     return state;
-     }
-     }
-
-     function reducerTwo(state, event) {
-     state = state || {}; // default value
-     console.log('reduce', state, event);
-     switch (event.type) {
-     case 'DO_THE_THING':
-     if (event.payload === 'test') {
-     return _.assign({}, state, {propAlso: event.payload});
-     } else {
-     return _.assign({}, state, {propNope: event.payload});
-     }
-     default:
-     return state;
-     }
-     }
-
-
-
-     setReducers([reducer, reducerTwo, reducer]);
-
-     _myState = applyReducersToState(_myState, {type: 'DO_THE_THING', payload: 'test'});
-     console.log(_myState);
-     }
-     */
 
     //----------------------------------------------------------------------------
     //  API
@@ -155,6 +114,4 @@ define('nori/model/MixinReducerModel',
     module.exports.addReducer              = addReducer;
     module.exports.applyReducersToState    = applyReducersToState;
     module.exports.handleStateMutation     = handleStateMutation;
-
-
   });
