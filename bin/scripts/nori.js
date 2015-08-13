@@ -2385,10 +2385,11 @@ define('nori/view/ViewComponent',
 
     /**
      * Determine if the view should rerender on update
+     * TODO implement
      * @returns {boolean}
      */
     function viewShouldRender(previousState) {
-      return this.getState() === previousState;
+      return true;
     }
 
     /**

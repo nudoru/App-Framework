@@ -2,7 +2,6 @@ define('app/App',
   function (require, module, exports) {
 
     var _this,
-        _noriEvents         = require('nori/events/EventCreator'),
         _noriEventConstants = require('nori/events/EventConstants');
 
     /**
@@ -11,10 +10,6 @@ define('app/App',
      */
     function initialize() {
       _this = this;
-
-      // Error handling
-      Nori.dispatcher().subscribe(_noriEventConstants.APP_WARNING, onAppWarning.bind(this));
-      Nori.dispatcher().subscribe(_noriEventConstants.APP_ERROR, onAppError.bind(this));
 
       Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
 
@@ -38,86 +33,10 @@ define('app/App',
       this.view().removeLoadingMessage();
       this.view().render();
 
-      // 4 Start it with the route in the current URL
+      // 4 Start with the route in the current URL
       this.setCurrentRoute(APP.router().getCurrentRoute());
-
-      //restTesting();
     }
-
-    /**
-     * Testing
-     */
-    function restTesting() {
-      var request = require('nori/service/rest');
-
-      request.request({method: 'GET', url: '/items', json: true}).then(
-        function success(data) {
-          console.log(data);
-        }).catch(
-        function error(data) {
-          console.log(data);
-        });
-
-      request.request({
-        method: 'POST',
-        url   : '/items',
-        data  : JSON.stringify({key: 'value'}),
-        json  : true
-      }).then(
-        function success(data) {
-          console.log(data);
-        }).catch(
-        function error(data) {
-          console.log(data);
-        });
-
-      request.request({
-        method: 'PUT',
-        url   : '/items/42',
-        data  : JSON.stringify({key: 'value'}),
-        json  : true
-      }).then(
-        function success(data) {
-          console.log(data);
-        }).catch(
-        function error(data) {
-          console.log(data);
-        });
-
-      request.request({method: 'DELETE', url: '/items/42', json: true}).then(
-        function success(data) {
-          console.log(data);
-        }).catch(
-        function error(data) {
-          console.log(data);
-        });
-    }
-
-    //----------------------------------------------------------------------------
-    //  Handle server or incoming events
-    //----------------------------------------------------------------------------
-
-    //----------------------------------------------------------------------------
-    //  Errors
-    //----------------------------------------------------------------------------
-
-    /**
-     * Handle application warning
-     * @param eventObject
-     */
-    function onAppWarning(eventObject) {
-      console.log('appWarning', eventObject);
-    }
-
-    /**
-     * Handle application error
-     * @param eventObject
-     */
-    function onAppError(eventObject) {
-      console.log('appError', eventObject);
-      throw eventObject.payload;
-    }
-
+    
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -209,6 +128,59 @@ define('app/model/AppModel',
         default:
           return state;
       }
+    }
+
+    //----------------------------------------------------------------------------
+    //  Handle server communication
+    //----------------------------------------------------------------------------
+
+    /**
+     * Testing
+     */
+    function restTesting() {
+      var request = require('nori/service/rest');
+
+      request.request({method: 'GET', url: '/items', json: true}).then(
+        function success(data) {
+          console.log(data);
+        }).catch(
+        function error(data) {
+          console.log(data);
+        });
+
+      request.request({
+        method: 'POST',
+        url   : '/items',
+        data  : JSON.stringify({key: 'value'}),
+        json  : true
+      }).then(
+        function success(data) {
+          console.log(data);
+        }).catch(
+        function error(data) {
+          console.log(data);
+        });
+
+      request.request({
+        method: 'PUT',
+        url   : '/items/42',
+        data  : JSON.stringify({key: 'value'}),
+        json  : true
+      }).then(
+        function success(data) {
+          console.log(data);
+        }).catch(
+        function error(data) {
+          console.log(data);
+        });
+
+      request.request({method: 'DELETE', url: '/items/42', json: true}).then(
+        function success(data) {
+          console.log(data);
+        }).catch(
+        function error(data) {
+          console.log(data);
+        });
     }
 
     //----------------------------------------------------------------------------
