@@ -168,10 +168,50 @@ define('app/model/AppModel',
     function initialize() {
       _this = this;
 
-      _this.initializeReducerModel();
+      initializeReducers();
 
       // load data and then dispatch this
       _noriEvents.applicationModelInitialized();
+    }
+
+
+
+    //----------------------------------------------------------------------------
+    //  State / reducers
+    //----------------------------------------------------------------------------
+
+    /**
+     * Initialize 'nori/model/MixinReducerModel' functionality
+     */
+    function initializeReducers() {
+      _this.initializeReducerModel();
+      _this.addReducer(templateReducerFunction);
+    }
+
+    /**
+     * Handle possible state changes after reducers run
+     */
+    function handleStateMutation() {
+      //
+    }
+
+    /**
+     * Template reducer function
+     * Model state isn't modified, current state is passed in and mutated state returned
+     */
+    function templateReducerFunction(state, event) {
+      state = state || {};
+
+      console.log('templateReducerFunction',state,event);
+
+      switch (event.type) {
+        case _noriEventConstants.MODEL_DATA_CHANGED:
+          // can compose other reducers
+          // return _.assign({}, state, otherStateTransformer(state));
+          return _.assign({}, state, {prop: event.payload.value});
+        default:
+          return state;
+      }
     }
 
     //----------------------------------------------------------------------------
@@ -192,7 +232,7 @@ define('app/model/AppModel',
     //----------------------------------------------------------------------------
 
     module.exports.initialize = initialize;
-
+    module.exports.handleStateMutation = handleStateMutation;
   });
 
 

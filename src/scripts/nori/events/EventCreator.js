@@ -171,6 +171,16 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
+    module.exports.modelStateChanged = function (payload) {
+      var evtObj = {
+        type   : _appEventConstants.MODEL_STATE_CHANGED,
+        payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
     module.exports.renderView = function (targetSelector, htmlStr, id, callback) {
       var evtObj = {
         type   : _appEventConstants.RENDER_VIEW,

@@ -516,6 +516,7 @@ define('nori/events/EventConstants',
       MODEL_DATA_CHANGED     : null,
       MODEL_DATA_SAVED       : null,
       MODEL_DATA_DESTROYED   : null,
+      MODEL_STATE_CHANGED    : null,
       UPDATE_MODEL_DATA      : null,
       RESUME_FROM_MODEL_STATE: null,
       VIEW_INITIALIZED       : null,
@@ -699,6 +700,16 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
+    module.exports.modelStateChanged = function (payload) {
+      var evtObj = {
+        type   : _appEventConstants.MODEL_STATE_CHANGED,
+        payload: payload
+      };
+
+      Nori.dispatcher().publish(evtObj);
+      return evtObj;
+    };
+
     module.exports.renderView = function (targetSelector, htmlStr, id, callback) {
       var evtObj = {
         type   : _appEventConstants.RENDER_VIEW,
@@ -843,41 +854,7 @@ define('nori/model/ApplicationModel',
 
     var _this,
       _appMapCollectionList = Object.create(null),
-      _appMapList = Object.create(null),
-      _appEventConstants = require('nori/events/EventConstants');
-
-    function initializeApplicationModel() {
-      _this = this;
-    }
-
-    function subscribeToModelEvents() {
-      if (!_this) {
-        throw new Error('nori/model/ApplicationModel, cannot subscribeToModelEvents() without initializeApplicationModel() first');
-      }
-
-      Nori.dispatcher().subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
-        _this.handleModelDataChanged(payload);
-      });
-      Nori.dispatcher().subscribe(_appEventConstants.UPDATE_MODEL_DATA, function execute(payload) {
-        _this.handleUpdateModelData(payload);
-      });
-    }
-
-    /**
-     * Respond to the event. To be implemented in sub
-     * @param dataObj
-     */
-    function handleModelDataChanged(dataObj) {
-      console.log('AM, handlemodeldatachange', dataObj);
-    }
-
-    /**
-     * Respond to the event. To be implemented in sub
-     * @param dataObj
-     */
-    function handleUpdateModelData(dataObj) {
-      console.log('AM, handleupdatemodeldata', dataObj);
-    }
+      _appMapList = Object.create(null);
 
     /**
      * Create a new model collection and initalize
@@ -923,10 +900,6 @@ define('nori/model/ApplicationModel',
       return _appMapCollectionList[storeID];
     }
 
-    module.exports.initializeApplicationModel = initializeApplicationModel;
-    module.exports.subscribeToModelEvents = subscribeToModelEvents;
-    module.exports.handleModelDataChanged = handleModelDataChanged;
-    module.exports.handleUpdateModelData = handleUpdateModelData;
     module.exports.createMapCollection = createMapCollection;
     module.exports.createMap = createMap;
     module.exports.getMap = getMap;
@@ -1569,11 +1542,13 @@ define('nori/model/MixinReducerModel',
     //----------------------------------------------------------------------------
 
     /**
-     * Set up event listener
+     * Set up event listener/receiver
      */
     function initializeReducerModel() {
       _this = this;
       Nori.dispatcher().registerReceiver(handleApplicationEvents);
+
+      _this.setState({});
     }
 
     /**
@@ -1583,7 +1558,17 @@ define('nori/model/MixinReducerModel',
      */
     function handleApplicationEvents(eventObject) {
       console.log('ReducerModel Event occured: ', eventObject);
-      setState(applyReducersToState(getState(), eventObject));
+      var nextState = applyReducersToState(getState(), eventObject);
+      setState(nextState);
+
+      _this.handleStateMutation();
+    }
+
+    /**
+     * API hook to handled state updates
+     */
+    function handleStateMutation() {
+      // override this
     }
 
     /**
@@ -1669,6 +1654,7 @@ define('nori/model/MixinReducerModel',
     module.exports.setReducers             = setReducers;
     module.exports.addReducer              = addReducer;
     module.exports.applyReducersToState    = applyReducersToState;
+    module.exports.handleStateMutation     = handleStateMutation;
 
 
   });

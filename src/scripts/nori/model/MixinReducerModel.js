@@ -1,6 +1,7 @@
 /**
  * Mixin for Nori models to add functionality similar to Redux' Reducer and single
- * object state tree concept.
+ * object state tree concept. Mixin should be composed to nori/model/ApplicationModel
+ * during creation of main AppModel
  *
  * https://gaearon.github.io/redux/docs/basics/Reducers.html
  *
@@ -41,11 +42,13 @@ define('nori/model/MixinReducerModel',
     //----------------------------------------------------------------------------
 
     /**
-     * Set up event listener
+     * Set up event listener/receiver
      */
     function initializeReducerModel() {
       _this = this;
       Nori.dispatcher().registerReceiver(handleApplicationEvents);
+
+      _this.setState({});
     }
 
     /**
@@ -55,7 +58,17 @@ define('nori/model/MixinReducerModel',
      */
     function handleApplicationEvents(eventObject) {
       console.log('ReducerModel Event occured: ', eventObject);
-      setState(applyReducersToState(getState(), eventObject));
+      var nextState = applyReducersToState(getState(), eventObject);
+      setState(nextState);
+
+      _this.handleStateMutation();
+    }
+
+    /**
+     * API hook to handled state updates
+     */
+    function handleStateMutation() {
+      // override this
     }
 
     /**
@@ -141,6 +154,7 @@ define('nori/model/MixinReducerModel',
     module.exports.setReducers             = setReducers;
     module.exports.addReducer              = addReducer;
     module.exports.applyReducersToState    = applyReducersToState;
+    module.exports.handleStateMutation     = handleStateMutation;
 
 
   });
