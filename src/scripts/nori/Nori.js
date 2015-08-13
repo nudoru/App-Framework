@@ -138,7 +138,7 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Associate a model with an array of views. When notifyBoundViewsOfModelUpdate
+   * Associate a model with a component view. When notifyBoundViewsOfModelUpdate
    * is called, each view will be notified of the new data
    * @param modelID
    * @param viewID

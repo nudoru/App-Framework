@@ -43,7 +43,7 @@ define('nori/view/MixinComponentViews',
         htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + templateID),
         controller  : createComponentView(componentModule),
         isRouteView : isRoute,
-        mountPoint  : mountPoint
+        mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
       };
     }
 
@@ -58,6 +58,16 @@ define('nori/view/MixinComponentViews',
         requireNew('nori/view/MixinEventDelegator'),
         extras
       ]);
+    }
+
+    /**
+     * Sugar for the mapViewComponent
+     * @param templateID
+     * @param controllerModID
+     * @param mountPoint
+     */
+    function createViewComponent(templateID, controllerModID, mountPoint) {
+      mapViewComponent(templateID, controllerModID, false, mountPoint);
     }
 
     /**
@@ -145,23 +155,8 @@ define('nori/view/MixinComponentViews',
       _currentRouteViewID = '';
     }
 
-    /**
-     * Sugar for the mapViewComponent
-     * @param templateID
-     * @param controllerModID
-     * @param mountPoint
-     */
-    function createViewComponent(templateID, controllerModID, mountPoint) {
-      mapViewComponent(templateID, controllerModID, false, mountPoint);
-    }
 
-    /**
-     * Sugar for showViewComponent
-     * @param templateID
-     */
-    function renderComponent(templateID) {
-      showViewComponent(templateID);
-    }
+
 
     //----------------------------------------------------------------------------
     //  API
@@ -169,8 +164,7 @@ define('nori/view/MixinComponentViews',
 
     module.exports.setRouteViewMountPoint  = setRouteViewMountPoint;
     module.exports.template                = getTemplate;
-    module.exports.createViewComponent     = createViewComponent;
-    module.exports.renderComponent         = renderComponent;
+    //module.exports.createViewComponent     = createViewComponent;
     module.exports.mapViewComponent        = mapViewComponent;
     module.exports.showViewComponent       = showViewComponent;
     module.exports.mapRouteToViewComponent = mapRouteToViewComponent;
