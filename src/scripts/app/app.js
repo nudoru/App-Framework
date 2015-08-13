@@ -2,6 +2,8 @@
  * Application controller
  * The control is only responsible for bootstrapping the application. All other
  * functionality should reside in other modules.
+ *
+ * Startup steps are numbered below
  */
 
 define('app/App',
@@ -42,7 +44,7 @@ define('app/App',
       // 4 Start with the route in the current URL
       this.setCurrentRoute(APP.router().getCurrentRoute());
     }
-    
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------

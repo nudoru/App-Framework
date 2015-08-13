@@ -12,8 +12,13 @@
       // Create the application instance
       window.APP = Nori.createApplication(require('app/App'));
 
-      // Kick off the bootstrapping process
-      APP.initialize();
+      // Might need this janky timeout in some situations
+      setTimeout(startApplication, 1);
+
+      function startApplication() {
+        // Kick off the bootstrapping process
+        APP.initialize();
+      }
 
     };
   }

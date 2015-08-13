@@ -36,7 +36,7 @@ define('app/App',
       // 4 Start with the route in the current URL
       this.setCurrentRoute(APP.router().getCurrentRoute());
     }
-    
+
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
@@ -486,8 +486,13 @@ define('app/view/ViewComponent',
       // Create the application instance
       window.APP = Nori.createApplication(require('app/App'));
 
-      // Kick off the bootstrapping process
-      APP.initialize();
+      // Might need this janky timeout in some situations
+      setTimeout(startApplication, 1);
+
+      function startApplication() {
+        // Kick off the bootstrapping process
+        APP.initialize();
+      }
 
     };
   }

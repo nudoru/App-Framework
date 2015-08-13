@@ -35,7 +35,7 @@ var Nori = (function () {
   }
 
   function getCurrentRoute() {
-    return _.merge({}, _config.currentRoute);
+    return _.assign({}, _config.currentRoute);
   }
 
   //----------------------------------------------------------------------------
