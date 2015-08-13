@@ -2,8 +2,17 @@ define('app/model/AppModel',
   function (require, module, exports) {
 
     var _this,
-        _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants');
+        _state = Object.create(null),
+          _noriEvents = require('nori/events/EventCreator'),
+          _noriEventConstants = require('nori/events/EventConstants');
+
+    //----------------------------------------------------------------------------
+    //  Accessors
+    //----------------------------------------------------------------------------
+
+    function getState() {
+      return _.assign({}, _state);
+    }
 
     //----------------------------------------------------------------------------
     //  Init
@@ -57,4 +66,5 @@ define('app/model/AppModel',
     //----------------------------------------------------------------------------
 
     module.exports.initialize = initialize;
+    module.exports.getState   = getState;
   });

@@ -6,7 +6,7 @@ define('app/App',
   function (require, module, exports) {
 
     var _this,
-        _appEventConstants = require('nori/events/EventConstants');
+        _noriEventConstants = require('nori/events/EventConstants');
 
     /**
      * Application bootstrapper. Create the model and views and pass to the app
@@ -15,7 +15,7 @@ define('app/App',
     function initialize() {
       _this = this;
 
-      Nori.dispatcher().subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
+      Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
 
       // 1
       this.initializeApplication({

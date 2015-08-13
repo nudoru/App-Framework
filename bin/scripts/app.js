@@ -2,7 +2,7 @@ define('app/App',
   function (require, module, exports) {
 
     var _this,
-        _appEventConstants = require('nori/events/EventConstants');
+        _noriEventConstants = require('nori/events/EventConstants');
 
     /**
      * Application bootstrapper. Create the model and views and pass to the app
@@ -11,7 +11,7 @@ define('app/App',
     function initialize() {
       _this = this;
 
-      Nori.dispatcher().subscribe(_appEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
+      Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
 
       // 1
       this.initializeApplication({
@@ -119,8 +119,17 @@ define('app/model/AppModel',
   function (require, module, exports) {
 
     var _this,
-        _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants');
+        _state = Object.create(null),
+          _noriEvents = require('nori/events/EventCreator'),
+          _noriEventConstants = require('nori/events/EventConstants');
+
+    //----------------------------------------------------------------------------
+    //  Accessors
+    //----------------------------------------------------------------------------
+
+    function getState() {
+      return _.assign({}, _state);
+    }
 
     //----------------------------------------------------------------------------
     //  Init
@@ -139,7 +148,6 @@ define('app/model/AppModel',
      */
     function receiveEvents(eventObject) {
       //console.log('Event occured: ',eventObject);
-
       // newState = reducerFunction(getCurrentState(), eventObject);
     }
 
@@ -175,6 +183,7 @@ define('app/model/AppModel',
     //----------------------------------------------------------------------------
 
     module.exports.initialize = initialize;
+    module.exports.getState   = getState;
   });
 
 
@@ -252,8 +261,8 @@ define('app/view/AppView',
   function (require, module, exports) {
 
     var _this,
-        _appEvents = require('nori/events/EventCreator'),
-        _appEventConstants     = require('nori/events/EventConstants'),
+        _noriEvents            = require('nori/events/EventCreator'),
+        _noriEventConstants    = require('nori/events/EventConstants'),
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
     //----------------------------------------------------------------------------
@@ -263,7 +272,7 @@ define('app/view/AppView',
     function initialize() {
       _this = this;
 
-      _this.initializeApplicationView(['applicationscaffold','applicationcomponentsscaffold']);
+      _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
       _this.setRouteViewMountPoint('#contents');
 
       configureApplicationViewEvents();
@@ -275,24 +284,24 @@ define('app/view/AppView',
       APP.mapRouteView('/controls', 'debug-controls', 'app/view/AppSubView');
       APP.mapRouteView('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
-      _appEvents.applicationViewInitialized();
+      _noriEvents.applicationViewInitialized();
     }
 
     function render() {
       /*
-      _this.setEvents({
-        'click #button-id': handleButton
-      });
-      _this.delegateEvents();
-      */
+       _this.setEvents({
+       'click #button-id': handleButton
+       });
+       _this.delegateEvents();
+       */
     }
 
     function configureApplicationViewEvents() {
-      Nori.dispatcher().subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
+      Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
         _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
-      Nori.dispatcher().subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
+      Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
         _this.alert(payload.payload.message, payload.payload.title);
       });
     }

@@ -2,8 +2,8 @@ define('app/view/AppView',
   function (require, module, exports) {
 
     var _this,
-        _appEvents = require('nori/events/EventCreator'),
-        _appEventConstants     = require('nori/events/EventConstants'),
+        _noriEvents            = require('nori/events/EventCreator'),
+        _noriEventConstants    = require('nori/events/EventConstants'),
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
     //----------------------------------------------------------------------------
@@ -13,7 +13,7 @@ define('app/view/AppView',
     function initialize() {
       _this = this;
 
-      _this.initializeApplicationView(['applicationscaffold','applicationcomponentsscaffold']);
+      _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
       _this.setRouteViewMountPoint('#contents');
 
       configureApplicationViewEvents();
@@ -25,24 +25,24 @@ define('app/view/AppView',
       APP.mapRouteView('/controls', 'debug-controls', 'app/view/AppSubView');
       APP.mapRouteView('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
-      _appEvents.applicationViewInitialized();
+      _noriEvents.applicationViewInitialized();
     }
 
     function render() {
       /*
-      _this.setEvents({
-        'click #button-id': handleButton
-      });
-      _this.delegateEvents();
-      */
+       _this.setEvents({
+       'click #button-id': handleButton
+       });
+       _this.delegateEvents();
+       */
     }
 
     function configureApplicationViewEvents() {
-      Nori.dispatcher().subscribe(_appEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
+      Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
         _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
       });
 
-      Nori.dispatcher().subscribe(_appEventConstants.ALERT_USER, function onAlertUser(payload) {
+      Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
         _this.alert(payload.payload.message, payload.payload.title);
       });
     }
