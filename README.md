@@ -245,7 +245,7 @@ Subviews are mapped to the application view by configuring them with a route or 
 
 ```javascript
 // false indicates it’s not a route view
-mapView(‘UniqueID’, ‘ModuleName’, false, ‘mountPointSelector’);
+mapViewComponent(‘UniqueID’, ‘ModuleName’, false, ‘mountPointSelector’);
 ```
 
 The `UniqueID` maps to an HTML template that should be located in the main HTML file. A prefix of `template__` is prepended to the id like so:

@@ -1,9 +1,9 @@
 /**
- * Base module for app subviews for components
+ * Base module for components
  * Must be extended with custom modules
  */
 
-define('nori/view/ApplicationSubView',
+define('nori/view/ApplicationComponent',
   function (require, module, exports) {
 
     var _isInitialized = false,
@@ -22,7 +22,7 @@ define('nori/view/ApplicationSubView',
      * Initialization
      * @param initObj
      */
-    function initializeSubView(initObj) {
+    function initializeComponent(initObj) {
       if (!isInitialized()) {
         _initObj     = initObj;
         _id          = initObj.id;
@@ -149,7 +149,7 @@ define('nori/view/ApplicationSubView',
      */
     function mount() {
       if (!_html) {
-        throw new Error('SubView ' + _id + ' cannot mount with no HTML. Call render() first');
+        throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first');
       }
 
       if (this.viewWillMount) {
@@ -266,7 +266,7 @@ define('nori/view/ApplicationSubView',
     //  API
     //----------------------------------------------------------------------------
 
-    module.exports.initializeSubView = initializeSubView;
+    module.exports.initializeComponent = initializeComponent;
 
     module.exports.isInitialized = isInitialized;
     module.exports.setState      = setState;

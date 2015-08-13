@@ -26,7 +26,6 @@ define('nori/events/EventConstants',
       VIEW_CHANGE_TO_DESKTOP : null,
       ROUTE_CHANGED          : null,
       CHANGE_ROUTE           : null,
-      SUBVIEW_STORE_STATE    : null,
       RENDER_VIEW            : null
     }));
 

@@ -1,9 +1,9 @@
 /**
- * Template for an app subview or module. Override lifecycle function hooks.
+ * Template for an app component view. Override lifecycle function hooks.
  * Extended from Nori.View.ApplicationSubView
  */
 
-define('app/view/AppSubView',
+define('app/view/ComponentView',
   function (require, module, exports) {
 
     var _this;
@@ -15,7 +15,7 @@ define('app/view/AppSubView',
     function initialize(initObj) {
       if(!this.isInitialized()) {
         _this = this;
-        this.initializeSubView(initObj);
+        this.initializeComponent(initObj);
         // associate with stores. viewWillUpdate() fires when it changes
         //this.bindMap('SomeCollection');
         // custom init below here

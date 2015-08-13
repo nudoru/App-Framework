@@ -2,13 +2,13 @@ var Nori = (function () {
   var _config,
       _model,
       _view,
-      _modelViewBindingMap  = Object.create(null),
-      _appEvents            = require('nori/events/EventCreator'),
-      _appEventConstants    = require('nori/events/EventConstants'),
-      _browserEvents        = require('nudoru/browser/EventConstants'),
-      _objectUtils          = require('nudoru/core/ObjectUtils'),
-      _dispatcher           = require('nori/utils/Dispatcher'),
-      _router               = require('nori/utils/Router');
+      _modelViewBindingMap = Object.create(null),
+      _appEvents           = require('nori/events/EventCreator'),
+      _appEventConstants   = require('nori/events/EventConstants'),
+      _browserEvents       = require('nudoru/browser/EventConstants'),
+      _objectUtils         = require('nudoru/core/ObjectUtils'),
+      _dispatcher          = require('nori/utils/Dispatcher'),
+      _router              = require('nori/utils/Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -103,7 +103,7 @@ var Nori = (function () {
 
   // http://mithril.js.org/mithril.prop.html
   function prop(store) {
-    if(isFunction(store.then)) {
+    if (isFunction(store.then)) {
 
     }
 
@@ -180,7 +180,7 @@ var Nori = (function () {
 
     if (viewArry) {
       viewArry.forEach(function (view) {
-        _view.updateView(view);
+        _view.updateViewComponent(view);
       });
     }
   }
@@ -244,10 +244,10 @@ var Nori = (function () {
    * @param templateID
    * @param controller
    */
-  function mapRouteView(route, templateID, controller) {
+  function mapRouteToViewComponent(route, templateID, controller) {
     addRouteToConfig(route);
 
-    _view.mapRouteView(templateID, controller);
+    _view.mapRouteToViewComponent(templateID, controller);
 
     _router.when(route, {
       templateID: templateID,
@@ -256,17 +256,17 @@ var Nori = (function () {
         // route: route,
         // templateID: routeObj.templateID,
         // queryData: queryStrObj
-        showRouteView(dataObj);
+        showRouteViewComponent(dataObj);
       }
     });
   }
 
   /**
-   * Pass to the view to show the subview. injects any previous data from the model
+   * Pass to the view to show the component.
    * @param dataObj
    */
-  function showRouteView(dataObj) {
-    _view.showRouteView(dataObj);
+  function showRouteViewComponent(dataObj) {
+    _view.showRouteViewComponent(dataObj);
   }
 
   //----------------------------------------------------------------------------
@@ -329,7 +329,7 @@ var Nori = (function () {
   function createApplicationView(extras) {
     return extendWithArray({}, [
       require('nori/view/ApplicationView'),
-      require('nori/view/MixinSubViewRoutes'),
+      require('nori/view/MixinComponentViews'),
       requireNew('nori/view/MixinEventDelegator'),
       extras
     ]);
@@ -340,24 +340,24 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeApplication : initializeApplication,
-    config                : getConfig,
-    dispatcher            : getDispatcher,
-    router                : getRouter,
-    model                 : getModel,
-    view                  : getView,
-    createApplication     : createApplication,
-    createApplicationModel: createApplicationModel,
-    createApplicationView : createApplicationView,
-    setCurrentRoute       : setCurrentRoute,
-    getCurrentRoute       : getCurrentRoute,
-    mapRouteView          : mapRouteView,
-    extend                : extend,
-    extendWithArray       : extendWithArray,
-    bindToMap             : bindToMap,
-    handleModelUpdate     : handleModelUpdate,
-    prop                  : prop,
-    withAttr              : withAttr
+    initializeApplication  : initializeApplication,
+    config                 : getConfig,
+    dispatcher             : getDispatcher,
+    router                 : getRouter,
+    model                  : getModel,
+    view                   : getView,
+    createApplication      : createApplication,
+    createApplicationModel : createApplicationModel,
+    createApplicationView  : createApplicationView,
+    setCurrentRoute        : setCurrentRoute,
+    getCurrentRoute        : getCurrentRoute,
+    mapRouteToViewComponent: mapRouteToViewComponent,
+    extend                 : extend,
+    extendWithArray        : extendWithArray,
+    bindToMap              : bindToMap,
+    handleModelUpdate      : handleModelUpdate,
+    prop                   : prop,
+    withAttr               : withAttr
   };
 
 }

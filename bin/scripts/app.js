@@ -182,8 +182,8 @@ define('app/model/AppModel',
      * Initialize 'nori/model/MixinReducerModel' functionality
      */
     function initializeReducers() {
+      _this.addReducer(baseReducerFunction);
       _this.initializeReducerModel();
-      _this.addReducer(templateReducerFunction);
     }
 
     /**
@@ -197,11 +197,10 @@ define('app/model/AppModel',
      * Template reducer function
      * Model state isn't modified, current state is passed in and mutated state returned
      */
-    function templateReducerFunction(state, event) {
+    function baseReducerFunction(state, event) {
       state = state || {};
-
-      console.log('templateReducerFunction',state,event);
-
+      console.log('baseReducerFunction',state,event);
+      // add switch for every event type that needs to mutate state
       switch (event.type) {
         case _noriEventConstants.MODEL_DATA_CHANGED:
           // can compose other reducers
@@ -221,7 +220,68 @@ define('app/model/AppModel',
   });
 
 
-define('app/view/AppSubView',
+define('app/view/AppView',
+  function (require, module, exports) {
+
+    var _this,
+        _noriEvents            = require('nori/events/EventCreator'),
+        _noriEventConstants    = require('nori/events/EventConstants'),
+        _browserEventConstants = require('nudoru/browser/EventConstants');
+
+    //----------------------------------------------------------------------------
+    //  Initialization
+    //----------------------------------------------------------------------------
+
+    function initialize() {
+      _this = this;
+
+      _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+      _this.setRouteViewMountPoint('#contents');
+
+      configureApplicationViewEvents();
+
+      APP.mapRouteToViewComponent('/', 'default', 'app/view/ComponentView');
+
+      // For testing
+      APP.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ComponentView');
+      APP.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ComponentView');
+      APP.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
+
+      _noriEvents.applicationViewInitialized();
+    }
+
+    function render() {
+      /*
+       _this.setEvents({
+       'click #button-id': handleButton
+       });
+       _this.delegateEvents();
+       */
+    }
+
+    function configureApplicationViewEvents() {
+      Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
+        _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+      });
+
+      Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
+        _this.alert(payload.payload.message, payload.payload.title);
+      });
+    }
+
+    //----------------------------------------------------------------------------
+    //  Custom
+    //----------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
+
+    module.exports.initialize = initialize;
+    module.exports.render     = render;
+  });
+
+define('app/view/ComponentView',
   function (require, module, exports) {
 
     var _this;
@@ -233,7 +293,7 @@ define('app/view/AppSubView',
     function initialize(initObj) {
       if(!this.isInitialized()) {
         _this = this;
-        this.initializeSubView(initObj);
+        this.initializeComponent(initObj);
         // associate with stores. viewWillUpdate() fires when it changes
         //this.bindMap('SomeCollection');
         // custom init below here
@@ -291,67 +351,6 @@ define('app/view/AppSubView',
     //module.exports.viewDidUnmount = viewDidUnmount;
   });
 
-define('app/view/AppView',
-  function (require, module, exports) {
-
-    var _this,
-        _noriEvents            = require('nori/events/EventCreator'),
-        _noriEventConstants    = require('nori/events/EventConstants'),
-        _browserEventConstants = require('nudoru/browser/EventConstants');
-
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
-
-    function initialize() {
-      _this = this;
-
-      _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-      _this.setRouteViewMountPoint('#contents');
-
-      configureApplicationViewEvents();
-
-      APP.mapRouteView('/', 'default', 'app/view/AppSubView');
-
-      // For testing
-      APP.mapRouteView('/styles', 'debug-styletest', 'app/view/AppSubView');
-      APP.mapRouteView('/controls', 'debug-controls', 'app/view/AppSubView');
-      APP.mapRouteView('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
-
-      _noriEvents.applicationViewInitialized();
-    }
-
-    function render() {
-      /*
-       _this.setEvents({
-       'click #button-id': handleButton
-       });
-       _this.delegateEvents();
-       */
-    }
-
-    function configureApplicationViewEvents() {
-      Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
-        _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
-      });
-
-      Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
-        _this.alert(payload.payload.message, payload.payload.title);
-      });
-    }
-
-    //----------------------------------------------------------------------------
-    //  Custom
-    //----------------------------------------------------------------------------
-
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
-
-    module.exports.initialize = initialize;
-    module.exports.render     = render;
-  });
-
 define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
@@ -368,7 +367,7 @@ define('app/view/DebugControlsTestingSubView',
     function initialize(initObj) {
       if (!this.isInitialized()) {
         _lIpsum.initialize();
-        this.initializeSubView(initObj);
+        this.initializeComponent(initObj);
       }
     }
 

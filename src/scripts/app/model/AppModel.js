@@ -26,8 +26,8 @@ define('app/model/AppModel',
      * Initialize 'nori/model/MixinReducerModel' functionality
      */
     function initializeReducers() {
+      _this.addReducer(baseReducerFunction);
       _this.initializeReducerModel();
-      _this.addReducer(templateReducerFunction);
     }
 
     /**
@@ -41,11 +41,10 @@ define('app/model/AppModel',
      * Template reducer function
      * Model state isn't modified, current state is passed in and mutated state returned
      */
-    function templateReducerFunction(state, event) {
+    function baseReducerFunction(state, event) {
       state = state || {};
-
-      console.log('templateReducerFunction',state,event);
-
+      console.log('baseReducerFunction',state,event);
+      // add switch for every event type that needs to mutate state
       switch (event.type) {
         case _noriEventConstants.MODEL_DATA_CHANGED:
           // can compose other reducers

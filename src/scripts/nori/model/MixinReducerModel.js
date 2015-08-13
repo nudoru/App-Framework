@@ -47,8 +47,11 @@ define('nori/model/MixinReducerModel',
       _this = this;
       Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
-      // Should be initalized w/ the "root" reducer function
-      _this.setState({});
+      if (!_stateReducers) {
+        throw new Error('ReducerModel, must set a reducer before initialization');
+      }
+
+      applyReducers({});
     }
 
     /**
@@ -58,6 +61,10 @@ define('nori/model/MixinReducerModel',
      */
     function handleApplicationEvents(eventObject) {
       console.log('ReducerModel Event occured: ', eventObject);
+      applyReducers(eventObject);
+    }
+
+    function applyReducers(eventObject) {
       var nextState = applyReducersToState(getState(), eventObject);
       setState(nextState);
 
@@ -102,9 +109,9 @@ define('nori/model/MixinReducerModel',
       //  }
       //}
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
 
     module.exports.initializeReducerModel  = initializeReducerModel;
     module.exports.getState                = getState;
@@ -112,6 +119,7 @@ define('nori/model/MixinReducerModel',
     module.exports.handleApplicationEvents = handleApplicationEvents;
     module.exports.setReducers             = setReducers;
     module.exports.addReducer              = addReducer;
+    module.exports.applyReducers           = applyReducers;
     module.exports.applyReducersToState    = applyReducersToState;
     module.exports.handleStateMutation     = handleStateMutation;
   });

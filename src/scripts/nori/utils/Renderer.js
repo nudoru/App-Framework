@@ -1,5 +1,5 @@
 /**
- * Utility to handle all subview DOM attachment tasks
+ * Utility to handle all view DOM attachment tasks
  *
  * TODO - implement virutal-dom https://github.com/Matt-Esch/virtual-dom
  */
