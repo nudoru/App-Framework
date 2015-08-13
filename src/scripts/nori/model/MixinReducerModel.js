@@ -12,10 +12,8 @@ define('nori/model/MixinReducerModel',
   function (require, module, exports) {
 
     var _this,
-        _state              = Object.create(null),// Basic applicaiton state, could be a Map or a MapCollection
-        _stateReducers      = [],
-        _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants');
+        _state         = Object.create(null),// Basic applicaiton state, could be a Map or a MapCollection
+        _stateReducers = [];
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -90,21 +88,21 @@ define('nori/model/MixinReducerModel',
      * Template reducer function
      * Model state isn't modified, current state is passed in and mutated state returned
      */
-    function templateReducerFunction(state, event) {
-      state = state || {};
-      switch (event.type) {
-        case _noriEventConstants.MODEL_DATA_CHANGED:
-          // can compose other reducers
-          // return _.assign({}, state, otherStateTransformer(state));
-          return _.assign({}, state, {prop: event.payload.value});
-        default:
-          return state;
-      }
-    }
+      //function templateReducerFunction(state, event) {
+      //  state = state || {};
+      //  switch (event.type) {
+      //    case _noriEventConstants.MODEL_DATA_CHANGED:
+      //      // can compose other reducers
+      //      // return _.assign({}, state, otherStateTransformer(state));
+      //      return _.assign({}, state, {prop: event.payload.value});
+      //    default:
+      //      return state;
+      //  }
+      //}
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
 
     module.exports.initializeReducerModel  = initializeReducerModel;
     module.exports.getState                = getState;
