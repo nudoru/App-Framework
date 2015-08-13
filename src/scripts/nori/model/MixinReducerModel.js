@@ -3,16 +3,17 @@
  * object state tree concept. Mixin should be composed to nori/model/ApplicationModel
  * during creation of main AppModel
  *
+ * https://gaearon.github.io/redux/docs/api/Store.html
  * https://gaearon.github.io/redux/docs/basics/Reducers.html
  *
- * Created 8.13.15
+ * Created 8/13/15
  */
 
 define('nori/model/MixinReducerModel',
   function (require, module, exports) {
 
     var _this,
-        _state         = Object.create(null),// Basic applicaiton state, could be a Map or a MapCollection
+        _state         = requireNew('nori/model/SimpleStore'),
         _stateReducers = [];
 
     //----------------------------------------------------------------------------
@@ -20,11 +21,11 @@ define('nori/model/MixinReducerModel',
     //----------------------------------------------------------------------------
 
     function getState() {
-      return _.assign({}, _state);
+      return _state.getState();
     }
 
-    function setState(nextState) {
-      _state = nextState;
+    function setState(state) {
+      _state.setState(state);
     }
 
     function setReducers(reducerArray) {
@@ -46,6 +47,7 @@ define('nori/model/MixinReducerModel',
       _this = this;
       Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
+      // Should be initalized w/ the "root" reducer function
       _this.setState({});
     }
 
@@ -100,9 +102,9 @@ define('nori/model/MixinReducerModel',
       //  }
       //}
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
 
     module.exports.initializeReducerModel  = initializeReducerModel;
     module.exports.getState                = getState;

@@ -416,7 +416,7 @@ define('nori/utils/Templating',
         return _templateHTMLCache[id];
       }
 
-      var src       = document.getElementById(id),
+      var src = document.getElementById(id),
           srchtml, cleanhtml;
 
       if (src) {
@@ -473,10 +473,20 @@ define('nori/utils/Templating',
       return str.trim();
     }
 
+    function addClientSideTemplateToDOM(id, html) {
+      var s       = document.createElement('script');
+      s.type      = 'text/template';
+      s.id        = id;
+      s.innerHTML = html;
+      document.getElementsByTagName('head')[0].appendChild(s);
+    }
+
     module.exports.getSource   = getSource;
     module.exports.getTemplate = getTemplate;
     module.exports.asHTML      = asHTML;
     module.exports.asElement   = asElement;
+
+    module.exports.addClientSideTemplateToDOM = addClientSideTemplateToDOM;
 
   });
 
@@ -1496,7 +1506,7 @@ define('nori/model/MixinReducerModel',
   function (require, module, exports) {
 
     var _this,
-        _state         = Object.create(null),// Basic applicaiton state, could be a Map or a MapCollection
+        _state         = requireNew('nori/model/SimpleStore'),
         _stateReducers = [];
 
     //----------------------------------------------------------------------------
@@ -1504,11 +1514,11 @@ define('nori/model/MixinReducerModel',
     //----------------------------------------------------------------------------
 
     function getState() {
-      return _.assign({}, _state);
+      return _state.getState();
     }
 
-    function setState(nextState) {
-      _state = nextState;
+    function setState(state) {
+      _state.setState(state);
     }
 
     function setReducers(reducerArray) {
@@ -1530,6 +1540,7 @@ define('nori/model/MixinReducerModel',
       _this = this;
       Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
+      // Should be initalized w/ the "root" reducer function
       _this.setState({});
     }
 
@@ -1584,9 +1595,9 @@ define('nori/model/MixinReducerModel',
       //  }
       //}
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //  API
+    //----------------------------------------------------------------------------
 
     module.exports.initializeReducerModel  = initializeReducerModel;
     module.exports.getState                = getState;
@@ -1596,6 +1607,31 @@ define('nori/model/MixinReducerModel',
     module.exports.addReducer              = addReducer;
     module.exports.applyReducersToState    = applyReducersToState;
     module.exports.handleStateMutation     = handleStateMutation;
+  });
+
+define('nori/model/SimpleStore',
+  function (require, module, exports) {
+    var _state = Object.create(null);
+
+    /**
+     * Return a copy of the state
+     * @returns {void|*}
+     */
+    function getState() {
+      return _.assign({}, _state);
+    }
+
+    /**
+     * Sets the state
+     * @param state
+     */
+    function setState(state) {
+      _state = state;
+    }
+
+    module.exports.getState = getState;
+    module.exports.setState = setState;
+
   });
 
 define('nori/view/ApplicationSubView',

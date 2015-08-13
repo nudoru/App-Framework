@@ -1,10 +1,7 @@
 /*
  Simple wrapper for Underscore / HTML templates
-
  Matt Perkins
  4/7/15
-
- Refer - http://ejohn.org/blog/javascript-micro-templating/
  */
 define('nori/utils/Templating',
   function (require, module, exports) {
@@ -23,7 +20,7 @@ define('nori/utils/Templating',
         return _templateHTMLCache[id];
       }
 
-      var src       = document.getElementById(id),
+      var src = document.getElementById(id),
           srchtml, cleanhtml;
 
       if (src) {
@@ -80,9 +77,19 @@ define('nori/utils/Templating',
       return str.trim();
     }
 
+    function addClientSideTemplateToDOM(id, html) {
+      var s       = document.createElement('script');
+      s.type      = 'text/template';
+      s.id        = id;
+      s.innerHTML = html;
+      document.getElementsByTagName('head')[0].appendChild(s);
+    }
+
     module.exports.getSource   = getSource;
     module.exports.getTemplate = getTemplate;
     module.exports.asHTML      = asHTML;
     module.exports.asElement   = asElement;
+
+    module.exports.addClientSideTemplateToDOM = addClientSideTemplateToDOM;
 
   });
