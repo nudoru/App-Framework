@@ -16,11 +16,11 @@
 
 define('nori/utils/Dispatcher',
   function (require, module, exports) {
-    var _subjectMap     = {},
-        _receiverMap    = {},
-        _id             = 0,
-        _log            = [],
-        _queue          = [],
+    var _subjectMap  = {},
+        _receiverMap = {},
+        _id          = 0,
+        _log         = [],
+        _queue       = [],
         _timerObservable,
         _timerSubscription,
         _timerPausable;
@@ -71,32 +71,16 @@ define('nori/utils/Dispatcher',
     }
 
     /**
-     * Maps a module/command's execute() function as the handler for onNext
-     * @param evtStr Event name string
-     * @param cmdModule Module name
-     * @param once will complete/dispose after one fire
-     * @returns {*}
-     */
-    //function subscribeCommand(evtStr, cmdModule, once) {
-    //  var cmd = require(cmdModule);
-    //  if (cmd.hasOwnProperty('execute')) {
-    //    return subscribe(evtStr, cmd.execute, once);
-    //  } else {
-    //    throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
-    //  }
-    //}
-
-    /**
      * Initialize the event processing timer or resume a paused timer
      */
     function initTimer() {
-      if(_timerObservable) {
+      if (_timerObservable) {
         _timerPausable.onNext(true);
         return;
       }
 
-      _timerPausable = new Rx.Subject();
-      _timerObservable = Rx.Observable.interval(1).pausable(_timerPausable);
+      _timerPausable     = new Rx.Subject();
+      _timerObservable   = Rx.Observable.interval(1).pausable(_timerPausable);
       _timerSubscription = _timerObservable.subscribe(processNextEvent);
     }
 
@@ -105,7 +89,7 @@ define('nori/utils/Dispatcher',
      */
     function processNextEvent() {
       var evt = _queue.shift();
-      if(evt) {
+      if (evt) {
         //console.log('Procesing event: ',evt);
         dispatchToReceivers(evt);
         dispatchToSubscribers(evt);
@@ -235,9 +219,8 @@ define('nori/utils/Dispatcher',
       }
     }
 
-    module.exports.subscribe   = subscribe;
-    module.exports.unsubscribe = unsubscribe;
-    //module.exports.subscribeCommand   = subscribeCommand;
+    module.exports.subscribe          = subscribe;
+    module.exports.unsubscribe        = unsubscribe;
     module.exports.publish            = publish;
     module.exports.getLog             = getLog;
     module.exports.registerReceiver   = registerReceiver;

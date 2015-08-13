@@ -2,7 +2,6 @@ var Nori = (function () {
   var _config,
       _model,
       _view,
-      //_dispatcherCommandMap = Object.create(null),
       _modelViewBindingMap  = Object.create(null),
       _appEvents            = require('nori/events/EventCreator'),
       _appEventConstants    = require('nori/events/EventConstants'),
@@ -240,30 +239,6 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Maps an event to trigger a command when it's published
-   * @param evt The event string
-   * @param cmdModuleName Module name of a command object, req execute(dataObj) function
-   */
-  //function mapEventCommand(evt, cmdModuleName) {
-  //  _dispatcherCommandMap[evt] = _dispatcher.subscribeCommand(evt, cmdModuleName);
-  //}
-
-  /**
-   * Set the router to execute the command when on the route
-   * @param route
-   * @param templateID
-   * @param command
-   */
-  //function mapRouteCommand(route, templateID, command) {
-  //  _router.when(route, {
-  //    templateID: templateID,
-  //    controller: function executeRouteCommand(dataObj) {
-  //      command.execute(dataObj);
-  //    }
-  //  });
-  //}
-
-  /**
    * Maps a route to a view controller
    * @param route
    * @param templateID
@@ -377,8 +352,6 @@ var Nori = (function () {
     setCurrentRoute       : setCurrentRoute,
     getCurrentRoute       : getCurrentRoute,
     mapRouteView          : mapRouteView,
-    //mapRouteCommand            : mapRouteCommand,
-    //mapEventCommand            : mapEventCommand,
     extend                : extend,
     extendWithArray       : extendWithArray,
     bindToMap             : bindToMap,

@@ -1,10 +1,10 @@
 define('nori/utils/Dispatcher',
   function (require, module, exports) {
-    var _subjectMap     = {},
-        _receiverMap    = {},
-        _id             = 0,
-        _log            = [],
-        _queue          = [],
+    var _subjectMap  = {},
+        _receiverMap = {},
+        _id          = 0,
+        _log         = [],
+        _queue       = [],
         _timerObservable,
         _timerSubscription,
         _timerPausable;
@@ -55,32 +55,16 @@ define('nori/utils/Dispatcher',
     }
 
     /**
-     * Maps a module/command's execute() function as the handler for onNext
-     * @param evtStr Event name string
-     * @param cmdModule Module name
-     * @param once will complete/dispose after one fire
-     * @returns {*}
-     */
-    //function subscribeCommand(evtStr, cmdModule, once) {
-    //  var cmd = require(cmdModule);
-    //  if (cmd.hasOwnProperty('execute')) {
-    //    return subscribe(evtStr, cmd.execute, once);
-    //  } else {
-    //    throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
-    //  }
-    //}
-
-    /**
      * Initialize the event processing timer or resume a paused timer
      */
     function initTimer() {
-      if(_timerObservable) {
+      if (_timerObservable) {
         _timerPausable.onNext(true);
         return;
       }
 
-      _timerPausable = new Rx.Subject();
-      _timerObservable = Rx.Observable.interval(1).pausable(_timerPausable);
+      _timerPausable     = new Rx.Subject();
+      _timerObservable   = Rx.Observable.interval(1).pausable(_timerPausable);
       _timerSubscription = _timerObservable.subscribe(processNextEvent);
     }
 
@@ -89,7 +73,7 @@ define('nori/utils/Dispatcher',
      */
     function processNextEvent() {
       var evt = _queue.shift();
-      if(evt) {
+      if (evt) {
         //console.log('Procesing event: ',evt);
         dispatchToReceivers(evt);
         dispatchToSubscribers(evt);
@@ -219,9 +203,8 @@ define('nori/utils/Dispatcher',
       }
     }
 
-    module.exports.subscribe   = subscribe;
-    module.exports.unsubscribe = unsubscribe;
-    //module.exports.subscribeCommand   = subscribeCommand;
+    module.exports.subscribe          = subscribe;
+    module.exports.unsubscribe        = unsubscribe;
     module.exports.publish            = publish;
     module.exports.getLog             = getLog;
     module.exports.registerReceiver   = registerReceiver;
@@ -2624,7 +2607,6 @@ var Nori = (function () {
   var _config,
       _model,
       _view,
-      //_dispatcherCommandMap = Object.create(null),
       _modelViewBindingMap  = Object.create(null),
       _appEvents            = require('nori/events/EventCreator'),
       _appEventConstants    = require('nori/events/EventConstants'),
@@ -2862,30 +2844,6 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Maps an event to trigger a command when it's published
-   * @param evt The event string
-   * @param cmdModuleName Module name of a command object, req execute(dataObj) function
-   */
-  //function mapEventCommand(evt, cmdModuleName) {
-  //  _dispatcherCommandMap[evt] = _dispatcher.subscribeCommand(evt, cmdModuleName);
-  //}
-
-  /**
-   * Set the router to execute the command when on the route
-   * @param route
-   * @param templateID
-   * @param command
-   */
-  //function mapRouteCommand(route, templateID, command) {
-  //  _router.when(route, {
-  //    templateID: templateID,
-  //    controller: function executeRouteCommand(dataObj) {
-  //      command.execute(dataObj);
-  //    }
-  //  });
-  //}
-
-  /**
    * Maps a route to a view controller
    * @param route
    * @param templateID
@@ -2999,8 +2957,6 @@ var Nori = (function () {
     setCurrentRoute       : setCurrentRoute,
     getCurrentRoute       : getCurrentRoute,
     mapRouteView          : mapRouteView,
-    //mapRouteCommand            : mapRouteCommand,
-    //mapEventCommand            : mapEventCommand,
     extend                : extend,
     extendWithArray       : extendWithArray,
     bindToMap             : bindToMap,
