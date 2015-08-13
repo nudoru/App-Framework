@@ -119,9 +119,9 @@ define('app/model/AppModel',
   function (require, module, exports) {
 
     var _this,
-        _state = Object.create(null),
-          _noriEvents = require('nori/events/EventCreator'),
-          _noriEventConstants = require('nori/events/EventConstants');
+        _state              = Object.create(null),// Basic applicaiton state, could be a Map or a MapCollection
+        _noriEvents         = require('nori/events/EventCreator'),
+        _noriEventConstants = require('nori/events/EventConstants');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -129,6 +129,10 @@ define('app/model/AppModel',
 
     function getState() {
       return _.assign({}, _state);
+    }
+
+    function setState(nextState) {
+      _state = nextState;
     }
 
     //----------------------------------------------------------------------------
@@ -148,7 +152,7 @@ define('app/model/AppModel',
      */
     function receiveEvents(eventObject) {
       //console.log('Event occured: ',eventObject);
-      // newState = reducerFunction(getCurrentState(), eventObject);
+      // setState(reducerFunction(getCurrentState(), eventObject));
     }
 
     /**
@@ -157,6 +161,8 @@ define('app/model/AppModel',
      */
 
     function reducerFunction(state, event) {
+      state = state || {}; // default value
+
       switch (event.type) {
         case _noriEventConstants.MODEL_DATA_CHANGED:
           return _.assign({}, state, {prop: event.payload.value});
