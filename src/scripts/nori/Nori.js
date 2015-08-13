@@ -341,6 +341,7 @@ var Nori = (function () {
   function createApplicationModel(extras) {
     return extendWithArray({}, [
       require('nori/model/ApplicationModel'),
+      require('nori/model/MixinReducerModel'),
       extras
     ]);
   }
