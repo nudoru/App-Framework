@@ -54,7 +54,7 @@ define('nori/view/MixinComponentViews',
      */
     function createComponentView(extras) {
       return Nori.extendWithArray({}, [
-        requireNew('nori/view/ApplicationComponent'),
+        requireNew('nori/view/ViewComponent'),
         requireNew('nori/view/MixinEventDelegator'),
         extras
       ]);

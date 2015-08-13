@@ -3,7 +3,7 @@
  * Must be extended with custom modules
  */
 
-define('nori/view/ApplicationComponent',
+define('nori/view/ViewComponent',
   function (require, module, exports) {
 
     var _isInitialized = false,

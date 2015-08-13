@@ -3,7 +3,7 @@
  * Extended from Nori.View.ApplicationSubView
  */
 
-define('app/view/ComponentView',
+define('app/view/ViewComponent',
   function (require, module, exports) {
 
     var _this;
