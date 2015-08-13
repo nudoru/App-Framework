@@ -1548,7 +1548,7 @@ define('nori/view/ApplicationSubView',
         _state         = {},
         _children      = [],
         _isMounted     = false,
-        _appEvents     = require('nori/events/EventCreator');
+        _noriEvents    = require('nori/events/EventCreator');
 
     /**
      * Initialization
@@ -1605,7 +1605,7 @@ define('nori/view/ApplicationSubView',
      */
     function update() {
       // make a copy of last state
-      var previousState = _.merge({}, this.getState());
+      var previousState = _.assign({}, this.getState());
 
       // state will update here
       this.viewWillUpdate();
@@ -1626,11 +1626,11 @@ define('nori/view/ApplicationSubView',
     }
 
     /**
-     * Determin if the view should rerender on update
+     * Determine if the view should rerender on update
      * @returns {boolean}
      */
     function viewShouldRender(previousState) {
-      return true;
+      return this.getState() === previousState;
     }
 
     /**
@@ -1691,14 +1691,19 @@ define('nori/view/ApplicationSubView',
       _isMounted = true;
 
       // Go out to the standard render function. DOM element is returned in callback
-      // Needs to be bound to 'this' context
-      _appEvents.renderView(_mountPoint, _html, _id, (function (domEl) {
-        setDOMElement(domEl);
-        // from the ViewMixinEventDelegator
-        if (this.delegateEvents) {
-          this.delegateEvents();
-        }
-      }).bind(this));
+      _noriEvents.renderView(_mountPoint, _html, _id, onViewRendered.bind(this));
+    }
+
+    /**
+     * Handler for the renderer module
+     * @param domEl
+     */
+    function onViewRendered(domEl) {
+      setDOMElement(domEl);
+      // from the ViewMixinEventDelegator
+      if (this.delegateEvents) {
+        this.delegateEvents();
+      }
 
       if (this.viewDidMount) {
         this.viewDidMount();
@@ -1722,7 +1727,7 @@ define('nori/view/ApplicationSubView',
     function unmount() {
       this.viewWillUnmount();
       _isMounted = false;
-      _appEvents.renderView(_mountPoint, '', _id);
+      _noriEvents.renderView(_mountPoint, '', _id);
 
       // from the ViewMixinEventDelegator
       if (this.undelegateEvents) {
