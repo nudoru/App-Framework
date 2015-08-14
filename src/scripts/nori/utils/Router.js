@@ -36,20 +36,7 @@ define('nori/utils/Router',
 
       _subject.onNext(eventPayload);
     }
-
-    /**
-     * Map a route to a given controller function
-     * The controller funtion will be passed an object with the route and templateID
-     * @param route
-     * @param conObj
-     */
-    function mapRouteToController(route, conObj) {
-      _routeMap[route] = {
-        templateID: conObj.templateID,
-        controller: conObj.controller
-      };
-    }
-
+    
     /**
      * Parses the route and query string from the current URL fragment
      * @returns {{route: string, query: {}}}
@@ -128,7 +115,6 @@ define('nori/utils/Router',
 
     module.exports.initialize           = initialize;
     module.exports.subscribe            = subscribe;
-    module.exports.mapRouteToController = mapRouteToController;
     module.exports.getCurrentRoute      = getCurrentRoute;
     module.exports.set                  = set;
 
