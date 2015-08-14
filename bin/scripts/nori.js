@@ -924,6 +924,7 @@ define('nori/model/Map',
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
+        _subject   = new Rx.Subject(),
         _appEvents = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
@@ -946,6 +947,15 @@ define('nori/model/Map',
         setJSON(initObj.json);
       }
 
+    }
+
+    /**
+     * subscribe a handler for changes
+     * @param handler
+     * @returns {*}
+     */
+    function subscribe(handler) {
+      return _subject.subscribe(handler);
     }
 
     /**
@@ -1161,19 +1171,20 @@ define('nori/model/Map',
      * On change, emit event globally
      */
     function dispatchChange(type) {
-      type = type || 'map';
-
       if (!_silent) {
-        _appEvents.modelChanged({
+        var payload = {
           id     : _id,
           mapType: 'model'
-        });
+        };
+
+        _subject.onNext(payload);
+        _appEvents.modelChanged(payload);
       }
 
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
           id: _id
-        }, type);
+        }, (type || 'map'));
       }
 
     }
@@ -1195,6 +1206,7 @@ define('nori/model/Map',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
+    module.exports.subscribe           = subscribe;
     module.exports.getID               = getID;
     module.exports.clear               = clear;
     module.exports.isDirty             = isDirty;
@@ -1230,6 +1242,7 @@ define('nori/model/MapCollection',
         _parentCollection,
         _children  = [],
         _silent    = false,
+        _subject   = new Rx.Subject(),
         _appEvents = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
@@ -1249,6 +1262,15 @@ define('nori/model/MapCollection',
       if (initObj.models) {
         addMapsFromArray.call(_this, initObj.models);
       }
+    }
+
+    /**
+     * subscribe a handler for changes
+     * @param handler
+     * @returns {*}
+     */
+    function subscribe(handler) {
+      return _subject.subscribe(handler);
     }
 
     function isDirty() {
@@ -1394,17 +1416,19 @@ define('nori/model/MapCollection',
      */
     function dispatchChange(data, type) {
       if (!_silent) {
-        type = type || '';
-        _appEvents.modelChanged({
+        var payload = {
           id     : _id,
-          type   : type,
+          type   : type || '',
           mapType: 'collection',
           mapID  : data.id
-        });
+        };
+
+        _subject.onNext(payload);
+        _appEvents.modelChanged(payload);
       }
 
-      if(_parentCollection) {
-        _parentCollection.dispatchChange({id:_id, store:getMap()});
+      if (_parentCollection) {
+        _parentCollection.dispatchChange({id: _id, store: getMap()});
       }
     }
 
@@ -1490,6 +1514,7 @@ define('nori/model/MapCollection',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
+    module.exports.subscribe           = subscribe;
     module.exports.getID               = getID;
     module.exports.isDirty             = isDirty;
     module.exports.markClean           = markClean;
@@ -1634,7 +1659,17 @@ define('nori/model/MixinReducerModel',
 
 define('nori/model/SimpleStore',
   function (require, module, exports) {
-    var _state = Object.create(null);
+    var _state   = Object.create(null),
+        _subject = new Rx.Subject();
+
+    /**
+     * subscribe a handler for changes
+     * @param handler
+     * @returns {*}
+     */
+    function subscribe(handler) {
+      return _subject.subscribe(handler);
+    }
 
     /**
      * Return a copy of the state
@@ -1650,10 +1685,12 @@ define('nori/model/SimpleStore',
      */
     function setState(state) {
       _state = state;
+      _subject.onNext();
     }
 
-    module.exports.getState = getState;
-    module.exports.setState = setState;
+    module.exports.subscribe = subscribe;
+    module.exports.getState  = getState;
+    module.exports.setState  = setState;
 
   });
 

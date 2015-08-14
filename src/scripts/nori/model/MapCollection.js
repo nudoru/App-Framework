@@ -11,6 +11,7 @@ define('nori/model/MapCollection',
         _parentCollection,
         _children  = [],
         _silent    = false,
+        _subject   = new Rx.Subject(),
         _appEvents = require('nori/events/EventCreator');
 
     //----------------------------------------------------------------------------
@@ -30,6 +31,15 @@ define('nori/model/MapCollection',
       if (initObj.models) {
         addMapsFromArray.call(_this, initObj.models);
       }
+    }
+
+    /**
+     * subscribe a handler for changes
+     * @param handler
+     * @returns {*}
+     */
+    function subscribe(handler) {
+      return _subject.subscribe(handler);
     }
 
     function isDirty() {
@@ -175,17 +185,19 @@ define('nori/model/MapCollection',
      */
     function dispatchChange(data, type) {
       if (!_silent) {
-        type = type || '';
-        _appEvents.modelChanged({
+        var payload = {
           id     : _id,
-          type   : type,
+          type   : type || '',
           mapType: 'collection',
           mapID  : data.id
-        });
+        };
+
+        _subject.onNext(payload);
+        _appEvents.modelChanged(payload);
       }
 
-      if(_parentCollection) {
-        _parentCollection.dispatchChange({id:_id, store:getMap()});
+      if (_parentCollection) {
+        _parentCollection.dispatchChange({id: _id, store: getMap()});
       }
     }
 
@@ -271,6 +283,7 @@ define('nori/model/MapCollection',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
+    module.exports.subscribe           = subscribe;
     module.exports.getID               = getID;
     module.exports.isDirty             = isDirty;
     module.exports.markClean           = markClean;
