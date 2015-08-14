@@ -34,8 +34,7 @@ define('app/App',
       this.view().render();
 
       // 4 Start with the route in the current URL
-      //this.router().executeCurrent();
-      this.view().loadCurrentRoute();
+      this.view().showViewFromURLHash();
     }
 
     //----------------------------------------------------------------------------
@@ -198,8 +197,7 @@ define('app/view/AppView',
 
     var _this,
         _noriEvents            = require('nori/events/EventCreator'),
-        _noriEventConstants    = require('nori/events/EventConstants'),
-        _browserEventConstants = require('nudoru/browser/EventConstants');
+        _noriEventConstants    = require('nori/events/EventConstants');
 
     //----------------------------------------------------------------------------
     //  Initialization

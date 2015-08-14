@@ -36,6 +36,7 @@ define('nori/view/ApplicationView',
       attachApplicationScaffolding(scaffoldTemplates);
 
       _this.initializeComponentViews();
+
       initializeApplicationElements();
       initializeComponents();
     }

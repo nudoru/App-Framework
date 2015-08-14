@@ -13,16 +13,26 @@ define('nori/view/MixinComponentViews',
         _template                    = require('nori/utils/Templating'),
         _noriEvents                  = require('nori/events/EventCreator');
 
+    /**
+     * Set up listeners
+     */
     function initializeComponentViews() {
       Nori.router().subscribe(function onRouteChange(payload) {
         handleRouteChange(payload.routeObj);
       });
     }
 
-    function loadCurrentRoute() {
+    /**
+     * Typically on app startup, show the view assigned to the current URL hash
+     */
+    function showViewFromURLHash() {
       showRouteViewComponent(Nori.getCurrentRoute().route);
     }
 
+    /**
+     * Show route from URL hash on change
+     * @param routeObj
+     */
     function handleRouteChange(routeObj) {
       showRouteViewComponent(routeObj.route);
     }
@@ -171,7 +181,7 @@ define('nori/view/MixinComponentViews',
     //----------------------------------------------------------------------------
 
     module.exports.initializeComponentViews = initializeComponentViews;
-    module.exports.loadCurrentRoute         = loadCurrentRoute;
+    module.exports.showViewFromURLHash         = showViewFromURLHash;
     module.exports.setRouteViewMountPoint   = setRouteViewMountPoint;
     module.exports.template                 = getTemplate;
     module.exports.mapViewComponent         = mapViewComponent;

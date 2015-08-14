@@ -42,8 +42,7 @@ define('app/App',
       this.view().render();
 
       // 4 Start with the route in the current URL
-      //this.router().executeCurrent();
-      this.view().loadCurrentRoute();
+      this.view().showViewFromURLHash();
     }
 
     //----------------------------------------------------------------------------

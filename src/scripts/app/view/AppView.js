@@ -3,8 +3,7 @@ define('app/view/AppView',
 
     var _this,
         _noriEvents            = require('nori/events/EventCreator'),
-        _noriEventConstants    = require('nori/events/EventConstants'),
-        _browserEventConstants = require('nudoru/browser/EventConstants');
+        _noriEventConstants    = require('nori/events/EventConstants');
 
     //----------------------------------------------------------------------------
     //  Initialization
