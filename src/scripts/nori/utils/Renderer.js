@@ -1,18 +1,20 @@
 /**
  * Utility to handle all view DOM attachment tasks
  *
- * TODO - implement virutal-dom https://github.com/Matt-Esch/virtual-dom
+ * TODO - implement virutal-dom
+ *  https://github.com/Matt-Esch/virtual-dom
+ *  https://github.com/twilson63/html2hscript, https://www.npmjs.com/package/html2hyperscript
  */
 
 define('nori/utils/Renderer',
   function (require, module, exports) {
 
-    var _appEvents         = require('nori/events/EventCreator'),
-        _appEventConstants = require('nori/events/EventConstants'),
+    var _noriEvents         = require('nori/events/EventCreator'),
+        _noriEventConstants = require('nori/events/EventConstants'),
         _domUtils          = require('nudoru/browser/DOMUtils');
 
     function initialize() {
-      Nori.dispatcher().subscribe(_appEventConstants.RENDER_VIEW, render);
+      Nori.dispatcher().subscribe(_noriEventConstants.RENDER_VIEW, render);
     }
 
     function render(payload) {
@@ -34,7 +36,7 @@ define('nori/utils/Renderer',
         cb(domEl);
       }
 
-      _appEvents.viewRendered(targetSelector, payload.payload.id);
+      _noriEvents.viewRendered(targetSelector, payload.payload.id);
     }
 
     module.exports.initialize = initialize;
