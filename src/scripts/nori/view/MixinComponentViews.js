@@ -5,12 +5,27 @@
 define('nori/view/MixinComponentViews',
   function (require, module, exports) {
 
-    var _template                    = require('nori/utils/Templating'),
-        _routeViewMountPoint,
-        _componentViewMap            = Object.create(null),
+    var _routeViewMountPoint,
         _currentRouteViewID,
+        _componentViewMap            = Object.create(null),
+        _routeViewIDMap              = Object.create(null),
         _componentHTMLTemplatePrefix = 'template__',
-        _appEvents                   = require('nori/events/EventCreator');
+        _template                    = require('nori/utils/Templating'),
+        _noriEvents                  = require('nori/events/EventCreator');
+
+    function initializeComponentViews() {
+      Nori.router().subscribe(function onRouteChange(payload) {
+        handleRouteChange(payload.routeObj);
+      });
+    }
+
+    function loadCurrentRoute() {
+      showRouteViewComponent(Nori.getCurrentRoute().route);
+    }
+
+    function handleRouteChange(routeObj) {
+      showRouteViewComponent(routeObj.route);
+    }
 
     /**
      * Set the location for the view to append, any contents will be removed prior
@@ -61,21 +76,12 @@ define('nori/view/MixinComponentViews',
     }
 
     /**
-     * Sugar for the mapViewComponent
-     * @param templateID
-     * @param controllerModID
-     * @param mountPoint
-     */
-    function createViewComponent(templateID, controllerModID, mountPoint) {
-      mapViewComponent(templateID, controllerModID, false, mountPoint);
-    }
-
-    /**
      * Map a route to a module view controller
      * @param templateID
      * @param controllerModule
      */
-    function mapRouteToViewComponent(templateID, controllerModule) {
+    function mapRouteToViewComponent(route, templateID, controllerModule) {
+      _routeViewIDMap[route] = templateID;
       mapViewComponent(templateID, controllerModule, true, _routeViewMountPoint);
     }
 
@@ -113,7 +119,6 @@ define('nori/view/MixinComponentViews',
      */
     function showViewComponent(templateID) {
       var componentView = _componentViewMap[templateID];
-
       if (!componentView) {
         throw new Error('No componentView mapped for id: ' + templateID);
       }
@@ -131,18 +136,24 @@ define('nori/view/MixinComponentViews',
 
     /**
      * Show a view (in response to a route change)
-     * @param dataObj props: templateID, route, data (from query string)
+     * @param route
      */
-    function showRouteViewComponent(dataObj) {
+    function showRouteViewComponent(route) {
+      var routeTemplateID = _routeViewIDMap[route];
+      if (!routeTemplateID) {
+        console.log("No view mapped for route: " + route);
+        return;
+      }
+
       unmountCurrentRouteView();
-      _currentRouteViewID = dataObj.templateID;
+      _currentRouteViewID = routeTemplateID;
 
       showViewComponent(_currentRouteViewID);
 
       TweenLite.set(_routeViewMountPoint, {alpha: 0});
       TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
 
-      _appEvents.viewChanged(_currentRouteViewID);
+      _noriEvents.viewChanged(_currentRouteViewID);
     }
 
     /**
@@ -155,20 +166,18 @@ define('nori/view/MixinComponentViews',
       _currentRouteViewID = '';
     }
 
-
-
-
     //----------------------------------------------------------------------------
     //  API
     //----------------------------------------------------------------------------
 
-    module.exports.setRouteViewMountPoint  = setRouteViewMountPoint;
-    module.exports.template                = getTemplate;
-    //module.exports.createViewComponent     = createViewComponent;
-    module.exports.mapViewComponent        = mapViewComponent;
-    module.exports.showViewComponent       = showViewComponent;
-    module.exports.mapRouteToViewComponent = mapRouteToViewComponent;
-    module.exports.showRouteViewComponent  = showRouteViewComponent;
-    module.exports.updateViewComponent     = updateViewComponent;
-    module.exports.applyMixin              = applyMixin;
+    module.exports.initializeComponentViews = initializeComponentViews;
+    module.exports.loadCurrentRoute         = loadCurrentRoute;
+    module.exports.setRouteViewMountPoint   = setRouteViewMountPoint;
+    module.exports.template                 = getTemplate;
+    module.exports.mapViewComponent         = mapViewComponent;
+    module.exports.showViewComponent        = showViewComponent;
+    module.exports.mapRouteToViewComponent  = mapRouteToViewComponent;
+    module.exports.showRouteViewComponent   = showRouteViewComponent;
+    module.exports.updateViewComponent      = updateViewComponent;
+    module.exports.applyMixin               = applyMixin;
   });

@@ -18,12 +18,12 @@ define('app/view/AppView',
 
       configureApplicationViewEvents();
 
-      APP.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
+      _this.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
 
       // For testing
-      APP.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
-      APP.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
-      APP.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
+      _this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
+      _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
+      _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
       _noriEvents.applicationViewInitialized();
     }

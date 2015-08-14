@@ -1,11 +1,9 @@
 var Nori = (function () {
-  var _config,
-      _model,
+  var _model,
       _view,
       _modelViewBindingMap = Object.create(null),
-      _appEvents           = require('nori/events/EventCreator'),
-      _appEventConstants   = require('nori/events/EventConstants'),
-      _browserEvents       = require('nudoru/browser/EventConstants'),
+      _noriEvents          = require('nori/events/EventCreator'),
+      _noriEventConstants  = require('nori/events/EventConstants'),
       _objectUtils         = require('nudoru/core/ObjectUtils'),
       _dispatcher          = require('nori/utils/Dispatcher'),
       _router              = require('nori/utils/Router');
@@ -31,11 +29,11 @@ var Nori = (function () {
   }
 
   function getConfig() {
-    return _objectUtils.extend({}, _config);
+    return _objectUtils.extend({}, (window.APP_CONFIG_DATA || {}));
   }
 
   function getCurrentRoute() {
-    return _.assign({}, _config.currentRoute);
+    return _router.getCurrentRoute();
   }
 
   //----------------------------------------------------------------------------
@@ -47,90 +45,26 @@ var Nori = (function () {
    * @param initObj view, model
    */
   function initializeApplication(initObj) {
-    initializeConfig();
     _router.initialize();
 
-    if (initObj.view) {
-      _view = initObj.view;
-    } else {
-      _view = createApplicationView({});
-    }
-
-    if (initObj.model) {
-      _model = initObj.model;
-    } else {
-      _model = createApplicationModel({});
-    }
+    _view = initObj.view || createApplicationView({});
+    _model = initObj.model || createApplicationModel({});
 
     configureApplicationEvents();
 
-    _appEvents.applicationInitialized();
-  }
-
-  /**
-   * Initialize the global vars
-   */
-  function initializeConfig() {
-    _config = {
-      appConfig   : window.APP_CONFIG_DATA || {},
-      routes      : [],
-      currentRoute: {
-        route: '/',
-        data : undefined
-      }
-    };
+    _noriEvents.applicationInitialized();
   }
 
   function configureApplicationEvents() {
-    _dispatcher.subscribe(_appEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
+    // This triggers views to update on model changes
+    _dispatcher.subscribe(_noriEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
       handleModelUpdate(payload.payload);
     });
 
-    _dispatcher.subscribe(_browserEvents.URL_HASH_CHANGED, function execute(payload) {
-      setCurrentRoute(payload.payload.routeObj);
+    // Route changed
+    _router.subscribe(function onRouteChange(payload) {
+      _noriEvents.routeChanged(payload.routeObj);
     });
-
-    _dispatcher.subscribe(_appEventConstants.CHANGE_ROUTE, function execute(payload) {
-      payload.payload.fromApp = true;
-      setCurrentRoute(payload.payload);
-    });
-  }
-
-  //----------------------------------------------------------------------------
-  // Functional utils from Mithril
-  //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
-  //----------------------------------------------------------------------------
-
-  // http://mithril.js.org/mithril.prop.html
-  function prop(store) {
-    if (isFunction(store.then)) {
-
-    }
-
-    var gettersetter = function () {
-      if (arguments.length) {
-        store = arguments[0];
-      }
-      return store;
-    };
-
-    gettersetter.toJSON = function () {
-      return store;
-    };
-
-    return gettersetter;
-  }
-
-  // http://mithril.js.org/mithril.withAttr.html
-  function withAttr(prop, callback, context) {
-    return function (e) {
-      e = e || event;
-
-      var currentTarget = e.currentTarget || this,
-          cntx          = context || this;
-
-      callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
-    };
   }
 
   //----------------------------------------------------------------------------
@@ -183,90 +117,6 @@ var Nori = (function () {
         _view.updateViewComponent(view);
       });
     }
-  }
-
-  //----------------------------------------------------------------------------
-  //  View Routes
-  //  Route obj is {route: '/whatever', data:{var:value,...}
-  //----------------------------------------------------------------------------
-
-  /**
-   * Add route to the list of valid routes
-   * @param route
-   */
-  function addRouteToConfig(route) {
-    _config.routes.push(route);
-  }
-
-  /**
-   * Determine if the route has been mapped
-   * @param route
-   * @returns {boolean}
-   */
-  function isValidRoute(route) {
-    return _config.routes.indexOf(route) > -1;
-  }
-
-  /**
-   * Allow the router to run the route view mapping if it's valid. Typically reached from
-   * the ChangeRouteCommand via an emitted event:
-   *  _dispatcher.publish(_appEventConstants.CHANGE_ROUTE, {route:'/route', data:{}});
-   * When the route is changed in this way, this method will fire twice, once for the
-   * _router.setRoute and once when the URL hash change event (URLHashChangedCommand).
-   * The route changed event is only published on this 2nd call which will trigger the
-   * RouteChangedCommand to update views, etc.
-   * @param routeObj props: route, data, fromApp
-   */
-  function setCurrentRoute(routeObj) {
-    if (isValidRoute(routeObj.route)) {
-      _config.currentRoute = routeObj;
-
-      // fromApp prop is set in ChangeRouteCommand, indicates it's app not URL generated
-      // else is a URL change and just execute current mapping
-      if (routeObj.fromApp) {
-        _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
-      } else {
-        _router.runCurrentRoute();
-        _appEvents.routeChanged(routeObj);
-      }
-    } else {
-      _router.setRoute(_config.currentRoute.route, _config.currentRoute.data);
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //  Wiring Services
-  //----------------------------------------------------------------------------
-
-  /**
-   * Maps a route to a view controller
-   * @param route
-   * @param templateID
-   * @param controller
-   */
-  function mapRouteToViewComponent(route, templateID, controller) {
-    addRouteToConfig(route);
-
-    _view.mapRouteToViewComponent(templateID, controller);
-
-    _router.when(route, {
-      templateID: templateID,
-      controller: function routeToViewController(dataObj) {
-        // dataObj is from the router:
-        // route: route,
-        // templateID: routeObj.templateID,
-        // queryData: queryStrObj
-        showRouteViewComponent(dataObj);
-      }
-    });
-  }
-
-  /**
-   * Pass to the view to show the component.
-   * @param dataObj
-   */
-  function showRouteViewComponent(dataObj) {
-    _view.showRouteViewComponent(dataObj);
   }
 
   //----------------------------------------------------------------------------
@@ -336,6 +186,42 @@ var Nori = (function () {
   }
 
   //----------------------------------------------------------------------------
+  // Functional utils from Mithril
+  //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
+  //----------------------------------------------------------------------------
+
+  // http://mithril.js.org/mithril.prop.html
+  function prop(store) {
+    //if (isFunction(store.then)) {
+    //  // handle a promise
+    //}
+    var gettersetter = function () {
+      if (arguments.length) {
+        store = arguments[0];
+      }
+      return store;
+    };
+
+    gettersetter.toJSON = function () {
+      return store;
+    };
+
+    return gettersetter;
+  }
+
+  // http://mithril.js.org/mithril.withAttr.html
+  function withAttr(prop, callback, context) {
+    return function (e) {
+      e = e || event;
+
+      var currentTarget = e.currentTarget || this,
+          cntx          = context || this;
+
+      callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
+    };
+  }
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -349,9 +235,7 @@ var Nori = (function () {
     createApplication      : createApplication,
     createApplicationModel : createApplicationModel,
     createApplicationView  : createApplicationView,
-    setCurrentRoute        : setCurrentRoute,
     getCurrentRoute        : getCurrentRoute,
-    mapRouteToViewComponent: mapRouteToViewComponent,
     extend                 : extend,
     extendWithArray        : extendWithArray,
     bindToMap              : bindToMap,

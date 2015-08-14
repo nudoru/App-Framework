@@ -140,7 +140,7 @@ define('app/view/DebugControlsTestingSubView',
       _actionSixEl.addEventListener('click', function actFour(e) {
         Nori.dispatcher().publish({
           type   : _appEventConstants.CHANGE_ROUTE,
-          payload: {route: '/two'}
+          payload: {route: '/styles', data:'test'}
         });
       });
 

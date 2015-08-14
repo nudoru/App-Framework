@@ -34,7 +34,8 @@ define('app/App',
       this.view().render();
 
       // 4 Start with the route in the current URL
-      this.setCurrentRoute(APP.router().getCurrentRoute());
+      //this.router().executeCurrent();
+      this.view().loadCurrentRoute();
     }
 
     //----------------------------------------------------------------------------
@@ -212,12 +213,12 @@ define('app/view/AppView',
 
       configureApplicationViewEvents();
 
-      APP.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
+      _this.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
 
       // For testing
-      APP.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
-      APP.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
-      APP.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
+      _this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
+      _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
+      _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
       _noriEvents.applicationViewInitialized();
     }
@@ -391,7 +392,7 @@ define('app/view/DebugControlsTestingSubView',
       _actionSixEl.addEventListener('click', function actFour(e) {
         Nori.dispatcher().publish({
           type   : _appEventConstants.CHANGE_ROUTE,
-          payload: {route: '/two'}
+          payload: {route: '/styles', data:'test'}
         });
       });
 
