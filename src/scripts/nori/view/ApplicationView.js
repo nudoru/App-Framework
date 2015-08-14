@@ -9,6 +9,10 @@ define('nori/view/ApplicationView',
     //  Initialization
     //----------------------------------------------------------------------------
 
+    /**
+     * Initialize
+     * @param scaffoldTemplates template IDs to attached to the body for the app
+     */
     function initializeApplicationView(scaffoldTemplates) {
       _this = this;
       _renderer.initialize();
@@ -19,6 +23,10 @@ define('nori/view/ApplicationView',
       _this.initializeNudoruControls();
     }
 
+    /**
+     * Attach app HTML structure
+     * @param templates
+     */
     function attachApplicationScaffolding(templates) {
       if (!templates) {
         return;
