@@ -125,9 +125,10 @@ define('nori/utils/Router',
       window.location.hash = path;
     }
 
-    module.exports.initialize           = initialize;
-    module.exports.subscribe            = subscribe;
-    module.exports.getCurrentRoute      = getCurrentRoute;
-    module.exports.set                  = set;
+    module.exports.initialize        = initialize;
+    module.exports.subscribe         = subscribe;
+    module.exports.notifySubscribers = notifySubscribers;
+    module.exports.getCurrentRoute   = getCurrentRoute;
+    module.exports.set               = set;
 
   });

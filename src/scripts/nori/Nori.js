@@ -1,12 +1,9 @@
 var Nori = (function () {
   var _model,
       _view,
-      _modelViewBindingMap = Object.create(null),
-      _noriEvents          = require('nori/events/EventCreator'),
-      _noriEventConstants  = require('nori/events/EventConstants'),
-      _objectUtils         = require('nudoru/core/ObjectUtils'),
-      _dispatcher          = require('nori/utils/Dispatcher'),
-      _router              = require('nori/utils/Router');
+      _objectUtils = require('nudoru/core/ObjectUtils'),
+      _dispatcher  = require('nori/utils/Dispatcher'),
+      _router      = require('nori/utils/Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -46,77 +43,8 @@ var Nori = (function () {
    */
   function initializeApplication(initObj) {
     _router.initialize();
-
-    _view = initObj.view || createApplicationView({});
+    _view  = initObj.view || createApplicationView({});
     _model = initObj.model || createApplicationModel({});
-
-    configureApplicationEvents();
-
-    _noriEvents.applicationInitialized();
-  }
-
-  function configureApplicationEvents() {
-    // This triggers views to update on model changes
-    _dispatcher.subscribe(_noriEventConstants.MODEL_DATA_CHANGED, function execute(payload) {
-      handleModelUpdate(payload.payload);
-    });
-
-    // Route changed
-    _router.subscribe(function onRouteChange(payload) {
-      _noriEvents.routeChanged(payload.routeObj);
-    });
-  }
-
-  //----------------------------------------------------------------------------
-  //  Model binding
-  //----------------------------------------------------------------------------
-
-  /**
-   * Associate a model with a component view. When notifyBoundViewsOfModelUpdate
-   * is called, each view will be notified of the new data
-   * @param modelID
-   * @param viewID
-   */
-  function bindToMap(modelID, viewID) {
-    if (!modelID || !viewID) {
-      throw new Error('Nori, bindToMap: Model ID and View ID must be defined.', modelID, viewID);
-    }
-
-    var viewArry = _modelViewBindingMap[modelID];
-
-    if (viewArry) {
-      if (viewArry.indexOf(viewID) === -1) {
-        viewArry.push(viewID);
-      }
-    } else {
-      viewArry = [viewID];
-    }
-
-    _modelViewBindingMap[modelID] = viewArry;
-  }
-
-  /**
-   * Notify any bound views on model change, not collection change
-   * @param dataObj
-   * {id:mapid, mapType:'model'}
-   * {id:collectionid, mapType:'collection', mapID: data.id}
-   */
-  function handleModelUpdate(dataObj) {
-    notifyViewsOfModelUpdate(dataObj.id);
-  }
-
-  /**
-   * Tell views to update if they're listening to a model
-   * @param modelID
-   */
-  function notifyViewsOfModelUpdate(modelID) {
-    var viewArry = _modelViewBindingMap[modelID];
-
-    if (viewArry) {
-      viewArry.forEach(function (view) {
-        _view.updateViewComponent(view);
-      });
-    }
   }
 
   //----------------------------------------------------------------------------
@@ -165,7 +93,7 @@ var Nori = (function () {
    */
   function createApplicationModel(extras) {
     return extendWithArray({}, [
-      require('nori/model/ApplicationModel'),
+      require('nori/model/MixinMapFactory'),
       require('nori/model/MixinReducerModel'),
       extras
     ]);
@@ -226,23 +154,20 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeApplication  : initializeApplication,
-    config                 : getConfig,
-    dispatcher             : getDispatcher,
-    router                 : getRouter,
-    model                  : getModel,
-    view                   : getView,
-    createApplication      : createApplication,
-    createApplicationModel : createApplicationModel,
-    createApplicationView  : createApplicationView,
-    getCurrentRoute        : getCurrentRoute,
-    extend                 : extend,
-    extendWithArray        : extendWithArray,
-    bindToMap              : bindToMap,
-    handleModelUpdate      : handleModelUpdate,
-    prop                   : prop,
-    withAttr               : withAttr
+    initializeApplication : initializeApplication,
+    config                : getConfig,
+    dispatcher            : getDispatcher,
+    router                : getRouter,
+    model                 : getModel,
+    view                  : getView,
+    createApplication     : createApplication,
+    createApplicationModel: createApplicationModel,
+    createApplicationView : createApplicationView,
+    getCurrentRoute       : getCurrentRoute,
+    extend                : extend,
+    extendWithArray       : extendWithArray,
+    prop                  : prop,
+    withAttr              : withAttr
   };
 
-}
-());
+}());

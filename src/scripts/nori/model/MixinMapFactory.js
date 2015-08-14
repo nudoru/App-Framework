@@ -1,4 +1,4 @@
-define('nori/model/ApplicationModel',
+define('nori/model/MixinMapFactory',
   function (require, module, exports) {
 
     var _mapCollectionList = Object.create(null),
@@ -14,7 +14,6 @@ define('nori/model/ApplicationModel',
       var m = Nori.extendWithArray({}, [requireNew('nori/model/MapCollection'), extras]);
 
       m.initialize(initObj);
-      _mapCollectionList[initObj.id] = m;
       return m;
     }
 
@@ -28,7 +27,6 @@ define('nori/model/ApplicationModel',
       var m = Nori.extendWithArray({}, [requireNew('nori/model/Map'), extras]);
 
       m.initialize(initObj);
-      _mapList[initObj.id] = m;
       return m;
     }
 

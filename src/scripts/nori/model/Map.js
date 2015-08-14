@@ -12,8 +12,7 @@ define('nori/model/Map',
         _entries   = [],
         _map       = Object.create(null),
         _silent    = false,
-        _subject   = new Rx.Subject(),
-        _appEvents = require('nori/events/EventCreator');
+        _subject   = new Rx.Subject();
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -266,7 +265,6 @@ define('nori/model/Map',
         };
 
         _subject.onNext(payload);
-        _appEvents.modelChanged(payload);
       }
 
       if (_parentCollection.dispatchChange) {

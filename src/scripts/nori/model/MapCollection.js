@@ -11,8 +11,7 @@ define('nori/model/MapCollection',
         _parentCollection,
         _children  = [],
         _silent    = false,
-        _subject   = new Rx.Subject(),
-        _appEvents = require('nori/events/EventCreator');
+        _subject   = new Rx.Subject();
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -193,7 +192,6 @@ define('nori/model/MapCollection',
         };
 
         _subject.onNext(payload);
-        _appEvents.modelChanged(payload);
       }
 
       if (_parentCollection) {

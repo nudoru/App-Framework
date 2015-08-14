@@ -27,6 +27,7 @@ define('nori/view/MixinComponentViews',
      */
     function showViewFromURLHash() {
       showRouteViewComponent(Nori.getCurrentRoute().route);
+      Nori.router().notifySubscribers();
     }
 
     /**
@@ -111,18 +112,6 @@ define('nori/view/MixinComponentViews',
     }
 
     /**
-     * Update componentView based on a change in bound model data
-     * @param viewID
-     */
-    function updateViewComponent(viewID) {
-      var componentView = _componentViewMap[viewID];
-
-      if (componentView.controller.update) {
-        componentView.controller.update();
-      }
-    }
-
-    /**
      * Show a mapped componentView
      * @param templateID
      * @param dataObj
@@ -188,6 +177,5 @@ define('nori/view/MixinComponentViews',
     module.exports.showViewComponent        = showViewComponent;
     module.exports.mapRouteToViewComponent  = mapRouteToViewComponent;
     module.exports.showRouteViewComponent   = showRouteViewComponent;
-    module.exports.updateViewComponent      = updateViewComponent;
     module.exports.applyMixin               = applyMixin;
   });
