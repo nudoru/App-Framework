@@ -138,7 +138,7 @@ define('app/model/AppModel',
      * Testing
      */
     function restTesting() {
-      var request = require('nori/service/rest');
+      var request = require('nori/service/Rest');
 
       request.request({method: 'GET', url: '/items', json: true}).then(
         function success(data) {

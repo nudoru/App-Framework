@@ -788,7 +788,7 @@ define('nori/events/EventCreator',
 
   });
 
-define('nori/service/rest',
+define('nori/service/Rest',
   function (require, module, exports) {
 
     /**
