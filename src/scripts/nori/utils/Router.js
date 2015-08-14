@@ -11,15 +11,27 @@ define('nori/utils/Router',
         _objUtils           = require('nudoru/core/ObjectUtils'),
         _noriEventConstants = require('nori/events/EventConstants');
 
+    /**
+     * Set event handlers
+     */
     function initialize() {
       window.addEventListener('hashchange', notifySubscribers, false);
       Nori.dispatcher().subscribe(_noriEventConstants.CHANGE_ROUTE, handleAppRouteChangeRequests);
     }
 
+    /**
+     * Handle application route change requests
+     * @param payload
+     */
     function handleAppRouteChangeRequests(payload) {
       set(payload.payload.route, payload.payload.data);
     }
 
+    /**
+     * subscribe a handler to the url change events
+     * @param handler
+     * @returns {*}
+     */
     function subscribe(handler) {
       return _subject.subscribe(handler);
     }
@@ -36,7 +48,7 @@ define('nori/utils/Router',
 
       _subject.onNext(eventPayload);
     }
-    
+
     /**
      * Parses the route and query string from the current URL fragment
      * @returns {{route: string, query: {}}}
