@@ -107,6 +107,7 @@ var Nori = (function () {
   function createApplicationView(extras) {
     return extendWithArray({}, [
       require('nori/view/ApplicationView'),
+      require('nori/view/MixinNudoruControls'),
       require('nori/view/MixinComponentViews'),
       requireNew('nori/view/MixinEventDelegator'),
       extras
