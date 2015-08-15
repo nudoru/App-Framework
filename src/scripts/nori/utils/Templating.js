@@ -26,12 +26,26 @@ define('nori/utils/Templating',
       if (src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('nudoru/core/NTemplate, template not found: "' + id + '"');
+        throw new Error('nudoru/core/Templating, template not found: "' + id + '"');
       }
 
       cleanhtml              = cleanTemplateHTML(srchtml);
       _templateHTMLCache[id] = cleanhtml;
       return cleanhtml;
+    }
+
+    /**
+     * Returns all IDs belonging to text/template type script tags
+     * @returns {Array}
+     */
+    function getAllTemplateIDs() {
+      var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
+
+      return scriptTags.filter(function (tag) {
+        return tag.getAttribute('type') === 'text/template';
+      }).map(function (tag) {
+        return tag.getAttribute('id');
+      });
     }
 
     /**
@@ -73,10 +87,37 @@ define('nori/utils/Templating',
      * Cleans template HTML
      */
     function cleanTemplateHTML(str) {
-      //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
       return str.trim();
     }
 
+    /**
+     * Remove returns, spaces and tabs
+     * @param str
+     * @returns {XML|string}
+     */
+    function removeWhiteSpace(str) {
+      return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
+    }
+
+    /**
+     * Iterate over all templates, clean them up and log
+     * Util for SharePoint projects, <script> blocks aren't allowed
+     * So this helps create the blocks for insertion in to the DOM
+     */
+    function processForDOMInsertion() {
+      var ids = getAllTemplateIDs();
+      ids.forEach(function (id) {
+        var src = removeWhiteSpace(getSource(id));
+        console.log(id,src);
+      });
+    }
+
+    /**
+     * Add a template script tag to the DOM
+     * Util for SharePoint projects, <script> blocks aren't allowed
+     * @param id
+     * @param html
+     */
     function addClientSideTemplateToDOM(id, html) {
       var s       = document.createElement('script');
       s.type      = 'text/template';
@@ -85,10 +126,12 @@ define('nori/utils/Templating',
       document.getElementsByTagName('head')[0].appendChild(s);
     }
 
-    module.exports.getSource   = getSource;
-    module.exports.getTemplate = getTemplate;
-    module.exports.asHTML      = asHTML;
-    module.exports.asElement   = asElement;
+    module.exports.getSource              = getSource;
+    module.exports.getAllTemplateIDs      = getAllTemplateIDs;
+    module.exports.processForDOMInsertion = processForDOMInsertion;
+    module.exports.getTemplate            = getTemplate;
+    module.exports.asHTML                 = asHTML;
+    module.exports.asElement              = asElement;
 
     module.exports.addClientSideTemplateToDOM = addClientSideTemplateToDOM;
 

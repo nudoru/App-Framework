@@ -439,12 +439,26 @@ define('nori/utils/Templating',
       if (src) {
         srchtml = src.innerHTML;
       } else {
-        throw new Error('nudoru/core/NTemplate, template not found: "' + id + '"');
+        throw new Error('nudoru/core/Templating, template not found: "' + id + '"');
       }
 
       cleanhtml              = cleanTemplateHTML(srchtml);
       _templateHTMLCache[id] = cleanhtml;
       return cleanhtml;
+    }
+
+    /**
+     * Returns all IDs belonging to text/template type script tags
+     * @returns {Array}
+     */
+    function getAllTemplateIDs() {
+      var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
+
+      return scriptTags.filter(function (tag) {
+        return tag.getAttribute('type') === 'text/template';
+      }).map(function (tag) {
+        return tag.getAttribute('id');
+      });
     }
 
     /**
@@ -486,10 +500,37 @@ define('nori/utils/Templating',
      * Cleans template HTML
      */
     function cleanTemplateHTML(str) {
-      //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
       return str.trim();
     }
 
+    /**
+     * Remove returns, spaces and tabs
+     * @param str
+     * @returns {XML|string}
+     */
+    function removeWhiteSpace(str) {
+      return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
+    }
+
+    /**
+     * Iterate over all templates, clean them up and log
+     * Util for SharePoint projects, <script> blocks aren't allowed
+     * So this helps create the blocks for insertion in to the DOM
+     */
+    function processForDOMInsertion() {
+      var ids = getAllTemplateIDs();
+      ids.forEach(function (id) {
+        var src = removeWhiteSpace(getSource(id));
+        console.log(id,src);
+      });
+    }
+
+    /**
+     * Add a template script tag to the DOM
+     * Util for SharePoint projects, <script> blocks aren't allowed
+     * @param id
+     * @param html
+     */
     function addClientSideTemplateToDOM(id, html) {
       var s       = document.createElement('script');
       s.type      = 'text/template';
@@ -498,10 +539,12 @@ define('nori/utils/Templating',
       document.getElementsByTagName('head')[0].appendChild(s);
     }
 
-    module.exports.getSource   = getSource;
-    module.exports.getTemplate = getTemplate;
-    module.exports.asHTML      = asHTML;
-    module.exports.asElement   = asElement;
+    module.exports.getSource              = getSource;
+    module.exports.getAllTemplateIDs      = getAllTemplateIDs;
+    module.exports.processForDOMInsertion = processForDOMInsertion;
+    module.exports.getTemplate            = getTemplate;
+    module.exports.asHTML                 = asHTML;
+    module.exports.asElement              = asElement;
 
     module.exports.addClientSideTemplateToDOM = addClientSideTemplateToDOM;
 
@@ -2135,123 +2178,6 @@ define('nori/view/MixinEventDelegator',
   });
 
 
-
-define('nori/view/MixinMultiDevice',
-  function (require, module, exports) {
-
-    var _drawerEl,
-        _drawerToggleButtonEl,
-        _drawerToggleButtonStream,
-        _appEl,
-        _browserResizeStream,
-        _isMobile,
-        _tabletBreakWidth,
-        _phoneBreakWidth,
-        _drawerWidth,
-        _isDrawerOpen,
-        _currentViewPortSize,
-        _appEvents = require('nori/events/EventCreator'),
-        _browserInfo       = require('nudoru/browser/BrowserInfo');
-
-    function initializeMultiDeviceView(initObj) {
-      _isMobile         = false;
-      _tabletBreakWidth = 750;
-      _phoneBreakWidth  = 475;
-      _drawerWidth      = 250;
-      _isDrawerOpen     = false;
-
-      _appEl                = document.getElementById('app__contents');
-      _drawerEl             = document.getElementById('drawer');
-      _drawerToggleButtonEl = document.querySelector('.drawer__menu-spinner-button > input');
-
-      if (_drawerEl) {
-        TweenLite.to(_drawerEl, 0, {x: _drawerWidth * -1});
-      }
-
-      configureStreams();
-      handleViewPortResize();
-    }
-
-    function configureStreams() {
-      _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
-        .throttle(10)
-        .subscribe(function () {
-          handleViewPortResize();
-        });
-
-      if (_drawerToggleButtonEl) {
-        _drawerToggleButtonStream = Rx.Observable.fromEvent(_drawerToggleButtonEl, 'change')
-          .subscribe(function () {
-            toggleDrawer();
-          });
-      }
-    }
-
-    function handleViewPortResize() {
-      setViewPortSize();
-      checkForMobile();
-    }
-
-    function setViewPortSize() {
-      _currentViewPortSize = {
-        width : window.innerWidth,
-        height: window.innerHeight
-      };
-    }
-
-    /**
-     * Usually on resize, check to see if we're in mobile
-     */
-    function checkForMobile() {
-      if (_currentViewPortSize.width <= _tabletBreakWidth || _browserInfo.mobile.any()) {
-        switchToMobileView();
-      } else if (_currentViewPortSize.width > _tabletBreakWidth) {
-        switchToDesktopView();
-      }
-    }
-
-    function switchToMobileView() {
-      if (_isMobile) {
-        return;
-      }
-      _isMobile = true;
-      _appEvents.viewChangedToMobile();
-    }
-
-    function switchToDesktopView() {
-      if (!_isMobile) {
-        return;
-      }
-      _isMobile = false;
-      closeDrawer();
-      _appEvents.viewChangedToDesktop();
-    }
-
-    function toggleDrawer() {
-      if (_isDrawerOpen) {
-        closeDrawer();
-      } else {
-        openDrawer();
-      }
-    }
-
-    function openDrawer() {
-      _isDrawerOpen = true;
-      TweenLite.to(_drawerEl, 0.5, {x: 0, ease: Quad.easeOut});
-      TweenLite.to(_appEl, 0.5, {x: _drawerWidth, ease: Quad.easeOut});
-    }
-
-    function closeDrawer() {
-      _isDrawerOpen = false;
-      TweenLite.to(_drawerEl, 0.5, {x: _drawerWidth * -1, ease: Quad.easeOut});
-      TweenLite.to(_appEl, 0.5, {x: 0, ease: Quad.easeOut});
-    }
-
-    module.exports.initializeMultiDeviceView = initializeMultiDeviceView;
-    module.exports.openDrawer                = openDrawer;
-    module.exports.closeDrawer               = closeDrawer;
-    module.exports.checkForMobile            = checkForMobile;
-  });
 
 define('nori/view/MixinNudoruControls',
   function (require, module, exports) {
