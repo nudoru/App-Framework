@@ -805,7 +805,8 @@ define('nori/service/Rest',
           url    = reqObj.url,
           data   = reqObj.data || null;
 
-      return new Promise(function (resolve, reject) {
+      //return new Promise(function (resolve, reject) {
+      return new Rx.Observable.create(function(observer) {
         xhr.open(method, url, true, reqObj.user, reqObj.password);
 
         xhr.onreadystatechange = function () {
@@ -813,9 +814,9 @@ define('nori/service/Rest',
             if (xhr.status >= 200 && xhr.status < 300) {
               try {
                 if (json) {
-                  resolve(JSON.parse(xhr.responseText));
+                  observer.onNext(JSON.parse(xhr.responseText));
                 } else {
-                  resolve(xhr.responseText);
+                  observer.onError(xhr.responseText);
                 }
               }
               catch (e) {
@@ -828,13 +829,13 @@ define('nori/service/Rest',
         };
 
         xhr.onerror   = function () {
-          return handleError('Network error');
+          handleError('Network error');
         };
         xhr.ontimeout = function () {
-          return handleError('Timeout');
+          handleError('Timeout');
         };
         xhr.onabort   = function () {
-          return handleError('About');
+          handleError('About');
         };
 
         // set non json header? 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -848,7 +849,7 @@ define('nori/service/Rest',
 
         function handleError(type, message) {
           message = message || '';
-          reject(type + ' ' + message);
+          observer.onError(type + ' ' + message);
         }
       });
 

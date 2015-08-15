@@ -1,6 +1,61 @@
 /**
  * Ajax / Rest module.
- * Returns a promise for a request
+ * Returns an RxJS Obervable
+ *
+ * Usage:
+ *
+ var request = require('nori/service/Rest');
+
+ var getSub = request.request({
+        method: 'GET',
+        url   : '/items',
+        json  : true
+      }).subscribe(
+ function success(data) {
+          console.log('ok', data);
+        },
+ function error(data) {
+          console.log('err', data);
+        });
+
+ var postSub = request.request({
+        method: 'POST',
+        url   : '/items',
+        data  : JSON.stringify({key: 'value'}),
+        json  : true
+      }).subscribe(
+ function success(data) {
+          console.log('ok', data);
+        },
+ function error(data) {
+          console.log('err', data);
+        });
+
+ var putSub = request.request({
+        method: 'PUT',
+        url   : '/items/42',
+        data  : JSON.stringify({key: 'value'}),
+        json  : true
+      }).subscribe(
+ function success(data) {
+          console.log('ok', data);
+        },
+ function error(data) {
+          console.log('err', data);
+        });
+
+ var delSub = request.request({
+        method: 'DELETE',
+        url   : '/items/42',
+        json  : true
+      }).subscribe(
+ function success(data) {
+          console.log('ok', data);
+        },
+ function error(data) {
+          console.log('err', data);
+        });
+ *
  */
 
 define('nori/service/Rest',
@@ -19,7 +74,8 @@ define('nori/service/Rest',
           url    = reqObj.url,
           data   = reqObj.data || null;
 
-      return new Promise(function (resolve, reject) {
+      //return new Promise(function (resolve, reject) {
+      return new Rx.Observable.create(function(observer) {
         xhr.open(method, url, true, reqObj.user, reqObj.password);
 
         xhr.onreadystatechange = function () {
@@ -27,9 +83,9 @@ define('nori/service/Rest',
             if (xhr.status >= 200 && xhr.status < 300) {
               try {
                 if (json) {
-                  resolve(JSON.parse(xhr.responseText));
+                  observer.onNext(JSON.parse(xhr.responseText));
                 } else {
-                  resolve(xhr.responseText);
+                  observer.onError(xhr.responseText);
                 }
               }
               catch (e) {
@@ -42,13 +98,13 @@ define('nori/service/Rest',
         };
 
         xhr.onerror   = function () {
-          return handleError('Network error');
+          handleError('Network error');
         };
         xhr.ontimeout = function () {
-          return handleError('Timeout');
+          handleError('Timeout');
         };
         xhr.onabort   = function () {
-          return handleError('About');
+          handleError('About');
         };
 
         // set non json header? 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -62,7 +118,7 @@ define('nori/service/Rest',
 
         function handleError(type, message) {
           message = message || '';
-          reject(type + ' ' + message);
+          observer.onError(type + ' ' + message);
         }
       });
 
