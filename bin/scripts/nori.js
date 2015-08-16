@@ -2224,7 +2224,6 @@ define('nori/view/ViewComponent',
   function (require, module, exports) {
 
     var _isInitialized = false,
-        _initObj,
         _id,
         _templateObj,
         _html,
@@ -2241,7 +2240,6 @@ define('nori/view/ViewComponent',
      */
     function initializeComponent(initObj) {
       if (!isInitialized()) {
-        _initObj     = initObj;
         _id          = initObj.id;
         _templateObj = initObj.template;
         _mountPoint  = initObj.mountPoint;
@@ -2252,10 +2250,14 @@ define('nori/view/ViewComponent',
 
     /**
      * Bind updates to the map ID to this view's update
-     * @param mapID
+     * @param id
      */
-    function bindMap(mapID) {
-      Nori.bindToMap(mapID, this.getID());
+    function bindMap(id) {
+      var map = Nori.model().getMap(id) || Nori.model().getMapCollection(id);
+      if (!map) {
+        throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + id);
+      }
+      map.subscribe(this.update.bind(this));
     }
 
     /**
@@ -2316,7 +2318,9 @@ define('nori/view/ViewComponent',
      * @returns {boolean}
      */
     function viewShouldRender(previousState) {
-      return true;
+      console.log('TEST, remove? ViewComponent, viewShouldRender working?');
+      return !_.isEqual(previousState, this.getState());
+      //return true;
     }
 
     /**
@@ -2443,6 +2447,10 @@ define('nori/view/ViewComponent',
       return _isInitialized;
     }
 
+    function isMounted() {
+      return _isMounted;
+    }
+
     function setState(obj) {
       _state = obj;
     }
@@ -2495,9 +2503,9 @@ define('nori/view/ViewComponent',
     module.exports.setHTML       = setHTML;
     module.exports.getDOMElement = getDOMElement;
     module.exports.setDOMElement = setDOMElement;
+    module.exports.isMounted     = isMounted;
 
-    module.exports.bindMap = bindMap;
-
+    module.exports.bindMap        = bindMap;
     module.exports.viewWillUpdate = viewWillUpdate;
     module.exports.update         = update;
     module.exports.viewDidUpdate  = viewDidUpdate;
