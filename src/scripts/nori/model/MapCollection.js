@@ -9,9 +9,8 @@ define('nori/model/MapCollection',
     var _this,
         _id,
         _parentCollection,
-        _children  = [],
-        _silent    = false,
-        _subject   = new Rx.Subject();
+        _children = [],
+        _subject  = new Rx.Subject();
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -22,9 +21,8 @@ define('nori/model/MapCollection',
         throw new Error('ModelCollection must be init\'d with an id');
       }
 
-      _this   = this;
-      _id     = initObj.id;
-      _silent = initObj.silent || false;
+      _this = this;
+      _id   = initObj.id;
 
       // TODO test
       if (initObj.models) {
@@ -72,7 +70,7 @@ define('nori/model/MapCollection',
      * @param array Array of objects
      * @param idKey Key on each object to use for the ID of that Model store
      */
-    function addFromObjArray(oArry, idKey, silent) {
+    function addFromObjArray(oArry, idKey) {
       oArry.forEach(function (obj) {
 
         var id;
@@ -83,13 +81,13 @@ define('nori/model/MapCollection',
           id = _id + 'child' + _children.length;
         }
 
-        add(Nori.model().createMap({id: id, silent: silent, store: obj}));
+        add(Nori.model().createMap({id: id, store: obj}));
       });
       dispatchChange(_id, 'add_map');
     }
 
 
-    function addFromJSONArray(json, idKey, silent) {
+    function addFromJSONArray(json, idKey) {
       json.forEach(function (jstr) {
 
         var id, obj;
@@ -106,7 +104,7 @@ define('nori/model/MapCollection',
           id = _id + 'child' + _children.length;
         }
 
-        add(Nori.model().createMap({id: id, silent: silent, store: obj}));
+        add(Nori.model().createMap({id: id, store: obj}));
       });
       dispatchChange(_id, 'add_map');
     }
@@ -183,16 +181,14 @@ define('nori/model/MapCollection',
      * On change, emit event globally
      */
     function dispatchChange(data, type) {
-      if (!_silent) {
-        var payload = {
-          id     : _id,
-          type   : type || '',
-          mapType: 'collection',
-          mapID  : data.id
-        };
+      var payload = {
+        id     : _id,
+        type   : type || '',
+        mapType: 'collection',
+        mapID  : data.id
+      };
 
-        _subject.onNext(payload);
-      }
+      _subject.onNext(payload);
 
       if (_parentCollection) {
         _parentCollection.dispatchChange({id: _id, store: getMap()});
@@ -211,15 +207,15 @@ define('nori/model/MapCollection',
       return _children.length;
     }
 
-    function getFirst() {
+    function first() {
       return _children[0];
     }
 
-    function getLast() {
+    function last() {
       return _children[_children.length - 1];
     }
 
-    function getAtIndex(i) {
+    function atIndex(i) {
       return _children[i];
     }
 
@@ -294,9 +290,9 @@ define('nori/model/MapCollection',
     module.exports.getMap              = getMap;
     module.exports.hasMap              = hasMap;
     module.exports.size                = size;
-    module.exports.getFirst            = getFirst;
-    module.exports.getLast             = getLast;
-    module.exports.getAtIndex          = getAtIndex;
+    module.exports.first               = first;
+    module.exports.last                = last;
+    module.exports.atIndex             = atIndex;
     module.exports.filter              = filter;
     module.exports.filterByKey         = filterByKey;
     module.exports.forEach             = forEach;

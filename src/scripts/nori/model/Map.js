@@ -8,11 +8,10 @@ define('nori/model/Map',
 
     var _id,
         _parentCollection,
-        _dirty     = false,
-        _entries   = [],
-        _map       = Object.create(null),
-        _silent    = false,
-        _subject   = new Rx.Subject();
+        _dirty   = false,
+        _entries = [],
+        _map     = Object.create(null),
+        _subject = new Rx.Subject();
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -24,8 +23,6 @@ define('nori/model/Map',
       }
 
       _id = initObj.id;
-
-      _silent = initObj.silent || false;
 
       if (initObj.store) {
         _dirty = true;
@@ -62,6 +59,9 @@ define('nori/model/Map',
       return _id;
     }
 
+    /**
+     * Erase it
+     */
     function clear() {
       _map   = {};
       _dirty = true;
@@ -78,26 +78,20 @@ define('nori/model/Map',
     /**
      * Set property or merge in new data
      * @param key String = name of property to set, Object = will merge new props
-     * @param options String = value of property to set, Object = options: silent
+     * @param value String = value of property to set
      */
-    function set(key, options) {
-      var silentSet = false;
+    function set(key, value) {
 
       if (typeof key === 'object') {
-        if (options !== null && typeof options === 'object') {
-          silentSet = options.silent || false;
-        }
         _map = _.merge({}, _map, key);
       } else {
-        _map[key] = options;
+        _map[key] = value;
       }
 
       // Mark changed
       _dirty = true;
 
-      if (!silentSet) {
-        dispatchChange('set_key');
-      }
+      dispatchChange('set_key');
     }
 
     /**
@@ -106,7 +100,7 @@ define('nori/model/Map',
      * @param prop
      * @param data
      */
-    function setKeyProp(key, prop, data, silent) {
+    function setKeyProp(key, prop, data) {
       _map[key][prop] = data;
 
       _dirty = true;
@@ -217,11 +211,11 @@ define('nori/model/Map',
       return values().filter(predicate);
     }
 
-    function getFirst() {
+    function first() {
       return entries()[0];
     }
 
-    function getLast() {
+    function last() {
       var e = entries();
       return e[e.length - 1];
     }
@@ -258,14 +252,12 @@ define('nori/model/Map',
      * On change, emit event globally
      */
     function dispatchChange(type) {
-      if (!_silent) {
-        var payload = {
-          id     : _id,
-          mapType: 'model'
-        };
+      var payload = {
+        id     : _id,
+        mapType: 'model'
+      };
 
-        _subject.onNext(payload);
-      }
+      _subject.onNext(payload);
 
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
@@ -309,8 +301,8 @@ define('nori/model/Map',
     module.exports.entries             = entries;
     module.exports.filterValues        = filterValues;
     module.exports.size                = size;
-    module.exports.getFirst            = getFirst;
-    module.exports.getLast             = getLast;
+    module.exports.first               = first;
+    module.exports.last                = last;
     module.exports.getAtIndex          = getAtIndex;
     module.exports.toObject            = toObject;
     module.exports.transform           = transform;
