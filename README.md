@@ -1,18 +1,22 @@
+## This is wildly out of date! I'm updating slowly ...
+
 # NORI App Framework
 
 [![Build Status](https://travis-ci.org/nudoru/App-Framework.svg?branch=master)](https://travis-ci.org/nudoru/App-Framework)
 
-Nori is a handy starting template for my JS projects based on some of the ideas of: ~~AS3 Robotlegs, Backbone, Ember + other random ideas I've found and liked. Based on the MVC pattern.~~ Flux and Command-Query Responsibility Segregation (CQRS) generally after reading this great post: http://jaysoo.ca/2015/02/06/what-the-flux/
+Nori is a handy starting template for my JS projects based on some ideas from: Redux, Flux, Model-View-Intent, React, Mithril and other interesting ideas. I created it to help me learn to be a JavaScript Ninja by implementing features that I like rather than using someone else's implementation or framework.
 
 Dependencies:
 - RxJS
-- GreenSock Animation Playform
+- GreenSock Animation Platform
 - Lodash
-- and my Nudoru utility classes - more information at the bottom of this article
+- my Nudoru utility classes - more information at the bottom
 
 ## Data Flow
 
-The flow of data in an application is one direction and generally follows Flux.
+The flow of data in an application is one direction and generally follows ideas from Flux.
+
+8/14/15 Each model data object (Map, MapCollection and SimpleModel) provide an RxJS Subject that you subscribe to via the subscribe() method and no longer dispatch change events to the global bus. This requires you explicitly declare a dependency on the model you want, usually in a view component.
 
 ```
      ┌──────────────────────────────┬──────────────────────────┐
@@ -66,39 +70,37 @@ w    │                 ┌─────────────────�
 
 ## Define / Require
 
-I created my own define/require module system that works without the need to for a build process packager. Modules are based on the CommonJS format. Source is in the `source/nudoru/require.js` file
+I created my own client side define/require module system that works without the need to for a build process packager. Modules are based on the CommonJS format. Source is in the `source/nudoru/require.js` file
 
 **Everything in Nori is a module defined and required in this manner** except for the main Nori object.
 
-Modules in Nori are created like typical closures and not created with prototypical inherence / constructors in mind. New instances are created with Lodash’s `_.assign` method to copy enumerable properties to a new object. Extending modules with mixins is possible and leveraged in Nori factory functions to extend functionality of core components. The Application View is a great example.
+Modules in Nori are created like typical closures and not created with prototypical inherence / constructors in mind. New instances are created with Lodash’s `_.assign` method to copy enumerable properties to a new object (concatenative inheritance). Extending modules with mixins is common and leveraged in Nori factory functions to extend functionality of core components. The Application View is a great example.
 
 ### To define a module:
 ```javascript
-define(‘MyApp.Module’,
+define(‘app/Module’,
   function (require, module, exports) {
-		exports.method = function() { … };
+		module.exports.method = function() { … };
   });
 ```
 
-Public functionality is exposed via the `exports` or `module.exports` object.
+Module names are the file path to the module JS file. Public functionality is exposed via the `module.exports` object.
 
 ### Require a module:
 
 **Get a singleton instance**
 ```javascript
-var module = require(‘MyApp.Module’);
+var module = require(‘app/Module’);
 ```
 
 **Get a unique instance**
 ```javascript
-var module = requireNew(‘MyApp.Module’);
+var module = requireNew(‘app/Module’);
 ```
 
 ## Dispatcher / Events
 
-The `scripts/nori/utils/Dispatcher.js` is a pub/sub system that uses RxJS subjects. You can subscribe to events with it and publish events.
-
-Subscribing to an event returns a RxJS subscription.
+The `scripts/nori/utils/Dispatcher.js` is a pub/sub system that uses RxJS subjects. You can subscribe to events with it and publish events. Subscribing to an event returns a RxJS subscription.
 
 Events are ‘magic’ strings. Nori defines core application ones in the `scripts/events/AppEvents.js` and `scripts/nudoru/browser/BrowserEvents.js` modules.
 
@@ -154,7 +156,7 @@ The event payload object will be passed to the handerFunc. Per Flux recommendati
 
 ## Application Bootstrapper
 
-A bootstrapper module is required to set up models, views, routes, etc. and configure the application before it’s run. It should be created as a global object (for convenience) an initialized like this:
+A bootstrapper module is required to set up models, views and anything else needed configure the application before it’s run. It should be created as a global object (for convenience) an initialized like this:
 
 ```javascript
 // Create the application instance
@@ -294,9 +296,9 @@ decorateSubViewController(‘Timecard’, [requireNew(‘TT.View.TTSubViewModule
 
 ### SubView binding to Model store
 
-The view will call `MyApp.registerForModelChanges(modelID, viewID)` to bind it to any updates on the model. When data is updated on the model or collection the `handleModelUpdate` will run triggering the `update()` method in any bound views.
+UPDATE: Views should subscribe to the specific models that they wish to monitor. 
 
-Data flow:
+OUT OF DATE Data flow:
 
 ```
                               ┌──── registerForModelChanges ◀──────────────────┐

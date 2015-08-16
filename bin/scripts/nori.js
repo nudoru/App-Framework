@@ -1538,7 +1538,7 @@ define('nori/model/MixinMapFactory',
      * @returns {*}
      */
     function createMapCollection(initObj, extras) {
-      var m = Nori.extendWithArray({}, [requireNew('nori/model/MapCollection'), extras]);
+      var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), extras]);
       m.initialize(initObj);
       return m;
     }
@@ -1550,7 +1550,7 @@ define('nori/model/MixinMapFactory',
      * @returns {*}
      */
     function createMap(initObj, extras) {
-      var m = Nori.extendWithArray({}, [requireNew('nori/model/Map'), extras]);
+      var m = Nori.assignArray({}, [requireNew('nori/model/Map'), extras]);
       m.initialize(initObj);
       return m;
     }
@@ -2005,7 +2005,7 @@ define('nori/view/MixinComponentViews',
      * @returns {*}
      */
     function createComponentView(extras) {
-      return Nori.extendWithArray({}, [
+      return Nori.assignArray({}, [
         requireNew('nori/view/ViewComponent'),
         requireNew('nori/view/MixinEventDelegator'),
         extras
@@ -2034,7 +2034,7 @@ define('nori/view/MixinComponentViews',
         throw new Error('No componentView mapped for id: ' + templateID);
       }
 
-      componentView.controller = Nori.extendWithArray(componentView.controller, extras);
+      componentView.controller = Nori.assignArray(componentView.controller, extras);
     }
 
     /**
@@ -2536,9 +2536,8 @@ define('nori/view/ViewComponent',
 var Nori = (function () {
   var _model,
       _view,
-      _objectUtils = require('nudoru/core/ObjectUtils'),
-      _dispatcher  = require('nori/utils/Dispatcher'),
-      _router      = require('nori/utils/Router');
+      _dispatcher = require('nori/utils/Dispatcher'),
+      _router     = require('nori/utils/Router');
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -2561,7 +2560,7 @@ var Nori = (function () {
   }
 
   function getConfig() {
-    return _objectUtils.extend({}, (window.APP_CONFIG_DATA || {}));
+    return _.assign({}, (window.APP_CONFIG_DATA || {}));
   }
 
   function getCurrentRoute() {
@@ -2587,26 +2586,16 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Merges objects
-   * @param base Destination object
-   * @param extra Source
-   * @returns {*}
-   */
-  function extend(base, extra) {
-    return _.assign({}, base, extra);
-  }
-
-  /**
    * Merges a collection of objects
-   * @param base
-   * @param extArry
+   * @param target
+   * @param sourceArray
    * @returns {*}
    */
-  function extendWithArray(base, extArry) {
-    while (extArry.length) {
-      base = _.assign(base, extArry.shift());
-    }
-    return base;
+  function assignArray(target, sourceArray) {
+    sourceArray.forEach(function (source) {
+      target = _.assign(target, source);
+    });
+    return target;
   }
 
   /**
@@ -2615,7 +2604,7 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplication(extras) {
-    return extendWithArray({}, [
+    return assignArray({}, [
       this,
       extras
     ]);
@@ -2627,7 +2616,7 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationModel(extras) {
-    return extendWithArray({}, [
+    return assignArray({}, [
       require('nori/model/MixinMapFactory'),
       require('nori/model/MixinReducerModel'),
       extras
@@ -2640,7 +2629,7 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationView(extras) {
-    return extendWithArray({}, [
+    return assignArray({}, [
       require('nori/view/ApplicationView'),
       require('nori/view/MixinNudoruControls'),
       require('nori/view/MixinComponentViews'),
@@ -2700,8 +2689,7 @@ var Nori = (function () {
     createApplicationModel: createApplicationModel,
     createApplicationView : createApplicationView,
     getCurrentRoute       : getCurrentRoute,
-    extend                : extend,
-    extendWithArray       : extendWithArray,
+    assignArray           : assignArray,
     prop                  : prop,
     withAttr              : withAttr
   };

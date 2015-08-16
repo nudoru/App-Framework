@@ -11,7 +11,7 @@ define('nori/model/MixinMapFactory',
      * @returns {*}
      */
     function createMapCollection(initObj, extras) {
-      var m = Nori.extendWithArray({}, [requireNew('nori/model/MapCollection'), extras]);
+      var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), extras]);
       m.initialize(initObj);
       return m;
     }
@@ -23,7 +23,7 @@ define('nori/model/MixinMapFactory',
      * @returns {*}
      */
     function createMap(initObj, extras) {
-      var m = Nori.extendWithArray({}, [requireNew('nori/model/Map'), extras]);
+      var m = Nori.assignArray({}, [requireNew('nori/model/Map'), extras]);
       m.initialize(initObj);
       return m;
     }

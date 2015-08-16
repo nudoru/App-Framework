@@ -79,7 +79,7 @@ define('nori/view/MixinComponentViews',
      * @returns {*}
      */
     function createComponentView(extras) {
-      return Nori.extendWithArray({}, [
+      return Nori.assignArray({}, [
         requireNew('nori/view/ViewComponent'),
         requireNew('nori/view/MixinEventDelegator'),
         extras
@@ -108,7 +108,7 @@ define('nori/view/MixinComponentViews',
         throw new Error('No componentView mapped for id: ' + templateID);
       }
 
-      componentView.controller = Nori.extendWithArray(componentView.controller, extras);
+      componentView.controller = Nori.assignArray(componentView.controller, extras);
     }
 
     /**
