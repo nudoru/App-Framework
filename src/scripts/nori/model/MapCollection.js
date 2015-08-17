@@ -9,6 +9,7 @@ define('nori/model/MapCollection',
     var _this,
         _id,
         _parentCollection,
+        _caret    = 0,
         _children = [];
 
     //----------------------------------------------------------------------------
@@ -28,6 +29,38 @@ define('nori/model/MapCollection',
         addMapsFromArray.call(_this, initObj.models);
       }
     }
+
+    //----------------------------------------------------------------------------
+    //  Iterator
+    //----------------------------------------------------------------------------
+
+    function next() {
+      var ret = {};
+      if (hasNext()) {
+        ret = {value: _children[_caret++], done: !hasNext()};
+      } else {
+        ret = current();
+      }
+
+      return ret;
+    }
+
+    function current() {
+      return {value: _children[_caret], done: !hasNext()}
+    }
+
+    function rewind() {
+      _caret = 0;
+      return _children[_caret];
+    }
+
+    function hasNext() {
+      return _caret < _children.length;
+    }
+
+    //----------------------------------------------------------------------------
+    //  Impl
+    //----------------------------------------------------------------------------
 
     function isDirty() {
       var dirty = false;
@@ -266,6 +299,10 @@ define('nori/model/MapCollection',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
+    module.exports.current             = current;
+    module.exports.next                = next;
+    module.exports.hasNext             = hasNext;
+    module.exports.rewind              = rewind;
     module.exports.getID               = getID;
     module.exports.isDirty             = isDirty;
     module.exports.markClean           = markClean;
