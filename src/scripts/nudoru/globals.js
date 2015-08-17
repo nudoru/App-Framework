@@ -21,13 +21,24 @@ function isFunction(object) {
 }
 
 function isObject(object) {
+  var type = {}.toString;
   return type.call(object) === "[object Object]";
 }
 
 function isString(object) {
+  var type = {}.toString;
   return type.call(object) === "[object String]";
 }
 
 var isArray = Array.isArray || function (object) {
+    var type = {}.toString;
     return type.call(object) === "[object Array]";
   };
+
+function isPromise(promise) {
+  return promise && typeof promise.then === 'function';
+}
+
+function isObservable(observable) {
+  return observable && typeof observable.subscribe === 'function';
+}

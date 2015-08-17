@@ -33,13 +33,21 @@ define('nori/view/ViewComponent',
 
     /**
      * Bind updates to the map ID to this view's update
-     * @param id
+     * @param mapIDorObj Object to subscribe to or ID. Should implement nori/model/MixinObservableModel
      */
-    function bindMap(id) {
-      var map = Nori.model().getMap(id) || Nori.model().getMapCollection(id);
-      if (!map) {
-        throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + id);
+    function bindMap(mapIDorObj) {
+      var map;
+
+      if(isObject(mapIDorObj)) {
+        map = mapIDorObj;
+      } else {
+        map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
       }
+
+      if (!map) {
+        throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+      }
+
       map.subscribe(this.update.bind(this));
     }
 
@@ -101,7 +109,6 @@ define('nori/view/ViewComponent',
      * @returns {boolean}
      */
     function viewShouldRender(previousState) {
-      console.log('TEST, remove? ViewComponent, viewShouldRender working?');
       return !_.isEqual(previousState, this.getState());
       //return true;
     }

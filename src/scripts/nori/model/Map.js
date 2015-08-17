@@ -6,12 +6,12 @@
 define('nori/model/Map',
   function (require, module, exports) {
 
-    var _id,
+    var _this,
+        _id,
         _parentCollection,
         _dirty   = false,
         _entries = [],
-        _map     = Object.create(null),
-        _subject = new Rx.Subject();
+        _map     = Object.create(null);
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -22,6 +22,7 @@ define('nori/model/Map',
         throw new Error('Model must be init\'d with an id');
       }
 
+      _this = this;
       _id = initObj.id;
 
       if (initObj.store) {
@@ -31,15 +32,6 @@ define('nori/model/Map',
         setJSON(initObj.json);
       }
 
-    }
-
-    /**
-     * subscribe a handler for changes
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
     }
 
     /**
@@ -257,7 +249,7 @@ define('nori/model/Map',
         mapType: 'model'
       };
 
-      _subject.onNext(payload);
+      _this.notifySubscribers(payload);
 
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
@@ -284,7 +276,6 @@ define('nori/model/Map',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
-    module.exports.subscribe           = subscribe;
     module.exports.getID               = getID;
     module.exports.clear               = clear;
     module.exports.isDirty             = isDirty;

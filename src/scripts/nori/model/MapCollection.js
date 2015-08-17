@@ -9,8 +9,7 @@ define('nori/model/MapCollection',
     var _this,
         _id,
         _parentCollection,
-        _children = [],
-        _subject  = new Rx.Subject();
+        _children = [];
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -28,15 +27,6 @@ define('nori/model/MapCollection',
       if (initObj.models) {
         addMapsFromArray.call(_this, initObj.models);
       }
-    }
-
-    /**
-     * subscribe a handler for changes
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
     }
 
     function isDirty() {
@@ -85,7 +75,6 @@ define('nori/model/MapCollection',
       });
       dispatchChange(_id, 'add_map');
     }
-
 
     function addFromJSONArray(json, idKey) {
       json.forEach(function (jstr) {
@@ -188,7 +177,7 @@ define('nori/model/MapCollection',
         mapID  : data.id
       };
 
-      _subject.onNext(payload);
+      _this.notifySubscribers(payload);
 
       if (_parentCollection) {
         _parentCollection.dispatchChange({id: _id, store: getMap()});
@@ -277,7 +266,6 @@ define('nori/model/MapCollection',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
-    module.exports.subscribe           = subscribe;
     module.exports.getID               = getID;
     module.exports.isDirty             = isDirty;
     module.exports.markClean           = markClean;
