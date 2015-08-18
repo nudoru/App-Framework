@@ -23,7 +23,7 @@ define('app/view/DebugControlsTestingSubView',
     }
 
 
-    function viewDidMount() {
+    function componentDidMount() {
       console.log(this.getID() + ', subview did mount');
 
       _actionOneEl   = document.getElementById('action-one');
@@ -147,6 +147,6 @@ define('app/view/DebugControlsTestingSubView',
     }
 
     module.exports.initialize   = initialize;
-    module.exports.viewDidMount = viewDidMount;
+    module.exports.componentDidMount = componentDidMount;
 
   });

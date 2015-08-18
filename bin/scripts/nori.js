@@ -2308,7 +2308,7 @@ define('nori/view/ViewComponent',
     function bindMap(mapIDorObj) {
       var map;
 
-      if(isObject(mapIDorObj)) {
+      if (isObject(mapIDorObj)) {
         map = mapIDorObj;
       } else {
         map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
@@ -2342,7 +2342,7 @@ define('nori/view/ViewComponent',
     /**
      * Before the iew updates and a rerender occurs
      */
-    function viewWillUpdate() {
+    function componentWillUpdate() {
       // update state
     }
 
@@ -2356,21 +2356,21 @@ define('nori/view/ViewComponent',
       var previousState = _.assign({}, this.getState());
 
       // state will update here
-      this.viewWillUpdate();
+      this.componentWillUpdate();
 
       _children.forEach(function updateChild(child) {
         child.update();
       });
 
       if (_isMounted) {
-        if (this.viewShouldRender(previousState)) {
+        if (this.componentShouldRender(previousState)) {
           this.unmount();
           this.render();
           this.mount();
         }
       }
 
-      this.viewDidUpdate();
+      this.componentDidUpdate();
     }
 
     /**
@@ -2378,7 +2378,7 @@ define('nori/view/ViewComponent',
      * TODO implement
      * @returns {boolean}
      */
-    function viewShouldRender(previousState) {
+    function componentShouldRender(previousState) {
       return !_.isEqual(previousState, this.getState());
       //return true;
     }
@@ -2386,11 +2386,11 @@ define('nori/view/ViewComponent',
     /**
      * After the view updates and a rerender occurred
      */
-    function viewDidUpdate() {
+    function componentDidUpdate() {
       // stub
     }
 
-    function viewWillRender() {
+    function componentWillRender() {
       // stub
     }
 
@@ -2399,8 +2399,8 @@ define('nori/view/ViewComponent',
      * @returns {*}
      */
     function render() {
-      if (this.viewWillRender) {
-        this.viewWillRender();
+      if (this.componentWillRender) {
+        this.componentWillRender();
       }
 
       _children.forEach(function renderChild(child) {
@@ -2409,19 +2409,19 @@ define('nori/view/ViewComponent',
 
       _html = _templateObj(_state);
 
-      if (this.viewDidRender) {
-        this.viewDidRender();
+      if (this.componentDidRender) {
+        this.componentDidRender();
       }
     }
 
-    function viewDidRender() {
+    function componentDidRender() {
       // stub
     }
 
     /**
      * Call before it's been added to a view
      */
-    function viewWillMount() {
+    function componentWillMount() {
       // stub
     }
 
@@ -2434,8 +2434,8 @@ define('nori/view/ViewComponent',
         throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first');
       }
 
-      if (this.viewWillMount) {
-        this.viewWillMount();
+      if (this.componentWillMount) {
+        this.componentWillMount();
       }
 
       _isMounted = true;
@@ -2455,27 +2455,27 @@ define('nori/view/ViewComponent',
         this.delegateEvents();
       }
 
-      if (this.viewDidMount) {
-        this.viewDidMount();
+      if (this.componentDidMount) {
+        this.componentDidMount();
       }
     }
 
     /**
      * Call after it's been added to a view
      */
-    function viewDidMount() {
+    function componentDidMount() {
       // stub
     }
 
     /**
      * Call when unloading and switching views
      */
-    function viewWillUnmount() {
+    function componentWillUnmount() {
       // stub
     }
 
     function unmount() {
-      this.viewWillUnmount();
+      this.componentWillUnmount();
       _isMounted = false;
       _noriEvents.renderView(_mountPoint, '', _id);
 
@@ -2485,10 +2485,10 @@ define('nori/view/ViewComponent',
       }
 
       setDOMElement(null);
-      this.viewDidUnmount();
+      this.componentDidUnmount();
     }
 
-    function viewDidUnmount() {
+    function componentDidUnmount() {
       // stub
     }
 
@@ -2565,23 +2565,23 @@ define('nori/view/ViewComponent',
     module.exports.setDOMElement = setDOMElement;
     module.exports.isMounted     = isMounted;
 
-    module.exports.bindMap        = bindMap;
-    module.exports.viewWillUpdate = viewWillUpdate;
-    module.exports.update         = update;
-    module.exports.viewDidUpdate  = viewDidUpdate;
+    module.exports.bindMap             = bindMap;
+    module.exports.componentWillUpdate = componentWillUpdate;
+    module.exports.update              = update;
+    module.exports.componentDidUpdate  = componentDidUpdate;
 
-    module.exports.viewShouldRender = viewShouldRender;
-    module.exports.viewWillRender   = viewWillRender;
-    module.exports.render           = render;
-    module.exports.viewDidRender    = viewDidRender;
+    module.exports.componentShouldRender = componentShouldRender;
+    module.exports.componentWillRender   = componentWillRender;
+    module.exports.render                = render;
+    module.exports.componentDidRender    = componentDidRender;
 
-    module.exports.viewWillMount = viewWillMount;
-    module.exports.mount         = mount;
-    module.exports.viewDidMount  = viewDidMount;
+    module.exports.componentWillMount = componentWillMount;
+    module.exports.mount              = mount;
+    module.exports.componentDidMount  = componentDidMount;
 
-    module.exports.viewWillUnmount = viewWillUnmount;
-    module.exports.unmount         = unmount;
-    module.exports.viewDidUnmount  = viewDidUnmount;
+    module.exports.componentWillUnmount = componentWillUnmount;
+    module.exports.unmount              = unmount;
+    module.exports.componentDidUnmount  = componentDidUnmount;
 
     module.exports.addChild    = addChild;
     module.exports.removeChild = removeChild;

@@ -16,7 +16,7 @@ define('app/view/ViewComponent',
       if(!this.isInitialized()) {
         _this = this;
         this.initializeComponent(initObj);
-        // associate with stores. viewWillUpdate() fires when it changes
+        // associate with stores. componentWillUpdate() fires when it changes
         //this.bindMap('SomeCollection');
         // custom init below here
       }
@@ -25,7 +25,7 @@ define('app/view/ViewComponent',
     /**
      * Update has been triggered due a change in the bound model
      */
-    function viewWillUpdate() {
+    function componentWillUpdate() {
       // Update state from stores
       var obj = Object.create(null);
       // build it
@@ -34,16 +34,16 @@ define('app/view/ViewComponent',
 
     // Example of custom render
     //function render() {
-    //  this.viewWillRender();
+    //  this.componentWillRender();
     //  this.setHTML(this.getTemplate()(this.getState()));
     //  // created in mount this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
-    //  this.viewDidRender();
+    //  this.componentDidRender();
     //}
 
     /**
      * Updated view has been rendered and added to the DOM. Manipulate it here
      */
-    function viewDidMount() {
+    function componentDidMount() {
       // good place to assign events or post render
       /*
        _this.setEvents({
@@ -56,19 +56,19 @@ define('app/view/ViewComponent',
     /**
      * Remove event handlers and perform other cleanup
      */
-    function viewWillUnmount() {
+    function componentWillUnmount() {
       // remove events
     }
 
     module.exports.initialize = initialize;
-    module.exports.viewWillUpdate = viewWillUpdate;
-    module.exports.viewDidMount = viewDidMount;
-    module.exports.viewWillUnmount = viewWillUnmount;
+    module.exports.componentWillUpdate = componentWillUpdate;
+    module.exports.componentDidMount = componentDidMount;
+    module.exports.componentWillUnmount = componentWillUnmount;
 
     // Other possible lifecycle hooks
-    //module.exports.viewDidUpdate = viewDidUpdate;
-    //module.exports.viewWillRender = viewWillRender;
-    //module.exports.viewDidRender = viewDidRender;
-    //module.exports.viewWillMount = viewWillMount;
-    //module.exports.viewDidUnmount = viewDidUnmount;
+    //module.exports.componentDidUpdate = componentDidUpdate;
+    //module.exports.componentWillRender = componentWillRender;
+    //module.exports.componentDidRender = componentDidRender;
+    //module.exports.componentWillMount = componentWillMount;
+    //module.exports.componentDidUnmount = componentDidUnmount;
   });
