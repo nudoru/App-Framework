@@ -7,6 +7,7 @@ define('nori/view/ViewComponent',
   function (require, module, exports) {
 
     var _isInitialized = false,
+        _initialProps,
         _id,
         _templateObj,
         _html,
@@ -19,13 +20,14 @@ define('nori/view/ViewComponent',
 
     /**
      * Initialization
-     * @param initObj
+     * @param initialProps
      */
-    function initializeComponent(initObj) {
+    function initializeComponent(initialProps) {
       if (!isInitialized()) {
-        _id          = initObj.id;
-        _templateObj = initObj.template;
-        _mountPoint  = initObj.mountPoint;
+        _initialProps = initialProps;
+        _id           = initialProps.id;
+        _templateObj  = initialProps.template;
+        _mountPoint   = initialProps.mountPoint;
       }
       this.update();
       _isInitialized = true;
@@ -237,6 +239,10 @@ define('nori/view/ViewComponent',
       return _isInitialized;
     }
 
+    function getInitialProps() {
+      return _initialProps;
+    }
+
     function isMounted() {
       return _isMounted;
     }
@@ -284,16 +290,17 @@ define('nori/view/ViewComponent',
 
     module.exports.initializeComponent = initializeComponent;
 
-    module.exports.isInitialized = isInitialized;
-    module.exports.setState      = setState;
-    module.exports.getState      = getState;
-    module.exports.getID         = getID;
-    module.exports.getTemplate   = getTemplate;
-    module.exports.getHTML       = getHTML;
-    module.exports.setHTML       = setHTML;
-    module.exports.getDOMElement = getDOMElement;
-    module.exports.setDOMElement = setDOMElement;
-    module.exports.isMounted     = isMounted;
+    module.exports.isInitialized   = isInitialized;
+    module.exports.getInitialProps = getInitialProps;
+    module.exports.setState        = setState;
+    module.exports.getState        = getState;
+    module.exports.getID           = getID;
+    module.exports.getTemplate     = getTemplate;
+    module.exports.getHTML         = getHTML;
+    module.exports.setHTML         = setHTML;
+    module.exports.getDOMElement   = getDOMElement;
+    module.exports.setDOMElement   = setDOMElement;
+    module.exports.isMounted       = isMounted;
 
     module.exports.bindMap             = bindMap;
     module.exports.componentWillUpdate = componentWillUpdate;
