@@ -148,9 +148,9 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
-    module.exports.updateModelData = function (modelID, data) {
+    module.exports.changeModelState = function (modelID, data) {
       var evtObj = {
-        type   : _appEventConstants.UPDATE_MODEL_DATA,
+        type   : _appEventConstants.CHANGE_MODEL_STATE,
         payload: {
           id  : modelID,
           data: data

@@ -83,6 +83,7 @@ var Nori = (function () {
   function createApplicationModel(extras) {
     return assignArray({}, [
       require('nori/model/MixinMapFactory'),
+      require('nori/utils/MixinObservableSubject'),
       require('nori/model/MixinReducerModel'),
       extras
     ]);

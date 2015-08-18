@@ -25,7 +25,10 @@ define('nori/model/MixinReducerModel',
     }
 
     function setState(state) {
-      _state.setState(state);
+      if(!_.isEqual(state, _state)) {
+        _state.setState(state);
+        _this.notifySubscribers({});
+      }
     }
 
     function setReducers(reducerArray) {
@@ -60,14 +63,13 @@ define('nori/model/MixinReducerModel',
      * @param eventObject
      */
     function handleApplicationEvents(eventObject) {
-      console.log('ReducerModel Event occured: ', eventObject);
+      //console.log('ReducerModel Event occurred: ', eventObject);
       applyReducers(eventObject);
     }
 
     function applyReducers(eventObject) {
       var nextState = applyReducersToState(getState(), eventObject);
       setState(nextState);
-
       _this.handleStateMutation();
     }
 

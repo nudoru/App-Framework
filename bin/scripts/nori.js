@@ -605,7 +605,7 @@ define('nori/events/EventConstants',
       MODEL_DATA_SAVED       : null,
       MODEL_DATA_DESTROYED   : null,
       MODEL_STATE_CHANGED    : null,
-      UPDATE_MODEL_DATA      : null,
+      CHANGE_MODEL_STATE      : null,
       RESUME_FROM_MODEL_STATE: null,
       VIEW_INITIALIZED       : null,
       VIEW_RENDERED          : null,
@@ -764,9 +764,9 @@ define('nori/events/EventCreator',
       return evtObj;
     };
 
-    module.exports.updateModelData = function (modelID, data) {
+    module.exports.changeModelState = function (modelID, data) {
       var evtObj = {
-        type   : _appEventConstants.UPDATE_MODEL_DATA,
+        type   : _appEventConstants.CHANGE_MODEL_STATE,
         payload: {
           id  : modelID,
           data: data
@@ -1634,7 +1634,10 @@ define('nori/model/MixinReducerModel',
     }
 
     function setState(state) {
-      _state.setState(state);
+      if(!_.isEqual(state, _state)) {
+        _state.setState(state);
+        _this.notifySubscribers({});
+      }
     }
 
     function setReducers(reducerArray) {
@@ -1669,14 +1672,13 @@ define('nori/model/MixinReducerModel',
      * @param eventObject
      */
     function handleApplicationEvents(eventObject) {
-      console.log('ReducerModel Event occured: ', eventObject);
+      //console.log('ReducerModel Event occurred: ', eventObject);
       applyReducers(eventObject);
     }
 
     function applyReducers(eventObject) {
       var nextState = applyReducersToState(getState(), eventObject);
       setState(nextState);
-
       _this.handleStateMutation();
     }
 
@@ -2672,6 +2674,7 @@ var Nori = (function () {
   function createApplicationModel(extras) {
     return assignArray({}, [
       require('nori/model/MixinMapFactory'),
+      require('nori/utils/MixinObservableSubject'),
       require('nori/model/MixinReducerModel'),
       extras
     ]);
