@@ -1,8 +1,8 @@
 /**
- * Add RxJS Subject to a model
+ * Add RxJS Subject to a module
  */
 
-define('nori/model/MixinObservableModel',
+define('nori/utils/MixinObservableSubject',
 
   function (require, module, exports) {
 
@@ -10,7 +10,7 @@ define('nori/model/MixinObservableModel',
     var _subject = new Rx.BehaviorSubject();
 
     /**
-     * SUbscribe handler to updates
+     * Subscribe handler to updates
      * @param handler
      * @returns {*}
      */

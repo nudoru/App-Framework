@@ -90,7 +90,7 @@ define('nori/utils/Dispatcher',
     function processNextEvent() {
       var evt = _queue.shift();
       if (evt) {
-        console.log('Procesing event: ',evt);
+        //console.log('Procesing event: ',evt);
         dispatchToReceivers(evt);
         dispatchToSubscribers(evt);
       } else {

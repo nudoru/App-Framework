@@ -249,6 +249,44 @@ define('nori/utils/Dispatcher',
 
   });
 
+define('nori/utils/MixinObservableSubject',
+
+  function (require, module, exports) {
+
+    //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
+    var _subject = new Rx.BehaviorSubject();
+
+    /**
+     * Subscribe handler to updates
+     * @param handler
+     * @returns {*}
+     */
+    function subscribe(handler) {
+      return _subject.subscribe(handler);
+    }
+
+    /**
+     * Called from update or whatever function to dispatch to subscribers
+     * @param payload
+     */
+    function notifySubscribers(payload) {
+      _subject.onNext(payload);
+    }
+
+    /**
+     * Gets the last payload that was dispatched to subscribers
+     * @returns {*}
+     */
+    function getLastNotification() {
+      return _subject.getValue();
+    }
+
+    module.exports.subscribe           = subscribe;
+    module.exports.notifySubscribers   = notifySubscribers;
+    module.exports.getLastNotification = getLastNotification;
+
+  });
+
 define('nori/utils/Renderer',
   function (require, module, exports) {
 
@@ -289,8 +327,7 @@ define('nori/utils/Renderer',
 define('nori/utils/Router',
   function (require, module, exports) {
 
-    var _routeMap           = Object.create(null),
-        _subject            = new Rx.Subject(),
+    var _subject            = new Rx.Subject(),
         _objUtils           = require('nudoru/core/ObjectUtils'),
         _noriEventConstants = require('nori/events/EventConstants');
 
@@ -391,8 +428,6 @@ define('nori/utils/Router',
     /**
      * Returns everything after the 'whatever.html#' in the URL
      * Leading and trailing slashes are removed
-     * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
-     *
      * @returns {string}
      */
     function getURLFragment() {
@@ -905,12 +940,12 @@ define('nori/service/Rest',
 define('nori/model/Map',
   function (require, module, exports) {
 
-    var _id,
+    var _this,
+        _id,
         _parentCollection,
         _dirty   = false,
         _entries = [],
-        _map     = Object.create(null),
-        _subject = new Rx.Subject();
+        _map     = Object.create(null);
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -921,6 +956,7 @@ define('nori/model/Map',
         throw new Error('Model must be init\'d with an id');
       }
 
+      _this = this;
       _id = initObj.id;
 
       if (initObj.store) {
@@ -930,15 +966,6 @@ define('nori/model/Map',
         setJSON(initObj.json);
       }
 
-    }
-
-    /**
-     * subscribe a handler for changes
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
     }
 
     /**
@@ -1156,7 +1183,7 @@ define('nori/model/Map',
         mapType: 'model'
       };
 
-      _subject.onNext(payload);
+      _this.notifySubscribers(payload);
 
       if (_parentCollection.dispatchChange) {
         _parentCollection.dispatchChange({
@@ -1183,7 +1210,6 @@ define('nori/model/Map',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
-    module.exports.subscribe           = subscribe;
     module.exports.getID               = getID;
     module.exports.clear               = clear;
     module.exports.isDirty             = isDirty;
@@ -1217,8 +1243,8 @@ define('nori/model/MapCollection',
     var _this,
         _id,
         _parentCollection,
-        _children = [],
-        _subject  = new Rx.Subject();
+        _caret    = 0,
+        _children = [];
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -1238,14 +1264,37 @@ define('nori/model/MapCollection',
       }
     }
 
-    /**
-     * subscribe a handler for changes
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
+    //----------------------------------------------------------------------------
+    //  Iterator
+    //----------------------------------------------------------------------------
+
+    function next() {
+      var ret = {};
+      if (hasNext()) {
+        ret = {value: _children[_caret++], done: !hasNext()};
+      } else {
+        ret = current();
+      }
+
+      return ret;
     }
+
+    function current() {
+      return {value: _children[_caret], done: !hasNext()};
+    }
+
+    function rewind() {
+      _caret = 0;
+      return _children[_caret];
+    }
+
+    function hasNext() {
+      return _caret < _children.length;
+    }
+
+    //----------------------------------------------------------------------------
+    //  Impl
+    //----------------------------------------------------------------------------
 
     function isDirty() {
       var dirty = false;
@@ -1293,7 +1342,6 @@ define('nori/model/MapCollection',
       });
       dispatchChange(_id, 'add_map');
     }
-
 
     function addFromJSONArray(json, idKey) {
       json.forEach(function (jstr) {
@@ -1396,7 +1444,7 @@ define('nori/model/MapCollection',
         mapID  : data.id
       };
 
-      _subject.onNext(payload);
+      _this.notifySubscribers(payload);
 
       if (_parentCollection) {
         _parentCollection.dispatchChange({id: _id, store: getMap()});
@@ -1485,7 +1533,10 @@ define('nori/model/MapCollection',
     //----------------------------------------------------------------------------
 
     module.exports.initialize          = initialize;
-    module.exports.subscribe           = subscribe;
+    module.exports.current             = current;
+    module.exports.next                = next;
+    module.exports.hasNext             = hasNext;
+    module.exports.rewind              = rewind;
     module.exports.getID               = getID;
     module.exports.isDirty             = isDirty;
     module.exports.markClean           = markClean;
@@ -1526,7 +1577,7 @@ define('nori/model/MixinMapFactory',
      * @returns {*}
      */
     function createMapCollection(initObj, extras) {
-      var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), extras]);
+      var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), requireNew('nori/utils/MixinObservableSubject'), extras]);
       m.initialize(initObj);
       return m;
     }
@@ -1538,7 +1589,7 @@ define('nori/model/MixinMapFactory',
      * @returns {*}
      */
     function createMap(initObj, extras) {
-      var m = Nori.assignArray({}, [requireNew('nori/model/Map'), extras]);
+      var m = Nori.assignArray({}, [requireNew('nori/model/Map'), requireNew('nori/utils/MixinObservableSubject'), extras]);
       m.initialize(initObj);
       return m;
     }
@@ -2250,13 +2301,21 @@ define('nori/view/ViewComponent',
 
     /**
      * Bind updates to the map ID to this view's update
-     * @param id
+     * @param mapIDorObj Object to subscribe to or ID. Should implement nori/model/MixinObservableModel
      */
-    function bindMap(id) {
-      var map = Nori.model().getMap(id) || Nori.model().getMapCollection(id);
-      if (!map) {
-        throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + id);
+    function bindMap(mapIDorObj) {
+      var map;
+
+      if(isObject(mapIDorObj)) {
+        map = mapIDorObj;
+      } else {
+        map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
       }
+
+      if (!map) {
+        throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+      }
+
       map.subscribe(this.update.bind(this));
     }
 
@@ -2318,7 +2377,6 @@ define('nori/view/ViewComponent',
      * @returns {boolean}
      */
     function viewShouldRender(previousState) {
-      console.log('TEST, remove? ViewComponent, viewShouldRender working?');
       return !_.isEqual(previousState, this.getState());
       //return true;
     }

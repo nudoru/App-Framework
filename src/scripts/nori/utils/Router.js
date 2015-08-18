@@ -6,8 +6,7 @@
 define('nori/utils/Router',
   function (require, module, exports) {
 
-    var _routeMap           = Object.create(null),
-        _subject            = new Rx.Subject(),
+    var _subject            = new Rx.Subject(),
         _objUtils           = require('nudoru/core/ObjectUtils'),
         _noriEventConstants = require('nori/events/EventConstants');
 
@@ -108,8 +107,6 @@ define('nori/utils/Router',
     /**
      * Returns everything after the 'whatever.html#' in the URL
      * Leading and trailing slashes are removed
-     * reference- http://lea.verou.me/2011/05/get-your-hash-the-bulletproof-way/
-     *
      * @returns {string}
      */
     function getURLFragment() {

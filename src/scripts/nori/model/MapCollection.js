@@ -46,7 +46,7 @@ define('nori/model/MapCollection',
     }
 
     function current() {
-      return {value: _children[_caret], done: !hasNext()}
+      return {value: _children[_caret], done: !hasNext()};
     }
 
     function rewind() {
