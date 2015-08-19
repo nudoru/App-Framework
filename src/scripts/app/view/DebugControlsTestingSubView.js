@@ -7,7 +7,7 @@ define('app/view/DebugControlsTestingSubView',
 
     var DebugControlsTestingSubView = (function () {
 
-      var _lIpsum            = require('nudoru/browser/NLorem'),
+      var _lIpsum            = require('nudoru/browser/Lorem'),
           _toolTip           = require('nudoru/component/ToolTipView'),
           _noriEventConstants = require('nori/events/EventConstants'),
           _actionOneEl,
