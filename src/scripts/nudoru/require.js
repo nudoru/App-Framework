@@ -9,9 +9,6 @@
  ******************************************************************************/
 
 /**
- * Typically modules would be in separate files and smushed together with a build
- * tools like Webpack or Browserify. I'm maintaining my own concat with Grunt so
- * all of the modules will be in a file already.
  * This establishes a object map and look up system.
  *
  * Example:
