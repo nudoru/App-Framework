@@ -3,7 +3,7 @@
  * Extended from Nori.View.ApplicationSubView
  */
 
-define('app/view/ViewComponent',
+define('app/view/TemplateViewComponent',
   function (require, module, exports) {
 
     var ViewComponent = (function () {
