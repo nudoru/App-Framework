@@ -6,7 +6,7 @@
 define('app/view/TemplateViewComponent',
   function (require, module, exports) {
 
-    var ViewComponent = (function () {
+    var TemplateViewComponent = (function () {
 
       var _this;
 
@@ -19,7 +19,7 @@ define('app/view/TemplateViewComponent',
           _this = this;
           this.initializeComponent(initObj);
           // associate with stores. componentWillUpdate() fires when it changes
-          //this.bindMap('SomeCollection');
+          //this.bindMap(map id string or map object);
           // custom init below here
         }
       }
@@ -78,6 +78,6 @@ define('app/view/TemplateViewComponent',
 
     }());
 
-    module.exports = ViewComponent;
+    module.exports = TemplateViewComponent;
 
   });
