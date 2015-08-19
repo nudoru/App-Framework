@@ -499,9 +499,35 @@ define('nori/utils/Templating',
 
     var Templating = (function () {
 
-      var _templateHTMLCache = Object.create(null),
+      var _templateMap = Object.create(null),
+          _templateHTMLCache = Object.create(null),
           _templateCache     = Object.create(null),
           _DOMUtils          = require('nudoru/browser/DOMUtils');
+
+      function addTemplate(id,html) {
+        _templateMap[id] = html;
+      }
+
+      function getSourceFromTemplateMap(id) {
+        var source = _templateMap[id];
+        if(source) {
+          return cleanTemplateHTML(source);
+        }
+        return;
+      }
+
+      function getSourceFromHTML(id) {
+        var src = document.getElementById(id),
+            srchtml;
+
+        if (src) {
+          srchtml = src.innerHTML;
+        } else {
+          throw new Error('nudoru/core/Templating, template not found: "' + id + '"');
+        }
+
+        return cleanTemplateHTML(srchtml);
+      }
 
       /**
        * Get the template html from the script tag with id
@@ -513,18 +539,14 @@ define('nori/utils/Templating',
           return _templateHTMLCache[id];
         }
 
-        var src = document.getElementById(id),
-            srchtml, cleanhtml;
+        var sourcehtml = getSourceFromTemplateMap(id);
 
-        if (src) {
-          srchtml = src.innerHTML;
-        } else {
-          throw new Error('nudoru/core/Templating, template not found: "' + id + '"');
+        if(!sourcehtml) {
+          sourcehtml = getSourceFromHTML(id);
         }
 
-        cleanhtml              = cleanTemplateHTML(srchtml);
-        _templateHTMLCache[id] = cleanhtml;
-        return cleanhtml;
+        _templateHTMLCache[id] = sourcehtml;
+        return sourcehtml;
       }
 
       /**

@@ -491,9 +491,11 @@ define('app/view/TemplateViewComponent',
     window.onload = function() {
 
       // Create the application instance
-      var nori = require('nori/Nori');
+      var nori = require('nori/Nori'),
+          app = require('app/App');
+
       window.Nori = nori();
-      window.APP = Nori.createApplication(require('app/App'));
+      window.APP = Nori.createApplication(app);
 
       // Might need this janky timeout in some situations
       setTimeout(startApplication, 1);
