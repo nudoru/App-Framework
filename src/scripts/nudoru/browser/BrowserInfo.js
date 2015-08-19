@@ -1,68 +1,73 @@
 define('nudoru/browser/BrowserInfo',
   function (require, module, exports) {
 
-    module.exports.appVersion  = navigator.appVersion;
-    module.exports.userAgent   = navigator.userAgent;
-    module.exports.isIE        = -1 < navigator.userAgent.indexOf("MSIE ");
-    module.exports.isIE6       = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 6");
-    module.exports.isIE7       = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 7");
-    module.exports.isIE8       = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 8");
-    module.exports.isIE9       = module.exports.isIE && -1 < navigator.appVersion.indexOf("MSIE 9");
-    module.exports.isFF        = -1 < navigator.userAgent.indexOf("Firefox/");
-    module.exports.isChrome    = -1 < navigator.userAgent.indexOf("Chrome/");
-    module.exports.isMac       = -1 < navigator.userAgent.indexOf("Macintosh;");
-    module.exports.isMacSafari = -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome");
+    module.exports = {
 
-    module.exports.hasTouch     = 'ontouchstart' in document.documentElement;
-    module.exports.notSupported = this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9;
+      appVersion : navigator.appVersion,
+      userAgent  : navigator.userAgent,
+      isIE       : -1 < navigator.userAgent.indexOf("MSIE "),
+      isIE6      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 6"),
+      isIE7      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 7"),
+      isIE8      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 8"),
+      isIE9      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 9"),
+      isFF       : -1 < navigator.userAgent.indexOf("Firefox/"),
+      isChrome   : -1 < navigator.userAgent.indexOf("Chrome/"),
+      isMac      : -1 < navigator.userAgent.indexOf("Macintosh,"),
+      isMacSafari: -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome"),
 
-    module.exports.mobile = {
-      Android   : function () {
-        return navigator.userAgent.match(/Android/i);
+      hasTouch    : 'ontouchstart' in document.documentElement,
+      notSupported: this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9,
+
+      mobile: {
+        Android   : function () {
+          return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function () {
+          return navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/BB10; Touch/);
+        },
+        iOS       : function () {
+          return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera     : function () {
+          return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows   : function () {
+          return navigator.userAgent.match(/IEMobile/i);
+        },
+        any       : function () {
+          return (
+              this.Android()
+              || this.BlackBerry()
+              || this.iOS()
+              || this.Opera()
+              || this.Windows()
+            ) !== null
+        }
+
       },
-      BlackBerry: function () {
-        return navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/BB10; Touch/);
+
+      // TODO filter for IE > 9
+      enhanced: function () {
+        return !_browserInfo.isIE && !_browserInfo.mobile.any();
       },
-      iOS       : function () {
-        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+
+      mouseDownEvtStr: function () {
+        return this.mobile.any() ? "touchstart" : "mousedown";
       },
-      Opera     : function () {
-        return navigator.userAgent.match(/Opera Mini/i);
+
+      mouseUpEvtStr: function () {
+        return this.mobile.any() ? "touchend" : "mouseup";
       },
-      Windows   : function () {
-        return navigator.userAgent.match(/IEMobile/i);
+
+      mouseClickEvtStr: function () {
+        return this.mobile.any() ? "touchend" : "click";
       },
-      any       : function () {
-        return (
-            this.Android()
-            || this.BlackBerry()
-            || this.iOS()
-            || this.Opera()
-            || this.Windows()
-          ) !== null
+
+      mouseMoveEvtStr: function () {
+        return this.mobile.any() ? "touchmove" : "mousemove";
       }
 
     };
 
-    // TODO filter for IE > 9
-    module.exports.enhanced = function () {
-      return !_browserInfo.isIE && !_browserInfo.mobile.any();
-    };
-
-    module.exports.mouseDownEvtStr = function () {
-      return this.mobile.any() ? "touchstart" : "mousedown";
-    };
-
-    module.exports.mouseUpEvtStr = function () {
-      return this.mobile.any() ? "touchend" : "mouseup";
-    };
-
-    module.exports.mouseClickEvtStr = function () {
-      return this.mobile.any() ? "touchend" : "click";
-    };
-
-    module.exports.mouseMoveEvtStr = function () {
-      return this.mobile.any() ? "touchmove" : "mousemove";
-    };
 
   });

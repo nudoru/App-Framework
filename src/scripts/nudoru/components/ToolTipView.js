@@ -46,7 +46,7 @@ define('nudoru/component/ToolTipView',
           'TL': 'tooltip__topleft'
         },
         _mountPoint,
-        _template     = require('nudoru/component/Templating'),
+        _template     = require('nori/utils/Templating'),
         _domUtils     = require('nudoru/browser/DOMUtils');
 
     function initialize(elID) {

@@ -1,619 +1,13 @@
-define('nudoru/component/CoachMarksView',
-  function (require, module, exports) {
-
-    var _counter           = 1,
-        _markedObjects     = [],
-        _gutter            = 5,
-        _labelWidth        = 250,
-        _mountPoint,
-        _modalCloseSubscriber,
-        _shapeTemplateHTML = '<div id="#js__coachmark-shape-<%= id%>" class="coachmark__shape-<%= props.shape%>"></div>',
-        _shapeTemplate,
-        _toolTip           = require('nudoru/component/ToolTipView'),
-        _modal             = require('nudoru/component/ModalCoverView'),
-        _domUtils          = require('nudoru/browser/DOMUtils'),
-        _dispatcher        = require('nudoru/component/Dispatcher'),
-        _componentEvents   = require('nudoru/component/ComponentEvents');
-
-    function initialize(elID) {
-      _mountPoint    = document.getElementById(elID);
-      _shapeTemplate = _.template(_shapeTemplateHTML);
-    }
-
-    function outlineElement(selector, props) {
-      _markedObjects.push({
-        targetSelector: selector,
-        id            : _counter++,
-        shape         : null,
-        label         : null,
-        props         : props
-      });
-    }
-
-    function renderMarkedObjects() {
-      _markedObjects.forEach(function (object, i) {
-        var el      = document.querySelector(object.targetSelector),
-            elProps = el.getBoundingClientRect(),
-            shape   = _domUtils.HTMLStrToNode(_shapeTemplate(object)),
-            tooltip;
-
-        object.shape = shape;
-
-        _mountPoint.appendChild(object.shape);
-
-        TweenLite.set(object.shape, {
-          alpha : 0,
-          x     : elProps.left - _gutter,
-          y     : elProps.top - _gutter,
-          width : object.props.width || elProps.width + (_gutter * 2),
-          height: object.props.height || elProps.height + (_gutter * 2)
-        });
-
-        tooltip = _toolTip.add({
-          title        : '',
-          content      : object.props.label,
-          position     : object.props.labelPosition,
-          targetEl     : object.shape,
-          width        : object.props.labelWidth || _labelWidth,
-          gutter       : 3,
-          alwaysVisible: true,
-          type         : 'coachmark'
-        });
-
-        TweenLite.set(tooltip, {alpha:0});
-
-        TweenLite.to([tooltip, object.shape], 1, {
-          alpha: 1,
-          ease : Quad.easeOut,
-          delay: 0.5 * i
-        });
-
-      });
-    }
-
-    function show() {
-      _modalCloseSubscriber = _dispatcher.subscribe(_componentEvents.MODAL_COVER_HIDE, hide);
-      _modal.show(true);
-      _modal.setOpacity(0.25);
-      renderMarkedObjects();
-    }
-
-    /**
-     * Hide triggered by clicking on the modal mask or the modal close button
-     */
-    function hide() {
-      _modal.hide(true);
-      _modalCloseSubscriber.dispose();
-      _modalCloseSubscriber = null;
-
-      _markedObjects.forEach(function (object) {
-        TweenLite.killDelayedCallsTo(object.shape);
-        _toolTip.remove(object.shape);
-        _mountPoint.removeChild(object.shape);
-        delete object.shape;
-      });
-    }
-
-    module.exports.initialize     = initialize;
-    module.exports.outlineElement = outlineElement;
-    module.exports.show           = show;
-    module.exports.hide           = hide;
-
-  });
-
-define('nudoru/component/Dispatcher',
-  function (require, module, exports) {
-    var _subjectMap = {};
-
-    /**
-     * Add an event as observable
-     * @param evtStr Event name string
-     * @param handler onNext() subscription function
-     * @param once will complete/dispose after one fire
-     * @returns {*}
-     */
-    function subscribe(evtStr, handler, once) {
-      _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
-
-      _subjectMap[evtStr] = {
-        once   : once,
-        handler: handler,
-        subject: new Rx.Subject()
-      };
-
-      return _subjectMap[evtStr].subject.subscribe(handler);
-    }
-
-    /**
-     * Maps a module/command's execute() function as the handler for onNext
-     * @param evtStr Event name string
-     * @param cmdModule Module name
-     * @param once will complete/dispose after one fire
-     * @returns {*}
-     */
-    function subscribeCommand(evtStr, cmdModule, once) {
-      var cmd = require(cmdModule);
-      if (cmd.hasOwnProperty('execute')) {
-        return subscribe(evtStr, cmd.execute, once);
-      } else {
-        throw new Error('Emitter cannot map ' + evtStr + ' to command ' + cmdModule + ': must have execute()');
-      }
-    }
-
-    /**
-     * Publish a event to all subscribers
-     * @param evtStr
-     * @param data
-     */
-    function publish(evtStr, data) {
-      var subjObj = _subjectMap[evtStr];
-
-      if (!subjObj) {
-        return;
-      }
-
-      subjObj.subject.onNext(data);
-
-      if (subjObj.once) {
-        subjObj.subject.onCompleted();
-        subjObj.subject.dispose();
-        subjObj = null;
-      }
-    }
-
-    /**
-     * Cleanup
-     */
-    function dispose() {
-      var subjects = _subjectMap;
-      for (var prop in subjects) {
-        if (hasOwnProp.call(subjects, prop)) {
-          subjects[prop].subject.dispose();
-        }
-      }
-
-      _subjectMap = {};
-    }
-
-    module.exports.subscribe        = subscribe;
-    module.exports.subscribeCommand = subscribeCommand;
-    module.exports.publish          = publish;
-    module.exports.dispose          = dispose;
-
-  });
-
 define('nudoru/component/ComponentEvents',
-  function(require, module, exports) {
-    module.exports.MODAL_COVER_SHOW = 'MODAL_COVER_SHOW';
-    module.exports.MODAL_COVER_HIDE = 'MODAL_COVER_HIDE';
-    module.exports.MENU_SELECT = 'MENU_SELECT';
-  });
-
-define('nudoru/component/Templating',
   function (require, module, exports) {
 
-    var _templateHTMLCache = Object.create(null),
-        _templateCache     = Object.create(null),
-        _DOMUtils          = require('nudoru/browser/DOMUtils');
+    var objUtils = require('nudoru/core/ObjectUtils');
 
-    /**
-     * Get the template html from the script tag with id
-     * @param id
-     * @returns {*}
-     */
-    function getSource(id) {
-      if (_templateHTMLCache[id]) {
-        return _templateHTMLCache[id];
-      }
-
-      var src       = document.getElementById(id),
-          srchtml   = '',
-          cleanhtml = '';
-
-      if (src) {
-        srchtml = src.innerHTML;
-      } else {
-        throw new Error('nudoru/core/NTemplate, template not found: "' + id + '"');
-      }
-
-      cleanhtml              = cleanTemplateHTML(srchtml);
-      _templateHTMLCache[id] = cleanhtml;
-      return cleanhtml;
-    }
-
-    /**
-     * Returns an underscore template
-     * @param id
-     * @returns {*}
-     */
-    function getTemplate(id) {
-      if (_templateCache[id]) {
-        return _templateCache[id];
-      }
-      var templ          = _.template(getSource(id));
-      _templateCache[id] = templ;
-      return templ;
-    }
-
-    /**
-     * Processes the template and returns HTML
-     * @param id
-     * @param obj
-     * @returns {*}
-     */
-    function asHTML(id, obj) {
-      var temp = getTemplate(id);
-      return temp(obj);
-    }
-
-    /**
-     * Processes the template and returns an HTML Element
-     * @param id
-     * @param obj
-     * @returns {*}
-     */
-    function asElement(id, obj) {
-      return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
-    }
-
-    /**
-     * Cleans template HTML
-     */
-    function cleanTemplateHTML(str) {
-      //replace(/(\r\n|\n|\r|\t)/gm,'').replace(/>\s+</g,'><').
-      return str.trim();
-    }
-
-    module.exports.getSource   = getSource;
-    module.exports.getTemplate = getTemplate;
-    module.exports.asHTML      = asHTML;
-    module.exports.asElement   = asElement;
-
-  });
-
-
-define('nudoru/component/ComponentViewUtils',
-  function (require, module, exports) {
-
-    /**
-     * Create shared 3d perspective for all children
-     * @param el
-     */
-    function apply3DToContainer(el) {
-      TweenLite.set(el, {
-        css: {
-          perspective      : 800,
-          perspectiveOrigin: '50% 50%'
-        }
-      });
-    }
-
-    /**
-     * Apply basic CSS props
-     * @param el
-     */
-    function apply3DToComponentElement(el) {
-      TweenLite.set(el, {
-        css: {
-          transformStyle    : "preserve-3d",
-          backfaceVisibility: "hidden",
-          transformOrigin   : '50% 50%'
-        }
-      });
-    }
-
-    /**
-     * Apply basic 3d props and set unique perspective for children
-     * @param el
-     */
-    function applyUnique3DToComponentElement(el) {
-      TweenLite.set(el, {
-        css: {
-          transformStyle      : "preserve-3d",
-          backfaceVisibility  : "hidden",
-          transformPerspective: 600,
-          transformOrigin     : '50% 50%'
-        }
-      });
-    }
-
-    module.exports.apply3DToContainer              = apply3DToContainer;
-    module.exports.apply3DToComponentElement       = apply3DToComponentElement;
-    module.exports.applyUnique3DToComponentElement = applyUnique3DToComponentElement;
-
-  });
-
-
-define('nudoru/component/FloatImageView',
-  function (require, module, exports) {
-
-    var _mountPoint         = document,
-        _coverDivID         = 'floatimage__cover',
-        _floatingImageClass = '.floatimage__srcimage',
-        _zoomedImageClass   = 'floatimage__zoomedimage',
-        _viewPortCoverEl,
-        _viewPortCoverClickStream,
-        _captionEl,
-        _currentImageElement,
-        _scrollingView      = _mountPoint.body,
-        _fancyEffects       = false,
-        _DOMUtils           = require('nudoru/browser/DOMUtils'),
-        _numberUtils        = require('nudoru/core/NumberUtils'),
-        _browserInfo        = require('nudoru/browser/BrowserInfo');
-
-    /**
-     * Entry point, initialize elements and hide cover
-     */
-    function initialize() {
-      _viewPortCoverEl = _mountPoint.getElementById(_coverDivID);
-      _captionEl       = _viewPortCoverEl.querySelector('.floatimage__caption');
-
-      _fancyEffects = !_browserInfo.isIE && !_browserInfo.mobile.any();
-
-      hideFloatImageCover();
-
-      _viewPortCoverClickStream = Rx.Observable.fromEvent(_viewPortCoverEl, _browserInfo.mouseClickEvtStr())
-        .subscribe(function () {
-          hideFloatImageCover();
-        });
-    }
-
-    /**
-     * Apply functionality to div/container of div>img 's
-     * @param container
-     */
-    function apply(container) {
-      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
-
-        _DOMUtils.wrapElement('<div class="floatimage__wrapper" />', el);
-
-        el.addEventListener(_browserInfo.mouseClickEvtStr(), onImageClick, false);
-
-        //TweenLite.set(el.parentNode.parentNode, {css:{transformPerspective:200, transformStyle:"preserve-3d", backfaceVisibility:"hidden"}});
-
-        if (!_browserInfo.mobile.any()) {
-          el.addEventListener('mouseover', onImageOver, false);
-          el.addEventListener('mouseout', onImageOut, false);
-        }
-
-      });
-    }
-
-    function setScrollingView(el) {
-      _scrollingView = el;
-    }
-
-    function onImageOver(evt) {
-      if (_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
-          scale: 1.10,
-          ease : Circ.easeOut
-        });
-      } else {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.25, {
-          scale: 1.10,
-          ease : Circ.easeOut
-        });
-
-      }
-    }
-
-    function onImageOut(evt) {
-      if (_fancyEffects) {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
-          scale: 1,
-          ease : Circ.easeOut
-        });
-      } else {
-        TweenLite.to(evt.target.parentNode.parentNode, 0.5, {
-          scale: 1,
-          ease : Circ.easeOut
-        });
-      }
-
-    }
-
-    /**
-     * Show the image when the image element is clicked
-     * @param evt
-     */
-    function onImageClick(evt) {
-      showImage(evt.target);
-    }
-
-    /**
-     * Present the image that was clicked
-     * @param imageEl
-     */
-    function showImage(imageEl) {
-      // Will happen if you click on the icon
-      if (imageEl.tagName.toLowerCase() === 'div') {
-        _currentImageElement = imageEl.querySelector('img');
-      } else {
-        _currentImageElement = imageEl;
-      }
-
-      // Calculations
-      var vpFill         = 0.75,
-          imgSrc         = _currentImageElement.getAttribute('src'),
-          imgAlt         = _currentImageElement.getAttribute('alt'),
-          imgWidth       = _currentImageElement.clientWidth,
-          imgHeight      = _currentImageElement.clientHeight,
-          imgPosition    = _DOMUtils.offset(_currentImageElement),
-          imgRatio       = imgWidth / imgHeight,
-          imgTargetScale = 1,
-          vpWidth        = window.innerWidth,
-          vpHeight       = window.innerHeight,
-          vpScrollTop    = _scrollingView.scrollTop,
-          vpScrollLeft   = _scrollingView.scrollLeft,
-          vpRatio        = vpWidth / vpHeight,
-          imgOriginX     = imgPosition.left - vpScrollLeft,
-          imgOriginY     = imgPosition.top - vpScrollTop,
-          imgTargetX,
-          imgTargetY,
-          imgTargetWidth,
-          imgTargetHeight;
-
-      if (vpRatio > imgRatio) {
-        imgTargetScale = vpHeight * vpFill / imgHeight;
-      } else {
-        imgTargetScale = vpWidth * vpFill / imgWidth;
-      }
-
-      imgTargetWidth  = imgWidth * imgTargetScale;
-      imgTargetHeight = imgHeight * imgTargetScale;
-
-      imgTargetX = (vpWidth / 2) - (imgTargetWidth / 2) - imgPosition.left + vpScrollLeft;
-      imgTargetY = (vpHeight / 2) - (imgTargetHeight / 2) - imgPosition.top + vpScrollTop;
-
-      var zoomImage = _DOMUtils.HTMLStrToNode('<div class="' + _zoomedImageClass + '"></div>');
-
-      zoomImage.style.backgroundImage = 'url("' + imgSrc + '")';
-      zoomImage.style.left            = imgOriginX + 'px';
-      zoomImage.style.top             = imgOriginY + 'px';
-      zoomImage.style.width           = imgWidth + 'px';
-      zoomImage.style.height          = imgHeight + 'px';
-
-      _viewPortCoverEl.appendChild(zoomImage);
-
-      // fade source image on screen
-      TweenLite.to(_currentImageElement, 0.25, {alpha: 0, ease: Circ.easeOut});
-
-      if (_fancyEffects) {
-        // further from the center, the create the effect
-        var startingRot = _numberUtils.clamp(((imgPosition.left - (vpWidth / 2)) / 4), -75, 75),
-            origin;
-
-        if (startingRot <= 0) {
-          startingRot = Math.min(startingRot, -20);
-          origin      = 'left top';
-        } else {
-          startingRot = Math.max(startingRot, 20);
-          origin      = 'right top';
-        }
-
-        TweenLite.set(zoomImage, {
-          css: {
-            transformPerspective: 1000,
-            transformStyle      : "preserve-3d",
-            backfaceVisibility  : "hidden"
-          }
-        });
-
-        // For the 'tear down effect'
-        var tl = new TimelineLite();
-        tl.to(zoomImage, 0.25, {
-          rotationZ      : -15,
-          rotationY      : startingRot,
-          transformOrigin: origin,
-          y              : '+50',
-          ease           : Back.easeInOut
-        });
-        tl.to(zoomImage, 0.5, {
-          rotationZ      : 0,
-          rotationY      : 0,
-          transformOrigin: origin,
-          width          : imgTargetWidth,
-          height         : imgTargetHeight,
-          x              : imgTargetX,
-          y              : imgTargetY,
-          ease           : Quad.easeOut
-        });
-
-      } else {
-        TweenLite.to(zoomImage, 0.5, {
-          rotationY: 0,
-          width    : imgTargetWidth,
-          height   : imgTargetHeight,
-          x        : imgTargetX,
-          y        : imgTargetY,
-          ease     : Circ.easeOut
-        });
-      }
-
-      showFloatImageCover();
-
-      // Caption
-      if (imgAlt.length >= 1) {
-        _captionEl.innerHTML = '<p>' + imgAlt + '</p>';
-      } else {
-        _captionEl.innerHTML = '';
-      }
-
-    }
-
-    /**
-     * Remove functionality to div/container of div>img 's
-     * @param container
-     */
-    function remove(container) {
-      if (!container) {
-        return;
-      }
-
-      _scrollingView = _mountPoint.body;
-
-      getFloatingElementsInContainerAsArray(container).forEach(function (el) {
-        el.removeEventListener('click', onImageClick);
-        if (!_browserInfo.mobile.any()) {
-          el.removeEventListener('mouseover', onImageOver);
-          el.removeEventListener('mouseout', onImageOut);
-        }
-      });
-    }
-
-    /**
-     * Get an array of elements in the container returned as Array instead of a Node list
-     * @param container
-     * @returns {*}
-     */
-    function getFloatingElementsInContainerAsArray(container) {
-      if (!_DOMUtils.isDomObj(container)) {
-        return [];
-      }
-      return _DOMUtils.getQSElementsAsArray(container, _floatingImageClass);
-    }
-
-    /**
-     * Show the div covering the UI
-     */
-    function showFloatImageCover() {
-      TweenLite.to(_viewPortCoverEl, 0.25, {autoAlpha: 1, ease: Circ.easeOut});
-    }
-
-    /**
-     * Hide the div covering the UI
-     */
-    function hideFloatImageCover() {
-      if (_currentImageElement) {
-        TweenLite.to(_currentImageElement, 0.1, {alpha: 1, ease: Circ.easeOut});
-        _currentImageElement = null;
-      }
-
-      TweenLite.to(_viewPortCoverEl, 0.25, {
-        autoAlpha : 0,
-        ease      : Circ.easeOut,
-        onComplete: hideFloatImageCoverComplete
-      });
-    }
-
-    /**
-     * The enlarged image is present during the cover fade out, remove it when that's completed
-     */
-    function hideFloatImageCoverComplete() {
-      var zoomedImage = _viewPortCoverEl.querySelector('.' + _zoomedImageClass);
-      if (zoomedImage) {
-        _viewPortCoverEl.removeChild(zoomedImage);
-      }
-    }
-
-    /**
-     * Public API
-     */
-    module.exports.initialize       = initialize;
-    module.exports.apply            = apply;
-    module.exports.setScrollingView = setScrollingView;
-    module.exports.remove           = remove;
+    _.merge(module.exports, objUtils.keyMirror({
+      MODAL_COVER_SHOW: null,
+      MODAL_COVER_HIDE: null,
+      MENU_SELECT     : null
+    }));
 
 
   });
@@ -621,677 +15,720 @@ define('nudoru/component/FloatImageView',
 define('nudoru/component/MessageBoxCreator',
   function (require, module, exports) {
 
-    var _messageBoxView = require('nudoru/component/MessageBoxView');
+    var MessageBoxCreator = (function () {
 
-    function alert(title, message, modal, cb) {
-      return _messageBoxView.add({
-        title  : title,
-        content: '<p>' + message + '</p>',
-        type   : _messageBoxView.type().DANGER,
-        modal  : modal,
-        width  : 400,
-        buttons: [
-          {
-            label  : 'Close',
-            id     : 'Close',
-            type   : '',
-            icon   : 'times',
-            onClick: cb
-          }
-        ]
-      })
-    }
+      var _messageBoxView = require('nudoru/component/MessageBoxView');
 
-    function confirm(title, message, okCB, modal) {
-      return _messageBoxView.add({
-        title  : title,
-        content: '<p>' + message + '</p>',
-        type   : _messageBoxView.type().DEFAULT,
-        modal  : modal,
-        width  : 400,
-        buttons: [
-          {
-            label: 'Cancel',
-            id   : 'Cancel',
-            type : 'negative',
-            icon : 'times'
-          },
-          {
-            label  : 'Proceed',
-            id     : 'proceed',
-            type   : 'positive',
-            icon   : 'check',
-            onClick: okCB
-          }
-        ]
-      });
-    }
+      function alert(title, message, modal, cb) {
+        return _messageBoxView.add({
+          title  : title,
+          content: '<p>' + message + '</p>',
+          type   : _messageBoxView.type().DANGER,
+          modal  : modal,
+          width  : 400,
+          buttons: [
+            {
+              label  : 'Close',
+              id     : 'Close',
+              type   : '',
+              icon   : 'times',
+              onClick: cb
+            }
+          ]
+        })
+      }
 
-    function prompt(title, message, okCB, modal) {
-      return _messageBoxView.add({
-        title  : title,
-        content: '<p class="text-center padding-bottom-double">' + message + '</p><textarea name="response" class="input-text" type="text" style="width:400px; height:75px; resize: none" autofocus="true"></textarea>',
-        type   : _messageBoxView.type().DEFAULT,
-        modal  : modal,
-        width  : 450,
-        buttons: [
-          {
-            label: 'Cancel',
-            id   : 'Cancel',
-            type : 'negative',
-            icon : 'times'
-          },
-          {
-            label  : 'Proceed',
-            id     : 'proceed',
-            type   : 'positive',
-            icon   : 'check',
-            onClick: okCB
-          }
-        ]
-      });
-    }
+      function confirm(title, message, okCB, modal) {
+        return _messageBoxView.add({
+          title  : title,
+          content: '<p>' + message + '</p>',
+          type   : _messageBoxView.type().DEFAULT,
+          modal  : modal,
+          width  : 400,
+          buttons: [
+            {
+              label: 'Cancel',
+              id   : 'Cancel',
+              type : 'negative',
+              icon : 'times'
+            },
+            {
+              label  : 'Proceed',
+              id     : 'proceed',
+              type   : 'positive',
+              icon   : 'check',
+              onClick: okCB
+            }
+          ]
+        });
+      }
 
-    function choice(title, message, selections, okCB, modal) {
-      var selectHTML = '<select class="spaced" style="width:450px;height:200px" name="selection" autofocus="true" size="20">';
+      function prompt(title, message, okCB, modal) {
+        return _messageBoxView.add({
+          title  : title,
+          content: '<p class="text-center padding-bottom-double">' + message + '</p><textarea name="response" class="input-text" type="text" style="width:400px; height:75px; resize: none" autofocus="true"></textarea>',
+          type   : _messageBoxView.type().DEFAULT,
+          modal  : modal,
+          width  : 450,
+          buttons: [
+            {
+              label: 'Cancel',
+              id   : 'Cancel',
+              type : 'negative',
+              icon : 'times'
+            },
+            {
+              label  : 'Proceed',
+              id     : 'proceed',
+              type   : 'positive',
+              icon   : 'check',
+              onClick: okCB
+            }
+          ]
+        });
+      }
 
-      selections.forEach(function (opt) {
-        selectHTML += '<option value="' + opt.value + '" ' + (opt.selected === 'true' ? 'selected' : '') + '>' + opt.label + '</option>';
-      });
+      function choice(title, message, selections, okCB, modal) {
+        var selectHTML = '<select class="spaced" style="width:450px;height:200px" name="selection" autofocus="true" size="20">';
 
-      selectHTML += '</select>';
+        selections.forEach(function (opt) {
+          selectHTML += '<option value="' + opt.value + '" ' + (opt.selected === 'true' ? 'selected' : '') + '>' + opt.label + '</option>';
+        });
 
-      return _messageBoxView.add({
-        title  : title,
-        content: '<p class="text-center padding-bottom-double">' + message + '</p><div class="text-center">' + selectHTML + '</div>',
-        type   : _messageBoxView.type().DEFAULT,
-        modal  : modal,
-        width  : 500,
-        buttons: [
-          {
-            label: 'Cancel',
-            id   : 'Cancel',
-            type : 'negative',
-            icon : 'times'
-          },
-          {
-            label  : 'OK',
-            id     : 'ok',
-            type   : 'positive',
-            icon   : 'check',
-            onClick: okCB
-          }
-        ]
-      });
-    }
+        selectHTML += '</select>';
 
-    module.exports.alert   = alert;
-    module.exports.confirm = confirm;
-    module.exports.prompt  = prompt;
-    module.exports.choice  = choice;
+        return _messageBoxView.add({
+          title  : title,
+          content: '<p class="text-center padding-bottom-double">' + message + '</p><div class="text-center">' + selectHTML + '</div>',
+          type   : _messageBoxView.type().DEFAULT,
+          modal  : modal,
+          width  : 500,
+          buttons: [
+            {
+              label: 'Cancel',
+              id   : 'Cancel',
+              type : 'negative',
+              icon : 'times'
+            },
+            {
+              label  : 'OK',
+              id     : 'ok',
+              type   : 'positive',
+              icon   : 'check',
+              onClick: okCB
+            }
+          ]
+        });
+      }
+
+      return {
+        alert  : alert,
+        confirm: confirm,
+        prompt : prompt,
+        choice : choice
+      }
+
+    }());
+
+    module.exports = MessageBoxCreator;
 
   });
 
 define('nudoru/component/MessageBoxView',
   function (require, module, exports) {
 
-    var _children               = [],
-        _counter                = 0,
-        _highestZ               = 1000,
-        _defaultWidth           = 400,
-        _types                  = {
-          DEFAULT    : 'default',
-          INFORMATION: 'information',
-          SUCCESS    : 'success',
-          WARNING    : 'warning',
-          DANGER     : 'danger'
-        },
-        _typeStyleMap           = {
-          'default'    : '',
-          'information': 'messagebox__information',
-          'success'    : 'messagebox__success',
-          'warning'    : 'messagebox__warning',
-          'danger'     : 'messagebox__danger'
-        },
-        _mountPoint,
-        _buttonIconTemplateID   = 'template__messagebox--button-icon',
-        _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
-        _template               = require('nudoru/component/Templating'),
-        _modal                  = require('nudoru/component/ModalCoverView'),
-        _browserInfo            = require('nudoru/browser/BrowserInfo'),
-        _domUtils               = require('nudoru/browser/DOMUtils'),
-        _componentUtils         = require('nudoru/component/ComponentViewUtils');
+    var MessageBoxView = (function () {
 
-    /**
-     * Initialize and set the mount point / box container
-     * @param elID
-     */
-    function initialize(elID) {
-      _mountPoint = document.getElementById(elID);
-    }
+      var _children               = [],
+          _counter                = 0,
+          _highestZ               = 1000,
+          _defaultWidth           = 400,
+          _types                  = {
+            DEFAULT    : 'default',
+            INFORMATION: 'information',
+            SUCCESS    : 'success',
+            WARNING    : 'warning',
+            DANGER     : 'danger'
+          },
+          _typeStyleMap           = {
+            'default'    : '',
+            'information': 'messagebox__information',
+            'success'    : 'messagebox__success',
+            'warning'    : 'messagebox__warning',
+            'danger'     : 'messagebox__danger'
+          },
+          _mountPoint,
+          _buttonIconTemplateID   = 'template__messagebox--button-icon',
+          _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
+          _template               = require('nori/utils/Templating'),
+          _modal                  = require('nudoru/component/ModalCoverView'),
+          _browserInfo            = require('nudoru/browser/BrowserInfo'),
+          _domUtils               = require('nudoru/browser/DOMUtils'),
+          _componentUtils         = require('nudoru/browser/ThreeDTransforms');
 
-    /**
-     * Add a new message box
-     * @param initObj
-     * @returns {*}
-     */
-    function add(initObj) {
-      var type   = initObj.type || _types.DEFAULT,
-          boxObj = createBoxObject(initObj);
-
-      // setup
-      _children.push(boxObj);
-      _mountPoint.appendChild(boxObj.element);
-      assignTypeClassToElement(type, boxObj.element);
-      configureButtons(boxObj);
-
-      _componentUtils.applyUnique3DToComponentElement(boxObj.element);
-
-      // Set 3d CSS props for in/out transition
-      TweenLite.set(boxObj.element, {
-        css: {
-          zIndex: _highestZ,
-          width : initObj.width ? initObj.width : _defaultWidth
-        }
-      });
-
-      // center after width has been set
-      _domUtils.centerElementInViewPort(boxObj.element);
-
-      // Make it draggable
-      Draggable.create('#' + boxObj.id, {
-        bounds : window,
-        onPress: function () {
-          _highestZ = Draggable.zIndex;
-        }
-      });
-
-      // Show it
-      transitionIn(boxObj.element);
-
-      // Show the modal cover
-      if (initObj.modal) {
-        _modal.showNonDismissable(true);
+      /**
+       * Initialize and set the mount point / box container
+       * @param elID
+       */
+      function initialize(elID) {
+        _mountPoint = document.getElementById(elID);
       }
 
-      return boxObj.id;
-    }
+      /**
+       * Add a new message box
+       * @param initObj
+       * @returns {*}
+       */
+      function add(initObj) {
+        var type   = initObj.type || _types.DEFAULT,
+            boxObj = createBoxObject(initObj);
 
-    /**
-     * Assign a type class to it
-     * @param type
-     * @param element
-     */
-    function assignTypeClassToElement(type, element) {
-      if (type !== 'default') {
-        _domUtils.addClass(element, _typeStyleMap[type]);
+        // setup
+        _children.push(boxObj);
+        _mountPoint.appendChild(boxObj.element);
+        assignTypeClassToElement(type, boxObj.element);
+        configureButtons(boxObj);
+
+        _componentUtils.applyUnique3DToElement(boxObj.element);
+
+        // Set 3d CSS props for in/out transition
+        TweenLite.set(boxObj.element, {
+          css: {
+            zIndex: _highestZ,
+            width : initObj.width ? initObj.width : _defaultWidth
+          }
+        });
+
+        // center after width has been set
+        _domUtils.centerElementInViewPort(boxObj.element);
+
+        // Make it draggable
+        Draggable.create('#' + boxObj.id, {
+          bounds : window,
+          onPress: function () {
+            _highestZ = Draggable.zIndex;
+          }
+        });
+
+        // Show it
+        transitionIn(boxObj.element);
+
+        // Show the modal cover
+        if (initObj.modal) {
+          _modal.showNonDismissable(true);
+        }
+
+        return boxObj.id;
       }
-    }
 
-    /**
-     * Create the object for a box
-     * @param initObj
-     * @returns {{dataObj: *, id: string, modal: (*|boolean), element: *, streams: Array}}
-     */
-    function createBoxObject(initObj) {
-      var id  = 'js__messagebox-' + (_counter++).toString(),
-          obj = {
-            dataObj: initObj,
-            id     : id,
-            modal  : initObj.modal,
-            element: _template.asElement('template__messagebox--default', {
+      /**
+       * Assign a type class to it
+       * @param type
+       * @param element
+       */
+      function assignTypeClassToElement(type, element) {
+        if (type !== 'default') {
+          _domUtils.addClass(element, _typeStyleMap[type]);
+        }
+      }
+
+      /**
+       * Create the object for a box
+       * @param initObj
+       * @returns {{dataObj: *, id: string, modal: (*|boolean), element: *, streams: Array}}
+       */
+      function createBoxObject(initObj) {
+        var id  = 'js__messagebox-' + (_counter++).toString(),
+            obj = {
+              dataObj: initObj,
               id     : id,
-              title  : initObj.title,
-              content: initObj.content
-            }),
-            streams: []
-          };
+              modal  : initObj.modal,
+              element: _template.asElement('template__messagebox--default', {
+                id     : id,
+                title  : initObj.title,
+                content: initObj.content
+              }),
+              streams: []
+            };
 
-      return obj;
-    }
-
-    /**
-     * Set up the buttons
-     * @param boxObj
-     */
-    function configureButtons(boxObj) {
-      var buttonData = boxObj.dataObj.buttons;
-
-      // default button if none
-      if (!buttonData) {
-        buttonData = [{
-          label: 'Close',
-          type : '',
-          icon : 'times',
-          id   : 'default-close'
-        }];
+        return obj;
       }
 
-      var buttonContainer = boxObj.element.querySelector('.footer-buttons');
+      /**
+       * Set up the buttons
+       * @param boxObj
+       */
+      function configureButtons(boxObj) {
+        var buttonData = boxObj.dataObj.buttons;
 
-      _domUtils.removeAllElements(buttonContainer);
-
-      buttonData.forEach(function makeButton(buttonObj) {
-        buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
-
-        var buttonEl;
-
-        if (buttonObj.hasOwnProperty('icon')) {
-          buttonEl = _template.asElement(_buttonIconTemplateID, buttonObj);
-        } else {
-          buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+        // default button if none
+        if (!buttonData) {
+          buttonData = [{
+            label: 'Close',
+            type : '',
+            icon : 'times',
+            id   : 'default-close'
+          }];
         }
 
-        buttonContainer.appendChild(buttonEl);
+        var buttonContainer = boxObj.element.querySelector('.footer-buttons');
 
-        var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
-          .subscribe(function () {
-            if (buttonObj.hasOwnProperty('onClick')) {
-              if (buttonObj.onClick) {
-                buttonObj.onClick.call(this, captureFormData(boxObj.id));
+        _domUtils.removeAllElements(buttonContainer);
+
+        buttonData.forEach(function makeButton(buttonObj) {
+          buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
+
+          var buttonEl;
+
+          if (buttonObj.hasOwnProperty('icon')) {
+            buttonEl = _template.asElement(_buttonIconTemplateID, buttonObj);
+          } else {
+            buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+          }
+
+          buttonContainer.appendChild(buttonEl);
+
+          var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
+            .subscribe(function () {
+              if (buttonObj.hasOwnProperty('onClick')) {
+                if (buttonObj.onClick) {
+                  buttonObj.onClick.call(this, captureFormData(boxObj.id));
+                }
               }
-            }
-            remove(boxObj.id);
-          });
-        boxObj.streams.push(btnStream);
-      });
+              remove(boxObj.id);
+            });
+          boxObj.streams.push(btnStream);
+        });
 
-    }
-
-    /**
-     * Returns data from the form on the box contents
-     * @param boxID
-     * @returns {*}
-     */
-    function captureFormData(boxID) {
-      return _domUtils.captureFormData(getObjByID(boxID).element);
-    }
-
-    /**
-     * Remove a box from the screen / container
-     * @param id
-     */
-    function remove(id) {
-      var idx = getObjIndexByID(id),
-          boxObj;
-
-      if (idx > -1) {
-        boxObj = _children[idx];
-        transitionOut(boxObj.element);
       }
-    }
 
-    /**
-     * Show the box
-     * @param el
-     */
-    function transitionIn(el) {
-      TweenLite.to(el, 0, {alpha: 0, rotationX: 45, scale: 2});
-      TweenLite.to(el, 0.5, {
-        alpha    : 1,
-        rotationX: 0,
-        scale    : 1,
-        ease     : Circ.easeOut
-      });
-    }
+      /**
+       * Returns data from the form on the box contents
+       * @param boxID
+       * @returns {*}
+       */
+      function captureFormData(boxID) {
+        return _domUtils.captureFormData(getObjByID(boxID).element);
+      }
 
-    /**
-     * Remove the box
-     * @param el
-     */
-    function transitionOut(el) {
-      TweenLite.to(el, 0.25, {
-        alpha    : 0,
-        rotationX: -45,
-        scale    : 0.25,
-        ease     : Circ.easeIn, onComplete: function () {
-          onTransitionOutComplete(el);
-        }
-      });
-    }
+      /**
+       * Remove a box from the screen / container
+       * @param id
+       */
+      function remove(id) {
+        var idx = getObjIndexByID(id),
+            boxObj;
 
-    /**
-     * Clean up after the transition out animation
-     * @param el
-     */
-    function onTransitionOutComplete(el) {
-      var idx    = getObjIndexByID(el.getAttribute('id')),
+        if (idx > -1) {
           boxObj = _children[idx];
-
-      boxObj.streams.forEach(function (stream) {
-        stream.dispose();
-      });
-
-      Draggable.get('#' + boxObj.id).disable();
-
-      _mountPoint.removeChild(el);
-
-      _children[idx] = null;
-      _children.splice(idx, 1);
-
-      checkModalStatus();
-    }
-
-    /**
-     * Determine if any open boxes have modal true
-     */
-    function checkModalStatus() {
-      var isModal = false;
-
-      _children.forEach(function (boxObj) {
-        if (boxObj.modal === true) {
-          isModal = true;
+          transitionOut(boxObj.element);
         }
-      });
-
-      if (!isModal) {
-        _modal.hide(true);
       }
-    }
 
-    /**
-     * Utility to get the box object index by ID
-     * @param id
-     * @returns {number}
-     */
-    function getObjIndexByID(id) {
-      return _children.map(function (child) {
-        return child.id;
-      }).indexOf(id);
-    }
+      /**
+       * Show the box
+       * @param el
+       */
+      function transitionIn(el) {
+        TweenLite.to(el, 0, {alpha: 0, rotationX: 45, scale: 2});
+        TweenLite.to(el, 0.5, {
+          alpha    : 1,
+          rotationX: 0,
+          scale    : 1,
+          ease     : Circ.easeOut
+        });
+      }
 
-    /**
-     * Utility to get the box object by ID
-     * @param id
-     * @returns {number}
-     */
-    function getObjByID(id) {
-      return _children.filter(function (child) {
-        return child.id === id;
-      })[0];
-    }
+      /**
+       * Remove the box
+       * @param el
+       */
+      function transitionOut(el) {
+        TweenLite.to(el, 0.25, {
+          alpha    : 0,
+          rotationX: -45,
+          scale    : 0.25,
+          ease     : Circ.easeIn, onComplete: function () {
+            onTransitionOutComplete(el);
+          }
+        });
+      }
 
-    module.exports.initialize = initialize;
-    module.exports.add        = add;
-    module.exports.remove     = remove;
-    module.exports.type       = function () {
-      return _types
-    };
+      /**
+       * Clean up after the transition out animation
+       * @param el
+       */
+      function onTransitionOutComplete(el) {
+        var idx    = getObjIndexByID(el.getAttribute('id')),
+            boxObj = _children[idx];
+
+        boxObj.streams.forEach(function (stream) {
+          stream.dispose();
+        });
+
+        Draggable.get('#' + boxObj.id).disable();
+
+        _mountPoint.removeChild(el);
+
+        _children[idx] = null;
+        _children.splice(idx, 1);
+
+        checkModalStatus();
+      }
+
+      /**
+       * Determine if any open boxes have modal true
+       */
+      function checkModalStatus() {
+        var isModal = false;
+
+        _children.forEach(function (boxObj) {
+          if (boxObj.modal === true) {
+            isModal = true;
+          }
+        });
+
+        if (!isModal) {
+          _modal.hide(true);
+        }
+      }
+
+      /**
+       * Utility to get the box object index by ID
+       * @param id
+       * @returns {number}
+       */
+      function getObjIndexByID(id) {
+        return _children.map(function (child) {
+          return child.id;
+        }).indexOf(id);
+      }
+
+      /**
+       * Utility to get the box object by ID
+       * @param id
+       * @returns {number}
+       */
+      function getObjByID(id) {
+        return _children.filter(function (child) {
+          return child.id === id;
+        })[0];
+      }
+
+      function getTypes() {
+        return _types;
+      }
+
+      return {
+        initialize: initialize,
+        add       : add,
+        remove    : remove,
+        type      : getTypes
+      };
+
+    }());
+
+    module.exports = MessageBoxView;
 
   });
 
 define('nudoru/component/ModalCoverView',
   function (require, module, exports) {
-    var _mountPoint      = document,
-        _modalCoverEl,
-        _modalBackgroundEl,
-        _modalCloseButtonEl,
-        _modalClickStream,
-        _isVisible,
-        _notDismissable,
-        _dispatcher      = require('nudoru/component/Dispatcher'),
-        _componentEvents = require('nudoru/component/ComponentEvents'),
-        _browserInfo     = require('nudoru/browser/BrowserInfo');
 
-    function initialize() {
+    var ModalCoverView = (function () {
 
-      _isVisible = true;
+      var _mountPoint      = document,
+          _modalCoverEl,
+          _modalBackgroundEl,
+          _modalCloseButtonEl,
+          _modalClickStream,
+          _isVisible,
+          _notDismissable,
+          _componentEvents = require('nudoru/component/ComponentEvents'),
+          _browserInfo     = require('nudoru/browser/BrowserInfo');
 
-      _modalCoverEl       = _mountPoint.getElementById('modal__cover');
-      _modalBackgroundEl  = _mountPoint.querySelector('.modal__background');
-      _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
+      function initialize() {
 
-      var modalBGClick     = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
-          modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
+        _isVisible = true;
 
-      _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
-        .subscribe(function () {
-          onModalClick();
+        _modalCoverEl       = _mountPoint.getElementById('modal__cover');
+        _modalBackgroundEl  = _mountPoint.querySelector('.modal__background');
+        _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
+
+        var modalBGClick     = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
+            modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
+
+        _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
+          .subscribe(function () {
+            onModalClick();
+          });
+
+        hide(false);
+      }
+
+      function getIsVisible() {
+        return _isVisible;
+      }
+
+      function onModalClick() {
+        if (_notDismissable) return;
+        hide(true);
+      }
+
+      function showModalCover(shouldAnimate) {
+        _isVisible   = true;
+        var duration = shouldAnimate ? 0.25 : 0;
+        TweenLite.to(_modalCoverEl, duration, {
+          autoAlpha: 1,
+          ease     : Quad.easeOut
+        });
+        TweenLite.to(_modalBackgroundEl, duration, {
+          alpha: 1,
+          ease : Quad.easeOut
+        });
+      }
+
+      function show(shouldAnimate) {
+        if (_isVisible) {
+          return;
+        }
+
+        _notDismissable = false;
+
+        showModalCover(shouldAnimate);
+
+        TweenLite.set(_modalCloseButtonEl, {scale: 2, alpha: 0});
+        TweenLite.to(_modalCloseButtonEl, 1, {
+          autoAlpha: 1,
+          scale    : 1,
+          ease     : Bounce.easeOut,
+          delay    : 1
+        });
+      }
+
+      /**
+       * A 'hard' modal view cannot be dismissed with a click, must be via code
+       * @param shouldAnimate
+       */
+      function showNonDismissable(shouldAnimate) {
+        if (_isVisible) {
+          return;
+        }
+
+        _notDismissable = true;
+
+        showModalCover(shouldAnimate);
+        TweenLite.to(_modalCloseButtonEl, 0, {autoAlpha: 0});
+      }
+
+      function hide(shouldAnimate) {
+        if (!_isVisible) {
+          return;
+        }
+        _isVisible      = false;
+        _notDismissable = false;
+        var duration    = shouldAnimate ? 0.25 : 0;
+        TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
+        TweenLite.to(_modalCoverEl, duration, {
+          autoAlpha: 0,
+          ease     : Quad.easeOut
+        });
+        TweenLite.to(_modalCloseButtonEl, duration / 2, {
+          autoAlpha: 0,
+          ease     : Quad.easeOut
         });
 
-      hide(false);
-    }
-
-    function getIsVisible() {
-      return _isVisible;
-    }
-
-    function onModalClick() {
-      if (_notDismissable) return;
-      hide(true);
-    }
-
-    function showModalCover(shouldAnimate) {
-      _isVisible   = true;
-      var duration = shouldAnimate ? 0.25 : 0;
-      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 1, ease: Quad.easeOut});
-      TweenLite.to(_modalBackgroundEl, duration, {alpha: 1, ease: Quad.easeOut});
-    }
-
-    function show(shouldAnimate) {
-      if (_isVisible) {
-        return;
       }
 
-      _notDismissable = false;
-
-      showModalCover(shouldAnimate);
-
-      TweenLite.set(_modalCloseButtonEl, {scale: 2, alpha: 0});
-      TweenLite.to(_modalCloseButtonEl, 1, {
-        autoAlpha: 1,
-        scale: 1,
-        ease     : Bounce.easeOut,
-        delay    : 1
-      });
-
-      _dispatcher.publish(_componentEvents.MODAL_COVER_SHOW);
-    }
-
-    /**
-     * A 'hard' modal view cannot be dismissed with a click, must be via code
-     * @param shouldAnimate
-     */
-    function showNonDismissable(shouldAnimate) {
-      if (_isVisible) {
-        return;
+      function setOpacity(opacity) {
+        if (opacity < 0 || opacity > 1) {
+          console.log('nudoru/component/ModalCoverView: setOpacity: opacity should be between 0 and 1');
+          opacity = 1;
+        }
+        TweenLite.to(_modalBackgroundEl, 0.25, {
+          alpha: opacity,
+          ease : Quad.easeOut
+        });
       }
 
-      _notDismissable = true;
-
-      showModalCover(shouldAnimate);
-      TweenLite.to(_modalCloseButtonEl, 0, {autoAlpha: 0});
-    }
-
-    function hide(shouldAnimate) {
-      if (!_isVisible) {
-        return;
+      function setColor(r, g, b) {
+        TweenLite.to(_modalBackgroundEl, 0.25, {
+          backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')',
+          ease           : Quad.easeOut
+        });
       }
-      _isVisible   = false;
-      _notDismissable      = false;
-      var duration = shouldAnimate ? 0.25 : 0;
-      TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
-      TweenLite.to(_modalCoverEl, duration, {autoAlpha: 0, ease: Quad.easeOut});
-      TweenLite.to(_modalCloseButtonEl, duration / 2, {
-        autoAlpha: 0,
-        ease     : Quad.easeOut
-      });
 
-      _dispatcher.publish(_componentEvents.MODAL_COVER_HIDE);
-    }
+      return {
+        initialize        : initialize,
+        show              : show,
+        showNonDismissable: showNonDismissable,
+        hide              : hide,
+        visible           : getIsVisible,
+        setOpacity        : setOpacity,
+        setColor          : setColor
+      };
 
-    function setOpacity(opacity) {
-      if (opacity < 0 || opacity > 1) {
-        console.log('nudoru/component/ModalCoverView: setOpacity: opacity should be between 0 and 1');
-        opacity = 1;
-      }
-      TweenLite.to(_modalBackgroundEl, 0.25, {
-        alpha: opacity,
-        ease : Quad.easeOut
-      });
-    }
+    }());
 
-    function setColor(r, g, b) {
-      TweenLite.to(_modalBackgroundEl, 0.25, {
-        backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')',
-        ease           : Quad.easeOut
-      });
-    }
+    module.exports = ModalCoverView;
 
-    module.exports.initialize = initialize;
-    module.exports.show       = show;
-    module.exports.showNonDismissable   = showNonDismissable;
-    module.exports.hide       = hide;
-    module.exports.visible    = getIsVisible;
-    module.exports.setOpacity = setOpacity;
-    module.exports.setColor   = setColor;
   });
 
 define('nudoru/component/ToastView',
   function (require, module, exports) {
 
-    var _children              = [],
-        _counter               = 0,
-        _defaultExpireDuration = 7000,
-        _types                 = {
-          DEFAULT    : 'default',
-          INFORMATION: 'information',
-          SUCCESS    : 'success',
-          WARNING    : 'warning',
-          DANGER     : 'danger'
-        },
-        _typeStyleMap          = {
-          'default'    : '',
-          'information': 'toast__information',
-          'success'    : 'toast__success',
-          'warning'    : 'toast__warning',
-          'danger'     : 'toast__danger'
-        },
-        _mountPoint,
-        _template              = require('nudoru/component/Templating'),
-        _browserInfo           = require('nudoru/browser/BrowserInfo'),
-        _domUtils              = require('nudoru/browser/DOMUtils'),
-        _componentUtils        = require('nudoru/component/ComponentViewUtils');
+    var ToastView = (function () {
 
-    function initialize(elID) {
-      _mountPoint = document.getElementById(elID);
-    }
+      var _children              = [],
+          _counter               = 0,
+          _defaultExpireDuration = 7000,
+          _types                 = {
+            DEFAULT    : 'default',
+            INFORMATION: 'information',
+            SUCCESS    : 'success',
+            WARNING    : 'warning',
+            DANGER     : 'danger'
+          },
+          _typeStyleMap          = {
+            'default'    : '',
+            'information': 'toast__information',
+            'success'    : 'toast__success',
+            'warning'    : 'toast__warning',
+            'danger'     : 'toast__danger'
+          },
+          _mountPoint,
+          _template              = require('nori/utils/Templating'),
+          _browserInfo           = require('nudoru/browser/BrowserInfo'),
+          _domUtils              = require('nudoru/browser/DOMUtils'),
+          _componentUtils        = require('nudoru/browser/ThreeDTransforms');
 
-    //obj.title, obj.content, obj.type
-    function add(initObj) {
-      initObj.type = initObj.type || _types.DEFAULT;
+      function initialize(elID) {
+        _mountPoint = document.getElementById(elID);
+      }
 
-      var toastObj = createToastObject(initObj.title, initObj.message);
+      //obj.title, obj.content, obj.type
+      function add(initObj) {
+        initObj.type = initObj.type || _types.DEFAULT;
 
-      _children.push(toastObj);
+        var toastObj = createToastObject(initObj.title, initObj.message);
 
-      _mountPoint.insertBefore(toastObj.element, _mountPoint.firstChild);
+        _children.push(toastObj);
 
-      assignTypeClassToElement(initObj.type, toastObj.element);
+        _mountPoint.insertBefore(toastObj.element, _mountPoint.firstChild);
 
-      _componentUtils.apply3DToContainer(_mountPoint);
-      _componentUtils.apply3DToComponentElement(toastObj.element);
+        assignTypeClassToElement(initObj.type, toastObj.element);
 
-      var closeBtn         = toastObj.element.querySelector('.toast__item-controls > button'),
-          closeBtnSteam    = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
-          expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+        _componentUtils.apply3DToContainer(_mountPoint);
+        _componentUtils.apply3DToElement(toastObj.element);
 
-      toastObj.defaultButtonStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
-        .subscribe(function () {
-          remove(toastObj.id);
+        var closeBtn         = toastObj.element.querySelector('.toast__item-controls > button'),
+            closeBtnSteam    = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
+            expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+
+        toastObj.defaultButtonStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+          .subscribe(function () {
+            remove(toastObj.id);
+          });
+
+        transitionIn(toastObj.element);
+
+        return toastObj.id;
+      }
+
+      function assignTypeClassToElement(type, element) {
+        if (type !== 'default') {
+          _domUtils.addClass(element, _typeStyleMap[type]);
+        }
+      }
+
+      function createToastObject(title, message) {
+        var id  = 'js__toast-toastitem-' + (_counter++).toString(),
+            obj = {
+              id                 : id,
+              element            : _template.asElement('template__component--toast', {
+                id     : id,
+                title  : title,
+                message: message
+              }),
+              defaultButtonStream: null
+            };
+
+        return obj;
+      }
+
+      function remove(id) {
+        var idx = getObjIndexByID(id),
+            toast;
+
+        if (idx > -1) {
+          toast = _children[idx];
+          rearrange(idx);
+          transitionOut(toast.element);
+        }
+      }
+
+      function transitionIn(el) {
+        TweenLite.to(el, 0, {alpha: 0});
+        TweenLite.to(el, 1, {alpha: 1, ease: Quad.easeOut});
+        rearrange();
+      }
+
+      function transitionOut(el) {
+        TweenLite.to(el, 0.25, {
+          rotationX: -45,
+          alpha    : 0,
+          ease     : Quad.easeIn, onComplete: function () {
+            onTransitionOutComplete(el);
+          }
         });
-
-      transitionIn(toastObj.element);
-
-      return toastObj.id;
-    }
-
-    function assignTypeClassToElement(type, element) {
-      if (type !== 'default') {
-        _domUtils.addClass(element, _typeStyleMap[type]);
       }
-    }
 
-    function createToastObject(title, message) {
-      var id  = 'js__toast-toastitem-' + (_counter++).toString(),
-          obj = {
-            id                 : id,
-            element            : _template.asElement('template__component--toast', {
-              id     : id,
-              title  : title,
-              message: message
-            }),
-            defaultButtonStream: null
-          };
+      function onTransitionOutComplete(el) {
+        var idx        = getObjIndexByID(el.getAttribute('id')),
+            toastObj   = _children[idx];
 
-      return obj;
-    }
+        toastObj.defaultButtonStream.dispose();
 
-    function remove(id) {
-      var idx = getObjIndexByID(id),
-          toast;
-
-      if (idx > -1) {
-        toast = _children[idx];
-        rearrange(idx);
-        transitionOut(toast.element);
+        _mountPoint.removeChild(el);
+        _children[idx] = null;
+        _children.splice(idx, 1);
       }
-    }
 
-    function transitionIn(el) {
-      TweenLite.to(el, 0, {alpha: 0});
-      TweenLite.to(el, 1, {alpha: 1, ease: Quad.easeOut});
-      rearrange();
-    }
+      function rearrange(ignore) {
+        var i = _children.length - 1,
+            current,
+            y = 0;
 
-    function transitionOut(el) {
-      TweenLite.to(el, 0.25, {
-        rotationX: -45,
-        alpha    : 0,
-        ease     : Quad.easeIn, onComplete: function () {
-          onTransitionOutComplete(el);
+        for (; i > -1; i--) {
+          if (i === ignore) {
+            continue;
+          }
+          current = _children[i];
+          TweenLite.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
+          y += 10 + current.element.clientHeight;
         }
-      });
-    }
-
-    function onTransitionOutComplete(el) {
-      var idx        = getObjIndexByID(el.getAttribute('id')),
-          toastObj   = _children[idx];
-
-      toastObj.defaultButtonStream.dispose();
-
-      _mountPoint.removeChild(el);
-      _children[idx] = null;
-      _children.splice(idx, 1);
-    }
-
-    function rearrange(ignore) {
-      var i = _children.length - 1,
-          current,
-          y = 0;
-
-      for (; i > -1; i--) {
-        if (i === ignore) {
-          continue;
-        }
-        current = _children[i];
-        TweenLite.to(current.element, 0.75, {y: y, ease: Bounce.easeOut});
-        y += 10 + current.element.clientHeight;
       }
-    }
 
-    function getObjIndexByID(id) {
-      return _children.map(function (child) {
-        return child.id;
-      }).indexOf(id);
-    }
+      function getObjIndexByID(id) {
+        return _children.map(function (child) {
+          return child.id;
+        }).indexOf(id);
+      }
 
-    module.exports.initialize = initialize;
-    module.exports.add        = add;
-    module.exports.remove     = remove;
-    module.exports.type       = function () {
-      return _types
-    };
+      function getTypes() {
+        return _types;
+      }
+
+      return {
+        initialize: initialize,
+        add       : add,
+        remove    : remove,
+        type      : getTypes
+      };
+
+    }());
+
+    module.exports = ToastView;
 
   });
 
@@ -1338,7 +775,7 @@ define('nudoru/component/ToolTipView',
           'TL': 'tooltip__topleft'
         },
         _mountPoint,
-        _template     = require('nudoru/component/Templating'),
+        _template     = require('nori/utils/Templating'),
         _domUtils     = require('nudoru/browser/DOMUtils');
 
     function initialize(elID) {
