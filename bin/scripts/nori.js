@@ -1,251 +1,272 @@
 define('nori/utils/Cookie',
-  function(require, module, exports) {
+  function (require, module, exports) {
 
-    module.exports.create = function(name, value, days) {
-      var expires = "", date;
-      if (days) {
-        date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
-      }
-      document.cookie = name + "=" + value + expires + "; path=/";
-    };
+    var Cookie = (function () {
 
-    module.exports.read = function(name) {
-      var nameEQ = name + "=",
-        ca = document.cookie.split(';'),
-        i,
-        c;
-      i = ca.length;
-      while (i--) {
-        c = ca[i];
-        while (c.charAt(0) === ' ') {
-          c = c.substring(1, c.length);
+      function create(name, value, days) {
+        var expires = "", date;
+        if (days) {
+          date    = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          expires = "; expires=" + date.toGMTString();
         }
-        if (c.indexOf(nameEQ) === 0) {
-          return c.substring(nameEQ.length, c.length);
-        }
+        document.cookie = name + "=" + value + expires + "; path=/";
       }
-      return null;
-    };
 
-    module.exports.remove = function(name) {
-      module.exports.create(name, '', -1);
-    };
+      function read(name) {
+        var nameEQ = name + "=",
+            ca     = document.cookie.split(';'),
+            i, c;
+
+        i = ca.length;
+        while (i--) {
+          c = ca[i];
+          while (c.charAt(0) === ' ') {
+            c = c.substring(1, c.length);
+          }
+          if (c.indexOf(nameEQ) === 0) {
+            return c.substring(nameEQ.length, c.length);
+          }
+        }
+        return null;
+      }
+
+      function remove(name) {
+        create(name, '', -1);
+      }
+
+      return {
+        create: create,
+        read  : read,
+        remove: remove
+      };
+
+    }());
+
+    module.exports = Cookie;
 
   });
 
 define('nori/utils/Dispatcher',
   function (require, module, exports) {
-    var _subjectMap  = {},
-        _receiverMap = {},
-        _id          = 0,
-        _log         = [],
-        _queue       = [],
-        _timerObservable,
-        _timerSubscription,
-        _timerPausable;
 
-    /**
-     * Add an event as observable
-     * @param evtStr Event name string
-     * @param handler onNext() subscription function
-     * @param onceOrContext optional, either the context to execute the hander or once bool
-     * @param once will complete/dispose after one fire
-     * @returns {*}
-     */
-    function subscribe(evtStr, handler, onceOrContext, once) {
-      var handlerContext = window;
+    var Dispatcher = (function () {
 
-      //console.log('dispatcher subscribe', evtStr, handler, onceOrContext, once);
+      var _subjectMap  = {},
+          _receiverMap = {},
+          _id          = 0,
+          _log         = [],
+          _queue       = [],
+          _timerObservable,
+          _timerSubscription,
+          _timerPausable;
 
-      if (falsey(evtStr)) {
-        throw new Error('Fasley event string passed for handler', handler);
+      /**
+       * Add an event as observable
+       * @param evtStr Event name string
+       * @param handler onNext() subscription function
+       * @param onceOrContext optional, either the context to execute the hander or once bool
+       * @param once will complete/dispose after one fire
+       * @returns {*}
+       */
+      function subscribe(evtStr, handler, onceOrContext, once) {
+        var handlerContext = window;
+
+        //console.log('dispatcher subscribe', evtStr, handler, onceOrContext, once);
+
+        if (falsey(evtStr)) {
+          throw new Error('Fasley event string passed for handler', handler);
+        }
+
+        if (falsey(handler)) {
+          throw new Error('Fasley handler passed for event string', evtStr);
+        }
+
+        if (onceOrContext || onceOrContext === false) {
+          if (onceOrContext === true || onceOrContext === false) {
+            once = onceOrContext;
+          } else {
+            handlerContext = onceOrContext;
+          }
+        }
+
+        _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
+
+        var subject = new Rx.Subject();
+
+        _subjectMap[evtStr].push({
+          once    : once,
+          priority: 0,
+          handler : handler,
+          context : handlerContext,
+          subject : subject,
+          type    : 0
+        });
+
+        return subject.subscribe(handler.bind(handlerContext));
       }
 
-      if (falsey(handler)) {
-        throw new Error('Fasley handler passed for event string', evtStr);
+      /**
+       * Initialize the event processing timer or resume a paused timer
+       */
+      function initTimer() {
+        if (_timerObservable) {
+          _timerPausable.onNext(true);
+          return;
+        }
+
+        _timerPausable     = new Rx.Subject();
+        _timerObservable   = Rx.Observable.interval(1).pausable(_timerPausable);
+        _timerSubscription = _timerObservable.subscribe(processNextEvent);
       }
 
-      if (onceOrContext || onceOrContext === false) {
-        if (onceOrContext === true || onceOrContext === false) {
-          once = onceOrContext;
+      /**
+       * Shift next event to handle off of the queue and dispatch it
+       */
+      function processNextEvent() {
+        var evt = _queue.shift();
+        if (evt) {
+          //console.log('Procesing event: ',evt);
+          dispatchToReceivers(evt);
+          dispatchToSubscribers(evt);
         } else {
-          handlerContext = onceOrContext;
+          _timerPausable.onNext(false);
         }
       }
 
-      _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
+      /**
+       * Push event to the stack and begin execution
+       * @param payloadObj type:String, payload:data
+       * @param data
+       */
+      function publish(payloadObj) {
+        _log.push(payloadObj);
+        _queue.push(payloadObj);
 
-      var subject = new Rx.Subject();
-
-      _subjectMap[evtStr].push({
-        once    : once,
-        priority: 0,
-        handler : handler,
-        context : handlerContext,
-        subject : subject,
-        type    : 0
-      });
-
-      return subject.subscribe(handler.bind(handlerContext));
-    }
-
-    /**
-     * Initialize the event processing timer or resume a paused timer
-     */
-    function initTimer() {
-      if (_timerObservable) {
-        _timerPausable.onNext(true);
-        return;
+        initTimer();
       }
 
-      _timerPausable     = new Rx.Subject();
-      _timerObservable   = Rx.Observable.interval(1).pausable(_timerPausable);
-      _timerSubscription = _timerObservable.subscribe(processNextEvent);
-    }
-
-    /**
-     * Shift next event to handle off of the queue and dispatch it
-     */
-    function processNextEvent() {
-      var evt = _queue.shift();
-      if (evt) {
-        //console.log('Procesing event: ',evt);
-        dispatchToReceivers(evt);
-        dispatchToSubscribers(evt);
-      } else {
-        _timerPausable.onNext(false);
-      }
-    }
-
-    /**
-     * Push event to the stack and begin execution
-     * @param payloadObj type:String, payload:data
-     * @param data
-     */
-    function publish(payloadObj) {
-      _log.push(payloadObj);
-      _queue.push(payloadObj);
-
-      initTimer();
-    }
-
-    /**
-     * Send the payload to all receivers
-     * @param payload
-     */
-    function dispatchToReceivers(payload) {
-      for (var id in _receiverMap) {
-        _receiverMap[id].handler(payload);
-      }
-    }
-
-    /**
-     * Subscribers receive all payloads for a given event type while handlers are targeted
-     * @param payload
-     */
-    function dispatchToSubscribers(payload) {
-      var subscribers = _subjectMap[payload.type], i;
-      if (!subscribers) {
-        return;
-      }
-
-      i = subscribers.length;
-
-      while (i--) {
-        var subjObj = subscribers[i];
-        if (subjObj.type === 0) {
-          subjObj.subject.onNext(payload);
-        }
-        if (subjObj.once) {
-          unsubscribe(payload.type, subjObj.handler);
-        }
-      }
-    }
-
-    /**
-     * Remove a handler
-     * @param evtStr
-     * @param hander
-     */
-    function unsubscribe(evtStr, handler) {
-      if (_subjectMap[evtStr] === undefined) {
-        return;
-      }
-
-      var subscribers = _subjectMap[evtStr],
-          handlerIdx  = -1;
-
-      for (var i = 0, len = subscribers.length; i < len; i++) {
-        if (subscribers[i].handler === handler) {
-          handlerIdx     = i;
-          subscribers[i].subject.onCompleted();
-          subscribers[i].subject.dispose();
-          subscribers[i] = null;
+      /**
+       * Send the payload to all receivers
+       * @param payload
+       */
+      function dispatchToReceivers(payload) {
+        for (var id in _receiverMap) {
+          _receiverMap[id].handler(payload);
         }
       }
 
-      if (handlerIdx === -1) {
-        return;
+      /**
+       * Subscribers receive all payloads for a given event type while handlers are targeted
+       * @param payload
+       */
+      function dispatchToSubscribers(payload) {
+        var subscribers = _subjectMap[payload.type], i;
+        if (!subscribers) {
+          return;
+        }
+
+        i = subscribers.length;
+
+        while (i--) {
+          var subjObj = subscribers[i];
+          if (subjObj.type === 0) {
+            subjObj.subject.onNext(payload);
+          }
+          if (subjObj.once) {
+            unsubscribe(payload.type, subjObj.handler);
+          }
+        }
       }
 
-      subscribers.splice(handlerIdx, 1);
+      /**
+       * Remove a handler
+       * @param evtStr
+       * @param hander
+       */
+      function unsubscribe(evtStr, handler) {
+        if (_subjectMap[evtStr] === undefined) {
+          return;
+        }
 
-      if (subscribers.length === 0) {
-        delete _subjectMap[evtStr];
+        var subscribers = _subjectMap[evtStr],
+            handlerIdx  = -1;
+
+        for (var i = 0, len = subscribers.length; i < len; i++) {
+          if (subscribers[i].handler === handler) {
+            handlerIdx     = i;
+            subscribers[i].subject.onCompleted();
+            subscribers[i].subject.dispose();
+            subscribers[i] = null;
+          }
+        }
+
+        if (handlerIdx === -1) {
+          return;
+        }
+
+        subscribers.splice(handlerIdx, 1);
+
+        if (subscribers.length === 0) {
+          delete _subjectMap[evtStr];
+        }
       }
-    }
 
-    /**
-     * Return a copy of the log array
-     * @returns {Array.<T>}
-     */
-    function getLog() {
-      return _log.slice(0);
-    }
+      /**
+       * Return a copy of the log array
+       * @returns {Array.<T>}
+       */
+      function getLog() {
+        return _log.slice(0);
+      }
 
 
-    /**
-     * Simple receiver implementation based on Flux
-     * Registered receivers will get every published event
-     * https://github.com/facebook/flux/blob/master/src/Dispatcher.js
-     *
-     * Usage:
-     *
-     * _dispatcher.registerReceiver(function (payload) {
+      /**
+       * Simple receiver implementation based on Flux
+       * Registered receivers will get every published event
+       * https://github.com/facebook/flux/blob/master/src/Dispatcher.js
+       *
+       * Usage:
+       *
+       * _dispatcher.registerReceiver(function (payload) {
      *    console.log('receiving, ',payload);
      * });
-     *
-     * @param handler
-     * @returns {string}
-     */
-    function registerReceiver(handler) {
-      var id           = 'ID_' + _id++;
-      _receiverMap[id] = {
-        id     : id,
-        handler: handler
-      };
-      return id;
-    }
-
-
-    /**
-     * Remove a receiver handler
-     * @param id
-     */
-    function unregisterReceiver(id) {
-      if (_receiverMap.hasOwnProperty(id)) {
-        delete _receiverMap[id];
+       *
+       * @param handler
+       * @returns {string}
+       */
+      function registerReceiver(handler) {
+        var id           = 'ID_' + _id++;
+        _receiverMap[id] = {
+          id     : id,
+          handler: handler
+        };
+        return id;
       }
-    }
 
-    module.exports.subscribe          = subscribe;
-    module.exports.unsubscribe        = unsubscribe;
-    module.exports.publish            = publish;
-    module.exports.getLog             = getLog;
-    module.exports.registerReceiver   = registerReceiver;
-    module.exports.unregisterReceiver = unregisterReceiver;
+
+      /**
+       * Remove a receiver handler
+       * @param id
+       */
+      function unregisterReceiver(id) {
+        if (_receiverMap.hasOwnProperty(id)) {
+          delete _receiverMap[id];
+        }
+      }
+
+      return {
+        subscribe         : subscribe,
+        unsubscribe       : unsubscribe,
+        publish           : publish,
+        getLog            : getLog,
+        registerReceiver  : registerReceiver,
+        unregisterReceiver: unregisterReceiver
+      };
+
+    }());
+
+    module.exports = Dispatcher;
 
   });
 
@@ -253,335 +274,363 @@ define('nori/utils/MixinObservableSubject',
 
   function (require, module, exports) {
 
-    //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
-    var _subject = new Rx.BehaviorSubject();
+    var MixinObservableSubject = (function () {
+      //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
+      var _subject = new Rx.BehaviorSubject();
 
-    /**
-     * Subscribe handler to updates
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
-    }
+      /**
+       * Subscribe handler to updates
+       * @param handler
+       * @returns {*}
+       */
+      function subscribe(handler) {
+        return _subject.subscribe(handler);
+      }
 
-    /**
-     * Called from update or whatever function to dispatch to subscribers
-     * @param payload
-     */
-    function notifySubscribers(payload) {
-      _subject.onNext(payload);
-    }
+      /**
+       * Called from update or whatever function to dispatch to subscribers
+       * @param payload
+       */
+      function notifySubscribers(payload) {
+        _subject.onNext(payload);
+      }
 
-    /**
-     * Gets the last payload that was dispatched to subscribers
-     * @returns {*}
-     */
-    function getLastNotification() {
-      return _subject.getValue();
-    }
+      /**
+       * Gets the last payload that was dispatched to subscribers
+       * @returns {*}
+       */
+      function getLastNotification() {
+        return _subject.getValue();
+      }
 
-    module.exports.subscribe           = subscribe;
-    module.exports.notifySubscribers   = notifySubscribers;
-    module.exports.getLastNotification = getLastNotification;
+      return {
+        subscribe          : subscribe,
+        notifySubscribers  : notifySubscribers,
+        getLastNotification: getLastNotification
+      };
+
+    }());
+
+    module.exports = MixinObservableSubject;
 
   });
 
 define('nori/utils/Renderer',
   function (require, module, exports) {
 
-    var _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants'),
-        _domUtils          = require('nudoru/browser/DOMUtils');
+    var Renderer = (function () {
+      var _noriEvents         = require('nori/events/EventCreator'),
+          _noriEventConstants = require('nori/events/EventConstants'),
+          _domUtils           = require('nudoru/browser/DOMUtils');
 
-    function initialize() {
-      Nori.dispatcher().subscribe(_noriEventConstants.RENDER_VIEW, render);
-    }
-
-    function render(payload) {
-      var targetSelector = payload.payload.target,
-          html           = payload.payload.html,
-          domEl,
-          mountPoint     = document.querySelector(targetSelector),
-          cb             = payload.payload.callback;
-
-      mountPoint.innerHTML = '';
-
-      if (html) {
-        domEl = _domUtils.HTMLStrToNode(html);
-        mountPoint.appendChild(domEl);
+      function initialize() {
+        Nori.dispatcher().subscribe(_noriEventConstants.RENDER_VIEW, render);
       }
 
-      // Send the created DOM element back to the caller
-      if (cb) {
-        cb(domEl);
+      function render(payload) {
+        var targetSelector = payload.payload.target,
+            html           = payload.payload.html,
+            domEl,
+            mountPoint     = document.querySelector(targetSelector),
+            cb             = payload.payload.callback;
+
+        mountPoint.innerHTML = '';
+
+        if (html) {
+          domEl = _domUtils.HTMLStrToNode(html);
+          mountPoint.appendChild(domEl);
+        }
+
+        // Send the created DOM element back to the caller
+        if (cb) {
+          cb(domEl);
+        }
+
+        _noriEvents.viewRendered(targetSelector, payload.payload.id);
       }
 
-      _noriEvents.viewRendered(targetSelector, payload.payload.id);
-    }
+      return {
+        initialize: initialize
+      };
 
-    module.exports.initialize = initialize;
+    }());
+
+    module.exports = Renderer;
 
   });
 
 define('nori/utils/Router',
   function (require, module, exports) {
 
-    var _subject            = new Rx.Subject(),
-        _objUtils           = require('nudoru/core/ObjectUtils'),
-        _noriEventConstants = require('nori/events/EventConstants');
+    var Router = (function () {
+      var _subject            = new Rx.Subject(),
+          _objUtils           = require('nudoru/core/ObjectUtils'),
+          _noriEventConstants = require('nori/events/EventConstants');
 
-    /**
-     * Set event handlers
-     */
-    function initialize() {
-      window.addEventListener('hashchange', notifySubscribers, false);
-      Nori.dispatcher().subscribe(_noriEventConstants.CHANGE_ROUTE, handleAppRouteChangeRequests);
-    }
+      /**
+       * Set event handlers
+       */
+      function initialize() {
+        window.addEventListener('hashchange', notifySubscribers, false);
+        Nori.dispatcher().subscribe(_noriEventConstants.CHANGE_ROUTE, handleAppRouteChangeRequests);
+      }
 
-    /**
-     * Handle application route change requests
-     * @param payload
-     */
-    function handleAppRouteChangeRequests(payload) {
-      set(payload.payload.route, payload.payload.data);
-    }
+      /**
+       * Handle application route change requests
+       * @param payload
+       */
+      function handleAppRouteChangeRequests(payload) {
+        set(payload.payload.route, payload.payload.data);
+      }
 
-    /**
-     * subscribe a handler to the url change events
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
-    }
+      /**
+       * subscribe a handler to the url change events
+       * @param handler
+       * @returns {*}
+       */
+      function subscribe(handler) {
+        return _subject.subscribe(handler);
+      }
 
-    /**
-     * Notify of a change in route
-     * @param fromApp True if the route was caused by an app event not URL or history change
-     */
-    function notifySubscribers() {
-      var eventPayload = {
-        routeObj: getCurrentRoute(), // { route:, data: }
-        fragment: getURLFragment()
+      /**
+       * Notify of a change in route
+       * @param fromApp True if the route was caused by an app event not URL or history change
+       */
+      function notifySubscribers() {
+        var eventPayload = {
+          routeObj: getCurrentRoute(), // { route:, data: }
+          fragment: getURLFragment()
+        };
+
+        _subject.onNext(eventPayload);
+      }
+
+      /**
+       * Parses the route and query string from the current URL fragment
+       * @returns {{route: string, query: {}}}
+       */
+      function getCurrentRoute() {
+        var fragment    = getURLFragment(),
+            parts       = fragment.split('?'),
+            route       = '/' + parts[0],
+            queryStr    = decodeURIComponent(parts[1]),
+            queryStrObj = parseQueryStr(queryStr);
+
+        if (queryStr === '=undefined') {
+          queryStrObj = {};
+        }
+
+        return {route: route, data: queryStrObj};
+      }
+
+      /**
+       * Parses a query string into key/value pairs
+       * @param queryStr
+       * @returns {{}}
+       */
+      function parseQueryStr(queryStr) {
+        var obj   = {},
+            parts = queryStr.split('&');
+
+        parts.forEach(function (pairStr) {
+          var pairArr     = pairStr.split('=');
+          obj[pairArr[0]] = pairArr[1];
+        });
+
+        return obj;
+      }
+
+      /**
+       * Combines a route and data object into a proper URL hash fragment
+       * @param route
+       * @param dataObj
+       */
+      function set(route, dataObj) {
+        var path = route,
+            data = [];
+        if (!_objUtils.isNull(dataObj)) {
+          path += "?";
+          for (var prop in dataObj) {
+            if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
+              data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
+            }
+          }
+          path += data.join('&');
+        }
+
+        updateURLFragment(path);
+      }
+
+      /**
+       * Returns everything after the 'whatever.html#' in the URL
+       * Leading and trailing slashes are removed
+       * @returns {string}
+       */
+      function getURLFragment() {
+        var fragment = location.hash.slice(1);
+        return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
+      }
+
+      /**
+       * Set the URL hash fragment
+       * @param path
+       */
+      function updateURLFragment(path) {
+        window.location.hash = path;
+      }
+
+      return {
+        initialize       : initialize,
+        subscribe        : subscribe,
+        notifySubscribers: notifySubscribers,
+        getCurrentRoute  : getCurrentRoute,
+        set              : set
       };
 
-      _subject.onNext(eventPayload);
-    }
+    }());
 
-    /**
-     * Parses the route and query string from the current URL fragment
-     * @returns {{route: string, query: {}}}
-     */
-    function getCurrentRoute() {
-      var fragment    = getURLFragment(),
-          parts       = fragment.split('?'),
-          route       = '/' + parts[0],
-          queryStr    = decodeURIComponent(parts[1]),
-          queryStrObj = parseQueryStr(queryStr);
-
-      if (queryStr === '=undefined') {
-        queryStrObj = {};
-      }
-
-      return {route: route, data: queryStrObj};
-    }
-
-    /**
-     * Parses a query string into key/value pairs
-     * @param queryStr
-     * @returns {{}}
-     */
-    function parseQueryStr(queryStr) {
-      var obj   = {},
-          parts = queryStr.split('&');
-
-      parts.forEach(function (pairStr) {
-        var pairArr     = pairStr.split('=');
-        obj[pairArr[0]] = pairArr[1];
-      });
-
-      return obj;
-    }
-
-    /**
-     * Combines a route and data object into a proper URL hash fragment
-     * @param route
-     * @param dataObj
-     */
-    function set(route, dataObj) {
-      var path = route,
-          data = [];
-      if (!_objUtils.isNull(dataObj)) {
-        path += "?";
-        for (var prop in dataObj) {
-          if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
-            data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
-          }
-        }
-        path += data.join('&');
-      }
-
-      updateURLFragment(path);
-    }
-
-    /**
-     * Returns everything after the 'whatever.html#' in the URL
-     * Leading and trailing slashes are removed
-     * @returns {string}
-     */
-    function getURLFragment() {
-      var fragment = location.hash.slice(1);
-      return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
-    }
-
-    /**
-     * Set the URL hash fragment
-     * @param path
-     */
-    function updateURLFragment(path) {
-      window.location.hash = path;
-    }
-
-    module.exports.initialize        = initialize;
-    module.exports.subscribe         = subscribe;
-    module.exports.notifySubscribers = notifySubscribers;
-    module.exports.getCurrentRoute   = getCurrentRoute;
-    module.exports.set               = set;
+    module.exports = Router;
 
   });
 
 define('nori/utils/Templating',
   function (require, module, exports) {
 
-    var _templateHTMLCache = Object.create(null),
-        _templateCache     = Object.create(null),
-        _DOMUtils          = require('nudoru/browser/DOMUtils');
+    var Templating = (function () {
+      var _templateHTMLCache = Object.create(null),
+          _templateCache     = Object.create(null),
+          _DOMUtils          = require('nudoru/browser/DOMUtils');
 
-    /**
-     * Get the template html from the script tag with id
-     * @param id
-     * @returns {*}
-     */
-    function getSource(id) {
-      if (_templateHTMLCache[id]) {
-        return _templateHTMLCache[id];
+      /**
+       * Get the template html from the script tag with id
+       * @param id
+       * @returns {*}
+       */
+      function getSource(id) {
+        if (_templateHTMLCache[id]) {
+          return _templateHTMLCache[id];
+        }
+
+        var src = document.getElementById(id),
+            srchtml, cleanhtml;
+
+        if (src) {
+          srchtml = src.innerHTML;
+        } else {
+          throw new Error('nudoru/core/Templating, template not found: "' + id + '"');
+        }
+
+        cleanhtml              = cleanTemplateHTML(srchtml);
+        _templateHTMLCache[id] = cleanhtml;
+        return cleanhtml;
       }
 
-      var src = document.getElementById(id),
-          srchtml, cleanhtml;
+      /**
+       * Returns all IDs belonging to text/template type script tags
+       * @returns {Array}
+       */
+      function getAllTemplateIDs() {
+        var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
 
-      if (src) {
-        srchtml = src.innerHTML;
-      } else {
-        throw new Error('nudoru/core/Templating, template not found: "' + id + '"');
+        return scriptTags.filter(function (tag) {
+          return tag.getAttribute('type') === 'text/template';
+        }).map(function (tag) {
+          return tag.getAttribute('id');
+        });
       }
 
-      cleanhtml              = cleanTemplateHTML(srchtml);
-      _templateHTMLCache[id] = cleanhtml;
-      return cleanhtml;
-    }
-
-    /**
-     * Returns all IDs belonging to text/template type script tags
-     * @returns {Array}
-     */
-    function getAllTemplateIDs() {
-      var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
-
-      return scriptTags.filter(function (tag) {
-        return tag.getAttribute('type') === 'text/template';
-      }).map(function (tag) {
-        return tag.getAttribute('id');
-      });
-    }
-
-    /**
-     * Returns an underscore template
-     * @param id
-     * @returns {*}
-     */
-    function getTemplate(id) {
-      if (_templateCache[id]) {
-        return _templateCache[id];
+      /**
+       * Returns an underscore template
+       * @param id
+       * @returns {*}
+       */
+      function getTemplate(id) {
+        if (_templateCache[id]) {
+          return _templateCache[id];
+        }
+        var templ          = _.template(getSource(id));
+        _templateCache[id] = templ;
+        return templ;
       }
-      var templ          = _.template(getSource(id));
-      _templateCache[id] = templ;
-      return templ;
-    }
 
-    /**
-     * Processes the template and returns HTML
-     * @param id
-     * @param obj
-     * @returns {*}
-     */
-    function asHTML(id, obj) {
-      var temp = getTemplate(id);
-      return temp(obj);
-    }
+      /**
+       * Processes the template and returns HTML
+       * @param id
+       * @param obj
+       * @returns {*}
+       */
+      function asHTML(id, obj) {
+        var temp = getTemplate(id);
+        return temp(obj);
+      }
 
-    /**
-     * Processes the template and returns an HTML Element
-     * @param id
-     * @param obj
-     * @returns {*}
-     */
-    function asElement(id, obj) {
-      return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
-    }
+      /**
+       * Processes the template and returns an HTML Element
+       * @param id
+       * @param obj
+       * @returns {*}
+       */
+      function asElement(id, obj) {
+        return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
+      }
 
-    /**
-     * Cleans template HTML
-     */
-    function cleanTemplateHTML(str) {
-      return str.trim();
-    }
+      /**
+       * Cleans template HTML
+       */
+      function cleanTemplateHTML(str) {
+        return str.trim();
+      }
 
-    /**
-     * Remove returns, spaces and tabs
-     * @param str
-     * @returns {XML|string}
-     */
-    function removeWhiteSpace(str) {
-      return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
-    }
+      /**
+       * Remove returns, spaces and tabs
+       * @param str
+       * @returns {XML|string}
+       */
+      function removeWhiteSpace(str) {
+        return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
+      }
 
-    /**
-     * Iterate over all templates, clean them up and log
-     * Util for SharePoint projects, <script> blocks aren't allowed
-     * So this helps create the blocks for insertion in to the DOM
-     */
-    function processForDOMInsertion() {
-      var ids = getAllTemplateIDs();
-      ids.forEach(function (id) {
-        var src = removeWhiteSpace(getSource(id));
-        console.log(id,src);
-      });
-    }
+      /**
+       * Iterate over all templates, clean them up and log
+       * Util for SharePoint projects, <script> blocks aren't allowed
+       * So this helps create the blocks for insertion in to the DOM
+       */
+      function processForDOMInsertion() {
+        var ids = getAllTemplateIDs();
+        ids.forEach(function (id) {
+          var src = removeWhiteSpace(getSource(id));
+          console.log(id, src);
+        });
+      }
 
-    /**
-     * Add a template script tag to the DOM
-     * Util for SharePoint projects, <script> blocks aren't allowed
-     * @param id
-     * @param html
-     */
-    function addClientSideTemplateToDOM(id, html) {
-      var s       = document.createElement('script');
-      s.type      = 'text/template';
-      s.id        = id;
-      s.innerHTML = html;
-      document.getElementsByTagName('head')[0].appendChild(s);
-    }
+      /**
+       * Add a template script tag to the DOM
+       * Util for SharePoint projects, <script> blocks aren't allowed
+       * @param id
+       * @param html
+       */
+      function addClientSideTemplateToDOM(id, html) {
+        var s       = document.createElement('script');
+        s.type      = 'text/template';
+        s.id        = id;
+        s.innerHTML = html;
+        document.getElementsByTagName('head')[0].appendChild(s);
+      }
 
-    module.exports.getSource              = getSource;
-    module.exports.getAllTemplateIDs      = getAllTemplateIDs;
-    module.exports.processForDOMInsertion = processForDOMInsertion;
-    module.exports.getTemplate            = getTemplate;
-    module.exports.asHTML                 = asHTML;
-    module.exports.asElement              = asElement;
+      return {
+        getSource             : getSource,
+        getAllTemplateIDs     : getAllTemplateIDs,
+        processForDOMInsertion: processForDOMInsertion,
+        getTemplate           : getTemplate,
+        asHTML                : asHTML,
+        asElement             : asElement,
 
-    module.exports.addClientSideTemplateToDOM = addClientSideTemplateToDOM;
+        addClientSideTemplateToDOM: addClientSideTemplateToDOM,
+      };
+
+    }());
+
+    module.exports = Templating;
 
   });
 
@@ -622,248 +671,253 @@ define('nori/events/EventConstants',
 define('nori/events/EventCreator',
   function (require, module, exports) {
 
-    var _appEventConstants     = require('nori/events/EventConstants'),
+    var _noriEventConstants    = require('nori/events/EventConstants'),
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
-    module.exports.applicationWarning = function (message) {
-      var evtObj = {
-        type   : _appEventConstants.APP_WARNING,
-        error  : false,
-        payload: {
-          message: message
-        }
-      };
+    var NoriEventCreator = {
 
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
+      applicationWarning: function (message) {
+        var evtObj = {
+          type   : _noriEventConstants.APP_WARNING,
+          error  : false,
+          payload: {
+            message: message
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      applicationError: function (message) {
+        var evtObj = {
+          type   : _noriEventConstants.APP_ERROR,
+          error  : true,
+          payload: new Error(message)
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      applicationInitialized: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.APP_INITIALIZED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      notifyUser: function (title, message, type) {
+        var evtObj = {
+          type   : _noriEventConstants.NOTIFY_USER,
+          payload: {
+            title  : title,
+            message: message,
+            type   : type || 'default'
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      alertUser: function (title, message, type) {
+        var evtObj = {
+          type   : _noriEventConstants.ALERT_USER,
+          payload: {
+            title  : title,
+            message: message,
+            type   : type || 'default'
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      warnUser: function (title, message, type) {
+        var evtObj = {
+          type   : _noriEventConstants.WARN_USER,
+          payload: {
+            title  : title,
+            message: message,
+            type   : type || 'danger'
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      applicationModelInitialized: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.APP_MODEL_INITIALIZED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      applicationViewInitialized: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.APP_VIEW_INITIALIZED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      urlHashChanged: function (payload) {
+        var evtObj = {
+          type   : _browserEventConstants.URL_HASH_CHANGED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      viewChanged: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.VIEW_CHANGED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      changeRoute: function (route, data) {
+        var evtObj = {
+          type   : _noriEventConstants.CHANGE_ROUTE,
+          payload: {
+            route: route,
+            data : data
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      routeChanged: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.ROUTE_CHANGED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      changeModelState: function (modelID, data) {
+        var evtObj = {
+          type   : _noriEventConstants.CHANGE_MODEL_STATE,
+          payload: {
+            id  : modelID,
+            data: data
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      modelChanged: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.MODEL_DATA_CHANGED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      modelStateChanged: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.MODEL_STATE_CHANGED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      renderView: function (targetSelector, htmlStr, id, callback) {
+        var evtObj = {
+          type   : _noriEventConstants.RENDER_VIEW,
+          payload: {
+            target  : targetSelector,
+            html    : htmlStr,
+            id      : id,
+            callback: callback
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      viewRendered: function (targetSelector, id) {
+        var evtObj = {
+          type   : _noriEventConstants.VIEW_RENDERED,
+          payload: {
+            target: targetSelector,
+            id    : id
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      viewChangedToMobile: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.VIEW_CHANGE_TO_MOBILE,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      viewChangedToDesktop: function (payload) {
+        var evtObj = {
+          type   : _noriEventConstants.VIEW_CHANGE_TO_DESKTOP,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      browserScrolled: function (payload) {
+        var evtObj = {
+          type   : _browserEventConstants.BROWSER_SCROLLED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
+
+      browserResized: function (payload) {
+        var evtObj = {
+          type   : _browserEventConstants.BROWSER_RESIZED,
+          payload: payload
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      },
     };
 
-    module.exports.applicationError = function (message) {
-      var evtObj = {
-        type   : _appEventConstants.APP_ERROR,
-        error  : true,
-        payload: new Error(message)
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.applicationInitialized = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.APP_INITIALIZED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.notifyUser = function (title, message, type) {
-      var evtObj = {
-        type   : _appEventConstants.NOTIFY_USER,
-        payload: {
-          title  : title,
-          message: message,
-          type   : type || 'default'
-        }
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.alertUser = function (title, message, type) {
-      var evtObj = {
-        type   : _appEventConstants.ALERT_USER,
-        payload: {
-          title  : title,
-          message: message,
-          type   : type || 'default'
-        }
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.warnUser = function (title, message, type) {
-      var evtObj = {
-        type   : _appEventConstants.WARN_USER,
-        payload: {
-          title  : title,
-          message: message,
-          type   : type || 'danger'
-        }
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.applicationModelInitialized = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.APP_MODEL_INITIALIZED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.applicationViewInitialized = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.APP_VIEW_INITIALIZED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.urlHashChanged = function (payload) {
-      var evtObj = {
-        type   : _browserEventConstants.URL_HASH_CHANGED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.viewChanged = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.VIEW_CHANGED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.changeRoute = function (route, data) {
-      var evtObj = {
-        type   : _appEventConstants.CHANGE_ROUTE,
-        payload: {
-          route: route,
-          data : data
-        }
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.routeChanged = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.ROUTE_CHANGED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.changeModelState = function (modelID, data) {
-      var evtObj = {
-        type   : _appEventConstants.CHANGE_MODEL_STATE,
-        payload: {
-          id  : modelID,
-          data: data
-        }
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.modelChanged = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.MODEL_DATA_CHANGED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.modelStateChanged = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.MODEL_STATE_CHANGED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.renderView = function (targetSelector, htmlStr, id, callback) {
-      var evtObj = {
-        type   : _appEventConstants.RENDER_VIEW,
-        payload: {
-          target  : targetSelector,
-          html    : htmlStr,
-          id      : id,
-          callback: callback
-        }
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.viewRendered = function (targetSelector, id) {
-      var evtObj = {
-        type   : _appEventConstants.VIEW_RENDERED,
-        payload: {
-          target: targetSelector,
-          id    : id
-        }
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.viewChangedToMobile = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.VIEW_CHANGE_TO_MOBILE,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.viewChangedToDesktop = function (payload) {
-      var evtObj = {
-        type   : _appEventConstants.VIEW_CHANGE_TO_DESKTOP,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.browserScrolled = function (payload) {
-      var evtObj = {
-        type   : _browserEventConstants.BROWSER_SCROLLED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
-
-    module.exports.browserResized = function (payload) {
-      var evtObj = {
-        type   : _browserEventConstants.BROWSER_RESIZED,
-        payload: payload
-      };
-
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
-    };
+    module.exports = NoriEventCreator;
 
   });
 
@@ -876,7 +930,8 @@ define('nori/service/Rest',
      * @param success
      * @param error
      */
-    function request(reqObj) {
+    module.exports.Request = function request(reqObj) {
+
       var xhr    = new XMLHttpRequest(),
           json   = reqObj.json || false,
           method = reqObj.method.toUpperCase() || 'GET',
@@ -884,7 +939,7 @@ define('nori/service/Rest',
           data   = reqObj.data || null;
 
       //return new Promise(function (resolve, reject) {
-      return new Rx.Observable.create(function(observer) {
+      return new Rx.Observable.create(function (observer) {
         xhr.open(method, url, true, reqObj.user, reqObj.password);
 
         xhr.onreadystatechange = function () {
@@ -930,784 +985,804 @@ define('nori/service/Rest',
           observer.onError(type + ' ' + message);
         }
       });
-
-    }
-
-    module.exports.request   = request;
+    };
 
   });
 
 define('nori/model/Map',
   function (require, module, exports) {
 
-    var _this,
-        _id,
-        _parentCollection,
-        _dirty   = false,
-        _entries = [],
-        _map     = Object.create(null);
+    var Map = (function () {
+      var _this,
+          _id,
+          _parentCollection,
+          _dirty   = false,
+          _entries = [],
+          _map     = Object.create(null);
 
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Initialization
+      //----------------------------------------------------------------------------
 
-    function initialize(initObj) {
-      if (!initObj.id) {
-        throw new Error('Model must be init\'d with an id');
+      function initialize(initObj) {
+        if (!initObj.id) {
+          throw new Error('Model must be init\'d with an id');
+        }
+
+        _this = this;
+        _id   = initObj.id;
+
+        if (initObj.store) {
+          _dirty = true;
+          _map   = initObj.store;
+        } else if (initObj.json) {
+          setJSON(initObj.json);
+        }
+
       }
 
-      _this = this;
-      _id = initObj.id;
-
-      if (initObj.store) {
+      /**
+       * Set map store from a JSON object
+       * @param jstr
+       */
+      function setJSON(jstr) {
         _dirty = true;
-        _map   = initObj.store;
-      } else if (initObj.json) {
-        setJSON(initObj.json);
-      }
-
-    }
-
-    /**
-     * Set map store from a JSON object
-     * @param jstr
-     */
-    function setJSON(jstr) {
-      _dirty = true;
-      try {
-        _map = JSON.parse(jstr);
-      } catch (e) {
-        throw new Error('MapCollection, error parsing JSON:', jstr, e);
-      }
-    }
-
-    function getID() {
-      return _id;
-    }
-
-    /**
-     * Erase it
-     */
-    function clear() {
-      _map   = {};
-      _dirty = true;
-    }
-
-    function isDirty() {
-      return _dirty;
-    }
-
-    function markClean() {
-      _dirty = false;
-    }
-
-    /**
-     * Set property or merge in new data
-     * @param key String = name of property to set, Object = will merge new props
-     * @param value String = value of property to set
-     */
-    function set(key, value) {
-
-      if (typeof key === 'object') {
-        _map = _.merge({}, _map, key);
-      } else {
-        _map[key] = value;
-      }
-
-      // Mark changed
-      _dirty = true;
-
-      dispatchChange('set_key');
-    }
-
-    /**
-     * Assuming that _map[key] is an object, this will set a property on it
-     * @param key
-     * @param prop
-     * @param data
-     */
-    function setKeyProp(key, prop, data) {
-      _map[key][prop] = data;
-
-      _dirty = true;
-      dispatchChange('set_key');
-    }
-
-    /**
-     * Returns a copy of the data
-     * @returns *
-     */
-    function get(key) {
-      var value = has(key) ? _map[key] : undefined;
-
-      if (value) {
-        value = _.cloneDeep(value);
-      }
-
-      return value;
-    }
-
-    /**
-     * Assuming that _map[key] is an object, this will get value
-     * @param key
-     * @param prop
-     * @returns {*}
-     */
-    function getKeyProp(key, prop) {
-      var valueObj = has(key) ? _map[key] : undefined,
-          value    = null;
-
-      if (valueObj) {
-        value = _.cloneDeep(valueObj[prop]);
-      }
-
-      return value;
-    }
-
-    /**
-     * Returns true of the key is present in the map
-     * @param key
-     * @returns {boolean}
-     */
-    function has(key) {
-      return _map.hasOwnProperty(key);
-    }
-
-    /**
-     * Returns an array of the key/values. Results are cached and only regenerated
-     * if changed (set)
-     * @returns {Array}
-     */
-    function entries() {
-      if (!_dirty && _entries) {
-        return _entries;
-      }
-
-      var arry = [];
-      for (var key in _map) {
-        arry.push({key: key, value: _map[key]});
-      }
-
-      _entries = arry;
-      _dirty   = false;
-
-      return arry;
-    }
-
-    /**
-     * Number of entries
-     * @returns {Number}
-     */
-    function size() {
-      return keys().length;
-    }
-
-    /**
-     * Returns an array of all keys in the map
-     * @returns {Array}
-     */
-    function keys() {
-      return Object.keys(_map);
-    }
-
-    /**
-     * Returns an array of all vaules in the map
-     * @returns {Array}
-     */
-    function values() {
-      return entries().map(function (entry) {
-        return entry.value;
-      });
-    }
-
-    /**
-     * Remove a value
-     * @param key
-     */
-    function remove(key) {
-      delete _map[key];
-    }
-
-    /**
-     * Returns matches to the predicate function
-     * @param predicate
-     * @returns {Array.<T>}
-     */
-    function filterValues(predicate) {
-      return values().filter(predicate);
-    }
-
-    function first() {
-      return entries()[0];
-    }
-
-    function last() {
-      var e = entries();
-      return e[e.length - 1];
-    }
-
-    function getAtIndex(i) {
-      return entries()[i];
-    }
-
-    /**
-     * Returns a copy of the data map
-     * @returns {void|*}
-     */
-    function toObject() {
-      return _.merge({}, _map);
-    }
-
-    /**
-     * Return a new object by "translating" the properties of the map from one key to another
-     * @param tObj {currentProp, newProp}
-     */
-    function transform(tObj) {
-      var transformed = Object.create(null);
-
-      for (var prop in tObj) {
-        if (_map.hasOwnProperty(prop)) {
-          transformed[tObj[prop]] = _map[prop];
+        try {
+          _map = JSON.parse(jstr);
+        } catch (e) {
+          throw new Error('MapCollection, error parsing JSON:', jstr, e);
         }
       }
 
-      return transformed;
-    }
-
-    /**
-     * On change, emit event globally
-     */
-    function dispatchChange(type) {
-      var payload = {
-        id     : _id,
-        mapType: 'model'
-      };
-
-      _this.notifySubscribers(payload);
-
-      if (_parentCollection.dispatchChange) {
-        _parentCollection.dispatchChange({
-          id: _id
-        }, (type || 'map'));
+      function getID() {
+        return _id;
       }
 
-    }
+      /**
+       * Erase it
+       */
+      function clear() {
+        _map   = {};
+        _dirty = true;
+      }
 
-    function toJSON() {
-      return JSON.stringify(_map);
-    }
+      function isDirty() {
+        return _dirty;
+      }
 
-    function setParentCollection(collection) {
-      _parentCollection = collection;
-    }
+      function markClean() {
+        _dirty = false;
+      }
 
-    function getParentCollection() {
-      return _parentCollection;
-    }
+      /**
+       * Set property or merge in new data
+       * @param key String = name of property to set, Object = will merge new props
+       * @param value String = value of property to set
+       */
+      function set(key, value) {
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+        if (typeof key === 'object') {
+          _map = _.merge({}, _map, key);
+        } else {
+          _map[key] = value;
+        }
 
-    module.exports.initialize          = initialize;
-    module.exports.getID               = getID;
-    module.exports.clear               = clear;
-    module.exports.isDirty             = isDirty;
-    module.exports.markClean           = markClean;
-    module.exports.setJSON             = setJSON;
-    module.exports.set                 = set;
-    module.exports.setKeyProp          = setKeyProp;
-    module.exports.get                 = get;
-    module.exports.getKeyProp          = getKeyProp;
-    module.exports.has                 = has;
-    module.exports.remove              = remove;
-    module.exports.keys                = keys;
-    module.exports.values              = values;
-    module.exports.entries             = entries;
-    module.exports.filterValues        = filterValues;
-    module.exports.size                = size;
-    module.exports.first               = first;
-    module.exports.last                = last;
-    module.exports.getAtIndex          = getAtIndex;
-    module.exports.toObject            = toObject;
-    module.exports.transform           = transform;
-    module.exports.toJSON              = toJSON;
-    module.exports.setParentCollection = setParentCollection;
-    module.exports.getParentCollection = getParentCollection;
+        // Mark changed
+        _dirty = true;
+
+        dispatchChange('set_key');
+      }
+
+      /**
+       * Assuming that _map[key] is an object, this will set a property on it
+       * @param key
+       * @param prop
+       * @param data
+       */
+      function setKeyProp(key, prop, data) {
+        _map[key][prop] = data;
+
+        _dirty = true;
+        dispatchChange('set_key');
+      }
+
+      /**
+       * Returns a copy of the data
+       * @returns *
+       */
+      function get(key) {
+        var value = has(key) ? _map[key] : undefined;
+
+        if (value) {
+          value = _.cloneDeep(value);
+        }
+
+        return value;
+      }
+
+      /**
+       * Assuming that _map[key] is an object, this will get value
+       * @param key
+       * @param prop
+       * @returns {*}
+       */
+      function getKeyProp(key, prop) {
+        var valueObj = has(key) ? _map[key] : undefined,
+            value    = null;
+
+        if (valueObj) {
+          value = _.cloneDeep(valueObj[prop]);
+        }
+
+        return value;
+      }
+
+      /**
+       * Returns true of the key is present in the map
+       * @param key
+       * @returns {boolean}
+       */
+      function has(key) {
+        return _map.hasOwnProperty(key);
+      }
+
+      /**
+       * Returns an array of the key/values. Results are cached and only regenerated
+       * if changed (set)
+       * @returns {Array}
+       */
+      function entries() {
+        if (!_dirty && _entries) {
+          return _entries;
+        }
+
+        var arry = [];
+        for (var key in _map) {
+          arry.push({key: key, value: _map[key]});
+        }
+
+        _entries = arry;
+        _dirty   = false;
+
+        return arry;
+      }
+
+      /**
+       * Number of entries
+       * @returns {Number}
+       */
+      function size() {
+        return keys().length;
+      }
+
+      /**
+       * Returns an array of all keys in the map
+       * @returns {Array}
+       */
+      function keys() {
+        return Object.keys(_map);
+      }
+
+      /**
+       * Returns an array of all vaules in the map
+       * @returns {Array}
+       */
+      function values() {
+        return entries().map(function (entry) {
+          return entry.value;
+        });
+      }
+
+      /**
+       * Remove a value
+       * @param key
+       */
+      function remove(key) {
+        delete _map[key];
+      }
+
+      /**
+       * Returns matches to the predicate function
+       * @param predicate
+       * @returns {Array.<T>}
+       */
+      function filterValues(predicate) {
+        return values().filter(predicate);
+      }
+
+      function first() {
+        return entries()[0];
+      }
+
+      function last() {
+        var e = entries();
+        return e[e.length - 1];
+      }
+
+      function getAtIndex(i) {
+        return entries()[i];
+      }
+
+      /**
+       * Returns a copy of the data map
+       * @returns {void|*}
+       */
+      function toObject() {
+        return _.merge({}, _map);
+      }
+
+      /**
+       * Return a new object by "translating" the properties of the map from one key to another
+       * @param tObj {currentProp, newProp}
+       */
+      function transform(tObj) {
+        var transformed = Object.create(null);
+
+        for (var prop in tObj) {
+          if (_map.hasOwnProperty(prop)) {
+            transformed[tObj[prop]] = _map[prop];
+          }
+        }
+
+        return transformed;
+      }
+
+      /**
+       * On change, emit event globally
+       */
+      function dispatchChange(type) {
+        var payload = {
+          id     : _id,
+          mapType: 'model'
+        };
+
+        _this.notifySubscribers(payload);
+
+        if (_parentCollection.dispatchChange) {
+          _parentCollection.dispatchChange({
+            id: _id
+          }, (type || 'map'));
+        }
+
+      }
+
+      function toJSON() {
+        return JSON.stringify(_map);
+      }
+
+      function setParentCollection(collection) {
+        _parentCollection = collection;
+      }
+
+      function getParentCollection() {
+        return _parentCollection;
+      }
+
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initialize         : initialize,
+        getID              : getID,
+        clear              : clear,
+        isDirty            : isDirty,
+        markClean          : markClean,
+        setJSON            : setJSON,
+        set                : set,
+        setKeyProp         : setKeyProp,
+        get                : get,
+        getKeyProp         : getKeyProp,
+        has                : has,
+        remove             : remove,
+        keys               : keys,
+        values             : values,
+        entries            : entries,
+        filterValues       : filterValues,
+        size               : size,
+        first              : first,
+        last               : last,
+        getAtIndex         : getAtIndex,
+        toObject           : toObject,
+        transform          : transform,
+        toJSON             : toJSON,
+        setParentCollection: setParentCollection,
+        getParentCollection: getParentCollection
+      };
+
+    }());
+
+    module.exports = Map;
 
   });
 
 define('nori/model/MapCollection',
   function (require, module, exports) {
 
-    var _this,
-        _id,
-        _parentCollection,
-        _caret    = 0,
+    var MapCollection = (function () {
+      var _this,
+          _id,
+          _parentCollection,
+          _caret    = 0,
+          _children = [];
+
+      //----------------------------------------------------------------------------
+      //  Initialization
+      //----------------------------------------------------------------------------
+
+      function initialize(initObj) {
+        if (!initObj.id) {
+          throw new Error('ModelCollection must be init\'d with an id');
+        }
+
+        _this = this;
+        _id   = initObj.id;
+
+        // TODO test
+        if (initObj.models) {
+          addMapsFromArray.call(_this, initObj.models);
+        }
+      }
+
+      //----------------------------------------------------------------------------
+      //  Iterator
+      //----------------------------------------------------------------------------
+
+      function next() {
+        var ret = {};
+        if (hasNext()) {
+          ret = {value: _children[_caret++], done: !hasNext()};
+        } else {
+          ret = current();
+        }
+
+        return ret;
+      }
+
+      function current() {
+        return {value: _children[_caret], done: !hasNext()};
+      }
+
+      function rewind() {
+        _caret = 0;
+        return _children[_caret];
+      }
+
+      function hasNext() {
+        return _caret < _children.length;
+      }
+
+      //----------------------------------------------------------------------------
+      //  Impl
+      //----------------------------------------------------------------------------
+
+      function isDirty() {
+        var dirty = false;
+        forEach(function checkDirty(map) {
+          if (map.isDirty()) {
+            dirty = true;
+          }
+        });
+        return dirty;
+      }
+
+      function markClean() {
+        forEach(function checkDirty(map) {
+          map.markClean();
+        });
+      }
+
+      /**
+       * Add an array of Model instances
+       * @param sArry
+       */
+      function addMapsFromArray(sArry) {
+        sArry.forEach(function (store) {
+          add(store);
+        });
+      }
+
+      /**
+       * Create an add child Model stores from an array of objects
+       * @param array Array of objects
+       * @param idKey Key on each object to use for the ID of that Model store
+       */
+      function addFromObjArray(oArry, idKey) {
+        oArry.forEach(function (obj) {
+
+          var id;
+
+          if (obj.hasOwnProperty(idKey)) {
+            id = obj[idKey];
+          } else {
+            id = _id + 'child' + _children.length;
+          }
+
+          add(Nori.model().createMap({id: id, store: obj}));
+        });
+        dispatchChange(_id, 'add_map');
+      }
+
+      function addFromJSONArray(json, idKey) {
+        json.forEach(function (jstr) {
+
+          var id, obj;
+
+          try {
+            obj = JSON.parse(jstr);
+          } catch (e) {
+            throw new Error('MapCollection, error parsing JSON:', jstr, e);
+          }
+
+          if (obj.hasOwnProperty(idKey)) {
+            id = obj[idKey];
+          } else {
+            id = _id + 'child' + _children.length;
+          }
+
+          add(Nori.model().createMap({id: id, store: obj}));
+        });
+        dispatchChange(_id, 'add_map');
+      }
+
+      function getID() {
+        return _id;
+      }
+
+      function add(store) {
+        var currIdx = getMapIndex(store.getID());
+
+        store.setParentCollection(_this);
+
+        if (currIdx >= 0) {
+          _children[currIdx] = store;
+        } else {
+          _children.push(store);
+        }
+
+        dispatchChange(_id, 'add_map');
+      }
+
+      /**
+       * Remove a store from the collection
+       * @param storeID
+       */
+      function remove(storeID) {
+        var currIdx = getMapIndex(storeID);
+        if (currIdx >= 0) {
+          _children[currIdx].setParentCollection(null);
+          _children[currIdx] = null;
+          _children.splice(currIdx, 1);
+          dispatchChange(_id, 'remove_map');
+        } else {
+          console.log(_id + ' remove, model not in collection: ' + storeID);
+        }
+      }
+
+      /**
+       * Remove all stores from the array
+       */
+      function removeAll() {
+        _children.forEach(function (map) {
+          map.setParentCollection(null);
+        });
+
         _children = [];
-
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
-
-    function initialize(initObj) {
-      if (!initObj.id) {
-        throw new Error('ModelCollection must be init\'d with an id');
-      }
-
-      _this = this;
-      _id   = initObj.id;
-
-      // TODO test
-      if (initObj.models) {
-        addMapsFromArray.call(_this, initObj.models);
-      }
-    }
-
-    //----------------------------------------------------------------------------
-    //  Iterator
-    //----------------------------------------------------------------------------
-
-    function next() {
-      var ret = {};
-      if (hasNext()) {
-        ret = {value: _children[_caret++], done: !hasNext()};
-      } else {
-        ret = current();
-      }
-
-      return ret;
-    }
-
-    function current() {
-      return {value: _children[_caret], done: !hasNext()};
-    }
-
-    function rewind() {
-      _caret = 0;
-      return _children[_caret];
-    }
-
-    function hasNext() {
-      return _caret < _children.length;
-    }
-
-    //----------------------------------------------------------------------------
-    //  Impl
-    //----------------------------------------------------------------------------
-
-    function isDirty() {
-      var dirty = false;
-      forEach(function checkDirty(map) {
-        if (map.isDirty()) {
-          dirty = true;
-        }
-      });
-      return dirty;
-    }
-
-    function markClean() {
-      forEach(function checkDirty(map) {
-        map.markClean();
-      });
-    }
-
-    /**
-     * Add an array of Model instances
-     * @param sArry
-     */
-    function addMapsFromArray(sArry) {
-      sArry.forEach(function (store) {
-        add(store);
-      });
-    }
-
-    /**
-     * Create an add child Model stores from an array of objects
-     * @param array Array of objects
-     * @param idKey Key on each object to use for the ID of that Model store
-     */
-    function addFromObjArray(oArry, idKey) {
-      oArry.forEach(function (obj) {
-
-        var id;
-
-        if (obj.hasOwnProperty(idKey)) {
-          id = obj[idKey];
-        } else {
-          id = _id + 'child' + _children.length;
-        }
-
-        add(Nori.model().createMap({id: id, store: obj}));
-      });
-      dispatchChange(_id, 'add_map');
-    }
-
-    function addFromJSONArray(json, idKey) {
-      json.forEach(function (jstr) {
-
-        var id, obj;
-
-        try {
-          obj = JSON.parse(jstr);
-        } catch (e) {
-          throw new Error('MapCollection, error parsing JSON:', jstr, e);
-        }
-
-        if (obj.hasOwnProperty(idKey)) {
-          id = obj[idKey];
-        } else {
-          id = _id + 'child' + _children.length;
-        }
-
-        add(Nori.model().createMap({id: id, store: obj}));
-      });
-      dispatchChange(_id, 'add_map');
-    }
-
-    function getID() {
-      return _id;
-    }
-
-    function add(store) {
-      var currIdx = getMapIndex(store.getID());
-
-      store.setParentCollection(_this);
-
-      if (currIdx >= 0) {
-        _children[currIdx] = store;
-      } else {
-        _children.push(store);
-      }
-
-      dispatchChange(_id, 'add_map');
-    }
-
-    /**
-     * Remove a store from the collection
-     * @param storeID
-     */
-    function remove(storeID) {
-      var currIdx = getMapIndex(storeID);
-      if (currIdx >= 0) {
-        _children[currIdx].setParentCollection(null);
-        _children[currIdx] = null;
-        _children.splice(currIdx, 1);
         dispatchChange(_id, 'remove_map');
-      } else {
-        console.log(_id + ' remove, model not in collection: ' + storeID);
       }
-    }
 
-    /**
-     * Remove all stores from the array
-     */
-    function removeAll() {
-      _children.forEach(function (map) {
-        map.setParentCollection(null);
-      });
+      /**
+       * Gets the Model by ID
+       * @param storeID
+       * @returns {T}
+       */
+      function getMap(storeID) {
+        return _children.filter(function (store) {
+          return store.getID() === storeID;
+        })[0];
+      }
 
-      _children = [];
-      dispatchChange(_id, 'remove_map');
-    }
+      /**
+       * Get the index in _children array by Model's ID
+       * @param storeID
+       * @returns {number}
+       */
+      function getMapIndex(storeID) {
+        return _children.map(function (store) {
+          return store.getID();
+        }).indexOf(storeID);
+      }
 
-    /**
-     * Gets the Model by ID
-     * @param storeID
-     * @returns {T}
-     */
-    function getMap(storeID) {
-      return _children.filter(function (store) {
-        return store.getID() === storeID;
-      })[0];
-    }
+      /**
+       * On change, emit event globally
+       */
+      function dispatchChange(data, type) {
+        var payload = {
+          id     : _id,
+          type   : type || '',
+          mapType: 'collection',
+          mapID  : data.id
+        };
 
-    /**
-     * Get the index in _children array by Model's ID
-     * @param storeID
-     * @returns {number}
-     */
-    function getMapIndex(storeID) {
-      return _children.map(function (store) {
-        return store.getID();
-      }).indexOf(storeID);
-    }
+        _this.notifySubscribers(payload);
 
-    /**
-     * On change, emit event globally
-     */
-    function dispatchChange(data, type) {
-      var payload = {
-        id     : _id,
-        type   : type || '',
-        mapType: 'collection',
-        mapID  : data.id
+        if (_parentCollection) {
+          _parentCollection.dispatchChange({id: _id, store: getMap()});
+        }
+      }
+
+      function hasMap(storeID) {
+        return _children[storeID];
+      }
+
+      /**
+       * Number of entries
+       * @returns {Number}
+       */
+      function size() {
+        return _children.length;
+      }
+
+      function first() {
+        return _children[0];
+      }
+
+      function last() {
+        return _children[_children.length - 1];
+      }
+
+      function atIndex(i) {
+        return _children[i];
+      }
+
+      /**
+       * Runs a predidate on each child map
+       * @param predicate
+       * @returns {Array.<T>}
+       */
+      function filter(predicate) {
+        return _children.filter(predicate);
+      }
+
+      /**
+       * Returns maps where the filter matches the prop / value pair
+       * @param key
+       * @param value
+       * @returns {Array.<T>}
+       */
+      function filterByKey(key, value) {
+        return _children.filter(function (map) {
+          return map.get(key) === value;
+        });
+      }
+
+      function forEach(func) {
+        return _children.forEach(func);
+      }
+
+      function map(func) {
+        return _children.map(func);
+      }
+
+      /**
+       * Return an array of entries of each map
+       * @returns {Array}
+       */
+      function entries() {
+        var arry = [];
+        _children.forEach(function (map) {
+          arry.push(map.entries());
+        });
+        return arry;
+      }
+
+      function toJSON() {
+        return JSON.stringify(_children);
+      }
+
+      function setParentCollection(collection) {
+        _parentCollection = collection;
+      }
+
+      function getParentCollection() {
+        return _parentCollection;
+      }
+
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initialize         : initialize,
+        current            : current,
+        next               : next,
+        hasNext            : hasNext,
+        rewind             : rewind,
+        getID              : getID,
+        isDirty            : isDirty,
+        markClean          : markClean,
+        add                : add,
+        addMapsFromArray   : addMapsFromArray,
+        addFromObjArray    : addFromObjArray,
+        addFromJSONArray   : addFromJSONArray,
+        remove             : remove,
+        removeAll          : removeAll,
+        getMap             : getMap,
+        hasMap             : hasMap,
+        size               : size,
+        first              : first,
+        last               : last,
+        atIndex            : atIndex,
+        filter             : filter,
+        filterByKey        : filterByKey,
+        forEach            : forEach,
+        map                : map,
+        entries            : entries,
+        toJSON             : toJSON,
+        dispatchChange     : dispatchChange,
+        setParentCollection: setParentCollection,
+        getParentCollection: getParentCollection
       };
+    }());
 
-      _this.notifySubscribers(payload);
-
-      if (_parentCollection) {
-        _parentCollection.dispatchChange({id: _id, store: getMap()});
-      }
-    }
-
-    function hasMap(storeID) {
-      return _children[storeID];
-    }
-
-    /**
-     * Number of entries
-     * @returns {Number}
-     */
-    function size() {
-      return _children.length;
-    }
-
-    function first() {
-      return _children[0];
-    }
-
-    function last() {
-      return _children[_children.length - 1];
-    }
-
-    function atIndex(i) {
-      return _children[i];
-    }
-
-    /**
-     * Runs a predidate on each child map
-     * @param predicate
-     * @returns {Array.<T>}
-     */
-    function filter(predicate) {
-      return _children.filter(predicate);
-    }
-
-    /**
-     * Returns maps where the filter matches the prop / value pair
-     * @param key
-     * @param value
-     * @returns {Array.<T>}
-     */
-    function filterByKey(key, value) {
-      return _children.filter(function (map) {
-        return map.get(key) === value;
-      });
-    }
-
-    function forEach(func) {
-      return _children.forEach(func);
-    }
-
-    function map(func) {
-      return _children.map(func);
-    }
-
-    /**
-     * Return an array of entries of each map
-     * @returns {Array}
-     */
-    function entries() {
-      var arry = [];
-      _children.forEach(function (map) {
-        arry.push(map.entries());
-      });
-      return arry;
-    }
-
-    function toJSON() {
-      return JSON.stringify(_children);
-    }
-
-    function setParentCollection(collection) {
-      _parentCollection = collection;
-    }
-
-    function getParentCollection() {
-      return _parentCollection;
-    }
-
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
-
-    module.exports.initialize          = initialize;
-    module.exports.current             = current;
-    module.exports.next                = next;
-    module.exports.hasNext             = hasNext;
-    module.exports.rewind              = rewind;
-    module.exports.getID               = getID;
-    module.exports.isDirty             = isDirty;
-    module.exports.markClean           = markClean;
-    module.exports.add                 = add;
-    module.exports.addMapsFromArray    = addMapsFromArray;
-    module.exports.addFromObjArray     = addFromObjArray;
-    module.exports.addFromJSONArray    = addFromJSONArray;
-    module.exports.remove              = remove;
-    module.exports.removeAll           = removeAll;
-    module.exports.getMap              = getMap;
-    module.exports.hasMap              = hasMap;
-    module.exports.size                = size;
-    module.exports.first               = first;
-    module.exports.last                = last;
-    module.exports.atIndex             = atIndex;
-    module.exports.filter              = filter;
-    module.exports.filterByKey         = filterByKey;
-    module.exports.forEach             = forEach;
-    module.exports.map                 = map;
-    module.exports.entries             = entries;
-    module.exports.toJSON              = toJSON;
-    module.exports.dispatchChange      = dispatchChange;
-    module.exports.setParentCollection = setParentCollection;
-    module.exports.getParentCollection = getParentCollection;
+    module.exports = MapCollection;
 
   });
 
 define('nori/model/MixinMapFactory',
   function (require, module, exports) {
 
-    var _mapCollectionList = Object.create(null),
-        _mapList           = Object.create(null);
+    var MixinMapFactory = (function () {
+      var _mapCollectionList = Object.create(null),
+          _mapList           = Object.create(null);
 
-    /**
-     * Create a new model collection and initalize
-     * @param initObj
-     * @param extras
-     * @returns {*}
-     */
-    function createMapCollection(initObj, extras) {
-      var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), requireNew('nori/utils/MixinObservableSubject'), extras]);
-      m.initialize(initObj);
-      return m;
-    }
+      /**
+       * Create a new model collection and initalize
+       * @param initObj
+       * @param extras
+       * @returns {*}
+       */
+      function createMapCollection(initObj, extras) {
+        var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), requireNew('nori/utils/MixinObservableSubject'), extras]);
+        m.initialize(initObj);
+        return m;
+      }
 
-    /**
-     * Create a new model and initialize
-     * @param initObj
-     * @param extras
-     * @returns {*}
-     */
-    function createMap(initObj, extras) {
-      var m = Nori.assignArray({}, [requireNew('nori/model/Map'), requireNew('nori/utils/MixinObservableSubject'), extras]);
-      m.initialize(initObj);
-      return m;
-    }
+      /**
+       * Create a new model and initialize
+       * @param initObj
+       * @param extras
+       * @returns {*}
+       */
+      function createMap(initObj, extras) {
+        var m = Nori.assignArray({}, [requireNew('nori/model/Map'), requireNew('nori/utils/MixinObservableSubject'), extras]);
+        m.initialize(initObj);
+        return m;
+      }
 
-    /**
-     * Get a model from the application collection
-     * @param storeID
-     * @returns {void|*}
-     */
-    function getMap(storeID) {
-      return _mapList[storeID];
-    }
+      /**
+       * Get a model from the application collection
+       * @param storeID
+       * @returns {void|*}
+       */
+      function getMap(storeID) {
+        return _mapList[storeID];
+      }
 
-    /**
-     * Get a model collection from the application collection
-     * @param storeID
-     * @returns {void|*}
-     */
-    function getMapCollection(storeID) {
-      return _mapCollectionList[storeID];
-    }
+      /**
+       * Get a model collection from the application collection
+       * @param storeID
+       * @returns {void|*}
+       */
+      function getMapCollection(storeID) {
+        return _mapCollectionList[storeID];
+      }
 
-    module.exports.createMapCollection = createMapCollection;
-    module.exports.createMap           = createMap;
-    module.exports.getMap              = getMap;
-    module.exports.getMapCollection    = getMapCollection;
+      return {
+        createMapCollection: createMapCollection,
+        createMap          : createMap,
+        getMap             : getMap,
+        getMapCollection   : getMapCollection
+      };
+
+    }());
+
+
+    module.exports = MixinMapFactory;
+
   });
 
 define('nori/model/MixinReducerModel',
   function (require, module, exports) {
 
-    var _this,
-        _state         = requireNew('nori/model/SimpleStore'),
-        _stateReducers = [];
+    var MixinReducerModel = (function () {
+      var _this,
+          _state         = requireNew('nori/model/SimpleStore'),
+          _stateReducers = [];
 
-    //----------------------------------------------------------------------------
-    //  Accessors
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Accessors
+      //----------------------------------------------------------------------------
 
-    function getState() {
-      return _state.getState();
-    }
-
-    function setState(state) {
-      if(!_.isEqual(state, _state)) {
-        _state.setState(state);
-        _this.notifySubscribers({});
-      }
-    }
-
-    function setReducers(reducerArray) {
-      _stateReducers = reducerArray;
-    }
-
-    function addReducer(reducer) {
-      _stateReducers.push(reducer);
-    }
-
-    //----------------------------------------------------------------------------
-    //  Init
-    //----------------------------------------------------------------------------
-
-    /**
-     * Set up event listener/receiver
-     */
-    function initializeReducerModel() {
-      _this = this;
-      Nori.dispatcher().registerReceiver(handleApplicationEvents);
-
-      if (!_stateReducers) {
-        throw new Error('ReducerModel, must set a reducer before initialization');
+      function getState() {
+        return _state.getState();
       }
 
-      applyReducers({});
-    }
+      function setState(state) {
+        if (!_.isEqual(state, _state)) {
+          _state.setState(state);
+          _this.notifySubscribers({});
+        }
+      }
 
-    /**
-     * Will receive "firehose" of all events that occur in the application. These
-     * are sent to all reducers to update the state
-     * @param eventObject
-     */
-    function handleApplicationEvents(eventObject) {
-      //console.log('ReducerModel Event occurred: ', eventObject);
-      applyReducers(eventObject);
-    }
+      function setReducers(reducerArray) {
+        _stateReducers = reducerArray;
+      }
 
-    function applyReducers(eventObject) {
-      var nextState = applyReducersToState(getState(), eventObject);
-      setState(nextState);
-      _this.handleStateMutation();
-    }
+      function addReducer(reducer) {
+        _stateReducers.push(reducer);
+      }
 
-    /**
-     * API hook to handled state updates
-     */
-    function handleStateMutation() {
-      // override this
-    }
+      //----------------------------------------------------------------------------
+      //  Init
+      //----------------------------------------------------------------------------
 
-    /**
-     * Creates a new state from the combined reduces and event object
-     * Model state isn't modified, current state is passed in and mutated state returned
-     * @param state
-     * @param event
-     * @returns {*|{}}
-     */
-    function applyReducersToState(state, event) {
-      state = state || {};
-      _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
-        state = reducerFunc(state, event);
-      });
-      return state;
-    }
+      /**
+       * Set up event listener/receiver
+       */
+      function initializeReducerModel() {
+        _this = this;
+        Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
-    /**
-     * Template reducer function
-     * Model state isn't modified, current state is passed in and mutated state returned
-     */
+        if (!_stateReducers) {
+          throw new Error('ReducerModel, must set a reducer before initialization');
+        }
+
+        applyReducers({});
+      }
+
+      /**
+       * Will receive "firehose" of all events that occur in the application. These
+       * are sent to all reducers to update the state
+       * @param eventObject
+       */
+      function handleApplicationEvents(eventObject) {
+        //console.log('ReducerModel Event occurred: ', eventObject);
+        applyReducers(eventObject);
+      }
+
+      function applyReducers(eventObject) {
+        var nextState = applyReducersToState(getState(), eventObject);
+        setState(nextState);
+        _this.handleStateMutation();
+      }
+
+      /**
+       * API hook to handled state updates
+       */
+      function handleStateMutation() {
+        // override this
+      }
+
+      /**
+       * Creates a new state from the combined reduces and event object
+       * Model state isn't modified, current state is passed in and mutated state returned
+       * @param state
+       * @param event
+       * @returns {*|{}}
+       */
+      function applyReducersToState(state, event) {
+        state = state || {};
+        _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
+          state = reducerFunc(state, event);
+        });
+        return state;
+      }
+
+      /**
+       * Template reducer function
+       * Model state isn't modified, current state is passed in and mutated state returned
+       */
       //function templateReducerFunction(state, event) {
       //  state = state || {};
       //  switch (event.type) {
@@ -1724,1038 +1799,1113 @@ define('nori/model/MixinReducerModel',
       //  API
       //----------------------------------------------------------------------------
 
-    module.exports.initializeReducerModel  = initializeReducerModel;
-    module.exports.getState                = getState;
-    module.exports.setState                = setState;
-    module.exports.handleApplicationEvents = handleApplicationEvents;
-    module.exports.setReducers             = setReducers;
-    module.exports.addReducer              = addReducer;
-    module.exports.applyReducers           = applyReducers;
-    module.exports.applyReducersToState    = applyReducersToState;
-    module.exports.handleStateMutation     = handleStateMutation;
+      return {
+        initializeReducerModel : initializeReducerModel,
+        getState               : getState,
+        setState               : setState,
+        handleApplicationEvents: handleApplicationEvents,
+        setReducers            : setReducers,
+        addReducer             : addReducer,
+        applyReducers          : applyReducers,
+        applyReducersToState   : applyReducersToState,
+        handleStateMutation    : handleStateMutation
+      };
+
+    }());
+
+    module.exports = MixinReducerModel;
+
   });
 
 define('nori/model/SimpleStore',
   function (require, module, exports) {
-    var _state   = Object.create(null),
-        _subject = new Rx.Subject();
 
-    /**
-     * subscribe a handler for changes
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
-    }
+    var SimpleStore = (function () {
+      var _state   = Object.create(null),
+          _subject = new Rx.Subject();
 
-    /**
-     * Return a copy of the state
-     * @returns {void|*}
-     */
-    function getState() {
-      return _.assign({}, _state);
-    }
+      /**
+       * subscribe a handler for changes
+       * @param handler
+       * @returns {*}
+       */
+      function subscribe(handler) {
+        return _subject.subscribe(handler);
+      }
 
-    /**
-     * Sets the state
-     * @param state
-     */
-    function setState(state) {
-      _state = state;
-      _subject.onNext();
-    }
+      /**
+       * Return a copy of the state
+       * @returns {void|*}
+       */
+      function getState() {
+        return _.assign({}, _state);
+      }
 
-    module.exports.subscribe = subscribe;
-    module.exports.getState  = getState;
-    module.exports.setState  = setState;
+      /**
+       * Sets the state
+       * @param state
+       */
+      function setState(state) {
+        _state = state;
+        _subject.onNext();
+      }
+
+      return {
+        subscribe: subscribe,
+        getState : getState,
+        setState : setState
+      };
+
+    }());
+
+    module.exports = SimpleStore;
 
   });
 
 define('nori/view/ApplicationView',
   function (require, module, exports) {
 
-    var _this,
-        _renderer = require('nori/utils/Renderer'),
-        _domUtils = require('nudoru/browser/DOMUtils');
+    var ApplicationView = (function () {
 
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
+      var _this,
+          _renderer = require('nori/utils/Renderer'),
+          _domUtils = require('nudoru/browser/DOMUtils');
 
-    /**
-     * Initialize
-     * @param scaffoldTemplates template IDs to attached to the body for the app
-     */
-    function initializeApplicationView(scaffoldTemplates) {
-      _this = this;
-      _renderer.initialize();
+      //----------------------------------------------------------------------------
+      //  Initialization
+      //----------------------------------------------------------------------------
 
-      attachApplicationScaffolding(scaffoldTemplates);
+      /**
+       * Initialize
+       * @param scaffoldTemplates template IDs to attached to the body for the app
+       */
+      function initializeApplicationView(scaffoldTemplates) {
+        _this = this;
+        _renderer.initialize();
 
-      _this.initializeComponentViews();
-      _this.initializeNudoruControls();
-    }
+        attachApplicationScaffolding(scaffoldTemplates);
 
-    /**
-     * Attach app HTML structure
-     * @param templates
-     */
-    function attachApplicationScaffolding(templates) {
-      if (!templates) {
-        return;
+        _this.initializeComponentViews();
+        _this.initializeNudoruControls();
       }
 
-      var bodyEl = document.querySelector('body');
-
-      templates.forEach(function (templ) {
-        bodyEl.appendChild(_domUtils.HTMLStrToNode(_this.template().getSource('template__' + templ, {})));
-      });
-    }
-
-    /**
-     * After app initialization, remove the loading message
-     */
-    function removeLoadingMessage() {
-      var cover   = document.querySelector('#initialization__cover'),
-          message = document.querySelector('.initialization__message');
-
-      TweenLite.to(cover, 1, {
-        alpha: 0, ease: Quad.easeOut, onComplete: function () {
-          cover.parentNode.removeChild(cover);
+      /**
+       * Attach app HTML structure
+       * @param templates
+       */
+      function attachApplicationScaffolding(templates) {
+        if (!templates) {
+          return;
         }
-      });
 
-      TweenLite.to(message, 2, {
-        top: "+=50px", ease: Quad.easeIn, onComplete: function () {
-          cover.removeChild(message);
-        }
-      });
-    }
+        var bodyEl = document.querySelector('body');
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+        templates.forEach(function (templ) {
+          bodyEl.appendChild(_domUtils.HTMLStrToNode(_this.template().getSource('template__' + templ, {})));
+        });
+      }
 
-    module.exports.initializeApplicationView = initializeApplicationView;
-    module.exports.removeLoadingMessage      = removeLoadingMessage;
+      /**
+       * After app initialization, remove the loading message
+       */
+      function removeLoadingMessage() {
+        var cover   = document.querySelector('#initialization__cover'),
+            message = document.querySelector('.initialization__message');
+
+        TweenLite.to(cover, 1, {
+          alpha: 0, ease: Quad.easeOut, onComplete: function () {
+            cover.parentNode.removeChild(cover);
+          }
+        });
+
+        TweenLite.to(message, 2, {
+          top: "+=50px", ease: Quad.easeIn, onComplete: function () {
+            cover.removeChild(message);
+          }
+        });
+      }
+
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initializeApplicationView: initializeApplicationView,
+        removeLoadingMessage     : removeLoadingMessage
+      };
+
+    }());
+
+    module.exports = ApplicationView;
+
   });
 
 define('nori/view/MixinBrowserEvents',
   function (require, module, exports) {
 
-    var _currentViewPortSize,
-        _currentViewPortScroll,
-        _uiUpdateLayoutStream,
-        _browserScrollStream,
-        _browserResizeStream,
-        _positionUIElementsOnChangeCB,
-        _appEvents = require('nori/events/EventCreator');
+    var MixinBrowserEvents = (function () {
 
+      var _currentViewPortSize,
+          _currentViewPortScroll,
+          _uiUpdateLayoutStream,
+          _browserScrollStream,
+          _browserResizeStream,
+          _positionUIElementsOnChangeCB,
+          _noriEvents = require('nori/events/EventCreator');
 
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Initialization
+      //----------------------------------------------------------------------------
 
-    function initializeBrowserWindowEventStreams() {
-      setCurrentViewPortSize();
-      setCurrentViewPortScroll();
-      configureUIStreams();
-    }
+      function initializeBrowserWindowEventStreams() {
+        setCurrentViewPortSize();
+        setCurrentViewPortScroll();
+        configureUIStreams();
+      }
 
-    function setPositionUIElementsOnChangeCB(cb) {
-      _positionUIElementsOnChangeCB = cb;
-    }
+      function setPositionUIElementsOnChangeCB(cb) {
+        _positionUIElementsOnChangeCB = cb;
+      }
 
-    /**
-     * Set up RxJS streams for events
-     */
-    function configureUIStreams() {
-      var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
-          uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
+      /**
+       * Set up RxJS streams for events
+       */
+      function configureUIStreams() {
+        var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
+            uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
-      // UI layout happens immediately, while resize and scroll is throttled
-      _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
-        .subscribe(function () {
-          positionUIElementsOnChange();
-        });
+        // UI layout happens immediately, while resize and scroll is throttled
+        _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
+          .subscribe(function () {
+            positionUIElementsOnChange();
+          });
 
-      _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
-        .throttle(100)
-        .subscribe(function () {
-          handleViewPortResize();
-        });
+        _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
+          .throttle(100)
+          .subscribe(function () {
+            handleViewPortResize();
+          });
 
-      _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll')
-        .throttle(100)
-        .subscribe(function () {
-          handleViewPortScroll();
-        });
-    }
+        _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll')
+          .throttle(100)
+          .subscribe(function () {
+            handleViewPortScroll();
+          });
+      }
 
-    function getMainScrollingView() {
-      return _mainScrollEl;
-    }
+      function getMainScrollingView() {
+        return _mainScrollEl;
+      }
 
-    function setMainScrollingView(elID) {
-      _mainScrollEl = document.getElementById(elID);
-    }
+      function setMainScrollingView(elID) {
+        _mainScrollEl = document.getElementById(elID);
+      }
 
-    //----------------------------------------------------------------------------
-    //  Viewport and UI elements
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Viewport and UI elements
+      //----------------------------------------------------------------------------
 
-    function handleViewPortResize() {
-      _appEvents.browserResized(_currentViewPortSize);
-    }
+      function handleViewPortResize() {
+        _noriEvents.browserResized(_currentViewPortSize);
+      }
 
-    function handleViewPortScroll() {
-      _appEvents.browserScrolled(_currentViewPortScroll);
-    }
+      function handleViewPortScroll() {
+        _noriEvents.browserScrolled(_currentViewPortScroll);
+      }
 
-    function getCurrentViewPortSize() {
-      return _currentViewPortSize;
-    }
+      function getCurrentViewPortSize() {
+        return _currentViewPortSize;
+      }
 
-    /**
-     * Cache the current view port size in a var
-     */
-    function setCurrentViewPortSize() {
-      _currentViewPortSize = {
-        width : window.innerWidth,
-        height: window.innerHeight
+      /**
+       * Cache the current view port size in a var
+       */
+      function setCurrentViewPortSize() {
+        _currentViewPortSize = {
+          width : window.innerWidth,
+          height: window.innerHeight
+        };
+      }
+
+      function getCurrentViewPortScroll() {
+        return _currentViewPortScroll;
+      }
+
+      /**
+       * Cache the current view port scroll in a var
+       */
+      function setCurrentViewPortScroll() {
+        var scrollEL = _mainScrollEl ? _mainScrollEl : document.body;
+
+        var left = scrollEL.scrollLeft,
+            top  = scrollEL.scrollTop;
+
+        left = left ? left : 0;
+        top  = top ? top : 0;
+
+        _currentViewPortScroll = {left: left, top: top};
+      }
+
+      /**
+       * Reposition the UI elements on a UI change, scroll, resize, etc.
+       */
+      function positionUIElementsOnChange() {
+        setCurrentViewPortScroll();
+        setCurrentViewPortSize();
+
+        _positionUIElementsOnChangeCB.call(this, _currentViewPortSize, _currentViewPortScroll);
+      }
+
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initializeBrowserWindowEventStreams: initializeBrowserWindowEventStreams,
+        setPositionUIElementsOnChangeCB    : setPositionUIElementsOnChangeCB,
+        getMainScrollingView               : getMainScrollingView,
+        setMainScrollingView               : setMainScrollingView,
+        getCurrentViewPortSize             : getCurrentViewPortSize,
+        getCurrentViewPortScroll           : getCurrentViewPortScroll
       };
-    }
 
-    function getCurrentViewPortScroll() {
-      return _currentViewPortScroll;
-    }
+    }());
 
-    /**
-     * Cache the current view port scroll in a var
-     */
-    function setCurrentViewPortScroll() {
-      var scrollEL = _mainScrollEl ? _mainScrollEl : document.body;
+    module.exports = MixinBrowserEvents;
 
-      var left = scrollEL.scrollLeft,
-          top  = scrollEL.scrollTop;
-
-      left = left ? left : 0;
-      top  = top ? top : 0;
-
-      _currentViewPortScroll = {left: left, top: top};
-    }
-
-    /**
-     * Reposition the UI elements on a UI change, scroll, resize, etc.
-     */
-    function positionUIElementsOnChange() {
-      setCurrentViewPortScroll();
-      setCurrentViewPortSize();
-
-      _positionUIElementsOnChangeCB.call(this, _currentViewPortSize, _currentViewPortScroll);
-    }
-
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
-
-    module.exports.initializeBrowserWindowEventStreams = initializeBrowserWindowEventStreams;
-    module.exports.setPositionUIElementsOnChangeCB     = setPositionUIElementsOnChangeCB;
-    module.exports.getMainScrollingView                = getMainScrollingView;
-    module.exports.setMainScrollingView                = setMainScrollingView;
-    module.exports.getCurrentViewPortSize              = getCurrentViewPortSize;
-    module.exports.getCurrentViewPortScroll            = getCurrentViewPortScroll;
 
   });
 
 define('nori/view/MixinComponentViews',
   function (require, module, exports) {
 
-    var _routeViewMountPoint,
-        _currentRouteViewID,
-        _componentViewMap            = Object.create(null),
-        _routeViewIDMap              = Object.create(null),
-        _componentHTMLTemplatePrefix = 'template__',
-        _template                    = require('nori/utils/Templating'),
-        _noriEvents                  = require('nori/events/EventCreator');
+    var MixinComponentViews = (function () {
 
-    /**
-     * Set up listeners
-     */
-    function initializeComponentViews() {
-      Nori.router().subscribe(function onRouteChange(payload) {
-        handleRouteChange(payload.routeObj);
-      });
-    }
+      var _routeViewMountPoint,
+          _currentRouteViewID,
+          _componentViewMap            = Object.create(null),
+          _routeViewIDMap              = Object.create(null),
+          _componentHTMLTemplatePrefix = 'template__',
+          _template                    = require('nori/utils/Templating'),
+          _noriEvents                  = require('nori/events/EventCreator');
 
-    /**
-     * Typically on app startup, show the view assigned to the current URL hash
-     */
-    function showViewFromURLHash() {
-      showRouteViewComponent(Nori.getCurrentRoute().route);
-      Nori.router().notifySubscribers();
-    }
-
-    /**
-     * Show route from URL hash on change
-     * @param routeObj
-     */
-    function handleRouteChange(routeObj) {
-      showRouteViewComponent(routeObj.route);
-    }
-
-    /**
-     * Set the location for the view to append, any contents will be removed prior
-     * @param elID
-     */
-    function setRouteViewMountPoint(elID) {
-      _routeViewMountPoint = elID;
-    }
-
-    /**
-     * Return the template object
-     * @returns {*}
-     */
-    function getTemplate() {
-      return _template;
-    }
-
-    /**
-     * Map a route to a module view controller
-     * @param templateID
-     * @param componentModule
-     * @param isRoute True | False
-     */
-    function mapViewComponent(templateID, componentModule, isRoute, mountPoint) {
-      if (typeof componentModule === 'string') {
-        componentModule = requireNew(componentModule);
+      /**
+       * Set up listeners
+       */
+      function initializeComponentViews() {
+        Nori.router().subscribe(function onRouteChange(payload) {
+          handleRouteChange(payload.routeObj);
+        });
       }
 
-      _componentViewMap[templateID] = {
-        htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + templateID),
-        controller  : createComponentView(componentModule),
-        isRouteView : isRoute,
-        mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
+      /**
+       * Typically on app startup, show the view assigned to the current URL hash
+       */
+      function showViewFromURLHash() {
+        showRouteViewComponent(Nori.getCurrentRoute().route);
+        Nori.router().notifySubscribers();
+      }
+
+      /**
+       * Show route from URL hash on change
+       * @param routeObj
+       */
+      function handleRouteChange(routeObj) {
+        showRouteViewComponent(routeObj.route);
+      }
+
+      /**
+       * Set the location for the view to append, any contents will be removed prior
+       * @param elID
+       */
+      function setRouteViewMountPoint(elID) {
+        _routeViewMountPoint = elID;
+      }
+
+      /**
+       * Return the template object
+       * @returns {*}
+       */
+      function getTemplate() {
+        return _template;
+      }
+
+      /**
+       * Map a route to a module view controller
+       * @param templateID
+       * @param componentModule
+       * @param isRoute True | False
+       */
+      function mapViewComponent(templateID, componentModule, isRoute, mountPoint) {
+        if (typeof componentModule === 'string') {
+          componentModule = requireNew(componentModule);
+        }
+
+        _componentViewMap[templateID] = {
+          htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + templateID),
+          controller  : createComponentView(componentModule),
+          isRouteView : isRoute,
+          mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
+        };
+      }
+
+      /**
+       * Factory to create component view modules
+       * @param extras
+       * @returns {*}
+       */
+      function createComponentView(extras) {
+        return Nori.assignArray({}, [
+          requireNew('nori/view/ViewComponent'),
+          requireNew('nori/view/MixinEventDelegator'),
+          extras
+        ]);
+      }
+
+      /**
+       * Map a route to a module view controller
+       * @param templateID
+       * @param controllerModule
+       */
+      function mapRouteToViewComponent(route, templateID, controllerModule) {
+        _routeViewIDMap[route] = templateID;
+        mapViewComponent(templateID, controllerModule, true, _routeViewMountPoint);
+      }
+
+      /**
+       * Add a mixin for a mapped controller view
+       * @param templateID
+       * @param extras
+       */
+      function applyMixin(templateID, extras) {
+        var componentView = _componentViewMap[templateID];
+
+        if (!componentView) {
+          throw new Error('No componentView mapped for id: ' + templateID);
+        }
+
+        componentView.controller = Nori.assignArray(componentView.controller, extras);
+      }
+
+      /**
+       * Show a mapped componentView
+       * @param templateID
+       * @param dataObj
+       */
+      function showViewComponent(templateID) {
+        var componentView = _componentViewMap[templateID];
+        if (!componentView) {
+          throw new Error('No componentView mapped for id: ' + templateID);
+        }
+
+        componentView.controller.initialize({
+          id        : templateID,
+          template  : componentView.htmlTemplate,
+          mountPoint: componentView.mountPoint
+        });
+
+        componentView.controller.update();
+        componentView.controller.render();
+        componentView.controller.mount();
+      }
+
+      /**
+       * Show a view (in response to a route change)
+       * @param route
+       */
+      function showRouteViewComponent(route) {
+        var routeTemplateID = _routeViewIDMap[route];
+        if (!routeTemplateID) {
+          console.log("No view mapped for route: " + route);
+          return;
+        }
+
+        unmountCurrentRouteView();
+        _currentRouteViewID = routeTemplateID;
+
+        showViewComponent(_currentRouteViewID);
+
+        TweenLite.set(_routeViewMountPoint, {alpha: 0});
+        TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
+
+        _noriEvents.viewChanged(_currentRouteViewID);
+      }
+
+      /**
+       * Remove the currently displayed view
+       */
+      function unmountCurrentRouteView() {
+        if (_currentRouteViewID) {
+          _componentViewMap[_currentRouteViewID].controller.unmount();
+        }
+        _currentRouteViewID = '';
+      }
+
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initializeComponentViews: initializeComponentViews,
+        showViewFromURLHash     : showViewFromURLHash,
+        setRouteViewMountPoint  : setRouteViewMountPoint,
+        template                : getTemplate,
+        mapViewComponent        : mapViewComponent,
+        showViewComponent       : showViewComponent,
+        mapRouteToViewComponent : mapRouteToViewComponent,
+        showRouteViewComponent  : showRouteViewComponent,
+        applyMixin              : applyMixin
       };
-    }
 
-    /**
-     * Factory to create component view modules
-     * @param extras
-     * @returns {*}
-     */
-    function createComponentView(extras) {
-      return Nori.assignArray({}, [
-        requireNew('nori/view/ViewComponent'),
-        requireNew('nori/view/MixinEventDelegator'),
-        extras
-      ]);
-    }
+    }());
 
-    /**
-     * Map a route to a module view controller
-     * @param templateID
-     * @param controllerModule
-     */
-    function mapRouteToViewComponent(route, templateID, controllerModule) {
-      _routeViewIDMap[route] = templateID;
-      mapViewComponent(templateID, controllerModule, true, _routeViewMountPoint);
-    }
+    module.exports = MixinComponentViews;
 
-    /**
-     * Add a mixin for a mapped controller view
-     * @param templateID
-     * @param extras
-     */
-    function applyMixin(templateID, extras) {
-      var componentView = _componentViewMap[templateID];
-
-      if (!componentView) {
-        throw new Error('No componentView mapped for id: ' + templateID);
-      }
-
-      componentView.controller = Nori.assignArray(componentView.controller, extras);
-    }
-
-    /**
-     * Show a mapped componentView
-     * @param templateID
-     * @param dataObj
-     */
-    function showViewComponent(templateID) {
-      var componentView = _componentViewMap[templateID];
-      if (!componentView) {
-        throw new Error('No componentView mapped for id: ' + templateID);
-      }
-
-      componentView.controller.initialize({
-        id        : templateID,
-        template  : componentView.htmlTemplate,
-        mountPoint: componentView.mountPoint
-      });
-
-      componentView.controller.update();
-      componentView.controller.render();
-      componentView.controller.mount();
-    }
-
-    /**
-     * Show a view (in response to a route change)
-     * @param route
-     */
-    function showRouteViewComponent(route) {
-      var routeTemplateID = _routeViewIDMap[route];
-      if (!routeTemplateID) {
-        console.log("No view mapped for route: " + route);
-        return;
-      }
-
-      unmountCurrentRouteView();
-      _currentRouteViewID = routeTemplateID;
-
-      showViewComponent(_currentRouteViewID);
-
-      TweenLite.set(_routeViewMountPoint, {alpha: 0});
-      TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
-
-      _noriEvents.viewChanged(_currentRouteViewID);
-    }
-
-    /**
-     * Remove the currently displayed view
-     */
-    function unmountCurrentRouteView() {
-      if (_currentRouteViewID) {
-        _componentViewMap[_currentRouteViewID].controller.unmount();
-      }
-      _currentRouteViewID = '';
-    }
-
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
-
-    module.exports.initializeComponentViews = initializeComponentViews;
-    module.exports.showViewFromURLHash         = showViewFromURLHash;
-    module.exports.setRouteViewMountPoint   = setRouteViewMountPoint;
-    module.exports.template                 = getTemplate;
-    module.exports.mapViewComponent         = mapViewComponent;
-    module.exports.showViewComponent        = showViewComponent;
-    module.exports.mapRouteToViewComponent  = mapRouteToViewComponent;
-    module.exports.showRouteViewComponent   = showRouteViewComponent;
-    module.exports.applyMixin               = applyMixin;
   });
 
 define('nori/view/MixinEventDelegator',
   function (require, module, exports) {
-    var _eventsMap,
-        _eventSubscribers;
 
-    function setEvents(evtObj) {
-      _eventsMap = evtObj;
-    }
+    var MixinEventDelegator = (function () {
 
-    function getEvents() {
-      return _eventsMap;
-    }
+      var _eventsMap,
+          _eventSubscribers;
 
-    /**
-     * Automates setting events on DOM elements.
-     * 'evtStr selector':callback
-     * 'evtStr selector, evtStr selector': sharedCallback
-     */
-    function delegateEvents() {
-      if (!_eventsMap) {
-        return;
+      function setEvents(evtObj) {
+        _eventsMap = evtObj;
       }
 
-      _eventSubscribers = Object.create(null);
+      function getEvents() {
+        return _eventsMap;
+      }
 
-      for (var evtStrings in _eventsMap) {
-        if (_eventsMap.hasOwnProperty(evtStrings)) {
+      /**
+       * Automates setting events on DOM elements.
+       * 'evtStr selector':callback
+       * 'evtStr selector, evtStr selector': sharedCallback
+       */
+      function delegateEvents() {
+        if (!_eventsMap) {
+          return;
+        }
 
-          var mappings = evtStrings.split(',');
+        _eventSubscribers = Object.create(null);
 
-          mappings.forEach(function(evtMap) {
-            evtMap = evtMap.trim();
+        for (var evtStrings in _eventsMap) {
+          if (_eventsMap.hasOwnProperty(evtStrings)) {
 
-            var eventStr = evtMap.split(' ')[0].trim(),
-                selector = evtMap.split(' ')[1].trim(),
-                element  = document.querySelector(selector);
+            var mappings = evtStrings.split(',');
 
-            if (!element) {
-              console.log('Cannot add event to invalid DOM element: ' + selector);
-            } else {
-              _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(_eventsMap[evtStrings]);
-            }
+            mappings.forEach(function (evtMap) {
+              evtMap = evtMap.trim();
 
-          });
+              var eventStr = evtMap.split(' ')[0].trim(),
+                  selector = evtMap.split(' ')[1].trim(),
+                  element  = document.querySelector(selector);
 
+              if (!element) {
+                console.log('Cannot add event to invalid DOM element: ' + selector);
+              } else {
+                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(_eventsMap[evtStrings]);
+              }
+
+            });
+
+          }
         }
       }
-    }
 
-    /**
-     * Cleanly remove events
-     */
-    function undelegateEvents() {
-      if (!_eventsMap) {
-        return;
+      /**
+       * Cleanly remove events
+       */
+      function undelegateEvents() {
+        if (!_eventsMap) {
+          return;
+        }
+
+        for (var event in _eventSubscribers) {
+          _eventSubscribers[event].dispose();
+          delete _eventSubscribers[event];
+        }
+
+        _eventSubscribers = Object.create(null);
       }
 
-      for (var event in _eventSubscribers) {
-        _eventSubscribers[event].dispose();
-        delete _eventSubscribers[event];
-      }
+      return {
+        setEvents       : setEvents,
+        getEvents       : getEvents,
+        undelegateEvents: undelegateEvents,
+        delegateEvents  : delegateEvents
+      };
 
-      _eventSubscribers = Object.create(null);
-    }
+    }());
 
-    module.exports.setEvents        = setEvents;
-    module.exports.getEvents        = getEvents;
-    module.exports.undelegateEvents = undelegateEvents;
-    module.exports.delegateEvents   = delegateEvents;
+    module.exports = MixinEventDelegator;
+
   });
-
-
 
 define('nori/view/MixinNudoruControls',
   function (require, module, exports) {
 
-    var _notificationView  = require('nudoru/component/ToastView'),
-        _toolTipView       = require('nudoru/component/ToolTipView'),
-        _messageBoxView    = require('nudoru/component/MessageBoxView'),
-        _messageBoxCreator = require('nudoru/component/MessageBoxCreator'),
-        _modalCoverView    = require('nudoru/component/ModalCoverView');
+    var MixinNudoruControls = (function () {
 
-    function initializeNudoruControls() {
-      _toolTipView.initialize('tooltip__container');
-      _notificationView.initialize('toast__container');
-      _messageBoxView.initialize('messagebox__container');
-      _modalCoverView.initialize();
-    }
+      var _notificationView  = require('nudoru/component/ToastView'),
+          _toolTipView       = require('nudoru/component/ToolTipView'),
+          _messageBoxView    = require('nudoru/component/MessageBoxView'),
+          _messageBoxCreator = require('nudoru/component/MessageBoxCreator'),
+          _modalCoverView    = require('nudoru/component/ModalCoverView');
 
-    function mbCreator() {
-      return _messageBoxCreator;
-    }
+      function initializeNudoruControls() {
+        _toolTipView.initialize('tooltip__container');
+        _notificationView.initialize('toast__container');
+        _messageBoxView.initialize('messagebox__container');
+        _modalCoverView.initialize();
+      }
 
-    function addMessageBox(obj) {
-      return _messageBoxView.add(obj);
-    }
+      function mbCreator() {
+        return _messageBoxCreator;
+      }
 
-    function removeMessageBox(id) {
-      _messageBoxView.remove(id);
-    }
+      function addMessageBox(obj) {
+        return _messageBoxView.add(obj);
+      }
 
-    function alert(message, title) {
-      return mbCreator().alert(title || 'Alert', message);
-    }
+      function removeMessageBox(id) {
+        _messageBoxView.remove(id);
+      }
 
-    function addNotification(obj) {
-      return _notificationView.add(obj);
-    }
+      function alert(message, title) {
+        return mbCreator().alert(title || 'Alert', message);
+      }
 
-    function notify(message, title, type) {
-      return addNotification({
-        title  : title || '',
-        type   : type || _notificationView.type().DEFAULT,
-        message: message
-      });
-    }
+      function addNotification(obj) {
+        return _notificationView.add(obj);
+      }
 
-    module.exports.initializeNudoruControls = initializeNudoruControls;
-    module.exports.mbCreator                = mbCreator;
-    module.exports.addMessageBox            = addMessageBox;
-    module.exports.removeMessageBox         = removeMessageBox;
-    module.exports.addNotification          = addNotification;
-    module.exports.alert                    = alert;
-    module.exports.notify                   = notify;
+      function notify(message, title, type) {
+        return addNotification({
+          title  : title || '',
+          type   : type || _notificationView.type().DEFAULT,
+          message: message
+        });
+      }
+
+      return {
+        initializeNudoruControls: initializeNudoruControls,
+        mbCreator               : mbCreator,
+        addMessageBox           : addMessageBox,
+        removeMessageBox        : removeMessageBox,
+        addNotification         : addNotification,
+        alert                   : alert,
+        notify                  : notify
+      };
+
+    }());
+
+    module.exports = MixinNudoruControls;
+
   });
 
 define('nori/view/ViewComponent',
   function (require, module, exports) {
 
-    var _isInitialized = false,
-        _initialProps,
-        _id,
-        _templateObj,
-        _html,
-        _DOMElement,
-        _mountPoint,
-        _state         = {},
-        _children      = [],
-        _isMounted     = false,
-        _noriEvents    = require('nori/events/EventCreator');
+    var ViewComponent = (function () {
 
-    /**
-     * Initialization
-     * @param initialProps
-     */
-    function initializeComponent(initialProps) {
-      if (!isInitialized()) {
-        _initialProps = initialProps;
-        _id           = initialProps.id;
-        _templateObj  = initialProps.template;
-        _mountPoint   = initialProps.mountPoint;
-      }
-      this.update();
-      _isInitialized = true;
-    }
+      var _isInitialized = false,
+          _initialProps,
+          _id,
+          _templateObj,
+          _html,
+          _DOMElement,
+          _mountPoint,
+          _state         = {},
+          _children      = [],
+          _isMounted     = false,
+          _noriEvents    = require('nori/events/EventCreator');
 
-    /**
-     * Bind updates to the map ID to this view's update
-     * @param mapIDorObj Object to subscribe to or ID. Should implement nori/model/MixinObservableModel
-     */
-    function bindMap(mapIDorObj) {
-      var map;
-
-      if (isObject(mapIDorObj)) {
-        map = mapIDorObj;
-      } else {
-        map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
+      /**
+       * Initialization
+       * @param initialProps
+       */
+      function initializeComponent(initialProps) {
+        if (!isInitialized()) {
+          _initialProps = initialProps;
+          _id           = initialProps.id;
+          _templateObj  = initialProps.template;
+          _mountPoint   = initialProps.mountPoint;
+        }
+        this.update();
+        _isInitialized = true;
       }
 
-      if (!map) {
-        throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+      /**
+       * Bind updates to the map ID to this view's update
+       * @param mapIDorObj Object to subscribe to or ID. Should implement nori/model/MixinObservableModel
+       */
+      function bindMap(mapIDorObj) {
+        var map;
+
+        if (isObject(mapIDorObj)) {
+          map = mapIDorObj;
+        } else {
+          map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
+        }
+
+        if (!map) {
+          throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+        }
+
+        map.subscribe(this.update.bind(this));
       }
 
-      map.subscribe(this.update.bind(this));
-    }
+      /**
+       * Add a child
+       * @param child
+       */
+      function addChild(child) {
+        _children.push(child);
+      }
 
-    /**
-     * Add a child
-     * @param child
-     */
-    function addChild(child) {
-      _children.push(child);
-    }
+      /**
+       * Remove a child
+       * @param child
+       */
+      function removeChild(child) {
+        var idx = _children.indexOf(child);
+        _children[idx].dispose();
+        _children.splice(idx, 1);
+      }
 
-    /**
-     * Remove a child
-     * @param child
-     */
-    function removeChild(child) {
-      var idx = _children.indexOf(child);
-      _children[idx].dispose();
-      _children.splice(idx, 1);
-    }
+      /**
+       * Before the iew updates and a rerender occurs
+       */
+      function componentWillUpdate() {
+        // update state
+      }
 
-    /**
-     * Before the iew updates and a rerender occurs
-     */
-    function componentWillUpdate() {
-      // update state
-    }
+      /**
+       * Update state and rerender
+       * @param dataObj
+       * @returns {*}
+       */
+      function update() {
+        // make a copy of last state
+        var previousState = _.assign({}, this.getState());
 
-    /**
-     * Update state and rerender
-     * @param dataObj
-     * @returns {*}
-     */
-    function update() {
-      // make a copy of last state
-      var previousState = _.assign({}, this.getState());
+        // state will update here
+        this.componentWillUpdate();
 
-      // state will update here
-      this.componentWillUpdate();
+        _children.forEach(function updateChild(child) {
+          child.update();
+        });
 
-      _children.forEach(function updateChild(child) {
-        child.update();
-      });
+        if (_isMounted) {
+          if (this.componentShouldRender(previousState)) {
+            this.unmount();
+            this.render();
+            this.mount();
+          }
+        }
 
-      if (_isMounted) {
-        if (this.componentShouldRender(previousState)) {
-          this.unmount();
-          this.render();
-          this.mount();
+        this.componentDidUpdate();
+      }
+
+      /**
+       * Determine if the view should rerender on update
+       * TODO implement
+       * @returns {boolean}
+       */
+      function componentShouldRender(previousState) {
+        return !_.isEqual(previousState, this.getState());
+        //return true;
+      }
+
+      /**
+       * After the view updates and a rerender occurred
+       */
+      function componentDidUpdate() {
+        // stub
+      }
+
+      function componentWillRender() {
+        // stub
+      }
+
+      /**
+       * Render it, need to add it to a parent container, handled in higher level view
+       * @returns {*}
+       */
+      function render() {
+        if (this.componentWillRender) {
+          this.componentWillRender();
+        }
+
+        _children.forEach(function renderChild(child) {
+          child.render();
+        });
+
+        _html = _templateObj(_state);
+
+        if (this.componentDidRender) {
+          this.componentDidRender();
         }
       }
 
-      this.componentDidUpdate();
-    }
-
-    /**
-     * Determine if the view should rerender on update
-     * TODO implement
-     * @returns {boolean}
-     */
-    function componentShouldRender(previousState) {
-      return !_.isEqual(previousState, this.getState());
-      //return true;
-    }
-
-    /**
-     * After the view updates and a rerender occurred
-     */
-    function componentDidUpdate() {
-      // stub
-    }
-
-    function componentWillRender() {
-      // stub
-    }
-
-    /**
-     * Render it, need to add it to a parent container, handled in higher level view
-     * @returns {*}
-     */
-    function render() {
-      if (this.componentWillRender) {
-        this.componentWillRender();
+      function componentDidRender() {
+        // stub
       }
 
-      _children.forEach(function renderChild(child) {
-        child.render();
-      });
-
-      _html = _templateObj(_state);
-
-      if (this.componentDidRender) {
-        this.componentDidRender();
-      }
-    }
-
-    function componentDidRender() {
-      // stub
-    }
-
-    /**
-     * Call before it's been added to a view
-     */
-    function componentWillMount() {
-      // stub
-    }
-
-    /**
-     * Append it to a parent element
-     * @param mountEl
-     */
-    function mount() {
-      if (!_html) {
-        throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first');
+      /**
+       * Call before it's been added to a view
+       */
+      function componentWillMount() {
+        // stub
       }
 
-      if (this.componentWillMount) {
-        this.componentWillMount();
+      /**
+       * Append it to a parent element
+       * @param mountEl
+       */
+      function mount() {
+        if (!_html) {
+          throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first');
+        }
+
+        if (this.componentWillMount) {
+          this.componentWillMount();
+        }
+
+        _isMounted = true;
+
+        // Go out to the standard render function. DOM element is returned in callback
+        _noriEvents.renderView(_mountPoint, _html, _id, onViewRendered.bind(this));
       }
 
-      _isMounted = true;
+      /**
+       * Handler for the renderer module
+       * @param domEl
+       */
+      function onViewRendered(domEl) {
+        setDOMElement(domEl);
+        // from the ViewMixinEventDelegator
+        if (this.delegateEvents) {
+          this.delegateEvents();
+        }
 
-      // Go out to the standard render function. DOM element is returned in callback
-      _noriEvents.renderView(_mountPoint, _html, _id, onViewRendered.bind(this));
-    }
-
-    /**
-     * Handler for the renderer module
-     * @param domEl
-     */
-    function onViewRendered(domEl) {
-      setDOMElement(domEl);
-      // from the ViewMixinEventDelegator
-      if (this.delegateEvents) {
-        this.delegateEvents();
+        if (this.componentDidMount) {
+          this.componentDidMount();
+        }
       }
 
-      if (this.componentDidMount) {
-        this.componentDidMount();
-      }
-    }
-
-    /**
-     * Call after it's been added to a view
-     */
-    function componentDidMount() {
-      // stub
-    }
-
-    /**
-     * Call when unloading and switching views
-     */
-    function componentWillUnmount() {
-      // stub
-    }
-
-    function unmount() {
-      this.componentWillUnmount();
-      _isMounted = false;
-      _noriEvents.renderView(_mountPoint, '', _id);
-
-      // from the ViewMixinEventDelegator
-      if (this.undelegateEvents) {
-        this.undelegateEvents();
+      /**
+       * Call after it's been added to a view
+       */
+      function componentDidMount() {
+        // stub
       }
 
-      setDOMElement(null);
-      this.componentDidUnmount();
-    }
+      /**
+       * Call when unloading and switching views
+       */
+      function componentWillUnmount() {
+        // stub
+      }
 
-    function componentDidUnmount() {
-      // stub
-    }
+      function unmount() {
+        this.componentWillUnmount();
+        _isMounted = false;
+        _noriEvents.renderView(_mountPoint, '', _id);
 
-    /**
-     * Remove a view and cleanup
-     */
-    function dispose() {
-      this.unmount();
-    }
+        // from the ViewMixinEventDelegator
+        if (this.undelegateEvents) {
+          this.undelegateEvents();
+        }
 
-    //----------------------------------------------------------------------------
-    //  Accessors
-    //----------------------------------------------------------------------------
+        setDOMElement(null);
+        this.componentDidUnmount();
+      }
 
-    function isInitialized() {
-      return _isInitialized;
-    }
+      function componentDidUnmount() {
+        // stub
+      }
 
-    function getInitialProps() {
-      return _initialProps;
-    }
+      /**
+       * Remove a view and cleanup
+       */
+      function dispose() {
+        this.unmount();
+      }
 
-    function isMounted() {
-      return _isMounted;
-    }
+      //----------------------------------------------------------------------------
+      //  Accessors
+      //----------------------------------------------------------------------------
 
-    function setState(obj) {
-      _state = obj;
-    }
+      function isInitialized() {
+        return _isInitialized;
+      }
 
-    function getState() {
-      return _.cloneDeep(_state);
-    }
+      function getInitialProps() {
+        return _initialProps;
+      }
 
-    function getID() {
-      return _id;
-    }
+      function isMounted() {
+        return _isMounted;
+      }
 
-    function getTemplate() {
-      return _templateObj;
-    }
+      function setState(obj) {
+        _state = obj;
+      }
 
-    function getDOMElement() {
-      return _DOMElement;
-    }
+      function getState() {
+        return _.cloneDeep(_state);
+      }
 
-    function setDOMElement(el) {
-      _DOMElement = el;
-    }
+      function getID() {
+        return _id;
+      }
 
-    function getHTML() {
-      return _html;
-    }
+      function getTemplate() {
+        return _templateObj;
+      }
 
-    function setHTML(str) {
-      _html = str;
-    }
+      function getDOMElement() {
+        return _DOMElement;
+      }
 
-    function getChildren() {
-      return _children.slice(0);
-    }
+      function setDOMElement(el) {
+        _DOMElement = el;
+      }
+
+      function getHTML() {
+        return _html;
+      }
+
+      function setHTML(str) {
+        _html = str;
+      }
+
+      function getChildren() {
+        return _children.slice(0);
+      }
 
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
 
-    module.exports.initializeComponent = initializeComponent;
+      return {
+        initializeComponent: initializeComponent,
 
-    module.exports.isInitialized   = isInitialized;
-    module.exports.getInitialProps = getInitialProps;
-    module.exports.setState        = setState;
-    module.exports.getState        = getState;
-    module.exports.getID           = getID;
-    module.exports.getTemplate     = getTemplate;
-    module.exports.getHTML         = getHTML;
-    module.exports.setHTML         = setHTML;
-    module.exports.getDOMElement   = getDOMElement;
-    module.exports.setDOMElement   = setDOMElement;
-    module.exports.isMounted       = isMounted;
+        isInitialized  : isInitialized,
+        getInitialProps: getInitialProps,
+        setState       : setState,
+        getState       : getState,
+        getID          : getID,
+        getTemplate    : getTemplate,
+        getHTML        : getHTML,
+        setHTML        : setHTML,
+        getDOMElement  : getDOMElement,
+        setDOMElement  : setDOMElement,
+        isMounted      : isMounted,
 
-    module.exports.bindMap             = bindMap;
-    module.exports.componentWillUpdate = componentWillUpdate;
-    module.exports.update              = update;
-    module.exports.componentDidUpdate  = componentDidUpdate;
+        bindMap            : bindMap,
+        componentWillUpdate: componentWillUpdate,
+        update             : update,
+        componentDidUpdate : componentDidUpdate,
 
-    module.exports.componentShouldRender = componentShouldRender;
-    module.exports.componentWillRender   = componentWillRender;
-    module.exports.render                = render;
-    module.exports.componentDidRender    = componentDidRender;
+        componentShouldRender: componentShouldRender,
+        componentWillRender  : componentWillRender,
+        render               : render,
+        componentDidRender   : componentDidRender,
 
-    module.exports.componentWillMount = componentWillMount;
-    module.exports.mount              = mount;
-    module.exports.componentDidMount  = componentDidMount;
+        componentWillMount: componentWillMount,
+        mount             : mount,
+        componentDidMount : componentDidMount,
 
-    module.exports.componentWillUnmount = componentWillUnmount;
-    module.exports.unmount              = unmount;
-    module.exports.componentDidUnmount  = componentDidUnmount;
+        componentWillUnmount: componentWillUnmount,
+        unmount             : unmount,
+        componentDidUnmount : componentDidUnmount,
 
-    module.exports.addChild    = addChild;
-    module.exports.removeChild = removeChild;
-    module.exports.getChildren = getChildren;
+        addChild   : addChild,
+        removeChild: removeChild,
+        getChildren: getChildren
+      };
+
+    }());
+
+    module.exports = ViewComponent;
 
   });
 
-var Nori = (function () {
-  var _model,
-      _view,
-      _dispatcher = require('nori/utils/Dispatcher'),
-      _router     = require('nori/utils/Router');
+define('nori/Nori',
+  function (require, module, exports) {
 
-  //----------------------------------------------------------------------------
-  //  Accessors
-  //----------------------------------------------------------------------------
+    var Nori = (function () {
 
-  function getDispatcher() {
-    return _dispatcher;
-  }
+        var _model,
+            _view,
+            _dispatcher = require('nori/utils/Dispatcher'),
+            _router     = require('nori/utils/Router');
 
-  function getRouter() {
-    return _router;
-  }
+        //----------------------------------------------------------------------------
+        //  Accessors
+        //----------------------------------------------------------------------------
 
-  function getModel() {
-    return _model;
-  }
+        function getDispatcher() {
+          return _dispatcher;
+        }
 
-  function getView() {
-    return _view;
-  }
+        function getRouter() {
+          return _router;
+        }
 
-  function getConfig() {
-    return _.assign({}, (window.APP_CONFIG_DATA || {}));
-  }
+        function getModel() {
+          return _model;
+        }
 
-  function getCurrentRoute() {
-    return _router.getCurrentRoute();
-  }
+        function getView() {
+          return _view;
+        }
 
-  //----------------------------------------------------------------------------
-  //  Initialize
-  //----------------------------------------------------------------------------
+        function getConfig() {
+          return _.assign({}, (window.APP_CONFIG_DATA || {}));
+        }
 
-  /**
-   * Init the app and inject the model and view
-   * @param initObj view, model
-   */
-  function initializeApplication(initObj) {
-    _router.initialize();
-    _view  = initObj.view || createApplicationView({});
-    _model = initObj.model || createApplicationModel({});
-  }
+        function getCurrentRoute() {
+          return _router.getCurrentRoute();
+        }
 
-  //----------------------------------------------------------------------------
-  //  Factories - concatenative inheritance, decorators
-  //----------------------------------------------------------------------------
+        //----------------------------------------------------------------------------
+        //  Initialize
+        //----------------------------------------------------------------------------
 
-  /**
-   * Merges a collection of objects
-   * @param target
-   * @param sourceArray
-   * @returns {*}
-   */
-  function assignArray(target, sourceArray) {
-    sourceArray.forEach(function (source) {
-      target = _.assign(target, source);
-    });
-    return target;
-  }
+        /**
+         * Init the app and inject the model and view
+         * @param initObj view, model
+         */
+        function initializeApplication(initObj) {
+          _router.initialize();
+          _view  = initObj.view || createApplicationView({});
+          _model = initObj.model || createApplicationModel({});
+        }
 
-  /**
-   * Create a new Nori application instance
-   * @param extras
-   * @returns {*}
-   */
-  function createApplication(extras) {
-    return assignArray({}, [
-      this,
-      extras
-    ]);
-  }
+        //----------------------------------------------------------------------------
+        //  Factories - concatenative inheritance, decorators
+        //----------------------------------------------------------------------------
 
-  /**
-   * Creates main application model
-   * @param extras
-   * @returns {*}
-   */
-  function createApplicationModel(extras) {
-    return assignArray({}, [
-      require('nori/model/MixinMapFactory'),
-      require('nori/utils/MixinObservableSubject'),
-      require('nori/model/MixinReducerModel'),
-      extras
-    ]);
-  }
+        /**
+         * Merges a collection of objects
+         * @param target
+         * @param sourceArray
+         * @returns {*}
+         */
+        function assignArray(target, sourceArray) {
+          sourceArray.forEach(function (source) {
+            target = _.assign(target, source);
+          });
+          return target;
+        }
 
-  /**
-   * Creates main application view
-   * @param extras
-   * @returns {*}
-   */
-  function createApplicationView(extras) {
-    return assignArray({}, [
-      require('nori/view/ApplicationView'),
-      require('nori/view/MixinNudoruControls'),
-      require('nori/view/MixinComponentViews'),
-      requireNew('nori/view/MixinEventDelegator'),
-      extras
-    ]);
-  }
+        /**
+         * Create a new Nori application instance
+         * @param extras
+         * @returns {*}
+         */
+        function createApplication(extras) {
+          return assignArray({}, [
+            this,
+            extras
+          ]);
+        }
 
-  //----------------------------------------------------------------------------
-  // Functional utils from Mithril
-  //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
-  //----------------------------------------------------------------------------
+        /**
+         * Creates main application model
+         * @param extras
+         * @returns {*}
+         */
+        function createApplicationModel(extras) {
+          return assignArray({}, [
+            require('nori/model/MixinMapFactory'),
+            require('nori/utils/MixinObservableSubject'),
+            require('nori/model/MixinReducerModel'),
+            extras
+          ]);
+        }
 
-  // http://mithril.js.org/mithril.prop.html
-  function prop(store) {
-    //if (isFunction(store.then)) {
-    //  // handle a promise
-    //}
-    var gettersetter = function () {
-      if (arguments.length) {
-        store = arguments[0];
-      }
-      return store;
-    };
+        /**
+         * Creates main application view
+         * @param extras
+         * @returns {*}
+         */
+        function createApplicationView(extras) {
+          return assignArray({}, [
+            require('nori/view/ApplicationView'),
+            require('nori/view/MixinNudoruControls'),
+            require('nori/view/MixinComponentViews'),
+            requireNew('nori/view/MixinEventDelegator'),
+            extras
+          ]);
+        }
 
-    gettersetter.toJSON = function () {
-      return store;
-    };
+        //----------------------------------------------------------------------------
+        // Functional utils from Mithril
+        //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
+        //----------------------------------------------------------------------------
 
-    return gettersetter;
-  }
+        // http://mithril.js.org/mithril.prop.html
+        function prop(store) {
+          //if (isFunction(store.then)) {
+          //  // handle a promise
+          //}
+          var gettersetter = function () {
+            if (arguments.length) {
+              store = arguments[0];
+            }
+            return store;
+          };
 
-  // http://mithril.js.org/mithril.withAttr.html
-  function withAttr(prop, callback, context) {
-    return function (e) {
-      e = e || event;
+          gettersetter.toJSON = function () {
+            return store;
+          };
 
-      var currentTarget = e.currentTarget || this,
-          cntx          = context || this;
+          return gettersetter;
+        }
 
-      callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
-    };
-  }
+        // http://mithril.js.org/mithril.withAttr.html
+        function withAttr(prop, callback, context) {
+          return function (e) {
+            e = e || event;
 
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
+            var currentTarget = e.currentTarget || this,
+                cntx          = context || this;
 
-  return {
-    initializeApplication : initializeApplication,
-    config                : getConfig,
-    dispatcher            : getDispatcher,
-    router                : getRouter,
-    model                 : getModel,
-    view                  : getView,
-    createApplication     : createApplication,
-    createApplicationModel: createApplicationModel,
-    createApplicationView : createApplicationView,
-    getCurrentRoute       : getCurrentRoute,
-    assignArray           : assignArray,
-    prop                  : prop,
-    withAttr              : withAttr
-  };
+            callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
+          };
+        }
 
-}());
+        //----------------------------------------------------------------------------
+        //  API
+        //----------------------------------------------------------------------------
+
+        return {
+          initializeApplication : initializeApplication,
+          config                : getConfig,
+          dispatcher            : getDispatcher,
+          router                : getRouter,
+          model                 : getModel,
+          view                  : getView,
+          createApplication     : createApplication,
+          createApplicationModel: createApplicationModel,
+          createApplicationView : createApplicationView,
+          getCurrentRoute       : getCurrentRoute,
+          assignArray           : assignArray,
+          prop                  : prop,
+          withAttr              : withAttr
+        };
+
+      }());
+
+    module.exports = Nori;
+
+  });
+

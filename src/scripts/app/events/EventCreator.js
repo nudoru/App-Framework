@@ -8,16 +8,22 @@ define('app/events/EventCreator',
 
     var _eventConstants = require('app/events/EventConstants');
 
-    module.exports.someEvent = function (data) {
-      var evtObj = {
-        type   : _eventConstants.SOMETHING_HAPPENED,
-        payload: {
-          theData: data
-        }
-      };
+    var EventCreator = {
 
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
+      someEvent: function (data) {
+        var evtObj = {
+          type   : _eventConstants.SOMETHING_HAPPENED,
+          payload: {
+            theData: data
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      }
+
     };
+
+    module.exports = EventCreator;
 
   });

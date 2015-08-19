@@ -1,47 +1,55 @@
 define('app/App',
   function (require, module, exports) {
 
-    var _this,
-        _noriEventConstants = require('nori/events/EventConstants');
+    var App = (function () {
 
-    /**
-     * Application bootstrapper. Create the model and views and pass to the app
-     * to initialize.
-     */
-    function initialize() {
-      _this = this;
+      var _this,
+          _noriEventConstants = require('nori/events/EventConstants');
 
-      Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
+      /**
+       * Application bootstrapper. Create the model and views and pass to the app
+       * to initialize.
+       */
+      function initialize() {
+        _this = this;
 
-      // 1
-      this.initializeApplication({
-        model: this.createApplicationModel(require('app/model/AppModel')),
-        view : this.createApplicationView(require('app/view/AppView'))
-      });
+        Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
 
-      // 2
-      this.view().initialize();
-      // model will acquire data as needed and dispatch event when complete
-      this.model().initialize();
-    }
+        // 1
+        this.initializeApplication({
+          model: this.createApplicationModel(require('app/model/AppModel')),
+          view : this.createApplicationView(require('app/view/AppView'))
+        });
 
-    /**
-     * When model data has been loaded
-     */
-    function onModelInitialized() {
-      // 3
-      this.view().removeLoadingMessage();
-      this.view().render();
+        // 2
+        this.view().initialize();
+        // model will acquire data as needed and dispatch event when complete
+        this.model().initialize();
+      }
 
-      // 4 Start with the route in the current URL
-      this.view().showViewFromURLHash();
-    }
+      /**
+       * When model data has been loaded
+       */
+      function onModelInitialized() {
+        // 3
+        this.view().removeLoadingMessage();
+        this.view().render();
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+        // 4 Start with the route in the current URL
+        this.view().showViewFromURLHash();
+      }
 
-    module.exports.initialize = initialize;
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initialize: initialize
+      };
+
+    }());
+
+    module.exports = App;
 
   });
 
@@ -49,7 +57,7 @@ define('app/events/EventConstants',
   function (require, module, exports) {
     var objUtils = require('nudoru/core/ObjectUtils');
 
-    _.merge(exports, objUtils.keyMirror({
+    _.merge(module.exports, objUtils.keyMirror({
       SOMETHING_HAPPENED: null
     }));
   });
@@ -59,368 +67,409 @@ define('app/events/EventCreator',
 
     var _eventConstants = require('app/events/EventConstants');
 
-    module.exports.someEvent = function (data) {
-      var evtObj = {
-        type   : _eventConstants.SOMETHING_HAPPENED,
-        payload: {
-          theData: data
-        }
-      };
+    var EventCreator = {
 
-      Nori.dispatcher().publish(evtObj);
-      return evtObj;
+      someEvent: function (data) {
+        var evtObj = {
+          type   : _eventConstants.SOMETHING_HAPPENED,
+          payload: {
+            theData: data
+          }
+        };
+
+        Nori.dispatcher().publish(evtObj);
+        return evtObj;
+      }
+
     };
+
+    module.exports = EventCreator;
 
   });
 
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var _this,
-        _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants');
+    var AppModel = (function () {
 
-    //----------------------------------------------------------------------------
-    //  Init
-    //----------------------------------------------------------------------------
+      var _this,
+          _noriEvents         = require('nori/events/EventCreator'),
+          _noriEventConstants = require('nori/events/EventConstants');
 
-    function initialize() {
-      _this = this;
+      //----------------------------------------------------------------------------
+      //  Init
+      //----------------------------------------------------------------------------
 
-      initializeReducers();
+      function initialize() {
+        _this = this;
 
-      // load data and then dispatch this
-      _noriEvents.applicationModelInitialized();
-    }
+        initializeReducers();
 
-    //----------------------------------------------------------------------------
-    //  State / reducers
-    //----------------------------------------------------------------------------
-
-    /**
-     * Initialize 'nori/model/MixinReducerModel' functionality
-     */
-    function initializeReducers() {
-      _this.addReducer(baseReducerFunction);
-      _this.initializeReducerModel();
-    }
-
-    /**
-     * Handle possible state changes after reducers run
-     * any app event > apply reducers > set new state (> subs notified) > handle state mutation
-     */
-    function handleStateMutation() {
-      //console.log('handle possible state mutation');
-    }
-
-    /**
-     * Template reducer function
-     * Model state isn't modified, current state is passed in and mutated state returned
-     */
-    function baseReducerFunction(state, event) {
-      state = state || {};
-      //console.log('baseReducerFunction', state, event);
-      // add switch for every event type that needs to mutate state
-      switch (event.type) {
-        case _noriEventConstants.CHANGE_MODEL_STATE:
-          // can compose other reducers
-          // return _.assign({}, state, otherStateTransformer(state));
-          return _.assign({}, state, {prop: event.payload});
-        default:
-          return state;
+        // load data and then dispatch this
+        _noriEvents.applicationModelInitialized();
       }
-    }
 
-    //----------------------------------------------------------------------------
-    //  Handle server communication
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  State / reducers
+      //----------------------------------------------------------------------------
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+      /**
+       * Initialize 'nori/model/MixinReducerModel' functionality
+       */
+      function initializeReducers() {
+        _this.addReducer(baseReducerFunction);
+        _this.initializeReducerModel();
+      }
 
-    module.exports.initialize          = initialize;
-    module.exports.handleStateMutation = handleStateMutation;
+      /**
+       * Handle possible state changes after reducers run
+       * any app event > apply reducers > set new state (> subs notified) > handle state mutation
+       */
+      function handleStateMutation() {
+        //console.log('handle possible state mutation');
+      }
+
+      /**
+       * Template reducer function
+       * Model state isn't modified, current state is passed in and mutated state returned
+       */
+      function baseReducerFunction(state, event) {
+        state = state || {};
+        //console.log('baseReducerFunction', state, event);
+        // add switch for every event type that needs to mutate state
+        switch (event.type) {
+          case _noriEventConstants.CHANGE_MODEL_STATE:
+            // can compose other reducers
+            // return _.assign({}, state, otherStateTransformer(state));
+            return _.assign({}, state, {prop: event.payload});
+          default:
+            return state;
+        }
+      }
+
+      //----------------------------------------------------------------------------
+      //  Handle server communication
+      //----------------------------------------------------------------------------
+
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initialize         : initialize,
+        handleStateMutation: handleStateMutation
+      };
+
+    }());
+
+    module.exports = AppModel;
+
   });
 
 
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _this,
-        _noriEvents            = require('nori/events/EventCreator'),
-        _noriEventConstants    = require('nori/events/EventConstants');
+    var AppView = (function () {
 
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
+      var _this,
+          _noriEvents         = require('nori/events/EventCreator'),
+          _noriEventConstants = require('nori/events/EventConstants');
 
-    function initialize() {
-      _this = this;
+      //----------------------------------------------------------------------------
+      //  Initialization
+      //----------------------------------------------------------------------------
 
-      _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-      _this.setRouteViewMountPoint('#contents');
+      function initialize() {
+        _this = this;
 
-      configureApplicationViewEvents();
+        _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+        _this.setRouteViewMountPoint('#contents');
 
-      _this.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
+        configureApplicationViewEvents();
 
-      // For testing
-      _this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
-      _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
-      _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
+        _this.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
 
-      _noriEvents.applicationViewInitialized();
-    }
+        // For testing
+        _this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
+        _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
+        _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
-    function render() {
-      /*
-       _this.setEvents({
-       'click #button-id': handleButton
-       });
-       _this.delegateEvents();
-       */
-    }
+        _noriEvents.applicationViewInitialized();
+      }
 
-    function configureApplicationViewEvents() {
-      Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
-        _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
-      });
+      function render() {
+        /*
+         _this.setEvents({
+         'click #button-id': handleButton
+         });
+         _this.delegateEvents();
+         */
+      }
 
-      Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
-        _this.alert(payload.payload.message, payload.payload.title);
-      });
-    }
+      function configureApplicationViewEvents() {
+        Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
+          _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+        });
 
-    //----------------------------------------------------------------------------
-    //  Custom
-    //----------------------------------------------------------------------------
+        Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
+          _this.alert(payload.payload.message, payload.payload.title);
+        });
+      }
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Custom
+      //----------------------------------------------------------------------------
 
-    module.exports.initialize = initialize;
-    module.exports.render     = render;
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initialize: initialize,
+        render    : render
+      };
+
+    }());
+
+    module.exports = AppView;
+
   });
 
 define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
-    var _lIpsum            = require('nudoru/browser/NLorem'),
-        _toolTip           = require('nudoru/component/ToolTipView'),
-        _appEventConstants = require('nori/events/EventConstants'),
-        _actionOneEl,
-        _actionTwoEl,
-        _actionThreeEl,
-        _actionFourEl,
-        _actionFiveEl,
-        _actionSixEl;
+    var DebugControlsTestingSubView = (function () {
 
-    function initialize(initObj) {
-      if (!this.isInitialized()) {
-        _lIpsum.initialize();
-        this.initializeComponent(initObj);
+      var _lIpsum            = require('nudoru/browser/NLorem'),
+          _toolTip           = require('nudoru/component/ToolTipView'),
+          _noriEventConstants = require('nori/events/EventConstants'),
+          _actionOneEl,
+          _actionTwoEl,
+          _actionThreeEl,
+          _actionFourEl,
+          _actionFiveEl,
+          _actionSixEl;
+
+      function initialize(initObj) {
+        if (!this.isInitialized()) {
+          _lIpsum.initialize();
+          this.initializeComponent(initObj);
+        }
       }
-    }
 
 
-    function componentDidMount() {
-      console.log(this.getID() + ', subview did mount');
+      function componentDidMount() {
+        console.log(this.getID() + ', subview did mount');
 
-      _actionOneEl   = document.getElementById('action-one');
-      _actionTwoEl   = document.getElementById('action-two');
-      _actionThreeEl = document.getElementById('action-three');
-      _actionFourEl  = document.getElementById('action-four');
-      _actionFiveEl  = document.getElementById('action-five');
-      _actionSixEl   = document.getElementById('action-six');
+        _actionOneEl   = document.getElementById('action-one');
+        _actionTwoEl   = document.getElementById('action-two');
+        _actionThreeEl = document.getElementById('action-three');
+        _actionFourEl  = document.getElementById('action-four');
+        _actionFiveEl  = document.getElementById('action-five');
+        _actionSixEl   = document.getElementById('action-six');
 
-      //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
-      //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
-      //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
-      //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
+        //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
+        //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
+        //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
+        //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
 
-      _toolTip.add({
-        title   : '',
-        content : "This is a button, you click it dummy. This is a button, you click it dummy. ",
-        position: 'L',
-        targetEl: _actionFourEl,
-        type    : 'information'
-      });
-      _toolTip.add({
-        title   : '',
-        content : "This is a button, you click it dummy. This is a button, you click it dummy. ",
-        position: 'B',
-        targetEl: _actionFourEl,
-        type    : 'information'
-      });
-      _toolTip.add({
-        title   : '',
-        content : "This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ",
-        position: 'R',
-        targetEl: _actionFourEl,
-        type    : 'information'
-      });
-      _toolTip.add({
-        title   : '',
-        content : "This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ",
-        position: 'T',
-        targetEl: _actionFourEl,
-        type    : 'information'
-      });
-
-
-      _actionOneEl.addEventListener('click', function actOne(e) {
-        Nori.view().addMessageBox({
-          title  : _lIpsum.getSentence(2, 4),
-          content: _lIpsum.getParagraph(2, 4),
-          type   : 'warning',
-          modal  : true,
-          width  : 500
+        _toolTip.add({
+          title   : '',
+          content : "This is a button, you click it dummy. This is a button, you click it dummy. ",
+          position: 'L',
+          targetEl: _actionFourEl,
+          type    : 'information'
         });
-      });
+        _toolTip.add({
+          title   : '',
+          content : "This is a button, you click it dummy. This is a button, you click it dummy. ",
+          position: 'B',
+          targetEl: _actionFourEl,
+          type    : 'information'
+        });
+        _toolTip.add({
+          title   : '',
+          content : "This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ",
+          position: 'R',
+          targetEl: _actionFourEl,
+          type    : 'information'
+        });
+        _toolTip.add({
+          title   : '',
+          content : "This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. This is a button, you click it dummy. ",
+          position: 'T',
+          targetEl: _actionFourEl,
+          type    : 'information'
+        });
 
-      _actionTwoEl.addEventListener('click', function actTwo(e) {
-        Nori.view().addMessageBox({
-          title  : _lIpsum.getSentence(10, 20),
-          content: _lIpsum.getParagraph(2, 4),
-          type   : 'default',
-          modal  : false,
-          buttons: [
-            {
-              label  : 'Yes',
-              id     : 'yes',
-              type   : 'default',
-              icon   : 'check',
-              onClick: function () {
-                console.log('yes');
+
+        _actionOneEl.addEventListener('click', function actOne(e) {
+          Nori.view().addMessageBox({
+            title  : _lIpsum.getSentence(2, 4),
+            content: _lIpsum.getParagraph(2, 4),
+            type   : 'warning',
+            modal  : true,
+            width  : 500
+          });
+        });
+
+        _actionTwoEl.addEventListener('click', function actTwo(e) {
+          Nori.view().addMessageBox({
+            title  : _lIpsum.getSentence(10, 20),
+            content: _lIpsum.getParagraph(2, 4),
+            type   : 'default',
+            modal  : false,
+            buttons: [
+              {
+                label  : 'Yes',
+                id     : 'yes',
+                type   : 'default',
+                icon   : 'check',
+                onClick: function () {
+                  console.log('yes');
+                }
+              },
+              {
+                label  : 'Maybe',
+                id     : 'maybe',
+                type   : 'positive',
+                icon   : 'cog',
+                onClick: function () {
+                  console.log('maybe');
+                }
+              },
+              {
+                label: 'Nope',
+                id   : 'nope',
+                type : 'negative',
+                icon : 'times'
               }
-            },
-            {
-              label  : 'Maybe',
-              id     : 'maybe',
-              type   : 'positive',
-              icon   : 'cog',
-              onClick: function () {
-                console.log('maybe');
-              }
-            },
-            {
-              label: 'Nope',
-              id   : 'nope',
-              type : 'negative',
-              icon : 'times'
+            ]
+          });
+        });
+
+        _actionThreeEl.addEventListener('click', function actThree(e) {
+          Nori.view().addNotification({
+            title  : _lIpsum.getSentence(3, 6),
+            type   : 'information',
+            content: _lIpsum.getParagraph(1, 2)
+          });
+
+          _toolTip.remove(_actionFourEl);
+        });
+
+        _actionFourEl.addEventListener('click', function actFour(e) {
+          console.log('Four');
+        });
+
+        _actionFiveEl.addEventListener('click', function actFour(e) {
+          Nori.dispatcher().publish({
+            type   : _noriEventConstants.CHANGE_ROUTE,
+            payload: {
+              route: '/one',
+              data : {prop: 'some data', moar: '25'}
             }
-          ]
-        });
-      });
-
-      _actionThreeEl.addEventListener('click', function actThree(e) {
-        Nori.view().addNotification({
-          title  : _lIpsum.getSentence(3, 6),
-          type   : 'information',
-          content: _lIpsum.getParagraph(1, 2)
+          });
         });
 
-        _toolTip.remove(_actionFourEl);
-      });
-
-      _actionFourEl.addEventListener('click', function actFour(e) {
-        console.log('Four');
-      });
-
-      _actionFiveEl.addEventListener('click', function actFour(e) {
-        Nori.dispatcher().publish({
-          type   : _appEventConstants.CHANGE_ROUTE,
-          payload: {
-            route: '/one',
-            data : {prop: 'some data', moar: '25'}
-          }
+        _actionSixEl.addEventListener('click', function actFour(e) {
+          Nori.dispatcher().publish({
+            type   : _noriEventConstants.CHANGE_ROUTE,
+            payload: {route: '/styles', data: 'test'}
+          });
         });
-      });
 
-      _actionSixEl.addEventListener('click', function actFour(e) {
-        Nori.dispatcher().publish({
-          type   : _appEventConstants.CHANGE_ROUTE,
-          payload: {route: '/styles', data:'test'}
-        });
-      });
+      }
 
-    }
+      return {
+        initialize       : initialize,
+        componentDidMount: componentDidMount
+      };
 
-    module.exports.initialize   = initialize;
-    module.exports.componentDidMount = componentDidMount;
+    }());
+
+    module.exports = DebugControlsTestingSubView;
 
   });
 
 define('app/view/ViewComponent',
   function (require, module, exports) {
 
-    var _this;
+    var ViewComponent = (function () {
 
-    /**
-     * Initialize subview
-     * @param initObj {id, template, mountPoint}
-     */
-    function initialize(initObj) {
-      if(!this.isInitialized()) {
-        _this = this;
-        this.initializeComponent(initObj);
-        // associate with stores. componentWillUpdate() fires when it changes
-        //this.bindMap('SomeCollection');
-        // custom init below here
-      }
-    }
+      var _this;
 
-    /**
-     * Update has been triggered due a change in the bound model
-     */
-    function componentWillUpdate() {
-      // Update state from stores
-      var obj = Object.create(null);
-      // build it
-      _this.setState(obj);
-    }
-
-    // Example of custom render
-    //function render() {
-    //  this.componentWillRender();
-    //  this.setHTML(this.getTemplate()(this.getState()));
-    //  // created in mount this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
-    //  this.componentDidRender();
-    //}
-
-    /**
-     * Updated view has been rendered and added to the DOM. Manipulate it here
-     */
-    function componentDidMount() {
-      // good place to assign events or post render
-      /*
-       _this.setEvents({
-       'click #button-id': handleButton
-       });
-       _this.delegateEvents();
+      /**
+       * Initialize subview
+       * @param initObj {id, template, mountPoint}
        */
-    }
+      function initialize(initObj) {
+        if (!this.isInitialized()) {
+          _this = this;
+          this.initializeComponent(initObj);
+          // associate with stores. componentWillUpdate() fires when it changes
+          //this.bindMap('SomeCollection');
+          // custom init below here
+        }
+      }
 
-    /**
-     * Remove event handlers and perform other cleanup
-     */
-    function componentWillUnmount() {
-      // remove events
-    }
+      /**
+       * Update has been triggered due a change in the bound model
+       */
+      function componentWillUpdate() {
+        // Update state from stores
+        var obj = Object.create(null);
+        // build it
+        _this.setState(obj);
+      }
 
-    module.exports.initialize = initialize;
-    module.exports.componentWillUpdate = componentWillUpdate;
-    module.exports.componentDidMount = componentDidMount;
-    module.exports.componentWillUnmount = componentWillUnmount;
+      // Example of custom render
+      //function render() {
+      //  this.componentWillRender();
+      //  this.setHTML(this.getTemplate()(this.getState()));
+      //  // created in mount this.setDOMElement(_domUtils.HTMLStrToNode(this.getHTML()));
+      //  this.componentDidRender();
+      //}
 
-    // Other possible lifecycle hooks
-    //module.exports.componentDidUpdate = componentDidUpdate;
-    //module.exports.componentWillRender = componentWillRender;
-    //module.exports.componentDidRender = componentDidRender;
-    //module.exports.componentWillMount = componentWillMount;
-    //module.exports.componentDidUnmount = componentDidUnmount;
+      /**
+       * Updated view has been rendered and added to the DOM. Manipulate it here
+       */
+      function componentDidMount() {
+        // good place to assign events or post render
+        /*
+         _this.setEvents({
+         'click #button-id': handleButton
+         });
+         _this.delegateEvents();
+         */
+      }
+
+      /**
+       * Remove event handlers and perform other cleanup
+       */
+      function componentWillUnmount() {
+        // remove events
+      }
+
+      return {
+        initialize          : initialize,
+        componentWillUpdate : componentWillUpdate,
+        componentDidMount   : componentDidMount,
+        componentWillUnmount: componentWillUnmount
+
+        // Other possible lifecycle hooks
+        //componentDidUpdate : componentDidUpdate,
+        //componentWillRender : componentWillRender,
+        //componentDidRender : componentDidRender,
+        //componentWillMount : componentWillMount,
+        //componentDidUnmount : componentDidUnmount
+      };
+
+    }());
+
+    module.exports = ViewComponent;
+
   });
 
 (function () {
@@ -435,6 +484,7 @@ define('app/view/ViewComponent',
     window.onload = function() {
 
       // Create the application instance
+      window.Nori = require('nori/Nori');
       window.APP = Nori.createApplication(require('app/App'));
 
       // Might need this janky timeout in some situations

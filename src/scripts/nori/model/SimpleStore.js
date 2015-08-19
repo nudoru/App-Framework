@@ -1,36 +1,44 @@
 define('nori/model/SimpleStore',
   function (require, module, exports) {
-    var _state   = Object.create(null),
-        _subject = new Rx.Subject();
 
-    /**
-     * subscribe a handler for changes
-     * @param handler
-     * @returns {*}
-     */
-    function subscribe(handler) {
-      return _subject.subscribe(handler);
-    }
+    var SimpleStore = (function () {
+      var _state   = Object.create(null),
+          _subject = new Rx.Subject();
 
-    /**
-     * Return a copy of the state
-     * @returns {void|*}
-     */
-    function getState() {
-      return _.assign({}, _state);
-    }
+      /**
+       * subscribe a handler for changes
+       * @param handler
+       * @returns {*}
+       */
+      function subscribe(handler) {
+        return _subject.subscribe(handler);
+      }
 
-    /**
-     * Sets the state
-     * @param state
-     */
-    function setState(state) {
-      _state = state;
-      _subject.onNext();
-    }
+      /**
+       * Return a copy of the state
+       * @returns {void|*}
+       */
+      function getState() {
+        return _.assign({}, _state);
+      }
 
-    module.exports.subscribe = subscribe;
-    module.exports.getState  = getState;
-    module.exports.setState  = setState;
+      /**
+       * Sets the state
+       * @param state
+       */
+      function setState(state) {
+        _state = state;
+        _subject.onNext();
+      }
+
+      return {
+        subscribe: subscribe,
+        getState : getState,
+        setState : setState
+      };
+
+    }());
+
+    module.exports = SimpleStore;
 
   });

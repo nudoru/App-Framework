@@ -17,72 +17,81 @@
 
 define('nori/view/MixinEventDelegator',
   function (require, module, exports) {
-    var _eventsMap,
-        _eventSubscribers;
 
-    function setEvents(evtObj) {
-      _eventsMap = evtObj;
-    }
+    var MixinEventDelegator = (function () {
 
-    function getEvents() {
-      return _eventsMap;
-    }
+      var _eventsMap,
+          _eventSubscribers;
 
-    /**
-     * Automates setting events on DOM elements.
-     * 'evtStr selector':callback
-     * 'evtStr selector, evtStr selector': sharedCallback
-     */
-    function delegateEvents() {
-      if (!_eventsMap) {
-        return;
+      function setEvents(evtObj) {
+        _eventsMap = evtObj;
       }
 
-      _eventSubscribers = Object.create(null);
+      function getEvents() {
+        return _eventsMap;
+      }
 
-      for (var evtStrings in _eventsMap) {
-        if (_eventsMap.hasOwnProperty(evtStrings)) {
+      /**
+       * Automates setting events on DOM elements.
+       * 'evtStr selector':callback
+       * 'evtStr selector, evtStr selector': sharedCallback
+       */
+      function delegateEvents() {
+        if (!_eventsMap) {
+          return;
+        }
 
-          var mappings = evtStrings.split(',');
+        _eventSubscribers = Object.create(null);
 
-          mappings.forEach(function(evtMap) {
-            evtMap = evtMap.trim();
+        for (var evtStrings in _eventsMap) {
+          if (_eventsMap.hasOwnProperty(evtStrings)) {
 
-            var eventStr = evtMap.split(' ')[0].trim(),
-                selector = evtMap.split(' ')[1].trim(),
-                element  = document.querySelector(selector);
+            var mappings = evtStrings.split(',');
 
-            if (!element) {
-              console.log('Cannot add event to invalid DOM element: ' + selector);
-            } else {
-              _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(_eventsMap[evtStrings]);
-            }
+            mappings.forEach(function (evtMap) {
+              evtMap = evtMap.trim();
 
-          });
+              var eventStr = evtMap.split(' ')[0].trim(),
+                  selector = evtMap.split(' ')[1].trim(),
+                  element  = document.querySelector(selector);
 
+              if (!element) {
+                console.log('Cannot add event to invalid DOM element: ' + selector);
+              } else {
+                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(_eventsMap[evtStrings]);
+              }
+
+            });
+
+          }
         }
       }
-    }
 
-    /**
-     * Cleanly remove events
-     */
-    function undelegateEvents() {
-      if (!_eventsMap) {
-        return;
+      /**
+       * Cleanly remove events
+       */
+      function undelegateEvents() {
+        if (!_eventsMap) {
+          return;
+        }
+
+        for (var event in _eventSubscribers) {
+          _eventSubscribers[event].dispose();
+          delete _eventSubscribers[event];
+        }
+
+        _eventSubscribers = Object.create(null);
       }
 
-      for (var event in _eventSubscribers) {
-        _eventSubscribers[event].dispose();
-        delete _eventSubscribers[event];
-      }
+      return {
+        setEvents       : setEvents,
+        getEvents       : getEvents,
+        undelegateEvents: undelegateEvents,
+        delegateEvents  : delegateEvents
+      };
 
-      _eventSubscribers = Object.create(null);
-    }
+    }());
 
-    module.exports.setEvents        = setEvents;
-    module.exports.getEvents        = getEvents;
-    module.exports.undelegateEvents = undelegateEvents;
-    module.exports.delegateEvents   = delegateEvents;
+    module.exports = MixinEventDelegator;
+
   });
-

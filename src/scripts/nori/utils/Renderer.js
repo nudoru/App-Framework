@@ -9,36 +9,43 @@
 define('nori/utils/Renderer',
   function (require, module, exports) {
 
-    var _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants'),
-        _domUtils          = require('nudoru/browser/DOMUtils');
+    var Renderer = (function () {
+      var _noriEvents         = require('nori/events/EventCreator'),
+          _noriEventConstants = require('nori/events/EventConstants'),
+          _domUtils           = require('nudoru/browser/DOMUtils');
 
-    function initialize() {
-      Nori.dispatcher().subscribe(_noriEventConstants.RENDER_VIEW, render);
-    }
-
-    function render(payload) {
-      var targetSelector = payload.payload.target,
-          html           = payload.payload.html,
-          domEl,
-          mountPoint     = document.querySelector(targetSelector),
-          cb             = payload.payload.callback;
-
-      mountPoint.innerHTML = '';
-
-      if (html) {
-        domEl = _domUtils.HTMLStrToNode(html);
-        mountPoint.appendChild(domEl);
+      function initialize() {
+        Nori.dispatcher().subscribe(_noriEventConstants.RENDER_VIEW, render);
       }
 
-      // Send the created DOM element back to the caller
-      if (cb) {
-        cb(domEl);
+      function render(payload) {
+        var targetSelector = payload.payload.target,
+            html           = payload.payload.html,
+            domEl,
+            mountPoint     = document.querySelector(targetSelector),
+            cb             = payload.payload.callback;
+
+        mountPoint.innerHTML = '';
+
+        if (html) {
+          domEl = _domUtils.HTMLStrToNode(html);
+          mountPoint.appendChild(domEl);
+        }
+
+        // Send the created DOM element back to the caller
+        if (cb) {
+          cb(domEl);
+        }
+
+        _noriEvents.viewRendered(targetSelector, payload.payload.id);
       }
 
-      _noriEvents.viewRendered(targetSelector, payload.payload.id);
-    }
+      return {
+        initialize: initialize
+      };
 
-    module.exports.initialize = initialize;
+    }());
+
+    module.exports = Renderer;
 
   });

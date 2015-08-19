@@ -1,127 +1,135 @@
 define('nori/view/MixinBrowserEvents',
   function (require, module, exports) {
 
-    var _currentViewPortSize,
-        _currentViewPortScroll,
-        _uiUpdateLayoutStream,
-        _browserScrollStream,
-        _browserResizeStream,
-        _positionUIElementsOnChangeCB,
-        _appEvents = require('nori/events/EventCreator');
+    var MixinBrowserEvents = (function () {
 
+      var _currentViewPortSize,
+          _currentViewPortScroll,
+          _uiUpdateLayoutStream,
+          _browserScrollStream,
+          _browserResizeStream,
+          _positionUIElementsOnChangeCB,
+          _noriEvents = require('nori/events/EventCreator');
 
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Initialization
+      //----------------------------------------------------------------------------
 
-    function initializeBrowserWindowEventStreams() {
-      setCurrentViewPortSize();
-      setCurrentViewPortScroll();
-      configureUIStreams();
-    }
+      function initializeBrowserWindowEventStreams() {
+        setCurrentViewPortSize();
+        setCurrentViewPortScroll();
+        configureUIStreams();
+      }
 
-    function setPositionUIElementsOnChangeCB(cb) {
-      _positionUIElementsOnChangeCB = cb;
-    }
+      function setPositionUIElementsOnChangeCB(cb) {
+        _positionUIElementsOnChangeCB = cb;
+      }
 
-    /**
-     * Set up RxJS streams for events
-     */
-    function configureUIStreams() {
-      var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
-          uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
+      /**
+       * Set up RxJS streams for events
+       */
+      function configureUIStreams() {
+        var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
+            uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
 
-      // UI layout happens immediately, while resize and scroll is throttled
-      _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
-        .subscribe(function () {
-          positionUIElementsOnChange();
-        });
+        // UI layout happens immediately, while resize and scroll is throttled
+        _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
+          .subscribe(function () {
+            positionUIElementsOnChange();
+          });
 
-      _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
-        .throttle(100)
-        .subscribe(function () {
-          handleViewPortResize();
-        });
+        _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
+          .throttle(100)
+          .subscribe(function () {
+            handleViewPortResize();
+          });
 
-      _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll')
-        .throttle(100)
-        .subscribe(function () {
-          handleViewPortScroll();
-        });
-    }
+        _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll')
+          .throttle(100)
+          .subscribe(function () {
+            handleViewPortScroll();
+          });
+      }
 
-    function getMainScrollingView() {
-      return _mainScrollEl;
-    }
+      function getMainScrollingView() {
+        return _mainScrollEl;
+      }
 
-    function setMainScrollingView(elID) {
-      _mainScrollEl = document.getElementById(elID);
-    }
+      function setMainScrollingView(elID) {
+        _mainScrollEl = document.getElementById(elID);
+      }
 
-    //----------------------------------------------------------------------------
-    //  Viewport and UI elements
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Viewport and UI elements
+      //----------------------------------------------------------------------------
 
-    function handleViewPortResize() {
-      _appEvents.browserResized(_currentViewPortSize);
-    }
+      function handleViewPortResize() {
+        _noriEvents.browserResized(_currentViewPortSize);
+      }
 
-    function handleViewPortScroll() {
-      _appEvents.browserScrolled(_currentViewPortScroll);
-    }
+      function handleViewPortScroll() {
+        _noriEvents.browserScrolled(_currentViewPortScroll);
+      }
 
-    function getCurrentViewPortSize() {
-      return _currentViewPortSize;
-    }
+      function getCurrentViewPortSize() {
+        return _currentViewPortSize;
+      }
 
-    /**
-     * Cache the current view port size in a var
-     */
-    function setCurrentViewPortSize() {
-      _currentViewPortSize = {
-        width : window.innerWidth,
-        height: window.innerHeight
+      /**
+       * Cache the current view port size in a var
+       */
+      function setCurrentViewPortSize() {
+        _currentViewPortSize = {
+          width : window.innerWidth,
+          height: window.innerHeight
+        };
+      }
+
+      function getCurrentViewPortScroll() {
+        return _currentViewPortScroll;
+      }
+
+      /**
+       * Cache the current view port scroll in a var
+       */
+      function setCurrentViewPortScroll() {
+        var scrollEL = _mainScrollEl ? _mainScrollEl : document.body;
+
+        var left = scrollEL.scrollLeft,
+            top  = scrollEL.scrollTop;
+
+        left = left ? left : 0;
+        top  = top ? top : 0;
+
+        _currentViewPortScroll = {left: left, top: top};
+      }
+
+      /**
+       * Reposition the UI elements on a UI change, scroll, resize, etc.
+       */
+      function positionUIElementsOnChange() {
+        setCurrentViewPortScroll();
+        setCurrentViewPortSize();
+
+        _positionUIElementsOnChangeCB.call(this, _currentViewPortSize, _currentViewPortScroll);
+      }
+
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initializeBrowserWindowEventStreams: initializeBrowserWindowEventStreams,
+        setPositionUIElementsOnChangeCB    : setPositionUIElementsOnChangeCB,
+        getMainScrollingView               : getMainScrollingView,
+        setMainScrollingView               : setMainScrollingView,
+        getCurrentViewPortSize             : getCurrentViewPortSize,
+        getCurrentViewPortScroll           : getCurrentViewPortScroll
       };
-    }
 
-    function getCurrentViewPortScroll() {
-      return _currentViewPortScroll;
-    }
+    }());
 
-    /**
-     * Cache the current view port scroll in a var
-     */
-    function setCurrentViewPortScroll() {
-      var scrollEL = _mainScrollEl ? _mainScrollEl : document.body;
+    module.exports = MixinBrowserEvents;
 
-      var left = scrollEL.scrollLeft,
-          top  = scrollEL.scrollTop;
-
-      left = left ? left : 0;
-      top  = top ? top : 0;
-
-      _currentViewPortScroll = {left: left, top: top};
-    }
-
-    /**
-     * Reposition the UI elements on a UI change, scroll, resize, etc.
-     */
-    function positionUIElementsOnChange() {
-      setCurrentViewPortScroll();
-      setCurrentViewPortSize();
-
-      _positionUIElementsOnChangeCB.call(this, _currentViewPortSize, _currentViewPortScroll);
-    }
-
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
-
-    module.exports.initializeBrowserWindowEventStreams = initializeBrowserWindowEventStreams;
-    module.exports.setPositionUIElementsOnChangeCB     = setPositionUIElementsOnChangeCB;
-    module.exports.getMainScrollingView                = getMainScrollingView;
-    module.exports.setMainScrollingView                = setMainScrollingView;
-    module.exports.getCurrentViewPortSize              = getCurrentViewPortSize;
-    module.exports.getCurrentViewPortScroll            = getCurrentViewPortScroll;
 
   });

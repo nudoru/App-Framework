@@ -1,59 +1,68 @@
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _this,
-        _noriEvents            = require('nori/events/EventCreator'),
-        _noriEventConstants    = require('nori/events/EventConstants');
+    var AppView = (function () {
 
-    //----------------------------------------------------------------------------
-    //  Initialization
-    //----------------------------------------------------------------------------
+      var _this,
+          _noriEvents         = require('nori/events/EventCreator'),
+          _noriEventConstants = require('nori/events/EventConstants');
 
-    function initialize() {
-      _this = this;
+      //----------------------------------------------------------------------------
+      //  Initialization
+      //----------------------------------------------------------------------------
 
-      _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-      _this.setRouteViewMountPoint('#contents');
+      function initialize() {
+        _this = this;
 
-      configureApplicationViewEvents();
+        _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+        _this.setRouteViewMountPoint('#contents');
 
-      _this.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
+        configureApplicationViewEvents();
 
-      // For testing
-      _this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
-      _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
-      _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
+        _this.mapRouteToViewComponent('/', 'default', 'app/view/ViewComponent');
 
-      _noriEvents.applicationViewInitialized();
-    }
+        // For testing
+        _this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/ViewComponent');
+        _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/ViewComponent');
+        _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
-    function render() {
-      /*
-       _this.setEvents({
-       'click #button-id': handleButton
-       });
-       _this.delegateEvents();
-       */
-    }
+        _noriEvents.applicationViewInitialized();
+      }
 
-    function configureApplicationViewEvents() {
-      Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
-        _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
-      });
+      function render() {
+        /*
+         _this.setEvents({
+         'click #button-id': handleButton
+         });
+         _this.delegateEvents();
+         */
+      }
 
-      Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
-        _this.alert(payload.payload.message, payload.payload.title);
-      });
-    }
+      function configureApplicationViewEvents() {
+        Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
+          _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+        });
 
-    //----------------------------------------------------------------------------
-    //  Custom
-    //----------------------------------------------------------------------------
+        Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
+          _this.alert(payload.payload.message, payload.payload.title);
+        });
+      }
 
-    //----------------------------------------------------------------------------
-    //  API
-    //----------------------------------------------------------------------------
+      //----------------------------------------------------------------------------
+      //  Custom
+      //----------------------------------------------------------------------------
 
-    module.exports.initialize = initialize;
-    module.exports.render     = render;
+      //----------------------------------------------------------------------------
+      //  API
+      //----------------------------------------------------------------------------
+
+      return {
+        initialize: initialize,
+        render    : render
+      };
+
+    }());
+
+    module.exports = AppView;
+
   });

@@ -67,7 +67,8 @@ define('nori/service/Rest',
      * @param success
      * @param error
      */
-    function request(reqObj) {
+    module.exports.Request = function request(reqObj) {
+
       var xhr    = new XMLHttpRequest(),
           json   = reqObj.json || false,
           method = reqObj.method.toUpperCase() || 'GET',
@@ -75,7 +76,7 @@ define('nori/service/Rest',
           data   = reqObj.data || null;
 
       //return new Promise(function (resolve, reject) {
-      return new Rx.Observable.create(function(observer) {
+      return new Rx.Observable.create(function (observer) {
         xhr.open(method, url, true, reqObj.user, reqObj.password);
 
         xhr.onreadystatechange = function () {
@@ -121,9 +122,6 @@ define('nori/service/Rest',
           observer.onError(type + ' ' + message);
         }
       });
-
-    }
-
-    module.exports.request   = request;
+    };
 
   });
