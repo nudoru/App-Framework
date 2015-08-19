@@ -2,8 +2,12 @@ define('nori/model/MixinMapFactory',
   function (require, module, exports) {
 
     var MixinMapFactory = (function () {
+
       var _mapCollectionList = Object.create(null),
-          _mapList           = Object.create(null);
+          _mapList           = Object.create(null),
+          _mapCollectionFactory = require('nori/model/MapCollection'),
+          _mapFactory = require('nori/model/Map'),
+          _observableFactory = require('nori/utils/MixinObservableSubject');
 
       /**
        * Create a new model collection and initalize
@@ -12,7 +16,7 @@ define('nori/model/MixinMapFactory',
        * @returns {*}
        */
       function createMapCollection(initObj, extras) {
-        var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), requireNew('nori/utils/MixinObservableSubject'), extras]);
+        var m = Nori.assignArray({}, [_mapCollectionFactory(), _observableFactory(), extras]);
         m.initialize(initObj);
         return m;
       }
@@ -24,7 +28,7 @@ define('nori/model/MixinMapFactory',
        * @returns {*}
        */
       function createMap(initObj, extras) {
-        var m = Nori.assignArray({}, [requireNew('nori/model/Map'), requireNew('nori/utils/MixinObservableSubject'), extras]);
+        var m = Nori.assignArray({}, [_mapFactory(), _observableFactory(), extras]);
         m.initialize(initObj);
         return m;
       }

@@ -274,7 +274,7 @@ define('nori/utils/MixinObservableSubject',
 
   function (require, module, exports) {
 
-    var MixinObservableSubject = (function () {
+    var MixinObservableSubject = function () {
       //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
       var _subject = new Rx.BehaviorSubject();
 
@@ -309,7 +309,7 @@ define('nori/utils/MixinObservableSubject',
         getLastNotification: getLastNotification
       };
 
-    }());
+    };
 
     module.exports = MixinObservableSubject;
 
@@ -363,6 +363,7 @@ define('nori/utils/Router',
   function (require, module, exports) {
 
     var Router = (function () {
+
       var _subject            = new Rx.Subject(),
           _objUtils           = require('nudoru/core/ObjectUtils'),
           _noriEventConstants = require('nori/events/EventConstants');
@@ -497,6 +498,7 @@ define('nori/utils/Templating',
   function (require, module, exports) {
 
     var Templating = (function () {
+
       var _templateHTMLCache = Object.create(null),
           _templateCache     = Object.create(null),
           _DOMUtils          = require('nudoru/browser/DOMUtils');
@@ -992,7 +994,7 @@ define('nori/service/Rest',
 define('nori/model/Map',
   function (require, module, exports) {
 
-    var Map = (function () {
+    var Map = function () {
       var _this,
           _id,
           _parentCollection,
@@ -1290,7 +1292,7 @@ define('nori/model/Map',
         getParentCollection: getParentCollection
       };
 
-    }());
+    };
 
     module.exports = Map;
 
@@ -1299,7 +1301,7 @@ define('nori/model/Map',
 define('nori/model/MapCollection',
   function (require, module, exports) {
 
-    var MapCollection = (function () {
+    var MapCollection = function () {
       var _this,
           _id,
           _parentCollection,
@@ -1623,9 +1625,10 @@ define('nori/model/MapCollection',
         setParentCollection: setParentCollection,
         getParentCollection: getParentCollection
       };
-    }());
+    };
 
     module.exports = MapCollection;
+
 
   });
 
@@ -1633,8 +1636,12 @@ define('nori/model/MixinMapFactory',
   function (require, module, exports) {
 
     var MixinMapFactory = (function () {
+
       var _mapCollectionList = Object.create(null),
-          _mapList           = Object.create(null);
+          _mapList           = Object.create(null),
+          _mapCollectionFactory = require('nori/model/MapCollection'),
+          _mapFactory = require('nori/model/Map'),
+          _observableFactory = require('nori/utils/MixinObservableSubject');
 
       /**
        * Create a new model collection and initalize
@@ -1643,7 +1650,7 @@ define('nori/model/MixinMapFactory',
        * @returns {*}
        */
       function createMapCollection(initObj, extras) {
-        var m = Nori.assignArray({}, [requireNew('nori/model/MapCollection'), requireNew('nori/utils/MixinObservableSubject'), extras]);
+        var m = Nori.assignArray({}, [_mapCollectionFactory(), _observableFactory(), extras]);
         m.initialize(initObj);
         return m;
       }
@@ -1655,7 +1662,7 @@ define('nori/model/MixinMapFactory',
        * @returns {*}
        */
       function createMap(initObj, extras) {
-        var m = Nori.assignArray({}, [requireNew('nori/model/Map'), requireNew('nori/utils/MixinObservableSubject'), extras]);
+        var m = Nori.assignArray({}, [_mapFactory(), _observableFactory(), extras]);
         m.initialize(initObj);
         return m;
       }
@@ -1697,7 +1704,7 @@ define('nori/model/MixinReducerModel',
 
     var MixinReducerModel = (function () {
       var _this,
-          _state         = requireNew('nori/model/SimpleStore'),
+          _state,
           _stateReducers = [];
 
       //----------------------------------------------------------------------------
@@ -1732,6 +1739,10 @@ define('nori/model/MixinReducerModel',
        */
       function initializeReducerModel() {
         _this = this;
+
+        var simpleStore = require('nori/model/SimpleStore');
+        _state = simpleStore();
+
         Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
         if (!_stateReducers) {
@@ -1820,7 +1831,7 @@ define('nori/model/MixinReducerModel',
 define('nori/model/SimpleStore',
   function (require, module, exports) {
 
-    var SimpleStore = (function () {
+    var SimpleStore = function () {
       var _state   = Object.create(null),
           _subject = new Rx.Subject();
 
@@ -1856,7 +1867,7 @@ define('nori/model/SimpleStore',
         setState : setState
       };
 
-    }());
+    };
 
     module.exports = SimpleStore;
 
@@ -2133,17 +2144,17 @@ define('nori/view/MixinComponentViews',
       /**
        * Map a route to a module view controller
        * @param templateID
-       * @param componentModule
+       * @param componentModuleID
        * @param isRoute True | False
        */
-      function mapViewComponent(templateID, componentModule, isRoute, mountPoint) {
-        if (typeof componentModule === 'string') {
-          componentModule = requireNew(componentModule);
+      function mapViewComponent(templateID, componentModuleID, isRoute, mountPoint) {
+        if (typeof componentModuleID !== 'string') {
+          throw new Error('MixinComponentViews, mapViewComponent: Component module must be module ID string.');
         }
 
         _componentViewMap[templateID] = {
           htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + templateID),
-          controller  : createComponentView(componentModule),
+          controller  : createComponentView(componentModuleID),
           isRouteView : isRoute,
           mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
         };
@@ -2151,15 +2162,20 @@ define('nori/view/MixinComponentViews',
 
       /**
        * Factory to create component view modules
-       * @param extras
+       * @param moduleID
        * @returns {*}
        */
-      function createComponentView(extras) {
-        return Nori.assignArray({}, [
-          requireNew('nori/view/ViewComponent'),
-          requireNew('nori/view/MixinEventDelegator'),
-          extras
-        ]);
+      function createComponentView(moduleID) {
+        var componentViewFactory   = require('nori/view/ViewComponent'),
+            eventDelegatorFactory  = require('nori/view/MixinEventDelegator'),
+            customComponentFactory = require(moduleID),
+            component              = Nori.assignArray({}, [
+              componentViewFactory(),
+              eventDelegatorFactory(),
+              customComponentFactory()
+            ]);
+
+        return component;
       }
 
       /**
@@ -2266,7 +2282,7 @@ define('nori/view/MixinComponentViews',
 define('nori/view/MixinEventDelegator',
   function (require, module, exports) {
 
-    var MixinEventDelegator = (function () {
+    var MixinEventDelegator = function () {
 
       var _eventsMap,
           _eventSubscribers;
@@ -2338,7 +2354,7 @@ define('nori/view/MixinEventDelegator',
         delegateEvents  : delegateEvents
       };
 
-    }());
+    };
 
     module.exports = MixinEventDelegator;
 
@@ -2409,7 +2425,9 @@ define('nori/view/MixinNudoruControls',
 define('nori/view/ViewComponent',
   function (require, module, exports) {
 
-    var ViewComponent = (function () {
+    var id = 0;
+
+    var ViewComponent = function () {
 
       var _isInitialized = false,
           _initialProps,
@@ -2731,7 +2749,7 @@ define('nori/view/ViewComponent',
         getChildren: getChildren
       };
 
-    }());
+    };
 
     module.exports = ViewComponent;
 
@@ -2740,7 +2758,7 @@ define('nori/view/ViewComponent',
 define('nori/Nori',
   function (require, module, exports) {
 
-    var Nori = (function () {
+    var Nori = function () {
 
         var _model,
             _view,
@@ -2824,9 +2842,11 @@ define('nori/Nori',
          * @returns {*}
          */
         function createApplicationModel(extras) {
+          var observable = require('nori/utils/MixinObservableSubject');
+
           return assignArray({}, [
             require('nori/model/MixinMapFactory'),
-            require('nori/utils/MixinObservableSubject'),
+            observable(),
             require('nori/model/MixinReducerModel'),
             extras
           ]);
@@ -2838,11 +2858,13 @@ define('nori/Nori',
          * @returns {*}
          */
         function createApplicationView(extras) {
+          var eventDelegator = require('nori/view/MixinEventDelegator');
+
           return assignArray({}, [
             require('nori/view/ApplicationView'),
             require('nori/view/MixinNudoruControls'),
             require('nori/view/MixinComponentViews'),
-            requireNew('nori/view/MixinEventDelegator'),
+            eventDelegator(),
             extras
           ]);
         }
@@ -2903,7 +2925,7 @@ define('nori/Nori',
           withAttr              : withAttr
         };
 
-      }());
+      };
 
     module.exports = Nori;
 

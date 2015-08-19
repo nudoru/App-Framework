@@ -14,7 +14,7 @@ define('nori/model/MixinReducerModel',
 
     var MixinReducerModel = (function () {
       var _this,
-          _state         = requireNew('nori/model/SimpleStore'),
+          _state,
           _stateReducers = [];
 
       //----------------------------------------------------------------------------
@@ -49,6 +49,10 @@ define('nori/model/MixinReducerModel',
        */
       function initializeReducerModel() {
         _this = this;
+
+        var simpleStore = require('nori/model/SimpleStore');
+        _state = simpleStore();
+
         Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
         if (!_stateReducers) {

@@ -1,7 +1,7 @@
 define('nori/Nori',
   function (require, module, exports) {
 
-    var Nori = (function () {
+    var Nori = function () {
 
         var _model,
             _view,
@@ -85,9 +85,11 @@ define('nori/Nori',
          * @returns {*}
          */
         function createApplicationModel(extras) {
+          var observable = require('nori/utils/MixinObservableSubject');
+
           return assignArray({}, [
             require('nori/model/MixinMapFactory'),
-            require('nori/utils/MixinObservableSubject'),
+            observable(),
             require('nori/model/MixinReducerModel'),
             extras
           ]);
@@ -99,11 +101,13 @@ define('nori/Nori',
          * @returns {*}
          */
         function createApplicationView(extras) {
+          var eventDelegator = require('nori/view/MixinEventDelegator');
+
           return assignArray({}, [
             require('nori/view/ApplicationView'),
             require('nori/view/MixinNudoruControls'),
             require('nori/view/MixinComponentViews'),
-            requireNew('nori/view/MixinEventDelegator'),
+            eventDelegator(),
             extras
           ]);
         }
@@ -164,7 +168,7 @@ define('nori/Nori',
           withAttr              : withAttr
         };
 
-      }());
+      };
 
     module.exports = Nori;
 

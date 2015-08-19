@@ -6,7 +6,7 @@ define('nori/utils/MixinObservableSubject',
 
   function (require, module, exports) {
 
-    var MixinObservableSubject = (function () {
+    var MixinObservableSubject = function () {
       //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
       var _subject = new Rx.BehaviorSubject();
 
@@ -41,7 +41,7 @@ define('nori/utils/MixinObservableSubject',
         getLastNotification: getLastNotification
       };
 
-    }());
+    };
 
     module.exports = MixinObservableSubject;
 

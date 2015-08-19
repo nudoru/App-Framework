@@ -6,7 +6,9 @@
 define('nori/view/ViewComponent',
   function (require, module, exports) {
 
-    var ViewComponent = (function () {
+    var id = 0;
+
+    var ViewComponent = function () {
 
       var _isInitialized = false,
           _initialProps,
@@ -328,7 +330,7 @@ define('nori/view/ViewComponent',
         getChildren: getChildren
       };
 
-    }());
+    };
 
     module.exports = ViewComponent;
 

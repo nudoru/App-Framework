@@ -7,6 +7,7 @@ define('nori/utils/Templating',
   function (require, module, exports) {
 
     var Templating = (function () {
+
       var _templateHTMLCache = Object.create(null),
           _templateCache     = Object.create(null),
           _DOMUtils          = require('nudoru/browser/DOMUtils');

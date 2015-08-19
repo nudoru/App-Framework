@@ -10,7 +10,8 @@
     window.onload = function() {
 
       // Create the application instance
-      window.Nori = require('nori/Nori');
+      var nori = require('nori/Nori');
+      window.Nori = nori();
       window.APP = Nori.createApplication(require('app/App'));
 
       // Might need this janky timeout in some situations

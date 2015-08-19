@@ -5,10 +5,10 @@
 define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
-    var DebugControlsTestingSubView = (function () {
+    var DebugComponent = function () {
 
-      var _lIpsum            = require('nudoru/browser/Lorem'),
-          _toolTip           = require('nudoru/component/ToolTipView'),
+      var _lIpsum             = require('nudoru/browser/Lorem'),
+          _toolTip            = require('nudoru/component/ToolTipView'),
           _noriEventConstants = require('nori/events/EventConstants'),
           _actionOneEl,
           _actionTwoEl,
@@ -24,6 +24,10 @@ define('app/view/DebugControlsTestingSubView',
         }
       }
 
+
+      function DEBUG() {
+        //
+      }
 
       function componentDidMount() {
         console.log(this.getID() + ', subview did mount');
@@ -149,12 +153,14 @@ define('app/view/DebugControlsTestingSubView',
       }
 
       return {
+        DEBUG            : DEBUG,
         initialize       : initialize,
         componentDidMount: componentDidMount
       };
 
-    }());
+    };
 
-    module.exports = DebugControlsTestingSubView;
+    module.exports = DebugComponent;
+
 
   });

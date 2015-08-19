@@ -7,6 +7,7 @@ define('nori/utils/Router',
   function (require, module, exports) {
 
     var Router = (function () {
+
       var _subject            = new Rx.Subject(),
           _objUtils           = require('nudoru/core/ObjectUtils'),
           _noriEventConstants = require('nori/events/EventConstants');

@@ -1,7 +1,7 @@
 define('nori/model/SimpleStore',
   function (require, module, exports) {
 
-    var SimpleStore = (function () {
+    var SimpleStore = function () {
       var _state   = Object.create(null),
           _subject = new Rx.Subject();
 
@@ -37,7 +37,7 @@ define('nori/model/SimpleStore',
         setState : setState
       };
 
-    }());
+    };
 
     module.exports = SimpleStore;
 

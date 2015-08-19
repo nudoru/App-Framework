@@ -6,7 +6,7 @@
 define('app/view/TemplateViewComponent',
   function (require, module, exports) {
 
-    var TemplateViewComponent = (function () {
+    var Component = function () {
 
       var _this;
 
@@ -18,6 +18,7 @@ define('app/view/TemplateViewComponent',
         if (!this.isInitialized()) {
           _this = this;
           this.initializeComponent(initObj);
+
           // associate with stores. componentWillUpdate() fires when it changes
           //this.bindMap(map id string or map object);
           // custom init below here
@@ -31,7 +32,7 @@ define('app/view/TemplateViewComponent',
         // Update state from stores
         var obj = Object.create(null);
         // build it
-        _this.setState(obj);
+        this.setState(obj);
       }
 
       // Example of custom render
@@ -76,8 +77,8 @@ define('app/view/TemplateViewComponent',
         //componentDidUnmount : componentDidUnmount
       };
 
-    }());
+    };
 
-    module.exports = TemplateViewComponent;
+    module.exports = Component;
 
   });

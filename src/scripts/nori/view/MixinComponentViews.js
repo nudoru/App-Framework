@@ -59,17 +59,17 @@ define('nori/view/MixinComponentViews',
       /**
        * Map a route to a module view controller
        * @param templateID
-       * @param componentModule
+       * @param componentModuleID
        * @param isRoute True | False
        */
-      function mapViewComponent(templateID, componentModule, isRoute, mountPoint) {
-        if (typeof componentModule === 'string') {
-          componentModule = requireNew(componentModule);
+      function mapViewComponent(templateID, componentModuleID, isRoute, mountPoint) {
+        if (typeof componentModuleID !== 'string') {
+          throw new Error('MixinComponentViews, mapViewComponent: Component module must be module ID string.');
         }
 
         _componentViewMap[templateID] = {
           htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + templateID),
-          controller  : createComponentView(componentModule),
+          controller  : createComponentView(componentModuleID),
           isRouteView : isRoute,
           mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
         };
@@ -77,15 +77,20 @@ define('nori/view/MixinComponentViews',
 
       /**
        * Factory to create component view modules
-       * @param extras
+       * @param moduleID
        * @returns {*}
        */
-      function createComponentView(extras) {
-        return Nori.assignArray({}, [
-          requireNew('nori/view/ViewComponent'),
-          requireNew('nori/view/MixinEventDelegator'),
-          extras
-        ]);
+      function createComponentView(moduleID) {
+        var componentViewFactory   = require('nori/view/ViewComponent'),
+            eventDelegatorFactory  = require('nori/view/MixinEventDelegator'),
+            customComponentFactory = require(moduleID),
+            component              = Nori.assignArray({}, [
+              componentViewFactory(),
+              eventDelegatorFactory(),
+              customComponentFactory()
+            ]);
+
+        return component;
       }
 
       /**

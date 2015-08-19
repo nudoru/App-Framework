@@ -6,7 +6,7 @@
 define('nori/model/Map',
   function (require, module, exports) {
 
-    var Map = (function () {
+    var Map = function () {
       var _this,
           _id,
           _parentCollection,
@@ -304,7 +304,7 @@ define('nori/model/Map',
         getParentCollection: getParentCollection
       };
 
-    }());
+    };
 
     module.exports = Map;
 

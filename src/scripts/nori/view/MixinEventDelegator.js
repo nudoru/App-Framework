@@ -18,7 +18,7 @@
 define('nori/view/MixinEventDelegator',
   function (require, module, exports) {
 
-    var MixinEventDelegator = (function () {
+    var MixinEventDelegator = function () {
 
       var _eventsMap,
           _eventSubscribers;
@@ -90,7 +90,7 @@ define('nori/view/MixinEventDelegator',
         delegateEvents  : delegateEvents
       };
 
-    }());
+    };
 
     module.exports = MixinEventDelegator;
 
