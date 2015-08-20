@@ -193,6 +193,36 @@ define('nudoru/browser/DOMUtils',
         }
       },
 
+      // From impress.js
+      applyCSS: function (el, props) {
+        var key, pkey;
+        for (key in props) {
+          if (props.hasOwnProperty(key)) {
+            el.style[key] = props[key];
+          }
+        }
+        return el;
+      },
+
+      // from impress.js
+      // `computeWindowScale` counts the scale factor between window size and size
+      // defined for the presentation in the config.
+      computeWindowScale: function (config) {
+        var hScale = window.innerHeight / config.height,
+            wScale = window.innerWidth / config.width,
+            scale  = hScale > wScale ? wScale : hScale;
+
+        if (config.maxScale && scale > config.maxScale) {
+          scale = config.maxScale;
+        }
+
+        if (config.minScale && scale < config.minScale) {
+          scale = config.minScale;
+        }
+
+        return scale;
+      },
+
       /**
        * Get an array of elements in the container returned as Array instead of a Node list
        */
