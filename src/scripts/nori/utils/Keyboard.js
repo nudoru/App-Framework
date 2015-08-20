@@ -3,6 +3,7 @@ define('nori/utils/Keyboard',
 
     /**
      * Maps keyboard presses to a handler function
+     * TODO Implement modifiers
      *
      * Example
      var Keyboard = require('nori/utils/Keyboard'),
