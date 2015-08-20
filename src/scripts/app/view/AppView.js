@@ -21,8 +21,10 @@ define('app/view/AppView',
 
         _this.mapRouteToViewComponent('/', 'default', 'app/view/TemplateViewComponent');
 
+        var testComponent = require('app/view/TemplateViewComponent2');
+
         // For testing
-        _this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponent');
+        _this.mapRouteToViewComponent('/styles', 'debug-styletest', testComponent);
         _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponent');
         _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 

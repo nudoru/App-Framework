@@ -59,17 +59,13 @@ define('nori/view/MixinComponentViews',
       /**
        * Map a route to a module view controller
        * @param templateID
-       * @param componentModuleID
+       * @param componentIDorObj
        * @param isRoute True | False
        */
-      function mapViewComponent(templateID, componentModuleID, isRoute, mountPoint) {
-        if (typeof componentModuleID !== 'string') {
-          throw new Error('MixinComponentViews, mapViewComponent: Component module must be module ID string.');
-        }
-
+      function mapViewComponent(templateID, componentIDorObj, isRoute, mountPoint) {
         _componentViewMap[templateID] = {
           htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + templateID),
-          controller  : createComponentView(componentModuleID),
+          controller  : createComponentView(componentIDorObj),
           isRouteView : isRoute,
           mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
         };
@@ -80,14 +76,20 @@ define('nori/view/MixinComponentViews',
        * @param moduleID
        * @returns {*}
        */
-      function createComponentView(moduleID) {
+      function createComponentView(componentIDorObj) {
+        var componentObj = componentIDorObj;
+
+        if(typeof  componentIDorObj === 'string') {
+          var componentFactory = require(componentIDorObj);
+          componentObj = componentFactory();
+        }
+
         var componentViewFactory   = require('nori/view/ViewComponent'),
             eventDelegatorFactory  = require('nori/view/MixinEventDelegator'),
-            customComponentFactory = require(moduleID),
             component              = Nori.assignArray({}, [
               componentViewFactory(),
               eventDelegatorFactory(),
-              customComponentFactory()
+              componentObj
             ]);
 
         return component;
@@ -172,6 +174,15 @@ define('nori/view/MixinComponentViews',
         _currentRouteViewID = '';
       }
 
+      /**
+       * Inspired by React, alternate way to create a view component
+       * @param componentObj
+       * @returns {*}
+       */
+      function createComponent(componentObj) {
+        return createComponentView(componentObj);
+      }
+
       //----------------------------------------------------------------------------
       //  API
       //----------------------------------------------------------------------------
@@ -182,10 +193,11 @@ define('nori/view/MixinComponentViews',
         setRouteViewMountPoint  : setRouteViewMountPoint,
         template                : getTemplate,
         mapViewComponent        : mapViewComponent,
+        createComponentView     : createComponentView,
         showViewComponent       : showViewComponent,
         mapRouteToViewComponent : mapRouteToViewComponent,
         showRouteViewComponent  : showRouteViewComponent,
-        applyMixin              : applyMixin
+        applyMixin              : applyMixin,
       };
 
     };
