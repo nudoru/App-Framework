@@ -3,6 +3,8 @@ define('nori/utils/Keyboard',
 
     /**
      * Maps keyboard presses to a handler function
+     * Dependencies: RxJS
+     *
      * TODO Implement modifiers
      *
      * Example
