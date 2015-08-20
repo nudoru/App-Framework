@@ -73,34 +73,45 @@ define('app/model/AppModel',
         _noriEventConstants = require('nori/events/EventConstants');
 
     var AppModel = Nori.createApplicationModel({
-      initialize: function () {
-        this.initializeReducers();
 
-        // load data and then dispatch this
+      initialize: function () {
+        this.addReducer(this.defaultReducerFunction);
+        this.initializeReducerModel();
+
+        this.modelReady();
+      },
+
+      modelReady: function() {
+        // testing _noriEvents.changeModelState('', {foo:'bar'});
         _noriEvents.applicationModelInitialized();
       },
 
-      initializeReducers: function () {
-        this.addReducer(this.baseReducerFunction);
-        this.initializeReducerModel();
-      },
-
-      handleStateMutation: function () {
-        //console.log('handle possible state mutation');
-      },
-
-      baseReducerFunction: function (state, event) {
+      /**
+       * Modify the state based on incoming events. Can compose state transformations
+       * return _.assign({}, state, otherStateTransformer(state));
+       * @param state
+       * @param event
+       * @returns {*}
+       */
+      defaultReducerFunction: function (state, event) {
         state = state || {};
-        //console.log('baseReducerFunction', state, event);
-        // add switch for every event type that needs to mutate state
+
         switch (event.type) {
+
           case _noriEventConstants.CHANGE_MODEL_STATE:
-            // can compose other reducers
-            // return _.assign({}, state, otherStateTransformer(state));
-            return _.assign({}, state, {prop: event.payload});
+            return _.assign({}, state, event.payload.data);
+
           default:
             return state;
         }
+      },
+
+      /**
+       * Handled update to state, don't
+       */
+      handleStateMutation: function () {
+        // Eventbus _noriEvents.modelStateChanged();
+        this.notifySubscribers();
       }
 
     });
@@ -331,10 +342,12 @@ define('app/view/TemplateViewComponent',
       initialize: function (initObj) {
         //Bind to a map, update will be called on changes to the map
         //this.bindMap(map id string or map object);
+        //this.bindMap(APP.model());
         //custom init below here
       },
 
       componentWillUpdate: function () {
+        //console.log('update! ',APP.model().getState());
         var obj = Object.create(null);
         obj.greeting = 'Hello world!';
         this.setState(obj);

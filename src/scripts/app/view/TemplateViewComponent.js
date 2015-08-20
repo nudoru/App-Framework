@@ -6,10 +6,12 @@ define('app/view/TemplateViewComponent',
       initialize: function (initObj) {
         //Bind to a map, update will be called on changes to the map
         //this.bindMap(map id string or map object);
+        //this.bindMap(APP.model());
         //custom init below here
       },
 
       componentWillUpdate: function () {
+        //console.log('update! ',APP.model().getState());
         var obj = Object.create(null);
         obj.greeting = 'Hello world!';
         this.setState(obj);

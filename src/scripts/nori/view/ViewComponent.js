@@ -49,6 +49,10 @@ define('nori/view/ViewComponent',
           throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
         }
 
+        if(!isFunction(map.subscribe)) {
+          throw new Error('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
+        }
+
         map.subscribe(this.update.bind(this));
       }
 
@@ -87,7 +91,6 @@ define('nori/view/ViewComponent',
        * @returns {*}
        */
       function componentUpdate() {
-        console.log('component update');
         // make a copy of last state
         var previousState = _.assign({}, this.getState());
 
@@ -139,7 +142,6 @@ define('nori/view/ViewComponent',
        * @returns {*}
        */
       function componentRender() {
-        console.log('componentRender');
         if (this.componentWillRender) {
           this.componentWillRender();
         }

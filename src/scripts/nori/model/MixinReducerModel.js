@@ -15,7 +15,9 @@ define('nori/model/MixinReducerModel',
     var MixinReducerModel = function () {
       var _this,
           _state,
-          _stateReducers = [];
+          _stateReducers      = [],
+          _simpleStoreFactory = require('nori/model/SimpleStore'),
+          _noriEventConstants = require('nori/events/EventConstants');
 
       //----------------------------------------------------------------------------
       //  Accessors
@@ -49,9 +51,7 @@ define('nori/model/MixinReducerModel',
        */
       function initializeReducerModel() {
         _this = this;
-
-        var simpleStore = require('nori/model/SimpleStore');
-        _state = simpleStore();
+        _state = _simpleStoreFactory();
 
         Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
@@ -69,6 +69,9 @@ define('nori/model/MixinReducerModel',
        */
       function handleApplicationEvents(eventObject) {
         //console.log('ReducerModel Event occurred: ', eventObject);
+        if (eventObject.type === _noriEventConstants.MODEL_STATE_CHANGED || eventObject.type === _noriEventConstants.MODEL_DATA_CHANGED) {
+          return;
+        }
         applyReducers(eventObject);
       }
 
@@ -79,7 +82,7 @@ define('nori/model/MixinReducerModel',
       }
 
       /**
-       * API hook to handled state updates
+       * API hook to handle state updates
        */
       function handleStateMutation() {
         // override this
