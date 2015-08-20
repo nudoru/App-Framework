@@ -1,176 +1,170 @@
-define('nori/Nori',
-  function (require, module, exports) {
+var Nori = (function () {
 
-    var Nori = function () {
+  var _model,
+      _view,
+      _dispatcher = require('nori/utils/Dispatcher'),
+      _router     = require('nori/utils/Router');
 
-        var _model,
-            _view,
-            _dispatcher = require('nori/utils/Dispatcher'),
-            _router     = require('nori/utils/Router');
+  //----------------------------------------------------------------------------
+  //  Accessors
+  //----------------------------------------------------------------------------
 
-        //----------------------------------------------------------------------------
-        //  Accessors
-        //----------------------------------------------------------------------------
+  function getDispatcher() {
+    return _dispatcher;
+  }
 
-        function getDispatcher() {
-          return _dispatcher;
-        }
+  function getRouter() {
+    return _router;
+  }
 
-        function getRouter() {
-          return _router;
-        }
+  function getModel() {
+    return _model;
+  }
 
-        function getModel() {
-          return _model;
-        }
+  function getView() {
+    return _view;
+  }
 
-        function getView() {
-          return _view;
-        }
+  function getConfig() {
+    return _.assign({}, (window.APP_CONFIG_DATA || {}));
+  }
 
-        function getConfig() {
-          return _.assign({}, (window.APP_CONFIG_DATA || {}));
-        }
+  function getCurrentRoute() {
+    return _router.getCurrentRoute();
+  }
 
-        function getCurrentRoute() {
-          return _router.getCurrentRoute();
-        }
+  //----------------------------------------------------------------------------
+  //  Initialize
+  //----------------------------------------------------------------------------
 
-        //----------------------------------------------------------------------------
-        //  Initialize
-        //----------------------------------------------------------------------------
+  /**
+   * Init the app and inject the model and view
+   * @param initObj view, model
+   */
+  function initializeApplication(initObj) {
+    _router.initialize();
+    _view  = initObj.view || createApplicationView({});
+    _model = initObj.model || createApplicationModel({});
+  }
 
-        /**
-         * Init the app and inject the model and view
-         * @param initObj view, model
-         */
-        function initializeApplication(initObj) {
-          _router.initialize();
-          _view  = initObj.view || createApplicationView({});
-          _model = initObj.model || createApplicationModel({});
-        }
+  //----------------------------------------------------------------------------
+  //  Factories - concatenative inheritance, decorators
+  //----------------------------------------------------------------------------
 
-        //----------------------------------------------------------------------------
-        //  Factories - concatenative inheritance, decorators
-        //----------------------------------------------------------------------------
+  /**
+   * Merges a collection of objects
+   * @param target
+   * @param sourceArray
+   * @returns {*}
+   */
+  function assignArray(target, sourceArray) {
+    sourceArray.forEach(function (source) {
+      target = _.assign(target, source);
+    });
+    return target;
+  }
 
-        /**
-         * Merges a collection of objects
-         * @param target
-         * @param sourceArray
-         * @returns {*}
-         */
-        function assignArray(target, sourceArray) {
-          sourceArray.forEach(function (source) {
-            target = _.assign(target, source);
-          });
-          return target;
-        }
+  /**
+   * Create a new Nori application instance
+   * @param custom
+   * @returns {*}
+   */
+  function createApplication(custom) {
+    return assignArray({}, [
+      this,
+      custom
+    ]);
+  }
 
-        /**
-         * Create a new Nori application instance
-         * @param extras
-         * @returns {*}
-         */
-        function createApplication(extras) {
-          return assignArray({}, [
-            this,
-            extras
-          ]);
-        }
+  /**
+   * Creates main application model
+   * @param custom
+   * @returns {*}
+   */
+  function createApplicationModel(custom) {
+    var observable = require('nori/utils/MixinObservableSubject');
 
-        /**
-         * Creates main application model
-         * @param extras
-         * @returns {*}
-         */
-        function createApplicationModel(extras) {
-          var observable = require('nori/utils/MixinObservableSubject');
+    return assignArray({}, [
+      require('nori/model/MixinMapFactory'),
+      observable(),
+      require('nori/model/MixinReducerModel'),
+      custom
+    ]);
+  }
 
-          return assignArray({}, [
-            require('nori/model/MixinMapFactory'),
-            observable(),
-            require('nori/model/MixinReducerModel'),
-            extras
-          ]);
-        }
+  /**
+   * Creates main application view
+   * @param custom
+   * @returns {*}
+   */
+  function createApplicationView(custom) {
+    var eventDelegator = require('nori/view/MixinEventDelegator');
 
-        /**
-         * Creates main application view
-         * @param extras
-         * @returns {*}
-         */
-        function createApplicationView(extras) {
-          var eventDelegator = require('nori/view/MixinEventDelegator');
+    return assignArray({}, [
+      require('nori/view/ApplicationView'),
+      require('nori/view/MixinNudoruControls'),
+      require('nori/view/MixinComponentViews'),
+      eventDelegator(),
+      custom
+    ]);
+  }
 
-          return assignArray({}, [
-            require('nori/view/ApplicationView'),
-            require('nori/view/MixinNudoruControls'),
-            require('nori/view/MixinComponentViews'),
-            eventDelegator(),
-            extras
-          ]);
-        }
+  //----------------------------------------------------------------------------
+  // Functional utils from Mithril
+  //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
+  //----------------------------------------------------------------------------
 
-        //----------------------------------------------------------------------------
-        // Functional utils from Mithril
-        //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
-        //----------------------------------------------------------------------------
+  // http://mithril.js.org/mithril.prop.html
+  function prop(store) {
+    //if (isFunction(store.then)) {
+    //  // handle a promise
+    //}
+    var gettersetter = function () {
+      if (arguments.length) {
+        store = arguments[0];
+      }
+      return store;
+    };
 
-        // http://mithril.js.org/mithril.prop.html
-        function prop(store) {
-          //if (isFunction(store.then)) {
-          //  // handle a promise
-          //}
-          var gettersetter = function () {
-            if (arguments.length) {
-              store = arguments[0];
-            }
-            return store;
-          };
+    gettersetter.toJSON = function () {
+      return store;
+    };
 
-          gettersetter.toJSON = function () {
-            return store;
-          };
+    return gettersetter;
+  }
 
-          return gettersetter;
-        }
+  // http://mithril.js.org/mithril.withAttr.html
+  function withAttr(prop, callback, context) {
+    return function (e) {
+      e = e || event;
 
-        // http://mithril.js.org/mithril.withAttr.html
-        function withAttr(prop, callback, context) {
-          return function (e) {
-            e = e || event;
+      var currentTarget = e.currentTarget || this,
+          cntx          = context || this;
 
-            var currentTarget = e.currentTarget || this,
-                cntx          = context || this;
+      callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
+    };
+  }
 
-            callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
-          };
-        }
+  //----------------------------------------------------------------------------
+  //  API
+  //----------------------------------------------------------------------------
 
-        //----------------------------------------------------------------------------
-        //  API
-        //----------------------------------------------------------------------------
+  return {
+    initializeApplication : initializeApplication,
+    config                : getConfig,
+    dispatcher            : getDispatcher,
+    router                : getRouter,
+    model                 : getModel,
+    view                  : getView,
+    createApplication     : createApplication,
+    createApplicationModel: createApplicationModel,
+    createApplicationView : createApplicationView,
+    getCurrentRoute       : getCurrentRoute,
+    assignArray           : assignArray,
+    prop                  : prop,
+    withAttr              : withAttr
+  };
 
-        return {
-          initializeApplication : initializeApplication,
-          config                : getConfig,
-          dispatcher            : getDispatcher,
-          router                : getRouter,
-          model                 : getModel,
-          view                  : getView,
-          createApplication     : createApplication,
-          createApplicationModel: createApplicationModel,
-          createApplicationView : createApplicationView,
-          getCurrentRoute       : getCurrentRoute,
-          assignArray           : assignArray,
-          prop                  : prop,
-          withAttr              : withAttr
-        };
+}());
 
-      };
-
-    module.exports = Nori;
-
-  });
 

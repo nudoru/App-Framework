@@ -9,36 +9,36 @@
 define('app/App',
   function (require, module, exports) {
 
-    var App = function () {
+    var _noriEventConstants = require('nori/events/EventConstants');
 
-      var _this,
-          _noriEventConstants = require('nori/events/EventConstants');
+    var App = Nori.createApplication({
 
       /**
        * Application bootstrapper. Create the model and views and pass to the app
        * to initialize.
        */
-      function initialize() {
-        _this = this;
+      initialize: function () {
+        var appview  = require('app/view/AppView'),
+            appmodel = require('app/model/AppModel');
 
-        Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
+        Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, this.onModelInitialized.bind(this), true);
 
         // 1
         this.initializeApplication({
-          model: this.createApplicationModel(require('app/model/AppModel')),
-          view : this.createApplicationView(require('app/view/AppView'))
+          model: appmodel,
+          view : appview
         });
 
         // 2
         this.view().initialize();
         // model will acquire data as needed and dispatch event when complete
         this.model().initialize();
-      }
+      },
 
       /**
        * When model data has been loaded
        */
-      function onModelInitialized() {
+      onModelInitialized: function () {
         // 3
         this.view().removeLoadingMessage();
         this.view().render();
@@ -46,17 +46,8 @@ define('app/App',
         // 4 Start with the route in the current URL
         this.view().showViewFromURLHash();
       }
+    });
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
-
-      return {
-        initialize: initialize
-      };
-
-    };
-
-    module.exports = App();
+    module.exports = App;
 
   });

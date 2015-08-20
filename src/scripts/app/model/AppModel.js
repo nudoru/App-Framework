@@ -1,50 +1,27 @@
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var AppModel = function () {
+    var _noriEvents         = require('nori/events/EventCreator'),
+        _noriEventConstants = require('nori/events/EventConstants');
 
-      var _this,
-          _noriEvents         = require('nori/events/EventCreator'),
-          _noriEventConstants = require('nori/events/EventConstants');
-
-      //----------------------------------------------------------------------------
-      //  Init
-      //----------------------------------------------------------------------------
-
-      function initialize() {
-        _this = this;
-
-        initializeReducers();
+    var AppModel = Nori.createApplicationModel({
+      initialize: function () {
+        this.initializeReducers();
 
         // load data and then dispatch this
         _noriEvents.applicationModelInitialized();
-      }
+      },
 
-      //----------------------------------------------------------------------------
-      //  State / reducers
-      //----------------------------------------------------------------------------
+      initializeReducers: function () {
+        this.addReducer(this.baseReducerFunction);
+        this.initializeReducerModel();
+      },
 
-      /**
-       * Initialize 'nori/model/MixinReducerModel' functionality
-       */
-      function initializeReducers() {
-        _this.addReducer(baseReducerFunction);
-        _this.initializeReducerModel();
-      }
-
-      /**
-       * Handle possible state changes after reducers run
-       * any app event > apply reducers > set new state (> subs notified) > handle state mutation
-       */
-      function handleStateMutation() {
+      handleStateMutation: function () {
         //console.log('handle possible state mutation');
-      }
+      },
 
-      /**
-       * Template reducer function
-       * Model state isn't modified, current state is passed in and mutated state returned
-       */
-      function baseReducerFunction(state, event) {
+      baseReducerFunction: function (state, event) {
         state = state || {};
         //console.log('baseReducerFunction', state, event);
         // add switch for every event type that needs to mutate state
@@ -58,21 +35,8 @@ define('app/model/AppModel',
         }
       }
 
-      //----------------------------------------------------------------------------
-      //  Handle server communication
-      //----------------------------------------------------------------------------
+    });
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
-
-      return {
-        initialize         : initialize,
-        handleStateMutation: handleStateMutation
-      };
-
-    };
-
-    module.exports = AppModel();
+    module.exports = AppModel;
 
   });

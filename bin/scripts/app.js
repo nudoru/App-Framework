@@ -1,36 +1,36 @@
 define('app/App',
   function (require, module, exports) {
 
-    var App = function () {
+    var _noriEventConstants = require('nori/events/EventConstants');
 
-      var _this,
-          _noriEventConstants = require('nori/events/EventConstants');
+    var App = Nori.createApplication({
 
       /**
        * Application bootstrapper. Create the model and views and pass to the app
        * to initialize.
        */
-      function initialize() {
-        _this = this;
+      initialize: function () {
+        var appview  = require('app/view/AppView'),
+            appmodel = require('app/model/AppModel');
 
-        Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, onModelInitialized.bind(this), true);
+        Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, this.onModelInitialized.bind(this), true);
 
         // 1
         this.initializeApplication({
-          model: this.createApplicationModel(require('app/model/AppModel')),
-          view : this.createApplicationView(require('app/view/AppView'))
+          model: appmodel,
+          view : appview
         });
 
         // 2
         this.view().initialize();
         // model will acquire data as needed and dispatch event when complete
         this.model().initialize();
-      }
+      },
 
       /**
        * When model data has been loaded
        */
-      function onModelInitialized() {
+      onModelInitialized: function () {
         // 3
         this.view().removeLoadingMessage();
         this.view().render();
@@ -38,18 +38,9 @@ define('app/App',
         // 4 Start with the route in the current URL
         this.view().showViewFromURLHash();
       }
+    });
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
-
-      return {
-        initialize: initialize
-      };
-
-    };
-
-    module.exports = App();
+    module.exports = App;
 
   });
 
@@ -90,50 +81,27 @@ define('app/events/EventCreator',
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var AppModel = function () {
+    var _noriEvents         = require('nori/events/EventCreator'),
+        _noriEventConstants = require('nori/events/EventConstants');
 
-      var _this,
-          _noriEvents         = require('nori/events/EventCreator'),
-          _noriEventConstants = require('nori/events/EventConstants');
-
-      //----------------------------------------------------------------------------
-      //  Init
-      //----------------------------------------------------------------------------
-
-      function initialize() {
-        _this = this;
-
-        initializeReducers();
+    var AppModel = Nori.createApplicationModel({
+      initialize: function () {
+        this.initializeReducers();
 
         // load data and then dispatch this
         _noriEvents.applicationModelInitialized();
-      }
+      },
 
-      //----------------------------------------------------------------------------
-      //  State / reducers
-      //----------------------------------------------------------------------------
+      initializeReducers: function () {
+        this.addReducer(this.baseReducerFunction);
+        this.initializeReducerModel();
+      },
 
-      /**
-       * Initialize 'nori/model/MixinReducerModel' functionality
-       */
-      function initializeReducers() {
-        _this.addReducer(baseReducerFunction);
-        _this.initializeReducerModel();
-      }
-
-      /**
-       * Handle possible state changes after reducers run
-       * any app event > apply reducers > set new state (> subs notified) > handle state mutation
-       */
-      function handleStateMutation() {
+      handleStateMutation: function () {
         //console.log('handle possible state mutation');
-      }
+      },
 
-      /**
-       * Template reducer function
-       * Model state isn't modified, current state is passed in and mutated state returned
-       */
-      function baseReducerFunction(state, event) {
+      baseReducerFunction: function (state, event) {
         state = state || {};
         //console.log('baseReducerFunction', state, event);
         // add switch for every event type that needs to mutate state
@@ -147,22 +115,9 @@ define('app/model/AppModel',
         }
       }
 
-      //----------------------------------------------------------------------------
-      //  Handle server communication
-      //----------------------------------------------------------------------------
+    });
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
-
-      return {
-        initialize         : initialize,
-        handleStateMutation: handleStateMutation
-      };
-
-    };
-
-    module.exports = AppModel();
+    module.exports = AppModel;
 
   });
 
@@ -170,71 +125,50 @@ define('app/model/AppModel',
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var AppView = function () {
+    var _noriEvents         = require('nori/events/EventCreator'),
+        _noriEventConstants = require('nori/events/EventConstants');
 
-      var _this,
-          _noriEvents         = require('nori/events/EventCreator'),
-          _noriEventConstants = require('nori/events/EventConstants');
+    var AppView = Nori.createApplicationView({
 
-      //----------------------------------------------------------------------------
-      //  Initialization
-      //----------------------------------------------------------------------------
+      initialize: function () {
+        this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+        this.setRouteViewMountPoint('#contents');
 
-      function initialize() {
-        _this = this;
+        this.configureApplicationViewEvents();
 
-        _this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-        _this.setRouteViewMountPoint('#contents');
-
-        configureApplicationViewEvents();
-
-        _this.mapRouteToViewComponent('/', 'default', 'app/view/TemplateViewComponent');
+        this.mapRouteToViewComponent('/', 'default', 'app/view/TemplateViewComponent');
 
         var testComponent = require('app/view/TemplateViewComponent2');
 
         // For testing
-        _this.mapRouteToViewComponent('/styles', 'debug-styletest', testComponent);
-        _this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponent');
-        _this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
+        this.mapRouteToViewComponent('/styles', 'debug-styletest', testComponent);
+        this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponent');
+        this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
         _noriEvents.applicationViewInitialized();
-      }
+      },
 
-      function render() {
+      render: function () {
         /*
-         _this.setEvents({
+         this.setEvents({
          'click #button-id': handleButton
          });
-         _this.delegateEvents();
+         this.delegateEvents();
          */
-      }
+      },
 
-      function configureApplicationViewEvents() {
+      configureApplicationViewEvents: function () {
         Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
-          _this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
+          this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
         });
-
         Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
-          _this.alert(payload.payload.message, payload.payload.title);
+          this.alert(payload.payload.message, payload.payload.title);
         });
       }
 
-      //----------------------------------------------------------------------------
-      //  Custom
-      //----------------------------------------------------------------------------
+    });
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
-
-      return {
-        initialize: initialize,
-        render    : render
-      };
-
-    };
-
-    module.exports = AppView();
+    module.exports = AppView;
 
   });
 
@@ -512,11 +446,7 @@ define('app/view/TemplateViewComponent2',
     window.onload = function() {
 
       // Create the application instance
-      var nori = require('nori/Nori'),
-          app = require('app/App');
-
-      window.Nori = nori();
-      window.APP = Nori.createApplication(app);
+      window.APP = require('app/App');
 
       // Might need this janky timeout in some situations
       setTimeout(startApplication, 1);

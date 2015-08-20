@@ -98,11 +98,11 @@ define('nori/view/MixinComponentViews',
       /**
        * Map a route to a module view controller
        * @param templateID
-       * @param controllerModule
+       * @param componentIDorObj
        */
-      function mapRouteToViewComponent(route, templateID, controllerModule) {
+      function mapRouteToViewComponent(route, templateID, componentIDorObj) {
         _routeViewIDMap[route] = templateID;
-        mapViewComponent(templateID, controllerModule, true, _routeViewMountPoint);
+        mapViewComponent(templateID, componentIDorObj, true, _routeViewMountPoint);
       }
 
       /**
@@ -172,15 +172,6 @@ define('nori/view/MixinComponentViews',
           _componentViewMap[_currentRouteViewID].controller.unmount();
         }
         _currentRouteViewID = '';
-      }
-
-      /**
-       * Inspired by React, alternate way to create a view component
-       * @param componentObj
-       * @returns {*}
-       */
-      function createComponent(componentObj) {
-        return createComponentView(componentObj);
       }
 
       //----------------------------------------------------------------------------
