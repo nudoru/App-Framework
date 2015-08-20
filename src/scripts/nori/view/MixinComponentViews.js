@@ -78,10 +78,10 @@ define('nori/view/MixinComponentViews',
        */
       function createComponentView(componentIDorObj) {
         var componentObj = componentIDorObj;
-
         if(typeof  componentIDorObj === 'string') {
           var componentFactory = require(componentIDorObj);
           componentObj = componentFactory();
+          //componentObj = require(componentIDorObj);
         }
 
         var componentViewFactory   = require('nori/view/ViewComponent'),
@@ -91,6 +91,15 @@ define('nori/view/MixinComponentViews',
               eventDelegatorFactory(),
               componentObj
             ]);
+
+        // Overwrite the initialize function to add parent init
+        var oldInit = component.initialize,
+            newInit = function initialize(initObj) {
+              component.initializeComponent(initObj);
+              oldInit.call(component, initObj);
+            };
+
+        component.initialize = newInit;
 
         return component;
       }
@@ -131,11 +140,13 @@ define('nori/view/MixinComponentViews',
           throw new Error('No componentView mapped for id: ' + templateID);
         }
 
-        componentView.controller.initialize({
-          id        : templateID,
-          template  : componentView.htmlTemplate,
-          mountPoint: componentView.mountPoint
-        });
+        if(!componentView.controller.isInitialized()) {
+          componentView.controller.initialize({
+            id        : templateID,
+            template  : componentView.htmlTemplate,
+            mountPoint: componentView.mountPoint
+          });
+        }
 
         componentView.controller.update();
         componentView.controller.render();

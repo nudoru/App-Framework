@@ -2194,10 +2194,10 @@ define('nori/view/MixinComponentViews',
        */
       function createComponentView(componentIDorObj) {
         var componentObj = componentIDorObj;
-
         if(typeof  componentIDorObj === 'string') {
           var componentFactory = require(componentIDorObj);
           componentObj = componentFactory();
+          //componentObj = require(componentIDorObj);
         }
 
         var componentViewFactory   = require('nori/view/ViewComponent'),
@@ -2207,6 +2207,15 @@ define('nori/view/MixinComponentViews',
               eventDelegatorFactory(),
               componentObj
             ]);
+
+        // Overwrite the initialize function to add parent init
+        var oldInit = component.initialize,
+            newInit = function initialize(initObj) {
+              component.initializeComponent(initObj);
+              oldInit.call(component, initObj);
+            };
+
+        component.initialize = newInit;
 
         return component;
       }
@@ -2247,11 +2256,13 @@ define('nori/view/MixinComponentViews',
           throw new Error('No componentView mapped for id: ' + templateID);
         }
 
-        componentView.controller.initialize({
-          id        : templateID,
-          template  : componentView.htmlTemplate,
-          mountPoint: componentView.mountPoint
-        });
+        if(!componentView.controller.isInitialized()) {
+          componentView.controller.initialize({
+            id        : templateID,
+            template  : componentView.htmlTemplate,
+            mountPoint: componentView.mountPoint
+          });
+        }
 
         componentView.controller.update();
         componentView.controller.render();
@@ -2478,13 +2489,10 @@ define('nori/view/ViewComponent',
        * @param initialProps
        */
       function initializeComponent(initialProps) {
-        if (!isInitialized()) {
-          _initialProps = initialProps;
-          _id           = initialProps.id;
-          _templateObj  = initialProps.template;
-          _mountPoint   = initialProps.mountPoint;
-        }
-        this.update();
+        _initialProps  = initialProps;
+        _id            = initialProps.id;
+        _templateObj   = initialProps.template;
+        _mountPoint    = initialProps.mountPoint;
         _isInitialized = true;
       }
 
@@ -2533,12 +2541,17 @@ define('nori/view/ViewComponent',
         // update state
       }
 
+      function update() {
+        this.componentUpdate();
+      }
+
       /**
        * Update state and rerender
        * @param dataObj
        * @returns {*}
        */
-      function update() {
+      function componentUpdate() {
+        console.log('component update');
         // make a copy of last state
         var previousState = _.assign({}, this.getState());
 
@@ -2581,11 +2594,16 @@ define('nori/view/ViewComponent',
         // stub
       }
 
+      function render() {
+        this.componentRender();
+      }
+
       /**
        * Render it, need to add it to a parent container, handled in higher level view
        * @returns {*}
        */
-      function render() {
+      function componentRender() {
+        console.log('componentRender');
         if (this.componentWillRender) {
           this.componentWillRender();
         }
@@ -2761,11 +2779,13 @@ define('nori/view/ViewComponent',
         bindMap            : bindMap,
         componentWillUpdate: componentWillUpdate,
         update             : update,
+        componentUpdate    : componentUpdate,
         componentDidUpdate : componentDidUpdate,
 
         componentShouldRender: componentShouldRender,
         componentWillRender  : componentWillRender,
         render               : render,
+        componentRender      : componentRender,
         componentDidRender   : componentDidRender,
 
         componentWillMount: componentWillMount,

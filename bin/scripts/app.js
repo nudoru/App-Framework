@@ -120,17 +120,15 @@ define('app/view/AppView',
 
       initialize: function () {
         this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-        this.setRouteViewMountPoint('#contents');
-
         this.configureApplicationViewEvents();
 
-        this.mapRouteToViewComponent('/', 'default', 'app/view/TemplateViewComponent');
+        var defaultViewComponent = require('app/view/TemplateViewComponent');
 
-        var testComponent = require('app/view/TemplateViewComponent2');
+        this.setRouteViewMountPoint('#contents'); // Container for routed views
 
-        // For testing
-        this.mapRouteToViewComponent('/styles', 'debug-styletest', testComponent);
-        this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponent');
+        this.mapRouteToViewComponent('/', 'default', defaultViewComponent);
+        this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
+        this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
         _noriEvents.applicationViewInitialized();
@@ -145,6 +143,9 @@ define('app/view/AppView',
          */
       },
 
+      /**
+       * Listen for notification and alert events and show to user
+       */
       configureApplicationViewEvents: function () {
         Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
           this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
@@ -178,7 +179,6 @@ define('app/view/DebugControlsTestingSubView',
       function initialize(initObj) {
         if (!this.isInitialized()) {
           _lIpsum.initialize();
-          this.initializeComponent(initObj);
         }
       }
 
@@ -326,6 +326,43 @@ define('app/view/DebugControlsTestingSubView',
 define('app/view/TemplateViewComponent',
   function (require, module, exports) {
 
+    var Component = Nori.view().createComponentView({
+
+      initialize: function (initObj) {
+        //Bind to a map, update will be called on changes to the map
+        //this.bindMap(map id string or map object);
+        //custom init below here
+      },
+
+      componentWillUpdate: function () {
+        var obj = Object.create(null);
+        obj.greeting = 'Hello world!';
+        this.setState(obj);
+      },
+
+      componentDidMount: function () {
+        // Assign events or post render
+        /*
+         this.setEvents({
+         'click #button-id': handleButton
+         });
+         _this.delegateEvents();
+         */
+      },
+
+      componentWillUnmount: function () {
+        // Clean up
+      }
+
+    });
+
+    module.exports = Component;
+
+  });
+
+define('app/view/TemplateViewComponentFactory',
+  function (require, module, exports) {
+
     var Component = function () {
 
       /**
@@ -379,46 +416,6 @@ define('app/view/TemplateViewComponent',
     };
 
     module.exports = Component;
-
-  });
-
-define('app/view/TemplateViewComponent2',
-  function (require, module, exports) {
-
-    var TemplateViewComponent2 = Nori.view().createComponentView({
-      initialize: function (initObj) {
-        console.log('testcomp init');
-        if (!this.isInitialized()) {
-          this.initializeComponent(initObj);
-          //this.bindMap(map id string or map object);
-          // custom init below here
-        }
-      },
-
-      componentWillUpdate: function () {
-        console.log('testcomp will update');
-        var obj = Object.create(null);
-        // Update state from stores
-        this.setState(obj);
-      },
-
-      componentDidMount: function () {
-        console.log('testcomp did mount',this);
-        // good place to assign events or post render
-        /*
-         this.setEvents({
-         'click #button-id': handleButton
-         });
-         _this.delegateEvents();
-         */
-      },
-
-      componentWillUnmount: function () {
-        console.log('testcomp will unmount');
-      }
-    });
-
-    module.exports = TemplateViewComponent2;
 
   });
 

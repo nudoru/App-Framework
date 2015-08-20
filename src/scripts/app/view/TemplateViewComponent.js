@@ -1,62 +1,35 @@
-/**
- * Template for an app component view. Override lifecycle function hooks.
- * Extended from Nori.View.ApplicationSubView
- */
-
 define('app/view/TemplateViewComponent',
   function (require, module, exports) {
 
-    var Component = function () {
+    var Component = Nori.view().createComponentView({
 
-      /**
-       * Initialize subview
-       * @param initObj {id, template, mountPoint}
-       */
-      function initialize(initObj) {
-        if (!this.isInitialized()) {
-          this.initializeComponent(initObj);
-          //this.bindMap(map id string or map object);
-          // custom init below here
-        }
-      }
+      initialize: function (initObj) {
+        //Bind to a map, update will be called on changes to the map
+        //this.bindMap(map id string or map object);
+        //custom init below here
+      },
 
-      /**
-       * Update has been triggered due a change in the bound model
-       */
-      function componentWillUpdate() {
+      componentWillUpdate: function () {
         var obj = Object.create(null);
-        // Update state from stores
+        obj.greeting = 'Hello world!';
         this.setState(obj);
-      }
+      },
 
-      /**
-       * Updated view has been rendered and added to the DOM. Manipulate it here
-       */
-      function componentDidMount() {
-        // good place to assign events or post render
+      componentDidMount: function () {
+        // Assign events or post render
         /*
          this.setEvents({
          'click #button-id': handleButton
          });
-         this.delegateEvents();
+         _this.delegateEvents();
          */
+      },
+
+      componentWillUnmount: function () {
+        // Clean up
       }
 
-      /**
-       * Remove event handlers and perform other cleanup
-       */
-      function componentWillUnmount() {
-        // cleanup
-      }
-
-      return {
-        initialize          : initialize,
-        componentWillUpdate : componentWillUpdate,
-        componentDidMount   : componentDidMount,
-        componentWillUnmount: componentWillUnmount
-      };
-
-    };
+    });
 
     module.exports = Component;
 

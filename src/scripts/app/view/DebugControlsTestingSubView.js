@@ -20,7 +20,6 @@ define('app/view/DebugControlsTestingSubView',
       function initialize(initObj) {
         if (!this.isInitialized()) {
           _lIpsum.initialize();
-          this.initializeComponent(initObj);
         }
       }
 

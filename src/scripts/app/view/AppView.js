@@ -8,17 +8,15 @@ define('app/view/AppView',
 
       initialize: function () {
         this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-        this.setRouteViewMountPoint('#contents');
-
         this.configureApplicationViewEvents();
 
-        this.mapRouteToViewComponent('/', 'default', 'app/view/TemplateViewComponent');
+        var defaultViewComponent = require('app/view/TemplateViewComponent');
 
-        var testComponent = require('app/view/TemplateViewComponent2');
+        this.setRouteViewMountPoint('#contents'); // Container for routed views
 
-        // For testing
-        this.mapRouteToViewComponent('/styles', 'debug-styletest', testComponent);
-        this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponent');
+        this.mapRouteToViewComponent('/', 'default', defaultViewComponent);
+        this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
+        this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
         _noriEvents.applicationViewInitialized();
@@ -33,6 +31,9 @@ define('app/view/AppView',
          */
       },
 
+      /**
+       * Listen for notification and alert events and show to user
+       */
       configureApplicationViewEvents: function () {
         Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
           this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
