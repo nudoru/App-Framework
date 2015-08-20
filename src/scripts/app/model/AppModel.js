@@ -18,12 +18,13 @@ define('app/model/AppModel',
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);
         this.initializeReducerModel();
-
         this.modelReady();
       },
 
+      /**
+       * Set or load any necessary data and then broadcast a initialized event.
+       */
       modelReady: function() {
-        // testing _noriEvents.changeModelState('', {foo:'bar'});
         _noriEvents.applicationModelInitialized();
       },
 
@@ -50,7 +51,8 @@ define('app/model/AppModel',
       },
 
       /**
-       * Handled update to state, don't
+       * Called after all reducers have run to broadcast possible updates. Does
+       * not check to see if the state was actually updated.
        */
       handleStateMutation: function () {
         //_noriEvents.modelStateChanged(); // Eventbus
