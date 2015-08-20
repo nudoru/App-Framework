@@ -3,23 +3,41 @@ define('app/App',
 
     var _noriEventConstants = require('nori/events/EventConstants');
 
+    /**
+     * "Controller" for a Nori application. The controller is responsible for
+     * bootstrapping the app and possibly handling socket/server interaction.
+     * Any additional functionality should be handled in a specific module.
+     */
     var App = Nori.createApplication({
 
-      // The main app model and view are created in these modules
+      /**
+       * Create the main Nori App model and view.
+       */
       appModel: require('app/model/AppModel'),
       appView : require('app/view/AppView'),
 
+      /**
+       * Intialize the appilcation, view and model
+       */
       initialize: function () {
+        // listen for the model loaded event
         Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, this.onModelInitialized.bind(this), true);
+
         this.initializeApplication(); // validates setup
         this.view().initialize();
         this.model().initialize(); // model will acquire data dispatch event when complete
       },
 
+      /**
+       * After the model data is ready
+       */
       onModelInitialized: function () {
         this.runApplication();
       },
 
+      /**
+       * Remove the "Please wait" cover and start the app
+       */
       runApplication: function() {
         this.view().removeLoadingMessage();
         this.view().render();
@@ -36,6 +54,10 @@ define('app/events/EventConstants',
   function (require, module, exports) {
     var objUtils = require('nudoru/core/ObjectUtils');
 
+    /**
+     * Event name string constants
+     */
+
     _.merge(module.exports, objUtils.keyMirror({
       SOMETHING_HAPPENED: null
     }));
@@ -46,6 +68,10 @@ define('app/events/EventCreator',
 
     var _eventConstants = require('app/events/EventConstants');
 
+    /**
+     * Purely for convenience, an Event ("action") Creator ala Flux spec. Follow
+     * guidelines for creating actions: https://github.com/acdlite/flux-standard-action
+     */
     var EventCreator = {
 
       someEvent: function (data) {
@@ -79,8 +105,9 @@ define('app/model/AppModel',
      * reducer functions to modify state as needed. Once they have run, the
      * handleStateMutation function is called to dispatch an event to the bus, or
      * notify subscribers via an observable.
+     *
+     * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
      */
-
     var AppModel = Nori.createApplicationModel({
 
       initialize: function () {
@@ -140,10 +167,15 @@ define('app/view/AppView',
     var _noriEvents         = require('nori/events/EventCreator'),
         _noriEventConstants = require('nori/events/EventConstants');
 
+    /**
+     * View for an application.
+     */
+
     var AppView = Nori.createApplicationView({
 
       initialize: function () {
         this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+
         this.configureApplicationViewEvents();
 
         var defaultViewComponent = require('app/view/TemplateViewComponent');
@@ -158,8 +190,11 @@ define('app/view/AppView',
         _noriEvents.applicationViewInitialized();
       },
 
+      /**
+       * Draw and UI to the DOM and set events
+       */
       render: function () {
-        /*
+        /* Sample event delegator syntax
          this.setEvents({
          'click #button-id': handleButton
          });
@@ -188,6 +223,9 @@ define('app/view/AppView',
 define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
+    /**
+     * Module for testing Nudoru component classes and any thing else
+     */
     var DebugComponent = function () {
 
       var _lIpsum             = require('nudoru/browser/Lorem'),
@@ -350,8 +388,17 @@ define('app/view/DebugControlsTestingSubView',
 define('app/view/TemplateViewComponent',
   function (require, module, exports) {
 
+    /**
+     * Module for a dynamic application view for a route or a persistent view
+     */
+
     var Component = Nori.view().createComponentView({
 
+      /**
+       * Initialize and bind, called once on first render. Parent component is
+       * initialized from app view
+       * @param initObj
+       */
       initialize: function (initObj) {
         //Bind to a map, update will be called on changes to the map
         //this.bindMap(map id string or map object);
@@ -359,16 +406,21 @@ define('app/view/TemplateViewComponent',
         //custom init below here
       },
 
+      /**
+       * State change on bound models (map, etc.) Update the component state
+       */
       componentWillUpdate: function () {
-        //console.log('update! ',APP.model().getState());
+        //console.log(APP.model().getState());
         var obj = Object.create(null);
         obj.greeting = 'Hello world!';
         this.setState(obj);
       },
 
+      /**
+       * Component HTML was attached to the DOM
+       */
       componentDidMount: function () {
-        // Assign events or post render
-        /*
+        /* Sample event delegator syntax
          this.setEvents({
          'click #button-id': handleButton
          });
@@ -376,6 +428,9 @@ define('app/view/TemplateViewComponent',
          */
       },
 
+      /**
+       * Component will be removed from the DOM
+       */
       componentWillUnmount: function () {
         // Clean up
       }
@@ -389,6 +444,10 @@ define('app/view/TemplateViewComponent',
 define('app/view/TemplateViewComponentFactory',
   function (require, module, exports) {
 
+    /**
+     * Module for a dynamic application view for a route or a persistent view
+     * implemented as a factory module.
+     */
     var Component = function () {
 
       /**
@@ -396,15 +455,12 @@ define('app/view/TemplateViewComponentFactory',
        * @param initObj {id, template, mountPoint}
        */
       function initialize(initObj) {
-        if (!this.isInitialized()) {
-          this.initializeComponent(initObj);
-          //this.bindMap(map id string or map object);
-          // custom init below here
-        }
+        //this.bindMap(map id string or map object);
+        // custom init below here
       }
 
       /**
-       * Update has been triggered due a change in the bound model
+       * State change on bound models (map, etc.) Update the component state
        */
       function componentWillUpdate() {
         var obj = Object.create(null);
@@ -413,10 +469,9 @@ define('app/view/TemplateViewComponentFactory',
       }
 
       /**
-       * Updated view has been rendered and added to the DOM. Manipulate it here
+       * Component HTML was attached to the DOM
        */
       function componentDidMount() {
-        // good place to assign events or post render
         /*
          this.setEvents({
          'click #button-id': handleButton
@@ -426,7 +481,7 @@ define('app/view/TemplateViewComponentFactory',
       }
 
       /**
-       * Remove event handlers and perform other cleanup
+       * Component will be removed from the DOM
        */
       function componentWillUnmount() {
         // cleanup
@@ -449,13 +504,23 @@ define('app/view/TemplateViewComponentFactory',
 
   var _browserInfo = require('nudoru/browser/BrowserInfo');
 
+  /**
+   * IE versions 9 and under are blocked, others are allowed to proceed
+   */
   if(_browserInfo.notSupported || _browserInfo.isIE9) {
+
     document.querySelector('body').innerHTML = '<h3>For the best experience, please use Internet Explorer 10+, Firefox, Chrome or Safari to view this application.</h3>';
+
   } else {
+
+    /**
+     * Create the application module and initialize
+     */
     window.onload = function() {
       window.APP = require('app/App');
       APP.initialize()
     };
+
   }
 
 }());

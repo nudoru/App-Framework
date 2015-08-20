@@ -4,10 +4,15 @@ define('app/view/AppView',
     var _noriEvents         = require('nori/events/EventCreator'),
         _noriEventConstants = require('nori/events/EventConstants');
 
+    /**
+     * View for an application.
+     */
+
     var AppView = Nori.createApplicationView({
 
       initialize: function () {
         this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+
         this.configureApplicationViewEvents();
 
         var defaultViewComponent = require('app/view/TemplateViewComponent');
@@ -22,8 +27,11 @@ define('app/view/AppView',
         _noriEvents.applicationViewInitialized();
       },
 
+      /**
+       * Draw and UI to the DOM and set events
+       */
       render: function () {
-        /*
+        /* Sample event delegator syntax
          this.setEvents({
          'click #button-id': handleButton
          });

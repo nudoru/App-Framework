@@ -11,8 +11,9 @@ define('app/model/AppModel',
      * reducer functions to modify state as needed. Once they have run, the
      * handleStateMutation function is called to dispatch an event to the bus, or
      * notify subscribers via an observable.
+     *
+     * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
      */
-
     var AppModel = Nori.createApplicationModel({
 
       initialize: function () {

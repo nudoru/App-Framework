@@ -1,6 +1,10 @@
 define('app/view/TemplateViewComponentFactory',
   function (require, module, exports) {
 
+    /**
+     * Module for a dynamic application view for a route or a persistent view
+     * implemented as a factory module.
+     */
     var Component = function () {
 
       /**
@@ -8,15 +12,12 @@ define('app/view/TemplateViewComponentFactory',
        * @param initObj {id, template, mountPoint}
        */
       function initialize(initObj) {
-        if (!this.isInitialized()) {
-          this.initializeComponent(initObj);
-          //this.bindMap(map id string or map object);
-          // custom init below here
-        }
+        //this.bindMap(map id string or map object);
+        // custom init below here
       }
 
       /**
-       * Update has been triggered due a change in the bound model
+       * State change on bound models (map, etc.) Update the component state
        */
       function componentWillUpdate() {
         var obj = Object.create(null);
@@ -25,10 +26,9 @@ define('app/view/TemplateViewComponentFactory',
       }
 
       /**
-       * Updated view has been rendered and added to the DOM. Manipulate it here
+       * Component HTML was attached to the DOM
        */
       function componentDidMount() {
-        // good place to assign events or post render
         /*
          this.setEvents({
          'click #button-id': handleButton
@@ -38,7 +38,7 @@ define('app/view/TemplateViewComponentFactory',
       }
 
       /**
-       * Remove event handlers and perform other cleanup
+       * Component will be removed from the DOM
        */
       function componentWillUnmount() {
         // cleanup

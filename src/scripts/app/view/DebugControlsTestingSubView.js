@@ -5,6 +5,9 @@
 define('app/view/DebugControlsTestingSubView',
   function (require, module, exports) {
 
+    /**
+     * Module for testing Nudoru component classes and any thing else
+     */
     var DebugComponent = function () {
 
       var _lIpsum             = require('nudoru/browser/Lorem'),
