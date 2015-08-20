@@ -1,9 +1,5 @@
 /**
  * Application controller
- * The control is only responsible for bootstrapping the application. All other
- * functionality should reside in other modules.
- *
- * Startup steps are numbered below
  */
 
 define('app/App',
@@ -13,39 +9,27 @@ define('app/App',
 
     var App = Nori.createApplication({
 
-      /**
-       * Application bootstrapper. Create the model and views and pass to the app
-       * to initialize.
-       */
+      // The main app model and view are created in these modules
+      appModel: require('app/model/AppModel'),
+      appView : require('app/view/AppView'),
+
       initialize: function () {
-        var appview  = require('app/view/AppView'),
-            appmodel = require('app/model/AppModel');
-
         Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, this.onModelInitialized.bind(this), true);
-
-        // 1
-        this.initializeApplication({
-          model: appmodel,
-          view : appview
-        });
-
-        // 2
+        this.initializeApplication(); // validates setup
         this.view().initialize();
-        // model will acquire data as needed and dispatch event when complete
-        this.model().initialize();
+        this.model().initialize(); // model will acquire data dispatch event when complete
       },
 
-      /**
-       * When model data has been loaded
-       */
       onModelInitialized: function () {
-        // 3
+        this.runApplication();
+      },
+
+      runApplication: function() {
         this.view().removeLoadingMessage();
         this.view().render();
-
-        // 4 Start with the route in the current URL
-        this.view().showViewFromURLHash();
+        this.view().showViewFromURLHash(); // Start with the route in the current URL
       }
+
     });
 
     module.exports = App;

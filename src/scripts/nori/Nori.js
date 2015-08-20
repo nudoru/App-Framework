@@ -43,8 +43,11 @@ var Nori = (function () {
    */
   function initializeApplication(initObj) {
     _router.initialize();
-    _view  = initObj.view || createApplicationView({});
-    _model = initObj.model || createApplicationModel({});
+
+    console.log('Initializing Nori, model? '+(_model ? 'Yes' : 'No')+', view? '+(_view ? 'Yes' : 'No'));
+
+    _view  = _view || createApplicationView({});
+    _model = _model || createApplicationModel({});
   }
 
   //----------------------------------------------------------------------------
@@ -84,12 +87,14 @@ var Nori = (function () {
   function createApplicationModel(custom) {
     var observable = require('nori/utils/MixinObservableSubject');
 
-    return assignArray({}, [
+    _model = assignArray({}, [
       require('nori/model/MixinMapFactory'),
       observable(),
       require('nori/model/MixinReducerModel'),
       custom
     ]);
+
+    return _model;
   }
 
   /**
@@ -100,13 +105,15 @@ var Nori = (function () {
   function createApplicationView(custom) {
     var eventDelegator = require('nori/view/MixinEventDelegator');
 
-    return assignArray({}, [
+    _view = assignArray({}, [
       require('nori/view/ApplicationView'),
       require('nori/view/MixinNudoruControls'),
       require('nori/view/MixinComponentViews'),
       eventDelegator(),
       custom
     ]);
+
+    return _view;
   }
 
   //----------------------------------------------------------------------------
