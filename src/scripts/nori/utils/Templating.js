@@ -6,7 +6,7 @@
 define('nori/utils/Templating',
   function (require, module, exports) {
 
-    var Templating = (function () {
+    var Templating = function () {
 
       var _templateMap = Object.create(null),
           _templateHTMLCache = Object.create(null),
@@ -160,8 +160,8 @@ define('nori/utils/Templating',
         asElement             : asElement
       };
 
-    }());
+    };
 
-    module.exports = Templating;
+    module.exports = Templating();
 
   });

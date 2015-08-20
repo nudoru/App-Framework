@@ -1,7 +1,7 @@
 define('nori/model/MixinMapFactory',
   function (require, module, exports) {
 
-    var MixinMapFactory = (function () {
+    var MixinMapFactory = function () {
 
       var _mapCollectionList = Object.create(null),
           _mapList           = Object.create(null),
@@ -58,9 +58,9 @@ define('nori/model/MixinMapFactory',
         getMapCollection   : getMapCollection
       };
 
-    }());
+    };
 
 
-    module.exports = MixinMapFactory;
+    module.exports = MixinMapFactory();
 
   });

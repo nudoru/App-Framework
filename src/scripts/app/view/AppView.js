@@ -1,7 +1,7 @@
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var AppView = (function () {
+    var AppView = function () {
 
       var _this,
           _noriEvents         = require('nori/events/EventCreator'),
@@ -61,8 +61,8 @@ define('app/view/AppView',
         render    : render
       };
 
-    }());
+    };
 
-    module.exports = AppView;
+    module.exports = AppView();
 
   });

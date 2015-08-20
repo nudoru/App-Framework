@@ -1,7 +1,7 @@
 define('nudoru/component/MessageBoxCreator',
   function (require, module, exports) {
 
-    var MessageBoxCreator = (function () {
+    var MessageBoxCreator = function () {
 
       var _messageBoxView = require('nudoru/component/MessageBoxView');
 
@@ -114,8 +114,8 @@ define('nudoru/component/MessageBoxCreator',
         choice : choice
       }
 
-    }());
+    };
 
-    module.exports = MessageBoxCreator;
+    module.exports = MessageBoxCreator();
 
   });

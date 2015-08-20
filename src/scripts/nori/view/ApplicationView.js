@@ -1,7 +1,7 @@
 define('nori/view/ApplicationView',
   function (require, module, exports) {
 
-    var ApplicationView = (function () {
+    var ApplicationView = function () {
 
       var _this,
           _renderer = require('nori/utils/Renderer'),
@@ -70,8 +70,8 @@ define('nori/view/ApplicationView',
         removeLoadingMessage     : removeLoadingMessage
       };
 
-    }());
+    };
 
-    module.exports = ApplicationView;
+    module.exports = ApplicationView();
 
   });

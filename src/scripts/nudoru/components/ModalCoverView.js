@@ -6,7 +6,7 @@
 define('nudoru/component/ModalCoverView',
   function (require, module, exports) {
 
-    var ModalCoverView = (function () {
+    var ModalCoverView = function () {
 
       var _mountPoint      = document,
           _modalCoverEl,
@@ -15,7 +15,6 @@ define('nudoru/component/ModalCoverView',
           _modalClickStream,
           _isVisible,
           _notDismissable,
-          _componentEvents = require('nudoru/component/ComponentEvents'),
           _browserInfo     = require('nudoru/browser/BrowserInfo');
 
       function initialize() {
@@ -139,8 +138,8 @@ define('nudoru/component/ModalCoverView',
         setColor          : setColor
       };
 
-    }());
+    };
 
-    module.exports = ModalCoverView;
+    module.exports = ModalCoverView();
 
   });

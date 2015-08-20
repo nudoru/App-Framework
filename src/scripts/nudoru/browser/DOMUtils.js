@@ -1,7 +1,6 @@
 define('nudoru/browser/DOMUtils',
   function (require, module, exports) {
 
-
     module.exports = {
 
       // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport

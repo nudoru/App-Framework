@@ -9,7 +9,7 @@
 define('nori/utils/Renderer',
   function (require, module, exports) {
 
-    var Renderer = (function () {
+    var Renderer = function () {
       var _noriEvents         = require('nori/events/EventCreator'),
           _noriEventConstants = require('nori/events/EventConstants'),
           _domUtils           = require('nudoru/browser/DOMUtils');
@@ -44,8 +44,8 @@ define('nori/utils/Renderer',
         initialize: initialize
       };
 
-    }());
+    };
 
-    module.exports = Renderer;
+    module.exports = Renderer();
 
   });

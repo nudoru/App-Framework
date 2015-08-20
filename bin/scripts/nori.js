@@ -1,7 +1,7 @@
 define('nori/utils/Cookie',
   function (require, module, exports) {
 
-    var Cookie = (function () {
+    var Cookie = function () {
 
       function create(name, value, days) {
         var expires = "", date;
@@ -41,16 +41,16 @@ define('nori/utils/Cookie',
         remove: remove
       };
 
-    }());
+    };
 
-    module.exports = Cookie;
+    module.exports = Cookie();
 
   });
 
 define('nori/utils/Dispatcher',
   function (require, module, exports) {
 
-    var Dispatcher = (function () {
+    var Dispatcher = function () {
 
       var _subjectMap  = {},
           _receiverMap = {},
@@ -264,9 +264,9 @@ define('nori/utils/Dispatcher',
         unregisterReceiver: unregisterReceiver
       };
 
-    }());
+    };
 
-    module.exports = Dispatcher;
+    module.exports = Dispatcher();
 
   });
 
@@ -318,7 +318,7 @@ define('nori/utils/MixinObservableSubject',
 define('nori/utils/Renderer',
   function (require, module, exports) {
 
-    var Renderer = (function () {
+    var Renderer = function () {
       var _noriEvents         = require('nori/events/EventCreator'),
           _noriEventConstants = require('nori/events/EventConstants'),
           _domUtils           = require('nudoru/browser/DOMUtils');
@@ -353,16 +353,16 @@ define('nori/utils/Renderer',
         initialize: initialize
       };
 
-    }());
+    };
 
-    module.exports = Renderer;
+    module.exports = Renderer();
 
   });
 
 define('nori/utils/Router',
   function (require, module, exports) {
 
-    var Router = (function () {
+    var Router = function () {
 
       var _subject            = new Rx.Subject(),
           _objUtils           = require('nudoru/core/ObjectUtils'),
@@ -488,16 +488,16 @@ define('nori/utils/Router',
         set              : set
       };
 
-    }());
+    };
 
-    module.exports = Router;
+    module.exports = Router();
 
   });
 
 define('nori/utils/Templating',
   function (require, module, exports) {
 
-    var Templating = (function () {
+    var Templating = function () {
 
       var _templateMap = Object.create(null),
           _templateHTMLCache = Object.create(null),
@@ -633,28 +633,27 @@ define('nori/utils/Templating',
        * @param id
        * @param html
        */
-      function addClientSideTemplateToDOM(id, html) {
-        var s       = document.createElement('script');
-        s.type      = 'text/template';
-        s.id        = id;
-        s.innerHTML = html;
-        document.getElementsByTagName('head')[0].appendChild(s);
-      }
+      //function addClientSideTemplateToDOM(id, html) {
+      //  var s       = document.createElement('script');
+      //  s.type      = 'text/template';
+      //  s.id        = id;
+      //  s.innerHTML = html;
+      //  document.getElementsByTagName('head')[0].appendChild(s);
+      //}
 
       return {
+        addTemplate           : addTemplate,
         getSource             : getSource,
         getAllTemplateIDs     : getAllTemplateIDs,
         processForDOMInsertion: processForDOMInsertion,
         getTemplate           : getTemplate,
         asHTML                : asHTML,
-        asElement             : asElement,
-
-        addClientSideTemplateToDOM: addClientSideTemplateToDOM,
+        asElement             : asElement
       };
 
-    }());
+    };
 
-    module.exports = Templating;
+    module.exports = Templating();
 
   });
 
@@ -954,62 +953,72 @@ define('nori/service/Rest',
      * @param success
      * @param error
      */
-    module.exports.Request = function request(reqObj) {
+    var Rest = function () {
 
-      var xhr    = new XMLHttpRequest(),
-          json   = reqObj.json || false,
-          method = reqObj.method.toUpperCase() || 'GET',
-          url    = reqObj.url,
-          data   = reqObj.data || null;
+      function request(reqObj) {
 
-      //return new Promise(function (resolve, reject) {
-      return new Rx.Observable.create(function (observer) {
-        xhr.open(method, url, true, reqObj.user, reqObj.password);
+        var xhr    = new XMLHttpRequest(),
+            json   = reqObj.json || false,
+            method = reqObj.method.toUpperCase() || 'GET',
+            url    = reqObj.url,
+            data   = reqObj.data || null;
 
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                if (json) {
-                  observer.onNext(JSON.parse(xhr.responseText));
-                } else {
-                  observer.onError(xhr.responseText);
+        return new Rx.Observable.create(function makeReq(observer) {
+          xhr.open(method, url, true);
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  if (json) {
+                    observer.onNext(JSON.parse(xhr.responseText));
+                  } else {
+                    observer.onError(xhr.responseText);
+                  }
                 }
+                catch (e) {
+                  handleError('Result', 'Error parsing result. Status: ' + xhr.status + ', Response: ' + xhr.response);
+                }
+              } else {
+                handleError(xhr.status, xhr.statusText);
               }
-              catch (e) {
-                handleError('Result', 'Error parsing JSON result');
-              }
-            } else {
-              handleError(xhr.status, xhr.statusText);
             }
+          };
+
+          xhr.onerror   = function () {
+            handleError('Network error');
+          };
+          xhr.ontimeout = function () {
+            handleError('Timeout');
+          };
+          xhr.onabort   = function () {
+            handleError('About');
+          };
+
+          // set non json header? 'application/x-www-form-urlencoded; charset=UTF-8'
+          if (json && method !== "GET") {
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+          } else if (json && method === "GET") {
+            //, text/*
+            xhr.setRequestHeader("Accept", "application/json; odata=verbose");  // odata param for Sharepoint
           }
-        };
 
-        xhr.onerror   = function () {
-          handleError('Network error');
-        };
-        xhr.ontimeout = function () {
-          handleError('Timeout');
-        };
-        xhr.onabort   = function () {
-          handleError('About');
-        };
+          xhr.send(data);
 
-        // set non json header? 'application/x-www-form-urlencoded; charset=UTF-8'
-        if (json && method !== "GET") {
-          xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-        } else if (json && method === "GET") {
-          xhr.setRequestHeader("Accept", "application/json, text/*; odata=verbose");  // odata param for Sharepoint
-        }
+          function handleError(type, message) {
+            message = message || '';
+            observer.onError(type + ' ' + message);
+          }
+        });
+      }
 
-        xhr.send(data);
+      return {
+        request: request
+      };
 
-        function handleError(type, message) {
-          message = message || '';
-          observer.onError(type + ' ' + message);
-        }
-      });
     };
+
+    module.exports = Rest();
 
   });
 
@@ -1657,7 +1666,7 @@ define('nori/model/MapCollection',
 define('nori/model/MixinMapFactory',
   function (require, module, exports) {
 
-    var MixinMapFactory = (function () {
+    var MixinMapFactory = function () {
 
       var _mapCollectionList = Object.create(null),
           _mapList           = Object.create(null),
@@ -1714,17 +1723,17 @@ define('nori/model/MixinMapFactory',
         getMapCollection   : getMapCollection
       };
 
-    }());
+    };
 
 
-    module.exports = MixinMapFactory;
+    module.exports = MixinMapFactory();
 
   });
 
 define('nori/model/MixinReducerModel',
   function (require, module, exports) {
 
-    var MixinReducerModel = (function () {
+    var MixinReducerModel = function () {
       var _this,
           _state,
           _stateReducers = [];
@@ -1844,9 +1853,9 @@ define('nori/model/MixinReducerModel',
         handleStateMutation    : handleStateMutation
       };
 
-    }());
+    };
 
-    module.exports = MixinReducerModel;
+    module.exports = MixinReducerModel();
 
   });
 
@@ -1898,7 +1907,7 @@ define('nori/model/SimpleStore',
 define('nori/view/ApplicationView',
   function (require, module, exports) {
 
-    var ApplicationView = (function () {
+    var ApplicationView = function () {
 
       var _this,
           _renderer = require('nori/utils/Renderer'),
@@ -1967,16 +1976,16 @@ define('nori/view/ApplicationView',
         removeLoadingMessage     : removeLoadingMessage
       };
 
-    }());
+    };
 
-    module.exports = ApplicationView;
+    module.exports = ApplicationView();
 
   });
 
 define('nori/view/MixinBrowserEvents',
   function (require, module, exports) {
 
-    var MixinBrowserEvents = (function () {
+    var MixinBrowserEvents = function () {
 
       var _currentViewPortSize,
           _currentViewPortScroll,
@@ -2102,9 +2111,9 @@ define('nori/view/MixinBrowserEvents',
         getCurrentViewPortScroll           : getCurrentViewPortScroll
       };
 
-    }());
+    };
 
-    module.exports = MixinBrowserEvents;
+    module.exports = MixinBrowserEvents();
 
 
   });
@@ -2112,7 +2121,7 @@ define('nori/view/MixinBrowserEvents',
 define('nori/view/MixinComponentViews',
   function (require, module, exports) {
 
-    var MixinComponentViews = (function () {
+    var MixinComponentViews = function () {
 
       var _routeViewMountPoint,
           _currentRouteViewID,
@@ -2295,9 +2304,9 @@ define('nori/view/MixinComponentViews',
         applyMixin              : applyMixin
       };
 
-    }());
+    };
 
-    module.exports = MixinComponentViews;
+    module.exports = MixinComponentViews();
 
   });
 
@@ -2385,7 +2394,7 @@ define('nori/view/MixinEventDelegator',
 define('nori/view/MixinNudoruControls',
   function (require, module, exports) {
 
-    var MixinNudoruControls = (function () {
+    var MixinNudoruControls = function () {
 
       var _notificationView  = require('nudoru/component/ToastView'),
           _toolTipView       = require('nudoru/component/ToolTipView'),
@@ -2438,16 +2447,14 @@ define('nori/view/MixinNudoruControls',
         notify                  : notify
       };
 
-    }());
+    };
 
-    module.exports = MixinNudoruControls;
+    module.exports = MixinNudoruControls();
 
   });
 
 define('nori/view/ViewComponent',
   function (require, module, exports) {
-
-    var id = 0;
 
     var ViewComponent = function () {
 

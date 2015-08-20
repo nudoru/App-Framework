@@ -1,7 +1,7 @@
 define('nudoru/browser/Lorem',
   function (require, module, exports) {
 
-    var Lorem = (function () {
+    var Lorem = function () {
 
       var _currentText      = [],
           _textSets         = [],
@@ -150,9 +150,9 @@ define('nudoru/browser/Lorem',
         fakeGUID    : fakeGUID
       };
 
-    }());
+    };
 
-    module.exports = Lorem;
+    module.exports = Lorem();
 
 
   });

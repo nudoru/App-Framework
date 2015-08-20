@@ -6,8 +6,6 @@
 define('nori/view/ViewComponent',
   function (require, module, exports) {
 
-    var id = 0;
-
     var ViewComponent = function () {
 
       var _isInitialized = false,

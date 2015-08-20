@@ -1,7 +1,7 @@
 define('nori/view/MixinNudoruControls',
   function (require, module, exports) {
 
-    var MixinNudoruControls = (function () {
+    var MixinNudoruControls = function () {
 
       var _notificationView  = require('nudoru/component/ToastView'),
           _toolTipView       = require('nudoru/component/ToolTipView'),
@@ -54,8 +54,8 @@ define('nori/view/MixinNudoruControls',
         notify                  : notify
       };
 
-    }());
+    };
 
-    module.exports = MixinNudoruControls;
+    module.exports = MixinNudoruControls();
 
   });

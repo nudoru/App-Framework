@@ -12,7 +12,7 @@
 define('nori/model/MixinReducerModel',
   function (require, module, exports) {
 
-    var MixinReducerModel = (function () {
+    var MixinReducerModel = function () {
       var _this,
           _state,
           _stateReducers = [];
@@ -132,8 +132,8 @@ define('nori/model/MixinReducerModel',
         handleStateMutation    : handleStateMutation
       };
 
-    }());
+    };
 
-    module.exports = MixinReducerModel;
+    module.exports = MixinReducerModel();
 
   });

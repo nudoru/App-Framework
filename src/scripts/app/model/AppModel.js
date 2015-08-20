@@ -1,7 +1,7 @@
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var AppModel = (function () {
+    var AppModel = function () {
 
       var _this,
           _noriEvents         = require('nori/events/EventCreator'),
@@ -71,8 +71,8 @@ define('app/model/AppModel',
         handleStateMutation: handleStateMutation
       };
 
-    }());
+    };
 
-    module.exports = AppModel;
+    module.exports = AppModel();
 
   });

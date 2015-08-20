@@ -17,7 +17,7 @@
 define('nori/utils/Dispatcher',
   function (require, module, exports) {
 
-    var Dispatcher = (function () {
+    var Dispatcher = function () {
 
       var _subjectMap  = {},
           _receiverMap = {},
@@ -231,8 +231,8 @@ define('nori/utils/Dispatcher',
         unregisterReceiver: unregisterReceiver
       };
 
-    }());
+    };
 
-    module.exports = Dispatcher;
+    module.exports = Dispatcher();
 
   });

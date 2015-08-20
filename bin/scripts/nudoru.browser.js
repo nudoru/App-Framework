@@ -75,7 +75,6 @@ define('nudoru/browser/BrowserInfo',
 define('nudoru/browser/DOMUtils',
   function (require, module, exports) {
 
-
     module.exports = {
 
       // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
@@ -274,7 +273,7 @@ define('nudoru/browser/EventConstants',
 define('nudoru/browser/Lorem',
   function (require, module, exports) {
 
-    var Lorem = (function () {
+    var Lorem = function () {
 
       var _currentText      = [],
           _textSets         = [],
@@ -423,9 +422,9 @@ define('nudoru/browser/Lorem',
         fakeGUID    : fakeGUID
       };
 
-    }());
+    };
 
-    module.exports = Lorem;
+    module.exports = Lorem();
 
 
   });

@@ -1,7 +1,7 @@
 define('app/App',
   function (require, module, exports) {
 
-    var App = (function () {
+    var App = function () {
 
       var _this,
           _noriEventConstants = require('nori/events/EventConstants');
@@ -47,9 +47,9 @@ define('app/App',
         initialize: initialize
       };
 
-    }());
+    };
 
-    module.exports = App;
+    module.exports = App();
 
   });
 
@@ -90,7 +90,7 @@ define('app/events/EventCreator',
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var AppModel = (function () {
+    var AppModel = function () {
 
       var _this,
           _noriEvents         = require('nori/events/EventCreator'),
@@ -160,9 +160,9 @@ define('app/model/AppModel',
         handleStateMutation: handleStateMutation
       };
 
-    }());
+    };
 
-    module.exports = AppModel;
+    module.exports = AppModel();
 
   });
 
@@ -170,7 +170,7 @@ define('app/model/AppModel',
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var AppView = (function () {
+    var AppView = function () {
 
       var _this,
           _noriEvents         = require('nori/events/EventCreator'),
@@ -230,9 +230,9 @@ define('app/view/AppView',
         render    : render
       };
 
-    }());
+    };
 
-    module.exports = AppView;
+    module.exports = AppView();
 
   });
 

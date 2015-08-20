@@ -9,7 +9,7 @@
 define('app/App',
   function (require, module, exports) {
 
-    var App = (function () {
+    var App = function () {
 
       var _this,
           _noriEventConstants = require('nori/events/EventConstants');
@@ -55,8 +55,8 @@ define('app/App',
         initialize: initialize
       };
 
-    }());
+    };
 
-    module.exports = App;
+    module.exports = App();
 
   });

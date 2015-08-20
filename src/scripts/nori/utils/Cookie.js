@@ -1,7 +1,7 @@
 define('nori/utils/Cookie',
   function (require, module, exports) {
 
-    var Cookie = (function () {
+    var Cookie = function () {
 
       function create(name, value, days) {
         var expires = "", date;
@@ -41,8 +41,8 @@ define('nori/utils/Cookie',
         remove: remove
       };
 
-    }());
+    };
 
-    module.exports = Cookie;
+    module.exports = Cookie();
 
   });

@@ -6,7 +6,7 @@
 define('nudoru/component/ToastView',
   function (require, module, exports) {
 
-    var ToastView = (function () {
+    var ToastView = function () {
 
       var _children              = [],
           _counter               = 0,
@@ -155,8 +155,8 @@ define('nudoru/component/ToastView',
         type      : getTypes
       };
 
-    }());
+    };
 
-    module.exports = ToastView;
+    module.exports = ToastView();
 
   });

@@ -5,7 +5,7 @@
 define('nori/view/MixinComponentViews',
   function (require, module, exports) {
 
-    var MixinComponentViews = (function () {
+    var MixinComponentViews = function () {
 
       var _routeViewMountPoint,
           _currentRouteViewID,
@@ -188,8 +188,8 @@ define('nori/view/MixinComponentViews',
         applyMixin              : applyMixin
       };
 
-    }());
+    };
 
-    module.exports = MixinComponentViews;
+    module.exports = MixinComponentViews();
 
   });

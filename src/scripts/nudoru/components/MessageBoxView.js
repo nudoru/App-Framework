@@ -7,7 +7,7 @@
 define('nudoru/component/MessageBoxView',
   function (require, module, exports) {
 
-    var MessageBoxView = (function () {
+    var MessageBoxView = function () {
 
       var _children               = [],
           _counter                = 0,
@@ -296,8 +296,8 @@ define('nudoru/component/MessageBoxView',
         type      : getTypes
       };
 
-    }());
+    };
 
-    module.exports = MessageBoxView;
+    module.exports = MessageBoxView();
 
   });

@@ -1,7 +1,7 @@
 define('nori/view/MixinBrowserEvents',
   function (require, module, exports) {
 
-    var MixinBrowserEvents = (function () {
+    var MixinBrowserEvents = function () {
 
       var _currentViewPortSize,
           _currentViewPortScroll,
@@ -127,9 +127,9 @@ define('nori/view/MixinBrowserEvents',
         getCurrentViewPortScroll           : getCurrentViewPortScroll
       };
 
-    }());
+    };
 
-    module.exports = MixinBrowserEvents;
+    module.exports = MixinBrowserEvents();
 
 
   });
