@@ -72,6 +72,15 @@ define('app/model/AppModel',
     var _noriEvents         = require('nori/events/EventCreator'),
         _noriEventConstants = require('nori/events/EventConstants');
 
+    /**
+     * This application model contains "reducer model" functionality based on Redux.
+     * The model state may only be changed from events as applied in reducer functions.
+     * The model received all events from the event bus and forwards them to all
+     * reducer functions to modify state as needed. Once they have run, the
+     * handleStateMutation function is called to dispatch an event to the bus, or
+     * notify subscribers via an observable.
+     */
+
     var AppModel = Nori.createApplicationModel({
 
       initialize: function () {
@@ -87,7 +96,9 @@ define('app/model/AppModel',
       },
 
       /**
-       * Modify the state based on incoming events. Can compose state transformations
+       * Modify state based on incoming events. Returns a copy of the modified
+       * state and does not modify the state directly.
+       * Can compose state transformations
        * return _.assign({}, state, otherStateTransformer(state));
        * @param state
        * @param event
@@ -110,7 +121,7 @@ define('app/model/AppModel',
        * Handled update to state, don't
        */
       handleStateMutation: function () {
-        // Eventbus _noriEvents.modelStateChanged();
+        //_noriEvents.modelStateChanged(); // Eventbus
         this.notifySubscribers();
       }
 
