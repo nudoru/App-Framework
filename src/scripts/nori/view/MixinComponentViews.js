@@ -26,10 +26,14 @@ define('nori/view/MixinComponentViews',
 
       /**
        * Typically on app startup, show the view assigned to the current URL hash
+       * @param silent If true, will not notify subscribers of the change, prevents
+       * double showing on initial load
        */
-      function showViewFromURLHash() {
+      function showViewFromURLHash(silent) {
         showRouteViewComponent(Nori.getCurrentRoute().route);
-        Nori.router().notifySubscribers();
+        if(!silent) {
+          Nori.router().notifySubscribers();
+        }
       }
 
       /**

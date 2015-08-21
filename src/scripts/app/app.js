@@ -41,7 +41,7 @@ define('app/App',
       runApplication: function() {
         this.view().removeLoadingMessage();
         this.view().render();
-        this.view().showViewFromURLHash(); // Start with the route in the current URL
+        this.view().showViewFromURLHash(true); // Start with the route in the current URL
       }
 
     });
