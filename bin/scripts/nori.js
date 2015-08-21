@@ -2722,9 +2722,8 @@ define('nori/view/ViewComponent',
           _id,
           _templateObj,
           _html,
-          _DOMElement,
+          _DOMNode,
           _mountPoint,
-          _state         = {},
           _children      = [],
           _isMounted     = false,
           _noriEvents    = require('nori/events/EventCreator');
@@ -2904,7 +2903,7 @@ define('nori/view/ViewComponent',
        * @param domEl
        */
       function onViewRendered(domEl) {
-        setDOMElement(domEl);
+        setDOMNode(domEl);
         // from the ViewMixinEventDelegator
         if (this.delegateEvents) {
           this.delegateEvents();
@@ -2939,7 +2938,7 @@ define('nori/view/ViewComponent',
           this.undelegateEvents();
         }
 
-        setDOMElement(null);
+        setDOMNode(null);
         this.componentDidUnmount();
       }
 
@@ -2982,12 +2981,12 @@ define('nori/view/ViewComponent',
         return _templateObj;
       }
 
-      function getDOMElement() {
-        return _DOMElement;
+      function getDOMNode() {
+        return _DOMNode;
       }
 
-      function setDOMElement(el) {
-        _DOMElement = el;
+      function setDOMNode(el) {
+        _DOMNode = el;
       }
 
       function getHTML() {
@@ -3017,8 +3016,8 @@ define('nori/view/ViewComponent',
         getTemplate    : getTemplate,
         getHTML        : getHTML,
         setHTML        : setHTML,
-        getDOMElement  : getDOMElement,
-        setDOMElement  : setDOMElement,
+        getDOMNode  : getDOMNode,
+        setDOMNode  : setDOMNode,
         isMounted      : isMounted,
 
         bindMap            : bindMap,
