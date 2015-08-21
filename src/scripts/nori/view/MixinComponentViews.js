@@ -151,7 +151,7 @@ define('nori/view/MixinComponentViews',
         }
 
         componentView.controller.update();
-        componentView.controller.render();
+        componentView.controller.renderPipeline();
         componentView.controller.mount();
       }
 

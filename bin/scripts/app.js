@@ -425,6 +425,10 @@ define('app/view/TemplateViewComponent',
         //this.setState(obj);
       },
 
+      //render: function() {
+      //  return '<h2>BOO!</h2>';
+      //},
+
       /**
        * Component HTML was attached to the DOM
        */

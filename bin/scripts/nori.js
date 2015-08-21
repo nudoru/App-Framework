@@ -2510,7 +2510,7 @@ define('nori/view/MixinComponentViews',
         }
 
         componentView.controller.update();
-        componentView.controller.render();
+        componentView.controller.renderPipeline();
         componentView.controller.mount();
       }
 
@@ -2733,10 +2733,10 @@ define('nori/view/ViewComponent',
        * @param configProps
        */
       function initializeComponent(configProps) {
-        _configProps   = configProps;
-        _id            = configProps.id;
-        _templateObj   = configProps.template;
-        _mountPoint    = configProps.mountPoint;
+        _configProps = configProps;
+        _id          = configProps.id;
+        _templateObj = configProps.template;
+        _mountPoint  = configProps.mountPoint;
 
         this.setState(this.getInitialState());
 
@@ -2815,7 +2815,7 @@ define('nori/view/ViewComponent',
         if (_isMounted) {
           if (this.componentShouldRender(previousState)) {
             this.unmount();
-            this.render();
+            this.renderPipeline();
             this.mount();
           }
         }
@@ -2844,8 +2844,13 @@ define('nori/view/ViewComponent',
         // stub
       }
 
-      function render() {
+      function renderPipeline() {
         this.componentRender();
+      }
+
+      function render() {
+        //this.componentRender();
+        return _templateObj(this.getState());
       }
 
       /**
@@ -2858,10 +2863,11 @@ define('nori/view/ViewComponent',
         }
 
         _children.forEach(function renderChild(child) {
-          child.render();
+          child.renderPipeline();
         });
 
-        _html = _templateObj(this.getState());
+        //_html = _templateObj(this.getState());
+        _html = this.render();
 
         if (this.componentDidRender) {
           this.componentDidRender();
@@ -3016,8 +3022,8 @@ define('nori/view/ViewComponent',
         getTemplate    : getTemplate,
         getHTML        : getHTML,
         setHTML        : setHTML,
-        getDOMNode  : getDOMNode,
-        setDOMNode  : setDOMNode,
+        getDOMNode     : getDOMNode,
+        setDOMNode     : setDOMNode,
         isMounted      : isMounted,
 
         bindMap            : bindMap,
@@ -3028,6 +3034,7 @@ define('nori/view/ViewComponent',
 
         componentShouldRender: componentShouldRender,
         componentWillRender  : componentWillRender,
+        renderPipeline       : renderPipeline,
         render               : render,
         componentRender      : componentRender,
         componentDidRender   : componentDidRender,
