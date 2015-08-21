@@ -148,7 +148,6 @@ define('app/view/DebugControlsTestingSubView',
       }
 
       return {
-        DEBUG            : DEBUG,
         initialize       : initialize,
         componentDidMount: componentDidMount
       };
