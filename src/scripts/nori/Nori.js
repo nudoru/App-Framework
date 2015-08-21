@@ -1,11 +1,12 @@
-_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-
 var Nori = (function () {
 
   var _model,
       _view,
       _dispatcher = require('nori/utils/Dispatcher'),
       _router     = require('nori/utils/Router');
+
+  // Switch Lodash to use Mustache style templates
+  _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
   //----------------------------------------------------------------------------
   //  Accessors

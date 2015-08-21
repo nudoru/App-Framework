@@ -53,7 +53,7 @@ define('app/view/TemplateViewComponent',
        * @returns {*}
        */
       //shouldComponentUpdate: function(nextState) {
-      //  return existy(nextState);
+      //  // Test for differences between nextState and this.getState()
       //},
 
       /**

@@ -2391,7 +2391,7 @@ define('nori/view/MixinComponentViews',
        */
       function showViewFromURLHash(silent) {
         showRouteViewComponent(Nori.getCurrentRoute().route);
-        if(!silent) {
+        if (!silent) {
           Nori.router().notifySubscribers();
         }
       }
@@ -2424,72 +2424,75 @@ define('nori/view/MixinComponentViews',
        * Map a route to a module view controller
        * @param templateID
        * @param componentIDorObj
-       * @param isRoute True | False
        */
-      function mapViewComponent(templateID, componentIDorObj, isRoute, mountPoint) {
-        _componentViewMap[templateID] = {
-          htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + templateID),
-          controller  : createComponentView(componentIDorObj),
+      function mapRouteToViewComponent(route, templateID, componentIDorObj) {
+        _routeViewIDMap[route] = templateID;
+        mapViewComponent(templateID, componentIDorObj, true, _routeViewMountPoint);
+      }
+
+      /**
+       * Map a component to a route path and mounting point. If a string is passed,
+       * the correct object will be created from the factory method, otherwise,
+       * the passed component object is used.
+       *
+       * @param componentID
+       * @param componentIDorObj
+       * @param isRoute
+       * @param mountPoint
+       */
+      function mapViewComponent(componentID, componentIDorObj, isRoute, mountPoint) {
+        var componentObj;
+
+        if (typeof componentIDorObj === 'string') {
+          var componentFactory = require(componentIDorObj);
+          componentObj         = createComponentView(componentFactory());
+        } else {
+          componentObj = componentIDorObj;
+        }
+
+        _componentViewMap[componentID] = {
+          htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + componentID),
+          controller  : componentObj,
           isRouteView : isRoute,
           mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
         };
       }
 
       /**
-       * Factory to create component view modules
-       * @param moduleID
+       * Factory to create component view modules by concating multiple source objects
+       * @param componentSource Custom module source
        * @returns {*}
        */
-      function createComponentView(componentIDorObj) {
-        var componentObj = componentIDorObj;
-        if (typeof  componentIDorObj === 'string') {
-          var componentFactory = require(componentIDorObj);
-          componentObj         = componentFactory();
-          //componentObj = require(componentIDorObj);
-        } else {
-          // Prevent double creation
-          if(componentObj.__CREATED) {
-            return componentObj;
-          }
-        }
-
+      function createComponentView(componentSource) {
         var componentViewFactory  = require('nori/view/ViewComponent'),
             eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
             simpleStoreFactory    = require('nori/model/SimpleStore'),
-            component             = Nori.assignArray({}, [
-              componentViewFactory(),
-              eventDelegatorFactory(),
-              simpleStoreFactory(),
-              componentObj
-            ]);
+            componentAssembly, component, previousInitialize;
 
-        // Overwrite the initialize function to add parent init
-        var oldInit = component.initialize,
-            newInit = function initialize(initObj) {
-              component.initializeComponent(initObj);
-              oldInit.call(component, initObj);
-            };
+        componentAssembly = [
+          componentViewFactory(),
+          eventDelegatorFactory(),
+          simpleStoreFactory(),
+          componentSource
+        ];
 
-        component.initialize = newInit;
-
-        if(componentObj.mixins) {
-          component = Nori.assignArray(component, componentObj.mixins);
+        if (componentSource.mixins) {
+          componentAssembly = componentAssembly.concat(componentSource.mixins);
         }
 
-        component.__CREATED = true;
+        component = Nori.assignArray({}, componentAssembly);
+
+        // Compose a new initialize function by inserting call to component super module
+        previousInitialize = component.initialize;
+        component.initialize = function initialize(initObj) {
+          component.initializeComponent(initObj);
+          previousInitialize.call(component, initObj);
+        };
 
         return component;
       }
 
-      /**
-       * Map a route to a module view controller
-       * @param templateID
-       * @param componentIDorObj
-       */
-      function mapRouteToViewComponent(route, templateID, componentIDorObj) {
-        _routeViewIDMap[route] = templateID;
-        mapViewComponent(templateID, componentIDorObj, true, _routeViewMountPoint);
-      }
+
 
       /**
        * Show a mapped componentView
@@ -2501,8 +2504,6 @@ define('nori/view/MixinComponentViews',
         if (!componentView) {
           throw new Error('No componentView mapped for id: ' + componentID);
         }
-
-        console.log('show view component: ',componentID);
 
         if (!componentView.controller.isInitialized()) {
           componentView.controller.initialize({
@@ -3070,14 +3071,15 @@ define('nori/view/ViewComponent',
 
   });
 
-_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-
 var Nori = (function () {
 
   var _model,
       _view,
       _dispatcher = require('nori/utils/Dispatcher'),
       _router     = require('nori/utils/Router');
+
+  // Switch Lodash to use Mustache style templates
+  _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
   //----------------------------------------------------------------------------
   //  Accessors
