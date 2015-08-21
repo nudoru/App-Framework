@@ -239,14 +239,7 @@ define('app/view/DebugControlsTestingSubView',
           _actionSixEl;
 
       function initialize(initObj) {
-        if (!this.isInitialized()) {
-          _lIpsum.initialize();
-        }
-      }
-
-
-      function DEBUG() {
-        //
+        _lIpsum.initialize();
       }
 
       function componentDidMount() {
