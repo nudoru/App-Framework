@@ -2385,7 +2385,16 @@ define('nori/view/MixinComponentViews',
       }
 
       /**
+       * Return the template object
+       * @returns {*}
+       */
+      function getTemplate() {
+        return _template;
+      }
+
+      /**
        * Typically on app startup, show the view assigned to the current URL hash
+       *
        * @param silent If true, will not notify subscribers of the change, prevents
        * double showing on initial load
        */
@@ -2405,19 +2414,12 @@ define('nori/view/MixinComponentViews',
       }
 
       /**
-       * Set the location for the view to append, any contents will be removed prior
+       * Set the location for the view to mount on route changes, any contents will
+       * be removed prior
        * @param elID
        */
       function setRouteViewMountPoint(elID) {
         _routeViewMountPoint = elID;
-      }
-
-      /**
-       * Return the template object
-       * @returns {*}
-       */
-      function getTemplate() {
-        return _template;
       }
 
       /**
@@ -2427,7 +2429,7 @@ define('nori/view/MixinComponentViews',
        */
       function mapRouteToViewComponent(route, templateID, componentIDorObj) {
         _routeViewIDMap[route] = templateID;
-        mapViewComponent(templateID, componentIDorObj, true, _routeViewMountPoint);
+        mapViewComponent(templateID, componentIDorObj, _routeViewMountPoint, true);
       }
 
       /**
@@ -2440,7 +2442,7 @@ define('nori/view/MixinComponentViews',
        * @param isRoute
        * @param mountPoint
        */
-      function mapViewComponent(componentID, componentIDorObj, isRoute, mountPoint) {
+      function mapViewComponent(componentID, componentIDorObj, mountPoint, isRoute) {
         var componentObj;
 
         if (typeof componentIDorObj === 'string') {
@@ -2483,7 +2485,7 @@ define('nori/view/MixinComponentViews',
         component = Nori.assignArray({}, componentAssembly);
 
         // Compose a new initialize function by inserting call to component super module
-        previousInitialize = component.initialize;
+        previousInitialize   = component.initialize;
         component.initialize = function initialize(initObj) {
           component.initializeComponent(initObj);
           previousInitialize.call(component, initObj);
@@ -2491,8 +2493,6 @@ define('nori/view/MixinComponentViews',
 
         return component;
       }
-
-
 
       /**
        * Show a mapped componentView
@@ -2502,7 +2502,8 @@ define('nori/view/MixinComponentViews',
       function showViewComponent(componentID) {
         var componentView = _componentViewMap[componentID];
         if (!componentView) {
-          throw new Error('No componentView mapped for id: ' + componentID);
+          console.warn('No componentView mapped for id: ' + componentID);
+          return;
         }
 
         if (!componentView.controller.isInitialized()) {
@@ -2511,14 +2512,12 @@ define('nori/view/MixinComponentViews',
             template  : componentView.htmlTemplate,
             mountPoint: componentView.mountPoint
           });
-          componentView.controller.renderPipeline();
-          componentView.controller.mount();
         } else {
           componentView.controller.update();
-          componentView.controller.renderPipeline();
-          componentView.controller.mount();
         }
 
+        componentView.controller.renderPipeline();
+        componentView.controller.mount();
       }
 
       /**
@@ -2526,17 +2525,18 @@ define('nori/view/MixinComponentViews',
        * @param route
        */
       function showRouteViewComponent(route) {
-        var routeTemplateID = _routeViewIDMap[route];
-        if (!routeTemplateID) {
-          console.log("No view mapped for route: " + route);
+        var componentID = _routeViewIDMap[route];
+        if (!componentID) {
+          console.warn("No view mapped for route: " + route);
           return;
         }
 
-        unmountCurrentRouteView();
-        _currentRouteViewID = routeTemplateID;
+        removeCurrentRouteView();
 
+        _currentRouteViewID = componentID;
         showViewComponent(_currentRouteViewID);
 
+        // Transition new view in
         TweenLite.set(_routeViewMountPoint, {alpha: 0});
         TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
 
@@ -2546,7 +2546,7 @@ define('nori/view/MixinComponentViews',
       /**
        * Remove the currently displayed view
        */
-      function unmountCurrentRouteView() {
+      function removeCurrentRouteView() {
         if (_currentRouteViewID) {
           _componentViewMap[_currentRouteViewID].controller.unmount();
         }
@@ -2565,8 +2565,7 @@ define('nori/view/MixinComponentViews',
         mapViewComponent        : mapViewComponent,
         createComponentView     : createComponentView,
         showViewComponent       : showViewComponent,
-        mapRouteToViewComponent : mapRouteToViewComponent,
-        showRouteViewComponent  : showRouteViewComponent
+        mapRouteToViewComponent : mapRouteToViewComponent
       };
 
     };
