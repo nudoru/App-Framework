@@ -120,6 +120,7 @@ define('app/model/AppModel',
        * Set or load any necessary data and then broadcast a initialized event.
        */
       modelReady: function() {
+        this.setState({greeting: 'Hello world!'});
         _noriEvents.applicationModelInitialized();
       },
 
@@ -414,17 +415,15 @@ define('app/view/TemplateViewComponent',
        * Set initial state properties. Call once on first render
        */
       getInitialState: function () {
-        return {
-          greeting: 'Hello world!'
-        };
+        return APP.model().getState();
       },
 
       /**
        * State change on bound models (map, etc.) Return nextState object
        */
       componentWillUpdate: function () {
-        var nextState      = {};
-        nextState.greeting = 'Hello world (updated)';
+        var nextState = APP.model().getState();
+        nextState.greeting += ' (updated)';
         return nextState;
       },
 

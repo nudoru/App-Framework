@@ -26,6 +26,7 @@ define('app/model/AppModel',
        * Set or load any necessary data and then broadcast a initialized event.
        */
       modelReady: function() {
+        this.setState({greeting: 'Hello world!'});
         _noriEvents.applicationModelInitialized();
       },
 
