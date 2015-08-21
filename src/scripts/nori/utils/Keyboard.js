@@ -9,10 +9,10 @@ define('nori/utils/Keyboard',
      *
      * Example
      var Keyboard = require('nori/utils/Keyboard'),
-         kb = Keyboard();
+     kb = Keyboard();
      kb.initialize();
-     kb.mapKey(['a','b'],function(){
-          console.log('A!!!!');
+     kb.mapKey(['a','b'],function(key){
+          console.log('Pressed: '+key);
           kb.unmapKey(['b']);
         });
      */
@@ -206,7 +206,7 @@ define('nori/utils/Keyboard',
        */
       function handleKeyDown(code) {
         if (_callbackMap.hasOwnProperty(code)) {
-          _callbackMap[code].call();
+          _callbackMap[code](code);
         }
       }
 

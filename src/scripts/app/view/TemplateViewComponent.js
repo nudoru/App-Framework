@@ -52,6 +52,8 @@ define('app/view/TemplateViewComponent',
          });
          _this.delegateEvents();
          */
+
+
       },
 
       /**

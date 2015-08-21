@@ -281,10 +281,10 @@ define('nori/utils/Keyboard',
      *
      * Example
      var Keyboard = require('nori/utils/Keyboard'),
-         kb = Keyboard();
+     kb = Keyboard();
      kb.initialize();
-     kb.mapKey(['a','b'],function(){
-          console.log('A!!!!');
+     kb.mapKey(['a','b'],function(key){
+          console.log('Pressed: '+key);
           kb.unmapKey(['b']);
         });
      */
@@ -478,7 +478,7 @@ define('nori/utils/Keyboard',
        */
       function handleKeyDown(code) {
         if (_callbackMap.hasOwnProperty(code)) {
-          _callbackMap[code].call();
+          _callbackMap[code](code);
         }
       }
 
@@ -2803,7 +2803,7 @@ define('nori/view/ViewComponent',
        */
       function componentUpdate() {
         // make a copy of last state
-        var previousState = _.assign({}, this.getState());
+        var previousState = this.getState();
 
         // state will update here
         this.componentWillUpdate();
@@ -2849,7 +2849,6 @@ define('nori/view/ViewComponent',
       }
 
       function render() {
-        //this.componentRender();
         return _templateObj(this.getState());
       }
 
@@ -2866,7 +2865,6 @@ define('nori/view/ViewComponent',
           child.renderPipeline();
         });
 
-        //_html = _templateObj(this.getState());
         _html = this.render();
 
         if (this.componentDidRender) {
@@ -2891,7 +2889,7 @@ define('nori/view/ViewComponent',
        */
       function mount() {
         if (!_html) {
-          throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first');
+          throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
         }
 
         if (this.componentWillMount) {
@@ -2987,6 +2985,10 @@ define('nori/view/ViewComponent',
         return _templateObj;
       }
 
+      function setTemplate(html) {
+        _templateObj = _.template(html);
+      }
+
       function getDOMNode() {
         return _DOMNode;
       }
@@ -3020,6 +3022,7 @@ define('nori/view/ViewComponent',
         getInitialState: getInitialState,
         getID          : getID,
         getTemplate    : getTemplate,
+        setTemplate    : setTemplate,
         getHTML        : getHTML,
         setHTML        : setHTML,
         getDOMNode     : getDOMNode,
@@ -3028,15 +3031,15 @@ define('nori/view/ViewComponent',
 
         bindMap            : bindMap,
         componentWillUpdate: componentWillUpdate,
-        update             : update,
         componentUpdate    : componentUpdate,
+        update             : update,
         componentDidUpdate : componentDidUpdate,
 
         componentShouldRender: componentShouldRender,
         componentWillRender  : componentWillRender,
         renderPipeline       : renderPipeline,
-        render               : render,
         componentRender      : componentRender,
+        render               : render,
         componentDidRender   : componentDidRender,
 
         componentWillMount: componentWillMount,
