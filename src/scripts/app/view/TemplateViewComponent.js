@@ -17,6 +17,7 @@ define('app/view/TemplateViewComponent',
         //this.bindMap(map id string or map object);
         //this.bindMap(APP.model());
         //custom init below here
+        //this.setTemplate('<h1><%= greeting %></h1>'); // set custom HTML template
       },
 
       /**
@@ -38,8 +39,12 @@ define('app/view/TemplateViewComponent',
         //this.setState(obj);
       },
 
+      /**
+       * Render override must return HTML.
+       */
       //render: function() {
-      //  return '<h2>BOO!</h2>';
+      //  var state = this.getState();
+      //  return '<h1>'+state.greeting+'</h1>';
       //},
 
       /**
@@ -52,8 +57,6 @@ define('app/view/TemplateViewComponent',
          });
          _this.delegateEvents();
          */
-
-
       },
 
       /**

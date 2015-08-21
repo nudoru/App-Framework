@@ -763,7 +763,8 @@ define('nori/utils/Templating',
         if (src) {
           srchtml = src.innerHTML;
         } else {
-          throw new Error('nudoru/core/Templating, template not found: "' + id + '"');
+          console.warn('nudoru/core/Templating, template not found: "' + id + '"');
+          srchtml = '<div>Template not found: '+id+'</div>';
         }
 
         return cleanTemplateHTML(srchtml);
