@@ -2446,6 +2446,11 @@ define('nori/view/MixinComponentViews',
           var componentFactory = require(componentIDorObj);
           componentObj         = componentFactory();
           //componentObj = require(componentIDorObj);
+        } else {
+          // Prevent double creation
+          if(componentObj.__CREATED) {
+            return componentObj;
+          }
         }
 
         var componentViewFactory  = require('nori/view/ViewComponent'),
@@ -2467,6 +2472,12 @@ define('nori/view/MixinComponentViews',
 
         component.initialize = newInit;
 
+        if(componentObj.mixins) {
+          component = Nori.assignArray(component, componentObj.mixins);
+        }
+
+        component.__CREATED = true;
+
         return component;
       }
 
@@ -2478,21 +2489,6 @@ define('nori/view/MixinComponentViews',
       function mapRouteToViewComponent(route, templateID, componentIDorObj) {
         _routeViewIDMap[route] = templateID;
         mapViewComponent(templateID, componentIDorObj, true, _routeViewMountPoint);
-      }
-
-      /**
-       * Add a mixin for a mapped controller view
-       * @param templateID
-       * @param extras
-       */
-      function applyMixin(templateID, extras) {
-        var componentView = _componentViewMap[templateID];
-
-        if (!componentView) {
-          throw new Error('No componentView mapped for id: ' + templateID);
-        }
-
-        componentView.controller = Nori.assignArray(componentView.controller, extras);
       }
 
       /**
@@ -2569,8 +2565,7 @@ define('nori/view/MixinComponentViews',
         createComponentView     : createComponentView,
         showViewComponent       : showViewComponent,
         mapRouteToViewComponent : mapRouteToViewComponent,
-        showRouteViewComponent  : showRouteViewComponent,
-        applyMixin              : applyMixin,
+        showRouteViewComponent  : showRouteViewComponent
       };
 
     };

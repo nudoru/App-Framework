@@ -393,6 +393,17 @@ define('app/view/TemplateViewComponent',
      */
 
     var Component = Nori.view().createComponentView({
+      /**
+       * Mixins are other modules/objects that multiple components share, provides
+       * common functionality between then.
+       */
+      //mixins: [
+      //  {
+      //    render: function () {
+      //      return '<h1>MIXIN!</h1>';
+      //    }
+      //  }
+      //],
 
       /**
        * Initialize and bind, called once on first render. Parent component is
@@ -410,7 +421,7 @@ define('app/view/TemplateViewComponent',
       /**
        * Set initial state properties. Call once on first render
        */
-      getInitialState: function() {
+      getInitialState: function () {
         return {
           greeting: 'Hello world!'
         };
@@ -420,7 +431,7 @@ define('app/view/TemplateViewComponent',
        * State change on bound models (map, etc.) Return nextState object
        */
       componentWillUpdate: function () {
-        var nextState = {};
+        var nextState      = {};
         nextState.greeting = 'Hello world (updated)';
         return nextState;
       },
