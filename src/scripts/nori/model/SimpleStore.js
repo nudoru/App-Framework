@@ -27,7 +27,7 @@ define('nori/model/SimpleStore',
        * @param state
        */
       function setState(state) {
-        _state = state;
+        _state = _.assign(_state, state);
         _subject.onNext();
       }
 

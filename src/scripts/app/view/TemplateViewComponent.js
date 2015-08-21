@@ -10,9 +10,9 @@ define('app/view/TemplateViewComponent',
       /**
        * Initialize and bind, called once on first render. Parent component is
        * initialized from app view
-       * @param initObj
+       * @param configProps
        */
-      initialize: function (initObj) {
+      initialize: function (configProps) {
         //Bind to a map, update will be called on changes to the map
         //this.bindMap(map id string or map object);
         //this.bindMap(APP.model());
@@ -20,13 +20,22 @@ define('app/view/TemplateViewComponent',
       },
 
       /**
+       * Set initial state properties. Call once on first render
+       */
+      getInitialState: function() {
+        return {
+          greeting: 'Hello world!'
+        };
+      },
+
+      /**
        * State change on bound models (map, etc.) Update the component state
        */
       componentWillUpdate: function () {
         //console.log(APP.model().getState());
-        var obj = Object.create(null);
-        obj.greeting = 'Hello world!';
-        this.setState(obj);
+        //var obj = {};
+        // set props
+        //this.setState(obj);
       },
 
       /**

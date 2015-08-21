@@ -78,17 +78,19 @@ define('nori/view/MixinComponentViews',
        */
       function createComponentView(componentIDorObj) {
         var componentObj = componentIDorObj;
-        if(typeof  componentIDorObj === 'string') {
+        if (typeof  componentIDorObj === 'string') {
           var componentFactory = require(componentIDorObj);
-          componentObj = componentFactory();
+          componentObj         = componentFactory();
           //componentObj = require(componentIDorObj);
         }
 
-        var componentViewFactory   = require('nori/view/ViewComponent'),
-            eventDelegatorFactory  = require('nori/view/MixinEventDelegator'),
-            component              = Nori.assignArray({}, [
+        var componentViewFactory  = require('nori/view/ViewComponent'),
+            eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
+            simpleStoreFactory    = require('nori/model/SimpleStore'),
+            component             = Nori.assignArray({}, [
               componentViewFactory(),
               eventDelegatorFactory(),
+              simpleStoreFactory(),
               componentObj
             ]);
 
@@ -140,7 +142,7 @@ define('nori/view/MixinComponentViews',
           throw new Error('No componentView mapped for id: ' + templateID);
         }
 
-        if(!componentView.controller.isInitialized()) {
+        if (!componentView.controller.isInitialized()) {
           componentView.controller.initialize({
             id        : templateID,
             template  : componentView.htmlTemplate,

@@ -9,7 +9,7 @@ define('nori/view/ViewComponent',
     var ViewComponent = function () {
 
       var _isInitialized = false,
-          _initialProps,
+          _configProps,
           _id,
           _templateObj,
           _html,
@@ -22,13 +22,16 @@ define('nori/view/ViewComponent',
 
       /**
        * Initialization
-       * @param initialProps
+       * @param configProps
        */
-      function initializeComponent(initialProps) {
-        _initialProps  = initialProps;
-        _id            = initialProps.id;
-        _templateObj   = initialProps.template;
-        _mountPoint    = initialProps.mountPoint;
+      function initializeComponent(configProps) {
+        _configProps   = configProps;
+        _id            = configProps.id;
+        _templateObj   = configProps.template;
+        _mountPoint    = configProps.mountPoint;
+
+        this.setState(this.getInitialState());
+
         _isInitialized = true;
       }
 
@@ -49,7 +52,7 @@ define('nori/view/ViewComponent',
           throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
         }
 
-        if(!isFunction(map.subscribe)) {
+        if (!isFunction(map.subscribe)) {
           throw new Error('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
         }
 
@@ -150,7 +153,7 @@ define('nori/view/ViewComponent',
           child.render();
         });
 
-        _html = _templateObj(_state);
+        _html = _templateObj(this.getState());
 
         if (this.componentDidRender) {
           this.componentDidRender();
@@ -250,20 +253,16 @@ define('nori/view/ViewComponent',
         return _isInitialized;
       }
 
-      function getInitialProps() {
-        return _initialProps;
+      function getConfigProps() {
+        return _configProps;
       }
 
       function isMounted() {
         return _isMounted;
       }
 
-      function setState(obj) {
-        _state = obj;
-      }
-
-      function getState() {
-        return _.cloneDeep(_state);
+      function getInitialState() {
+        this.setState({});
       }
 
       function getID() {
@@ -303,9 +302,8 @@ define('nori/view/ViewComponent',
         initializeComponent: initializeComponent,
 
         isInitialized  : isInitialized,
-        getInitialProps: getInitialProps,
-        setState       : setState,
-        getState       : getState,
+        getConfigProps : getConfigProps,
+        getInitialState: getInitialState,
         getID          : getID,
         getTemplate    : getTemplate,
         getHTML        : getHTML,

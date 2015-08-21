@@ -2131,7 +2131,7 @@ define('nori/model/SimpleStore',
        * @param state
        */
       function setState(state) {
-        _state = state;
+        _state = _.assign(_state, state);
         _subject.onNext();
       }
 
@@ -2437,17 +2437,19 @@ define('nori/view/MixinComponentViews',
        */
       function createComponentView(componentIDorObj) {
         var componentObj = componentIDorObj;
-        if(typeof  componentIDorObj === 'string') {
+        if (typeof  componentIDorObj === 'string') {
           var componentFactory = require(componentIDorObj);
-          componentObj = componentFactory();
+          componentObj         = componentFactory();
           //componentObj = require(componentIDorObj);
         }
 
-        var componentViewFactory   = require('nori/view/ViewComponent'),
-            eventDelegatorFactory  = require('nori/view/MixinEventDelegator'),
-            component              = Nori.assignArray({}, [
+        var componentViewFactory  = require('nori/view/ViewComponent'),
+            eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
+            simpleStoreFactory    = require('nori/model/SimpleStore'),
+            component             = Nori.assignArray({}, [
               componentViewFactory(),
               eventDelegatorFactory(),
+              simpleStoreFactory(),
               componentObj
             ]);
 
@@ -2499,7 +2501,7 @@ define('nori/view/MixinComponentViews',
           throw new Error('No componentView mapped for id: ' + templateID);
         }
 
-        if(!componentView.controller.isInitialized()) {
+        if (!componentView.controller.isInitialized()) {
           componentView.controller.initialize({
             id        : templateID,
             template  : componentView.htmlTemplate,
@@ -2716,7 +2718,7 @@ define('nori/view/ViewComponent',
     var ViewComponent = function () {
 
       var _isInitialized = false,
-          _initialProps,
+          _configProps,
           _id,
           _templateObj,
           _html,
@@ -2729,13 +2731,16 @@ define('nori/view/ViewComponent',
 
       /**
        * Initialization
-       * @param initialProps
+       * @param configProps
        */
-      function initializeComponent(initialProps) {
-        _initialProps  = initialProps;
-        _id            = initialProps.id;
-        _templateObj   = initialProps.template;
-        _mountPoint    = initialProps.mountPoint;
+      function initializeComponent(configProps) {
+        _configProps   = configProps;
+        _id            = configProps.id;
+        _templateObj   = configProps.template;
+        _mountPoint    = configProps.mountPoint;
+
+        this.setState(this.getInitialState());
+
         _isInitialized = true;
       }
 
@@ -2756,7 +2761,7 @@ define('nori/view/ViewComponent',
           throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
         }
 
-        if(!isFunction(map.subscribe)) {
+        if (!isFunction(map.subscribe)) {
           throw new Error('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
         }
 
@@ -2857,7 +2862,7 @@ define('nori/view/ViewComponent',
           child.render();
         });
 
-        _html = _templateObj(_state);
+        _html = _templateObj(this.getState());
 
         if (this.componentDidRender) {
           this.componentDidRender();
@@ -2957,20 +2962,16 @@ define('nori/view/ViewComponent',
         return _isInitialized;
       }
 
-      function getInitialProps() {
-        return _initialProps;
+      function getConfigProps() {
+        return _configProps;
       }
 
       function isMounted() {
         return _isMounted;
       }
 
-      function setState(obj) {
-        _state = obj;
-      }
-
-      function getState() {
-        return _.cloneDeep(_state);
+      function getInitialState() {
+        this.setState({});
       }
 
       function getID() {
@@ -3010,9 +3011,8 @@ define('nori/view/ViewComponent',
         initializeComponent: initializeComponent,
 
         isInitialized  : isInitialized,
-        getInitialProps: getInitialProps,
-        setState       : setState,
-        getState       : getState,
+        getConfigProps : getConfigProps,
+        getInitialState: getInitialState,
         getID          : getID,
         getTemplate    : getTemplate,
         getHTML        : getHTML,

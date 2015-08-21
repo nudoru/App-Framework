@@ -9,9 +9,9 @@ define('app/view/TemplateViewComponentFactory',
 
       /**
        * Initialize subview
-       * @param initObj {id, template, mountPoint}
+       * @param configProps {id, template, mountPoint}
        */
-      function initialize(initObj) {
+      function initialize(configProps) {
         //this.bindMap(map id string or map object);
         // custom init below here
       }
