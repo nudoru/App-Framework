@@ -1,3 +1,5 @@
+_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+
 var Nori = (function () {
 
   var _model,

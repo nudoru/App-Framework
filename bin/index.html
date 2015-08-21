@@ -13,10 +13,10 @@ BEGIN Templates for Components
 -->
 
 <script id="template__component--toast" type="text/template">
-    <div class="toast__item" id="<%= id %>">
+    <div class="toast__item" id="{{ id }}">
         <div class="toast__item-content">
-            <h1><%= title %></h1>
-            <p><%= message %></p>
+            <h1>{{ title }}</h1>
+            <p>{{ message }}</p>
         </div>
         <div class="toast__item-controls">
             <button><i class="fa fa-close"></i></button>
@@ -25,25 +25,25 @@ BEGIN Templates for Components
 </script>
 
 <script id="template__component--tooltip" type="text/template">
-    <div class="tooltip__item" id="<%= id %>">
+    <div class="tooltip__item" id="{{ id }}">
         <div class="tooltip__item-content">
-            <p><%= message %></p>
+            <p>{{ message }}</p>
         </div>
         <div class="arrow"></div>
     </div>
 </script>
 
 <script id="template__messagebox--default" type="text/template">
-    <div class="messagebox__default" id="<%= id %>">
-        <div class="header" id="<%= id %>-header">
-             <h1><%= title %></h1>
+    <div class="messagebox__default" id="{{ id }}">
+        <div class="header" id="{{ id }}-header">
+             <h1>{{ title }}</h1>
         </div>
         <div class="content">
-             <%= content %>
+             {{ content }}
         </div>
         <div class="footer">
             <div class="footer-buttons">
-                <div class="button" id="<%= id %>-button-close">
+                <div class="button" id="{{ id }}-button-close">
                     <button>Close</button>
                 </div>
             </div>
@@ -52,14 +52,14 @@ BEGIN Templates for Components
 </script>
 
 <script id="template__messagebox--button-noicon" type="text/template">
-    <div class="button <%= type %>" id="<%= id %>">
-        <button><%= label %></button>
+    <div class="button {{ type }}" id="{{ id }}">
+        <button>{{ label }}</button>
     </div>
 </script>
 
 <script id="template__messagebox--button-icon" type="text/template">
-    <div class="button icon-left <%= type %>" id="<%= id %>">
-        <button><i class="fa fa-<%= icon %>"></i><%= label %></button>
+    <div class="button icon-left {{ type }}" id="{{ id }}">
+        <button><i class="fa fa-{{ icon }}"></i>{{ label }}</button>
     </div>
 </script>
 
@@ -71,7 +71,7 @@ BEGIN Templates for Sub Views
 
 <script id="template__default" type="text/template">
     <div class="padded">
-        <h1><%= greeting %></h1>
+        <h1>{{ greeting }}</h1>
         <p>Default subview template.</p>
     </div>
 </script>
@@ -133,8 +133,6 @@ BEGIN Templates for DEBUG Sub Views
 
 <script id="template__debug-styletest" type="text/template">
     <div>
-
-
         <h1>Header One</h1>
         <h2>Header Two</h2>
         <h3>Header Three</h3>

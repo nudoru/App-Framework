@@ -3070,6 +3070,8 @@ define('nori/view/ViewComponent',
 
   });
 
+_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+
 var Nori = (function () {
 
   var _model,
