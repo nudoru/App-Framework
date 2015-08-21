@@ -30,14 +30,22 @@ define('app/view/TemplateViewComponent',
       },
 
       /**
-       * State change on bound models (map, etc.) Update the component state
+       * State change on bound models (map, etc.) Return nextState object
        */
       componentWillUpdate: function () {
-        //console.log(APP.model().getState());
-        //var obj = {};
-        // set props
-        //this.setState(obj);
+        var nextState = {};
+        nextState.greeting = 'Hello world (updated)';
+        return nextState;
       },
+
+      /**
+       * Determine if update/redraw should occur
+       * @param nextState
+       * @returns {*}
+       */
+      //shouldComponentUpdate: function(nextState) {
+      //  return existy(nextState);
+      //},
 
       /**
        * Render override must return HTML.

@@ -77,10 +77,10 @@ define('nori/view/ViewComponent',
       }
 
       /**
-       * Before the iew updates and a rerender occurs
+       * Before the wiew updates and a rerender occurs
        */
       function componentWillUpdate() {
-        // update state
+        return undefined;
       }
 
       function update() {
@@ -94,34 +94,37 @@ define('nori/view/ViewComponent',
        */
       function componentUpdate() {
         // make a copy of last state
-        var previousState = this.getState();
+        var currentState = this.getState();
+        var nextState = this.componentWillUpdate();
 
-        // state will update here
-        this.componentWillUpdate();
+        if (this.shouldComponentUpdate(nextState)) {
+          this.setState(nextState);
+          _children.forEach(function updateChild(child) {
+            child.update();
+          });
 
-        _children.forEach(function updateChild(child) {
-          child.update();
-        });
-
-        if (_isMounted) {
-          if (this.componentShouldRender(previousState)) {
-            this.unmount();
-            this.renderPipeline();
-            this.mount();
+          if (_isMounted) {
+            if (this.shouldComponentRender(currentState)) {
+              this.unmount();
+              this.renderPipeline();
+              this.mount();
+            }
           }
-        }
 
-        this.componentDidUpdate();
+          this.componentDidUpdate();
+        }
+      }
+
+      function shouldComponentUpdate(nextState) {
+        return existy(nextState);
       }
 
       /**
        * Determine if the view should rerender on update
-       * TODO implement
        * @returns {boolean}
        */
-      function componentShouldRender(previousState) {
-        return !_.isEqual(previousState, this.getState());
-        //return true;
+      function shouldComponentRender(beforeUpdateState) {
+        return !_.isEqual(beforeUpdateState, this.getState());
       }
 
       /**
@@ -320,13 +323,14 @@ define('nori/view/ViewComponent',
         setDOMNode     : setDOMNode,
         isMounted      : isMounted,
 
-        bindMap            : bindMap,
-        componentWillUpdate: componentWillUpdate,
-        componentUpdate    : componentUpdate,
-        update             : update,
-        componentDidUpdate : componentDidUpdate,
+        bindMap              : bindMap,
+        componentWillUpdate  : componentWillUpdate,
+        shouldComponentUpdate: shouldComponentUpdate,
+        componentUpdate      : componentUpdate,
+        update               : update,
+        componentDidUpdate   : componentDidUpdate,
 
-        componentShouldRender: componentShouldRender,
+        shouldComponentRender: shouldComponentRender,
         componentWillRender  : componentWillRender,
         renderPipeline       : renderPipeline,
         componentRender      : componentRender,

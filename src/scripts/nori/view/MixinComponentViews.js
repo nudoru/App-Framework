@@ -133,26 +133,31 @@ define('nori/view/MixinComponentViews',
 
       /**
        * Show a mapped componentView
-       * @param templateID
+       * @param componentID
        * @param dataObj
        */
-      function showViewComponent(templateID) {
-        var componentView = _componentViewMap[templateID];
+      function showViewComponent(componentID) {
+        var componentView = _componentViewMap[componentID];
         if (!componentView) {
-          throw new Error('No componentView mapped for id: ' + templateID);
+          throw new Error('No componentView mapped for id: ' + componentID);
         }
+
+        console.log('show view component: ',componentID);
 
         if (!componentView.controller.isInitialized()) {
           componentView.controller.initialize({
-            id        : templateID,
+            id        : componentID,
             template  : componentView.htmlTemplate,
             mountPoint: componentView.mountPoint
           });
+          componentView.controller.renderPipeline();
+          componentView.controller.mount();
+        } else {
+          componentView.controller.update();
+          componentView.controller.renderPipeline();
+          componentView.controller.mount();
         }
 
-        componentView.controller.update();
-        componentView.controller.renderPipeline();
-        componentView.controller.mount();
       }
 
       /**
