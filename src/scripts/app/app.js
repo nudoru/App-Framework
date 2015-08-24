@@ -10,6 +10,8 @@ define('app/App',
      */
     var App = Nori.createApplication({
 
+      mixins: [],
+
       /**
        * Create the main Nori App model and view.
        */

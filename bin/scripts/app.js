@@ -10,6 +10,8 @@ define('app/App',
      */
     var App = Nori.createApplication({
 
+      mixins: [],
+
       /**
        * Create the main Nori App model and view.
        */
@@ -96,7 +98,10 @@ define('app/model/AppModel',
   function (require, module, exports) {
 
     var _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants');
+        _noriEventConstants = require('nori/events/EventConstants'),
+        _mixinMapFactory = require('nori/model/MixinMapFactory'),
+        _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
+        _mixinReducerModel  = require('nori/model/MixinReducerModel');
 
     /**
      * This application model contains "reducer model" functionality based on Redux.
@@ -109,6 +114,12 @@ define('app/model/AppModel',
      * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
      */
     var AppModel = Nori.createApplicationModel({
+
+      mixins: [
+        _mixinMapFactory,
+        _mixinReducerModel,
+        _mixinObservableSubject()
+      ],
 
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);
@@ -165,8 +176,13 @@ define('app/model/AppModel',
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants');
+    var _noriEvents           = require('nori/events/EventCreator'),
+        _noriEventConstants   = require('nori/events/EventConstants'),
+        _mixinApplicationView = require('nori/view/ApplicationView'),
+        _mixinNudoruControls  = require('nori/view/MixinNudoruControls'),
+        _mixinComponentViews  = require('nori/view/MixinComponentViews'),
+        _mixinRouteViews      = require('nori/view/MixinRouteViews'),
+        _mixinEventDelegator  = require('nori/view/MixinEventDelegator');
 
     /**
      * View for an application.
@@ -174,21 +190,35 @@ define('app/view/AppView',
 
     var AppView = Nori.createApplicationView({
 
+      mixins: [
+        _mixinApplicationView,
+        _mixinNudoruControls,
+        _mixinComponentViews,
+        _mixinRouteViews,
+        _mixinEventDelegator()
+      ],
+
       initialize: function () {
         this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+        this.initializeRouteViews();
+        this.initializeNudoruControls();
 
         this.configureApplicationViewEvents();
+        this.configureViews();
 
+        _noriEvents.applicationViewInitialized();
+      },
+
+      configureViews: function () {
         var defaultViewComponent = require('app/view/TemplateViewComponent');
 
-        this.setRouteViewMountPoint('#contents'); // Container for routed views
+        // Container for routed views
+        this.setRouteViewMountPoint('#contents');
 
         this.mapRouteToViewComponent('/', 'default', defaultViewComponent);
         this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
-
-        _noriEvents.applicationViewInitialized();
       },
 
       /**
@@ -452,7 +482,7 @@ define('app/view/TemplateViewComponent',
          this.setEvents({
          'click #button-id': handleButton
          });
-         _this.delegateEvents();
+         this.delegateEvents();
          */
       },
 
@@ -475,6 +505,8 @@ define('app/view/TemplateViewComponentFactory',
     /**
      * Module for a dynamic application view for a route or a persistent view
      * implemented as a factory module.
+     *
+     * THIS STYLE IS CURRENTLY DEPRECIATED
      */
     var Component = function () {
 

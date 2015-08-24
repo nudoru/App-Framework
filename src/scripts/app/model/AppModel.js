@@ -2,7 +2,10 @@ define('app/model/AppModel',
   function (require, module, exports) {
 
     var _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants');
+        _noriEventConstants = require('nori/events/EventConstants'),
+        _mixinMapFactory = require('nori/model/MixinMapFactory'),
+        _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
+        _mixinReducerModel  = require('nori/model/MixinReducerModel');
 
     /**
      * This application model contains "reducer model" functionality based on Redux.
@@ -15,6 +18,12 @@ define('app/model/AppModel',
      * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
      */
     var AppModel = Nori.createApplicationModel({
+
+      mixins: [
+        _mixinMapFactory,
+        _mixinReducerModel,
+        _mixinObservableSubject()
+      ],
 
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);

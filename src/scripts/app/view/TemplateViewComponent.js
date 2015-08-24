@@ -72,7 +72,7 @@ define('app/view/TemplateViewComponent',
          this.setEvents({
          'click #button-id': handleButton
          });
-         _this.delegateEvents();
+         this.delegateEvents();
          */
       },
 

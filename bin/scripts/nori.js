@@ -1263,6 +1263,64 @@ define('nori/service/Rest',
 
   });
 
+define('app/service/SocketIO',
+  function (require, module, exports) {
+
+    var SocketIOConnector = function () {
+
+      var _subject = new Rx.BehaviorSubject(),
+          _socketIO = io();
+
+      //_socketIO.on('message', handleMessageReceived);
+
+      function emit(message, payload) {
+        payload = payload || {};
+        _socketIO.emit(message, payload);
+      }
+
+      function messageReceived() {
+
+      }
+
+      /**
+       * Subscribe handler to updates
+       * @param handler
+       * @returns {*}
+       */
+      function subscribe(handler) {
+        return _subject.subscribe(handler);
+      }
+
+      /**
+       * Called from update or whatever function to dispatch to subscribers
+       * @param payload
+       */
+      function notifySubscribers(payload) {
+        _subject.onNext(payload);
+      }
+
+      /**
+       * Gets the last payload that was dispatched to subscribers
+       * @returns {*}
+       */
+      function getLastNotification() {
+        return _subject.getValue();
+      }
+
+      return {
+        emit               : emit,
+        messageReceived    : messageReceived,
+        subscribe          : subscribe,
+        notifySubscribers  : notifySubscribers,
+        getLastNotification: getLastNotification
+      };
+
+    };
+
+    module.exports = SocketIOConnector();
+
+  });
+
 define('nori/model/Map',
   function (require, module, exports) {
 
@@ -2170,9 +2228,6 @@ define('nori/view/ApplicationView',
         _renderer.initialize();
 
         attachApplicationScaffolding(scaffoldTemplates);
-
-        _this.initializeComponentViews();
-        _this.initializeNudoruControls();
       }
 
       /**
@@ -2367,22 +2422,9 @@ define('nori/view/MixinComponentViews',
 
     var MixinComponentViews = function () {
 
-      var _routeViewMountPoint,
-          _currentRouteViewID,
-          _componentViewMap            = Object.create(null),
-          _routeViewIDMap              = Object.create(null),
+      var _componentViewMap            = Object.create(null),
           _componentHTMLTemplatePrefix = 'template__',
-          _template                    = require('nori/utils/Templating'),
-          _noriEvents                  = require('nori/events/EventCreator');
-
-      /**
-       * Set up listeners
-       */
-      function initializeComponentViews() {
-        Nori.router().subscribe(function onRouteChange(payload) {
-          handleRouteChange(payload.routeObj);
-        });
-      }
+          _template                    = require('nori/utils/Templating');
 
       /**
        * Return the template object
@@ -2393,56 +2435,15 @@ define('nori/view/MixinComponentViews',
       }
 
       /**
-       * Typically on app startup, show the view assigned to the current URL hash
-       *
-       * @param silent If true, will not notify subscribers of the change, prevents
-       * double showing on initial load
-       */
-      function showViewFromURLHash(silent) {
-        showRouteViewComponent(Nori.getCurrentRoute().route);
-        if (!silent) {
-          Nori.router().notifySubscribers();
-        }
-      }
-
-      /**
-       * Show route from URL hash on change
-       * @param routeObj
-       */
-      function handleRouteChange(routeObj) {
-        showRouteViewComponent(routeObj.route);
-      }
-
-      /**
-       * Set the location for the view to mount on route changes, any contents will
-       * be removed prior
-       * @param elID
-       */
-      function setRouteViewMountPoint(elID) {
-        _routeViewMountPoint = elID;
-      }
-
-      /**
-       * Map a route to a module view controller
-       * @param templateID
-       * @param componentIDorObj
-       */
-      function mapRouteToViewComponent(route, templateID, componentIDorObj) {
-        _routeViewIDMap[route] = templateID;
-        mapViewComponent(templateID, componentIDorObj, _routeViewMountPoint, true);
-      }
-
-      /**
-       * Map a component to a route path and mounting point. If a string is passed,
+       * Map a component to a mounting point. If a string is passed,
        * the correct object will be created from the factory method, otherwise,
        * the passed component object is used.
        *
        * @param componentID
        * @param componentIDorObj
-       * @param isRoute
        * @param mountPoint
        */
-      function mapViewComponent(componentID, componentIDorObj, mountPoint, isRoute) {
+      function mapViewComponent(componentID, componentIDorObj, mountPoint) {
         var componentObj;
 
         if (typeof componentIDorObj === 'string') {
@@ -2455,8 +2456,7 @@ define('nori/view/MixinComponentViews',
         _componentViewMap[componentID] = {
           htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + componentID),
           controller  : componentObj,
-          isRouteView : isRoute,
-          mountPoint  : isRoute ? _routeViewMountPoint : mountPoint
+          mountPoint  : mountPoint
         };
       }
 
@@ -2499,7 +2499,7 @@ define('nori/view/MixinComponentViews',
        * @param componentID
        * @param dataObj
        */
-      function showViewComponent(componentID) {
+      function showViewComponent(componentID, mountPoint) {
         var componentView = _componentViewMap[componentID];
         if (!componentView) {
           console.warn('No componentView mapped for id: ' + componentID);
@@ -2507,10 +2507,11 @@ define('nori/view/MixinComponentViews',
         }
 
         if (!componentView.controller.isInitialized()) {
+          mountPoint = mountPoint || componentView.mountPoint;
           componentView.controller.initialize({
             id        : componentID,
             template  : componentView.htmlTemplate,
-            mountPoint: componentView.mountPoint
+            mountPoint: mountPoint
           });
         } else {
           componentView.controller.update();
@@ -2521,36 +2522,11 @@ define('nori/view/MixinComponentViews',
       }
 
       /**
-       * Show a view (in response to a route change)
-       * @param route
+       * Returns a copy of the map object for component views
+       * @returns {null}
        */
-      function showRouteViewComponent(route) {
-        var componentID = _routeViewIDMap[route];
-        if (!componentID) {
-          console.warn("No view mapped for route: " + route);
-          return;
-        }
-
-        removeCurrentRouteView();
-
-        _currentRouteViewID = componentID;
-        showViewComponent(_currentRouteViewID);
-
-        // Transition new view in
-        TweenLite.set(_routeViewMountPoint, {alpha: 0});
-        TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
-
-        _noriEvents.viewChanged(_currentRouteViewID);
-      }
-
-      /**
-       * Remove the currently displayed view
-       */
-      function removeCurrentRouteView() {
-        if (_currentRouteViewID) {
-          _componentViewMap[_currentRouteViewID].controller.unmount();
-        }
-        _currentRouteViewID = '';
+      function getComponentViewMap() {
+        return _.assign({}, _componentViewMap);
       }
 
       //----------------------------------------------------------------------------
@@ -2558,14 +2534,11 @@ define('nori/view/MixinComponentViews',
       //----------------------------------------------------------------------------
 
       return {
-        initializeComponentViews: initializeComponentViews,
-        showViewFromURLHash     : showViewFromURLHash,
-        setRouteViewMountPoint  : setRouteViewMountPoint,
-        template                : getTemplate,
-        mapViewComponent        : mapViewComponent,
-        createComponentView     : createComponentView,
-        showViewComponent       : showViewComponent,
-        mapRouteToViewComponent : mapRouteToViewComponent
+        template           : getTemplate,
+        mapViewComponent   : mapViewComponent,
+        createComponentView: createComponentView,
+        showViewComponent  : showViewComponent,
+        getComponentViewMap: getComponentViewMap
       };
 
     };
@@ -2714,6 +2687,119 @@ define('nori/view/MixinNudoruControls',
     };
 
     module.exports = MixinNudoruControls();
+
+  });
+
+define('nori/view/MixinRouteViews',
+  function (require, module, exports) {
+
+    var MixinRouteViews = function () {
+
+      var _this,
+          _currentRouteViewID,
+          _routeViewMountPoint,
+          _routeViewIDMap = Object.create(null),
+          _noriEvents     = require('nori/events/EventCreator');
+
+      /**
+       * Set up listeners
+       */
+      function initializeRouteViews() {
+        _this = this; // mitigation, Due to events, scope may be set to the window object
+        Nori.router().subscribe(function onRouteChange(payload) {
+          handleRouteChange(payload.routeObj);
+        });
+      }
+
+      /**
+       * Show route from URL hash on change
+       * @param routeObj
+       */
+      function handleRouteChange(routeObj) {
+        showRouteViewComponent.bind(_this)(routeObj.route);
+      }
+
+      /**
+       * Typically on app startup, show the view assigned to the current URL hash
+       *
+       * @param silent If true, will not notify subscribers of the change, prevents
+       * double showing on initial load
+       */
+      function showViewFromURLHash(silent) {
+        this.showRouteViewComponent(Nori.getCurrentRoute().route);
+        if (!silent) {
+          Nori.router().notifySubscribers();
+        }
+      }
+
+      /**
+       * Set the location for the view to mount on route changes, any contents will
+       * be removed prior
+       * @param elID
+       */
+      function setRouteViewMountPoint(elID) {
+        _routeViewMountPoint = elID;
+      }
+
+      function getRouteViewMountPoint() {
+        return _routeViewMountPoint;
+      }
+
+      /**
+       * Map a route to a module view controller
+       * @param templateID
+       * @param componentIDorObj
+       */
+      function mapRouteToViewComponent(route, templateID, componentIDorObj) {
+        _routeViewIDMap[route] = templateID;
+        this.mapViewComponent(templateID, componentIDorObj, _routeViewMountPoint);
+      }
+
+      /**
+       * Show a view (in response to a route change)
+       * @param route
+       */
+      function showRouteViewComponent(route) {
+        var componentID = _routeViewIDMap[route];
+        if (!componentID) {
+          console.warn("No view mapped for route: " + route);
+          return;
+        }
+
+        removeCurrentRouteView();
+
+        _currentRouteViewID = componentID;
+        this.showViewComponent(_currentRouteViewID);
+
+        // Transition new view in
+        TweenLite.set(_routeViewMountPoint, {alpha: 0});
+        TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
+
+        _noriEvents.viewChanged(_currentRouteViewID);
+      }
+
+      /**
+       * Remove the currently displayed view
+       */
+      function removeCurrentRouteView() {
+        if (_currentRouteViewID) {
+          _this.getComponentViewMap()[_currentRouteViewID].controller.unmount();
+        }
+        _currentRouteViewID = '';
+      }
+
+      return {
+        initializeRouteViews   : initializeRouteViews,
+        showViewFromURLHash    : showViewFromURLHash,
+        showRouteViewComponent : showRouteViewComponent,
+        setRouteViewMountPoint : setRouteViewMountPoint,
+        getRouteViewMountPoint : getRouteViewMountPoint,
+        mapRouteToViewComponent: mapRouteToViewComponent
+      };
+
+    };
+
+    module.exports = MixinRouteViews();
 
   });
 
@@ -3119,8 +3205,6 @@ var Nori = (function () {
   function initializeApplication(initObj) {
     _router.initialize();
 
-    console.log('Initializing Nori, model? '+(_model ? 'Yes' : 'No')+', view? '+(_view ? 'Yes' : 'No'));
-
     _view  = _view || createApplicationView({});
     _model = _model || createApplicationModel({});
   }
@@ -3148,10 +3232,8 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplication(custom) {
-    return assignArray({}, [
-      this,
-      custom
-    ]);
+    custom.mixins.push(this);
+    return buildFromMixins(custom);
   }
 
   /**
@@ -3160,15 +3242,7 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationModel(custom) {
-    var observable = require('nori/utils/MixinObservableSubject');
-
-    _model = assignArray({}, [
-      require('nori/model/MixinMapFactory'),
-      observable(),
-      require('nori/model/MixinReducerModel'),
-      custom
-    ]);
-
+    _model = buildFromMixins(custom);
     return _model;
   }
 
@@ -3178,17 +3252,24 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationView(custom) {
-    var eventDelegator = require('nori/view/MixinEventDelegator');
-
-    _view = assignArray({}, [
-      require('nori/view/ApplicationView'),
-      require('nori/view/MixinNudoruControls'),
-      require('nori/view/MixinComponentViews'),
-      eventDelegator(),
-      custom
-    ]);
-
+    _view = buildFromMixins(custom);
     return _view;
+  }
+
+  /**
+   * Mixes in the modules specified in the custom application object
+   * @param sourceObject
+   * @returns {*}
+   */
+  function buildFromMixins(sourceObject) {
+    var mixins;
+
+    if (sourceObject.mixins) {
+      mixins = sourceObject.mixins;
+    }
+
+    mixins.push(sourceObject);
+    return assignArray({}, mixins);
   }
 
   //----------------------------------------------------------------------------
@@ -3241,6 +3322,7 @@ var Nori = (function () {
     createApplication     : createApplication,
     createApplicationModel: createApplicationModel,
     createApplicationView : createApplicationView,
+    buildFromMixins       : buildFromMixins,
     getCurrentRoute       : getCurrentRoute,
     assignArray           : assignArray,
     prop                  : prop,

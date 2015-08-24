@@ -47,8 +47,6 @@ var Nori = (function () {
   function initializeApplication(initObj) {
     _router.initialize();
 
-    console.log('Initializing Nori, model? '+(_model ? 'Yes' : 'No')+', view? '+(_view ? 'Yes' : 'No'));
-
     _view  = _view || createApplicationView({});
     _model = _model || createApplicationModel({});
   }
@@ -76,10 +74,8 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplication(custom) {
-    return assignArray({}, [
-      this,
-      custom
-    ]);
+    custom.mixins.push(this);
+    return buildFromMixins(custom);
   }
 
   /**
@@ -88,15 +84,7 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationModel(custom) {
-    var observable = require('nori/utils/MixinObservableSubject');
-
-    _model = assignArray({}, [
-      require('nori/model/MixinMapFactory'),
-      observable(),
-      require('nori/model/MixinReducerModel'),
-      custom
-    ]);
-
+    _model = buildFromMixins(custom);
     return _model;
   }
 
@@ -106,17 +94,24 @@ var Nori = (function () {
    * @returns {*}
    */
   function createApplicationView(custom) {
-    var eventDelegator = require('nori/view/MixinEventDelegator');
-
-    _view = assignArray({}, [
-      require('nori/view/ApplicationView'),
-      require('nori/view/MixinNudoruControls'),
-      require('nori/view/MixinComponentViews'),
-      eventDelegator(),
-      custom
-    ]);
-
+    _view = buildFromMixins(custom);
     return _view;
+  }
+
+  /**
+   * Mixes in the modules specified in the custom application object
+   * @param sourceObject
+   * @returns {*}
+   */
+  function buildFromMixins(sourceObject) {
+    var mixins;
+
+    if (sourceObject.mixins) {
+      mixins = sourceObject.mixins;
+    }
+
+    mixins.push(sourceObject);
+    return assignArray({}, mixins);
   }
 
   //----------------------------------------------------------------------------
@@ -169,6 +164,7 @@ var Nori = (function () {
     createApplication     : createApplication,
     createApplicationModel: createApplicationModel,
     createApplicationView : createApplicationView,
+    buildFromMixins       : buildFromMixins,
     getCurrentRoute       : getCurrentRoute,
     assignArray           : assignArray,
     prop                  : prop,

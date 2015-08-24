@@ -4,6 +4,8 @@ define('app/view/TemplateViewComponentFactory',
     /**
      * Module for a dynamic application view for a route or a persistent view
      * implemented as a factory module.
+     *
+     * THIS STYLE IS CURRENTLY DEPRECIATED
      */
     var Component = function () {
 

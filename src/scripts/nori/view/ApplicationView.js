@@ -20,9 +20,6 @@ define('nori/view/ApplicationView',
         _renderer.initialize();
 
         attachApplicationScaffolding(scaffoldTemplates);
-
-        _this.initializeComponentViews();
-        _this.initializeNudoruControls();
       }
 
       /**
