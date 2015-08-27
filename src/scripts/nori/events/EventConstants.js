@@ -3,8 +3,6 @@ define('nori/events/EventConstants',
     var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
-      APP_WARNING            : null,
-      APP_ERROR              : null,
       APP_INITIALIZED        : null,
       APP_MODEL_INITIALIZED  : null,
       APP_VIEW_INITIALIZED   : null,
@@ -22,9 +20,7 @@ define('nori/events/EventConstants',
       VIEW_INITIALIZED       : null,
       VIEW_CHANGED           : null,
       VIEW_CHANGE_TO_MOBILE  : null,
-      VIEW_CHANGE_TO_DESKTOP : null,
-      ROUTE_CHANGED          : null,
-      CHANGE_ROUTE           : null
+      VIEW_CHANGE_TO_DESKTOP : null
     }));
 
   });

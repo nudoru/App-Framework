@@ -231,12 +231,16 @@ define('nori/view/ViewComponent',
       function unmount() {
         this.componentWillUnmount();
         _isMounted = false;
-        _noriEvents.renderView(_mountPoint, '', _id);
 
         // from the ViewMixinEventDelegator
         if (this.undelegateEvents) {
           this.undelegateEvents();
         }
+
+        _renderer.render({
+          target  : _mountPoint,
+          html    : ''
+        });
 
         setDOMNode(null);
         this.componentDidUnmount();

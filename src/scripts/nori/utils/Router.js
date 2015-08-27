@@ -17,15 +17,6 @@ define('nori/utils/Router',
        */
       function initialize() {
         window.addEventListener('hashchange', notifySubscribers, false);
-        Nori.dispatcher().subscribe(_noriEventConstants.CHANGE_ROUTE, handleAppRouteChangeRequests);
-      }
-
-      /**
-       * Handle application route change requests
-       * @param payload
-       */
-      function handleAppRouteChangeRequests(payload) {
-        set(payload.payload.route, payload.payload.data);
       }
 
       /**

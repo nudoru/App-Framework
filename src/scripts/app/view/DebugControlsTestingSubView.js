@@ -129,20 +129,11 @@ define('app/view/DebugControlsTestingSubView',
         });
 
         _actionFiveEl.addEventListener('click', function actFour(e) {
-          Nori.dispatcher().publish({
-            type   : _noriEventConstants.CHANGE_ROUTE,
-            payload: {
-              route: '/one',
-              data : {prop: 'some data', moar: '25'}
-            }
-          });
+          Nori.router().set('/styles',{prop: 'some data', moar: '25'});
         });
 
         _actionSixEl.addEventListener('click', function actFour(e) {
-          Nori.dispatcher().publish({
-            type   : _noriEventConstants.CHANGE_ROUTE,
-            payload: {route: '/styles', data: 'test'}
-          });
+          console.log('nothing yet');
         });
 
       }

@@ -10,31 +10,7 @@ define('nori/events/EventCreator',
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
     var NoriEventCreator = {
-
-      applicationWarning: function (message) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_WARNING,
-          error  : false,
-          payload: {
-            message: message
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      applicationError: function (message) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_ERROR,
-          error  : true,
-          payload: new Error(message)
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
+      
       applicationInitialized: function (payload) {
         var evtObj = {
           type   : _noriEventConstants.APP_INITIALIZED,
@@ -127,29 +103,6 @@ define('nori/events/EventCreator',
         return evtObj;
       },
 
-      changeRoute: function (route, data) {
-        var evtObj = {
-          type   : _noriEventConstants.CHANGE_ROUTE,
-          payload: {
-            route: route,
-            data : data
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      routeChanged: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.ROUTE_CHANGED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
       changeModelState: function (modelID, data) {
         var evtObj = {
           type   : _noriEventConstants.CHANGE_MODEL_STATE,
@@ -182,7 +135,7 @@ define('nori/events/EventCreator',
         Nori.dispatcher().publish(evtObj);
         return evtObj;
       },
-      
+
       viewChangedToMobile: function (payload) {
         var evtObj = {
           type   : _noriEventConstants.VIEW_CHANGE_TO_MOBILE,
