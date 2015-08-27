@@ -2534,6 +2534,9 @@ define('nori/view/MixinModelStateViews',
        */
       function initializeStateViews() {
         _this = this; // mitigation, Due to events, scope may be set to the window object
+
+        this.createSubject('viewChange');
+
         Nori.model().subscribe(function onStateChange() {
           handleStateChange();
         });
@@ -2599,6 +2602,8 @@ define('nori/view/MixinModelStateViews',
         // Transition new view in
         TweenLite.set(_stateViewMountPoint, {alpha: 0});
         TweenLite.to(_stateViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
+
+        this.notifySubscribersOf('viewChange', componentID);
       }
 
       /**
@@ -2703,6 +2708,9 @@ define('nori/view/MixinRouteViews',
        */
       function initializeRouteViews() {
         _this = this; // mitigation, Due to events, scope may be set to the window object
+
+        this.createSubject('viewChange');
+
         Nori.router().subscribe(function onRouteChange(payload) {
           handleRouteChange(payload.routeObj);
         });
@@ -2771,6 +2779,8 @@ define('nori/view/MixinRouteViews',
         // Transition new view in
         TweenLite.set(_routeViewMountPoint, {alpha: 0});
         TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
+
+        this.notifySubscribersOf('viewChange', componentID);
       }
 
       /**
