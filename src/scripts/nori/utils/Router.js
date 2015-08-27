@@ -8,15 +8,15 @@ define('nori/utils/Router',
 
     var Router = function () {
 
-      var _subject            = new Rx.Subject(),
-          _objUtils           = require('nudoru/core/ObjectUtils'),
-          _noriEventConstants = require('nori/events/EventConstants');
+      var _subject  = new Rx.Subject(),
+          _hashChangeObservable,
+          _objUtils = require('nudoru/core/ObjectUtils');
 
       /**
        * Set event handlers
        */
       function initialize() {
-        window.addEventListener('hashchange', notifySubscribers, false);
+        _hashChangeObservable = Rx.Observable.fromEvent(window, 'hashchange').subscribe(notifySubscribers);
       }
 
       /**
