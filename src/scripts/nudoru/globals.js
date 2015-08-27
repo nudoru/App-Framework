@@ -1,9 +1,10 @@
-// Avoid `console` errors in browsers that lack a console. (IE9)
+var noop = function () {
+};
+
+// Avoid 'console' errors in browsers that lack a console. (IE9)
 //https://github.com/h5bp/html5-boilerplate/blob/master/src/js/plugins.js
 (function () {
   var method;
-  var noop    = function () {
-  };
   var methods = [
     'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
     'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
@@ -29,47 +30,48 @@
 //var $$ = document.querySelectorAll.bind(document);
 
 /**
- Handy global functions
- */
+* is checking collection
+*/
 
-function existy(x) {
-  return x != null;
-}
-
-function truthy(x) {
-  return (x !== false) && existy(x);
-}
-
-function falsey(x) {
-  return !truthy(x);
-}
-
-function isFunction(object) {
-  return typeof object === "function";
-}
-
-function isObject(object) {
-  var type = {}.toString;
-  return type.call(object) === "[object Object]";
-}
-
-function isString(object) {
-  var type = {}.toString;
-  return type.call(object) === "[object String]";
-}
-
-var isArray = Array.isArray || function (object) {
+var is = {
+  existy: function (x) {
+    return x != null;
+  },
+  truthy: function (x) {
+    return (x !== false) && this.existy(x);
+  },
+  falsey: function (x) {
+    return !this.truthy(x);
+  },
+  function: function (object) {
+    return typeof object === "function";
+  },
+  object: function (object) {
     var type = {}.toString;
-    return type.call(object) === "[object Array]";
-  };
-
-function isPromise(promise) {
-  return promise && typeof promise.then === 'function';
-}
-
-function isObservable(observable) {
-  return observable && typeof observable.subscribe === 'function';
-}
+    return type.call(object) === "[object Object]";
+  },
+  string: function (object) {
+    var type = {}.toString;
+    return type.call(object) === "[object String]";
+  },
+  array: function (object) {
+    return Array.isArray(object);
+    //return Object.prototype.toString.call(object) === '[object Array]';
+  },
+  promise: function (promise) {
+    return promise && typeof promise.then === 'function';
+  },
+  observable: function (observable) {
+    return observable && typeof observable.subscribe === 'function';
+  },
+  element: function (obj) {
+    return typeof HTMLElement === 'object' ?
+    obj instanceof HTMLElement || obj instanceof DocumentFragment : //DOM2
+    obj && typeof obj === 'object' && obj !== null &&
+    (obj.nodeType === 1 || obj.nodeType === 11) &&
+    typeof obj.nodeName === 'string'
+  }
+};
 
 function arrify(a) {
   return Array.prototype.slice.call(a, 0);

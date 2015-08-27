@@ -41,11 +41,11 @@ define('nori/utils/Dispatcher',
 
         //console.log('dispatcher subscribe', evtStr, handler, onceOrContext, once);
 
-        if (falsey(evtStr)) {
+        if (is.falsey(evtStr)) {
           throw new Error('Fasley event string passed for handler', handler);
         }
 
-        if (falsey(handler)) {
+        if (is.falsey(handler)) {
           throw new Error('Fasley handler passed for event string', evtStr);
         }
 

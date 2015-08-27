@@ -47,7 +47,7 @@ define('nori/view/MixinEventDelegator',
             var mappings    = evtStrings.split(','),
                 eventHander = _eventsMap[evtStrings];
 
-            if (!isFunction(eventHander)) {
+            if (!is.function(eventHander)) {
               console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
               return;
             }

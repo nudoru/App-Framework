@@ -35,6 +35,19 @@ define('nori/utils/MixinObservableSubject',
         return _subject.getValue();
       }
 
+      /**
+       * Technique from Cycle.js
+       * @param keyName
+       * @returns {Function}
+       */
+      function createObservable(keyName) {
+        return function (keyValue$) {
+          keyValue$.subscribe(function (keyValue) {
+            //localStorage.setItem(keyName, keyValue)
+          });
+        };
+      }
+
       return {
         subscribe          : subscribe,
         notifySubscribers  : notifySubscribers,

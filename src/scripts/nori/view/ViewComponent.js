@@ -47,7 +47,7 @@ define('nori/view/ViewComponent',
       function bindMap(mapIDorObj) {
         var map;
 
-        if (isObject(mapIDorObj)) {
+        if (is.object(mapIDorObj)) {
           map = mapIDorObj;
         } else {
           map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
@@ -57,7 +57,7 @@ define('nori/view/ViewComponent',
           throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
         }
 
-        if (!isFunction(map.subscribe)) {
+        if (!is.function(map.subscribe)) {
           throw new Error('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
         }
 
@@ -122,7 +122,7 @@ define('nori/view/ViewComponent',
       }
 
       function shouldComponentUpdate(nextState) {
-        return existy(nextState);
+        return is.existy(nextState);
       }
 
       /**

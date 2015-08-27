@@ -74,11 +74,11 @@ define('nori/utils/Dispatcher',
 
         //console.log('dispatcher subscribe', evtStr, handler, onceOrContext, once);
 
-        if (falsey(evtStr)) {
+        if (is.falsey(evtStr)) {
           throw new Error('Fasley event string passed for handler', handler);
         }
 
-        if (falsey(handler)) {
+        if (is.falsey(handler)) {
           throw new Error('Fasley handler passed for event string', evtStr);
         }
 
@@ -547,6 +547,19 @@ define('nori/utils/MixinObservableSubject',
        */
       function getLastNotification() {
         return _subject.getValue();
+      }
+
+      /**
+       * Technique from Cycle.js
+       * @param keyName
+       * @returns {Function}
+       */
+      function createObservable(keyName) {
+        return function (keyValue$) {
+          keyValue$.subscribe(function (keyValue) {
+            //localStorage.setItem(keyName, keyValue)
+          });
+        };
       }
 
       return {
@@ -2474,7 +2487,7 @@ define('nori/view/MixinEventDelegator',
             var mappings    = evtStrings.split(','),
                 eventHander = _eventsMap[evtStrings];
 
-            if (!isFunction(eventHander)) {
+            if (!is.function(eventHander)) {
               console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
               return;
             }
@@ -2851,7 +2864,7 @@ define('nori/view/ViewComponent',
       function bindMap(mapIDorObj) {
         var map;
 
-        if (isObject(mapIDorObj)) {
+        if (is.object(mapIDorObj)) {
           map = mapIDorObj;
         } else {
           map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
@@ -2861,7 +2874,7 @@ define('nori/view/ViewComponent',
           throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
         }
 
-        if (!isFunction(map.subscribe)) {
+        if (!is.function(map.subscribe)) {
           throw new Error('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
         }
 
@@ -2926,7 +2939,7 @@ define('nori/view/ViewComponent',
       }
 
       function shouldComponentUpdate(nextState) {
-        return existy(nextState);
+        return is.existy(nextState);
       }
 
       /**
