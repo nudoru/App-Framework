@@ -16,15 +16,21 @@ define('nori/model/MixinReducerModel',
       var _this,
           _state,
           _stateReducers      = [],
-          _simpleStoreFactory = require('nori/model/SimpleStore'),
+          _ignoredEventTypes = [],
           _noriEventConstants = require('nori/events/EventConstants');
 
       //----------------------------------------------------------------------------
       //  Accessors
       //----------------------------------------------------------------------------
 
+      /**
+       * _state might not exist if subscribers are added before this model is initialized
+       */
       function getState() {
-        return _state.getState();
+        if (_state) {
+          return _state.getState();
+        }
+        return {};
       }
 
       function setState(state) {
@@ -50,8 +56,19 @@ define('nori/model/MixinReducerModel',
        * Set up event listener/receiver
        */
       function initializeReducerModel() {
-        _this = this;
-        _state = _simpleStoreFactory();
+        var simpleStoreFactory = require('nori/model/SimpleStore');
+
+        _this  = this;
+        _state = simpleStoreFactory();
+
+        // Ignore these common lifecycle events
+        _ignoredEventTypes = [
+          _noriEventConstants.MODEL_STATE_CHANGED,
+          _noriEventConstants.MODEL_DATA_CHANGED,
+          _noriEventConstants.VIEW_CHANGED,
+          _noriEventConstants.RENDER_VIEW,
+          _noriEventConstants.VIEW_RENDERED
+        ];
 
         Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
@@ -59,6 +76,7 @@ define('nori/model/MixinReducerModel',
           throw new Error('ReducerModel, must set a reducer before initialization');
         }
 
+        // Set initial state from empty event
         applyReducers({});
       }
 
@@ -69,7 +87,7 @@ define('nori/model/MixinReducerModel',
        */
       function handleApplicationEvents(eventObject) {
         //console.log('ReducerModel Event occurred: ', eventObject);
-        if (eventObject.type === _noriEventConstants.MODEL_STATE_CHANGED || eventObject.type === _noriEventConstants.MODEL_DATA_CHANGED) {
+        if (_ignoredEventTypes.indexOf(eventObject.type) >= 0) {
           return;
         }
         applyReducers(eventObject);
@@ -97,6 +115,7 @@ define('nori/model/MixinReducerModel',
        */
       function applyReducersToState(state, event) {
         state = state || {};
+        // TODO should this actually use array.reduce()?
         _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
           state = reducerFunc(state, event);
         });

@@ -30,8 +30,13 @@ define('nori/view/ViewComponent',
         _mountPoint  = configProps.mountPoint;
 
         this.setState(this.getInitialState());
+        this.setEvents(this.defineEvents());
 
         _isInitialized = true;
+      }
+
+      function defineEvents() {
+        return undefined;
       }
 
       /**
@@ -95,7 +100,7 @@ define('nori/view/ViewComponent',
       function componentUpdate() {
         // make a copy of last state
         var currentState = this.getState();
-        var nextState = this.componentWillUpdate();
+        var nextState    = this.componentWillUpdate();
 
         if (this.shouldComponentUpdate(nextState)) {
           this.setState(nextState);
@@ -310,18 +315,18 @@ define('nori/view/ViewComponent',
 
       return {
         initializeComponent: initializeComponent,
-
-        isInitialized  : isInitialized,
-        getConfigProps : getConfigProps,
-        getInitialState: getInitialState,
-        getID          : getID,
-        getTemplate    : getTemplate,
-        setTemplate    : setTemplate,
-        getHTML        : getHTML,
-        setHTML        : setHTML,
-        getDOMNode     : getDOMNode,
-        setDOMNode     : setDOMNode,
-        isMounted      : isMounted,
+        defineEvents       : defineEvents,
+        isInitialized      : isInitialized,
+        getConfigProps     : getConfigProps,
+        getInitialState    : getInitialState,
+        getID              : getID,
+        getTemplate        : getTemplate,
+        setTemplate        : setTemplate,
+        getHTML            : getHTML,
+        setHTML            : setHTML,
+        getDOMNode         : getDOMNode,
+        setDOMNode         : setDOMNode,
+        isMounted          : isMounted,
 
         bindMap              : bindMap,
         componentWillUpdate  : componentWillUpdate,

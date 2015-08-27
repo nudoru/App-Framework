@@ -32,6 +32,16 @@ define('app/view/TemplateViewComponent',
       },
 
       /**
+       * Create an object to be used to define events on DOM elements
+       * @returns {}
+       */
+      //defineEvents: function() {
+      //  return {
+      //    'click #button-id': handleButton
+      //  };
+      //},
+
+      /**
        * Set initial state properties. Call once on first render
        */
       getInitialState: function () {
@@ -68,12 +78,7 @@ define('app/view/TemplateViewComponent',
        * Component HTML was attached to the DOM
        */
       componentDidMount: function () {
-        /* Sample event delegator syntax
-         this.setEvents({
-         'click #button-id': handleButton
-         });
-         this.delegateEvents();
-         */
+        //
       },
 
       /**

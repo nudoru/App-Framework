@@ -28,6 +28,9 @@ define('app/model/AppModel',
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);
         this.initializeReducerModel();
+
+        // Set initial state from data contained in the config.js file
+        this.setState(Nori.config());
         this.modelReady();
       },
 
@@ -36,6 +39,9 @@ define('app/model/AppModel',
        */
       modelReady: function() {
         this.setState({greeting: 'Hello world!'});
+
+        console.log('Initial app state:', this.getState());
+
         _noriEvents.applicationModelInitialized();
       },
 

@@ -53,12 +53,14 @@ define('nori/view/MixinComponentViews',
       function createComponentView(componentSource) {
         var componentViewFactory  = require('nori/view/ViewComponent'),
             eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
+            observableFactory     = require('nori/utils/MixinObservableSubject'),
             simpleStoreFactory    = require('nori/model/SimpleStore'),
             componentAssembly, component, previousInitialize;
 
         componentAssembly = [
           componentViewFactory(),
           eventDelegatorFactory(),
+          observableFactory(),
           simpleStoreFactory(),
           componentSource
         ];
@@ -76,7 +78,9 @@ define('nori/view/MixinComponentViews',
           previousInitialize.call(component, initObj);
         };
 
-        return component;
+        return function createComponentInstance() {
+          return _.assign({}, component);
+        };
       }
 
       /**

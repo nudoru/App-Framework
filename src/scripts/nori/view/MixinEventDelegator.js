@@ -7,8 +7,6 @@
  * Example:
  * this.setEvents({
  *        'click #btn_main_projects': handleProjectsButton,
- *        'click #btn_main_people': handlePeopleButton,
- *        'click #btn_main_help': handleHelpButton
  *        'click #btn_foo, click #btn_bar': handleFooBarButtons
  *      });
  * this.delegateEvents();
@@ -46,7 +44,13 @@ define('nori/view/MixinEventDelegator',
         for (var evtStrings in _eventsMap) {
           if (_eventsMap.hasOwnProperty(evtStrings)) {
 
-            var mappings = evtStrings.split(',');
+            var mappings    = evtStrings.split(','),
+                eventHander = _eventsMap[evtStrings];
+
+            if (!isFunction(eventHander)) {
+              console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
+              return;
+            }
 
             mappings.forEach(function (evtMap) {
               evtMap = evtMap.trim();
@@ -58,7 +62,7 @@ define('nori/view/MixinEventDelegator',
               if (!element) {
                 console.log('Cannot add event to invalid DOM element: ' + selector);
               } else {
-                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(_eventsMap[evtStrings]);
+                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(eventHander);
               }
 
             });

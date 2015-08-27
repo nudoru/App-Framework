@@ -124,6 +124,9 @@ define('app/model/AppModel',
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);
         this.initializeReducerModel();
+
+        // Set initial state from data contained in the config.js file
+        this.setState(Nori.config());
         this.modelReady();
       },
 
@@ -132,6 +135,9 @@ define('app/model/AppModel',
        */
       modelReady: function() {
         this.setState({greeting: 'Hello world!'});
+
+        console.log('Initial app state:', this.getState());
+
         _noriEvents.applicationModelInitialized();
       },
 
@@ -210,13 +216,13 @@ define('app/view/AppView',
       },
 
       configureViews: function () {
-        var defaultViewComponent = require('app/view/TemplateViewComponent');
+        var viewFactory = require('app/view/TemplateViewComponent');
 
         // Container for routed views
         this.setRouteViewMountPoint('#contents');
 
-        this.mapRouteToViewComponent('/', 'default', defaultViewComponent);
-        this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
+        this.mapRouteToViewComponent('/', 'default', viewFactory());
+        this.mapRouteToViewComponent('/styles', 'debug-styletest', viewFactory());
         this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
       },
@@ -239,10 +245,10 @@ define('app/view/AppView',
       configureApplicationViewEvents: function () {
         Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
           this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
-        });
+        }.bind(this));
         Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
           this.alert(payload.payload.message, payload.payload.title);
-        });
+        }.bind(this));
       }
 
     });
@@ -442,6 +448,16 @@ define('app/view/TemplateViewComponent',
       },
 
       /**
+       * Create an object to be used to define events on DOM elements
+       * @returns {}
+       */
+      //defineEvents: function() {
+      //  return {
+      //    'click #button-id': handleButton
+      //  };
+      //},
+
+      /**
        * Set initial state properties. Call once on first render
        */
       getInitialState: function () {
@@ -478,12 +494,7 @@ define('app/view/TemplateViewComponent',
        * Component HTML was attached to the DOM
        */
       componentDidMount: function () {
-        /* Sample event delegator syntax
-         this.setEvents({
-         'click #button-id': handleButton
-         });
-         this.delegateEvents();
-         */
+        //
       },
 
       /**

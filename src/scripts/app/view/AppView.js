@@ -35,13 +35,13 @@ define('app/view/AppView',
       },
 
       configureViews: function () {
-        var defaultViewComponent = require('app/view/TemplateViewComponent');
+        var viewFactory = require('app/view/TemplateViewComponent');
 
         // Container for routed views
         this.setRouteViewMountPoint('#contents');
 
-        this.mapRouteToViewComponent('/', 'default', defaultViewComponent);
-        this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
+        this.mapRouteToViewComponent('/', 'default', viewFactory());
+        this.mapRouteToViewComponent('/styles', 'debug-styletest', viewFactory());
         this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
       },
@@ -64,10 +64,10 @@ define('app/view/AppView',
       configureApplicationViewEvents: function () {
         Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
           this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
-        });
+        }.bind(this));
         Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
           this.alert(payload.payload.message, payload.payload.title);
-        });
+        }.bind(this));
       }
 
     });

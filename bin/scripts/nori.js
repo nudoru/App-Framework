@@ -496,11 +496,17 @@ define('nori/utils/Keyboard',
         return undefined;
       }
 
+      function dispose() {
+        _callbackMap = undefined;
+        _subscription.dispose();
+      }
+
       return {
         initialize : initialize,
         getKeyCodes: getKeyCodes,
         mapKey     : mapKey,
-        unmapKey   : unmapKey
+        unmapKey   : unmapKey,
+        dispose    : dispose
       };
 
     };
@@ -1263,24 +1269,64 @@ define('nori/service/Rest',
 
   });
 
-define('app/service/SocketIO',
+define('nori/service/SocketIO',
   function (require, module, exports) {
 
     var SocketIOConnector = function () {
 
-      var _subject = new Rx.BehaviorSubject(),
-          _socketIO = io();
+      var _subject  = new Rx.BehaviorSubject(),
+          _socketIO = io(),
+          _events   = {
+            NOTIFY_CLIENT    : 'notify_client',
+            NOTIFY_SERVER    : 'notify_server',
+            CONNECT          : 'connect',
+            DROPPED          : 'dropped',
+            USER_CONNECTED   : 'user_connected',
+            USER_DISCONNECTED: 'user_disconnected',
+            EMIT             : 'emit',
+            BROADCAST        : 'broadcast',
+            SYSTEM_MESSAGE   : 'system_message',
+            MESSAGE          : 'message',
+            CREATE_ROOM      : 'create_room',
+            JOIN_ROOM        : 'join_room',
+            LEAVE_ROOM       : 'leave_room'
+          };
 
-      //_socketIO.on('message', handleMessageReceived);
 
-      function emit(message, payload) {
-        payload = payload || {};
-        _socketIO.emit(message, payload);
+      function initialize() {
+        _socketIO.on(_events.NOTIFY_CLIENT, onNotifyClient);
       }
 
-      function messageReceived() {
-
+      /**
+       * All notifications from Socket.io come here
+       * @param payload {type, id, time, payload}
+       */
+      function onNotifyClient(payload) {
+        notifySubscribers(payload);
+        //notifyServer(_events.CONNECT,'hi!');
       }
+
+      /**
+       * All communications to the server should go through here
+       * @param type
+       * @param payload
+       */
+      function notifyServer(type, payload) {
+        _socketIO.emit(_events.NOTIFY_SERVER, {
+          type   : type,
+          payload: payload
+        });
+      }
+
+      //function emit(message, payload) {
+      //  message = message || _events.MESSAGE;
+      //  payload = payload || {};
+      //  _socketIO.emit(message, payload);
+      //}
+      //
+      //function on(event, handler) {
+      //  _socketIO.on(event, handler);
+      //}
 
       /**
        * Subscribe handler to updates
@@ -1307,9 +1353,16 @@ define('app/service/SocketIO',
         return _subject.getValue();
       }
 
+      function getEventConstants() {
+        return _.assign({}, _events);
+      }
+
       return {
-        emit               : emit,
-        messageReceived    : messageReceived,
+        events             : getEventConstants,
+        initialize         : initialize,
+        //on                 : on,
+        //emit               : emit,
+        notifyServer       : notifyServer,
         subscribe          : subscribe,
         notifySubscribers  : notifySubscribers,
         getLastNotification: getLastNotification
@@ -2036,15 +2089,21 @@ define('nori/model/MixinReducerModel',
       var _this,
           _state,
           _stateReducers      = [],
-          _simpleStoreFactory = require('nori/model/SimpleStore'),
+          _ignoredEventTypes = [],
           _noriEventConstants = require('nori/events/EventConstants');
 
       //----------------------------------------------------------------------------
       //  Accessors
       //----------------------------------------------------------------------------
 
+      /**
+       * _state might not exist if subscribers are added before this model is initialized
+       */
       function getState() {
-        return _state.getState();
+        if (_state) {
+          return _state.getState();
+        }
+        return {};
       }
 
       function setState(state) {
@@ -2070,8 +2129,19 @@ define('nori/model/MixinReducerModel',
        * Set up event listener/receiver
        */
       function initializeReducerModel() {
-        _this = this;
-        _state = _simpleStoreFactory();
+        var simpleStoreFactory = require('nori/model/SimpleStore');
+
+        _this  = this;
+        _state = simpleStoreFactory();
+
+        // Ignore these common lifecycle events
+        _ignoredEventTypes = [
+          _noriEventConstants.MODEL_STATE_CHANGED,
+          _noriEventConstants.MODEL_DATA_CHANGED,
+          _noriEventConstants.VIEW_CHANGED,
+          _noriEventConstants.RENDER_VIEW,
+          _noriEventConstants.VIEW_RENDERED
+        ];
 
         Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
@@ -2079,6 +2149,7 @@ define('nori/model/MixinReducerModel',
           throw new Error('ReducerModel, must set a reducer before initialization');
         }
 
+        // Set initial state from empty event
         applyReducers({});
       }
 
@@ -2089,7 +2160,7 @@ define('nori/model/MixinReducerModel',
        */
       function handleApplicationEvents(eventObject) {
         //console.log('ReducerModel Event occurred: ', eventObject);
-        if (eventObject.type === _noriEventConstants.MODEL_STATE_CHANGED || eventObject.type === _noriEventConstants.MODEL_DATA_CHANGED) {
+        if (_ignoredEventTypes.indexOf(eventObject.type) >= 0) {
           return;
         }
         applyReducers(eventObject);
@@ -2117,6 +2188,7 @@ define('nori/model/MixinReducerModel',
        */
       function applyReducersToState(state, event) {
         state = state || {};
+        // TODO should this actually use array.reduce()?
         _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
           state = reducerFunc(state, event);
         });
@@ -2468,12 +2540,14 @@ define('nori/view/MixinComponentViews',
       function createComponentView(componentSource) {
         var componentViewFactory  = require('nori/view/ViewComponent'),
             eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
+            observableFactory     = require('nori/utils/MixinObservableSubject'),
             simpleStoreFactory    = require('nori/model/SimpleStore'),
             componentAssembly, component, previousInitialize;
 
         componentAssembly = [
           componentViewFactory(),
           eventDelegatorFactory(),
+          observableFactory(),
           simpleStoreFactory(),
           componentSource
         ];
@@ -2491,7 +2565,9 @@ define('nori/view/MixinComponentViews',
           previousInitialize.call(component, initObj);
         };
 
-        return component;
+        return function createComponentInstance() {
+          return _.assign({}, component);
+        };
       }
 
       /**
@@ -2578,7 +2654,13 @@ define('nori/view/MixinEventDelegator',
         for (var evtStrings in _eventsMap) {
           if (_eventsMap.hasOwnProperty(evtStrings)) {
 
-            var mappings = evtStrings.split(',');
+            var mappings    = evtStrings.split(','),
+                eventHander = _eventsMap[evtStrings];
+
+            if (!isFunction(eventHander)) {
+              console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
+              return;
+            }
 
             mappings.forEach(function (evtMap) {
               evtMap = evtMap.trim();
@@ -2590,7 +2672,7 @@ define('nori/view/MixinEventDelegator',
               if (!element) {
                 console.log('Cannot add event to invalid DOM element: ' + selector);
               } else {
-                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(_eventsMap[evtStrings]);
+                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(eventHander);
               }
 
             });
@@ -2625,6 +2707,117 @@ define('nori/view/MixinEventDelegator',
     };
 
     module.exports = MixinEventDelegator;
+
+  });
+
+define('nori/view/MixinModelStateViews',
+  function (require, module, exports) {
+
+    var MixinModelStateViews = function () {
+
+      var _this,
+          _currentViewID,
+          _currentModelState,
+          _stateViewMountPoint,
+          _stateViewIDMap = Object.create(null),
+          _noriEvents     = require('nori/events/EventCreator');
+
+      /**
+       * Set up listeners
+       */
+      function initializeStateViews() {
+        _this = this; // mitigation, Due to events, scope may be set to the window object
+        Nori.model().subscribe(function onStateChange() {
+          handleStateChange();
+        });
+      }
+
+      /**
+       * Show route from URL hash on change
+       * @param routeObj
+       */
+      function handleStateChange() {
+        showViewForCurrentModelState();
+      }
+
+      function showViewForCurrentModelState() {
+        var state = Nori.model().getState().currentState;
+        if (state) {
+          if (state !== _currentModelState) {
+            _currentModelState = state;
+            showStateViewComponent.bind(_this)(_currentModelState);
+          }
+        }
+      }
+
+      /**
+       * Set the location for the view to mount on route changes, any contents will
+       * be removed prior
+       * @param elID
+       */
+      function setViewMountPoint(elID) {
+        _stateViewMountPoint = elID;
+      }
+
+      function getViewMountPoint() {
+        return _stateViewMountPoint;
+      }
+
+      /**
+       * Map a route to a module view controller
+       * @param templateID
+       * @param componentIDorObj
+       */
+      function mapStateToViewComponent(state, templateID, componentIDorObj) {
+        _stateViewIDMap[state] = templateID;
+        this.mapViewComponent(templateID, componentIDorObj, _stateViewMountPoint);
+      }
+
+      /**
+       * Show a view (in response to a route change)
+       * @param state
+       */
+      function showStateViewComponent(state) {
+        var componentID = _stateViewIDMap[state];
+        if (!componentID) {
+          console.warn("No view mapped for route: " + state);
+          return;
+        }
+
+        removeCurrentView();
+
+        _currentViewID = componentID;
+        this.showViewComponent(_currentViewID);
+
+        // Transition new view in
+        TweenLite.set(_stateViewMountPoint, {alpha: 0});
+        TweenLite.to(_stateViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
+
+        _noriEvents.viewChanged(_currentViewID);
+      }
+
+      /**
+       * Remove the currently displayed view
+       */
+      function removeCurrentView() {
+        if (_currentViewID) {
+          _this.getComponentViewMap()[_currentViewID].controller.unmount();
+        }
+        _currentViewID = '';
+      }
+
+      return {
+        initializeStateViews        : initializeStateViews,
+        showViewForCurrentModelState: showViewForCurrentModelState,
+        showStateViewComponent      : showStateViewComponent,
+        setViewMountPoint           : setViewMountPoint,
+        getViewMountPoint           : getViewMountPoint,
+        mapStateToViewComponent     : mapStateToViewComponent
+      };
+
+    };
+
+    module.exports = MixinModelStateViews();
 
   });
 
@@ -2830,8 +3023,13 @@ define('nori/view/ViewComponent',
         _mountPoint  = configProps.mountPoint;
 
         this.setState(this.getInitialState());
+        this.setEvents(this.defineEvents());
 
         _isInitialized = true;
+      }
+
+      function defineEvents() {
+        return undefined;
       }
 
       /**
@@ -2895,7 +3093,7 @@ define('nori/view/ViewComponent',
       function componentUpdate() {
         // make a copy of last state
         var currentState = this.getState();
-        var nextState = this.componentWillUpdate();
+        var nextState    = this.componentWillUpdate();
 
         if (this.shouldComponentUpdate(nextState)) {
           this.setState(nextState);
@@ -3110,18 +3308,18 @@ define('nori/view/ViewComponent',
 
       return {
         initializeComponent: initializeComponent,
-
-        isInitialized  : isInitialized,
-        getConfigProps : getConfigProps,
-        getInitialState: getInitialState,
-        getID          : getID,
-        getTemplate    : getTemplate,
-        setTemplate    : setTemplate,
-        getHTML        : getHTML,
-        setHTML        : setHTML,
-        getDOMNode     : getDOMNode,
-        setDOMNode     : setDOMNode,
-        isMounted      : isMounted,
+        defineEvents       : defineEvents,
+        isInitialized      : isInitialized,
+        getConfigProps     : getConfigProps,
+        getInitialState    : getInitialState,
+        getID              : getID,
+        getTemplate        : getTemplate,
+        setTemplate        : setTemplate,
+        getHTML            : getHTML,
+        setHTML            : setHTML,
+        getDOMNode         : getDOMNode,
+        setDOMNode         : setDOMNode,
+        isMounted          : isMounted,
 
         bindMap              : bindMap,
         componentWillUpdate  : componentWillUpdate,

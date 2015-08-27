@@ -224,11 +224,17 @@ define('nori/utils/Keyboard',
         return undefined;
       }
 
+      function dispose() {
+        _callbackMap = undefined;
+        _subscription.dispose();
+      }
+
       return {
         initialize : initialize,
         getKeyCodes: getKeyCodes,
         mapKey     : mapKey,
-        unmapKey   : unmapKey
+        unmapKey   : unmapKey,
+        dispose    : dispose
       };
 
     };
