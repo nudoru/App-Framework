@@ -521,24 +521,50 @@ define('nori/utils/MixinObservableSubject',
   function (require, module, exports) {
 
     var MixinObservableSubject = function () {
+
       //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
-      var _subject = new Rx.BehaviorSubject();
+      var _subject    = new Rx.BehaviorSubject(),
+          _subjectMap = {};
+
+      function createSubject(name) {
+        if (!_subjectMap.hasOwnProperty(name)) {
+          _subjectMap[name] = new Rx.BehaviorSubject();
+        }
+        return _subjectMap[name];
+      }
 
       /**
        * Subscribe handler to updates
        * @param handler
        * @returns {*}
        */
-      function subscribe(handler) {
-        return _subject.subscribe(handler);
+      function subscribe(handlerOrName, optHandler) {
+        if (is.string(handlerOrName)) {
+          return createSubject(handlerOrName).subscribe(optHandler);
+        } else {
+          return _subject.subscribe(handlerOrName);
+        }
       }
 
       /**
-       * Called from update or whatever function to dispatch to subscribers
+       * Dispatch updated to subscribers
        * @param payload
        */
       function notifySubscribers(payload) {
         _subject.onNext(payload);
+      }
+
+      /**
+       * Dispatch updated to named subscribers
+       * @param name
+       * @param payload
+       */
+      function notifySubscribersOf(name, payload) {
+        if (_subjectMap.hasOwnProperty(name)) {
+          _subjectMap[name].onNext(payload);
+        } else {
+          console.warn('MixinObservableSubject, no subscribers of ' + name);
+        }
       }
 
       /**
@@ -549,22 +575,11 @@ define('nori/utils/MixinObservableSubject',
         return _subject.getValue();
       }
 
-      /**
-       * Technique from Cycle.js
-       * @param keyName
-       * @returns {Function}
-       */
-      function createObservable(keyName) {
-        return function (keyValue$) {
-          keyValue$.subscribe(function (keyValue) {
-            //localStorage.setItem(keyName, keyValue)
-          });
-        };
-      }
-
       return {
         subscribe          : subscribe,
+        createSubject      : createSubject,
         notifySubscribers  : notifySubscribers,
+        notifySubscribersOf: notifySubscribersOf,
         getLastNotification: getLastNotification
       };
 
@@ -2188,97 +2203,61 @@ define('nori/view/MixinBrowserEvents',
 
     var MixinBrowserEvents = function () {
 
-      var _currentViewPortSize,
-          _currentViewPortScroll,
-          _uiUpdateLayoutStream,
+      var _scrollableAppContainer,
           _browserScrollStream,
-          _browserResizeStream,
-          _positionUIElementsOnChangeCB,
-          _noriEvents = require('nori/events/EventCreator');
+          _browserResizeStream;
 
       //----------------------------------------------------------------------------
       //  Initialization
       //----------------------------------------------------------------------------
 
-      function initializeBrowserWindowEventStreams() {
-        setCurrentViewPortSize();
-        setCurrentViewPortScroll();
-        configureUIStreams();
-      }
+      function initializeBrowserEvents(scrollcontainer) {
+        if(!this.createSubject) {
+          console.warn('nori/view/MixinBrowserEvents needs nori/utils/MixinObservableSubject to notify');
+        }
 
-      function setPositionUIElementsOnChangeCB(cb) {
-        _positionUIElementsOnChangeCB = cb;
+        if(scrollcontainer) {
+          setMainScrollingView(scrollcontainer);
+        } else {
+          _scrollableAppContainer = document;
+        }
+
+        createBrowserEventStreams.bind(this)();
+
+        this.createSubject('browserScroll');
+        this.createSubject('browserResize');
       }
 
       /**
        * Set up RxJS streams for events
        */
-      function configureUIStreams() {
-        var uiresizestream = Rx.Observable.fromEvent(window, 'resize'),
-            uiscrollscream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll');
-
-        // UI layout happens immediately, while resize and scroll is throttled
-        _uiUpdateLayoutStream = Rx.Observable.merge(uiresizestream, uiscrollscream)
-          .subscribe(function () {
-            positionUIElementsOnChange();
-          });
-
+      function createBrowserEventStreams() {
         _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
           .throttle(100)
-          .subscribe(function () {
-            handleViewPortResize();
-          });
+          .subscribe(handleViewPortResize.bind(this));
 
-        _browserScrollStream = Rx.Observable.fromEvent(_mainScrollEl, 'scroll')
+        _browserScrollStream = Rx.Observable.fromEvent(_scrollableAppContainer, 'scroll')
           .throttle(100)
-          .subscribe(function () {
-            handleViewPortScroll();
-          });
+          .subscribe(handleViewPortScroll.bind(this));
       }
-
-      function getMainScrollingView() {
-        return _mainScrollEl;
-      }
-
-      function setMainScrollingView(elID) {
-        _mainScrollEl = document.getElementById(elID);
-      }
-
-      //----------------------------------------------------------------------------
-      //  Viewport and UI elements
-      //----------------------------------------------------------------------------
 
       function handleViewPortResize() {
-        _noriEvents.browserResized(_currentViewPortSize);
+        this.notifySubscribersOf('browserResize', getCurrentViewPortSize());
       }
 
       function handleViewPortScroll() {
-        _noriEvents.browserScrolled(_currentViewPortScroll);
+        this.notifySubscribersOf('browserScroll', getCurrentViewPortScroll());
       }
 
       function getCurrentViewPortSize() {
-        return _currentViewPortSize;
-      }
-
-      /**
-       * Cache the current view port size in a var
-       */
-      function setCurrentViewPortSize() {
-        _currentViewPortSize = {
+        return {
           width : window.innerWidth,
           height: window.innerHeight
         };
       }
 
       function getCurrentViewPortScroll() {
-        return _currentViewPortScroll;
-      }
-
-      /**
-       * Cache the current view port scroll in a var
-       */
-      function setCurrentViewPortScroll() {
-        var scrollEL = _mainScrollEl ? _mainScrollEl : document.body;
+        var scrollEL = _scrollableAppContainer ? _scrollableAppContainer : document.body;
 
         var left = scrollEL.scrollLeft,
             top  = scrollEL.scrollTop;
@@ -2286,17 +2265,15 @@ define('nori/view/MixinBrowserEvents',
         left = left ? left : 0;
         top  = top ? top : 0;
 
-        _currentViewPortScroll = {left: left, top: top};
+        return {left: left, top: top};
       }
 
-      /**
-       * Reposition the UI elements on a UI change, scroll, resize, etc.
-       */
-      function positionUIElementsOnChange() {
-        setCurrentViewPortScroll();
-        setCurrentViewPortSize();
+      function getMainScrollingView() {
+        return _scrollableAppContainer;
+      }
 
-        _positionUIElementsOnChangeCB.call(this, _currentViewPortSize, _currentViewPortScroll);
+      function setMainScrollingView(elID) {
+        _scrollableAppContainer = document.querySelector(elID);
       }
 
       //----------------------------------------------------------------------------
@@ -2304,12 +2281,11 @@ define('nori/view/MixinBrowserEvents',
       //----------------------------------------------------------------------------
 
       return {
-        initializeBrowserWindowEventStreams: initializeBrowserWindowEventStreams,
-        setPositionUIElementsOnChangeCB    : setPositionUIElementsOnChangeCB,
-        getMainScrollingView               : getMainScrollingView,
-        setMainScrollingView               : setMainScrollingView,
-        getCurrentViewPortSize             : getCurrentViewPortSize,
-        getCurrentViewPortScroll           : getCurrentViewPortScroll
+        initializeBrowserEvents : initializeBrowserEvents,
+        getMainScrollingView    : getMainScrollingView,
+        setMainScrollingView    : setMainScrollingView,
+        getCurrentViewPortSize  : getCurrentViewPortSize,
+        getCurrentViewPortScroll: getCurrentViewPortScroll
       };
 
     };

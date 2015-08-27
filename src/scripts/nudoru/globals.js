@@ -30,46 +30,52 @@ var noop = function () {
 //var $$ = document.querySelectorAll.bind(document);
 
 /**
-* is checking collection
-*/
+ * is checking collection
+ */
 
 var is = {
-  existy: function (x) {
+  existy     : function (x) {
     return x != null;
   },
-  truthy: function (x) {
+  truthy     : function (x) {
     return (x !== false) && this.existy(x);
   },
-  falsey: function (x) {
+  falsey     : function (x) {
     return !this.truthy(x);
   },
-  function: function (object) {
+  function   : function (object) {
     return typeof object === "function";
   },
-  object: function (object) {
-    var type = {}.toString;
-    return type.call(object) === "[object Object]";
+  object     : function (object) {
+    return Object.prototype.toString.call(object) === "[object Object]";
   },
-  string: function (object) {
-    var type = {}.toString;
-    return type.call(object) === "[object String]";
+  objectEmpty: function (object) {
+    for (var key in object) {
+      if (object.hasOwnProperty(key)) {
+        return false;
+      }
+    }
+    return true;
   },
-  array: function (object) {
+  string     : function (object) {
+    return Object.prototype.toString.call(object) === "[object String]";
+  },
+  array      : function (object) {
     return Array.isArray(object);
     //return Object.prototype.toString.call(object) === '[object Array]';
   },
-  promise: function (promise) {
+  promise    : function (promise) {
     return promise && typeof promise.then === 'function';
   },
-  observable: function (observable) {
+  observable : function (observable) {
     return observable && typeof observable.subscribe === 'function';
   },
-  element: function (obj) {
+  element    : function (obj) {
     return typeof HTMLElement === 'object' ?
     obj instanceof HTMLElement || obj instanceof DocumentFragment : //DOM2
     obj && typeof obj === 'object' && obj !== null &&
     (obj.nodeType === 1 || obj.nodeType === 11) &&
-    typeof obj.nodeName === 'string'
+    typeof obj.nodeName === 'string';
   }
 };
 

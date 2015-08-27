@@ -188,7 +188,8 @@ define('app/view/AppView',
         _mixinNudoruControls  = require('nori/view/MixinNudoruControls'),
         _mixinComponentViews  = require('nori/view/MixinComponentViews'),
         _mixinRouteViews      = require('nori/view/MixinRouteViews'),
-        _mixinEventDelegator  = require('nori/view/MixinEventDelegator');
+        _mixinEventDelegator  = require('nori/view/MixinEventDelegator'),
+        _mixinObservableSubject = require('nori/utils/MixinObservableSubject');
 
     /**
      * View for an application.
@@ -201,11 +202,13 @@ define('app/view/AppView',
         _mixinNudoruControls,
         _mixinComponentViews,
         _mixinRouteViews,
-        _mixinEventDelegator()
+        _mixinEventDelegator(),
+        _mixinObservableSubject()
       ],
 
       initialize: function () {
         this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
+        this.initializeBrowserEvents('#app__contents');
         this.initializeRouteViews();
         this.initializeNudoruControls();
 
@@ -233,12 +236,7 @@ define('app/view/AppView',
        * Draw and UI to the DOM and set events
        */
       render: function () {
-        /* Sample event delegator syntax
-         this.setEvents({
-         'click #button-id': handleButton
-         });
-         this.delegateEvents();
-         */
+        //
       },
 
       /**

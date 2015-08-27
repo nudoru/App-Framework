@@ -7,24 +7,50 @@ define('nori/utils/MixinObservableSubject',
   function (require, module, exports) {
 
     var MixinObservableSubject = function () {
+
       //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
-      var _subject = new Rx.BehaviorSubject();
+      var _subject    = new Rx.BehaviorSubject(),
+          _subjectMap = {};
+
+      function createSubject(name) {
+        if (!_subjectMap.hasOwnProperty(name)) {
+          _subjectMap[name] = new Rx.BehaviorSubject();
+        }
+        return _subjectMap[name];
+      }
 
       /**
        * Subscribe handler to updates
        * @param handler
        * @returns {*}
        */
-      function subscribe(handler) {
-        return _subject.subscribe(handler);
+      function subscribe(handlerOrName, optHandler) {
+        if (is.string(handlerOrName)) {
+          return createSubject(handlerOrName).subscribe(optHandler);
+        } else {
+          return _subject.subscribe(handlerOrName);
+        }
       }
 
       /**
-       * Called from update or whatever function to dispatch to subscribers
+       * Dispatch updated to subscribers
        * @param payload
        */
       function notifySubscribers(payload) {
         _subject.onNext(payload);
+      }
+
+      /**
+       * Dispatch updated to named subscribers
+       * @param name
+       * @param payload
+       */
+      function notifySubscribersOf(name, payload) {
+        if (_subjectMap.hasOwnProperty(name)) {
+          _subjectMap[name].onNext(payload);
+        } else {
+          console.warn('MixinObservableSubject, no subscribers of ' + name);
+        }
       }
 
       /**
@@ -35,22 +61,11 @@ define('nori/utils/MixinObservableSubject',
         return _subject.getValue();
       }
 
-      /**
-       * Technique from Cycle.js
-       * @param keyName
-       * @returns {Function}
-       */
-      function createObservable(keyName) {
-        return function (keyValue$) {
-          keyValue$.subscribe(function (keyValue) {
-            //localStorage.setItem(keyName, keyValue)
-          });
-        };
-      }
-
       return {
         subscribe          : subscribe,
+        createSubject      : createSubject,
         notifySubscribers  : notifySubscribers,
+        notifySubscribersOf: notifySubscribersOf,
         getLastNotification: getLastNotification
       };
 
