@@ -1,13 +1,13 @@
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _noriEvents           = require('nori/events/EventCreator'),
-        _noriEventConstants   = require('nori/events/EventConstants'),
-        _mixinApplicationView = require('nori/view/ApplicationView'),
-        _mixinNudoruControls  = require('nori/view/MixinNudoruControls'),
-        _mixinComponentViews  = require('nori/view/MixinComponentViews'),
-        _mixinRouteViews      = require('nori/view/MixinRouteViews'),
-        _mixinEventDelegator  = require('nori/view/MixinEventDelegator'),
+    var _noriEvents             = require('nori/events/EventCreator'),
+        _noriEventConstants     = require('nori/events/EventConstants'),
+        _mixinApplicationView   = require('nori/view/ApplicationView'),
+        _mixinNudoruControls    = require('nori/view/MixinNudoruControls'),
+        _mixinComponentViews    = require('nori/view/MixinComponentViews'),
+        _mixinRouteViews        = require('nori/view/MixinRouteViews'),
+        _mixinEventDelegator    = require('nori/view/MixinEventDelegator'),
         _mixinObservableSubject = require('nori/utils/MixinObservableSubject');
 
     /**
@@ -37,16 +37,18 @@ define('app/view/AppView',
       },
 
       configureViews: function () {
-        var viewFactory = require('app/view/TemplateViewComponent');
+        var defaultViewFactory = require('app/view/TemplateViewComponent'),
+          defaultView = defaultViewFactory();
+
 
         // Container for routed views
         this.setViewMountPoint('#contents');
-        this.mapRouteToViewComponent('/', 'default', viewFactory());
+        this.mapRouteToViewComponent('/', 'default', defaultView);
         this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
-        // Alternate, map views to different model states with MixinModelStateViews
+        // Alternately, map views to different model states with MixinModelStateViews
         //this.mapStateToViewComponent('TITLE', 'title', screenTitle);
       },
 

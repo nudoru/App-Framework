@@ -2,37 +2,25 @@ define('nori/model/SimpleStore',
   function (require, module, exports) {
 
     var SimpleStore = function () {
-      var _state   = Object.create(null),
-          _subject = new Rx.Subject();
-
-      /**
-       * subscribe a handler for changes
-       * @param handler
-       * @returns {*}
-       */
-      function subscribe(handler) {
-        return _subject.subscribe(handler);
-      }
+      var _internalState   = Object.create(null);
 
       /**
        * Return a copy of the state
        * @returns {void|*}
        */
       function getState() {
-        return _.assign({}, _state);
+        return _.assign({}, _internalState);
       }
 
       /**
        * Sets the state
-       * @param state
+       * @param nextState
        */
-      function setState(state) {
-        _state = _.assign(_state, state);
-        _subject.onNext();
+      function setState(nextState) {
+        _internalState = _.assign(_internalState, nextState);
       }
 
       return {
-        subscribe: subscribe,
         getState : getState,
         setState : setState
       };

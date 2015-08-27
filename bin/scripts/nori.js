@@ -2098,37 +2098,25 @@ define('nori/model/SimpleStore',
   function (require, module, exports) {
 
     var SimpleStore = function () {
-      var _state   = Object.create(null),
-          _subject = new Rx.Subject();
-
-      /**
-       * subscribe a handler for changes
-       * @param handler
-       * @returns {*}
-       */
-      function subscribe(handler) {
-        return _subject.subscribe(handler);
-      }
+      var _internalState   = Object.create(null);
 
       /**
        * Return a copy of the state
        * @returns {void|*}
        */
       function getState() {
-        return _.assign({}, _state);
+        return _.assign({}, _internalState);
       }
 
       /**
        * Sets the state
-       * @param state
+       * @param nextState
        */
-      function setState(state) {
-        _state = _.assign(_state, state);
-        _subject.onNext();
+      function setState(nextState) {
+        _internalState = _.assign(_internalState, nextState);
       }
 
       return {
-        subscribe: subscribe,
         getState : getState,
         setState : setState
       };
@@ -2824,7 +2812,7 @@ define('nori/view/ViewComponent',
           _mountPoint,
           _children      = [],
           _isMounted     = false,
-          _renderer = require('nori/utils/Renderer'),
+          _renderer      = require('nori/utils/Renderer'),
           _noriEvents    = require('nori/events/EventCreator');
 
       /**
@@ -2839,6 +2827,10 @@ define('nori/view/ViewComponent',
 
         this.setState(this.getInitialState());
         this.setEvents(this.defineEvents());
+
+        this.createSubject('update');
+        this.createSubject('mount');
+        this.createSubject('unmount');
 
         _isInitialized = true;
       }
@@ -2861,11 +2853,11 @@ define('nori/view/ViewComponent',
         }
 
         if (!map) {
-          throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+          console.warn('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
         }
 
         if (!is.function(map.subscribe)) {
-          throw new Error('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
+          console.warn('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
         }
 
         map.subscribe(this.update.bind(this));
@@ -2926,6 +2918,7 @@ define('nori/view/ViewComponent',
 
           this.componentDidUpdate();
         }
+        this.notifySubscribersOf('update', this.getID());
       }
 
       function shouldComponentUpdate(nextState) {
@@ -3006,9 +2999,9 @@ define('nori/view/ViewComponent',
         _isMounted = true;
 
         // Go out to the standard render function. DOM element is returned in callback
-       setDOMNode(_renderer.render({
-          target  : _mountPoint,
-          html    : _html
+        setDOMNode(_renderer.render({
+          target: _mountPoint,
+          html  : _html
         }));
 
         // from the ViewMixinEventDelegator
@@ -3019,6 +3012,8 @@ define('nori/view/ViewComponent',
         if (this.componentDidMount) {
           this.componentDidMount();
         }
+
+        this.notifySubscribersOf('mount', this.getID());
       }
 
       /**
@@ -3045,12 +3040,13 @@ define('nori/view/ViewComponent',
         }
 
         _renderer.render({
-          target  : _mountPoint,
-          html    : ''
+          target: _mountPoint,
+          html  : ''
         });
 
         setDOMNode(null);
         this.componentDidUnmount();
+        this.notifySubscribersOf('unmount', this.getID());
       }
 
       function componentDidUnmount() {

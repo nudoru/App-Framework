@@ -17,7 +17,7 @@ define('nori/view/ViewComponent',
           _mountPoint,
           _children      = [],
           _isMounted     = false,
-          _renderer = require('nori/utils/Renderer'),
+          _renderer      = require('nori/utils/Renderer'),
           _noriEvents    = require('nori/events/EventCreator');
 
       /**
@@ -32,6 +32,10 @@ define('nori/view/ViewComponent',
 
         this.setState(this.getInitialState());
         this.setEvents(this.defineEvents());
+
+        this.createSubject('update');
+        this.createSubject('mount');
+        this.createSubject('unmount');
 
         _isInitialized = true;
       }
@@ -54,11 +58,11 @@ define('nori/view/ViewComponent',
         }
 
         if (!map) {
-          throw new Error('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+          console.warn('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
         }
 
         if (!is.function(map.subscribe)) {
-          throw new Error('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
+          console.warn('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
         }
 
         map.subscribe(this.update.bind(this));
@@ -119,6 +123,7 @@ define('nori/view/ViewComponent',
 
           this.componentDidUpdate();
         }
+        this.notifySubscribersOf('update', this.getID());
       }
 
       function shouldComponentUpdate(nextState) {
@@ -199,9 +204,9 @@ define('nori/view/ViewComponent',
         _isMounted = true;
 
         // Go out to the standard render function. DOM element is returned in callback
-       setDOMNode(_renderer.render({
-          target  : _mountPoint,
-          html    : _html
+        setDOMNode(_renderer.render({
+          target: _mountPoint,
+          html  : _html
         }));
 
         // from the ViewMixinEventDelegator
@@ -212,6 +217,8 @@ define('nori/view/ViewComponent',
         if (this.componentDidMount) {
           this.componentDidMount();
         }
+
+        this.notifySubscribersOf('mount', this.getID());
       }
 
       /**
@@ -238,12 +245,13 @@ define('nori/view/ViewComponent',
         }
 
         _renderer.render({
-          target  : _mountPoint,
-          html    : ''
+          target: _mountPoint,
+          html  : ''
         });
 
         setDOMNode(null);
         this.componentDidUnmount();
+        this.notifySubscribersOf('unmount', this.getID());
       }
 
       function componentDidUnmount() {
