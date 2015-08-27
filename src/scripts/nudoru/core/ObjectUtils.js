@@ -13,7 +13,7 @@ define('nudoru/core/ObjectUtils',
       isNull: function (obj) {
         var isnull = false;
 
-        if (falsey(obj)) {
+        if (is.falsey(obj)) {
           return true;
         }
 

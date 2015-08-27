@@ -61,29 +61,11 @@ define('nori/utils/MixinObservableSubject',
         }
       }
 
-      /**
-       * Gets the last payload that was dispatched to subscribers
-       * @returns {*}
-       */
-      function getLastNotification() {
-        return _subject.getValue();
-      }
-
-      /**
-       * Gets the last payload that was dispatched to subscribers
-       * @returns {*}
-       */
-      function getLastNotificationOf(name) {
-        return _subjectMap[name].getValue();
-      }
-
       return {
         subscribe            : subscribe,
         createSubject        : createSubject,
         notifySubscribers    : notifySubscribers,
-        notifySubscribersOf  : notifySubscribersOf,
-        getLastNotification  : getLastNotification,
-        getLastNotificationOf: getLastNotificationOf
+        notifySubscribersOf  : notifySubscribersOf
       };
 
     };

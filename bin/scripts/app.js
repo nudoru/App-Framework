@@ -219,14 +219,15 @@ define('app/view/AppView',
 
       configureViews: function () {
         var defaultViewFactory = require('app/view/TemplateViewComponent'),
-          defaultView = defaultViewFactory();
-
+          defaultView = defaultViewFactory(),
+          styleView = defaultViewFactory(),
+          controlsView = defaultViewFactory();
 
         // Container for routed views
         this.setViewMountPoint('#contents');
         this.mapRouteToViewComponent('/', 'default', defaultView);
-        this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
-        this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
+        this.mapRouteToViewComponent('/styles', 'debug-styletest', styleView);
+        this.mapRouteToViewComponent('/controls', 'debug-controls', controlsView);
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
         // Alternately, map views to different model states with MixinModelStateViews
