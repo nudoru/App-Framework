@@ -1954,7 +1954,7 @@ define('nori/model/MixinReducerModel',
       var _this,
           _state,
           _stateReducers      = [],
-          _ignoredEventTypes = [],
+          _ignoredEventTypes  = [],
           _noriEventConstants = require('nori/events/EventConstants');
 
       //----------------------------------------------------------------------------
@@ -1994,6 +1994,10 @@ define('nori/model/MixinReducerModel',
        * Set up event listener/receiver
        */
       function initializeReducerModel() {
+        if(!this.createSubject) {
+          console.warn('nori/model/MixinReducerModel needs nori/utils/MixinObservableSubject to notify');
+        }
+
         var simpleStoreFactory = require('nori/model/SimpleStore');
 
         _this  = this;
@@ -2059,18 +2063,19 @@ define('nori/model/MixinReducerModel',
       /**
        * Template reducer function
        * Model state isn't modified, current state is passed in and mutated state returned
+
+      function templateReducerFunction(state, event) {
+        state = state || {};
+        switch (event.type) {
+          case _noriEventConstants.MODEL_DATA_CHANGED:
+            // can compose other reducers
+            // return _.assign({}, state, otherStateTransformer(state));
+            return _.assign({}, state, {prop: event.payload.value});
+          default:
+            return state;
+        }
+      }
        */
-      //function templateReducerFunction(state, event) {
-      //  state = state || {};
-      //  switch (event.type) {
-      //    case _noriEventConstants.MODEL_DATA_CHANGED:
-      //      // can compose other reducers
-      //      // return _.assign({}, state, otherStateTransformer(state));
-      //      return _.assign({}, state, {prop: event.payload.value});
-      //    default:
-      //      return state;
-      //  }
-      //}
 
       //----------------------------------------------------------------------------
       //  API
