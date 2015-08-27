@@ -1,5 +1,11 @@
 /**
- * Add RxJS Subject to a module
+ * Add RxJS BehaviorSubject to a module.
+ *
+ * Add one simple observable subject or more complex ability to create others for
+ * more complex eventing needs.
+ *
+ * Behavior Subjects remember their list message. For more information:
+ * https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
  */
 
 define('nori/utils/MixinObservableSubject',
@@ -8,10 +14,14 @@ define('nori/utils/MixinObservableSubject',
 
     var MixinObservableSubject = function () {
 
-      //https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
       var _subject    = new Rx.BehaviorSubject(),
           _subjectMap = {};
 
+      /**
+       * Create a new subject
+       * @param name
+       * @returns {*}
+       */
       function createSubject(name) {
         if (!_subjectMap.hasOwnProperty(name)) {
           _subjectMap[name] = new Rx.BehaviorSubject();
@@ -20,7 +30,8 @@ define('nori/utils/MixinObservableSubject',
       }
 
       /**
-       * Subscribe handler to updates
+       * Subscribe handler to updates. If the handler is a string, the new subject
+       * will be created.
        * @param handler
        * @returns {*}
        */
@@ -61,12 +72,21 @@ define('nori/utils/MixinObservableSubject',
         return _subject.getValue();
       }
 
+      /**
+       * Gets the last payload that was dispatched to subscribers
+       * @returns {*}
+       */
+      function getLastNotificationOf(name) {
+        return _subjectMap[name].getValue();
+      }
+
       return {
-        subscribe          : subscribe,
-        createSubject      : createSubject,
-        notifySubscribers  : notifySubscribers,
-        notifySubscribersOf: notifySubscribersOf,
-        getLastNotification: getLastNotification
+        subscribe            : subscribe,
+        createSubject        : createSubject,
+        notifySubscribers    : notifySubscribers,
+        notifySubscribersOf  : notifySubscribersOf,
+        getLastNotification  : getLastNotification,
+        getLastNotificationOf: getLastNotificationOf
       };
 
     };

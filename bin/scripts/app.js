@@ -208,7 +208,6 @@ define('app/view/AppView',
 
       initialize: function () {
         this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
-        this.initializeBrowserEvents('#app__contents');
         this.initializeRouteViews();
         this.initializeNudoruControls();
 
