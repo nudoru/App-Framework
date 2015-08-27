@@ -38,12 +38,14 @@ define('app/view/AppView',
         var viewFactory = require('app/view/TemplateViewComponent');
 
         // Container for routed views
-        this.setRouteViewMountPoint('#contents');
-
+        this.setViewMountPoint('#contents');
         this.mapRouteToViewComponent('/', 'default', viewFactory());
-        this.mapRouteToViewComponent('/styles', 'debug-styletest', viewFactory());
+        this.mapRouteToViewComponent('/styles', 'debug-styletest', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/controls', 'debug-controls', 'app/view/TemplateViewComponentFactory');
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
+
+        // Alternate, map views to different model states with MixinModelStateViews
+        //this.mapStateToViewComponent('TITLE', 'title', screenTitle);
       },
 
       /**

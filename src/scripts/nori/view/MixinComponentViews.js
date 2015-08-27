@@ -33,7 +33,7 @@ define('nori/view/MixinComponentViews',
 
         if (typeof componentIDorObj === 'string') {
           var componentFactory = require(componentIDorObj);
-          componentObj         = createComponentView(componentFactory());
+          componentObj         = createComponentView(componentFactory())();
         } else {
           componentObj = componentIDorObj;
         }

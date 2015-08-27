@@ -10,20 +10,14 @@ define('nori/utils/Renderer',
   function (require, module, exports) {
 
     var Renderer = function () {
-      var _noriEvents         = require('nori/events/EventCreator'),
-          _noriEventConstants = require('nori/events/EventConstants'),
-          _domUtils           = require('nudoru/browser/DOMUtils');
-
-      function initialize() {
-        Nori.dispatcher().subscribe(_noriEventConstants.RENDER_VIEW, render);
-      }
+      var _domUtils           = require('nudoru/browser/DOMUtils');
 
       function render(payload) {
-        var targetSelector = payload.payload.target,
-            html           = payload.payload.html,
+        var targetSelector = payload.target,
+            html           = payload.html,
             domEl,
             mountPoint     = document.querySelector(targetSelector),
-            cb             = payload.payload.callback;
+            cb             = payload.callback;
 
         mountPoint.innerHTML = '';
 
@@ -32,16 +26,15 @@ define('nori/utils/Renderer',
           mountPoint.appendChild(domEl);
         }
 
-        // Send the created DOM element back to the caller
         if (cb) {
           cb(domEl);
         }
 
-        _noriEvents.viewRendered(targetSelector, payload.payload.id);
+        return domEl;
       }
 
       return {
-        initialize: initialize
+        render: render
       };
 
     };

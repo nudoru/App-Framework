@@ -565,20 +565,14 @@ define('nori/utils/Renderer',
   function (require, module, exports) {
 
     var Renderer = function () {
-      var _noriEvents         = require('nori/events/EventCreator'),
-          _noriEventConstants = require('nori/events/EventConstants'),
-          _domUtils           = require('nudoru/browser/DOMUtils');
-
-      function initialize() {
-        Nori.dispatcher().subscribe(_noriEventConstants.RENDER_VIEW, render);
-      }
+      var _domUtils           = require('nudoru/browser/DOMUtils');
 
       function render(payload) {
-        var targetSelector = payload.payload.target,
-            html           = payload.payload.html,
+        var targetSelector = payload.target,
+            html           = payload.html,
             domEl,
             mountPoint     = document.querySelector(targetSelector),
-            cb             = payload.payload.callback;
+            cb             = payload.callback;
 
         mountPoint.innerHTML = '';
 
@@ -587,16 +581,15 @@ define('nori/utils/Renderer',
           mountPoint.appendChild(domEl);
         }
 
-        // Send the created DOM element back to the caller
         if (cb) {
           cb(domEl);
         }
 
-        _noriEvents.viewRendered(targetSelector, payload.payload.id);
+        return domEl;
       }
 
       return {
-        initialize: initialize
+        render: render
       };
 
     };
@@ -924,16 +917,14 @@ define('nori/events/EventConstants',
       MODEL_DATA_SAVED       : null,
       MODEL_DATA_DESTROYED   : null,
       MODEL_STATE_CHANGED    : null,
-      CHANGE_MODEL_STATE      : null,
+      CHANGE_MODEL_STATE     : null,
       RESUME_FROM_MODEL_STATE: null,
       VIEW_INITIALIZED       : null,
-      VIEW_RENDERED          : null,
       VIEW_CHANGED           : null,
       VIEW_CHANGE_TO_MOBILE  : null,
       VIEW_CHANGE_TO_DESKTOP : null,
       ROUTE_CHANGED          : null,
-      CHANGE_ROUTE           : null,
-      RENDER_VIEW            : null
+      CHANGE_ROUTE           : null
     }));
 
   });
@@ -1117,35 +1108,7 @@ define('nori/events/EventCreator',
         Nori.dispatcher().publish(evtObj);
         return evtObj;
       },
-
-      renderView: function (targetSelector, htmlStr, id, callback) {
-        var evtObj = {
-          type   : _noriEventConstants.RENDER_VIEW,
-          payload: {
-            target  : targetSelector,
-            html    : htmlStr,
-            id      : id,
-            callback: callback
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      viewRendered: function (targetSelector, id) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_RENDERED,
-          payload: {
-            target: targetSelector,
-            id    : id
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
+      
       viewChangedToMobile: function (payload) {
         var evtObj = {
           type   : _noriEventConstants.VIEW_CHANGE_TO_MOBILE,
@@ -2284,7 +2247,6 @@ define('nori/view/ApplicationView',
     var ApplicationView = function () {
 
       var _this,
-          _renderer = require('nori/utils/Renderer'),
           _domUtils = require('nudoru/browser/DOMUtils');
 
       //----------------------------------------------------------------------------
@@ -2297,7 +2259,6 @@ define('nori/view/ApplicationView',
        */
       function initializeApplicationView(scaffoldTemplates) {
         _this = this;
-        _renderer.initialize();
 
         attachApplicationScaffolding(scaffoldTemplates);
       }
@@ -2520,7 +2481,7 @@ define('nori/view/MixinComponentViews',
 
         if (typeof componentIDorObj === 'string') {
           var componentFactory = require(componentIDorObj);
-          componentObj         = createComponentView(componentFactory());
+          componentObj         = createComponentView(componentFactory())();
         } else {
           componentObj = componentIDorObj;
         }
@@ -2930,11 +2891,11 @@ define('nori/view/MixinRouteViews',
        * be removed prior
        * @param elID
        */
-      function setRouteViewMountPoint(elID) {
+      function setViewMountPoint(elID) {
         _routeViewMountPoint = elID;
       }
 
-      function getRouteViewMountPoint() {
+      function getViewMountPoint() {
         return _routeViewMountPoint;
       }
 
@@ -2985,8 +2946,8 @@ define('nori/view/MixinRouteViews',
         initializeRouteViews   : initializeRouteViews,
         showViewFromURLHash    : showViewFromURLHash,
         showRouteViewComponent : showRouteViewComponent,
-        setRouteViewMountPoint : setRouteViewMountPoint,
-        getRouteViewMountPoint : getRouteViewMountPoint,
+        setViewMountPoint : setViewMountPoint,
+        getViewMountPoint : getViewMountPoint,
         mapRouteToViewComponent: mapRouteToViewComponent
       };
 
@@ -3010,6 +2971,7 @@ define('nori/view/ViewComponent',
           _mountPoint,
           _children      = [],
           _isMounted     = false,
+          _renderer = require('nori/utils/Renderer'),
           _noriEvents    = require('nori/events/EventCreator');
 
       /**
@@ -3191,15 +3153,11 @@ define('nori/view/ViewComponent',
         _isMounted = true;
 
         // Go out to the standard render function. DOM element is returned in callback
-        _noriEvents.renderView(_mountPoint, _html, _id, onViewRendered.bind(this));
-      }
+       setDOMNode(_renderer.render({
+          target  : _mountPoint,
+          html    : _html
+        }));
 
-      /**
-       * Handler for the renderer module
-       * @param domEl
-       */
-      function onViewRendered(domEl) {
-        setDOMNode(domEl);
         // from the ViewMixinEventDelegator
         if (this.delegateEvents) {
           this.delegateEvents();

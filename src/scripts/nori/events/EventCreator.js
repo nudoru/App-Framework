@@ -182,35 +182,7 @@ define('nori/events/EventCreator',
         Nori.dispatcher().publish(evtObj);
         return evtObj;
       },
-
-      renderView: function (targetSelector, htmlStr, id, callback) {
-        var evtObj = {
-          type   : _noriEventConstants.RENDER_VIEW,
-          payload: {
-            target  : targetSelector,
-            html    : htmlStr,
-            id      : id,
-            callback: callback
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      viewRendered: function (targetSelector, id) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_RENDERED,
-          payload: {
-            target: targetSelector,
-            id    : id
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
+      
       viewChangedToMobile: function (payload) {
         var evtObj = {
           type   : _noriEventConstants.VIEW_CHANGE_TO_MOBILE,

@@ -49,11 +49,11 @@ define('nori/view/MixinRouteViews',
        * be removed prior
        * @param elID
        */
-      function setRouteViewMountPoint(elID) {
+      function setViewMountPoint(elID) {
         _routeViewMountPoint = elID;
       }
 
-      function getRouteViewMountPoint() {
+      function getViewMountPoint() {
         return _routeViewMountPoint;
       }
 
@@ -104,8 +104,8 @@ define('nori/view/MixinRouteViews',
         initializeRouteViews   : initializeRouteViews,
         showViewFromURLHash    : showViewFromURLHash,
         showRouteViewComponent : showRouteViewComponent,
-        setRouteViewMountPoint : setRouteViewMountPoint,
-        getRouteViewMountPoint : getRouteViewMountPoint,
+        setViewMountPoint : setViewMountPoint,
+        getViewMountPoint : getViewMountPoint,
         mapRouteToViewComponent: mapRouteToViewComponent
       };
 

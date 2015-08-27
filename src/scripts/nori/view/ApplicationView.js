@@ -4,7 +4,6 @@ define('nori/view/ApplicationView',
     var ApplicationView = function () {
 
       var _this,
-          _renderer = require('nori/utils/Renderer'),
           _domUtils = require('nudoru/browser/DOMUtils');
 
       //----------------------------------------------------------------------------
@@ -17,7 +16,6 @@ define('nori/view/ApplicationView',
        */
       function initializeApplicationView(scaffoldTemplates) {
         _this = this;
-        _renderer.initialize();
 
         attachApplicationScaffolding(scaffoldTemplates);
       }

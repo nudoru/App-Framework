@@ -17,6 +17,7 @@ define('nori/view/ViewComponent',
           _mountPoint,
           _children      = [],
           _isMounted     = false,
+          _renderer = require('nori/utils/Renderer'),
           _noriEvents    = require('nori/events/EventCreator');
 
       /**
@@ -198,15 +199,11 @@ define('nori/view/ViewComponent',
         _isMounted = true;
 
         // Go out to the standard render function. DOM element is returned in callback
-        _noriEvents.renderView(_mountPoint, _html, _id, onViewRendered.bind(this));
-      }
+       setDOMNode(_renderer.render({
+          target  : _mountPoint,
+          html    : _html
+        }));
 
-      /**
-       * Handler for the renderer module
-       * @param domEl
-       */
-      function onViewRendered(domEl) {
-        setDOMNode(domEl);
         // from the ViewMixinEventDelegator
         if (this.delegateEvents) {
           this.delegateEvents();

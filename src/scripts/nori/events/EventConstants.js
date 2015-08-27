@@ -17,16 +17,14 @@ define('nori/events/EventConstants',
       MODEL_DATA_SAVED       : null,
       MODEL_DATA_DESTROYED   : null,
       MODEL_STATE_CHANGED    : null,
-      CHANGE_MODEL_STATE      : null,
+      CHANGE_MODEL_STATE     : null,
       RESUME_FROM_MODEL_STATE: null,
       VIEW_INITIALIZED       : null,
-      VIEW_RENDERED          : null,
       VIEW_CHANGED           : null,
       VIEW_CHANGE_TO_MOBILE  : null,
       VIEW_CHANGE_TO_DESKTOP : null,
       ROUTE_CHANGED          : null,
-      CHANGE_ROUTE           : null,
-      RENDER_VIEW            : null
+      CHANGE_ROUTE           : null
     }));
 
   });
