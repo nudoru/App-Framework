@@ -63,11 +63,7 @@ define('nori/model/MixinReducerModel',
 
         // Ignore these common lifecycle events
         _ignoredEventTypes = [
-          _noriEventConstants.MODEL_STATE_CHANGED,
-          _noriEventConstants.MODEL_DATA_CHANGED,
-          _noriEventConstants.VIEW_CHANGED,
-          _noriEventConstants.RENDER_VIEW,
-          _noriEventConstants.VIEW_RENDERED
+          _noriEventConstants.MODEL_STATE_CHANGED
         ];
 
         Nori.dispatcher().registerReceiver(handleApplicationEvents);

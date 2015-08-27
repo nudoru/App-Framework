@@ -10,8 +10,7 @@ define('nori/view/MixinRouteViews',
       var _this,
           _currentRouteViewID,
           _routeViewMountPoint,
-          _routeViewIDMap = Object.create(null),
-          _noriEvents     = require('nori/events/EventCreator');
+          _routeViewIDMap = Object.create(null);
 
       /**
        * Set up listeners
@@ -86,8 +85,6 @@ define('nori/view/MixinRouteViews',
         // Transition new view in
         TweenLite.set(_routeViewMountPoint, {alpha: 0});
         TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
-
-        _noriEvents.viewChanged(_currentRouteViewID);
       }
 
       /**

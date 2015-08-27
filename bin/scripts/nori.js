@@ -900,18 +900,8 @@ define('nori/events/EventConstants',
       ALERT_USER             : null,
       WARN_USER              : null,
       NOTIFY_USER            : null,
-      MODEL_DATA_WAITING     : null,
-      MODEL_DATA_READY       : null,
-      MODEL_DATA_CHANGED     : null,
-      MODEL_DATA_SAVED       : null,
-      MODEL_DATA_DESTROYED   : null,
       MODEL_STATE_CHANGED    : null,
-      CHANGE_MODEL_STATE     : null,
-      RESUME_FROM_MODEL_STATE: null,
-      VIEW_INITIALIZED       : null,
-      VIEW_CHANGED           : null,
-      VIEW_CHANGE_TO_MOBILE  : null,
-      VIEW_CHANGE_TO_DESKTOP : null
+      CHANGE_MODEL_STATE     : null
     }));
 
   });
@@ -923,7 +913,7 @@ define('nori/events/EventCreator',
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
     var NoriEventCreator = {
-      
+
       applicationInitialized: function (payload) {
         var evtObj = {
           type   : _noriEventConstants.APP_INITIALIZED,
@@ -996,26 +986,6 @@ define('nori/events/EventCreator',
         return evtObj;
       },
 
-      urlHashChanged: function (payload) {
-        var evtObj = {
-          type   : _browserEventConstants.URL_HASH_CHANGED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      viewChanged: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_CHANGED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
       changeModelState: function (modelID, data) {
         var evtObj = {
           type   : _noriEventConstants.CHANGE_MODEL_STATE,
@@ -1023,16 +993,6 @@ define('nori/events/EventCreator',
             id  : modelID,
             data: data
           }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      modelChanged: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.MODEL_DATA_CHANGED,
-          payload: payload
         };
 
         Nori.dispatcher().publish(evtObj);
@@ -1047,47 +1007,7 @@ define('nori/events/EventCreator',
 
         Nori.dispatcher().publish(evtObj);
         return evtObj;
-      },
-
-      viewChangedToMobile: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_CHANGE_TO_MOBILE,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      viewChangedToDesktop: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_CHANGE_TO_DESKTOP,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      browserScrolled: function (payload) {
-        var evtObj = {
-          type   : _browserEventConstants.BROWSER_SCROLLED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      browserResized: function (payload) {
-        var evtObj = {
-          type   : _browserEventConstants.BROWSER_RESIZED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
+      }
     };
 
     module.exports = NoriEventCreator;
@@ -2039,11 +1959,7 @@ define('nori/model/MixinReducerModel',
 
         // Ignore these common lifecycle events
         _ignoredEventTypes = [
-          _noriEventConstants.MODEL_STATE_CHANGED,
-          _noriEventConstants.MODEL_DATA_CHANGED,
-          _noriEventConstants.VIEW_CHANGED,
-          _noriEventConstants.RENDER_VIEW,
-          _noriEventConstants.VIEW_RENDERED
+          _noriEventConstants.MODEL_STATE_CHANGED
         ];
 
         Nori.dispatcher().registerReceiver(handleApplicationEvents);
@@ -2620,8 +2536,7 @@ define('nori/view/MixinModelStateViews',
           _currentViewID,
           _currentModelState,
           _stateViewMountPoint,
-          _stateViewIDMap = Object.create(null),
-          _noriEvents     = require('nori/events/EventCreator');
+          _stateViewIDMap = Object.create(null);
 
       /**
        * Set up listeners
@@ -2693,8 +2608,6 @@ define('nori/view/MixinModelStateViews',
         // Transition new view in
         TweenLite.set(_stateViewMountPoint, {alpha: 0});
         TweenLite.to(_stateViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
-
-        _noriEvents.viewChanged(_currentViewID);
       }
 
       /**
@@ -2792,8 +2705,7 @@ define('nori/view/MixinRouteViews',
       var _this,
           _currentRouteViewID,
           _routeViewMountPoint,
-          _routeViewIDMap = Object.create(null),
-          _noriEvents     = require('nori/events/EventCreator');
+          _routeViewIDMap = Object.create(null);
 
       /**
        * Set up listeners
@@ -2868,8 +2780,6 @@ define('nori/view/MixinRouteViews',
         // Transition new view in
         TweenLite.set(_routeViewMountPoint, {alpha: 0});
         TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
-
-        _noriEvents.viewChanged(_currentRouteViewID);
       }
 
       /**

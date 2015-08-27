@@ -10,7 +10,7 @@ define('nori/events/EventCreator',
         _browserEventConstants = require('nudoru/browser/EventConstants');
 
     var NoriEventCreator = {
-      
+
       applicationInitialized: function (payload) {
         var evtObj = {
           type   : _noriEventConstants.APP_INITIALIZED,
@@ -83,26 +83,6 @@ define('nori/events/EventCreator',
         return evtObj;
       },
 
-      urlHashChanged: function (payload) {
-        var evtObj = {
-          type   : _browserEventConstants.URL_HASH_CHANGED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      viewChanged: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_CHANGED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
       changeModelState: function (modelID, data) {
         var evtObj = {
           type   : _noriEventConstants.CHANGE_MODEL_STATE,
@@ -110,16 +90,6 @@ define('nori/events/EventCreator',
             id  : modelID,
             data: data
           }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      modelChanged: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.MODEL_DATA_CHANGED,
-          payload: payload
         };
 
         Nori.dispatcher().publish(evtObj);
@@ -134,47 +104,7 @@ define('nori/events/EventCreator',
 
         Nori.dispatcher().publish(evtObj);
         return evtObj;
-      },
-
-      viewChangedToMobile: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_CHANGE_TO_MOBILE,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      viewChangedToDesktop: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.VIEW_CHANGE_TO_DESKTOP,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      browserScrolled: function (payload) {
-        var evtObj = {
-          type   : _browserEventConstants.BROWSER_SCROLLED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      browserResized: function (payload) {
-        var evtObj = {
-          type   : _browserEventConstants.BROWSER_RESIZED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
+      }
     };
 
     module.exports = NoriEventCreator;
