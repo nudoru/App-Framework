@@ -1,11 +1,8 @@
 /**
- * Add RxJS BehaviorSubject to a module.
+ * Add RxJS Subject to a module.
  *
  * Add one simple observable subject or more complex ability to create others for
  * more complex eventing needs.
- *
- * Behavior Subjects remember their list message. For more information:
- * https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md
  */
 
 define('nori/utils/MixinObservableSubject',
@@ -14,7 +11,7 @@ define('nori/utils/MixinObservableSubject',
 
     var MixinObservableSubject = function () {
 
-      var _subject    = new Rx.BehaviorSubject(),
+      var _subject    = new Rx.Subject(),
           _subjectMap = {};
 
       /**
@@ -24,7 +21,7 @@ define('nori/utils/MixinObservableSubject',
        */
       function createSubject(name) {
         if (!_subjectMap.hasOwnProperty(name)) {
-          _subjectMap[name] = new Rx.BehaviorSubject();
+          _subjectMap[name] = new Rx.Subject();
         }
         return _subjectMap[name];
       }

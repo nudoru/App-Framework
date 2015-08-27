@@ -6,20 +6,9 @@
 define('nori/events/EventCreator',
   function (require, module, exports) {
 
-    var _noriEventConstants    = require('nori/events/EventConstants'),
-        _browserEventConstants = require('nudoru/browser/EventConstants');
+    var _noriEventConstants    = require('nori/events/EventConstants');
 
     var NoriEventCreator = {
-
-      applicationInitialized: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_INITIALIZED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
 
       notifyUser: function (title, message, type) {
         var evtObj = {
@@ -57,26 +46,6 @@ define('nori/events/EventCreator',
             message: message,
             type   : type || 'danger'
           }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      applicationModelInitialized: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_MODEL_INITIALIZED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      applicationViewInitialized: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_VIEW_INITIALIZED,
-          payload: payload
         };
 
         Nori.dispatcher().publish(evtObj);

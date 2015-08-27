@@ -19,21 +19,22 @@ define('app/App',
       appView : require('app/view/AppView'),
 
       /**
-       * Intialize the appilcation, view and model
+       * Initialize the application, view and model
        */
       initialize: function () {
-        // listen for the model loaded event
-        Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, this.onModelInitialized.bind(this), true);
-
         this.initializeApplication(); // validates setup
+
         this.view().initialize();
+
         this.model().initialize(); // model will acquire data dispatch event when complete
+        this.model().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
+        this.model().loadStore();
       },
 
       /**
        * After the model data is ready
        */
-      onModelInitialized: function () {
+      onStoreInitialized: function () {
         this.runApplication();
       },
 
@@ -97,11 +98,10 @@ define('app/events/EventCreator',
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants'),
-        _mixinMapFactory = require('nori/model/MixinMapFactory'),
+    var _noriEventConstants     = require('nori/events/EventConstants'),
+        _mixinMapFactory        = require('nori/model/MixinMapFactory'),
         _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
-        _mixinReducerModel  = require('nori/model/MixinReducerModel');
+        _mixinReducerModel      = require('nori/model/MixinReducerModel');
 
     /**
      * This application model contains "reducer model" functionality based on Redux.
@@ -124,21 +124,25 @@ define('app/model/AppModel',
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);
         this.initializeReducerModel();
+        this.createSubject('storeInitialized');
+      },
 
+      loadStore: function() {
         // Set initial state from data contained in the config.js file
         this.setState(Nori.config());
-        this.modelReady();
+        this.storeReady();
       },
 
       /**
        * Set or load any necessary data and then broadcast a initialized event.
        */
-      modelReady: function() {
+      storeReady: function () {
         this.setState({greeting: 'Hello world!'});
 
+        // Testing
         console.log('Initial app state:', this.getState());
 
-        _noriEvents.applicationModelInitialized();
+        this.notifySubscribersOf('storeInitialized');
       },
 
       /**
@@ -168,7 +172,6 @@ define('app/model/AppModel',
        * not check to see if the state was actually updated.
        */
       handleStateMutation: function () {
-        //_noriEvents.modelStateChanged(); // Eventbus
         this.notifySubscribers();
       }
 
@@ -182,8 +185,7 @@ define('app/model/AppModel',
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _noriEvents             = require('nori/events/EventCreator'),
-        _noriEventConstants     = require('nori/events/EventConstants'),
+    var _noriEventConstants     = require('nori/events/EventConstants'),
         _mixinApplicationView   = require('nori/view/ApplicationView'),
         _mixinNudoruControls    = require('nori/view/MixinNudoruControls'),
         _mixinComponentViews    = require('nori/view/MixinComponentViews'),
@@ -213,8 +215,6 @@ define('app/view/AppView',
 
         this.configureApplicationViewEvents();
         this.configureViews();
-
-        _noriEvents.applicationViewInitialized();
       },
 
       configureViews: function () {

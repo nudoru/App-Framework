@@ -1,8 +1,7 @@
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _noriEvents             = require('nori/events/EventCreator'),
-        _noriEventConstants     = require('nori/events/EventConstants'),
+    var _noriEventConstants     = require('nori/events/EventConstants'),
         _mixinApplicationView   = require('nori/view/ApplicationView'),
         _mixinNudoruControls    = require('nori/view/MixinNudoruControls'),
         _mixinComponentViews    = require('nori/view/MixinComponentViews'),
@@ -32,8 +31,6 @@ define('app/view/AppView',
 
         this.configureApplicationViewEvents();
         this.configureViews();
-
-        _noriEvents.applicationViewInitialized();
       },
 
       configureViews: function () {

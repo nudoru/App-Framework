@@ -126,7 +126,7 @@ define('nori/utils/Dispatcher',
       function processNextEvent() {
         var evt = _queue.shift();
         if (evt) {
-          //console.log('Procesing event: ',evt);
+          console.log('Procesing event: ',evt);
           dispatchToReceivers(evt);
           dispatchToSubscribers(evt);
         } else {
@@ -522,7 +522,7 @@ define('nori/utils/MixinObservableSubject',
 
     var MixinObservableSubject = function () {
 
-      var _subject    = new Rx.BehaviorSubject(),
+      var _subject    = new Rx.Subject(),
           _subjectMap = {};
 
       /**
@@ -532,7 +532,7 @@ define('nori/utils/MixinObservableSubject',
        */
       function createSubject(name) {
         if (!_subjectMap.hasOwnProperty(name)) {
-          _subjectMap[name] = new Rx.BehaviorSubject();
+          _subjectMap[name] = new Rx.Subject();
         }
         return _subjectMap[name];
       }
@@ -936,9 +936,6 @@ define('nori/events/EventConstants',
     var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
-      APP_INITIALIZED        : null,
-      APP_MODEL_INITIALIZED  : null,
-      APP_VIEW_INITIALIZED   : null,
       ALERT_USER             : null,
       WARN_USER              : null,
       NOTIFY_USER            : null,
@@ -951,20 +948,9 @@ define('nori/events/EventConstants',
 define('nori/events/EventCreator',
   function (require, module, exports) {
 
-    var _noriEventConstants    = require('nori/events/EventConstants'),
-        _browserEventConstants = require('nudoru/browser/EventConstants');
+    var _noriEventConstants    = require('nori/events/EventConstants');
 
     var NoriEventCreator = {
-
-      applicationInitialized: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_INITIALIZED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
 
       notifyUser: function (title, message, type) {
         var evtObj = {
@@ -1002,26 +988,6 @@ define('nori/events/EventCreator',
             message: message,
             type   : type || 'danger'
           }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      applicationModelInitialized: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_MODEL_INITIALIZED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      applicationViewInitialized: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.APP_VIEW_INITIALIZED,
-          payload: payload
         };
 
         Nori.dispatcher().publish(evtObj);

@@ -1,11 +1,10 @@
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var _noriEvents         = require('nori/events/EventCreator'),
-        _noriEventConstants = require('nori/events/EventConstants'),
-        _mixinMapFactory = require('nori/model/MixinMapFactory'),
+    var _noriEventConstants     = require('nori/events/EventConstants'),
+        _mixinMapFactory        = require('nori/model/MixinMapFactory'),
         _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
-        _mixinReducerModel  = require('nori/model/MixinReducerModel');
+        _mixinReducerModel      = require('nori/model/MixinReducerModel');
 
     /**
      * This application model contains "reducer model" functionality based on Redux.
@@ -28,21 +27,25 @@ define('app/model/AppModel',
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);
         this.initializeReducerModel();
+        this.createSubject('storeInitialized');
+      },
 
+      loadStore: function() {
         // Set initial state from data contained in the config.js file
         this.setState(Nori.config());
-        this.modelReady();
+        this.storeReady();
       },
 
       /**
        * Set or load any necessary data and then broadcast a initialized event.
        */
-      modelReady: function() {
+      storeReady: function () {
         this.setState({greeting: 'Hello world!'});
 
+        // Testing
         console.log('Initial app state:', this.getState());
 
-        _noriEvents.applicationModelInitialized();
+        this.notifySubscribersOf('storeInitialized');
       },
 
       /**
@@ -72,7 +75,6 @@ define('app/model/AppModel',
        * not check to see if the state was actually updated.
        */
       handleStateMutation: function () {
-        //_noriEvents.modelStateChanged(); // Eventbus
         this.notifySubscribers();
       }
 

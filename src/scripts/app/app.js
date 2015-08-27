@@ -19,21 +19,22 @@ define('app/App',
       appView : require('app/view/AppView'),
 
       /**
-       * Intialize the appilcation, view and model
+       * Initialize the application, view and model
        */
       initialize: function () {
-        // listen for the model loaded event
-        Nori.dispatcher().subscribe(_noriEventConstants.APP_MODEL_INITIALIZED, this.onModelInitialized.bind(this), true);
-
         this.initializeApplication(); // validates setup
+
         this.view().initialize();
+
         this.model().initialize(); // model will acquire data dispatch event when complete
+        this.model().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
+        this.model().loadStore();
       },
 
       /**
        * After the model data is ready
        */
-      onModelInitialized: function () {
+      onStoreInitialized: function () {
         this.runApplication();
       },
 

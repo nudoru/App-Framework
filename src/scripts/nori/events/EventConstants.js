@@ -3,9 +3,6 @@ define('nori/events/EventConstants',
     var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
-      APP_INITIALIZED        : null,
-      APP_MODEL_INITIALIZED  : null,
-      APP_VIEW_INITIALIZED   : null,
       ALERT_USER             : null,
       WARN_USER              : null,
       NOTIFY_USER            : null,
