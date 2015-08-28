@@ -1,4 +1,4 @@
-define('app/events/EventConstants',
+define('app/action/ActionConstants',
   function (require, module, exports) {
     var objUtils = require('nudoru/core/ObjectUtils');
 
@@ -7,6 +7,6 @@ define('app/events/EventConstants',
      */
 
     _.merge(module.exports, objUtils.keyMirror({
-      SOMETHING_HAPPENED: null
+      MUTATION_TYPE: null
     }));
   });

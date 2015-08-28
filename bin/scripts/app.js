@@ -1,7 +1,7 @@
 define('app/App',
   function (require, module, exports) {
 
-    var _noriEventConstants = require('nori/events/EventConstants');
+    var _noriActionCreator = require('nori/action/ActionCreator');
 
     /**
      * "Controller" for a Nori application. The controller is responsible for
@@ -41,7 +41,7 @@ define('app/App',
       /**
        * Remove the "Please wait" cover and start the app
        */
-      runApplication: function() {
+      runApplication: function () {
         this.view().removeLoadingMessage();
         this.view().render();
         this.view().showViewFromURLHash(true); // Start with the route in the current URL
@@ -53,7 +53,7 @@ define('app/App',
 
   });
 
-define('app/events/EventConstants',
+define('app/action/ActionConstants',
   function (require, module, exports) {
     var objUtils = require('nudoru/core/ObjectUtils');
 
@@ -62,43 +62,42 @@ define('app/events/EventConstants',
      */
 
     _.merge(module.exports, objUtils.keyMirror({
-      SOMETHING_HAPPENED: null
+      MUTATION_TYPE: null
     }));
   });
 
-define('app/events/EventCreator',
+define('app/Action/ActionCreator',
   function (require, module, exports) {
 
-    var _eventConstants = require('app/events/EventConstants');
+    var _actionConstants = require('app/action/ActionConstants');
 
     /**
      * Purely for convenience, an Event ("action") Creator ala Flux spec. Follow
      * guidelines for creating actions: https://github.com/acdlite/flux-standard-action
      */
-    var EventCreator = {
+    var ActionCreator = {
 
-      someEvent: function (data) {
-        var evtObj = {
-          type   : _eventConstants.SOMETHING_HAPPENED,
+      mutateSomeData: function (data) {
+        var actionObj = {
+          type   : _actionConstants.MUTATION_TYPE,
           payload: {
-            theData: data
+            data: data
           }
         };
 
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
+        return actionObj;
       }
 
     };
 
-    module.exports = EventCreator;
+    module.exports = ActionCreator;
 
   });
 
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var _noriEventConstants     = require('nori/events/EventConstants'),
+    var _noriActionConstants     = require('nori/action/ActionConstants'),
         _mixinMapFactory        = require('nori/model/MixinMapFactory'),
         _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
         _mixinReducerModel      = require('nori/model/MixinReducerModel');
@@ -151,16 +150,16 @@ define('app/model/AppModel',
        * Can compose state transformations
        * return _.assign({}, state, otherStateTransformer(state));
        * @param state
-       * @param event
+       * @param action
        * @returns {*}
        */
-      defaultReducerFunction: function (state, event) {
+      defaultReducerFunction: function (state, action) {
         state = state || {};
 
-        switch (event.type) {
+        switch (action.type) {
 
-          case _noriEventConstants.CHANGE_MODEL_STATE:
-            return _.assign({}, state, event.payload.data);
+          case _noriActionConstants.CHANGE_MODEL_STATE:
+            return _.assign({}, state, action.payload.data);
 
           default:
             return state;
@@ -172,6 +171,7 @@ define('app/model/AppModel',
        * not check to see if the state was actually updated.
        */
       handleStateMutation: function () {
+        console.log('Handle state mutation',this.getState());
         this.notifySubscribers();
       }
 
@@ -185,7 +185,7 @@ define('app/model/AppModel',
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _noriEventConstants     = require('nori/events/EventConstants'),
+    var _noriActionConstants     = require('nori/action/ActionConstants'),
         _mixinApplicationView   = require('nori/view/ApplicationView'),
         _mixinNudoruControls    = require('nori/view/MixinNudoruControls'),
         _mixinComponentViews    = require('nori/view/MixinComponentViews'),
@@ -213,7 +213,6 @@ define('app/view/AppView',
         this.initializeRouteViews();
         this.initializeNudoruControls();
 
-        this.configureApplicationViewEvents();
         this.configureViews();
       },
 
@@ -239,19 +238,8 @@ define('app/view/AppView',
        */
       render: function () {
         //
-      },
-
-      /**
-       * Listen for notification and alert events and show to user
-       */
-      configureApplicationViewEvents: function () {
-        Nori.dispatcher().subscribe(_noriEventConstants.NOTIFY_USER, function onNotiftUser(payload) {
-          this.notify(payload.payload.message, payload.payload.title, payload.payload.type);
-        }.bind(this));
-        Nori.dispatcher().subscribe(_noriEventConstants.ALERT_USER, function onAlertUser(payload) {
-          this.alert(payload.payload.message, payload.payload.title);
-        }.bind(this));
       }
+
 
     });
 
@@ -269,7 +257,7 @@ define('app/view/DebugControlsTestingSubView',
 
       var _lIpsum             = require('nudoru/browser/Lorem'),
           _toolTip            = require('nudoru/component/ToolTipView'),
-          _noriEventConstants = require('nori/events/EventConstants'),
+          _noriActionConstants = require('nori/action/ActionConstants'),
           _actionOneEl,
           _actionTwoEl,
           _actionThreeEl,
@@ -434,8 +422,8 @@ define('app/view/TemplateViewComponent',
        */
       initialize: function (configProps) {
         //Bind to a map, update will be called on changes to the map
-        //this.bindMap(map id string or map object);
-        //this.bindMap(APP.model());
+        //this.bindMap(APP.model()); // Reducer model, map id string or map object
+
         //custom init below here
         //this.setTemplate('<h1>{{ greeting }}</h1>'); // set custom HTML template
       },

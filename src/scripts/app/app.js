@@ -1,7 +1,7 @@
 define('app/App',
   function (require, module, exports) {
 
-    var _noriEventConstants = require('nori/events/EventConstants');
+    var _noriActionCreator = require('nori/action/ActionCreator');
 
     /**
      * "Controller" for a Nori application. The controller is responsible for
@@ -41,7 +41,7 @@ define('app/App',
       /**
        * Remove the "Please wait" cover and start the app
        */
-      runApplication: function() {
+      runApplication: function () {
         this.view().removeLoadingMessage();
         this.view().render();
         this.view().showViewFromURLHash(true); // Start with the route in the current URL

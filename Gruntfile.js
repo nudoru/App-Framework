@@ -127,10 +127,11 @@ module.exports = function (grunt) {
         dest: 'bin/scripts/nudoru.components.js'
       },
 
+      // Order is important
       nori: {
         src: [
           'src/scripts/nori/utils/*.js',
-          'src/scripts/nori/events/*.js',
+          'src/scripts/nori/action/*.js',
           'src/scripts/nori/service/*.js',
           'src/scripts/nori/model/modules/*.js',
           'src/scripts/nori/model/*.js',

@@ -17,8 +17,7 @@ define('nori/view/ViewComponent',
           _mountPoint,
           _children      = [],
           _isMounted     = false,
-          _renderer      = require('nori/utils/Renderer'),
-          _noriEvents    = require('nori/events/EventCreator');
+          _renderer      = require('nori/utils/Renderer');
 
       /**
        * Initialization

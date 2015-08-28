@@ -25,8 +25,8 @@ define('app/view/TemplateViewComponent',
        */
       initialize: function (configProps) {
         //Bind to a map, update will be called on changes to the map
-        //this.bindMap(map id string or map object);
-        //this.bindMap(APP.model());
+        //this.bindMap(APP.model()); // Reducer model, map id string or map object
+
         //custom init below here
         //this.setTemplate('<h1>{{ greeting }}</h1>'); // set custom HTML template
       },

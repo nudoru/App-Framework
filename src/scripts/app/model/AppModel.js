@@ -1,7 +1,7 @@
 define('app/model/AppModel',
   function (require, module, exports) {
 
-    var _noriEventConstants     = require('nori/events/EventConstants'),
+    var _noriActionConstants     = require('nori/action/ActionConstants'),
         _mixinMapFactory        = require('nori/model/MixinMapFactory'),
         _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
         _mixinReducerModel      = require('nori/model/MixinReducerModel');
@@ -54,16 +54,16 @@ define('app/model/AppModel',
        * Can compose state transformations
        * return _.assign({}, state, otherStateTransformer(state));
        * @param state
-       * @param event
+       * @param action
        * @returns {*}
        */
-      defaultReducerFunction: function (state, event) {
+      defaultReducerFunction: function (state, action) {
         state = state || {};
 
-        switch (event.type) {
+        switch (action.type) {
 
-          case _noriEventConstants.CHANGE_MODEL_STATE:
-            return _.assign({}, state, event.payload.data);
+          case _noriActionConstants.CHANGE_MODEL_STATE:
+            return _.assign({}, state, action.payload.data);
 
           default:
             return state;
@@ -75,6 +75,7 @@ define('app/model/AppModel',
        * not check to see if the state was actually updated.
        */
       handleStateMutation: function () {
+        console.log('Handle state mutation',this.getState());
         this.notifySubscribers();
       }
 

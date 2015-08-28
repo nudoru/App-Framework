@@ -75,11 +75,11 @@ define('nori/utils/Dispatcher',
         //console.log('dispatcher subscribe', evtStr, handler, onceOrContext, once);
 
         if (is.falsey(evtStr)) {
-          throw new Error('Fasley event string passed for handler', handler);
+          console.warn('Dispatcher: Fasley event string passed for handler', handler);
         }
 
         if (is.falsey(handler)) {
-          throw new Error('Fasley handler passed for event string', evtStr);
+          console.warn('Dispatcher: Fasley handler passed for event string', evtStr);
         }
 
         if (onceOrContext || onceOrContext === false) {
@@ -126,7 +126,6 @@ define('nori/utils/Dispatcher',
       function processNextEvent() {
         var evt = _queue.shift();
         if (evt) {
-          console.log('Procesing event: ',evt);
           dispatchToReceivers(evt);
           dispatchToSubscribers(evt);
         } else {
@@ -229,8 +228,8 @@ define('nori/utils/Dispatcher',
        * Usage:
        *
        * _dispatcher.registerReceiver(function (payload) {
-     *    console.log('receiving, ',payload);
-     * });
+       *    console.log('receiving, ',payload);
+       * });
        *
        * @param handler
        * @returns {string}
@@ -913,94 +912,38 @@ define('nori/utils/Templating',
   });
 
 
-define('nori/events/EventConstants',
+define('nori/action/ActionConstants',
   function (require, module, exports) {
     var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
-      ALERT_USER             : null,
-      WARN_USER              : null,
-      NOTIFY_USER            : null,
-      MODEL_STATE_CHANGED    : null,
       CHANGE_MODEL_STATE     : null
     }));
 
   });
 
-define('nori/events/EventCreator',
+define('nori/action/ActionCreator',
   function (require, module, exports) {
 
-    var _noriEventConstants    = require('nori/events/EventConstants');
+    var _noriActionConstants = require('nori/action/ActionConstants');
 
-    var NoriEventCreator = {
+    var NoriActionCreator = {
 
-      notifyUser: function (title, message, type) {
-        var evtObj = {
-          type   : _noriEventConstants.NOTIFY_USER,
+      changeModelState: function (data, id) {
+        var action = {
+          type   : _noriActionConstants.CHANGE_MODEL_STATE,
           payload: {
-            title  : title,
-            message: message,
-            type   : type || 'default'
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      alertUser: function (title, message, type) {
-        var evtObj = {
-          type   : _noriEventConstants.ALERT_USER,
-          payload: {
-            title  : title,
-            message: message,
-            type   : type || 'default'
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      warnUser: function (title, message, type) {
-        var evtObj = {
-          type   : _noriEventConstants.WARN_USER,
-          payload: {
-            title  : title,
-            message: message,
-            type   : type || 'danger'
-          }
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      changeModelState: function (modelID, data) {
-        var evtObj = {
-          type   : _noriEventConstants.CHANGE_MODEL_STATE,
-          payload: {
-            id  : modelID,
+            id  : id,
             data: data
           }
         };
 
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
-      },
-
-      modelStateChanged: function (payload) {
-        var evtObj = {
-          type   : _noriEventConstants.MODEL_STATE_CHANGED,
-          payload: payload
-        };
-
-        Nori.dispatcher().publish(evtObj);
-        return evtObj;
+        return action;
       }
+
     };
 
-    module.exports = NoriEventCreator;
+    module.exports = NoriActionCreator;
 
   });
 
@@ -1901,9 +1844,8 @@ define('nori/model/MixinReducerModel',
     var MixinReducerModel = function () {
       var _this,
           _state,
-          _stateReducers      = [],
-          _ignoredEventTypes  = [],
-          _noriEventConstants = require('nori/events/EventConstants');
+          _stateReducers       = [],
+          _noriActionConstants = require('nori/action/ActionConstants');
 
       //----------------------------------------------------------------------------
       //  Accessors
@@ -1942,7 +1884,7 @@ define('nori/model/MixinReducerModel',
        * Set up event listener/receiver
        */
       function initializeReducerModel() {
-        if(!this.createSubject) {
+        if (!this.createSubject) {
           console.warn('nori/model/MixinReducerModel needs nori/utils/MixinObservableSubject to notify');
         }
 
@@ -1950,13 +1892,6 @@ define('nori/model/MixinReducerModel',
 
         _this  = this;
         _state = simpleStoreFactory();
-
-        // Ignore these common lifecycle events
-        _ignoredEventTypes = [
-          _noriEventConstants.MODEL_STATE_CHANGED
-        ];
-
-        Nori.dispatcher().registerReceiver(handleApplicationEvents);
 
         if (!_stateReducers) {
           throw new Error('ReducerModel, must set a reducer before initialization');
@@ -1967,20 +1902,17 @@ define('nori/model/MixinReducerModel',
       }
 
       /**
-       * Will receive "firehose" of all events that occur in the application. These
+       * Apply the action object to the reducers to change state
        * are sent to all reducers to update the state
-       * @param eventObject
+       * @param actionObject
        */
-      function handleApplicationEvents(eventObject) {
-        //console.log('ReducerModel Event occurred: ', eventObject);
-        if (_ignoredEventTypes.indexOf(eventObject.type) >= 0) {
-          return;
-        }
-        applyReducers(eventObject);
+      function apply(actionObject) {
+        //console.log('ReducerModel Apply: ', actionObject);
+        applyReducers(actionObject);
       }
 
-      function applyReducers(eventObject) {
-        var nextState = applyReducersToState(getState(), eventObject);
+      function applyReducers(actionObject) {
+        var nextState = applyReducersToState(getState(), actionObject);
         setState(nextState);
         _this.handleStateMutation();
       }
@@ -1993,17 +1925,17 @@ define('nori/model/MixinReducerModel',
       }
 
       /**
-       * Creates a new state from the combined reduces and event object
+       * Creates a new state from the combined reduces and action object
        * Model state isn't modified, current state is passed in and mutated state returned
        * @param state
-       * @param event
+       * @param action
        * @returns {*|{}}
        */
-      function applyReducersToState(state, event) {
+      function applyReducersToState(state, action) {
         state = state || {};
         // TODO should this actually use array.reduce()?
         _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
-          state = reducerFunc(state, event);
+          state = reducerFunc(state, action);
         });
         return state;
       }
@@ -2012,10 +1944,10 @@ define('nori/model/MixinReducerModel',
        * Template reducer function
        * Model state isn't modified, current state is passed in and mutated state returned
 
-      function templateReducerFunction(state, event) {
+       function templateReducerFunction(state, event) {
         state = state || {};
         switch (event.type) {
-          case _noriEventConstants.MODEL_DATA_CHANGED:
+          case _noriActionConstants.MODEL_DATA_CHANGED:
             // can compose other reducers
             // return _.assign({}, state, otherStateTransformer(state));
             return _.assign({}, state, {prop: event.payload.value});
@@ -2030,15 +1962,15 @@ define('nori/model/MixinReducerModel',
       //----------------------------------------------------------------------------
 
       return {
-        initializeReducerModel : initializeReducerModel,
-        getState               : getState,
-        setState               : setState,
-        handleApplicationEvents: handleApplicationEvents,
-        setReducers            : setReducers,
-        addReducer             : addReducer,
-        applyReducers          : applyReducers,
-        applyReducersToState   : applyReducersToState,
-        handleStateMutation    : handleStateMutation
+        initializeReducerModel: initializeReducerModel,
+        getState              : getState,
+        setState              : setState,
+        apply                 : apply,
+        setReducers           : setReducers,
+        addReducer            : addReducer,
+        applyReducers         : applyReducers,
+        applyReducersToState  : applyReducersToState,
+        handleStateMutation   : handleStateMutation
       };
 
     };
@@ -2775,8 +2707,7 @@ define('nori/view/ViewComponent',
           _mountPoint,
           _children      = [],
           _isMounted     = false,
-          _renderer      = require('nori/utils/Renderer'),
-          _noriEvents    = require('nori/events/EventCreator');
+          _renderer      = require('nori/utils/Renderer');
 
       /**
        * Initialization

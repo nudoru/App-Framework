@@ -12,7 +12,7 @@ define('app/view/DebugControlsTestingSubView',
 
       var _lIpsum             = require('nudoru/browser/Lorem'),
           _toolTip            = require('nudoru/component/ToolTipView'),
-          _noriEventConstants = require('nori/events/EventConstants'),
+          _noriActionConstants = require('nori/action/ActionConstants'),
           _actionOneEl,
           _actionTwoEl,
           _actionThreeEl,
