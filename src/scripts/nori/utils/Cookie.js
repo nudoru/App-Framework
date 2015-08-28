@@ -1,3 +1,7 @@
+/**
+ * Handles cookies
+ */
+
 define('nori/utils/Cookie',
   function (require, module, exports) {
 
