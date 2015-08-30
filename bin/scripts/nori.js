@@ -954,7 +954,7 @@ define('nori/action/ActionConstants',
     var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
-      CHANGE_MODEL_STATE     : null
+      CHANGE_STORE_STATE     : null
     }));
 
   });
@@ -968,7 +968,7 @@ define('nori/action/ActionCreator',
 
       changeStoreState: function (data, id) {
         var action = {
-          type   : _noriActionConstants.CHANGE_MODEL_STATE,
+          type   : _noriActionConstants.CHANGE_STORE_STATE,
           payload: {
             id  : id,
             data: data

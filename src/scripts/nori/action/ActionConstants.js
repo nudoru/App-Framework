@@ -3,7 +3,7 @@ define('nori/action/ActionConstants',
     var objUtils = require('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
-      CHANGE_MODEL_STATE     : null
+      CHANGE_STORE_STATE     : null
     }));
 
   });

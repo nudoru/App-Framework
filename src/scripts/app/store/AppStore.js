@@ -62,7 +62,7 @@ define('app/store/AppStore',
 
         switch (action.type) {
 
-          case _noriActionConstants.CHANGE_MODEL_STATE:
+          case _noriActionConstants.CHANGE_STORE_STATE:
             return _.assign({}, state, action.payload.data);
 
           default:

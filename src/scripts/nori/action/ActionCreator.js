@@ -13,7 +13,7 @@ define('nori/action/ActionCreator',
 
       changeStoreState: function (data, id) {
         var action = {
-          type   : _noriActionConstants.CHANGE_MODEL_STATE,
+          type   : _noriActionConstants.CHANGE_STORE_STATE,
           payload: {
             id  : id,
             data: data
