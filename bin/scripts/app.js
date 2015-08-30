@@ -17,7 +17,8 @@ define('app/App',
       view : require('app/view/AppView'),
 
       /**
-       * Initialize the application, view and store
+       * Initialize
+       * Called when App is required in main.js
        */
       initialize: function () {
         this.view.initialize();
