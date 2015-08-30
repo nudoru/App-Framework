@@ -1,8 +1,6 @@
 var Nori = (function () {
 
-  var _store,
-      _view,
-      _dispatcher = require('nori/utils/Dispatcher'),
+  var _dispatcher = require('nori/utils/Dispatcher'),
       _router     = require('nori/utils/Router');
 
   // Switch Lodash to use Mustache style templates
@@ -20,35 +18,12 @@ var Nori = (function () {
     return _router;
   }
 
-  function getStore() {
-    return _store;
-  }
-
-  function getView() {
-    return _view;
-  }
-
   function getConfig() {
     return _.assign({}, (window.APP_CONFIG_DATA || {}));
   }
 
   function getCurrentRoute() {
     return _router.getCurrentRoute();
-  }
-
-  //----------------------------------------------------------------------------
-  //  Initialize
-  //----------------------------------------------------------------------------
-
-  /**
-   * Init the app and inject the store and view
-   * @param initObj view, store
-   */
-  function initializeApplication(initObj) {
-    _router.initialize();
-
-    _view  = _view || createApplicationView({});
-    _store = _store || createApplicationStore({});
   }
 
   //----------------------------------------------------------------------------
@@ -83,9 +58,10 @@ var Nori = (function () {
    * @param custom
    * @returns {*}
    */
-  function createApplicationStore(custom) {
-    _store = buildFromMixins(custom);
-    return _store;
+  function createStore(custom) {
+    return function cs() {
+      return _.assign({}, buildFromMixins(custom));
+    }
   }
 
   /**
@@ -93,9 +69,11 @@ var Nori = (function () {
    * @param custom
    * @returns {*}
    */
-  function createApplicationView(custom) {
-    _view = buildFromMixins(custom);
-    return _view;
+  function createView(custom) {
+    return function cv() {
+      return _.assign({}, buildFromMixins(custom));
+    }
+
   }
 
   /**
@@ -155,20 +133,17 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeApplication : initializeApplication,
-    config                : getConfig,
-    dispatcher            : getDispatcher,
-    router                : getRouter,
-    store                 : getStore,
-    view                  : getView,
-    createApplication     : createApplication,
-    createApplicationStore: createApplicationStore,
-    createApplicationView : createApplicationView,
-    buildFromMixins       : buildFromMixins,
-    getCurrentRoute       : getCurrentRoute,
-    assignArray           : assignArray,
-    prop                  : prop,
-    withAttr              : withAttr
+    config           : getConfig,
+    dispatcher       : getDispatcher,
+    router           : getRouter,
+    createApplication: createApplication,
+    createStore      : createStore,
+    createView       : createView,
+    buildFromMixins  : buildFromMixins,
+    getCurrentRoute  : getCurrentRoute,
+    assignArray      : assignArray,
+    prop             : prop,
+    withAttr         : withAttr
   };
 
 }());

@@ -1,8 +1,6 @@
 define('app/App',
   function (require, module, exports) {
 
-    var _noriActionCreator = require('nori/action/ActionCreator');
-
     /**
      * "Controller" for a Nori application. The controller is responsible for
      * bootstrapping the app and possibly handling socket/server interaction.
@@ -15,20 +13,18 @@ define('app/App',
       /**
        * Create the main Nori App store and view.
        */
-      appStore: require('app/store/AppStore'),
-      appView : require('app/view/AppView'),
+      store: require('app/store/AppStore'),
+      view : require('app/view/AppView'),
 
       /**
        * Initialize the application, view and store
        */
       initialize: function () {
-        this.initializeApplication(); // validates setup
+        this.view.initialize();
 
-        this.view().initialize();
-
-        this.store().initialize(); // store will acquire data dispatch event when complete
-        this.store().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
-        this.store().loadStore();
+        this.store.initialize(); // store will acquire data dispatch event when complete
+        this.store.subscribe('storeInitialized', this.onStoreInitialized.bind(this));
+        this.store.loadStore();
       },
 
       /**
@@ -42,9 +38,9 @@ define('app/App',
        * Remove the "Please wait" cover and start the app
        */
       runApplication: function () {
-        this.view().removeLoadingMessage();
-        this.view().render();
-        this.view().showViewFromURLHash(true); // Start with the route in the current URL
+        this.view.removeLoadingMessage();
+        this.view.render();
+        this.view.showViewFromURLHash(true); // Start with the route in the current URL
       }
 
     });

@@ -16,7 +16,7 @@ define('app/store/AppStore',
      *
      * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
      */
-    var AppStore = Nori.createApplicationStore({
+    var AppStore = Nori.createStore({
 
       mixins: [
         _mixinMapFactory,
@@ -81,6 +81,6 @@ define('app/store/AppStore',
 
     });
 
-    module.exports = AppStore;
+    module.exports = AppStore();
 
   });

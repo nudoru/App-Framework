@@ -125,6 +125,9 @@ define('nori/utils/Router',
 
     };
 
-    module.exports = Router();
+    var r = Router();
+    r.initialize();
+
+    module.exports = r;
 
   });

@@ -12,7 +12,7 @@ define('app/view/DebugControlsTestingSubView',
 
       var _lIpsum             = require('nudoru/browser/Lorem'),
           _toolTip            = require('nudoru/component/ToolTipView'),
-          _noriActionConstants = require('nori/action/ActionConstants'),
+          _appView             = require('app/view/AppView'),
           _actionOneEl,
           _actionTwoEl,
           _actionThreeEl,
@@ -70,7 +70,7 @@ define('app/view/DebugControlsTestingSubView',
 
 
         _actionOneEl.addEventListener('click', function actOne(e) {
-          Nori.view().addMessageBox({
+          _appView.addMessageBox({
             title  : _lIpsum.getSentence(2, 4),
             content: _lIpsum.getParagraph(2, 4),
             type   : 'warning',
@@ -80,7 +80,7 @@ define('app/view/DebugControlsTestingSubView',
         });
 
         _actionTwoEl.addEventListener('click', function actTwo(e) {
-          Nori.view().addMessageBox({
+          _appView.addMessageBox({
             title  : _lIpsum.getSentence(10, 20),
             content: _lIpsum.getParagraph(2, 4),
             type   : 'default',
@@ -115,7 +115,7 @@ define('app/view/DebugControlsTestingSubView',
         });
 
         _actionThreeEl.addEventListener('click', function actThree(e) {
-          Nori.view().addNotification({
+          _appView.addNotification({
             title  : _lIpsum.getSentence(3, 6),
             type   : 'information',
             content: _lIpsum.getParagraph(1, 2)

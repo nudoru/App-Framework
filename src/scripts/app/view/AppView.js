@@ -1,8 +1,7 @@
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _noriActionConstants     = require('nori/action/ActionConstants'),
-        _mixinApplicationView   = require('nori/view/ApplicationView'),
+    var _mixinApplicationView   = require('nori/view/ApplicationView'),
         _mixinNudoruControls    = require('nori/view/MixinNudoruControls'),
         _mixinComponentViews    = require('nori/view/MixinComponentViews'),
         _mixinRouteViews        = require('nori/view/MixinRouteViews'),
@@ -13,7 +12,7 @@ define('app/view/AppView',
      * View for an application.
      */
 
-    var AppView = Nori.createApplicationView({
+    var AppView = Nori.createView({
 
       mixins: [
         _mixinApplicationView,
@@ -59,6 +58,6 @@ define('app/view/AppView',
 
     });
 
-    module.exports = AppView;
+    module.exports = AppView();
 
   });

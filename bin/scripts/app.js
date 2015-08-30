@@ -1,8 +1,6 @@
 define('app/App',
   function (require, module, exports) {
 
-    var _noriActionCreator = require('nori/action/ActionCreator');
-
     /**
      * "Controller" for a Nori application. The controller is responsible for
      * bootstrapping the app and possibly handling socket/server interaction.
@@ -15,20 +13,18 @@ define('app/App',
       /**
        * Create the main Nori App store and view.
        */
-      appStore: require('app/store/AppStore'),
-      appView : require('app/view/AppView'),
+      store: require('app/store/AppStore'),
+      view : require('app/view/AppView'),
 
       /**
        * Initialize the application, view and store
        */
       initialize: function () {
-        this.initializeApplication(); // validates setup
+        this.view.initialize();
 
-        this.view().initialize();
-
-        this.store().initialize(); // store will acquire data dispatch event when complete
-        this.store().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
-        this.store().loadStore();
+        this.store.initialize(); // store will acquire data dispatch event when complete
+        this.store.subscribe('storeInitialized', this.onStoreInitialized.bind(this));
+        this.store.loadStore();
       },
 
       /**
@@ -42,9 +38,9 @@ define('app/App',
        * Remove the "Please wait" cover and start the app
        */
       runApplication: function () {
-        this.view().removeLoadingMessage();
-        this.view().render();
-        this.view().showViewFromURLHash(true); // Start with the route in the current URL
+        this.view.removeLoadingMessage();
+        this.view.render();
+        this.view.showViewFromURLHash(true); // Start with the route in the current URL
       }
 
     });
@@ -112,7 +108,7 @@ define('app/store/AppStore',
      *
      * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
      */
-    var AppStore = Nori.createApplicationStore({
+    var AppStore = Nori.createStore({
 
       mixins: [
         _mixinMapFactory,
@@ -177,7 +173,7 @@ define('app/store/AppStore',
 
     });
 
-    module.exports = AppStore;
+    module.exports = AppStore();
 
   });
 
@@ -185,8 +181,7 @@ define('app/store/AppStore',
 define('app/view/AppView',
   function (require, module, exports) {
 
-    var _noriActionConstants     = require('nori/action/ActionConstants'),
-        _mixinApplicationView   = require('nori/view/ApplicationView'),
+    var _mixinApplicationView   = require('nori/view/ApplicationView'),
         _mixinNudoruControls    = require('nori/view/MixinNudoruControls'),
         _mixinComponentViews    = require('nori/view/MixinComponentViews'),
         _mixinRouteViews        = require('nori/view/MixinRouteViews'),
@@ -197,7 +192,7 @@ define('app/view/AppView',
      * View for an application.
      */
 
-    var AppView = Nori.createApplicationView({
+    var AppView = Nori.createView({
 
       mixins: [
         _mixinApplicationView,
@@ -243,7 +238,7 @@ define('app/view/AppView',
 
     });
 
-    module.exports = AppView;
+    module.exports = AppView();
 
   });
 
@@ -257,7 +252,7 @@ define('app/view/DebugControlsTestingSubView',
 
       var _lIpsum             = require('nudoru/browser/Lorem'),
           _toolTip            = require('nudoru/component/ToolTipView'),
-          _noriActionConstants = require('nori/action/ActionConstants'),
+          _appView             = require('app/view/AppView'),
           _actionOneEl,
           _actionTwoEl,
           _actionThreeEl,
@@ -315,7 +310,7 @@ define('app/view/DebugControlsTestingSubView',
 
 
         _actionOneEl.addEventListener('click', function actOne(e) {
-          Nori.view().addMessageBox({
+          _appView.addMessageBox({
             title  : _lIpsum.getSentence(2, 4),
             content: _lIpsum.getParagraph(2, 4),
             type   : 'warning',
@@ -325,7 +320,7 @@ define('app/view/DebugControlsTestingSubView',
         });
 
         _actionTwoEl.addEventListener('click', function actTwo(e) {
-          Nori.view().addMessageBox({
+          _appView.addMessageBox({
             title  : _lIpsum.getSentence(10, 20),
             content: _lIpsum.getParagraph(2, 4),
             type   : 'default',
@@ -360,7 +355,7 @@ define('app/view/DebugControlsTestingSubView',
         });
 
         _actionThreeEl.addEventListener('click', function actThree(e) {
-          Nori.view().addNotification({
+          _appView.addNotification({
             title  : _lIpsum.getSentence(3, 6),
             type   : 'information',
             content: _lIpsum.getParagraph(1, 2)
@@ -398,11 +393,13 @@ define('app/view/DebugControlsTestingSubView',
 define('app/view/TemplateViewComponent',
   function (require, module, exports) {
 
+    var view = require('app/view/AppView');
+
     /**
      * Module for a dynamic application view for a route or a persistent view
      */
 
-    var Component = Nori.view().createComponentView({
+    var Component = view.createComponentView({
       /**
        * Mixins are other modules/objects that multiple components share, provides
        * common functionality between then.
@@ -442,14 +439,14 @@ define('app/view/TemplateViewComponent',
        * Set initial state properties. Call once on first render
        */
       getInitialState: function () {
-        return APP.store().getState();
+        return APP.store.getState();
       },
 
       /**
        * State change on bound stores (map, etc.) Return nextState object
        */
       componentWillUpdate: function () {
-        var nextState = APP.store().getState();
+        var nextState = APP.store.getState();
         nextState.greeting += ' (updated)';
         return nextState;
       },
@@ -485,67 +482,6 @@ define('app/view/TemplateViewComponent',
       }
 
     });
-
-    module.exports = Component;
-
-  });
-
-define('app/view/TemplateViewComponentFactory',
-  function (require, module, exports) {
-
-    /**
-     * Module for a dynamic application view for a route or a persistent view
-     * implemented as a factory module.
-     *
-     * THIS STYLE IS CURRENTLY DEPRECIATED
-     */
-    var Component = function () {
-
-      /**
-       * Initialize subview
-       * @param configProps {id, template, mountPoint}
-       */
-      function initialize(configProps) {
-        //this.bindMap(map id string or map object);
-        // custom init below here
-      }
-
-      /**
-       * State change on bound stores (map, etc.) Update the component state
-       */
-      function componentWillUpdate() {
-        var obj = Object.create(null);
-        // Update state from stores
-        this.setState(obj);
-      }
-
-      /**
-       * Component HTML was attached to the DOM
-       */
-      function componentDidMount() {
-        /*
-         this.setEvents({
-         'click #button-id': handleButton
-         });
-         this.delegateEvents();
-         */
-      }
-
-      /**
-       * Component will be removed from the DOM
-       */
-      function componentWillUnmount() {
-        // cleanup
-      }
-
-      return {
-        initialize          : initialize,
-        componentWillUpdate : componentWillUpdate,
-        componentDidMount   : componentDidMount,
-        componentWillUnmount: componentWillUnmount
-      };
-
-    };
 
     module.exports = Component;
 
