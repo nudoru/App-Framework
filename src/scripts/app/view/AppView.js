@@ -45,7 +45,7 @@ define('app/view/AppView',
         this.mapRouteToViewComponent('/controls', 'debug-controls', controlsView);
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
-        // Alternately, map views to different model states with MixinModelStateViews
+        // Alternately, map views to different store states with MixinStoreStateViews
         //this.mapStateToViewComponent('TITLE', 'title', screenTitle);
       },
 

@@ -19,7 +19,8 @@ define('nori/view/MixinEventDelegator',
     var MixinEventDelegator = function () {
 
       var _eventsMap,
-          _eventSubscribers;
+          _eventSubscribers,
+          _rx = require('nori/utils/Rx');
 
       function setEvents(evtObj) {
         _eventsMap = evtObj;
@@ -54,19 +55,10 @@ define('nori/view/MixinEventDelegator',
 
             mappings.forEach(function (evtMap) {
               evtMap = evtMap.trim();
-
               var eventStr = evtMap.split(' ')[0].trim(),
-                  selector = evtMap.split(' ')[1].trim(),
-                  element  = document.querySelector(selector);
-
-              if (!element) {
-                console.log('Cannot add event to invalid DOM element: ' + selector);
-              } else {
-                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(eventHander);
-              }
-
+                  selector = evtMap.split(' ')[1].trim();
+              _eventSubscribers[evtStrings] = _rx.dom(selector, eventStr).subscribe(eventHander);
             });
-
           }
         }
       }

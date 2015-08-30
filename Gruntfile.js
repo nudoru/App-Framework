@@ -130,13 +130,11 @@ module.exports = function (grunt) {
       // Order is important
       nori: {
         src: [
-          'src/scripts/nori/utils/*.js',
-          'src/scripts/nori/action/*.js',
-          'src/scripts/nori/service/*.js',
-          'src/scripts/nori/model/modules/*.js',
-          'src/scripts/nori/model/*.js',
-          'src/scripts/nori/view/modules/*.js',
-          'src/scripts/nori/view/*.js',
+          'src/scripts/nori/utils/**/*.js',
+          'src/scripts/nori/action/**/*.js',
+          'src/scripts/nori/service/**/*.js',
+          'src/scripts/nori/store/**/*.js',
+          'src/scripts/nori/view/**/*.js',
           'src/scripts/nori/Nori.js'
         ],
         dest: 'bin/scripts/nori.js'

@@ -6,6 +6,8 @@ define('nori/service/SocketIO',
       var _subject  = new Rx.BehaviorSubject(),
           _socketIO = io(),
           _events   = {
+            PING             : 'ping',
+            PONG             : 'pong',
             NOTIFY_CLIENT    : 'notify_client',
             NOTIFY_SERVER    : 'notify_server',
             CONNECT          : 'connect',
@@ -31,8 +33,16 @@ define('nori/service/SocketIO',
        * @param payload {type, id, time, payload}
        */
       function onNotifyClient(payload) {
+        if (payload.type === _events.PING) {
+          notifyServer(_events.PONG, {});
+        } else if (payload.type === _events.PONG) {
+          console.log('SOCKET.IO PONG!');
+        }
         notifySubscribers(payload);
-        //notifyServer(_events.CONNECT,'hi!');
+      }
+
+      function ping() {
+        notifyServer(_events.PING, {});
       }
 
       /**
@@ -89,8 +99,7 @@ define('nori/service/SocketIO',
       return {
         events             : getEventConstants,
         initialize         : initialize,
-        //on                 : on,
-        //emit               : emit,
+        ping               : ping,
         notifyServer       : notifyServer,
         subscribe          : subscribe,
         notifySubscribers  : notifySubscribers,

@@ -13,26 +13,26 @@ define('app/App',
       mixins: [],
 
       /**
-       * Create the main Nori App model and view.
+       * Create the main Nori App store and view.
        */
-      appModel: require('app/model/AppModel'),
+      appStore: require('app/store/AppStore'),
       appView : require('app/view/AppView'),
 
       /**
-       * Initialize the application, view and model
+       * Initialize the application, view and store
        */
       initialize: function () {
         this.initializeApplication(); // validates setup
 
         this.view().initialize();
 
-        this.model().initialize(); // model will acquire data dispatch event when complete
-        this.model().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
-        this.model().loadStore();
+        this.store().initialize(); // store will acquire data dispatch event when complete
+        this.store().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
+        this.store().loadStore();
       },
 
       /**
-       * After the model data is ready
+       * After the store data is ready
        */
       onStoreInitialized: function () {
         this.runApplication();
@@ -94,39 +94,39 @@ define('app/Action/ActionCreator',
 
   });
 
-define('app/model/AppModel',
+define('app/store/AppStore',
   function (require, module, exports) {
 
-    var _noriActionConstants     = require('nori/action/ActionConstants'),
-        _mixinMapFactory        = require('nori/model/MixinMapFactory'),
+    var _noriActionConstants    = require('nori/action/ActionConstants'),
+        _mixinMapFactory        = require('nori/store/MixinMapFactory'),
         _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
-        _mixinReducerModel      = require('nori/model/MixinReducerModel');
+        _mixinReducerStore      = require('nori/store/MixinReducerStore');
 
     /**
-     * This application model contains "reducer model" functionality based on Redux.
-     * The model state may only be changed from events as applied in reducer functions.
-     * The model received all events from the event bus and forwards them to all
+     * This application store contains "reducer store" functionality based on Redux.
+     * The store state may only be changed from events as applied in reducer functions.
+     * The store received all events from the event bus and forwards them to all
      * reducer functions to modify state as needed. Once they have run, the
      * handleStateMutation function is called to dispatch an event to the bus, or
      * notify subscribers via an observable.
      *
      * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
      */
-    var AppModel = Nori.createApplicationModel({
+    var AppStore = Nori.createApplicationStore({
 
       mixins: [
         _mixinMapFactory,
-        _mixinReducerModel,
+        _mixinReducerStore,
         _mixinObservableSubject()
       ],
 
       initialize: function () {
         this.addReducer(this.defaultReducerFunction);
-        this.initializeReducerModel();
+        this.initializeReducerStore();
         this.createSubject('storeInitialized');
       },
 
-      loadStore: function() {
+      loadStore: function () {
         // Set initial state from data contained in the config.js file
         this.setState(Nori.config());
         this.storeReady();
@@ -171,13 +171,13 @@ define('app/model/AppModel',
        * not check to see if the state was actually updated.
        */
       handleStateMutation: function () {
-        console.log('Handle state mutation',this.getState());
+        console.log('Handle state mutation', this.getState());
         this.notifySubscribers();
       }
 
     });
 
-    module.exports = AppModel;
+    module.exports = AppStore;
 
   });
 
@@ -229,7 +229,7 @@ define('app/view/AppView',
         this.mapRouteToViewComponent('/controls', 'debug-controls', controlsView);
         this.mapRouteToViewComponent('/comps', 'debug-components', 'app/view/DebugControlsTestingSubView');
 
-        // Alternately, map views to different model states with MixinModelStateViews
+        // Alternately, map views to different store states with MixinStoreStateViews
         //this.mapStateToViewComponent('TITLE', 'title', screenTitle);
       },
 
@@ -422,7 +422,7 @@ define('app/view/TemplateViewComponent',
        */
       initialize: function (configProps) {
         //Bind to a map, update will be called on changes to the map
-        //this.bindMap(APP.model()); // Reducer model, map id string or map object
+        //this.bindMap(APP.store()); // Reducer store, map id string or map object
 
         //custom init below here
         //this.setTemplate('<h1>{{ greeting }}</h1>'); // set custom HTML template
@@ -442,14 +442,14 @@ define('app/view/TemplateViewComponent',
        * Set initial state properties. Call once on first render
        */
       getInitialState: function () {
-        return APP.model().getState();
+        return APP.store().getState();
       },
 
       /**
-       * State change on bound models (map, etc.) Return nextState object
+       * State change on bound stores (map, etc.) Return nextState object
        */
       componentWillUpdate: function () {
-        var nextState = APP.model().getState();
+        var nextState = APP.store().getState();
         nextState.greeting += ' (updated)';
         return nextState;
       },
@@ -466,8 +466,7 @@ define('app/view/TemplateViewComponent',
       /**
        * Render override must return HTML.
        */
-      //render: function() {
-      //  var state = this.getState();
+      //render: function(state) {
       //  return '<h1>'+state.greeting+'</h1>';
       //},
 
@@ -512,7 +511,7 @@ define('app/view/TemplateViewComponentFactory',
       }
 
       /**
-       * State change on bound models (map, etc.) Update the component state
+       * State change on bound stores (map, etc.) Update the component state
        */
       function componentWillUpdate() {
         var obj = Object.create(null);

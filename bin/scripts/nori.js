@@ -588,7 +588,7 @@ define('nori/utils/Renderer',
   function (require, module, exports) {
 
     var Renderer = function () {
-      var _domUtils           = require('nudoru/browser/DOMUtils');
+      var _domUtils = require('nudoru/browser/DOMUtils');
 
       function render(payload) {
         var targetSelector = payload.target,
@@ -744,6 +744,43 @@ define('nori/utils/Router',
     };
 
     module.exports = Router();
+
+  });
+
+define('nori/utils/Rx',
+  function (require, module, exports) {
+
+    module.exports = {
+      dom: function (selector, event) {
+        var el = document.querySelector(selector);
+        if (!el) {
+          console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
+          return;
+        }
+        return Rx.Observable.fromEvent(el, event.trim());
+      },
+
+      from: function (ittr) {
+        return Rx.Observable.from(ittr);
+      },
+
+      interval: function (ms) {
+        return Rx.Observable.interval(ms);
+      },
+
+      doEvery: function(ms, handler) {
+        return this.interval(ms).subscribe(handler);
+      },
+
+      just: function (value) {
+        return Rx.Observable.just(value);
+      },
+
+      empty: function() {
+        return Rx.Observable.empty();
+      }
+
+    };
 
   });
 
@@ -929,7 +966,7 @@ define('nori/action/ActionCreator',
 
     var NoriActionCreator = {
 
-      changeModelState: function (data, id) {
+      changeStoreState: function (data, id) {
         var action = {
           type   : _noriActionConstants.CHANGE_MODEL_STATE,
           payload: {
@@ -1033,6 +1070,8 @@ define('nori/service/SocketIO',
       var _subject  = new Rx.BehaviorSubject(),
           _socketIO = io(),
           _events   = {
+            PING             : 'ping',
+            PONG             : 'pong',
             NOTIFY_CLIENT    : 'notify_client',
             NOTIFY_SERVER    : 'notify_server',
             CONNECT          : 'connect',
@@ -1058,8 +1097,16 @@ define('nori/service/SocketIO',
        * @param payload {type, id, time, payload}
        */
       function onNotifyClient(payload) {
+        if (payload.type === _events.PING) {
+          notifyServer(_events.PONG, {});
+        } else if (payload.type === _events.PONG) {
+          console.log('SOCKET.IO PONG!');
+        }
         notifySubscribers(payload);
-        //notifyServer(_events.CONNECT,'hi!');
+      }
+
+      function ping() {
+        notifyServer(_events.PING, {});
       }
 
       /**
@@ -1116,8 +1163,7 @@ define('nori/service/SocketIO',
       return {
         events             : getEventConstants,
         initialize         : initialize,
-        //on                 : on,
-        //emit               : emit,
+        ping               : ping,
         notifyServer       : notifyServer,
         subscribe          : subscribe,
         notifySubscribers  : notifySubscribers,
@@ -1130,7 +1176,7 @@ define('nori/service/SocketIO',
 
   });
 
-define('nori/model/Map',
+define('nori/store/Map',
   function (require, module, exports) {
 
     var Map = function () {
@@ -1147,7 +1193,7 @@ define('nori/model/Map',
 
       function initialize(initObj) {
         if (!initObj.id) {
-          throw new Error('Model must be init\'d with an id');
+          throw new Error('Store must be init\'d with an id');
         }
 
         _this = this;
@@ -1374,7 +1420,7 @@ define('nori/model/Map',
       function dispatchChange(type) {
         var payload = {
           id     : _id,
-          mapType: 'model'
+          mapType: 'store'
         };
 
         _this.notifySubscribers(payload);
@@ -1437,7 +1483,7 @@ define('nori/model/Map',
 
   });
 
-define('nori/model/MapCollection',
+define('nori/store/MapCollection',
   function (require, module, exports) {
 
     var MapCollection = function () {
@@ -1453,15 +1499,15 @@ define('nori/model/MapCollection',
 
       function initialize(initObj) {
         if (!initObj.id) {
-          throw new Error('ModelCollection must be init\'d with an id');
+          throw new Error('StoreCollection must be init\'d with an id');
         }
 
         _this = this;
         _id   = initObj.id;
 
         // TODO test
-        if (initObj.models) {
-          addMapsFromArray.call(_this, initObj.models);
+        if (initObj.stores) {
+          addMapsFromArray.call(_this, initObj.stores);
         }
       }
 
@@ -1514,7 +1560,7 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Add an array of Model instances
+       * Add an array of Store instances
        * @param sArry
        */
       function addMapsFromArray(sArry) {
@@ -1524,9 +1570,9 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Create an add child Model stores from an array of objects
+       * Create an add child Store stores from an array of objects
        * @param array Array of objects
-       * @param idKey Key on each object to use for the ID of that Model store
+       * @param idKey Key on each object to use for the ID of that Store store
        */
       function addFromObjArray(oArry, idKey) {
         oArry.forEach(function (obj) {
@@ -1539,7 +1585,7 @@ define('nori/model/MapCollection',
             id = _id + 'child' + _children.length;
           }
 
-          add(Nori.model().createMap({id: id, store: obj}));
+          add(Nori.store().createMap({id: id, store: obj}));
         });
         dispatchChange(_id, 'add_map');
       }
@@ -1561,7 +1607,7 @@ define('nori/model/MapCollection',
             id = _id + 'child' + _children.length;
           }
 
-          add(Nori.model().createMap({id: id, store: obj}));
+          add(Nori.store().createMap({id: id, store: obj}));
         });
         dispatchChange(_id, 'add_map');
       }
@@ -1596,7 +1642,7 @@ define('nori/model/MapCollection',
           _children.splice(currIdx, 1);
           dispatchChange(_id, 'remove_map');
         } else {
-          console.log(_id + ' remove, model not in collection: ' + storeID);
+          console.log(_id + ' remove, store not in collection: ' + storeID);
         }
       }
 
@@ -1613,7 +1659,7 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Gets the Model by ID
+       * Gets the Store by ID
        * @param storeID
        * @returns {T}
        */
@@ -1624,7 +1670,7 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Get the index in _children array by Model's ID
+       * Get the index in _children array by Store's ID
        * @param storeID
        * @returns {number}
        */
@@ -1771,19 +1817,19 @@ define('nori/model/MapCollection',
 
   });
 
-define('nori/model/MixinMapFactory',
+define('nori/store/MixinMapFactory',
   function (require, module, exports) {
 
     var MixinMapFactory = function () {
 
       var _mapCollectionList = Object.create(null),
           _mapList           = Object.create(null),
-          _mapCollectionFactory = require('nori/model/MapCollection'),
-          _mapFactory = require('nori/model/Map'),
+          _mapCollectionFactory = require('nori/store/MapCollection'),
+          _mapFactory = require('nori/store/Map'),
           _observableFactory = require('nori/utils/MixinObservableSubject');
 
       /**
-       * Create a new model collection and initalize
+       * Create a new store collection and initalize
        * @param initObj
        * @param extras
        * @returns {*}
@@ -1795,7 +1841,7 @@ define('nori/model/MixinMapFactory',
       }
 
       /**
-       * Create a new model and initialize
+       * Create a new store and initialize
        * @param initObj
        * @param extras
        * @returns {*}
@@ -1807,7 +1853,7 @@ define('nori/model/MixinMapFactory',
       }
 
       /**
-       * Get a model from the application collection
+       * Get a store from the application collection
        * @param storeID
        * @returns {void|*}
        */
@@ -1816,7 +1862,7 @@ define('nori/model/MixinMapFactory',
       }
 
       /**
-       * Get a model collection from the application collection
+       * Get a store collection from the application collection
        * @param storeID
        * @returns {void|*}
        */
@@ -1838,10 +1884,10 @@ define('nori/model/MixinMapFactory',
 
   });
 
-define('nori/model/MixinReducerModel',
+define('nori/store/MixinReducerStore',
   function (require, module, exports) {
 
-    var MixinReducerModel = function () {
+    var MixinReducerStore = function () {
       var _this,
           _state,
           _stateReducers       = [],
@@ -1852,7 +1898,7 @@ define('nori/model/MixinReducerModel',
       //----------------------------------------------------------------------------
 
       /**
-       * _state might not exist if subscribers are added before this model is initialized
+       * _state might not exist if subscribers are added before this store is initialized
        */
       function getState() {
         if (_state) {
@@ -1883,18 +1929,18 @@ define('nori/model/MixinReducerModel',
       /**
        * Set up event listener/receiver
        */
-      function initializeReducerModel() {
+      function initializeReducerStore() {
         if (!this.createSubject) {
-          console.warn('nori/model/MixinReducerModel needs nori/utils/MixinObservableSubject to notify');
+          console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
         }
 
-        var simpleStoreFactory = require('nori/model/SimpleStore');
+        var simpleStoreFactory = require('nori/store/SimpleStore');
 
         _this  = this;
         _state = simpleStoreFactory();
 
         if (!_stateReducers) {
-          throw new Error('ReducerModel, must set a reducer before initialization');
+          throw new Error('ReducerStore, must set a reducer before initialization');
         }
 
         // Set initial state from empty event
@@ -1907,7 +1953,7 @@ define('nori/model/MixinReducerModel',
        * @param actionObject
        */
       function apply(actionObject) {
-        //console.log('ReducerModel Apply: ', actionObject);
+        console.log('ReducerStore Apply: ', actionObject.type, actionObject.payload);
         applyReducers(actionObject);
       }
 
@@ -1926,7 +1972,7 @@ define('nori/model/MixinReducerModel',
 
       /**
        * Creates a new state from the combined reduces and action object
-       * Model state isn't modified, current state is passed in and mutated state returned
+       * Store state isn't modified, current state is passed in and mutated state returned
        * @param state
        * @param action
        * @returns {*|{}}
@@ -1942,7 +1988,7 @@ define('nori/model/MixinReducerModel',
 
       /**
        * Template reducer function
-       * Model state isn't modified, current state is passed in and mutated state returned
+       * Store state isn't modified, current state is passed in and mutated state returned
 
        function templateReducerFunction(state, event) {
         state = state || {};
@@ -1962,7 +2008,7 @@ define('nori/model/MixinReducerModel',
       //----------------------------------------------------------------------------
 
       return {
-        initializeReducerModel: initializeReducerModel,
+        initializeReducerStore: initializeReducerStore,
         getState              : getState,
         setState              : setState,
         apply                 : apply,
@@ -1975,11 +2021,11 @@ define('nori/model/MixinReducerModel',
 
     };
 
-    module.exports = MixinReducerModel();
+    module.exports = MixinReducerStore();
 
   });
 
-define('nori/model/SimpleStore',
+define('nori/store/SimpleStore',
   function (require, module, exports) {
 
     var SimpleStore = function () {
@@ -2235,7 +2281,7 @@ define('nori/view/MixinComponentViews',
           var componentViewFactory  = require('nori/view/ViewComponent'),
               eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
               observableFactory     = require('nori/utils/MixinObservableSubject'),
-              simpleStoreFactory    = require('nori/model/SimpleStore'),
+              simpleStoreFactory    = require('nori/store/SimpleStore'),
               componentAssembly, finalComponent, previousInitialize;
 
           componentAssembly = [
@@ -2286,7 +2332,7 @@ define('nori/view/MixinComponentViews',
           componentView.controller.update();
         }
 
-        componentView.controller.renderPipeline();
+        componentView.controller.componentRender();
         componentView.controller.mount();
       }
 
@@ -2322,7 +2368,8 @@ define('nori/view/MixinEventDelegator',
     var MixinEventDelegator = function () {
 
       var _eventsMap,
-          _eventSubscribers;
+          _eventSubscribers,
+          _rx = require('nori/utils/Rx');
 
       function setEvents(evtObj) {
         _eventsMap = evtObj;
@@ -2357,19 +2404,10 @@ define('nori/view/MixinEventDelegator',
 
             mappings.forEach(function (evtMap) {
               evtMap = evtMap.trim();
-
               var eventStr = evtMap.split(' ')[0].trim(),
-                  selector = evtMap.split(' ')[1].trim(),
-                  element  = document.querySelector(selector);
-
-              if (!element) {
-                console.log('Cannot add event to invalid DOM element: ' + selector);
-              } else {
-                _eventSubscribers[evtStrings] = Rx.Observable.fromEvent(element, eventStr).subscribe(eventHander);
-              }
-
+                  selector = evtMap.split(' ')[1].trim();
+              _eventSubscribers[evtStrings] = _rx.dom(selector, eventStr).subscribe(eventHander);
             });
-
           }
         }
       }
@@ -2403,14 +2441,14 @@ define('nori/view/MixinEventDelegator',
 
   });
 
-define('nori/view/MixinModelStateViews',
+define('nori/view/MixinStoreStateViews',
   function (require, module, exports) {
 
-    var MixinModelStateViews = function () {
+    var MixinStoreStateViews = function () {
 
       var _this,
           _currentViewID,
-          _currentModelState,
+          _currentStoreState,
           _stateViewMountPoint,
           _stateViewIDMap = Object.create(null);
 
@@ -2422,7 +2460,7 @@ define('nori/view/MixinModelStateViews',
 
         this.createSubject('viewChange');
 
-        Nori.model().subscribe(function onStateChange() {
+        Nori.store().subscribe(function onStateChange() {
           handleStateChange();
         });
       }
@@ -2432,15 +2470,15 @@ define('nori/view/MixinModelStateViews',
        * @param routeObj
        */
       function handleStateChange() {
-        showViewForCurrentModelState();
+        showViewForCurrentStoreState();
       }
 
-      function showViewForCurrentModelState() {
-        var state = Nori.model().getState().currentState;
+      function showViewForCurrentStoreState() {
+        var state = Nori.store().getState().currentState;
         if (state) {
-          if (state !== _currentModelState) {
-            _currentModelState = state;
-            showStateViewComponent.bind(_this)(_currentModelState);
+          if (state !== _currentStoreState) {
+            _currentStoreState = state;
+            showStateViewComponent.bind(_this)(_currentStoreState);
           }
         }
       }
@@ -2503,7 +2541,7 @@ define('nori/view/MixinModelStateViews',
 
       return {
         initializeStateViews        : initializeStateViews,
-        showViewForCurrentModelState: showViewForCurrentModelState,
+        showViewForCurrentStoreState: showViewForCurrentStoreState,
         showStateViewComponent      : showStateViewComponent,
         setViewMountPoint           : setViewMountPoint,
         getViewMountPoint           : getViewMountPoint,
@@ -2512,7 +2550,7 @@ define('nori/view/MixinModelStateViews',
 
     };
 
-    module.exports = MixinModelStateViews();
+    module.exports = MixinStoreStateViews();
 
   });
 
@@ -2703,7 +2741,7 @@ define('nori/view/ViewComponent',
           _id,
           _templateObj,
           _html,
-          _DOMNode,
+          _DOMElement,
           _mountPoint,
           _children      = [],
           _isMounted     = false,
@@ -2735,7 +2773,7 @@ define('nori/view/ViewComponent',
 
       /**
        * Bind updates to the map ID to this view's update
-       * @param mapIDorObj Object to subscribe to or ID. Should implement nori/model/MixinObservableModel
+       * @param mapIDorObj Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
        */
       function bindMap(mapIDorObj) {
         var map;
@@ -2743,15 +2781,17 @@ define('nori/view/ViewComponent',
         if (is.object(mapIDorObj)) {
           map = mapIDorObj;
         } else {
-          map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
+          map = Nori.store().getMap(mapIDorObj) || Nori.store().getMapCollection(mapIDorObj);
         }
 
         if (!map) {
           console.warn('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+          return;
         }
 
         if (!is.function(map.subscribe)) {
           console.warn('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
+          return;
         }
 
         map.subscribe(this.update.bind(this));
@@ -2761,89 +2801,56 @@ define('nori/view/ViewComponent',
        * Add a child
        * @param child
        */
-      function addChild(child) {
-        _children.push(child);
-      }
+      //function addChild(child) {
+      //  _children.push(child);
+      //}
 
       /**
        * Remove a child
        * @param child
        */
-      function removeChild(child) {
-        var idx = _children.indexOf(child);
-        _children[idx].dispose();
-        _children.splice(idx, 1);
-      }
+      //function removeChild(child) {
+      //  var idx = _children.indexOf(child);
+      //  _children[idx].unmount();
+      //  _children.splice(idx, 1);
+      //}
 
       /**
-       * Before the wiew updates and a rerender occurs
+       * Before the view updates and a rerender occurs
+       * Returns nextState of component
        */
       function componentWillUpdate() {
-        return undefined;
+        return this.getState();
       }
 
       function update() {
-        this.componentUpdate();
-      }
-
-      /**
-       * Update state and rerender
-       * @param dataObj
-       * @returns {*}
-       */
-      function componentUpdate() {
-        // make a copy of last state
         var currentState = this.getState();
         var nextState    = this.componentWillUpdate();
 
         if (this.shouldComponentUpdate(nextState)) {
           this.setState(nextState);
-          _children.forEach(function updateChild(child) {
-            child.update();
-          });
+          //_children.forEach(function updateChild(child) {
+          //  child.update();
+          //});
 
           if (_isMounted) {
             if (this.shouldComponentRender(currentState)) {
               this.unmount();
-              this.renderPipeline();
+              this.componentRender();
               this.mount();
             }
           }
-
-          this.componentDidUpdate();
+          this.notifySubscribersOf('update', this.getID());
         }
-        this.notifySubscribersOf('update', this.getID());
       }
 
+      /**
+       * Compare current state and next state to determine if updating should occur
+       * @param nextState
+       * @returns {*}
+       */
       function shouldComponentUpdate(nextState) {
         return is.existy(nextState);
-      }
-
-      /**
-       * Determine if the view should rerender on update
-       * @returns {boolean}
-       */
-      function shouldComponentRender(beforeUpdateState) {
-        return !_.isEqual(beforeUpdateState, this.getState());
-      }
-
-      /**
-       * After the view updates and a rerender occurred
-       */
-      function componentDidUpdate() {
-        // stub
-      }
-
-      function componentWillRender() {
-        // stub
-      }
-
-      function renderPipeline() {
-        this.componentRender();
-      }
-
-      function render() {
-        return _templateObj(this.getState());
       }
 
       /**
@@ -2851,30 +2858,21 @@ define('nori/view/ViewComponent',
        * @returns {*}
        */
       function componentRender() {
-        if (this.componentWillRender) {
-          this.componentWillRender();
-        }
+        //_children.forEach(function renderChild(child) {
+        //  child.componentRender();
+        //});
 
-        _children.forEach(function renderChild(child) {
-          child.renderPipeline();
-        });
+        _html = this.render(this.getState());
 
-        _html = this.render();
-
-        if (this.componentDidRender) {
-          this.componentDidRender();
-        }
-      }
-
-      function componentDidRender() {
-        // stub
       }
 
       /**
-       * Call before it's been added to a view
+       * May be overridden in a submodule for custom rendering
+       * Should return HTML
+       * @returns {*}
        */
-      function componentWillMount() {
-        // stub
+      function render(state) {
+        return _templateObj(state);
       }
 
       /**
@@ -2886,19 +2884,13 @@ define('nori/view/ViewComponent',
           throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
         }
 
-        if (this.componentWillMount) {
-          this.componentWillMount();
-        }
-
         _isMounted = true;
 
-        // Go out to the standard render function. DOM element is returned in callback
-        setDOMNode(_renderer.render({
+        _DOMElement = (_renderer.render({
           target: _mountPoint,
           html  : _html
         }));
 
-        // from the ViewMixinEventDelegator
         if (this.delegateEvents) {
           this.delegateEvents();
         }
@@ -2918,7 +2910,7 @@ define('nori/view/ViewComponent',
       }
 
       /**
-       * Call when unloading and switching views
+       * Call when unloading
        */
       function componentWillUnmount() {
         // stub
@@ -2928,7 +2920,6 @@ define('nori/view/ViewComponent',
         this.componentWillUnmount();
         _isMounted = false;
 
-        // from the ViewMixinEventDelegator
         if (this.undelegateEvents) {
           this.undelegateEvents();
         }
@@ -2938,20 +2929,9 @@ define('nori/view/ViewComponent',
           html  : ''
         });
 
-        setDOMNode(null);
-        this.componentDidUnmount();
+        _html       = '';
+        _DOMElement = null;
         this.notifySubscribersOf('unmount', this.getID());
-      }
-
-      function componentDidUnmount() {
-        // stub
-      }
-
-      /**
-       * Remove a view and cleanup
-       */
-      function dispose() {
-        this.unmount();
       }
 
       //----------------------------------------------------------------------------
@@ -2978,6 +2958,10 @@ define('nori/view/ViewComponent',
         return _id;
       }
 
+      function getDOMElement() {
+        return _DOMElement;
+      }
+
       function getTemplate() {
         return _templateObj;
       }
@@ -2986,25 +2970,9 @@ define('nori/view/ViewComponent',
         _templateObj = _.template(html);
       }
 
-      function getDOMNode() {
-        return _DOMNode;
-      }
-
-      function setDOMNode(el) {
-        _DOMNode = el;
-      }
-
-      function getHTML() {
-        return _html;
-      }
-
-      function setHTML(str) {
-        _html = str;
-      }
-
-      function getChildren() {
-        return _children.slice(0);
-      }
+      //function getChildren() {
+      //  return _children.slice(0);
+      //}
 
 
       //----------------------------------------------------------------------------
@@ -3020,37 +2988,27 @@ define('nori/view/ViewComponent',
         getID              : getID,
         getTemplate        : getTemplate,
         setTemplate        : setTemplate,
-        getHTML            : getHTML,
-        setHTML            : setHTML,
-        getDOMNode         : getDOMNode,
-        setDOMNode         : setDOMNode,
+        getDOMElement      : getDOMElement,
         isMounted          : isMounted,
 
-        bindMap              : bindMap,
+        bindMap: bindMap,
+
         componentWillUpdate  : componentWillUpdate,
         shouldComponentUpdate: shouldComponentUpdate,
-        componentUpdate      : componentUpdate,
         update               : update,
-        componentDidUpdate   : componentDidUpdate,
 
-        shouldComponentRender: shouldComponentRender,
-        componentWillRender  : componentWillRender,
-        renderPipeline       : renderPipeline,
-        componentRender      : componentRender,
-        render               : render,
-        componentDidRender   : componentDidRender,
+        componentRender: componentRender,
+        render         : render,
 
-        componentWillMount: componentWillMount,
-        mount             : mount,
-        componentDidMount : componentDidMount,
+        mount            : mount,
+        componentDidMount: componentDidMount,
 
         componentWillUnmount: componentWillUnmount,
-        unmount             : unmount,
-        componentDidUnmount : componentDidUnmount,
+        unmount             : unmount
 
-        addChild   : addChild,
-        removeChild: removeChild,
-        getChildren: getChildren
+        //addChild   : addChild,
+        //removeChild: removeChild,
+        //getChildren: getChildren
       };
 
     };
@@ -3061,7 +3019,7 @@ define('nori/view/ViewComponent',
 
 var Nori = (function () {
 
-  var _model,
+  var _store,
       _view,
       _dispatcher = require('nori/utils/Dispatcher'),
       _router     = require('nori/utils/Router');
@@ -3081,8 +3039,8 @@ var Nori = (function () {
     return _router;
   }
 
-  function getModel() {
-    return _model;
+  function getStore() {
+    return _store;
   }
 
   function getView() {
@@ -3102,14 +3060,14 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Init the app and inject the model and view
-   * @param initObj view, model
+   * Init the app and inject the store and view
+   * @param initObj view, store
    */
   function initializeApplication(initObj) {
     _router.initialize();
 
     _view  = _view || createApplicationView({});
-    _model = _model || createApplicationModel({});
+    _store = _store || createApplicationStore({});
   }
 
   //----------------------------------------------------------------------------
@@ -3140,13 +3098,13 @@ var Nori = (function () {
   }
 
   /**
-   * Creates main application model
+   * Creates main application store
    * @param custom
    * @returns {*}
    */
-  function createApplicationModel(custom) {
-    _model = buildFromMixins(custom);
-    return _model;
+  function createApplicationStore(custom) {
+    _store = buildFromMixins(custom);
+    return _store;
   }
 
   /**
@@ -3220,10 +3178,10 @@ var Nori = (function () {
     config                : getConfig,
     dispatcher            : getDispatcher,
     router                : getRouter,
-    model                 : getModel,
+    store                 : getStore,
     view                  : getView,
     createApplication     : createApplication,
-    createApplicationModel: createApplicationModel,
+    createApplicationStore: createApplicationStore,
     createApplicationView : createApplicationView,
     buildFromMixins       : buildFromMixins,
     getCurrentRoute       : getCurrentRoute,

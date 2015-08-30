@@ -3,7 +3,7 @@
  */
 
 
-define('nori/model/Map',
+define('nori/store/Map',
   function (require, module, exports) {
 
     var Map = function () {
@@ -20,7 +20,7 @@ define('nori/model/Map',
 
       function initialize(initObj) {
         if (!initObj.id) {
-          throw new Error('Model must be init\'d with an id');
+          throw new Error('Store must be init\'d with an id');
         }
 
         _this = this;
@@ -247,7 +247,7 @@ define('nori/model/Map',
       function dispatchChange(type) {
         var payload = {
           id     : _id,
-          mapType: 'model'
+          mapType: 'store'
         };
 
         _this.notifySubscribers(payload);

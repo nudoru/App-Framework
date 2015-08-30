@@ -1,16 +1,16 @@
-define('nori/model/MixinMapFactory',
+define('nori/store/MixinMapFactory',
   function (require, module, exports) {
 
     var MixinMapFactory = function () {
 
       var _mapCollectionList = Object.create(null),
           _mapList           = Object.create(null),
-          _mapCollectionFactory = require('nori/model/MapCollection'),
-          _mapFactory = require('nori/model/Map'),
+          _mapCollectionFactory = require('nori/store/MapCollection'),
+          _mapFactory = require('nori/store/Map'),
           _observableFactory = require('nori/utils/MixinObservableSubject');
 
       /**
-       * Create a new model collection and initalize
+       * Create a new store collection and initalize
        * @param initObj
        * @param extras
        * @returns {*}
@@ -22,7 +22,7 @@ define('nori/model/MixinMapFactory',
       }
 
       /**
-       * Create a new model and initialize
+       * Create a new store and initialize
        * @param initObj
        * @param extras
        * @returns {*}
@@ -34,7 +34,7 @@ define('nori/model/MixinMapFactory',
       }
 
       /**
-       * Get a model from the application collection
+       * Get a store from the application collection
        * @param storeID
        * @returns {void|*}
        */
@@ -43,7 +43,7 @@ define('nori/model/MixinMapFactory',
       }
 
       /**
-       * Get a model collection from the application collection
+       * Get a store collection from the application collection
        * @param storeID
        * @returns {void|*}
        */

@@ -13,26 +13,26 @@ define('app/App',
       mixins: [],
 
       /**
-       * Create the main Nori App model and view.
+       * Create the main Nori App store and view.
        */
-      appModel: require('app/model/AppModel'),
+      appStore: require('app/store/AppStore'),
       appView : require('app/view/AppView'),
 
       /**
-       * Initialize the application, view and model
+       * Initialize the application, view and store
        */
       initialize: function () {
         this.initializeApplication(); // validates setup
 
         this.view().initialize();
 
-        this.model().initialize(); // model will acquire data dispatch event when complete
-        this.model().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
-        this.model().loadStore();
+        this.store().initialize(); // store will acquire data dispatch event when complete
+        this.store().subscribe('storeInitialized', this.onStoreInitialized.bind(this));
+        this.store().loadStore();
       },
 
       /**
-       * After the model data is ready
+       * After the store data is ready
        */
       onStoreInitialized: function () {
         this.runApplication();

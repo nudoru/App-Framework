@@ -1,4 +1,4 @@
-define('nori/model/SimpleStore',
+define('nori/store/SimpleStore',
   function (require, module, exports) {
 
     var SimpleStore = function () {

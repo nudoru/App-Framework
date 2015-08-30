@@ -1,6 +1,6 @@
 var Nori = (function () {
 
-  var _model,
+  var _store,
       _view,
       _dispatcher = require('nori/utils/Dispatcher'),
       _router     = require('nori/utils/Router');
@@ -20,8 +20,8 @@ var Nori = (function () {
     return _router;
   }
 
-  function getModel() {
-    return _model;
+  function getStore() {
+    return _store;
   }
 
   function getView() {
@@ -41,14 +41,14 @@ var Nori = (function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Init the app and inject the model and view
-   * @param initObj view, model
+   * Init the app and inject the store and view
+   * @param initObj view, store
    */
   function initializeApplication(initObj) {
     _router.initialize();
 
     _view  = _view || createApplicationView({});
-    _model = _model || createApplicationModel({});
+    _store = _store || createApplicationStore({});
   }
 
   //----------------------------------------------------------------------------
@@ -79,13 +79,13 @@ var Nori = (function () {
   }
 
   /**
-   * Creates main application model
+   * Creates main application store
    * @param custom
    * @returns {*}
    */
-  function createApplicationModel(custom) {
-    _model = buildFromMixins(custom);
-    return _model;
+  function createApplicationStore(custom) {
+    _store = buildFromMixins(custom);
+    return _store;
   }
 
   /**
@@ -159,10 +159,10 @@ var Nori = (function () {
     config                : getConfig,
     dispatcher            : getDispatcher,
     router                : getRouter,
-    model                 : getModel,
+    store                 : getStore,
     view                  : getView,
     createApplication     : createApplication,
-    createApplicationModel: createApplicationModel,
+    createApplicationStore: createApplicationStore,
     createApplicationView : createApplicationView,
     buildFromMixins       : buildFromMixins,
     getCurrentRoute       : getCurrentRoute,

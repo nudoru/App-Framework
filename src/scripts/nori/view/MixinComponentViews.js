@@ -55,7 +55,7 @@ define('nori/view/MixinComponentViews',
           var componentViewFactory  = require('nori/view/ViewComponent'),
               eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
               observableFactory     = require('nori/utils/MixinObservableSubject'),
-              simpleStoreFactory    = require('nori/model/SimpleStore'),
+              simpleStoreFactory    = require('nori/store/SimpleStore'),
               componentAssembly, finalComponent, previousInitialize;
 
           componentAssembly = [
@@ -106,7 +106,7 @@ define('nori/view/MixinComponentViews',
           componentView.controller.update();
         }
 
-        componentView.controller.renderPipeline();
+        componentView.controller.componentRender();
         componentView.controller.mount();
       }
 

@@ -13,7 +13,7 @@ define('nori/view/ViewComponent',
           _id,
           _templateObj,
           _html,
-          _DOMNode,
+          _DOMElement,
           _mountPoint,
           _children      = [],
           _isMounted     = false,
@@ -45,7 +45,7 @@ define('nori/view/ViewComponent',
 
       /**
        * Bind updates to the map ID to this view's update
-       * @param mapIDorObj Object to subscribe to or ID. Should implement nori/model/MixinObservableModel
+       * @param mapIDorObj Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
        */
       function bindMap(mapIDorObj) {
         var map;
@@ -53,15 +53,17 @@ define('nori/view/ViewComponent',
         if (is.object(mapIDorObj)) {
           map = mapIDorObj;
         } else {
-          map = Nori.model().getMap(mapIDorObj) || Nori.model().getMapCollection(mapIDorObj);
+          map = Nori.store().getMap(mapIDorObj) || Nori.store().getMapCollection(mapIDorObj);
         }
 
         if (!map) {
           console.warn('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+          return;
         }
 
         if (!is.function(map.subscribe)) {
           console.warn('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
+          return;
         }
 
         map.subscribe(this.update.bind(this));
@@ -71,89 +73,56 @@ define('nori/view/ViewComponent',
        * Add a child
        * @param child
        */
-      function addChild(child) {
-        _children.push(child);
-      }
+      //function addChild(child) {
+      //  _children.push(child);
+      //}
 
       /**
        * Remove a child
        * @param child
        */
-      function removeChild(child) {
-        var idx = _children.indexOf(child);
-        _children[idx].dispose();
-        _children.splice(idx, 1);
-      }
+      //function removeChild(child) {
+      //  var idx = _children.indexOf(child);
+      //  _children[idx].unmount();
+      //  _children.splice(idx, 1);
+      //}
 
       /**
-       * Before the wiew updates and a rerender occurs
+       * Before the view updates and a rerender occurs
+       * Returns nextState of component
        */
       function componentWillUpdate() {
-        return undefined;
+        return this.getState();
       }
 
       function update() {
-        this.componentUpdate();
-      }
-
-      /**
-       * Update state and rerender
-       * @param dataObj
-       * @returns {*}
-       */
-      function componentUpdate() {
-        // make a copy of last state
         var currentState = this.getState();
         var nextState    = this.componentWillUpdate();
 
         if (this.shouldComponentUpdate(nextState)) {
           this.setState(nextState);
-          _children.forEach(function updateChild(child) {
-            child.update();
-          });
+          //_children.forEach(function updateChild(child) {
+          //  child.update();
+          //});
 
           if (_isMounted) {
             if (this.shouldComponentRender(currentState)) {
               this.unmount();
-              this.renderPipeline();
+              this.componentRender();
               this.mount();
             }
           }
-
-          this.componentDidUpdate();
+          this.notifySubscribersOf('update', this.getID());
         }
-        this.notifySubscribersOf('update', this.getID());
       }
 
+      /**
+       * Compare current state and next state to determine if updating should occur
+       * @param nextState
+       * @returns {*}
+       */
       function shouldComponentUpdate(nextState) {
         return is.existy(nextState);
-      }
-
-      /**
-       * Determine if the view should rerender on update
-       * @returns {boolean}
-       */
-      function shouldComponentRender(beforeUpdateState) {
-        return !_.isEqual(beforeUpdateState, this.getState());
-      }
-
-      /**
-       * After the view updates and a rerender occurred
-       */
-      function componentDidUpdate() {
-        // stub
-      }
-
-      function componentWillRender() {
-        // stub
-      }
-
-      function renderPipeline() {
-        this.componentRender();
-      }
-
-      function render() {
-        return _templateObj(this.getState());
       }
 
       /**
@@ -161,30 +130,21 @@ define('nori/view/ViewComponent',
        * @returns {*}
        */
       function componentRender() {
-        if (this.componentWillRender) {
-          this.componentWillRender();
-        }
+        //_children.forEach(function renderChild(child) {
+        //  child.componentRender();
+        //});
 
-        _children.forEach(function renderChild(child) {
-          child.renderPipeline();
-        });
+        _html = this.render(this.getState());
 
-        _html = this.render();
-
-        if (this.componentDidRender) {
-          this.componentDidRender();
-        }
-      }
-
-      function componentDidRender() {
-        // stub
       }
 
       /**
-       * Call before it's been added to a view
+       * May be overridden in a submodule for custom rendering
+       * Should return HTML
+       * @returns {*}
        */
-      function componentWillMount() {
-        // stub
+      function render(state) {
+        return _templateObj(state);
       }
 
       /**
@@ -196,19 +156,13 @@ define('nori/view/ViewComponent',
           throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
         }
 
-        if (this.componentWillMount) {
-          this.componentWillMount();
-        }
-
         _isMounted = true;
 
-        // Go out to the standard render function. DOM element is returned in callback
-        setDOMNode(_renderer.render({
+        _DOMElement = (_renderer.render({
           target: _mountPoint,
           html  : _html
         }));
 
-        // from the ViewMixinEventDelegator
         if (this.delegateEvents) {
           this.delegateEvents();
         }
@@ -228,7 +182,7 @@ define('nori/view/ViewComponent',
       }
 
       /**
-       * Call when unloading and switching views
+       * Call when unloading
        */
       function componentWillUnmount() {
         // stub
@@ -238,7 +192,6 @@ define('nori/view/ViewComponent',
         this.componentWillUnmount();
         _isMounted = false;
 
-        // from the ViewMixinEventDelegator
         if (this.undelegateEvents) {
           this.undelegateEvents();
         }
@@ -248,20 +201,9 @@ define('nori/view/ViewComponent',
           html  : ''
         });
 
-        setDOMNode(null);
-        this.componentDidUnmount();
+        _html       = '';
+        _DOMElement = null;
         this.notifySubscribersOf('unmount', this.getID());
-      }
-
-      function componentDidUnmount() {
-        // stub
-      }
-
-      /**
-       * Remove a view and cleanup
-       */
-      function dispose() {
-        this.unmount();
       }
 
       //----------------------------------------------------------------------------
@@ -288,6 +230,10 @@ define('nori/view/ViewComponent',
         return _id;
       }
 
+      function getDOMElement() {
+        return _DOMElement;
+      }
+
       function getTemplate() {
         return _templateObj;
       }
@@ -296,25 +242,9 @@ define('nori/view/ViewComponent',
         _templateObj = _.template(html);
       }
 
-      function getDOMNode() {
-        return _DOMNode;
-      }
-
-      function setDOMNode(el) {
-        _DOMNode = el;
-      }
-
-      function getHTML() {
-        return _html;
-      }
-
-      function setHTML(str) {
-        _html = str;
-      }
-
-      function getChildren() {
-        return _children.slice(0);
-      }
+      //function getChildren() {
+      //  return _children.slice(0);
+      //}
 
 
       //----------------------------------------------------------------------------
@@ -330,37 +260,27 @@ define('nori/view/ViewComponent',
         getID              : getID,
         getTemplate        : getTemplate,
         setTemplate        : setTemplate,
-        getHTML            : getHTML,
-        setHTML            : setHTML,
-        getDOMNode         : getDOMNode,
-        setDOMNode         : setDOMNode,
+        getDOMElement      : getDOMElement,
         isMounted          : isMounted,
 
-        bindMap              : bindMap,
+        bindMap: bindMap,
+
         componentWillUpdate  : componentWillUpdate,
         shouldComponentUpdate: shouldComponentUpdate,
-        componentUpdate      : componentUpdate,
         update               : update,
-        componentDidUpdate   : componentDidUpdate,
 
-        shouldComponentRender: shouldComponentRender,
-        componentWillRender  : componentWillRender,
-        renderPipeline       : renderPipeline,
-        componentRender      : componentRender,
-        render               : render,
-        componentDidRender   : componentDidRender,
+        componentRender: componentRender,
+        render         : render,
 
-        componentWillMount: componentWillMount,
-        mount             : mount,
-        componentDidMount : componentDidMount,
+        mount            : mount,
+        componentDidMount: componentDidMount,
 
         componentWillUnmount: componentWillUnmount,
-        unmount             : unmount,
-        componentDidUnmount : componentDidUnmount,
+        unmount             : unmount
 
-        addChild   : addChild,
-        removeChild: removeChild,
-        getChildren: getChildren
+        //addChild   : addChild,
+        //removeChild: removeChild,
+        //getChildren: getChildren
       };
 
     };

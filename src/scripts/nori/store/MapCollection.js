@@ -2,7 +2,7 @@
  * Map Collection - an array of maps
  */
 
-define('nori/model/MapCollection',
+define('nori/store/MapCollection',
   function (require, module, exports) {
 
     var MapCollection = function () {
@@ -18,15 +18,15 @@ define('nori/model/MapCollection',
 
       function initialize(initObj) {
         if (!initObj.id) {
-          throw new Error('ModelCollection must be init\'d with an id');
+          throw new Error('StoreCollection must be init\'d with an id');
         }
 
         _this = this;
         _id   = initObj.id;
 
         // TODO test
-        if (initObj.models) {
-          addMapsFromArray.call(_this, initObj.models);
+        if (initObj.stores) {
+          addMapsFromArray.call(_this, initObj.stores);
         }
       }
 
@@ -79,7 +79,7 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Add an array of Model instances
+       * Add an array of Store instances
        * @param sArry
        */
       function addMapsFromArray(sArry) {
@@ -89,9 +89,9 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Create an add child Model stores from an array of objects
+       * Create an add child Store stores from an array of objects
        * @param array Array of objects
-       * @param idKey Key on each object to use for the ID of that Model store
+       * @param idKey Key on each object to use for the ID of that Store store
        */
       function addFromObjArray(oArry, idKey) {
         oArry.forEach(function (obj) {
@@ -104,7 +104,7 @@ define('nori/model/MapCollection',
             id = _id + 'child' + _children.length;
           }
 
-          add(Nori.model().createMap({id: id, store: obj}));
+          add(Nori.store().createMap({id: id, store: obj}));
         });
         dispatchChange(_id, 'add_map');
       }
@@ -126,7 +126,7 @@ define('nori/model/MapCollection',
             id = _id + 'child' + _children.length;
           }
 
-          add(Nori.model().createMap({id: id, store: obj}));
+          add(Nori.store().createMap({id: id, store: obj}));
         });
         dispatchChange(_id, 'add_map');
       }
@@ -161,7 +161,7 @@ define('nori/model/MapCollection',
           _children.splice(currIdx, 1);
           dispatchChange(_id, 'remove_map');
         } else {
-          console.log(_id + ' remove, model not in collection: ' + storeID);
+          console.log(_id + ' remove, store not in collection: ' + storeID);
         }
       }
 
@@ -178,7 +178,7 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Gets the Model by ID
+       * Gets the Store by ID
        * @param storeID
        * @returns {T}
        */
@@ -189,7 +189,7 @@ define('nori/model/MapCollection',
       }
 
       /**
-       * Get the index in _children array by Model's ID
+       * Get the index in _children array by Store's ID
        * @param storeID
        * @returns {number}
        */

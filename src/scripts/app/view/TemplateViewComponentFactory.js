@@ -19,7 +19,7 @@ define('app/view/TemplateViewComponentFactory',
       }
 
       /**
-       * State change on bound models (map, etc.) Update the component state
+       * State change on bound stores (map, etc.) Update the component state
        */
       function componentWillUpdate() {
         var obj = Object.create(null);

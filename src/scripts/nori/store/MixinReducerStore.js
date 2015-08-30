@@ -1,7 +1,7 @@
 /**
- * Mixin for Nori models to add functionality similar to Redux' Reducer and single
- * object state tree concept. Mixin should be composed to nori/model/ApplicationModel
- * during creation of main AppModel
+ * Mixin for Nori stores to add functionality similar to Redux' Reducer and single
+ * object state tree concept. Mixin should be composed to nori/store/ApplicationStore
+ * during creation of main AppStore
  *
  * https://gaearon.github.io/redux/docs/api/Store.html
  * https://gaearon.github.io/redux/docs/basics/Reducers.html
@@ -9,10 +9,10 @@
  * Created 8/13/15
  */
 
-define('nori/model/MixinReducerModel',
+define('nori/store/MixinReducerStore',
   function (require, module, exports) {
 
-    var MixinReducerModel = function () {
+    var MixinReducerStore = function () {
       var _this,
           _state,
           _stateReducers       = [],
@@ -23,7 +23,7 @@ define('nori/model/MixinReducerModel',
       //----------------------------------------------------------------------------
 
       /**
-       * _state might not exist if subscribers are added before this model is initialized
+       * _state might not exist if subscribers are added before this store is initialized
        */
       function getState() {
         if (_state) {
@@ -54,18 +54,18 @@ define('nori/model/MixinReducerModel',
       /**
        * Set up event listener/receiver
        */
-      function initializeReducerModel() {
+      function initializeReducerStore() {
         if (!this.createSubject) {
-          console.warn('nori/model/MixinReducerModel needs nori/utils/MixinObservableSubject to notify');
+          console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
         }
 
-        var simpleStoreFactory = require('nori/model/SimpleStore');
+        var simpleStoreFactory = require('nori/store/SimpleStore');
 
         _this  = this;
         _state = simpleStoreFactory();
 
         if (!_stateReducers) {
-          throw new Error('ReducerModel, must set a reducer before initialization');
+          throw new Error('ReducerStore, must set a reducer before initialization');
         }
 
         // Set initial state from empty event
@@ -78,7 +78,7 @@ define('nori/model/MixinReducerModel',
        * @param actionObject
        */
       function apply(actionObject) {
-        //console.log('ReducerModel Apply: ', actionObject);
+        console.log('ReducerStore Apply: ', actionObject.type, actionObject.payload);
         applyReducers(actionObject);
       }
 
@@ -97,7 +97,7 @@ define('nori/model/MixinReducerModel',
 
       /**
        * Creates a new state from the combined reduces and action object
-       * Model state isn't modified, current state is passed in and mutated state returned
+       * Store state isn't modified, current state is passed in and mutated state returned
        * @param state
        * @param action
        * @returns {*|{}}
@@ -113,7 +113,7 @@ define('nori/model/MixinReducerModel',
 
       /**
        * Template reducer function
-       * Model state isn't modified, current state is passed in and mutated state returned
+       * Store state isn't modified, current state is passed in and mutated state returned
 
        function templateReducerFunction(state, event) {
         state = state || {};
@@ -133,7 +133,7 @@ define('nori/model/MixinReducerModel',
       //----------------------------------------------------------------------------
 
       return {
-        initializeReducerModel: initializeReducerModel,
+        initializeReducerStore: initializeReducerStore,
         getState              : getState,
         setState              : setState,
         apply                 : apply,
@@ -146,6 +146,6 @@ define('nori/model/MixinReducerModel',
 
     };
 
-    module.exports = MixinReducerModel();
+    module.exports = MixinReducerStore();
 
   });

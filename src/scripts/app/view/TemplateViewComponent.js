@@ -25,7 +25,7 @@ define('app/view/TemplateViewComponent',
        */
       initialize: function (configProps) {
         //Bind to a map, update will be called on changes to the map
-        //this.bindMap(APP.model()); // Reducer model, map id string or map object
+        //this.bindMap(APP.store()); // Reducer store, map id string or map object
 
         //custom init below here
         //this.setTemplate('<h1>{{ greeting }}</h1>'); // set custom HTML template
@@ -45,14 +45,14 @@ define('app/view/TemplateViewComponent',
        * Set initial state properties. Call once on first render
        */
       getInitialState: function () {
-        return APP.model().getState();
+        return APP.store().getState();
       },
 
       /**
-       * State change on bound models (map, etc.) Return nextState object
+       * State change on bound stores (map, etc.) Return nextState object
        */
       componentWillUpdate: function () {
-        var nextState = APP.model().getState();
+        var nextState = APP.store().getState();
         nextState.greeting += ' (updated)';
         return nextState;
       },
@@ -69,8 +69,7 @@ define('app/view/TemplateViewComponent',
       /**
        * Render override must return HTML.
        */
-      //render: function() {
-      //  var state = this.getState();
+      //render: function(state) {
       //  return '<h1>'+state.greeting+'</h1>';
       //},
 
