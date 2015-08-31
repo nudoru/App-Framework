@@ -16,7 +16,7 @@ define('nudoru/browser/BrowserInfo',
       isMacSafari: -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome"),
 
       hasTouch    : 'ontouchstart' in document.documentElement,
-      notSupported: this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9,
+      notSupported: (this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9),
 
       mobile: {
         Android   : function () {
@@ -35,13 +35,7 @@ define('nudoru/browser/BrowserInfo',
           return navigator.userAgent.match(/IEMobile/i);
         },
         any       : function () {
-          return (
-              this.Android()
-              || this.BlackBerry()
-              || this.iOS()
-              || this.Opera()
-              || this.Windows()
-            ) !== null
+          return (this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows()) !== null;
         }
 
       },

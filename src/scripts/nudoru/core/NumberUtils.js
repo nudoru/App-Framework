@@ -16,7 +16,7 @@ define('nudoru/core/NumberUtils',
       },
 
       inRange: function (val, min, max) {
-        return val > min && val < max
+        return val > min && val < max;
       },
 
       distanceTL: function (point1, point2) {

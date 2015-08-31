@@ -20,7 +20,7 @@
      */
     window.onload = function() {
       window.APP = require('app/App');
-      APP.initialize()
+      APP.initialize();
     };
 
   }

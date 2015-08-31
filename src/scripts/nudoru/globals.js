@@ -35,7 +35,7 @@ var noop = function () {
 
 var is = {
   existy     : function (x) {
-    return x != null;
+    return x !== null;
   },
   truthy     : function (x) {
     return (x !== false) && this.existy(x);

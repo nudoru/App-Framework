@@ -46,21 +46,28 @@ define('nori/view/MixinEventDelegator',
           if (_eventsMap.hasOwnProperty(evtStrings)) {
 
             var mappings    = evtStrings.split(','),
-                eventHander = _eventsMap[evtStrings];
+                eventHandler = _eventsMap[evtStrings];
 
-            if (!is.function(eventHander)) {
+            if (!is.function(eventHandler)) {
               console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
               return;
             }
 
+            /* jshint -W083 */
+            // https://jslinterrors.com/dont-make-functions-within-a-loop
             mappings.forEach(function (evtMap) {
               evtMap = evtMap.trim();
               var eventStr = evtMap.split(' ')[0].trim(),
                   selector = evtMap.split(' ')[1].trim();
-              _eventSubscribers[evtStrings] = _rx.dom(selector, eventStr).subscribe(eventHander);
+              _eventSubscribers[evtStrings] = createHandler(selector, eventStr, eventHandler);
             });
+            /* jshint +W083 */
           }
         }
+      }
+
+      function createHandler(selector, eventStr, eventHandler) {
+        return _rx.dom(selector, eventStr).subscribe(eventHandler);
       }
 
       /**

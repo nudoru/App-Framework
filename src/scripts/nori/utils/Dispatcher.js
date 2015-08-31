@@ -55,7 +55,9 @@ define('nori/utils/Dispatcher',
           }
         }
 
-        _subjectMap[evtStr] || (_subjectMap[evtStr] = []);
+        if(!_subjectMap[evtStr]) {
+          _subjectMap[evtStr] = [];
+        }
 
         var subject = new Rx.Subject();
 

@@ -21,7 +21,7 @@ define('nudoru/component/MessageBoxCreator',
               onClick: cb
             }
           ]
-        })
+        });
       }
 
       function confirm(title, message, okCB, modal) {
@@ -112,7 +112,7 @@ define('nudoru/component/MessageBoxCreator',
         confirm: confirm,
         prompt : prompt,
         choice : choice
-      }
+      };
 
     };
 
