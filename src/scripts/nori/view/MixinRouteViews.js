@@ -2,8 +2,8 @@
  * Mixin view that allows for component views to be display on routing changes
  */
 
-define('nori/view/MixinRouteViews',
-  function (require, module, exports) {
+ndefine('nori/view/MixinRouteViews',
+  function (nrequire, module, exports) {
 
     var MixinRouteViews = function () {
 

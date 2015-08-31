@@ -3,15 +3,15 @@
  Matt Perkins
  4/7/15
  */
-define('nori/utils/Templating',
-  function (require, module, exports) {
+ndefine('nori/utils/Templating',
+  function (nrequire, module, exports) {
 
     var Templating = function () {
 
       var _templateMap = Object.create(null),
           _templateHTMLCache = Object.create(null),
           _templateCache     = Object.create(null),
-          _DOMUtils          = require('nudoru/browser/DOMUtils');
+          _DOMUtils          = nrequire('nudoru/browser/DOMUtils');
 
       function addTemplate(id,html) {
         _templateMap[id] = html;

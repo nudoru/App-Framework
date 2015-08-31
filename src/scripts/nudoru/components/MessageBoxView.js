@@ -4,8 +4,8 @@
  * Created by matt on 5/5/15
  */
 
-define('nudoru/component/MessageBoxView',
-  function (require, module, exports) {
+ndefine('nudoru/component/MessageBoxView',
+  function (nrequire, module, exports) {
 
     var MessageBoxView = function () {
 
@@ -30,11 +30,11 @@ define('nudoru/component/MessageBoxView',
           _mountPoint,
           _buttonIconTemplateID   = 'template__messagebox--button-icon',
           _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
-          _template               = require('nori/utils/Templating'),
-          _modal                  = require('nudoru/component/ModalCoverView'),
-          _browserInfo            = require('nudoru/browser/BrowserInfo'),
-          _domUtils               = require('nudoru/browser/DOMUtils'),
-          _componentUtils         = require('nudoru/browser/ThreeDTransforms');
+          _template               = nrequire('nori/utils/Templating'),
+          _modal                  = nrequire('nudoru/component/ModalCoverView'),
+          _browserInfo            = nrequire('nudoru/browser/BrowserInfo'),
+          _domUtils               = nrequire('nudoru/browser/DOMUtils'),
+          _componentUtils         = nrequire('nudoru/browser/ThreeDTransforms');
 
       /**
        * Initialize and set the mount point / box container

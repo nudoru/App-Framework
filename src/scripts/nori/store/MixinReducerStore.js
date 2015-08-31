@@ -9,14 +9,14 @@
  * Created 8/13/15
  */
 
-define('nori/store/MixinReducerStore',
-  function (require, module, exports) {
+ndefine('nori/store/MixinReducerStore',
+  function (nrequire, module, exports) {
 
     var MixinReducerStore = function () {
       var _this,
           _state,
           _stateReducers       = [],
-          _noriActionConstants = require('nori/action/ActionConstants');
+          _noriActionConstants = nrequire('nori/action/ActionConstants');
 
       //----------------------------------------------------------------------------
       //  Accessors
@@ -59,7 +59,7 @@ define('nori/store/MixinReducerStore',
           console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
         }
 
-        var simpleStoreFactory = require('nori/store/SimpleStore');
+        var simpleStoreFactory = nrequire('nori/store/SimpleStore');
 
         _this  = this;
         _state = simpleStoreFactory();

@@ -3,8 +3,8 @@
  * last updated 7/9/15
  */
 
-define('nudoru/component/ToolTipView',
-  function (require, module, exports) {
+ndefine('nudoru/component/ToolTipView',
+  function (nrequire, module, exports) {
 
     var ToolTipView = function () {
 
@@ -48,8 +48,8 @@ define('nudoru/component/ToolTipView',
             'TL': 'tooltip__topleft'
           },
           _mountPoint,
-          _template     = require('nori/utils/Templating'),
-          _domUtils     = require('nudoru/browser/DOMUtils');
+          _template     = nrequire('nori/utils/Templating'),
+          _domUtils     = nrequire('nudoru/browser/DOMUtils');
 
       function initialize(elID) {
         _mountPoint = document.getElementById(elID);

@@ -1,13 +1,13 @@
-define('nori/store/MixinMapFactory',
-  function (require, module, exports) {
+ndefine('nori/store/MixinMapFactory',
+  function (nrequire, module, exports) {
 
     var MixinMapFactory = function () {
 
       var _mapCollectionList = Object.create(null),
           _mapList           = Object.create(null),
-          _mapCollectionFactory = require('nori/store/MapCollection'),
-          _mapFactory = require('nori/store/Map'),
-          _observableFactory = require('nori/utils/MixinObservableSubject');
+          _mapCollectionFactory = nrequire('nori/store/MapCollection'),
+          _mapFactory = nrequire('nori/store/Map'),
+          _observableFactory = nrequire('nori/utils/MixinObservableSubject');
 
       /**
        * Create a new store collection and initalize

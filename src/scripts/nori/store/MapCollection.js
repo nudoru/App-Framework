@@ -2,8 +2,8 @@
  * Map Collection - an array of maps
  */
 
-define('nori/store/MapCollection',
-  function (require, module, exports) {
+ndefine('nori/store/MapCollection',
+  function (nrequire, module, exports) {
 
     var MapCollection = function () {
       var _this,

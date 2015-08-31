@@ -1,7 +1,7 @@
 var Nori = (function () {
 
-  var _dispatcher = require('nori/utils/Dispatcher'),
-      _router     = require('nori/utils/Router');
+  var _dispatcher = nrequire('nori/utils/Dispatcher'),
+      _router     = nrequire('nori/utils/Router');
 
   // Switch Lodash to use Mustache style templates
   _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;

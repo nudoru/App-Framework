@@ -1,6 +1,6 @@
-define('nori/action/ActionConstants',
-  function (require, module, exports) {
-    var objUtils = require('nudoru/core/ObjectUtils');
+ndefine('nori/action/ActionConstants',
+  function (nrequire, module, exports) {
+    var objUtils = nrequire('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
       CHANGE_STORE_STATE     : null

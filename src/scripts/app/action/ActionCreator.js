@@ -1,7 +1,7 @@
-define('app/Action/ActionCreator',
-  function (require, module, exports) {
+ndefine('app/Action/ActionCreator',
+  function (nrequire, module, exports) {
 
-    var _actionConstants = require('app/action/ActionConstants');
+    var _actionConstants = nrequire('app/action/ActionConstants');
 
     /**
      * Purely for convenience, an Event ("action") Creator ala Flux spec. Follow

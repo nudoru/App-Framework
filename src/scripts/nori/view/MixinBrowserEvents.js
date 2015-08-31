@@ -1,5 +1,5 @@
-define('nori/view/MixinBrowserEvents',
-  function (require, module, exports) {
+ndefine('nori/view/MixinBrowserEvents',
+  function (nrequire, module, exports) {
 
     var MixinBrowserEvents = function () {
 

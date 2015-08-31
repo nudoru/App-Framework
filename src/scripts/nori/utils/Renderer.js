@@ -2,11 +2,11 @@
  * Utility to handle all view DOM attachment tasks
  */
 
-define('nori/utils/Renderer',
-  function (require, module, exports) {
+ndefine('nori/utils/Renderer',
+  function (nrequire, module, exports) {
 
     var Renderer = function () {
-      var _domUtils = require('nudoru/browser/DOMUtils');
+      var _domUtils = nrequire('nudoru/browser/DOMUtils');
 
       function render(payload) {
         var targetSelector = payload.target,

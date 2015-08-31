@@ -1,5 +1,5 @@
-define('nudoru/browser/TouchUtils',
-  function (require, module, exports) {
+ndefine('nudoru/browser/TouchUtils',
+  function (nrequire, module, exports) {
 
     module.exports = {
 

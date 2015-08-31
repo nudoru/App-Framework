@@ -13,14 +13,14 @@
  *
  */
 
-define('nori/view/MixinEventDelegator',
-  function (require, module, exports) {
+ndefine('nori/view/MixinEventDelegator',
+  function (nrequire, module, exports) {
 
     var MixinEventDelegator = function () {
 
       var _eventsMap,
           _eventSubscribers,
-          _rx = require('nori/utils/Rx');
+          _rx = nrequire('nori/utils/Rx');
 
       function setEvents(evtObj) {
         _eventsMap = evtObj;

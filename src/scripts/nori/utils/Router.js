@@ -3,14 +3,14 @@
  * Supporting IE9 so using hashes instead of the history API for now
  */
 
-define('nori/utils/Router',
-  function (require, module, exports) {
+ndefine('nori/utils/Router',
+  function (nrequire, module, exports) {
 
     var Router = function () {
 
       var _subject  = new Rx.Subject(),
           _hashChangeObservable,
-          _objUtils = require('nudoru/core/ObjectUtils');
+          _objUtils = nrequire('nudoru/core/ObjectUtils');
 
       /**
        * Set event handlers

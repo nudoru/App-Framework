@@ -4,7 +4,7 @@
  *
  * Usage:
  *
- var request = require('nori/service/Rest');
+ var request = nrequire('nori/service/Rest');
 
  var getSub = request.request({
         method: 'GET',
@@ -58,8 +58,8 @@
  *
  */
 
-define('nori/service/Rest',
-  function (require, module, exports) {
+ndefine('nori/service/Rest',
+  function (nrequire, module, exports) {
 
     /**
      * Ajax requst using Promises

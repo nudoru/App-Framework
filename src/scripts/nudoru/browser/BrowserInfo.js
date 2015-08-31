@@ -1,5 +1,5 @@
-define('nudoru/browser/BrowserInfo',
-  function (require, module, exports) {
+ndefine('nudoru/browser/BrowserInfo',
+  function (nrequire, module, exports) {
 
     module.exports = {
 

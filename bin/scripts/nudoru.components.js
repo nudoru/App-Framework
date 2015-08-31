@@ -1,8 +1,8 @@
 'use strict';
 
-define('nudoru/component/ComponentEvents', function (require, module, exports) {
+ndefine('nudoru/component/ComponentEvents', function (nrequire, module, exports) {
 
-  var objUtils = require('nudoru/core/ObjectUtils');
+  var objUtils = nrequire('nudoru/core/ObjectUtils');
 
   _.merge(module.exports, objUtils.keyMirror({
     MODAL_COVER_SHOW: null,
@@ -13,11 +13,11 @@ define('nudoru/component/ComponentEvents', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/component/MessageBoxCreator', function (require, module, exports) {
+ndefine('nudoru/component/MessageBoxCreator', function (nrequire, module, exports) {
 
   var MessageBoxCreator = function MessageBoxCreator() {
 
-    var _messageBoxView = require('nudoru/component/MessageBoxView');
+    var _messageBoxView = nrequire('nudoru/component/MessageBoxView');
 
     function alert(title, message, modal, cb) {
       return _messageBoxView.add({
@@ -129,7 +129,7 @@ define('nudoru/component/MessageBoxCreator', function (require, module, exports)
 
 'use strict';
 
-define('nudoru/component/MessageBoxView', function (require, module, exports) {
+ndefine('nudoru/component/MessageBoxView', function (nrequire, module, exports) {
 
   var MessageBoxView = function MessageBoxView() {
 
@@ -154,11 +154,11 @@ define('nudoru/component/MessageBoxView', function (require, module, exports) {
         _mountPoint,
         _buttonIconTemplateID = 'template__messagebox--button-icon',
         _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
-        _template = require('nori/utils/Templating'),
-        _modal = require('nudoru/component/ModalCoverView'),
-        _browserInfo = require('nudoru/browser/BrowserInfo'),
-        _domUtils = require('nudoru/browser/DOMUtils'),
-        _componentUtils = require('nudoru/browser/ThreeDTransforms');
+        _template = nrequire('nori/utils/Templating'),
+        _modal = nrequire('nudoru/component/ModalCoverView'),
+        _browserInfo = nrequire('nudoru/browser/BrowserInfo'),
+        _domUtils = nrequire('nudoru/browser/DOMUtils'),
+        _componentUtils = nrequire('nudoru/browser/ThreeDTransforms');
 
     /**
      * Initialize and set the mount point / box container
@@ -429,7 +429,7 @@ define('nudoru/component/MessageBoxView', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/component/ModalCoverView', function (require, module, exports) {
+ndefine('nudoru/component/ModalCoverView', function (nrequire, module, exports) {
 
   var ModalCoverView = function ModalCoverView() {
 
@@ -440,7 +440,7 @@ define('nudoru/component/ModalCoverView', function (require, module, exports) {
         _modalClickStream,
         _isVisible,
         _notDismissable,
-        _browserInfo = require('nudoru/browser/BrowserInfo');
+        _browserInfo = nrequire('nudoru/browser/BrowserInfo');
 
     function initialize() {
 
@@ -572,7 +572,7 @@ define('nudoru/component/ModalCoverView', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/component/ToastView', function (require, module, exports) {
+ndefine('nudoru/component/ToastView', function (nrequire, module, exports) {
 
   var ToastView = function ToastView() {
 
@@ -594,10 +594,10 @@ define('nudoru/component/ToastView', function (require, module, exports) {
       'danger': 'toast__danger'
     },
         _mountPoint,
-        _template = require('nori/utils/Templating'),
-        _browserInfo = require('nudoru/browser/BrowserInfo'),
-        _domUtils = require('nudoru/browser/DOMUtils'),
-        _componentUtils = require('nudoru/browser/ThreeDTransforms');
+        _template = nrequire('nori/utils/Templating'),
+        _browserInfo = nrequire('nudoru/browser/BrowserInfo'),
+        _domUtils = nrequire('nudoru/browser/DOMUtils'),
+        _componentUtils = nrequire('nudoru/browser/ThreeDTransforms');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);
@@ -733,7 +733,7 @@ define('nudoru/component/ToastView', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/component/ToolTipView', function (require, module, exports) {
+ndefine('nudoru/component/ToolTipView', function (nrequire, module, exports) {
 
   var ToolTipView = function ToolTipView() {
 
@@ -777,8 +777,8 @@ define('nudoru/component/ToolTipView', function (require, module, exports) {
       'TL': 'tooltip__topleft'
     },
         _mountPoint,
-        _template = require('nori/utils/Templating'),
-        _domUtils = require('nudoru/browser/DOMUtils');
+        _template = nrequire('nori/utils/Templating'),
+        _domUtils = nrequire('nudoru/browser/DOMUtils');
 
     function initialize(elID) {
       _mountPoint = document.getElementById(elID);

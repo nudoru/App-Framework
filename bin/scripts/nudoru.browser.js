@@ -1,6 +1,6 @@
 "use strict";
 
-define('nudoru/browser/BrowserInfo', function (require, module, exports) {
+ndefine('nudoru/browser/BrowserInfo', function (nrequire, module, exports) {
 
   module.exports = {
 
@@ -67,7 +67,7 @@ define('nudoru/browser/BrowserInfo', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/browser/DOMUtils', function (require, module, exports) {
+ndefine('nudoru/browser/DOMUtils', function (nrequire, module, exports) {
 
   module.exports = {
 
@@ -277,9 +277,9 @@ define('nudoru/browser/DOMUtils', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/browser/EventConstants', function (require, module, exports) {
+ndefine('nudoru/browser/EventConstants', function (nrequire, module, exports) {
 
-  var objUtils = require('nudoru/core/ObjectUtils');
+  var objUtils = nrequire('nudoru/core/ObjectUtils');
 
   _.merge(module.exports, objUtils.keyMirror({
     URL_HASH_CHANGED: null,
@@ -290,7 +290,7 @@ define('nudoru/browser/EventConstants', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/browser/Lorem', function (require, module, exports) {
+ndefine('nudoru/browser/Lorem', function (nrequire, module, exports) {
 
   var Lorem = function Lorem() {
 
@@ -303,9 +303,9 @@ define('nudoru/browser/Lorem', function (require, module, exports) {
         _months,
         _days,
         _initialized = false,
-        _arrayUtils = require('nudoru/core/ArrayUtils'),
-        _stringUtils = require('nudoru/core/StringUtils'),
-        _numberUtils = require('nudoru/core/NumberUtils');
+        _arrayUtils = nrequire('nudoru/core/ArrayUtils'),
+        _stringUtils = nrequire('nudoru/core/StringUtils'),
+        _numberUtils = nrequire('nudoru/core/NumberUtils');
 
     _textSets = ["Perhaps a re-engineering of your current world view will re-energize your online nomenclature to enable a new holistic interactive enterprise internet communication solution Upscaling the resurgent networking exchange solutions, achieving a breakaway systemic electronic data interchange system synchronization, thereby exploiting technical environments for mission critical broad based capacity constrained systems Fundamentally transforming well designed actionable information whose semantic content is virtually null To more fully clarify the current exchange, a few aggregate issues will require addressing to facilitate this distributed communication venue In integrating non-aligned structures into existing legacy systems, a holistic gateway blueprint is a backward compatible packaging tangible"];
 
@@ -446,7 +446,7 @@ define('nudoru/browser/Lorem', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/browser/ThreeDTransforms', function (require, module, exports) {
+ndefine('nudoru/browser/ThreeDTransforms', function (nrequire, module, exports) {
 
   module.exports = {
 
@@ -497,7 +497,7 @@ define('nudoru/browser/ThreeDTransforms', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/browser/TouchUtils', function (require, module, exports) {
+ndefine('nudoru/browser/TouchUtils', function (nrequire, module, exports) {
 
   module.exports = {
 

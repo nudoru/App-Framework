@@ -173,12 +173,7 @@ gulp.task('watch', function () {
 
 gulp.task('default', function () {
     runSequence(
-      'clean',
-      ['jade', 'compass'],
-      ['scripts:vendor', 'scripts:nudorucore', 'scripts:nudorubrowser', 'scripts:nudorucomponents', 'scripts:nori', 'scripts:app'],
-      'fonts',
-      'images',
-      'copyconfig',
+      ['jade', 'compass','scripts:vendor', 'scripts:nudorucore', 'scripts:nudorubrowser', 'scripts:nudorucomponents', 'scripts:nori', 'scripts:app','fonts', 'images', 'copyconfig'],
       'watch'
     );
   }

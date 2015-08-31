@@ -1,6 +1,6 @@
-define('app/action/ActionConstants',
-  function (require, module, exports) {
-    var objUtils = require('nudoru/core/ObjectUtils');
+ndefine('app/action/ActionConstants',
+  function (nrequire, module, exports) {
+    var objUtils = nrequire('nudoru/core/ObjectUtils');
 
     /**
      * Event name string constants

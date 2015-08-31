@@ -2,8 +2,8 @@
  * last updated 5/5/15
  */
 
-define('nudoru/browser/ThreeDTransforms',
-  function (require, module, exports) {
+ndefine('nudoru/browser/ThreeDTransforms',
+  function (nrequire, module, exports) {
 
     module.exports = {
 

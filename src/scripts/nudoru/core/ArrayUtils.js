@@ -1,7 +1,7 @@
-define('nudoru/core/ArrayUtils',
-  function (require, module, exports) {
+ndefine('nudoru/core/ArrayUtils',
+  function (nrequire, module, exports) {
 
-    var _numberUtils = require('nudoru/core/NumberUtils');
+    var _numberUtils = nrequire('nudoru/core/NumberUtils');
 
     module.exports = {
 

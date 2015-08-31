@@ -2,17 +2,17 @@
  * A template for a subview/route controller
  */
 
-define('app/view/DebugControlsTestingSubView',
-  function (require, module, exports) {
+ndefine('app/view/DebugControlsTestingSubView',
+  function (nrequire, module, exports) {
 
     /**
      * Module for testing Nudoru component classes and any thing else
      */
     var DebugComponent = function () {
 
-      var _lIpsum             = require('nudoru/browser/Lorem'),
-          _toolTip            = require('nudoru/component/ToolTipView'),
-          _appView             = require('app/view/AppView'),
+      var _lIpsum             = nrequire('nudoru/browser/Lorem'),
+          _toolTip            = nrequire('nudoru/component/ToolTipView'),
+          _appView             = nrequire('app/view/AppView'),
           _actionOneEl,
           _actionTwoEl,
           _actionThreeEl,

@@ -1,5 +1,5 @@
-define('app/App',
-  function (require, module, exports) {
+ndefine('app/App',
+  function (nrequire, module, exports) {
 
     /**
      * "Controller" for a Nori application. The controller is responsible for
@@ -13,8 +13,8 @@ define('app/App',
       /**
        * Create the main Nori App store and view.
        */
-      store: require('app/store/AppStore'),
-      view : require('app/view/AppView'),
+      store: nrequire('app/store/AppStore'),
+      view : nrequire('app/view/AppView'),
 
       /**
        * Initialize

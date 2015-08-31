@@ -3,8 +3,8 @@
  * last updated 5/5/15
  */
 
-define('nudoru/component/ToastView',
-  function (require, module, exports) {
+ndefine('nudoru/component/ToastView',
+  function (nrequire, module, exports) {
 
     var ToastView = function () {
 
@@ -26,10 +26,10 @@ define('nudoru/component/ToastView',
             'danger'     : 'toast__danger'
           },
           _mountPoint,
-          _template              = require('nori/utils/Templating'),
-          _browserInfo           = require('nudoru/browser/BrowserInfo'),
-          _domUtils              = require('nudoru/browser/DOMUtils'),
-          _componentUtils        = require('nudoru/browser/ThreeDTransforms');
+          _template              = nrequire('nori/utils/Templating'),
+          _browserInfo           = nrequire('nudoru/browser/BrowserInfo'),
+          _domUtils              = nrequire('nudoru/browser/DOMUtils'),
+          _componentUtils        = nrequire('nudoru/browser/ThreeDTransforms');
 
       function initialize(elID) {
         _mountPoint = document.getElementById(elID);

@@ -1,5 +1,5 @@
-define('nudoru/browser/DOMUtils',
-  function (require, module, exports) {
+ndefine('nudoru/browser/DOMUtils',
+  function (nrequire, module, exports) {
 
     module.exports = {
 

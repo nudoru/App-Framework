@@ -3,8 +3,8 @@
  */
 
 
-define('nori/store/Map',
-  function (require, module, exports) {
+ndefine('nori/store/Map',
+  function (nrequire, module, exports) {
 
     var Map = function () {
       var _this,

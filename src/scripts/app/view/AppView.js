@@ -1,12 +1,12 @@
-define('app/view/AppView',
-  function (require, module, exports) {
+ndefine('app/view/AppView',
+  function (nrequire, module, exports) {
 
-    var _mixinApplicationView   = require('nori/view/ApplicationView'),
-        _mixinNudoruControls    = require('nori/view/MixinNudoruControls'),
-        _mixinComponentViews    = require('nori/view/MixinComponentViews'),
-        _mixinRouteViews        = require('nori/view/MixinRouteViews'),
-        _mixinEventDelegator    = require('nori/view/MixinEventDelegator'),
-        _mixinObservableSubject = require('nori/utils/MixinObservableSubject');
+    var _mixinApplicationView   = nrequire('nori/view/ApplicationView'),
+        _mixinNudoruControls    = nrequire('nori/view/MixinNudoruControls'),
+        _mixinComponentViews    = nrequire('nori/view/MixinComponentViews'),
+        _mixinRouteViews        = nrequire('nori/view/MixinRouteViews'),
+        _mixinEventDelegator    = nrequire('nori/view/MixinEventDelegator'),
+        _mixinObservableSubject = nrequire('nori/utils/MixinObservableSubject');
 
     /**
      * View for an application.
@@ -32,7 +32,7 @@ define('app/view/AppView',
       },
 
       configureViews: function () {
-        var defaultViewFactory = require('app/view/TemplateViewComponent'),
+        var defaultViewFactory = nrequire('app/view/TemplateViewComponent'),
           defaultView = defaultViewFactory(),
           styleView = defaultViewFactory(),
           controlsView = defaultViewFactory();

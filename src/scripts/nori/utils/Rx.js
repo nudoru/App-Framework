@@ -1,5 +1,5 @@
-define('nori/utils/Rx',
-  function (require, module, exports) {
+ndefine('nori/utils/Rx',
+  function (nrequire, module, exports) {
 
     module.exports = {
       dom: function (selector, event) {

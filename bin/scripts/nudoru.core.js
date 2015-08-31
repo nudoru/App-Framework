@@ -12,7 +12,7 @@
  * This establishes a object map and look up system.
  *
  * Example:
- *  define('moduleID',
+ *  ndefine('moduleID',
  *    function(require, module, exports){
  *       module.exports.method = function(str) {
  *         //
@@ -25,25 +25,25 @@
  */
 'use strict';
 
-function define(id, moduleCode) {
-  if (id in define.cache) {
+function ndefine(id, moduleCode) {
+  if (id in ndefine.cache) {
     return;
   }
-  define.cache[id] = moduleCode;
+  ndefine.cache[id] = moduleCode;
 }
-define.cache = Object.create(null);
+ndefine.cache = Object.create(null);
 
 /**
  * Gets a defined module. Since it's cached, it's a singleton
  * @param id
  * @returns {*}
  */
-function require(id) {
-  if (id in require.cache) {
-    return require.cache[id];
+function nrequire(id) {
+  if (id in nrequire.cache) {
+    return nrequire.cache[id];
   }
 
-  var moduleCode = define.cache[id],
+  var moduleCode = ndefine.cache[id],
       exports = {},
       module = { exports: exports };
 
@@ -51,11 +51,11 @@ function require(id) {
     throw new Error('Require: module not found: "' + id + '"');
   }
 
-  moduleCode.call(moduleCode, require, module, exports);
-  require.cache[id] = module.exports;
+  moduleCode.call(moduleCode, nrequire, module, exports);
+  nrequire.cache[id] = module.exports;
   return module.exports;
 }
-require.cache = Object.create(null);
+nrequire.cache = Object.create(null);
 
 'use strict';
 
@@ -185,9 +185,9 @@ Either.prototype.map = function (f) {
 
 'use strict';
 
-define('nudoru/core/ArrayUtils', function (require, module, exports) {
+ndefine('nudoru/core/ArrayUtils', function (nrequire, module, exports) {
 
-  var _numberUtils = require('nudoru/core/NumberUtils');
+  var _numberUtils = nrequire('nudoru/core/NumberUtils');
 
   module.exports = {
 
@@ -274,7 +274,7 @@ define('nudoru/core/ArrayUtils', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/core/NumberUtils', function (require, module, exports) {
+ndefine('nudoru/core/NumberUtils', function (nrequire, module, exports) {
 
   module.exports = {
 
@@ -306,7 +306,7 @@ define('nudoru/core/NumberUtils', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/core/ObjectUtils', function (require, module, exports) {
+ndefine('nudoru/core/ObjectUtils', function (nrequire, module, exports) {
 
   module.exports = {
 
@@ -518,7 +518,7 @@ define('nudoru/core/ObjectUtils', function (require, module, exports) {
 
 'use strict';
 
-define('nudoru/core/StringUtils', function (require, module, exports) {
+ndefine('nudoru/core/StringUtils', function (nrequire, module, exports) {
 
   module.exports = {
 

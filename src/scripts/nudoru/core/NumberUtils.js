@@ -1,5 +1,5 @@
-define('nudoru/core/NumberUtils',
-  function (require, module, exports) {
+ndefine('nudoru/core/NumberUtils',
+  function (nrequire, module, exports) {
 
     module.exports = {
 

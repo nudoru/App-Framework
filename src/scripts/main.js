@@ -4,7 +4,7 @@
 
 (function () {
 
-  var _browserInfo = require('nudoru/browser/BrowserInfo');
+  var _browserInfo = nrequire('nudoru/browser/BrowserInfo');
 
   /**
    * IE versions 9 and under are blocked, others are allowed to proceed
@@ -19,7 +19,7 @@
      * Create the application module and initialize
      */
     window.onload = function() {
-      window.APP = require('app/App');
+      window.APP = nrequire('app/App');
       APP.initialize();
     };
 

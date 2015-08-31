@@ -1,5 +1,5 @@
-define('nudoru/util/Xml',
-  function (require, module, exports) {
+ndefine('nudoru/util/Xml',
+  function (nrequire, module, exports) {
 
     module.exports = {
 

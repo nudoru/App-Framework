@@ -1,6 +1,6 @@
 "use strict";
 
-define('nori/utils/Cookie', function (require, module, exports) {
+ndefine('nori/utils/Cookie', function (nrequire, module, exports) {
 
   var Cookie = function Cookie() {
 
@@ -64,7 +64,7 @@ define('nori/utils/Cookie', function (require, module, exports) {
 
 'use strict';
 
-define('nori/utils/Dispatcher', function (require, module, exports) {
+ndefine('nori/utils/Dispatcher', function (nrequire, module, exports) {
 
   var Dispatcher = function Dispatcher() {
 
@@ -286,7 +286,7 @@ define('nori/utils/Dispatcher', function (require, module, exports) {
 
 'use strict';
 
-define('nori/utils/Keyboard', function (require, module, exports) {
+ndefine('nori/utils/Keyboard', function (nrequire, module, exports) {
 
   /**
    * Maps keyboard presses to a handler function
@@ -295,7 +295,7 @@ define('nori/utils/Keyboard', function (require, module, exports) {
    * TODO Implement modifiers
    *
    * Example
-   var Keyboard = require('nori/utils/Keyboard'),
+   var Keyboard = nrequire('nori/utils/Keyboard'),
    kb = Keyboard();
    kb.initialize();
    kb.mapKey(['a','b'],function(key){
@@ -536,7 +536,7 @@ define('nori/utils/Keyboard', function (require, module, exports) {
 
 'use strict';
 
-define('nori/utils/MixinObservableSubject', function (require, module, exports) {
+ndefine('nori/utils/MixinObservableSubject', function (nrequire, module, exports) {
 
   var MixinObservableSubject = function MixinObservableSubject() {
 
@@ -607,10 +607,10 @@ define('nori/utils/MixinObservableSubject', function (require, module, exports) 
 
 'use strict';
 
-define('nori/utils/Renderer', function (require, module, exports) {
+ndefine('nori/utils/Renderer', function (nrequire, module, exports) {
 
   var Renderer = function Renderer() {
-    var _domUtils = require('nudoru/browser/DOMUtils');
+    var _domUtils = nrequire('nudoru/browser/DOMUtils');
 
     function render(payload) {
       var targetSelector = payload.target,
@@ -648,13 +648,13 @@ define('nori/utils/Renderer', function (require, module, exports) {
 
 'use strict';
 
-define('nori/utils/Router', function (require, module, exports) {
+ndefine('nori/utils/Router', function (nrequire, module, exports) {
 
   var Router = function Router() {
 
     var _subject = new Rx.Subject(),
         _hashChangeObservable,
-        _objUtils = require('nudoru/core/ObjectUtils');
+        _objUtils = nrequire('nudoru/core/ObjectUtils');
 
     /**
      * Set event handlers
@@ -776,7 +776,7 @@ define('nori/utils/Router', function (require, module, exports) {
 
 'use strict';
 
-define('nori/utils/Rx', function (require, module, exports) {
+ndefine('nori/utils/Rx', function (nrequire, module, exports) {
 
   module.exports = {
     dom: function dom(selector, event) {
@@ -818,14 +818,14 @@ define('nori/utils/Rx', function (require, module, exports) {
  */
 'use strict';
 
-define('nori/utils/Templating', function (require, module, exports) {
+ndefine('nori/utils/Templating', function (nrequire, module, exports) {
 
   var Templating = function Templating() {
 
     var _templateMap = Object.create(null),
         _templateHTMLCache = Object.create(null),
         _templateCache = Object.create(null),
-        _DOMUtils = require('nudoru/browser/DOMUtils');
+        _DOMUtils = nrequire('nudoru/browser/DOMUtils');
 
     function addTemplate(id, html) {
       _templateMap[id] = html;
@@ -981,8 +981,8 @@ define('nori/utils/Templating', function (require, module, exports) {
 
 'use strict';
 
-define('nori/action/ActionConstants', function (require, module, exports) {
-  var objUtils = require('nudoru/core/ObjectUtils');
+ndefine('nori/action/ActionConstants', function (nrequire, module, exports) {
+  var objUtils = nrequire('nudoru/core/ObjectUtils');
 
   _.merge(module.exports, objUtils.keyMirror({
     CHANGE_STORE_STATE: null
@@ -997,9 +997,9 @@ define('nori/action/ActionConstants', function (require, module, exports) {
 
 'use strict';
 
-define('nori/action/ActionCreator', function (require, module, exports) {
+ndefine('nori/action/ActionCreator', function (nrequire, module, exports) {
 
-  var _noriActionConstants = require('nori/action/ActionConstants');
+  var _noriActionConstants = nrequire('nori/action/ActionConstants');
 
   var NoriActionCreator = {
 
@@ -1026,7 +1026,7 @@ define('nori/action/ActionCreator', function (require, module, exports) {
  *
  * Usage:
  *
- var request = require('nori/service/Rest');
+ var request = nrequire('nori/service/Rest');
 
  var getSub = request.request({
         method: 'GET',
@@ -1082,7 +1082,7 @@ define('nori/action/ActionCreator', function (require, module, exports) {
 
 'use strict';
 
-define('nori/service/Rest', function (require, module, exports) {
+ndefine('nori/service/Rest', function (nrequire, module, exports) {
 
   /**
    * Ajax requst using Promises
@@ -1158,7 +1158,7 @@ define('nori/service/Rest', function (require, module, exports) {
 
 'use strict';
 
-define('nori/service/SocketIO', function (require, module, exports) {
+ndefine('nori/service/SocketIO', function (nrequire, module, exports) {
 
   var SocketIOConnector = function SocketIOConnector() {
 
@@ -1274,7 +1274,7 @@ define('nori/service/SocketIO', function (require, module, exports) {
 
 'use strict';
 
-define('nori/store/Map', function (require, module, exports) {
+ndefine('nori/store/Map', function (nrequire, module, exports) {
 
   var Map = function Map() {
     var _this,
@@ -1582,7 +1582,7 @@ define('nori/store/Map', function (require, module, exports) {
 
 'use strict';
 
-define('nori/store/MapCollection', function (require, module, exports) {
+ndefine('nori/store/MapCollection', function (nrequire, module, exports) {
 
   var MapCollection = function MapCollection() {
     var _this,
@@ -1915,15 +1915,15 @@ define('nori/store/MapCollection', function (require, module, exports) {
 
 'use strict';
 
-define('nori/store/MixinMapFactory', function (require, module, exports) {
+ndefine('nori/store/MixinMapFactory', function (nrequire, module, exports) {
 
   var MixinMapFactory = function MixinMapFactory() {
 
     var _mapCollectionList = Object.create(null),
         _mapList = Object.create(null),
-        _mapCollectionFactory = require('nori/store/MapCollection'),
-        _mapFactory = require('nori/store/Map'),
-        _observableFactory = require('nori/utils/MixinObservableSubject');
+        _mapCollectionFactory = nrequire('nori/store/MapCollection'),
+        _mapFactory = nrequire('nori/store/Map'),
+        _observableFactory = nrequire('nori/utils/MixinObservableSubject');
 
     /**
      * Create a new store collection and initalize
@@ -1991,13 +1991,13 @@ define('nori/store/MixinMapFactory', function (require, module, exports) {
 
 'use strict';
 
-define('nori/store/MixinReducerStore', function (require, module, exports) {
+ndefine('nori/store/MixinReducerStore', function (nrequire, module, exports) {
 
   var MixinReducerStore = function MixinReducerStore() {
     var _this,
         _state,
         _stateReducers = [],
-        _noriActionConstants = require('nori/action/ActionConstants');
+        _noriActionConstants = nrequire('nori/action/ActionConstants');
 
     //----------------------------------------------------------------------------
     //  Accessors
@@ -2040,7 +2040,7 @@ define('nori/store/MixinReducerStore', function (require, module, exports) {
         console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
       }
 
-      var simpleStoreFactory = require('nori/store/SimpleStore');
+      var simpleStoreFactory = nrequire('nori/store/SimpleStore');
 
       _this = this;
       _state = simpleStoreFactory();
@@ -2129,7 +2129,7 @@ define('nori/store/MixinReducerStore', function (require, module, exports) {
 
 'use strict';
 
-define('nori/store/SimpleStore', function (require, module, exports) {
+ndefine('nori/store/SimpleStore', function (nrequire, module, exports) {
 
   var SimpleStore = function SimpleStore() {
     var _internalState = Object.create(null);
@@ -2161,12 +2161,12 @@ define('nori/store/SimpleStore', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/ApplicationView', function (require, module, exports) {
+ndefine('nori/view/ApplicationView', function (nrequire, module, exports) {
 
   var ApplicationView = function ApplicationView() {
 
     var _this,
-        _domUtils = require('nudoru/browser/DOMUtils');
+        _domUtils = nrequire('nudoru/browser/DOMUtils');
 
     //----------------------------------------------------------------------------
     //  Initialization
@@ -2233,7 +2233,7 @@ define('nori/view/ApplicationView', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/MixinBrowserEvents', function (require, module, exports) {
+ndefine('nori/view/MixinBrowserEvents', function (nrequire, module, exports) {
 
   var MixinBrowserEvents = function MixinBrowserEvents() {
 
@@ -2326,13 +2326,13 @@ define('nori/view/MixinBrowserEvents', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/MixinComponentViews', function (require, module, exports) {
+ndefine('nori/view/MixinComponentViews', function (nrequire, module, exports) {
 
   var MixinComponentViews = function MixinComponentViews() {
 
     var _componentViewMap = Object.create(null),
         _componentHTMLTemplatePrefix = 'template__',
-        _template = require('nori/utils/Templating');
+        _template = nrequire('nori/utils/Templating');
 
     /**
      * Return the template object
@@ -2375,10 +2375,10 @@ define('nori/view/MixinComponentViews', function (require, module, exports) {
      */
     function createComponentView(componentSource) {
       return function () {
-        var componentViewFactory = require('nori/view/ViewComponent'),
-            eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
-            observableFactory = require('nori/utils/MixinObservableSubject'),
-            simpleStoreFactory = require('nori/store/SimpleStore'),
+        var componentViewFactory = nrequire('nori/view/ViewComponent'),
+            eventDelegatorFactory = nrequire('nori/view/MixinEventDelegator'),
+            observableFactory = nrequire('nori/utils/MixinObservableSubject'),
+            simpleStoreFactory = nrequire('nori/store/SimpleStore'),
             componentAssembly,
             finalComponent,
             previousInitialize;
@@ -2470,13 +2470,13 @@ define('nori/view/MixinComponentViews', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/MixinEventDelegator', function (require, module, exports) {
+ndefine('nori/view/MixinEventDelegator', function (nrequire, module, exports) {
 
   var MixinEventDelegator = function MixinEventDelegator() {
 
     var _eventsMap,
         _eventSubscribers,
-        _rx = require('nori/utils/Rx');
+        _rx = nrequire('nori/utils/Rx');
 
     function setEvents(evtObj) {
       _eventsMap = evtObj;
@@ -2559,7 +2559,7 @@ define('nori/view/MixinEventDelegator', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/MixinStoreStateViews', function (require, module, exports) {
+ndefine('nori/view/MixinStoreStateViews', function (nrequire, module, exports) {
 
   var MixinStoreStateViews = function MixinStoreStateViews() {
 
@@ -2673,15 +2673,15 @@ define('nori/view/MixinStoreStateViews', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/MixinNudoruControls', function (require, module, exports) {
+ndefine('nori/view/MixinNudoruControls', function (nrequire, module, exports) {
 
   var MixinNudoruControls = function MixinNudoruControls() {
 
-    var _notificationView = require('nudoru/component/ToastView'),
-        _toolTipView = require('nudoru/component/ToolTipView'),
-        _messageBoxView = require('nudoru/component/MessageBoxView'),
-        _messageBoxCreator = require('nudoru/component/MessageBoxCreator'),
-        _modalCoverView = require('nudoru/component/ModalCoverView');
+    var _notificationView = nrequire('nudoru/component/ToastView'),
+        _toolTipView = nrequire('nudoru/component/ToolTipView'),
+        _messageBoxView = nrequire('nudoru/component/MessageBoxView'),
+        _messageBoxCreator = nrequire('nudoru/component/MessageBoxCreator'),
+        _modalCoverView = nrequire('nudoru/component/ModalCoverView');
 
     function initializeNudoruControls() {
       _toolTipView.initialize('tooltip__container');
@@ -2738,7 +2738,7 @@ define('nori/view/MixinNudoruControls', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/MixinRouteViews', function (require, module, exports) {
+ndefine('nori/view/MixinRouteViews', function (nrequire, module, exports) {
 
   var MixinRouteViews = function MixinRouteViews() {
 
@@ -2857,7 +2857,7 @@ define('nori/view/MixinRouteViews', function (require, module, exports) {
 
 'use strict';
 
-define('nori/view/ViewComponent', function (require, module, exports) {
+ndefine('nori/view/ViewComponent', function (nrequire, module, exports) {
 
   var ViewComponent = function ViewComponent() {
 
@@ -2870,7 +2870,7 @@ define('nori/view/ViewComponent', function (require, module, exports) {
         _mountPoint,
         _children = [],
         _isMounted = false,
-        _renderer = require('nori/utils/Renderer');
+        _renderer = nrequire('nori/utils/Renderer');
 
     /**
      * Initialization
@@ -3141,8 +3141,8 @@ define('nori/view/ViewComponent', function (require, module, exports) {
 
 var Nori = (function () {
 
-  var _dispatcher = require('nori/utils/Dispatcher'),
-      _router = require('nori/utils/Router');
+  var _dispatcher = nrequire('nori/utils/Dispatcher'),
+      _router = nrequire('nori/utils/Router');
 
   // Switch Lodash to use Mustache style templates
   _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;

@@ -1,7 +1,7 @@
-define('app/view/TemplateViewComponent',
-  function (require, module, exports) {
+ndefine('app/view/TemplateViewComponent',
+  function (nrequire, module, exports) {
 
-    var view = require('app/view/AppView');
+    var view = nrequire('app/view/AppView');
 
     /**
      * Module for a dynamic application view for a route or a persistent view

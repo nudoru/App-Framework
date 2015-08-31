@@ -1,9 +1,9 @@
-define('nudoru/component/MessageBoxCreator',
-  function (require, module, exports) {
+ndefine('nudoru/component/MessageBoxCreator',
+  function (nrequire, module, exports) {
 
     var MessageBoxCreator = function () {
 
-      var _messageBoxView = require('nudoru/component/MessageBoxView');
+      var _messageBoxView = nrequire('nudoru/component/MessageBoxView');
 
       function alert(title, message, modal, cb) {
         return _messageBoxView.add({

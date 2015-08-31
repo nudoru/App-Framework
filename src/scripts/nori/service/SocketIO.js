@@ -1,5 +1,5 @@
-define('nori/service/SocketIO',
-  function (require, module, exports) {
+ndefine('nori/service/SocketIO',
+  function (nrequire, module, exports) {
 
     var SocketIOConnector = function () {
 

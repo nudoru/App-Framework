@@ -1,5 +1,5 @@
-define('nori/utils/Keyboard',
-  function (require, module, exports) {
+ndefine('nori/utils/Keyboard',
+  function (nrequire, module, exports) {
 
     /**
      * Maps keyboard presses to a handler function
@@ -8,7 +8,7 @@ define('nori/utils/Keyboard',
      * TODO Implement modifiers
      *
      * Example
-     var Keyboard = require('nori/utils/Keyboard'),
+     var Keyboard = nrequire('nori/utils/Keyboard'),
      kb = Keyboard();
      kb.initialize();
      kb.mapKey(['a','b'],function(key){

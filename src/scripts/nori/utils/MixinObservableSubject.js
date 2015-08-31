@@ -5,9 +5,9 @@
  * more complex eventing needs.
  */
 
-define('nori/utils/MixinObservableSubject',
+ndefine('nori/utils/MixinObservableSubject',
 
-  function (require, module, exports) {
+  function (nrequire, module, exports) {
 
     var MixinObservableSubject = function () {
 

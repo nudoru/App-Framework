@@ -1,10 +1,10 @@
-define('app/store/AppStore',
-  function (require, module, exports) {
+ndefine('app/store/AppStore',
+  function (nrequire, module, exports) {
 
-    var _noriActionConstants    = require('nori/action/ActionConstants'),
-        _mixinMapFactory        = require('nori/store/MixinMapFactory'),
-        _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
-        _mixinReducerStore      = require('nori/store/MixinReducerStore');
+    var _noriActionConstants    = nrequire('nori/action/ActionConstants'),
+        _mixinMapFactory        = nrequire('nori/store/MixinMapFactory'),
+        _mixinObservableSubject = nrequire('nori/utils/MixinObservableSubject'),
+        _mixinReducerStore      = nrequire('nori/store/MixinReducerStore');
 
     /**
      * This application store contains "reducer store" functionality based on Redux.

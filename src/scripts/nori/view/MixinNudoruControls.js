@@ -1,13 +1,13 @@
-define('nori/view/MixinNudoruControls',
-  function (require, module, exports) {
+ndefine('nori/view/MixinNudoruControls',
+  function (nrequire, module, exports) {
 
     var MixinNudoruControls = function () {
 
-      var _notificationView  = require('nudoru/component/ToastView'),
-          _toolTipView       = require('nudoru/component/ToolTipView'),
-          _messageBoxView    = require('nudoru/component/MessageBoxView'),
-          _messageBoxCreator = require('nudoru/component/MessageBoxCreator'),
-          _modalCoverView    = require('nudoru/component/ModalCoverView');
+      var _notificationView  = nrequire('nudoru/component/ToastView'),
+          _toolTipView       = nrequire('nudoru/component/ToolTipView'),
+          _messageBoxView    = nrequire('nudoru/component/MessageBoxView'),
+          _messageBoxCreator = nrequire('nudoru/component/MessageBoxCreator'),
+          _modalCoverView    = nrequire('nudoru/component/ModalCoverView');
 
       function initializeNudoruControls() {
         _toolTipView.initialize('tooltip__container');

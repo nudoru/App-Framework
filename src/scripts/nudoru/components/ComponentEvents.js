@@ -1,7 +1,7 @@
-define('nudoru/component/ComponentEvents',
-  function (require, module, exports) {
+ndefine('nudoru/component/ComponentEvents',
+  function (nrequire, module, exports) {
 
-    var objUtils = require('nudoru/core/ObjectUtils');
+    var objUtils = nrequire('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
       MODAL_COVER_SHOW: null,

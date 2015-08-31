@@ -1,5 +1,5 @@
-define('nori/store/SimpleStore',
-  function (require, module, exports) {
+ndefine('nori/store/SimpleStore',
+  function (nrequire, module, exports) {
 
     var SimpleStore = function () {
       var _internalState   = Object.create(null);

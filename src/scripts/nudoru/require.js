@@ -12,7 +12,7 @@
  * This establishes a object map and look up system.
  *
  * Example:
- *  define('moduleID',
+ *  ndefine('moduleID',
  *    function(require, module, exports){
  *       module.exports.method = function(str) {
  *         //
@@ -23,13 +23,13 @@
  * @param id
  * @param moduleCode
  */
-function define(id, moduleCode) {
-  if (id in define.cache) {
+function ndefine(id, moduleCode) {
+  if (id in ndefine.cache) {
     return;
   }
-  define.cache[id] = moduleCode;
+  ndefine.cache[id] = moduleCode;
 }
-define.cache = Object.create(null);
+ndefine.cache = Object.create(null);
 
 
 /**
@@ -37,12 +37,12 @@ define.cache = Object.create(null);
  * @param id
  * @returns {*}
  */
-function require(id) {
-  if (id in require.cache) {
-    return require.cache[id];
+function nrequire(id) {
+  if (id in nrequire.cache) {
+    return nrequire.cache[id];
   }
 
-  var moduleCode    = define.cache[id],
+  var moduleCode    = ndefine.cache[id],
       exports       = {},
       module        = {exports: exports};
 
@@ -50,8 +50,8 @@ function require(id) {
     throw new Error('Require: module not found: "' + id + '"');
   }
 
-  moduleCode.call(moduleCode, require, module, exports);
-  require.cache[id] = module.exports;
+  moduleCode.call(moduleCode, nrequire, module, exports);
+  nrequire.cache[id] = module.exports;
   return module.exports;
 }
-require.cache = Object.create(null);
+nrequire.cache = Object.create(null);

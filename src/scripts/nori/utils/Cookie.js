@@ -1,5 +1,5 @@
-define('nori/utils/Cookie',
-  function (require, module, exports) {
+ndefine('nori/utils/Cookie',
+  function (nrequire, module, exports) {
 
     var Cookie = function () {
 

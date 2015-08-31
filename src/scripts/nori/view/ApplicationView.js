@@ -1,10 +1,10 @@
-define('nori/view/ApplicationView',
-  function (require, module, exports) {
+ndefine('nori/view/ApplicationView',
+  function (nrequire, module, exports) {
 
     var ApplicationView = function () {
 
       var _this,
-          _domUtils = require('nudoru/browser/DOMUtils');
+          _domUtils = nrequire('nudoru/browser/DOMUtils');
 
       //----------------------------------------------------------------------------
       //  Initialization

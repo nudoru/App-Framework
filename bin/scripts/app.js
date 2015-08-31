@@ -1,6 +1,6 @@
 'use strict';
 
-define('app/App', function (require, module, exports) {
+ndefine('app/App', function (nrequire, module, exports) {
 
   /**
    * "Controller" for a Nori application. The controller is responsible for
@@ -14,8 +14,8 @@ define('app/App', function (require, module, exports) {
     /**
      * Create the main Nori App store and view.
      */
-    store: require('app/store/AppStore'),
-    view: require('app/view/AppView'),
+    store: nrequire('app/store/AppStore'),
+    view: nrequire('app/view/AppView'),
 
     /**
      * Initialize
@@ -52,8 +52,8 @@ define('app/App', function (require, module, exports) {
 
 'use strict';
 
-define('app/action/ActionConstants', function (require, module, exports) {
-  var objUtils = require('nudoru/core/ObjectUtils');
+ndefine('app/action/ActionConstants', function (nrequire, module, exports) {
+  var objUtils = nrequire('nudoru/core/ObjectUtils');
 
   /**
    * Event name string constants
@@ -66,9 +66,9 @@ define('app/action/ActionConstants', function (require, module, exports) {
 
 'use strict';
 
-define('app/Action/ActionCreator', function (require, module, exports) {
+ndefine('app/Action/ActionCreator', function (nrequire, module, exports) {
 
-  var _actionConstants = require('app/action/ActionConstants');
+  var _actionConstants = nrequire('app/action/ActionConstants');
 
   /**
    * Purely for convenience, an Event ("action") Creator ala Flux spec. Follow
@@ -94,12 +94,12 @@ define('app/Action/ActionCreator', function (require, module, exports) {
 
 'use strict';
 
-define('app/store/AppStore', function (require, module, exports) {
+ndefine('app/store/AppStore', function (nrequire, module, exports) {
 
-  var _noriActionConstants = require('nori/action/ActionConstants'),
-      _mixinMapFactory = require('nori/store/MixinMapFactory'),
-      _mixinObservableSubject = require('nori/utils/MixinObservableSubject'),
-      _mixinReducerStore = require('nori/store/MixinReducerStore');
+  var _noriActionConstants = nrequire('nori/action/ActionConstants'),
+      _mixinMapFactory = nrequire('nori/store/MixinMapFactory'),
+      _mixinObservableSubject = nrequire('nori/utils/MixinObservableSubject'),
+      _mixinReducerStore = nrequire('nori/store/MixinReducerStore');
 
   /**
    * This application store contains "reducer store" functionality based on Redux.
@@ -177,14 +177,14 @@ define('app/store/AppStore', function (require, module, exports) {
 
 'use strict';
 
-define('app/view/AppView', function (require, module, exports) {
+ndefine('app/view/AppView', function (nrequire, module, exports) {
 
-  var _mixinApplicationView = require('nori/view/ApplicationView'),
-      _mixinNudoruControls = require('nori/view/MixinNudoruControls'),
-      _mixinComponentViews = require('nori/view/MixinComponentViews'),
-      _mixinRouteViews = require('nori/view/MixinRouteViews'),
-      _mixinEventDelegator = require('nori/view/MixinEventDelegator'),
-      _mixinObservableSubject = require('nori/utils/MixinObservableSubject');
+  var _mixinApplicationView = nrequire('nori/view/ApplicationView'),
+      _mixinNudoruControls = nrequire('nori/view/MixinNudoruControls'),
+      _mixinComponentViews = nrequire('nori/view/MixinComponentViews'),
+      _mixinRouteViews = nrequire('nori/view/MixinRouteViews'),
+      _mixinEventDelegator = nrequire('nori/view/MixinEventDelegator'),
+      _mixinObservableSubject = nrequire('nori/utils/MixinObservableSubject');
 
   /**
    * View for an application.
@@ -203,7 +203,7 @@ define('app/view/AppView', function (require, module, exports) {
     },
 
     configureViews: function configureViews() {
-      var defaultViewFactory = require('app/view/TemplateViewComponent'),
+      var defaultViewFactory = nrequire('app/view/TemplateViewComponent'),
           defaultView = defaultViewFactory(),
           styleView = defaultViewFactory(),
           controlsView = defaultViewFactory();
@@ -237,16 +237,16 @@ define('app/view/AppView', function (require, module, exports) {
 
 'use strict';
 
-define('app/view/DebugControlsTestingSubView', function (require, module, exports) {
+ndefine('app/view/DebugControlsTestingSubView', function (nrequire, module, exports) {
 
   /**
    * Module for testing Nudoru component classes and any thing else
    */
   var DebugComponent = function DebugComponent() {
 
-    var _lIpsum = require('nudoru/browser/Lorem'),
-        _toolTip = require('nudoru/component/ToolTipView'),
-        _appView = require('app/view/AppView'),
+    var _lIpsum = nrequire('nudoru/browser/Lorem'),
+        _toolTip = nrequire('nudoru/component/ToolTipView'),
+        _appView = nrequire('app/view/AppView'),
         _actionOneEl,
         _actionTwoEl,
         _actionThreeEl,
@@ -377,9 +377,9 @@ define('app/view/DebugControlsTestingSubView', function (require, module, export
 
 'use strict';
 
-define('app/view/TemplateViewComponent', function (require, module, exports) {
+ndefine('app/view/TemplateViewComponent', function (nrequire, module, exports) {
 
-  var view = require('app/view/AppView');
+  var view = nrequire('app/view/AppView');
 
   /**
    * Module for a dynamic application view for a route or a persistent view
@@ -480,7 +480,7 @@ define('app/view/TemplateViewComponent', function (require, module, exports) {
 
 (function () {
 
-  var _browserInfo = require('nudoru/browser/BrowserInfo');
+  var _browserInfo = nrequire('nudoru/browser/BrowserInfo');
 
   /**
    * IE versions 9 and under are blocked, others are allowed to proceed
@@ -494,7 +494,7 @@ define('app/view/TemplateViewComponent', function (require, module, exports) {
      * Create the application module and initialize
      */
     window.onload = function () {
-      window.APP = require('app/App');
+      window.APP = nrequire('app/App');
       APP.initialize();
     };
   }

@@ -12,8 +12,8 @@
 
  */
 
-define('nori/utils/Dispatcher',
-  function (require, module, exports) {
+ndefine('nori/utils/Dispatcher',
+  function (nrequire, module, exports) {
 
     var Dispatcher = function () {
 

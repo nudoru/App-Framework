@@ -3,8 +3,8 @@
  * Last updated 7/9/15
  */
 
-define('nudoru/component/ModalCoverView',
-  function (require, module, exports) {
+ndefine('nudoru/component/ModalCoverView',
+  function (nrequire, module, exports) {
 
     var ModalCoverView = function () {
 
@@ -15,7 +15,7 @@ define('nudoru/component/ModalCoverView',
           _modalClickStream,
           _isVisible,
           _notDismissable,
-          _browserInfo     = require('nudoru/browser/BrowserInfo');
+          _browserInfo     = nrequire('nudoru/browser/BrowserInfo');
 
       function initialize() {
 

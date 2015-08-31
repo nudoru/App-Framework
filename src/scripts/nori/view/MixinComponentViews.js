@@ -2,14 +2,14 @@
  * Mixin view that allows for component views
  */
 
-define('nori/view/MixinComponentViews',
-  function (require, module, exports) {
+ndefine('nori/view/MixinComponentViews',
+  function (nrequire, module, exports) {
 
     var MixinComponentViews = function () {
 
       var _componentViewMap            = Object.create(null),
           _componentHTMLTemplatePrefix = 'template__',
-          _template                    = require('nori/utils/Templating');
+          _template                    = nrequire('nori/utils/Templating');
 
       /**
        * Return the template object
@@ -52,10 +52,10 @@ define('nori/view/MixinComponentViews',
        */
       function createComponentView(componentSource) {
         return function () {
-          var componentViewFactory  = require('nori/view/ViewComponent'),
-              eventDelegatorFactory = require('nori/view/MixinEventDelegator'),
-              observableFactory     = require('nori/utils/MixinObservableSubject'),
-              simpleStoreFactory    = require('nori/store/SimpleStore'),
+          var componentViewFactory  = nrequire('nori/view/ViewComponent'),
+              eventDelegatorFactory = nrequire('nori/view/MixinEventDelegator'),
+              observableFactory     = nrequire('nori/utils/MixinObservableSubject'),
+              simpleStoreFactory    = nrequire('nori/store/SimpleStore'),
               componentAssembly, finalComponent, previousInitialize;
 
           componentAssembly = [

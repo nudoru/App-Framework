@@ -2,8 +2,8 @@
  * Mixin view that allows for component views to be display on store state changes
  */
 
-define('nori/view/MixinStoreStateViews',
-  function (require, module, exports) {
+ndefine('nori/view/MixinStoreStateViews',
+  function (nrequire, module, exports) {
 
     var MixinStoreStateViews = function () {
 

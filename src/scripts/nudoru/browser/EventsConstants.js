@@ -1,7 +1,7 @@
-define('nudoru/browser/EventConstants',
-  function (require, module, exports) {
+ndefine('nudoru/browser/EventConstants',
+  function (nrequire, module, exports) {
 
-    var objUtils = require('nudoru/core/ObjectUtils');
+    var objUtils = nrequire('nudoru/core/ObjectUtils');
 
     _.merge(module.exports, objUtils.keyMirror({
       URL_HASH_CHANGED: null,

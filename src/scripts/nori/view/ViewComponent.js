@@ -3,8 +3,8 @@
  * Must be extended with custom modules
  */
 
-define('nori/view/ViewComponent',
-  function (require, module, exports) {
+ndefine('nori/view/ViewComponent',
+  function (nrequire, module, exports) {
 
     var ViewComponent = function () {
 
@@ -17,7 +17,7 @@ define('nori/view/ViewComponent',
           _mountPoint,
           _children      = [],
           _isMounted     = false,
-          _renderer      = require('nori/utils/Renderer');
+          _renderer      = nrequire('nori/utils/Renderer');
 
       /**
        * Initialization
