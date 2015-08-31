@@ -61,7 +61,7 @@ var Nori = (function () {
   function createStore(custom) {
     return function cs() {
       return _.assign({}, buildFromMixins(custom));
-    }
+    };
   }
 
   /**
@@ -72,8 +72,7 @@ var Nori = (function () {
   function createView(custom) {
     return function cv() {
       return _.assign({}, buildFromMixins(custom));
-    }
-
+    };
   }
 
   /**

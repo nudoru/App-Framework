@@ -8,6 +8,7 @@ define('nori/view/MixinStoreStateViews',
     var MixinStoreStateViews = function () {
 
       var _this,
+          _watchedStore,
           _currentViewID,
           _currentStoreState,
           _stateViewMountPoint,
@@ -16,12 +17,13 @@ define('nori/view/MixinStoreStateViews',
       /**
        * Set up listeners
        */
-      function initializeStateViews() {
+      function initializeStateViews(store) {
         _this = this; // mitigation, Due to events, scope may be set to the window object
+        _watchedStore = store;
 
         this.createSubject('viewChange');
 
-        Nori.store().subscribe(function onStateChange() {
+        _watchedStore.subscribe(function onStateChange() {
           handleStateChange();
         });
       }
@@ -35,7 +37,7 @@ define('nori/view/MixinStoreStateViews',
       }
 
       function showViewForCurrentStoreState() {
-        var state = Nori.store().getState().currentState;
+        var state = _watchedStore.getState().currentState;
         if (state) {
           if (state !== _currentStoreState) {
             _currentStoreState = state;
