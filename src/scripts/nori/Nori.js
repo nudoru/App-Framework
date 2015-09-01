@@ -1,7 +1,7 @@
-var Nori = (function () {
+var Nori = function () {
 
-  var _dispatcher = nrequire('nori/utils/Dispatcher'),
-      _router     = nrequire('nori/utils/Router');
+  var _dispatcher = require('./utils/Dispatcher.js'),
+      _router     = require('./utils/Router.js');
 
   // Switch Lodash to use Mustache style templates
   _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
@@ -145,6 +145,8 @@ var Nori = (function () {
     withAttr         : withAttr
   };
 
-}());
+};
+
+module.exports = Nori();
 
 

@@ -4,72 +4,65 @@
  * Add one simple observable subject or more complex ability to create others for
  * more complex eventing needs.
  */
+var MixinObservableSubject = function () {
 
-ndefine('nori/utils/MixinObservableSubject',
+  var _subject    = new Rx.Subject(),
+      _subjectMap = {};
 
-  function (nrequire, module, exports) {
+  /**
+   * Create a new subject
+   * @param name
+   * @returns {*}
+   */
+  function createSubject(name) {
+    if (!_subjectMap.hasOwnProperty(name)) {
+      _subjectMap[name] = new Rx.Subject();
+    }
+    return _subjectMap[name];
+  }
 
-    var MixinObservableSubject = function () {
+  /**
+   * Subscribe handler to updates. If the handler is a string, the new subject
+   * will be created.
+   * @param handler
+   * @returns {*}
+   */
+  function subscribe(handlerOrName, optHandler) {
+    if (is.string(handlerOrName)) {
+      return createSubject(handlerOrName).subscribe(optHandler);
+    } else {
+      return _subject.subscribe(handlerOrName);
+    }
+  }
 
-      var _subject    = new Rx.Subject(),
-          _subjectMap = {};
+  /**
+   * Dispatch updated to subscribers
+   * @param payload
+   */
+  function notifySubscribers(payload) {
+    _subject.onNext(payload);
+  }
 
-      /**
-       * Create a new subject
-       * @param name
-       * @returns {*}
-       */
-      function createSubject(name) {
-        if (!_subjectMap.hasOwnProperty(name)) {
-          _subjectMap[name] = new Rx.Subject();
-        }
-        return _subjectMap[name];
-      }
+  /**
+   * Dispatch updated to named subscribers
+   * @param name
+   * @param payload
+   */
+  function notifySubscribersOf(name, payload) {
+    if (_subjectMap.hasOwnProperty(name)) {
+      _subjectMap[name].onNext(payload);
+    } else {
+      console.warn('MixinObservableSubject, no subscribers of ' + name);
+    }
+  }
 
-      /**
-       * Subscribe handler to updates. If the handler is a string, the new subject
-       * will be created.
-       * @param handler
-       * @returns {*}
-       */
-      function subscribe(handlerOrName, optHandler) {
-        if (is.string(handlerOrName)) {
-          return createSubject(handlerOrName).subscribe(optHandler);
-        } else {
-          return _subject.subscribe(handlerOrName);
-        }
-      }
+  return {
+    subscribe          : subscribe,
+    createSubject      : createSubject,
+    notifySubscribers  : notifySubscribers,
+    notifySubscribersOf: notifySubscribersOf
+  };
 
-      /**
-       * Dispatch updated to subscribers
-       * @param payload
-       */
-      function notifySubscribers(payload) {
-        _subject.onNext(payload);
-      }
+};
 
-      /**
-       * Dispatch updated to named subscribers
-       * @param name
-       * @param payload
-       */
-      function notifySubscribersOf(name, payload) {
-        if (_subjectMap.hasOwnProperty(name)) {
-          _subjectMap[name].onNext(payload);
-        } else {
-          console.warn('MixinObservableSubject, no subscribers of ' + name);
-        }
-      }
-
-      return {
-        subscribe            : subscribe,
-        createSubject        : createSubject,
-        notifySubscribers    : notifySubscribers,
-        notifySubscribersOf  : notifySubscribersOf
-      };
-
-    };
-
-    module.exports = MixinObservableSubject;
-
-  });
+module.exports = MixinObservableSubject;

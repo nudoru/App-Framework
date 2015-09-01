@@ -1,26 +1,21 @@
-ndefine('nudoru/core/StringUtils',
-  function (nrequire, module, exports) {
+module.exports = {
 
-    module.exports = {
+  capitalizeFirstLetter: function (str) {
+    return str.charAt(0).toUpperCase() + str.substring(1);
+  },
 
-      capitalizeFirstLetter: function (str) {
-        return str.charAt(0).toUpperCase() + str.substring(1);
-      },
+  toTitleCase: function (str) {
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1);
+    });
+  },
 
-      toTitleCase: function (str) {
-        return str.replace(/\w\S*/g, function (txt) {
-          return txt.charAt(0).toUpperCase() + txt.substr(1);
-        });
-      },
+  removeTags: function (str) {
+    return str.replace(/(<([^>]+)>)/ig, '');
+  },
 
-      removeTags: function (str) {
-        return str.replace(/(<([^>]+)>)/ig, '');
-      },
+  ellipses: function (len) {
+    return (this.length > len) ? this.substr(0, len) + "..." : this;
+  }
 
-      ellipses: function (len) {
-        return (this.length > len) ? this.substr(0, len) + "..." : this;
-      }
-
-    };
-
-  });
+};

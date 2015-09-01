@@ -1,5 +1,4 @@
-var noop = function () {
-};
+var noop = function () {};
 
 // Avoid 'console' errors in browsers that lack a console. (IE9)
 //https://github.com/h5bp/html5-boilerplate/blob/master/src/js/plugins.js

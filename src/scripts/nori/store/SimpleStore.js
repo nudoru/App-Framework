@@ -1,32 +1,27 @@
-ndefine('nori/store/SimpleStore',
-  function (nrequire, module, exports) {
+var SimpleStore = function () {
+  var _internalState = Object.create(null);
 
-    var SimpleStore = function () {
-      var _internalState   = Object.create(null);
+  /**
+   * Return a copy of the state
+   * @returns {void|*}
+   */
+  function getState() {
+    return _.assign({}, _internalState);
+  }
 
-      /**
-       * Return a copy of the state
-       * @returns {void|*}
-       */
-      function getState() {
-        return _.assign({}, _internalState);
-      }
+  /**
+   * Sets the state
+   * @param nextState
+   */
+  function setState(nextState) {
+    _internalState = _.assign(_internalState, nextState);
+  }
 
-      /**
-       * Sets the state
-       * @param nextState
-       */
-      function setState(nextState) {
-        _internalState = _.assign(_internalState, nextState);
-      }
+  return {
+    getState: getState,
+    setState: setState
+  };
 
-      return {
-        getState : getState,
-        setState : setState
-      };
+};
 
-    };
-
-    module.exports = SimpleStore;
-
-  });
+module.exports = SimpleStore;

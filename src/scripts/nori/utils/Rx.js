@@ -1,36 +1,36 @@
-ndefine('nori/utils/Rx',
-  function (nrequire, module, exports) {
+/**
+ * RxJS Helpers
+ * @type {{dom: Function, from: Function, interval: Function, doEvery: Function, just: Function, empty: Function}}
+ */
 
-    module.exports = {
-      dom: function (selector, event) {
-        var el = document.querySelector(selector);
-        if (!el) {
-          console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
-          return;
-        }
-        return Rx.Observable.fromEvent(el, event.trim());
-      },
+module.exports = {
+  dom: function (selector, event) {
+    var el = document.querySelector(selector);
+    if (!el) {
+      console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
+      return;
+    }
+    return Rx.Observable.fromEvent(el, event.trim());
+  },
 
-      from: function (ittr) {
-        return Rx.Observable.from(ittr);
-      },
+  from: function (ittr) {
+    return Rx.Observable.from(ittr);
+  },
 
-      interval: function (ms) {
-        return Rx.Observable.interval(ms);
-      },
+  interval: function (ms) {
+    return Rx.Observable.interval(ms);
+  },
 
-      doEvery: function(ms, handler) {
-        return this.interval(ms).subscribe(handler);
-      },
+  doEvery: function (ms, handler) {
+    return this.interval(ms).subscribe(handler);
+  },
 
-      just: function (value) {
-        return Rx.Observable.just(value);
-      },
+  just: function (value) {
+    return Rx.Observable.just(value);
+  },
 
-      empty: function() {
-        return Rx.Observable.empty();
-      }
+  empty: function () {
+    return Rx.Observable.empty();
+  }
 
-    };
-
-  });
+};

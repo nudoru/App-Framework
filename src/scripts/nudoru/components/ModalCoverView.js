@@ -1,145 +1,135 @@
-/**
- * Created 2/?/15
- * Last updated 7/9/15
- */
+var ModalCoverView = function () {
 
-ndefine('nudoru/component/ModalCoverView',
-  function (nrequire, module, exports) {
+  var _mountPoint  = document,
+      _modalCoverEl,
+      _modalBackgroundEl,
+      _modalCloseButtonEl,
+      _modalClickStream,
+      _isVisible,
+      _notDismissable,
+      _browserInfo = require('../../nudoru/browser/BrowserInfo.js');
 
-    var ModalCoverView = function () {
+  function initialize() {
 
-      var _mountPoint      = document,
-          _modalCoverEl,
-          _modalBackgroundEl,
-          _modalCloseButtonEl,
-          _modalClickStream,
-          _isVisible,
-          _notDismissable,
-          _browserInfo     = nrequire('nudoru/browser/BrowserInfo');
+    _isVisible = true;
 
-      function initialize() {
+    _modalCoverEl       = _mountPoint.getElementById('modal__cover');
+    _modalBackgroundEl  = _mountPoint.querySelector('.modal__background');
+    _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
 
-        _isVisible = true;
+    var modalBGClick     = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
+        modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
 
-        _modalCoverEl       = _mountPoint.getElementById('modal__cover');
-        _modalBackgroundEl  = _mountPoint.querySelector('.modal__background');
-        _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
+    _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
+      .subscribe(function () {
+        onModalClick();
+      });
 
-        var modalBGClick     = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
-            modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
+    hide(false);
+  }
 
-        _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
-          .subscribe(function () {
-            onModalClick();
-          });
+  function getIsVisible() {
+    return _isVisible;
+  }
 
-        hide(false);
-      }
+  function onModalClick() {
+    if (_notDismissable) return;
+    hide(true);
+  }
 
-      function getIsVisible() {
-        return _isVisible;
-      }
+  function showModalCover(shouldAnimate) {
+    _isVisible   = true;
+    var duration = shouldAnimate ? 0.25 : 0;
+    TweenLite.to(_modalCoverEl, duration, {
+      autoAlpha: 1,
+      ease     : Quad.easeOut
+    });
+    TweenLite.to(_modalBackgroundEl, duration, {
+      alpha: 1,
+      ease : Quad.easeOut
+    });
+  }
 
-      function onModalClick() {
-        if (_notDismissable) return;
-        hide(true);
-      }
+  function show(shouldAnimate) {
+    if (_isVisible) {
+      return;
+    }
 
-      function showModalCover(shouldAnimate) {
-        _isVisible   = true;
-        var duration = shouldAnimate ? 0.25 : 0;
-        TweenLite.to(_modalCoverEl, duration, {
-          autoAlpha: 1,
-          ease     : Quad.easeOut
-        });
-        TweenLite.to(_modalBackgroundEl, duration, {
-          alpha: 1,
-          ease : Quad.easeOut
-        });
-      }
+    _notDismissable = false;
 
-      function show(shouldAnimate) {
-        if (_isVisible) {
-          return;
-        }
+    showModalCover(shouldAnimate);
 
-        _notDismissable = false;
+    TweenLite.set(_modalCloseButtonEl, {scale: 2, alpha: 0});
+    TweenLite.to(_modalCloseButtonEl, 1, {
+      autoAlpha: 1,
+      scale    : 1,
+      ease     : Bounce.easeOut,
+      delay    : 1
+    });
+  }
 
-        showModalCover(shouldAnimate);
+  /**
+   * A 'hard' modal view cannot be dismissed with a click, must be via code
+   * @param shouldAnimate
+   */
+  function showNonDismissable(shouldAnimate) {
+    if (_isVisible) {
+      return;
+    }
 
-        TweenLite.set(_modalCloseButtonEl, {scale: 2, alpha: 0});
-        TweenLite.to(_modalCloseButtonEl, 1, {
-          autoAlpha: 1,
-          scale    : 1,
-          ease     : Bounce.easeOut,
-          delay    : 1
-        });
-      }
+    _notDismissable = true;
 
-      /**
-       * A 'hard' modal view cannot be dismissed with a click, must be via code
-       * @param shouldAnimate
-       */
-      function showNonDismissable(shouldAnimate) {
-        if (_isVisible) {
-          return;
-        }
+    showModalCover(shouldAnimate);
+    TweenLite.to(_modalCloseButtonEl, 0, {autoAlpha: 0});
+  }
 
-        _notDismissable = true;
+  function hide(shouldAnimate) {
+    if (!_isVisible) {
+      return;
+    }
+    _isVisible      = false;
+    _notDismissable = false;
+    var duration    = shouldAnimate ? 0.25 : 0;
+    TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
+    TweenLite.to(_modalCoverEl, duration, {
+      autoAlpha: 0,
+      ease     : Quad.easeOut
+    });
+    TweenLite.to(_modalCloseButtonEl, duration / 2, {
+      autoAlpha: 0,
+      ease     : Quad.easeOut
+    });
 
-        showModalCover(shouldAnimate);
-        TweenLite.to(_modalCloseButtonEl, 0, {autoAlpha: 0});
-      }
+  }
 
-      function hide(shouldAnimate) {
-        if (!_isVisible) {
-          return;
-        }
-        _isVisible      = false;
-        _notDismissable = false;
-        var duration    = shouldAnimate ? 0.25 : 0;
-        TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
-        TweenLite.to(_modalCoverEl, duration, {
-          autoAlpha: 0,
-          ease     : Quad.easeOut
-        });
-        TweenLite.to(_modalCloseButtonEl, duration / 2, {
-          autoAlpha: 0,
-          ease     : Quad.easeOut
-        });
+  function setOpacity(opacity) {
+    if (opacity < 0 || opacity > 1) {
+      console.log('nudoru/component/ModalCoverView: setOpacity: opacity should be between 0 and 1');
+      opacity = 1;
+    }
+    TweenLite.to(_modalBackgroundEl, 0.25, {
+      alpha: opacity,
+      ease : Quad.easeOut
+    });
+  }
 
-      }
+  function setColor(r, g, b) {
+    TweenLite.to(_modalBackgroundEl, 0.25, {
+      backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')',
+      ease           : Quad.easeOut
+    });
+  }
 
-      function setOpacity(opacity) {
-        if (opacity < 0 || opacity > 1) {
-          console.log('nudoru/component/ModalCoverView: setOpacity: opacity should be between 0 and 1');
-          opacity = 1;
-        }
-        TweenLite.to(_modalBackgroundEl, 0.25, {
-          alpha: opacity,
-          ease : Quad.easeOut
-        });
-      }
+  return {
+    initialize        : initialize,
+    show              : show,
+    showNonDismissable: showNonDismissable,
+    hide              : hide,
+    visible           : getIsVisible,
+    setOpacity        : setOpacity,
+    setColor          : setColor
+  };
 
-      function setColor(r, g, b) {
-        TweenLite.to(_modalBackgroundEl, 0.25, {
-          backgroundColor: 'rgb(' + r + ',' + g + ',' + b + ')',
-          ease           : Quad.easeOut
-        });
-      }
+};
 
-      return {
-        initialize        : initialize,
-        show              : show,
-        showNonDismissable: showNonDismissable,
-        hide              : hide,
-        visible           : getIsVisible,
-        setOpacity        : setOpacity,
-        setColor          : setColor
-      };
-
-    };
-
-    module.exports = ModalCoverView();
-
-  });
+module.exports = ModalCoverView();

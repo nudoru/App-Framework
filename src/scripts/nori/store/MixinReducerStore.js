@@ -8,114 +8,109 @@
  *
  * Created 8/13/15
  */
+var MixinReducerStore = function () {
+  var _this,
+      _state,
+      _stateReducers = [];
 
-ndefine('nori/store/MixinReducerStore',
-  function (nrequire, module, exports) {
+  //----------------------------------------------------------------------------
+  //  Accessors
+  //----------------------------------------------------------------------------
 
-    var MixinReducerStore = function () {
-      var _this,
-          _state,
-          _stateReducers       = [],
-          _noriActionConstants = nrequire('nori/action/ActionConstants');
+  /**
+   * _state might not exist if subscribers are added before this store is initialized
+   */
+  function getState() {
+    if (_state) {
+      return _state.getState();
+    }
+    return {};
+  }
 
-      //----------------------------------------------------------------------------
-      //  Accessors
-      //----------------------------------------------------------------------------
+  function setState(state) {
+    if (!_.isEqual(state, _state)) {
+      _state.setState(state);
+      _this.notifySubscribers({});
+    }
+  }
 
-      /**
-       * _state might not exist if subscribers are added before this store is initialized
-       */
-      function getState() {
-        if (_state) {
-          return _state.getState();
-        }
-        return {};
-      }
+  function setReducers(reducerArray) {
+    _stateReducers = reducerArray;
+  }
 
-      function setState(state) {
-        if (!_.isEqual(state, _state)) {
-          _state.setState(state);
-          _this.notifySubscribers({});
-        }
-      }
+  function addReducer(reducer) {
+    _stateReducers.push(reducer);
+  }
 
-      function setReducers(reducerArray) {
-        _stateReducers = reducerArray;
-      }
+  //----------------------------------------------------------------------------
+  //  Init
+  //----------------------------------------------------------------------------
 
-      function addReducer(reducer) {
-        _stateReducers.push(reducer);
-      }
+  /**
+   * Set up event listener/receiver
+   */
+  function initializeReducerStore() {
+    if (!this.createSubject) {
+      console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
+    }
 
-      //----------------------------------------------------------------------------
-      //  Init
-      //----------------------------------------------------------------------------
+    var simpleStoreFactory = require('./SimpleStore.js');
 
-      /**
-       * Set up event listener/receiver
-       */
-      function initializeReducerStore() {
-        if (!this.createSubject) {
-          console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
-        }
+    _this  = this;
+    _state = simpleStoreFactory();
 
-        var simpleStoreFactory = nrequire('nori/store/SimpleStore');
+    if (!_stateReducers) {
+      throw new Error('ReducerStore, must set a reducer before initialization');
+    }
 
-        _this  = this;
-        _state = simpleStoreFactory();
+    // Set initial state from empty event
+    applyReducers({});
+  }
 
-        if (!_stateReducers) {
-          throw new Error('ReducerStore, must set a reducer before initialization');
-        }
+  /**
+   * Apply the action object to the reducers to change state
+   * are sent to all reducers to update the state
+   * @param actionObject
+   */
+  function apply(actionObject) {
+    console.log('ReducerStore Apply: ', actionObject.type, actionObject.payload);
+    applyReducers(actionObject);
+  }
 
-        // Set initial state from empty event
-        applyReducers({});
-      }
+  function applyReducers(actionObject) {
+    var nextState = applyReducersToState(getState(), actionObject);
+    setState(nextState);
+    _this.handleStateMutation();
+  }
 
-      /**
-       * Apply the action object to the reducers to change state
-       * are sent to all reducers to update the state
-       * @param actionObject
-       */
-      function apply(actionObject) {
-        console.log('ReducerStore Apply: ', actionObject.type, actionObject.payload);
-        applyReducers(actionObject);
-      }
+  /**
+   * API hook to handle state updates
+   */
+  function handleStateMutation() {
+    // override this
+  }
 
-      function applyReducers(actionObject) {
-        var nextState = applyReducersToState(getState(), actionObject);
-        setState(nextState);
-        _this.handleStateMutation();
-      }
+  /**
+   * Creates a new state from the combined reduces and action object
+   * Store state isn't modified, current state is passed in and mutated state returned
+   * @param state
+   * @param action
+   * @returns {*|{}}
+   */
+  function applyReducersToState(state, action) {
+    state = state || {};
+    // TODO should this actually use array.reduce()?
+    _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
+      state = reducerFunc(state, action);
+    });
+    return state;
+  }
 
-      /**
-       * API hook to handle state updates
-       */
-      function handleStateMutation() {
-        // override this
-      }
+  /**
+   * Template reducer function
+   * Store state isn't modified, current state is passed in and mutated state returned
 
-      /**
-       * Creates a new state from the combined reduces and action object
-       * Store state isn't modified, current state is passed in and mutated state returned
-       * @param state
-       * @param action
-       * @returns {*|{}}
-       */
-      function applyReducersToState(state, action) {
-        state = state || {};
-        // TODO should this actually use array.reduce()?
-        _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
-          state = reducerFunc(state, action);
-        });
-        return state;
-      }
-
-      /**
-       * Template reducer function
-       * Store state isn't modified, current state is passed in and mutated state returned
-
-       function templateReducerFunction(state, event) {
+   function templateReducerFunction(state, event) {
         state = state || {};
         switch (event.type) {
           case _noriActionConstants.MODEL_DATA_CHANGED:
@@ -126,26 +121,24 @@ ndefine('nori/store/MixinReducerStore',
             return state;
         }
       }
-       */
+   */
 
-      //----------------------------------------------------------------------------
-      //  API
-      //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //  API
+  //----------------------------------------------------------------------------
 
-      return {
-        initializeReducerStore: initializeReducerStore,
-        getState              : getState,
-        setState              : setState,
-        apply                 : apply,
-        setReducers           : setReducers,
-        addReducer            : addReducer,
-        applyReducers         : applyReducers,
-        applyReducersToState  : applyReducersToState,
-        handleStateMutation   : handleStateMutation
-      };
+  return {
+    initializeReducerStore: initializeReducerStore,
+    getState              : getState,
+    setState              : setState,
+    apply                 : apply,
+    setReducers           : setReducers,
+    addReducer            : addReducer,
+    applyReducers         : applyReducers,
+    applyReducersToState  : applyReducersToState,
+    handleStateMutation   : handleStateMutation
+  };
 
-    };
+};
 
-    module.exports = MixinReducerStore();
-
-  });
+module.exports = MixinReducerStore();

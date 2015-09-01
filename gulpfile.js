@@ -4,7 +4,9 @@ var gulp        = require('gulp'),
     minifyCSS   = require('gulp-minify-css'),
     jade        = require('gulp-jade'),
     concat      = require('gulp-concat'),
-    babel       = require('gulp-babel'),
+    browserify  = require('browserify'),
+    babelify    = require('babelify'),
+    source      = require('vinyl-source-stream'),
     uglify      = require('gulp-uglify'),
     sourcemaps  = require('gulp-sourcemaps'),
     jshint      = require('gulp-jshint'),
@@ -24,6 +26,12 @@ var paths = {
   srcJSApp   : ['src/scripts/main.js', 'src/scripts/app/**/*'],
   bin        : 'bin/'
 };
+
+// .on('error', errorLog)
+function errorLog(error) {
+  console.error.bind(error);
+  this.emit('end');
+}
 
 gulp.task('clean', function (cb) {
   del(['bin/**/*']);
@@ -50,6 +58,7 @@ gulp.task('compass', function () {
       image: 'bin/img',
       style: 'expanded'
     }))
+    .on('error', errorLog)
     //.pipe(minifyCSS())
     .pipe(gulp.dest('bin/css'))
     .pipe(livereload());
@@ -58,6 +67,7 @@ gulp.task('compass', function () {
 gulp.task('jade', function () {
   return gulp.src(['src/jade/**/*.jade'])
     .pipe(jade({pretty: true}))
+    .on('error', errorLog)
     .pipe(gulp.dest('bin/'))
     .pipe(livereload());
 });
@@ -71,7 +81,8 @@ gulp.task('scripts:vendor', function () {
     'src/scripts/vendor/gsap/easing/EasePack.min.js',
     'src/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
     'src/scripts/vendor/lodash.min.js',
-    'src/scripts/vendor/rxjs/rx.lite.compat.min.js'
+    'src/scripts/vendor/rxjs/rx.lite.compat.min.js',
+    'src/scripts/nudoru/globals.js'
   ])
     .pipe(sourcemaps.init())
     //.pipe(uglify({mangle: false, compress: false}))
@@ -80,81 +91,19 @@ gulp.task('scripts:vendor', function () {
     .pipe(gulp.dest('bin/scripts'));
 });
 
-gulp.task('scripts:nudorucore', function () {
-  return gulp.src([
-    'src/scripts/nudoru/require.js',
-    'src/scripts/nudoru/globals.js',
-    'src/scripts/nudoru/core/*.js'
-  ])
-    .pipe(sourcemaps.init())
+gulp.task('jshint', function () {
+  return gulp.src(['src/scripts/nudoru/**/*', 'src/scripts/nori/**/*', 'src/scripts/app/**/*'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish))
-    .pipe(babel())
-    //.pipe(uglify({mangle: false, compress: false}))
-    .pipe(concat('nudoru.core.js', {newLine: '\n\n'}))
-    .pipe(sourcemaps.write('maps/nudoru.core.map', {addComment: false}))
-    .pipe(gulp.dest('bin/scripts'))
-    .pipe(livereload());
 });
 
-gulp.task('scripts:nudorubrowser', function () {
-  return gulp.src(['src/scripts/nudoru/browser/*.js'])
-    .pipe(sourcemaps.init())
-    .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
-    .pipe(babel())
-    //.pipe(uglify({mangle: false, compress: false}))
-    .pipe(concat('nudoru.browser.js', {newLine: '\n\n'}))
-    .pipe(sourcemaps.write('maps/nudoru.browser.map', {addComment: false}))
-    .pipe(gulp.dest('bin/scripts'))
-    .pipe(livereload());
-});
-
-gulp.task('scripts:nudorucomponents', function () {
-  return gulp.src(['src/scripts/nudoru/components/*.js'])
-    .pipe(sourcemaps.init())
-    .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
-    .pipe(babel())
-    //.pipe(uglify({mangle: false, compress: false}))
-    .pipe(concat('nudoru.components.js', {newLine: '\n\n'}))
-    .pipe(sourcemaps.write('maps/nudoru.components.map', {addComment: false}))
-    .pipe(gulp.dest('bin/scripts'))
-    .pipe(livereload());
-});
-
-gulp.task('scripts:nori', function () {
-  return gulp.src([
-    'src/scripts/nori/utils/*.js',
-    'src/scripts/nori/action/*.js',
-    'src/scripts/nori/service/*.js',
-    'src/scripts/nori/store/*.js',
-    'src/scripts/nori/view/*.js',
-    'src/scripts/nori/Nori.js'
-  ])
-    .pipe(sourcemaps.init())
-    .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
-    .pipe(babel())
-    //.pipe(uglify({mangle: false, compress: false}))
-    .pipe(concat('nori.js', {newLine: '\n\n'}))
-    .pipe(sourcemaps.write('maps/nori.map', {addComment: false}))
-    .pipe(gulp.dest('bin/scripts'))
-    .pipe(livereload());
-});
-
-gulp.task('scripts:app', function () {
-  return gulp.src([
-    'src/scripts/app/**/*.js',
-    'src/scripts/main.js'
-  ])
-    .pipe(sourcemaps.init())
-    .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
-    .pipe(babel())
-    //.pipe(uglify({mangle: false, compress: false}))
-    .pipe(concat('app.js', {newLine: '\n\n'}))
-    .pipe(sourcemaps.write('maps/app.map', {addComment: false}))
+// disable strict to prevent 'this' in modules from becoming 'undefined'
+gulp.task('browserify', function () {
+  return browserify('src/scripts/main.js', {debug:true})
+    .transform(babelify.configure({blacklist: ["strict"]}))
+    .bundle()
+    .on('error', errorLog)
+    .pipe(source('app.bundle.js'))
     .pipe(gulp.dest('bin/scripts'))
     .pipe(livereload());
 });
@@ -166,14 +115,12 @@ gulp.task('watch', function () {
   gulp.watch(paths.srcSass, ['compass']);
   gulp.watch(paths.srcJade, ['jade']);
   gulp.watch(paths.srcJSVendor, ['scripts:vendor']);
-  gulp.watch(paths.srcJSNudoru, ['scripts:nudorucore', 'scripts:nudorubrowser', 'scripts:nudorucomponents']);
-  gulp.watch(paths.srcJSNori, ['scripts:nori']);
-  gulp.watch(paths.srcJSApp, ['scripts:app']);
+  gulp.watch(['src/scripts/nudoru/**/*', 'src/scripts/nori/**/*', 'src/scripts/main.js', 'src/scripts/app/**/*'], ['browserify']);
 });
 
 gulp.task('default', function () {
     runSequence(
-      ['jade', 'compass','scripts:vendor', 'scripts:nudorucore', 'scripts:nudorubrowser', 'scripts:nudorucomponents', 'scripts:nori', 'scripts:app','fonts', 'images', 'copyconfig'],
+      ['jade', 'compass', 'scripts:vendor', 'browserify', 'fonts', 'images', 'copyconfig', 'jshint'],
       'watch'
     );
   }
