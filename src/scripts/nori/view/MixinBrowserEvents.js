@@ -1,3 +1,5 @@
+/* @flow weak */
+
 var MixinBrowserEvents = function () {
 
   var _scrollableAppContainer,

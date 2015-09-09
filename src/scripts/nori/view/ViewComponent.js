@@ -1,18 +1,22 @@
+/* @flow weak */
+
 /**
  * Base module for components
  * Must be extended with custom modules
  */
+
+var _template = require('../utils/Templating.js');
 
 var ViewComponent = function () {
 
   var _isInitialized = false,
       _configProps,
       _id,
-      _templateObj,
+      _templateObjCache,
       _html,
       _DOMElement,
       _mountPoint,
-      _children      = [],
+      _regions       = {},
       _isMounted     = false,
       _renderer      = require('../utils/Renderer');
 
@@ -21,19 +25,26 @@ var ViewComponent = function () {
    * @param configProps
    */
   function initializeComponent(configProps) {
-    _configProps = configProps;
-    _id          = configProps.id;
-    _templateObj = configProps.template;
-    _mountPoint  = configProps.mountPoint;
+    _configProps = this.configuration() || configProps;
+    _id          = _configProps.id;
+    _mountPoint  = _configProps.mountPoint;
 
     this.setState(this.getInitialState());
     this.setEvents(this.defineEvents());
+
+    _regions = this.defineRegions();
 
     this.createSubject('update');
     this.createSubject('mount');
     this.createSubject('unmount');
 
+    this.initializeRegions();
+
     _isInitialized = true;
+  }
+
+  function configuration() {
+    return undefined;
   }
 
   function defineEvents() {
@@ -42,47 +53,16 @@ var ViewComponent = function () {
 
   /**
    * Bind updates to the map ID to this view's update
-   * @param mapIDorObj Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
+   * @param mapObj Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
    */
-  function bindMap(mapIDorObj) {
-    var map;
-
-    if (is.object(mapIDorObj)) {
-      map = mapIDorObj;
-    } else {
-      map = Nori.store().getMap(mapIDorObj) || Nori.store().getMapCollection(mapIDorObj);
-    }
-
-    if (!map) {
-      console.warn('ViewComponent bindMap, map or mapcollection not found: ' + mapIDorObj);
+  function bindMap(mapObj) {
+    if (!is.function(mapObj.subscribe)) {
+      console.warn('ViewComponent bindMap, map or mapcollection must be observable: ' + mapObj);
       return;
     }
 
-    if (!is.function(map.subscribe)) {
-      console.warn('ViewComponent bindMap, map or mapcollection must be observable: ' + mapIDorObj);
-      return;
-    }
-
-    map.subscribe(this.update.bind(this));
+    mapObj.subscribe(this.update.bind(this));
   }
-
-  /**
-   * Add a child
-   * @param child
-   */
-  //function addChild(child) {
-  //  _children.push(child);
-  //}
-
-  /**
-   * Remove a child
-   * @param child
-   */
-  //function removeChild(child) {
-  //  var idx = _children.indexOf(child);
-  //  _children[idx].unmount();
-  //  _children.splice(idx, 1);
-  //}
 
   /**
    * Before the view updates and a rerender occurs
@@ -98,17 +78,17 @@ var ViewComponent = function () {
 
     if (this.shouldComponentUpdate(nextState)) {
       this.setState(nextState);
-      //_children.forEach(function updateChild(child) {
-      //  child.update();
-      //});
 
       if (_isMounted) {
-        if (this.shouldComponentRender(currentState)) {
-          this.unmount();
-          this.componentRender();
-          this.mount();
-        }
+        //if (this.shouldComponentRender(currentState)) {
+        this.unmount();
+        this.componentRender();
+        this.mount();
+        //}
       }
+
+      this.updateRegions();
+
       this.notifySubscribersOf('update', this.getID());
     }
   }
@@ -127,12 +107,28 @@ var ViewComponent = function () {
    * @returns {*}
    */
   function componentRender() {
-    //_children.forEach(function renderChild(child) {
-    //  child.componentRender();
-    //});
+    if (!_templateObjCache) {
+      _templateObjCache = this.template();
+    }
 
     _html = this.render(this.getState());
 
+    this.renderRegions();
+  }
+
+  /**
+   * Returns a Lodash client side template function by getting the HTML source from
+   * the matching <script type='text/template'> tag in the document. OR you may
+   * specify the custom HTML to use here.
+   *
+   * The method is called only on the first render and cached to speed up renders
+   *
+   * @returns {Function}
+   */
+  function template() {
+    // assumes the template ID matches the component's ID as passed on initialize
+    var html = _template.getSource(this.getID());
+    return _.template(html);
   }
 
   /**
@@ -141,7 +137,7 @@ var ViewComponent = function () {
    * @returns {*}
    */
   function render(state) {
-    return _templateObj(state);
+    return _templateObjCache(state);
   }
 
   /**
@@ -161,8 +157,11 @@ var ViewComponent = function () {
     }));
 
     if (this.delegateEvents) {
-      this.delegateEvents();
+      // Pass true to automatically pass form element handlers the elements value or other status
+      this.delegateEvents(true);
     }
+
+    this.mountRegions();
 
     if (this.componentDidMount) {
       this.componentDidMount();
@@ -187,6 +186,9 @@ var ViewComponent = function () {
 
   function unmount() {
     this.componentWillUnmount();
+
+    this.unmountRegions();
+
     _isMounted = false;
 
     if (this.undelegateEvents) {
@@ -201,6 +203,52 @@ var ViewComponent = function () {
     _html       = '';
     _DOMElement = null;
     this.notifySubscribersOf('unmount', this.getID());
+  }
+
+  //----------------------------------------------------------------------------
+  //  Regions
+  //----------------------------------------------------------------------------
+
+  function defineRegions() {
+    return undefined;
+  }
+
+  function getRegion(id) {
+    return _regions[id];
+  }
+
+  function getRegionIDs() {
+    return _regions ? Object.keys(_regions) : [];
+  }
+
+  function initializeRegions() {
+    getRegionIDs().forEach(region => {
+      _regions[region].initialize();
+    });
+  }
+
+  function updateRegions() {
+    getRegionIDs().forEach(region => {
+      _regions[region].update();
+    });
+  }
+
+  function renderRegions() {
+    getRegionIDs().forEach(region => {
+      _regions[region].componentRender();
+    });
+  }
+
+  function mountRegions() {
+    getRegionIDs().forEach(region => {
+      _regions[region].mount();
+    });
+  }
+
+  function unmountRegions() {
+    getRegionIDs().forEach(region => {
+      _regions[region].unmount();
+    });
   }
 
   //----------------------------------------------------------------------------
@@ -231,53 +279,39 @@ var ViewComponent = function () {
     return _DOMElement;
   }
 
-  function getTemplate() {
-    return _templateObj;
-  }
-
-  function setTemplate(html) {
-    _templateObj = _.template(html);
-  }
-
-  //function getChildren() {
-  //  return _children.slice(0);
-  //}
-
-
   //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
   return {
-    initializeComponent: initializeComponent,
-    defineEvents       : defineEvents,
-    isInitialized      : isInitialized,
-    getConfigProps     : getConfigProps,
-    getInitialState    : getInitialState,
-    getID              : getID,
-    getTemplate        : getTemplate,
-    setTemplate        : setTemplate,
-    getDOMElement      : getDOMElement,
-    isMounted          : isMounted,
-
-    bindMap: bindMap,
-
+    initializeComponent  : initializeComponent,
+    configuration        : configuration,
+    defineRegions        : defineRegions,
+    defineEvents         : defineEvents,
+    isInitialized        : isInitialized,
+    getConfigProps       : getConfigProps,
+    getInitialState      : getInitialState,
+    getID                : getID,
+    template             : template,
+    getDOMElement        : getDOMElement,
+    isMounted            : isMounted,
+    bindMap              : bindMap,
     componentWillUpdate  : componentWillUpdate,
     shouldComponentUpdate: shouldComponentUpdate,
     update               : update,
-
-    componentRender: componentRender,
-    render         : render,
-
-    mount            : mount,
-    componentDidMount: componentDidMount,
-
-    componentWillUnmount: componentWillUnmount,
-    unmount             : unmount
-
-    //addChild   : addChild,
-    //removeChild: removeChild,
-    //getChildren: getChildren
+    componentRender      : componentRender,
+    render               : render,
+    mount                : mount,
+    componentDidMount    : componentDidMount,
+    componentWillUnmount : componentWillUnmount,
+    unmount              : unmount,
+    getRegion            : getRegion,
+    getRegionIDs         : getRegionIDs,
+    initializeRegions    : initializeRegions,
+    updateRegions        : updateRegions,
+    renderRegions        : renderRegions,
+    mountRegions         : mountRegions,
+    unmountRegions       : unmountRegions
   };
 
 };

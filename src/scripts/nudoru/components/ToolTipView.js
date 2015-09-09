@@ -108,7 +108,7 @@ var ToolTipView = function () {
           elOutStream  : null,
           height       : 0,
           width        : 0,
-          element      : _template.asElement('template__component--tooltip', {
+          element      : _template.asElement('component--tooltip', {
             id     : id,
             title  : title,
             message: message

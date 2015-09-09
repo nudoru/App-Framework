@@ -7,12 +7,14 @@ var gulp        = require('gulp'),
     browserify  = require('browserify'),
     babelify    = require('babelify'),
     source      = require('vinyl-source-stream'),
+    buffer      = require('vinyl-buffer'),
     uglify      = require('gulp-uglify'),
     sourcemaps  = require('gulp-sourcemaps'),
     jshint      = require('gulp-jshint'),
     stylish     = require('jshint-stylish'),
     runSequence = require('run-sequence'),
-    livereload  = require('gulp-livereload');
+    livereload  = require('gulp-livereload'),
+    bump        = require('gulp-bump');
 
 var paths = {
   srcFonts   : 'src/fonts/**/*',
@@ -36,6 +38,13 @@ function errorLog(error) {
 gulp.task('clean', function (cb) {
   del(['bin/**/*']);
   cb();
+});
+
+gulp.task('bump', function () {
+  return gulp.src(['./package.json'])
+    .pipe(bump())
+    .on('error', errorLog)
+    .pipe(gulp.dest('./'));
 });
 
 gulp.task('fonts', function () {
@@ -73,7 +82,7 @@ gulp.task('jade', function () {
 });
 
 
-gulp.task('scripts:vendor', function () {
+gulp.task('concatglobals', function () {
   return gulp.src([
     'src/scripts/vendor/gsap/TweenLite.min.js',
     'src/scripts/vendor/gsap/utils/Draggable.min.js',
@@ -84,26 +93,30 @@ gulp.task('scripts:vendor', function () {
     'src/scripts/vendor/rxjs/rx.lite.compat.min.js',
     'src/scripts/nudoru/globals.js'
   ])
-    .pipe(sourcemaps.init())
-    //.pipe(uglify({mangle: false, compress: false}))
+    //.pipe(sourcemaps.init())
+    .pipe(uglify({mangle: false, compress: true}))
+    .on('error', errorLog)
     .pipe(concat('libs.min.js', {newLine: '\n\n'}))
-    .pipe(sourcemaps.write('maps/libs.map', {addComment: false}))
+    //.pipe(sourcemaps.write('maps/libs.map', {addComment: false}))
     .pipe(gulp.dest('bin/scripts'));
 });
 
 gulp.task('jshint', function () {
   return gulp.src(['src/scripts/nudoru/**/*', 'src/scripts/nori/**/*', 'src/scripts/app/**/*'])
     .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
+    .pipe(jshint.reporter(stylish));
 });
 
 // disable strict to prevent 'this' in modules from becoming 'undefined'
 gulp.task('browserify', function () {
-  return browserify('src/scripts/main.js', {debug:true})
+  return browserify('src/scripts/main.js', {debug: true})
     .transform(babelify.configure({blacklist: ["strict"]}))
     .bundle()
     .on('error', errorLog)
     .pipe(source('app.bundle.js'))
+    //.pipe(buffer())
+    //.pipe(uglify({mangle: false, compress: false}))
+    //.on('error', errorLog)
     .pipe(gulp.dest('bin/scripts'))
     .pipe(livereload());
 });
@@ -114,13 +127,13 @@ gulp.task('watch', function () {
   gulp.watch(paths.srcFonts, ['fonts']);
   gulp.watch(paths.srcSass, ['compass']);
   gulp.watch(paths.srcJade, ['jade']);
-  gulp.watch(paths.srcJSVendor, ['scripts:vendor']);
+  gulp.watch(paths.srcJSVendor, ['concatglobals']);
   gulp.watch(['src/scripts/nudoru/**/*', 'src/scripts/nori/**/*', 'src/scripts/main.js', 'src/scripts/app/**/*'], ['browserify']);
 });
 
 gulp.task('default', function () {
     runSequence(
-      ['jade', 'compass', 'scripts:vendor', 'browserify', 'fonts', 'images', 'copyconfig', 'jshint'],
+      ['jade', 'compass', 'concatglobals', 'browserify', 'fonts', 'images', 'copyconfig', 'jshint'],
       'watch'
     );
   }

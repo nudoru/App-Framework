@@ -19,8 +19,8 @@ var MessageBoxView = function () {
         'danger'     : 'messagebox__danger'
       },
       _mountPoint,
-      _buttonIconTemplateID   = 'template__messagebox--button-icon',
-      _buttonNoIconTemplateID = 'template__messagebox--button-noicon',
+      _buttonIconTemplateID   = 'messagebox--button-icon',
+      _buttonNoIconTemplateID = 'messagebox--button-noicon',
       _template               = require('../../nori/utils/Templating.js'),
       _modal                  = require('./ModalCoverView.js'),
       _browserInfo            = require('../../nudoru/browser/BrowserInfo.js'),
@@ -104,7 +104,7 @@ var MessageBoxView = function () {
           dataObj: initObj,
           id     : id,
           modal  : initObj.modal,
-          element: _template.asElement('template__messagebox--default', {
+          element: _template.asElement('messagebox--default', {
             id     : id,
             title  : initObj.title,
             content: initObj.content

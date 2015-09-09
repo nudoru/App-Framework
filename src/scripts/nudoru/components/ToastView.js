@@ -66,7 +66,7 @@ var ToastView = function () {
     var id  = 'js__toast-toastitem-' + (_counter++).toString(),
         obj = {
           id                 : id,
-          element            : _template.asElement('template__component--toast', {
+          element            : _template.asElement('component--toast', {
             id     : id,
             title  : title,
             message: message

@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /*
  Simple wrapper for Underscore / HTML templates
  Matt Perkins

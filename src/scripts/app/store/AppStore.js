@@ -1,5 +1,4 @@
 var _noriActionConstants    = require('../../nori/action/ActionConstants.js'),
-    _mixinMapFactory        = require('../../nori/store/MixinMapFactory.js'),
     _mixinObservableSubject = require('../../nori/utils/MixinObservableSubject.js'),
     _mixinReducerStore      = require('../../nori/store/MixinReducerStore.js');
 
@@ -16,7 +15,6 @@ var _noriActionConstants    = require('../../nori/action/ActionConstants.js'),
 var AppStore = Nori.createStore({
 
   mixins: [
-    _mixinMapFactory,
     _mixinReducerStore,
     _mixinObservableSubject()
   ],
@@ -60,7 +58,7 @@ var AppStore = Nori.createStore({
     switch (action.type) {
 
       case _noriActionConstants.CHANGE_STORE_STATE:
-        return _.assign({}, state, action.payload.data);
+        return _.merge({}, state, action.payload.data);
 
       default:
         return state;

@@ -1,3 +1,5 @@
+/* @flow weak */
+
 var MixinNudoruControls = function () {
 
   var _notificationView  = require('../../nudoru/components/ToastView.js'),

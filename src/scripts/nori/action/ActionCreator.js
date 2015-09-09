@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /**
  * Action Creator
  * Based on Flux Actions
@@ -8,15 +10,13 @@ var _noriActionConstants = require('./ActionConstants.js');
 var NoriActionCreator = {
 
   changeStoreState: function (data, id) {
-    var action = {
+    return {
       type   : _noriActionConstants.CHANGE_STORE_STATE,
       payload: {
         id  : id,
         data: data
       }
     };
-
-    return action;
   }
 
 };

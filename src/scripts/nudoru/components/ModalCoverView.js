@@ -6,7 +6,7 @@ var ModalCoverView = function () {
       _modalCloseButtonEl,
       _modalClickStream,
       _isVisible,
-      _notDismissable,
+      _notDismissible,
       _browserInfo = require('../../nudoru/browser/BrowserInfo.js');
 
   function initialize() {
@@ -33,7 +33,9 @@ var ModalCoverView = function () {
   }
 
   function onModalClick() {
-    if (_notDismissable) return;
+    if (_notDismissible) {
+      return;
+    }
     hide(true);
   }
 
@@ -55,7 +57,7 @@ var ModalCoverView = function () {
       return;
     }
 
-    _notDismissable = false;
+    _notDismissible = false;
 
     showModalCover(shouldAnimate);
 
@@ -77,7 +79,7 @@ var ModalCoverView = function () {
       return;
     }
 
-    _notDismissable = true;
+    _notDismissible = true;
 
     showModalCover(shouldAnimate);
     TweenLite.to(_modalCloseButtonEl, 0, {autoAlpha: 0});
@@ -88,7 +90,7 @@ var ModalCoverView = function () {
       return;
     }
     _isVisible      = false;
-    _notDismissable = false;
+    _notDismissible = false;
     var duration    = shouldAnimate ? 0.25 : 0;
     TweenLite.killDelayedCallsTo(_modalCloseButtonEl);
     TweenLite.to(_modalCoverEl, duration, {

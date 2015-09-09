@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /**
  * Convenience mixin that makes events easier for views
  *
@@ -17,7 +19,8 @@ var MixinEventDelegator = function () {
 
   var _eventsMap,
       _eventSubscribers,
-      _rx = require('../utils/Rx');
+      _rx          = require('../utils/Rx'),
+      _browserInfo = require('../../nudoru/browser/BrowserInfo.js');
 
   function setEvents(evtObj) {
     _eventsMap = evtObj;
@@ -32,7 +35,7 @@ var MixinEventDelegator = function () {
    * 'evtStr selector':callback
    * 'evtStr selector, evtStr selector': sharedCallback
    */
-  function delegateEvents() {
+  function delegateEvents(autoForm) {
     if (!_eventsMap) {
       return;
     }
@@ -53,18 +56,79 @@ var MixinEventDelegator = function () {
         /* jshint -W083 */
         // https://jslinterrors.com/dont-make-functions-within-a-loop
         mappings.forEach(function (evtMap) {
-          evtMap                        = evtMap.trim();
-          var eventStr                  = evtMap.split(' ')[0].trim(),
-              selector                  = evtMap.split(' ')[1].trim();
-          _eventSubscribers[evtStrings] = createHandler(selector, eventStr, eventHandler);
+          evtMap       = evtMap.trim();
+          var eventStr = evtMap.split(' ')[0].trim(),
+              selector = evtMap.split(' ')[1].trim();
+
+          if (_browserInfo.mobile.any()) {
+            eventStr = convertMouseToTouchEventStr(eventStr);
+          }
+
+          _eventSubscribers[evtStrings] = createHandler(selector, eventStr, eventHandler, autoForm);
         });
         /* jshint +W083 */
       }
     }
   }
 
-  function createHandler(selector, eventStr, eventHandler) {
-    return _rx.dom(selector, eventStr).subscribe(eventHandler);
+  /**
+   * Map common mouse events to touch equivalents
+   * @param eventStr
+   * @returns {*}
+   */
+  function convertMouseToTouchEventStr(eventStr) {
+    switch (eventStr) {
+      case('click'):
+        return 'touchend';
+      case('mousedown'):
+        return 'touchstart';
+      case('mouseup'):
+        return 'touchend';
+      case('mousemove'):
+        return 'touchmove';
+      default:
+        return eventStr;
+    }
+  }
+
+  function createHandler(selector, eventStr, eventHandler, autoForm) {
+    var observable = _rx.dom(selector, eventStr),
+        el         = document.querySelector(selector),
+        tag        = el.tagName.toLowerCase(),
+        type       = el.getAttribute('type');
+
+    if (autoForm) {
+      if (tag === 'input' || tag === 'textarea') {
+        if (!type || type === 'text') {
+          if (eventStr === 'blur' || eventStr === 'focus') {
+            return observable
+              .map(evt => evt.target.value)
+              .subscribe(eventHandler);
+          } else if (eventStr === 'keyup' || eventStr === 'keydown') {
+            return observable
+              .throttle(100)
+              .map(evt => evt.target.value)
+              .subscribe(eventHandler);
+          }
+        } else if (type === 'radio' || type === 'checkbox') {
+          if (eventStr === 'click') {
+            return observable
+              .map(function (evt) {
+                return evt.target.checked;
+              })
+              .subscribe(eventHandler);
+          }
+        }
+      } else if (tag === 'select') {
+        if (eventStr === 'change') {
+          return observable
+            .map(evt => evt.target.value)
+            .subscribe(eventHandler);
+        }
+      }
+    }
+
+    return observable.subscribe(eventHandler);
   }
 
   /**

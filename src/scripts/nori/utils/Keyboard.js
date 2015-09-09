@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /**
  * Maps keyboard presses to a handler function
  * Dependencies: RxJS

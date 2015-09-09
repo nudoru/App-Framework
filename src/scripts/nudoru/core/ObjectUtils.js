@@ -15,7 +15,9 @@ module.exports = {
     }
 
     for (var prop in obj) {
-      if (prop === undefined || obj[prop] === undefined) isnull = true;
+      if (prop === undefined || obj[prop] === undefined) {
+        isnull = true;
+      }
       break;
     }
 

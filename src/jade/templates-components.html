@@ -2,7 +2,7 @@
 BEGIN Templates for Components
 -->
 
-<script id="template__component--toast" type="text/template">
+<script id="component--toast" type="text/template">
     <div class="toast__item" id="{{ id }}">
         <div class="toast__item-content">
             <h1>{{ title }}</h1>
@@ -14,7 +14,7 @@ BEGIN Templates for Components
     </div>
 </script>
 
-<script id="template__component--tooltip" type="text/template">
+<script id="component--tooltip" type="text/template">
     <div class="tooltip__item" id="{{ id }}">
         <div class="tooltip__item-content">
             <p>{{ message }}</p>
@@ -23,7 +23,7 @@ BEGIN Templates for Components
     </div>
 </script>
 
-<script id="template__messagebox--default" type="text/template">
+<script id="messagebox--default" type="text/template">
     <div class="messagebox__default" id="{{ id }}">
         <div class="header" id="{{ id }}-header">
              <h1>{{ title }}</h1>
@@ -41,13 +41,13 @@ BEGIN Templates for Components
     </div>
 </script>
 
-<script id="template__messagebox--button-noicon" type="text/template">
+<script id="messagebox--button-noicon" type="text/template">
     <div class="button {{ type }}" id="{{ id }}">
         <button>{{ label }}</button>
     </div>
 </script>
 
-<script id="template__messagebox--button-icon" type="text/template">
+<script id="messagebox--button-icon" type="text/template">
     <div class="button icon-left {{ type }}" id="{{ id }}">
         <button><i class="fa fa-{{ icon }}"></i>{{ label }}</button>
     </div>

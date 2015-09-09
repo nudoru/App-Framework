@@ -30,7 +30,9 @@ var Lorem = function () {
   _days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   function initialize() {
-    if (_initialized) return;
+    if (_initialized) {
+      return;
+    }
     setCurrentTextSet(0);
     _initialized = true;
   }

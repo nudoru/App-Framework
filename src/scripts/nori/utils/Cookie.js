@@ -1,3 +1,5 @@
+/* @flow weak */
+
 var Cookie = function () {
 
   function create(name, value, days) {

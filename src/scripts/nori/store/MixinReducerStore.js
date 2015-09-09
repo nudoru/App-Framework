@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /**
  * Mixin for Nori stores to add functionality similar to Redux' Reducer and single
  * object state tree concept. Mixin should be composed to nori/store/ApplicationStore
@@ -54,10 +56,8 @@ var MixinReducerStore = function () {
       console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
     }
 
-    var simpleStoreFactory = require('./SimpleStore.js');
-
     _this  = this;
-    _state = simpleStoreFactory();
+    _state = require('./ImmutableMap.js')();
 
     if (!_stateReducers) {
       throw new Error('ReducerStore, must set a reducer before initialization');
@@ -70,11 +70,14 @@ var MixinReducerStore = function () {
   /**
    * Apply the action object to the reducers to change state
    * are sent to all reducers to update the state
-   * @param actionObject
+   * @param actionObjOrArry Array of actions or a single action to reduce from
    */
-  function apply(actionObject) {
-    console.log('ReducerStore Apply: ', actionObject.type, actionObject.payload);
-    applyReducers(actionObject);
+  function apply(actionObjOrArry) {
+    if(is.array(actionObjOrArry)) {
+      actionObjOrArry.forEach(actionObj => applyReducers(actionObj));
+    } else {
+      applyReducers(actionObjOrArry);
+    }
   }
 
   function applyReducers(actionObject) {
@@ -115,9 +118,12 @@ var MixinReducerStore = function () {
         switch (event.type) {
           case _noriActionConstants.MODEL_DATA_CHANGED:
             // can compose other reducers
-            // return _.assign({}, state, otherStateTransformer(state));
-            return _.assign({}, state, {prop: event.payload.value});
+            // return _.merge({}, state, otherStateTransformer(state));
+            return _.merge({}, state, {prop: event.payload.value});
+          case undefined:
+            return state;
           default:
+            console.warn('Reducer store, unhandled event type: '+event.type);
             return state;
         }
       }

@@ -1,3 +1,5 @@
+/* @flow weak */
+
 var Nori = function () {
 
   var _dispatcher = require('./utils/Dispatcher.js'),
@@ -92,42 +94,6 @@ var Nori = function () {
   }
 
   //----------------------------------------------------------------------------
-  // Functional utils from Mithril
-  //  https://github.com/lhorie/mithril.js/blob/next/mithril.js
-  //----------------------------------------------------------------------------
-
-  // http://mithril.js.org/mithril.prop.html
-  function prop(store) {
-    //if (isFunction(store.then)) {
-    //  // handle a promise
-    //}
-    var gettersetter = function () {
-      if (arguments.length) {
-        store = arguments[0];
-      }
-      return store;
-    };
-
-    gettersetter.toJSON = function () {
-      return store;
-    };
-
-    return gettersetter;
-  }
-
-  // http://mithril.js.org/mithril.withAttr.html
-  function withAttr(prop, callback, context) {
-    return function (e) {
-      e = e || event;
-
-      var currentTarget = e.currentTarget || this,
-          cntx          = context || this;
-
-      callback.call(cntx, prop in currentTarget ? currentTarget[prop] : currentTarget.getAttribute(prop));
-    };
-  }
-
-  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -140,9 +106,7 @@ var Nori = function () {
     createView       : createView,
     buildFromMixins  : buildFromMixins,
     getCurrentRoute  : getCurrentRoute,
-    assignArray      : assignArray,
-    prop             : prop,
-    withAttr         : withAttr
+    assignArray      : assignArray
   };
 
 };

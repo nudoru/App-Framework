@@ -1,20 +1,12 @@
+/* @flow weak */
+
 /**
  * Mixin view that allows for component views
  */
 
 var MixinComponentViews = function () {
 
-  var _componentViewMap            = Object.create(null),
-      _componentHTMLTemplatePrefix = 'template__',
-      _template                    = require('../utils/Templating.js');
-
-  /**
-   * Return the template object
-   * @returns {*}
-   */
-  function getTemplate() {
-    return _template;
-  }
+  var _componentViewMap = Object.create(null);
 
   /**
    * Map a component to a mounting point. If a string is passed,
@@ -36,9 +28,8 @@ var MixinComponentViews = function () {
     }
 
     _componentViewMap[componentID] = {
-      htmlTemplate: _template.getTemplate(_componentHTMLTemplatePrefix + componentID),
-      controller  : componentObj,
-      mountPoint  : mountPoint
+      controller: componentObj,
+      mountPoint: mountPoint
     };
   }
 
@@ -48,18 +39,18 @@ var MixinComponentViews = function () {
    * @returns {*}
    */
   function createComponentView(componentSource) {
-    return function () {
+    return function (configProps) {
       var componentViewFactory  = require('./ViewComponent.js'),
           eventDelegatorFactory = require('./MixinEventDelegator.js'),
           observableFactory     = require('../utils/MixinObservableSubject.js'),
-          simpleStoreFactory    = require('../store/SimpleStore.js'),
+          stateObjFactory       = require('../store/ImmutableMap.js'),
           componentAssembly, finalComponent, previousInitialize;
 
       componentAssembly = [
         componentViewFactory(),
         eventDelegatorFactory(),
         observableFactory(),
-        simpleStoreFactory(),
+        stateObjFactory(),
         componentSource
       ];
 
@@ -75,6 +66,12 @@ var MixinComponentViews = function () {
         finalComponent.initializeComponent(initObj);
         previousInitialize.call(finalComponent, initObj);
       };
+
+      if(configProps) {
+        finalComponent.configuration = function() {
+          return configProps;
+        };
+      }
 
       return _.assign({}, finalComponent);
     };
@@ -120,7 +117,6 @@ var MixinComponentViews = function () {
   //----------------------------------------------------------------------------
 
   return {
-    template           : getTemplate,
     mapViewComponent   : mapViewComponent,
     createComponentView: createComponentView,
     showViewComponent  : showViewComponent,

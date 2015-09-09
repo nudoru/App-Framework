@@ -12,7 +12,7 @@
 BEGIN Templates for Components
 -->
 
-<script id="template__component--toast" type="text/template">
+<script id="component--toast" type="text/template">
     <div class="toast__item" id="{{ id }}">
         <div class="toast__item-content">
             <h1>{{ title }}</h1>
@@ -24,7 +24,7 @@ BEGIN Templates for Components
     </div>
 </script>
 
-<script id="template__component--tooltip" type="text/template">
+<script id="component--tooltip" type="text/template">
     <div class="tooltip__item" id="{{ id }}">
         <div class="tooltip__item-content">
             <p>{{ message }}</p>
@@ -33,7 +33,7 @@ BEGIN Templates for Components
     </div>
 </script>
 
-<script id="template__messagebox--default" type="text/template">
+<script id="messagebox--default" type="text/template">
     <div class="messagebox__default" id="{{ id }}">
         <div class="header" id="{{ id }}-header">
              <h1>{{ title }}</h1>
@@ -51,13 +51,13 @@ BEGIN Templates for Components
     </div>
 </script>
 
-<script id="template__messagebox--button-noicon" type="text/template">
+<script id="messagebox--button-noicon" type="text/template">
     <div class="button {{ type }}" id="{{ id }}">
         <button>{{ label }}</button>
     </div>
 </script>
 
-<script id="template__messagebox--button-icon" type="text/template">
+<script id="messagebox--button-icon" type="text/template">
     <div class="button icon-left {{ type }}" id="{{ id }}">
         <button><i class="fa fa-{{ icon }}"></i>{{ label }}</button>
     </div>
@@ -69,7 +69,7 @@ END Templates for Components
 BEGIN Templates for Sub Views
 -->
 
-<script id="template__default" type="text/template">
+<script id="default" type="text/template">
     <div class="padded">
         <h1>{{ greeting }}</h1>
         <p>Default subview template.</p>
@@ -84,7 +84,7 @@ END Templates for Sub Views
 BEGIN Templates for Application Structure
 -->
 
-<script id="template__applicationscaffold" type="text/template">
+<script id="applicationscaffold" type="text/template">
     <div id="app__container">
         <div id="app__contents">
             <header class="app__header">
@@ -107,7 +107,7 @@ BEGIN Templates for Application Structure
     </div>
 </script>
 
-<script id="template__applicationcomponentsscaffold" type="text/template">
+<script id="applicationcomponentsscaffold" type="text/template">
     <div id="app__components">
         <div id="initialization__cover">
             <div class="initialization__message">
@@ -131,7 +131,7 @@ END Templates for Application Structure
 BEGIN Templates for DEBUG Sub Views
 -->
 
-<script id="template__debug-styletest" type="text/template">
+<script id="debug-styletest" type="text/template">
     <div>
         <h1>Header One</h1>
         <h2>Header Two</h2>
@@ -254,7 +254,7 @@ BEGIN Templates for DEBUG Sub Views
     </div>
 </script>
 
-<script id="template__debug-controls" type="text/template">
+<script id="debug-controls" type="text/template">
     <div>
         <h1>Mock Components</h1>
         <div class="panel panel__border panel__shadow">
@@ -380,7 +380,7 @@ BEGIN Templates for DEBUG Sub Views
     </div>
 </script>
 
-<script id="template__debug-components" type="text/template">
+<script id="debug-components" type="text/template">
     <div>
         <div class="column-container">
             <div class="one-third-left-column">

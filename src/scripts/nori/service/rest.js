@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /**
  * Ajax / Rest module.
  * Returns an RxJS Obervable
@@ -9,6 +11,7 @@
  var getSub = request.request({
         method: 'GET',
         url   : '/items',
+        headers: [{'key':'value'}],
         json  : true
       }).subscribe(
  function success(data) {
@@ -62,11 +65,12 @@ var Rest = function () {
 
   function request(reqObj) {
 
-    var xhr    = new XMLHttpRequest(),
-        json   = reqObj.json || false,
-        method = reqObj.method.toUpperCase() || 'GET',
-        url    = reqObj.url,
-        data   = reqObj.data || null;
+    var xhr     = new XMLHttpRequest(),
+        json    = reqObj.json || false,
+        method  = reqObj.method.toUpperCase() || 'GET',
+        url     = reqObj.url,
+        headers = reqObj.headers || [],
+        data    = reqObj.data || null;
 
     return new Rx.Observable.create(function makeReq(observer) {
       xhr.open(method, url, true);
@@ -99,6 +103,16 @@ var Rest = function () {
       xhr.onabort   = function () {
         handleError('About');
       };
+
+      headers.forEach(function (headerPair) {
+        var prop = Object.keys(headerPair)[0],
+            value = headerPair[prop];
+        if (prop && value) {
+          xhr.setRequestHeader(prop, value);
+        } else {
+          console.warn('nori/service/rest, bad header pair: ', headerPair);
+        }
+      });
 
       // set non json header? 'application/x-www-form-urlencoded; charset=UTF-8'
       if (json && method !== "GET") {

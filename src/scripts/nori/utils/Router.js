@@ -1,3 +1,5 @@
+/* @flow weak */
+
 /**
  * Simple router
  * Supporting IE9 so using hashes instead of the history API for now
