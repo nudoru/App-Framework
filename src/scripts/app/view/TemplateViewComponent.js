@@ -1,15 +1,15 @@
-const _noriActions          = require('../../nori/action/ActionCreator'),
-      _appActions           = require('../action/ActionCreator.js'),
-      _appView              = require('./AppView'),
-      _appStore             = require('../store/AppStore'),
-      _template             = require('../../nori/utils/Templating.js'),
-      _mixinDOMManipulation = require('../../nori/view/MixinDOMManipulation.js');
+import _noriActions from '../../nori/action/ActionCreator';
+import _appView from './AppView';
+import _appStore from '../store/AppStore';
+import _template from '../../nori/utils/Templating.js';
+import _domUtils from '../../nudoru/browser/DOMUtils.js';
+import _mixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
  */
 
-var Component = _appView.createComponentView({
+let Component = Nori.view().createComponentView({
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -21,20 +21,18 @@ var Component = _appView.createComponentView({
   /**
    * Initialize and bind, called once on first render. Parent component is
    * initialized from app view
-   * @param configProps
+   * @param initProps
    */
-  initialize: function (configProps) {
+  initialize(initProps) {
     //Bind to a map, update will be called on changes to the map
-    //this.bindMap(_appStore); // Reducer store, map id string or map object
-
-    //custom init below here
+    //this.bind(_appStore); // Reducer store, map id string or map object
   },
 
   /**
    * Sub view components. Provide config props as param to factory method
    * @returns {{regionID: *}}
    */
-  //defineRegions: function () {
+  //defineRegions() {
   //  return {
   //    regionID : _regionModule({
   //      id        : 'game__playerstats',
@@ -71,42 +69,33 @@ var Component = _appView.createComponentView({
   /**
    * Set initial state properties. Call once on first render
    */
-  getInitialState: function () {
+  getInitialState() {
     return _appStore.getState();
   },
 
   /**
    * State change on bound stores (map, etc.) Return nextState object
    */
-  componentWillUpdate: function () {
+  componentWillUpdate() {
     var nextState = _appStore.getState();
     nextState.greeting += ' (updated)';
     return nextState;
   },
 
   /**
-   * Determine if update/redraw should occur
-   * @param nextState
-   * @returns {*}
-   */
-  //shouldComponentUpdate: function(nextState) {
-  //  // Test for differences between nextState and this.getState()
-  //},
-
-  /**
    * Component HTML was attached to the DOM
    */
-  componentDidMount: function () {
+  componentDidMount() {
     //
   },
 
   /**
    * Component will be removed from the DOM
    */
-  componentWillUnmount: function () {
+  componentWillUnmount() {
     // Clean up
   }
 
 });
 
-module.exports = Component;
+export default Component;

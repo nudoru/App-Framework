@@ -1,6 +1,8 @@
-var _noriActionConstants    = require('../../nori/action/ActionConstants.js'),
-    _mixinObservableSubject = require('../../nori/utils/MixinObservableSubject.js'),
-    _mixinReducerStore      = require('../../nori/store/MixinReducerStore.js');
+import _noriActionConstants from '../../nori/action/ActionConstants.js';
+import _appActionConstants from '../action/ActionConstants.js';
+import _stringUtils from '../../nudoru/core/StringUtils.js';
+import _numUtils from '../../nudoru/core/NumberUtils.js';
+import _arrayUtils from '../../nudoru/core/ArrayUtils.js';
 
 /**
  * This application store contains "reducer store" functionality based on Redux.
@@ -12,35 +14,21 @@ var _noriActionConstants    = require('../../nori/action/ActionConstants.js'),
  *
  * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
  */
-var AppStore = Nori.createStore({
+let AppStoreModule = Nori.createStore({
 
-  mixins: [
-    _mixinReducerStore,
-    _mixinObservableSubject()
-  ],
+  mixins: [],
 
-  initialize: function () {
-    this.addReducer(this.defaultReducerFunction);
+  initialize() {
+    this.addReducer(this.appStateReducerFunction);
     this.initializeReducerStore();
-    this.createSubject('storeInitialized');
+
+    this.setState();
   },
 
-  loadStore: function () {
-    // Set initial state from data contained in the config.js file
-    this.setState(Nori.config());
-    this.storeReady();
-  },
-
-  /**
-   * Set or load any necessary data and then broadcast a initialized event.
-   */
-  storeReady: function () {
-    this.setState({greeting: 'Hello world!'});
-
-    // Testing
-    console.log('Initial app state:', this.getState());
-
-    this.notifySubscribersOf('storeInitialized');
+  initialState() {
+    return {
+      greeting: 'Hello world!'
+    };
   },
 
   /**
@@ -52,7 +40,7 @@ var AppStore = Nori.createStore({
    * @param action
    * @returns {*}
    */
-  defaultReducerFunction: function (state, action) {
+  appStateReducerFunction(state, action) {
     state = state || {};
 
     switch (action.type) {
@@ -65,15 +53,9 @@ var AppStore = Nori.createStore({
     }
   },
 
-  /**
-   * Called after all reducers have run to broadcast possible updates. Does
-   * not check to see if the state was actually updated.
-   */
-  handleStateMutation: function () {
-    console.log('Handle state mutation', this.getState());
-    this.notifySubscribers();
-  }
 
 });
 
-module.exports = AppStore();
+let AppStore = AppStoreModule();
+
+export default AppStore;

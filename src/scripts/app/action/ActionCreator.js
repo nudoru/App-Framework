@@ -1,14 +1,14 @@
-var _actionConstants = require('./ActionConstants.js');
+import _appActionConstants from './ActionConstants.js';
 
 /**
  * Purely for convenience, an Event ("action") Creator ala Flux spec. Follow
  * guidelines for creating actions: https://github.com/acdlite/flux-standard-action
  */
-var ActionCreator = {
+let ActionCreator = {
 
-  mutateSomeData: function (data) {
+  mutateSomeData(data) {
     var actionObj = {
-      type   : _actionConstants.MUTATION_TYPE,
+      type   : _appActionConstants.MUTATION_TYPE,
       payload: {
         data: data
       }
@@ -19,4 +19,4 @@ var ActionCreator = {
 
 };
 
-module.exports = ActionCreator;
+export default ActionCreator;

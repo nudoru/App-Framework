@@ -1,23 +1,22 @@
-var _mixinApplicationView   = require('../../nori/view/ApplicationView.js'),
-    _mixinNudoruControls    = require('../../nori/view/MixinNudoruControls.js'),
-    _mixinComponentViews    = require('../../nori/view/MixinComponentViews.js'),
-    _mixinRouteViews        = require('../../nori/view/MixinRouteViews.js'),
-    _mixinEventDelegator    = require('../../nori/view/MixinEventDelegator.js'),
-    _mixinObservableSubject = require('../../nori/utils/MixinObservableSubject.js');
+import _appStore from '../store/AppStore.js';
+import _mixinApplicationView from '../../nori/view/ApplicationView.js';
+import _mixinNudoruControls from '../../nori/view/MixinNudoruControls.js';
+import _mixinRouteViews from '../../nori/view/MixinRouteViews.js';
+import _templateViewFactory from './TemplateViewComponent.js';
+
+let _imagesLoadedInst,
+    _preloadImages = [];
 
 /**
  * View for an application.
  */
 
-var AppView = Nori.createView({
+let AppViewModule = Nori.createView({
 
   mixins: [
     _mixinApplicationView,
     _mixinNudoruControls,
-    _mixinComponentViews,
-    _mixinRouteViews,
-    _mixinEventDelegator(),
-    _mixinObservableSubject()
+    _mixinRouteViews
   ],
 
   initialize: function () {
@@ -28,32 +27,27 @@ var AppView = Nori.createView({
     this.configureViews();
   },
 
-  configureViews: function () {
-    var defaultViewFactory = require('./TemplateViewComponent.js'),
-        defaultView        = defaultViewFactory(),
-        styleView          = defaultViewFactory(),
-        controlsView       = defaultViewFactory(),
-        debugView          = this.createComponentView(require('./DebugControlsTestingSubView.js'))();
+  preloadImages() {
+    // refer to docs http://desandro.github.io/imagesloaded/
+    //imagesLoadedInst = new imagesLoaded(_preloadImages, this.imagesPreloaded.bind(this));
+  },
 
+  imagesPreloaded() {
+  },
+
+  configureViews() {
     // Container for routed views
     this.setViewMountPoint('#contents');
-    this.mapRouteToViewComponent('/', 'default', defaultView);
-    this.mapRouteToViewComponent('/styles', 'debug-styletest', styleView);
-    this.mapRouteToViewComponent('/controls', 'debug-controls', controlsView);
-    this.mapRouteToViewComponent('/comps', 'debug-components', debugView);
+    this.mapRouteToViewComponent('/', 'default', _templateViewFactory());
+    this.mapRouteToViewComponent('/styles', 'debug-styletest', _templateViewFactory());
+    this.mapRouteToViewComponent('/controls', 'debug-controls', _templateViewFactory());
 
     // Alternately, map views to different store states with MixinStoreStateViews
     //this.mapStateToViewComponent('TITLE', 'title', screenTitle);
   },
 
-  /**
-   * Draw and UI to the DOM and set events
-   */
-  render: function () {
-    //
-  }
-
-
 });
 
-module.exports = AppView();
+let AppView = AppViewModule();
+
+export default AppView;
