@@ -1,8 +1,10 @@
 /* @flow weak */
 
-var MixinBrowserEvents = function () {
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 
-  var _scrollableAppContainer,
+let MixinBrowserEvents = function () {
+
+  let _scrollableAppContainer,
       _browserScrollStream,
       _browserResizeStream;
 
@@ -31,11 +33,11 @@ var MixinBrowserEvents = function () {
    * Set up RxJS streams for events
    */
   function createBrowserEventStreams() {
-    _browserResizeStream = Rx.Observable.fromEvent(window, 'resize')
+    _browserResizeStream = Rxjs.Observable.fromEvent(window, 'resize')
       .throttle(100)
       .subscribe(handleViewPortResize.bind(this));
 
-    _browserScrollStream = Rx.Observable.fromEvent(_scrollableAppContainer, 'scroll')
+    _browserScrollStream = Rxjs.Observable.fromEvent(_scrollableAppContainer, 'scroll')
       .throttle(100)
       .subscribe(handleViewPortScroll.bind(this));
   }
@@ -56,10 +58,9 @@ var MixinBrowserEvents = function () {
   }
 
   function getCurrentViewPortScroll() {
-    var scrollEL = _scrollableAppContainer ? _scrollableAppContainer : document.body;
-
-    var left = scrollEL.scrollLeft,
-        top  = scrollEL.scrollTop;
+    let scrollEL = _scrollableAppContainer ? _scrollableAppContainer : document.body,
+        left     = scrollEL.scrollLeft,
+        top      = scrollEL.scrollTop;
 
     left = left ? left : 0;
     top  = top ? top : 0;
@@ -89,4 +90,4 @@ var MixinBrowserEvents = function () {
 
 };
 
-module.exports = MixinBrowserEvents();
+export default MixinBrowserEvents();

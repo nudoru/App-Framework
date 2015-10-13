@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   MODAL_COVER_SHOW: 'MODAL_COVER_SHOW',
   MODAL_COVER_HIDE: 'MODAL_COVER_HIDE',
   MENU_SELECT     : 'MENU_SELECT'

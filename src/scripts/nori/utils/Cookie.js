@@ -42,4 +42,4 @@ var Cookie = function () {
 
 };
 
-module.exports = Cookie();
+export default Cookie();

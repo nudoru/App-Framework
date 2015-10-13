@@ -61,18 +61,20 @@
  *
  */
 
-var Rest = function () {
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+
+let Rest = function () {
 
   function request(reqObj) {
 
-    var xhr     = new XMLHttpRequest(),
+    let xhr     = new XMLHttpRequest(),
         json    = reqObj.json || false,
         method  = reqObj.method.toUpperCase() || 'GET',
         url     = reqObj.url,
         headers = reqObj.headers || [],
         data    = reqObj.data || null;
 
-    return new Rx.Observable.create(function makeReq(observer) {
+    return new Rxjs.Observable.create(function makeReq(observer) {
       xhr.open(method, url, true);
 
       xhr.onreadystatechange = function () {
@@ -105,7 +107,7 @@ var Rest = function () {
       };
 
       headers.forEach(function (headerPair) {
-        var prop = Object.keys(headerPair)[0],
+        let prop = Object.keys(headerPair)[0],
             value = headerPair[prop];
         if (prop && value) {
           xhr.setRequestHeader(prop, value);
@@ -137,4 +139,4 @@ var Rest = function () {
 
 };
 
-module.exports = Rest();
+export default Rest();

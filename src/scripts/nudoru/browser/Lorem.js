@@ -151,4 +151,4 @@ var Lorem = function () {
 
 };
 
-module.exports = Lorem();
+export default Lorem();

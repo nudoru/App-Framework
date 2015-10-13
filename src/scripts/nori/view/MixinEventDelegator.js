@@ -15,12 +15,14 @@
  *
  */
 
-var MixinEventDelegator = function () {
+import _rx from '../utils/Rx.js';
+import _browserInfo from '../../nudoru/browser/BrowserInfo.js';
+import is from '../../nudoru/util/is.js';
 
-  var _eventsMap,
-      _eventSubscribers,
-      _rx          = require('../utils/Rx'),
-      _browserInfo = require('../../nudoru/browser/BrowserInfo.js');
+let MixinEventDelegator = function () {
+
+  let _eventsMap,
+      _eventSubscribers;
 
   function setEvents(evtObj) {
     _eventsMap = evtObj;
@@ -45,26 +47,27 @@ var MixinEventDelegator = function () {
     for (var evtStrings in _eventsMap) {
       if (_eventsMap.hasOwnProperty(evtStrings)) {
 
-        var mappings     = evtStrings.split(','),
+        let mappings     = evtStrings.split(','),
             eventHandler = _eventsMap[evtStrings];
 
-        if (!is.function(eventHandler)) {
+        if (!is.func(eventHandler)) {
           console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
           return;
         }
 
         /* jshint -W083 */
         // https://jslinterrors.com/dont-make-functions-within-a-loop
-        mappings.forEach(function (evtMap) {
-          evtMap       = evtMap.trim();
-          var eventStr = evtMap.split(' ')[0].trim(),
+        mappings.forEach(evtMap => {
+          evtMap = evtMap.trim();
+
+          let eventStr = evtMap.split(' ')[0].trim(),
               selector = evtMap.split(' ')[1].trim();
 
           if (_browserInfo.mobile.any()) {
             eventStr = convertMouseToTouchEventStr(eventStr);
           }
 
-          _eventSubscribers[evtStrings] = createHandler(selector, eventStr, eventHandler, autoForm);
+          _eventSubscribers[evtMap] = createHandler(selector, eventStr, eventHandler, autoForm);
         });
         /* jshint +W083 */
       }
@@ -91,44 +94,48 @@ var MixinEventDelegator = function () {
     }
   }
 
-  function createHandler(selector, eventStr, eventHandler, autoForm) {
-    var observable = _rx.dom(selector, eventStr),
+  /**
+   * Returns an observable subscription
+   * @param selector DOM element
+   * @param eventStr Event to watch
+   * @param handler Subscriber to handle the event
+   * @param autoForm True to automatically pass common form element data to the handler
+   * @returns {*}
+   */
+  function createHandler(selector, eventStr, handler, autoForm) {
+    let observable = _rx.dom(selector, eventStr),
         el         = document.querySelector(selector),
-        tag        = el.tagName.toLowerCase(),
-        type       = el.getAttribute('type');
+        tag, type;
+
+    if (!el) {
+      console.warn('MixinEventDelegator, createHandler, Element not found:', selector);
+      return;
+    }
+
+    tag  = el.tagName.toLowerCase();
+    type = el.getAttribute('type');
 
     if (autoForm) {
       if (tag === 'input' || tag === 'textarea') {
         if (!type || type === 'text') {
           if (eventStr === 'blur' || eventStr === 'focus') {
-            return observable
-              .map(evt => evt.target.value)
-              .subscribe(eventHandler);
+            return observable.map(evt => evt.target.value).subscribe(handler);
           } else if (eventStr === 'keyup' || eventStr === 'keydown') {
-            return observable
-              .throttle(100)
-              .map(evt => evt.target.value)
-              .subscribe(eventHandler);
+            return observable.throttle(100).map(evt => evt.target.value).subscribe(handler);
           }
         } else if (type === 'radio' || type === 'checkbox') {
           if (eventStr === 'click') {
-            return observable
-              .map(function (evt) {
-                return evt.target.checked;
-              })
-              .subscribe(eventHandler);
+            return observable.map(evt => evt.target.checked).subscribe(handler);
           }
         }
       } else if (tag === 'select') {
         if (eventStr === 'change') {
-          return observable
-            .map(evt => evt.target.value)
-            .subscribe(eventHandler);
+          return observable.map(evt => evt.target.value).subscribe(handler);
         }
       }
     }
 
-    return observable.subscribe(eventHandler);
+    return observable.subscribe(handler);
   }
 
   /**
@@ -140,7 +147,11 @@ var MixinEventDelegator = function () {
     }
 
     for (var event in _eventSubscribers) {
-      _eventSubscribers[event].dispose();
+      if(_eventSubscribers[event]) {
+        _eventSubscribers[event].dispose();
+      } else {
+        console.warn('MixinEventDelegator, undelegateEvents, not a valid observable: ',event);
+      }
       delete _eventSubscribers[event];
     }
 
@@ -156,4 +167,4 @@ var MixinEventDelegator = function () {
 
 };
 
-module.exports = MixinEventDelegator;
+export default MixinEventDelegator;

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 
   isInteger: function (str) {
     return (/^-?\d+$/.test(str));

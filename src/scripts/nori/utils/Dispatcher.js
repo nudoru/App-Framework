@@ -13,9 +13,12 @@
  }
 
  */
-var Dispatcher = function () {
 
-  var _subjectMap  = {},
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+
+let Dispatcher = function () {
+
+  let _subjectMap  = {},
       _receiverMap = {},
       _id          = 0,
       _log         = [],
@@ -57,7 +60,7 @@ var Dispatcher = function () {
       _subjectMap[evtStr] = [];
     }
 
-    var subject = new Rx.Subject();
+    var subject = new Rxjs.Subject();
 
     _subjectMap[evtStr].push({
       once    : once,
@@ -80,8 +83,8 @@ var Dispatcher = function () {
       return;
     }
 
-    _timerPausable     = new Rx.Subject();
-    _timerObservable   = Rx.Observable.interval(1).pausable(_timerPausable);
+    _timerPausable     = new Rxjs.Subject();
+    _timerObservable   = Rxjs.Observable.interval(1).pausable(_timerPausable);
     _timerSubscription = _timerObservable.subscribe(processNextEvent);
   }
 
@@ -230,4 +233,4 @@ var Dispatcher = function () {
 
 };
 
-module.exports = Dispatcher();
+export default Dispatcher();

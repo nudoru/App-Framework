@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 
   // https://github.com/filamentgroup/tappy/blob/master/tappy.js
   getCoords: function (evt) {

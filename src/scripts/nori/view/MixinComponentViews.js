@@ -4,9 +4,16 @@
  * Mixin view that allows for component views
  */
 
-var MixinComponentViews = function () {
+import _componentViewFactory from './ViewComponent.js';
+import _eventDelegatorFactory from './MixinEventDelegator.js';
+import _observableFactory from '../utils/MixinObservableSubject.js';
+import _stateObjFactory from '../store/SimpleStore.js';
+import _immutableMapFactory from '../store/ImmutableMap.js';
 
-  var _componentViewMap = Object.create(null);
+let MixinComponentViews = function () {
+
+  let _componentViewMap      = Object.create(null),
+      _componentViewKeyIndex = 0;
 
   /**
    * Map a component to a mounting point. If a string is passed,
@@ -17,16 +24,7 @@ var MixinComponentViews = function () {
    * @param componentIDorObj
    * @param mountPoint
    */
-  function mapViewComponent(componentID, componentIDorObj, mountPoint) {
-    var componentObj;
-
-    if (typeof componentIDorObj === 'string') {
-      var componentFactory = require(componentIDorObj);
-      componentObj         = createComponentView(componentFactory())();
-    } else {
-      componentObj = componentIDorObj;
-    }
-
+  function mapViewComponent(componentID, componentObj, mountPoint) {
     _componentViewMap[componentID] = {
       controller: componentObj,
       mountPoint: mountPoint
@@ -39,18 +37,15 @@ var MixinComponentViews = function () {
    * @returns {*}
    */
   function createComponentView(componentSource) {
-    return function (configProps) {
-      var componentViewFactory  = require('./ViewComponent.js'),
-          eventDelegatorFactory = require('./MixinEventDelegator.js'),
-          observableFactory     = require('../utils/MixinObservableSubject.js'),
-          stateObjFactory       = require('../store/ImmutableMap.js'),
-          componentAssembly, finalComponent, previousInitialize;
+    return function (initProps) {
+
+      let componentAssembly, finalComponent, previousInitialize;
 
       componentAssembly = [
-        componentViewFactory(),
-        eventDelegatorFactory(),
-        observableFactory(),
-        stateObjFactory(),
+        _componentViewFactory(),
+        _eventDelegatorFactory(),
+        _observableFactory(),
+        _immutableMapFactory(),
         componentSource
       ];
 
@@ -58,18 +53,21 @@ var MixinComponentViews = function () {
         componentAssembly = componentAssembly.concat(componentSource.mixins);
       }
 
-      finalComponent = Nori.assignArray({}, componentAssembly);
+      finalComponent     = Nori.assignArray({}, componentAssembly);
+      finalComponent.key = _componentViewKeyIndex++;
 
       // Compose a new initialize function by inserting call to component super module
-      previousInitialize        = finalComponent.initialize;
+      previousInitialize = finalComponent.initialize;
+
       finalComponent.initialize = function initialize(initObj) {
         finalComponent.initializeComponent(initObj);
         previousInitialize.call(finalComponent, initObj);
       };
 
-      if(configProps) {
-        finalComponent.configuration = function() {
-          return configProps;
+      if (initProps) {
+        // Overwrite the function in the component
+        finalComponent.getDefaultProps = function () {
+          return initProps;
         };
       }
 
@@ -83,7 +81,7 @@ var MixinComponentViews = function () {
    * @param dataObj
    */
   function showViewComponent(componentID, mountPoint) {
-    var componentView = _componentViewMap[componentID];
+    let componentView = _componentViewMap[componentID];
     if (!componentView) {
       console.warn('No componentView mapped for id: ' + componentID);
       return;
@@ -125,4 +123,4 @@ var MixinComponentViews = function () {
 
 };
 
-module.exports = MixinComponentViews();
+export default MixinComponentViews();

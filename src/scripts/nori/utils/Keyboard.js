@@ -16,9 +16,11 @@
         });
  */
 
-var Keyboard = function () {
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 
-  var _callbackMap = {},
+let Keyboard = function () {
+
+  let _callbackMap = {},
       _subscription,
       _keyCodes    = {
         'backspace'       : '8',
@@ -131,7 +133,7 @@ var Keyboard = function () {
     context = context || document;
     evt     = evt || 'keydown';
 
-    var source = Rx.Observable.fromEvent(context, evt);
+    var source = Rxjs.Observable.fromEvent(context, evt);
 
     _subscription = source.map(function (evt) {
       return evt.keyCode;
@@ -238,4 +240,4 @@ var Keyboard = function () {
 
 };
 
-module.exports = Keyboard;
+export default Keyboard;

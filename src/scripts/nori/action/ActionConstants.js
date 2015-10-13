@@ -1,5 +1,5 @@
 /* @flow weak */
 
-module.exports = {
+export default {
   CHANGE_STORE_STATE: 'CHANGE_STORE_STATE'
 };

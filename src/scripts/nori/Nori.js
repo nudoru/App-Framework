@@ -1,9 +1,16 @@
 /* @flow weak */
 
-var Nori = function () {
+import _mixinObservableSubject from './utils/MixinObservableSubject.js';
+import _mixinReducerStore from './store/MixinReducerStore.js';
+import _mixinComponentViews from './view/MixinComponentViews.js';
+import _mixinEventDelegator from './view/MixinEventDelegator.js';
+import _dispatcher from './utils/Dispatcher.js';
+import _router from './utils/Router.js';
 
-  var _dispatcher = require('./utils/Dispatcher.js'),
-      _router     = require('./utils/Router.js');
+let Nori = function () {
+
+  let _storeTemplate,
+      _viewTemplate;
 
   // Switch Lodash to use Mustache style templates
   _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
@@ -20,6 +27,11 @@ var Nori = function () {
     return _router;
   }
 
+  /**
+   * Allow for optional external configuration data from outside of the compiled
+   * app bundle. For easy of settings tweaks after the build by non technical devs
+   * @returns {void|*}
+   */
   function getConfig() {
     return _.assign({}, (window.APP_CONFIG_DATA || {}));
   }
@@ -27,6 +39,33 @@ var Nori = function () {
   function getCurrentRoute() {
     return _router.getCurrentRoute();
   }
+
+  function view() {
+    return _viewTemplate;
+  }
+
+  function store() {
+    return _storeTemplate;
+  }
+
+  //----------------------------------------------------------------------------
+  //  Template parts
+  //----------------------------------------------------------------------------
+
+  _storeTemplate = createStore({
+    mixins: [
+      _mixinReducerStore,
+      _mixinObservableSubject()
+    ]
+  })();
+
+  _viewTemplate = createView({
+    mixins: [
+      _mixinComponentViews,
+      _mixinEventDelegator(),
+      _mixinObservableSubject()
+    ]
+  })();
 
   //----------------------------------------------------------------------------
   //  Factories - concatenative inheritance, decorators
@@ -39,10 +78,9 @@ var Nori = function () {
    * @returns {*}
    */
   function assignArray(target, sourceArray) {
-    sourceArray.forEach(function (source) {
-      target = _.assign(target, source);
-    });
-    return target;
+    return sourceArray.reduce((tgt, mixin) => {
+      return _.assign(tgt, mixin);
+    }, target);
   }
 
   /**
@@ -62,7 +100,7 @@ var Nori = function () {
    */
   function createStore(custom) {
     return function cs() {
-      return _.assign({}, buildFromMixins(custom));
+      return _.assign({}, _storeTemplate, buildFromMixins(custom));
     };
   }
 
@@ -73,7 +111,7 @@ var Nori = function () {
    */
   function createView(custom) {
     return function cv() {
-      return _.assign({}, buildFromMixins(custom));
+      return _.assign({}, _viewTemplate, buildFromMixins(custom));
     };
   }
 
@@ -83,7 +121,7 @@ var Nori = function () {
    * @returns {*}
    */
   function buildFromMixins(sourceObject) {
-    var mixins;
+    let mixins;
 
     if (sourceObject.mixins) {
       mixins = sourceObject.mixins;
@@ -101,6 +139,8 @@ var Nori = function () {
     config           : getConfig,
     dispatcher       : getDispatcher,
     router           : getRouter,
+    view             : view,
+    store            : store,
     createApplication: createApplication,
     createStore      : createStore,
     createView       : createView,
@@ -111,6 +151,4 @@ var Nori = function () {
 
 };
 
-module.exports = Nori();
-
-
+export default Nori();

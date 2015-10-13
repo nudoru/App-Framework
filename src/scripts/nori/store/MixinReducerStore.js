@@ -10,8 +10,13 @@
  *
  * Created 8/13/15
  */
-var MixinReducerStore = function () {
-  var _this,
+
+import is from '../../nudoru/util/is.js';
+import _stateObjFactory from './SimpleStore.js';
+import _immutableMapFactory from './ImmutableMap.js';
+
+let MixinReducerStore = function () {
+  let _this,
       _state,
       _stateReducers = [];
 
@@ -29,9 +34,15 @@ var MixinReducerStore = function () {
     return {};
   }
 
-  function setState(state) {
-    if (!_.isEqual(state, _state)) {
-      _state.setState(state);
+  /**
+   * Set the state of the store. Will default to initial state shape returned from
+   * initialState() function. Will only update the state if it's not equal to
+   * current
+   * @param nextstate
+   */
+  function setState(nextstate = this.initialState()) {
+    if (!_.isEqual(nextstate, getState())) {
+      _state.setState(nextstate);
       _this.notifySubscribers({});
     }
   }
@@ -56,15 +67,19 @@ var MixinReducerStore = function () {
       console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
     }
 
-    _this  = this;
-    _state = require('./ImmutableMap.js')();
+    _this = this;
+    //_state = _stateObjFactory();
+    _state = _immutableMapFactory();
 
-    if (!_stateReducers) {
-      throw new Error('ReducerStore, must set a reducer before initialization');
-    }
-
+    //if (!_stateReducers) {
+    //  throw new Error('ReducerStore, must set a reducer before initialization');
+    //}
     // Set initial state from empty event
-    applyReducers({});
+    //applyReducers({});
+  }
+
+  function initialState() {
+    return {};
   }
 
   /**
@@ -73,7 +88,7 @@ var MixinReducerStore = function () {
    * @param actionObjOrArry Array of actions or a single action to reduce from
    */
   function apply(actionObjOrArry) {
-    if(is.array(actionObjOrArry)) {
+    if (is.array(actionObjOrArry)) {
       actionObjOrArry.forEach(actionObj => applyReducers(actionObj));
     } else {
       applyReducers(actionObjOrArry);
@@ -81,16 +96,8 @@ var MixinReducerStore = function () {
   }
 
   function applyReducers(actionObject) {
-    var nextState = applyReducersToState(getState(), actionObject);
+    let nextState = applyReducersToState(getState(), actionObject);
     setState(nextState);
-    _this.handleStateMutation();
-  }
-
-  /**
-   * API hook to handle state updates
-   */
-  function handleStateMutation() {
-    // override this
   }
 
   /**
@@ -102,17 +109,12 @@ var MixinReducerStore = function () {
    */
   function applyReducersToState(state, action) {
     state = state || {};
-    // TODO should this actually use array.reduce()?
-    _stateReducers.forEach(function applyStateReducerFunction(reducerFunc) {
-      state = reducerFunc(state, action);
-    });
-    return state;
+    return _stateReducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
   }
 
   /**
    * Template reducer function
    * Store state isn't modified, current state is passed in and mutated state returned
-
    function templateReducerFunction(state, event) {
         state = state || {};
         switch (event.type) {
@@ -135,16 +137,16 @@ var MixinReducerStore = function () {
 
   return {
     initializeReducerStore: initializeReducerStore,
+    initialState          : initialState,
     getState              : getState,
     setState              : setState,
     apply                 : apply,
     setReducers           : setReducers,
     addReducer            : addReducer,
     applyReducers         : applyReducers,
-    applyReducersToState  : applyReducersToState,
-    handleStateMutation   : handleStateMutation
+    applyReducersToState  : applyReducersToState
   };
 
 };
 
-module.exports = MixinReducerStore();
+export default MixinReducerStore();

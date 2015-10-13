@@ -4,9 +4,9 @@
  * Mixin view that allows for component views to be display on store state changes
  */
 
-var MixinStoreStateViews = function () {
+let MixinStoreStateViews = function () {
 
-  var _this,
+  let _this,
       _watchedStore,
       _currentViewID,
       _currentStoreState,
@@ -36,7 +36,7 @@ var MixinStoreStateViews = function () {
   }
 
   function showViewForCurrentStoreState() {
-    var state = _watchedStore.getState().currentState;
+    let state = _watchedStore.getState().currentState;
     if (state) {
       if (state !== _currentStoreState) {
         _currentStoreState = state;
@@ -73,7 +73,7 @@ var MixinStoreStateViews = function () {
    * @param state
    */
   function showStateViewComponent(state) {
-    var componentID = _stateViewIDMap[state];
+    let componentID = _stateViewIDMap[state];
     if (!componentID) {
       console.warn("No view mapped for route: " + state);
       return;
@@ -86,7 +86,7 @@ var MixinStoreStateViews = function () {
 
     // Transition new view in
     TweenLite.set(_stateViewMountPoint, {alpha: 0});
-    TweenLite.to(_stateViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
+    TweenLite.to(_stateViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeOut});
 
     this.notifySubscribersOf('viewChange', componentID);
   }
@@ -96,7 +96,7 @@ var MixinStoreStateViews = function () {
    */
   function removeCurrentView() {
     if (_currentViewID) {
-      _this.getComponentViewMap()[_currentViewID].controller.unmount();
+      _this.getComponentViewMap()[_currentViewID].controller.dispose();
     }
     _currentViewID = '';
   }
@@ -112,4 +112,4 @@ var MixinStoreStateViews = function () {
 
 };
 
-module.exports = MixinStoreStateViews();
+export default MixinStoreStateViews();

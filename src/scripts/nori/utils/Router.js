@@ -5,17 +5,19 @@
  * Supporting IE9 so using hashes instead of the history API for now
  */
 
-var Router = function () {
+import _objUtils from '../../nudoru/core/ObjectUtils.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 
-  var _subject  = new Rx.Subject(),
-      _hashChangeObservable,
-      _objUtils = require('../../nudoru/core/ObjectUtils.js');
+let Router = function () {
+
+  let _subject  = new Rxjs.Subject(),
+      _hashChangeObservable;
 
   /**
    * Set event handlers
    */
   function initialize() {
-    _hashChangeObservable = Rx.Observable.fromEvent(window, 'hashchange').subscribe(notifySubscribers);
+    _hashChangeObservable = Rxjs.Observable.fromEvent(window, 'hashchange').subscribe(notifySubscribers);
   }
 
   /**
@@ -32,7 +34,7 @@ var Router = function () {
    * @param fromApp True if the route was caused by an app event not URL or history change
    */
   function notifySubscribers() {
-    var eventPayload = {
+    let eventPayload = {
       routeObj: getCurrentRoute(), // { route:, data: }
       fragment: getURLFragment()
     };
@@ -45,7 +47,7 @@ var Router = function () {
    * @returns {{route: string, query: {}}}
    */
   function getCurrentRoute() {
-    var fragment    = getURLFragment(),
+    let fragment    = getURLFragment(),
         parts       = fragment.split('?'),
         route       = '/' + parts[0],
         queryStr    = decodeURIComponent(parts[1]),
@@ -64,11 +66,12 @@ var Router = function () {
    * @returns {{}}
    */
   function parseQueryStr(queryStr) {
-    var obj   = {},
+    let obj   = {},
         parts = queryStr.split('&');
 
-    parts.forEach(function (pairStr) {
-      var pairArr     = pairStr.split('=');
+    // TODO refactor with Array.reduce
+    parts.forEach(pairStr => {
+      let pairArr     = pairStr.split('=');
       obj[pairArr[0]] = pairArr[1];
     });
 
@@ -81,7 +84,7 @@ var Router = function () {
    * @param dataObj
    */
   function set(route, dataObj) {
-    var path = route,
+    let path = route,
         data = [];
     if (!_objUtils.isNull(dataObj)) {
       path += "?";
@@ -102,7 +105,7 @@ var Router = function () {
    * @returns {string}
    */
   function getURLFragment() {
-    var fragment = location.hash.slice(1);
+    let fragment = location.hash.slice(1);
     return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
   }
 
@@ -124,7 +127,7 @@ var Router = function () {
 
 };
 
-var r = Router();
+let r = Router();
 r.initialize();
 
-module.exports = r;
+export default r;

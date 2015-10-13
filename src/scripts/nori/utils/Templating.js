@@ -5,19 +5,21 @@
  Matt Perkins
  4/7/15
  */
-var Templating = function () {
 
-  var _templateMap       = Object.create(null),
+import _DOMUtils from '../../nudoru/browser/DOMUtils.js';
+
+let Templating = function () {
+
+  let _templateMap       = Object.create(null),
       _templateHTMLCache = Object.create(null),
-      _templateCache     = Object.create(null),
-      _DOMUtils          = require('../../nudoru/browser/DOMUtils.js');
+      _templateCache     = Object.create(null);
 
   function addTemplate(id, html) {
     _templateMap[id] = html;
   }
 
   function getSourceFromTemplateMap(id) {
-    var source = _templateMap[id];
+    let source = _templateMap[id];
     if (source) {
       return cleanTemplateHTML(source);
     }
@@ -25,7 +27,7 @@ var Templating = function () {
   }
 
   function getSourceFromHTML(id) {
-    var src = document.getElementById(id),
+    let src = document.getElementById(id),
         srchtml;
 
     if (src) {
@@ -48,7 +50,7 @@ var Templating = function () {
       return _templateHTMLCache[id];
     }
 
-    var sourcehtml = getSourceFromTemplateMap(id);
+    let sourcehtml = getSourceFromTemplateMap(id);
 
     if (!sourcehtml) {
       sourcehtml = getSourceFromHTML(id);
@@ -63,7 +65,7 @@ var Templating = function () {
    * @returns {Array}
    */
   function getAllTemplateIDs() {
-    var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
+    let scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
 
     return scriptTags.filter(function (tag) {
       return tag.getAttribute('type') === 'text/template';
@@ -81,7 +83,7 @@ var Templating = function () {
     if (_templateCache[id]) {
       return _templateCache[id];
     }
-    var templ          = _.template(getSource(id));
+    let templ          = _.template(getSource(id));
     _templateCache[id] = templ;
     return templ;
   }
@@ -93,7 +95,7 @@ var Templating = function () {
    * @returns {*}
    */
   function asHTML(id, obj) {
-    var temp = getTemplate(id);
+    let temp = getTemplate(id);
     return temp(obj);
   }
 
@@ -129,10 +131,9 @@ var Templating = function () {
    * So this helps create the blocks for insertion in to the DOM
    */
   function processForDOMInsertion() {
-    var ids = getAllTemplateIDs();
-    ids.forEach(function (id) {
+    let ids = getAllTemplateIDs();
+    ids.forEach(id => {
       var src = removeWhiteSpace(getSource(id));
-      console.log(id, src);
     });
   }
 
@@ -162,4 +163,4 @@ var Templating = function () {
 
 };
 
-module.exports = Templating();
+export default Templating();

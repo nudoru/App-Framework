@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 
   // http://davidwalsh.name/convert-xml-json
   // Changes XML to JSON

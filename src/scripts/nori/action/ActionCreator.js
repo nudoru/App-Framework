@@ -5,7 +5,7 @@
  * Based on Flux Actions
  * For more information and guidelines: https://github.com/acdlite/flux-standard-action
  */
-var _noriActionConstants = require('./ActionConstants.js');
+import _noriActionConstants from './ActionConstants.js';
 
 var NoriActionCreator = {
 
@@ -21,4 +21,4 @@ var NoriActionCreator = {
 
 };
 
-module.exports = NoriActionCreator;
+export default NoriActionCreator;

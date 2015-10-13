@@ -6,9 +6,13 @@
  * Add one simple observable subject or more complex ability to create others for
  * more complex eventing needs.
  */
-var MixinObservableSubject = function () {
 
-  var _subject    = new Rx.Subject(),
+import is from '../../nudoru/util/is.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+
+let MixinObservableSubject = function () {
+
+  let _subject    = new Rxjs.Subject(),
       _subjectMap = {};
 
   /**
@@ -18,7 +22,7 @@ var MixinObservableSubject = function () {
    */
   function createSubject(name) {
     if (!_subjectMap.hasOwnProperty(name)) {
-      _subjectMap[name] = new Rx.Subject();
+      _subjectMap[name] = new Rxjs.Subject();
     }
     return _subjectMap[name];
   }
@@ -67,4 +71,4 @@ var MixinObservableSubject = function () {
 
 };
 
-module.exports = MixinObservableSubject;
+export default MixinObservableSubject;

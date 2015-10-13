@@ -60,4 +60,4 @@ var browserInfo = {
 
 };
 
-module.exports = browserInfo;
+export default browserInfo;

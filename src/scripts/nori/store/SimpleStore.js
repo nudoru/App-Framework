@@ -1,7 +1,7 @@
 /* @flow weak */
 
-var SimpleStore = function () {
-  var _internalState = Object.create(null);
+let SimpleStore = function () {
+  let _internalState = Object.create(null);
 
   /**
    * Return a copy of the state
@@ -16,14 +16,29 @@ var SimpleStore = function () {
    * @param nextState
    */
   function setState(nextState) {
-    _internalState = _.assign(_internalState, nextState);
+    _internalState = _.assign({}, _internalState, nextState);
+  }
+
+  function toJSON() {
+    return JSON.stringify(getState());
+  }
+
+  function fromJSON(data) {
+    try {
+      setState(JSON.parse(data));
+    } catch (e) {
+      console.warn('Nori, SimpleStore, could not parse JSON');
+      setState({});
+    }
   }
 
   return {
     getState: getState,
-    setState: setState
+    setState: setState,
+    toJSON  : toJSON,
+    fromJSON: fromJSON
   };
 
 };
 
-module.exports = SimpleStore;
+export default SimpleStore;

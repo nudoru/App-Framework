@@ -1,15 +1,15 @@
 /* @flow weak */
 
 /**
- * Wraps Immutable.js's Map in the same syntax as the SimpleStore module
+ * Wraps Immutable.js's OrderedMap in the same syntax as the SimpleStore module
  *
  * View Docs http://facebook.github.io/immutable-js/docs/#/Map
  */
 
-var immutable = require('../../vendor/immutable.min.js');
+import immutable from '../../vendor/immutable.min.js';
 
-var ImmutableMap = function () {
-  var _map = immutable.Map();
+let ImmutableMap = function () {
+  let _map = immutable.OrderedMap();
 
   /**
    * Returns the Map object
@@ -32,15 +32,35 @@ var ImmutableMap = function () {
    * @param next
    */
   function setState(next) {
-    _map = _map.merge(next);
+    let c = getState(),
+        d = _.assign({}, c, next);
+
+    _map  = immutable.OrderedMap(immutable.fromJS(d));
+
+    //_map = _map.merge(next);
+  }
+
+  function toJSON() {
+    return JSON.stringify(getState());
+  }
+
+  function fromJSON(data) {
+    try {
+      setState(JSON.parse(data));
+    } catch (e) {
+      console.warn('Nori, ImmutableMap, could not parse JSON');
+      setState({});
+    }
   }
 
   return {
     getState: getState,
     setState: setState,
-    getMap  : getMap
+    getMap  : getMap,
+    toJSON  : toJSON,
+    fromJSON: fromJSON
   };
 
 };
 
-module.exports = ImmutableMap;
+export default ImmutableMap;

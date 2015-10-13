@@ -113,4 +113,4 @@ var MessageBoxCreator = function () {
 
 };
 
-module.exports = MessageBoxCreator();
+export default MessageBoxCreator();

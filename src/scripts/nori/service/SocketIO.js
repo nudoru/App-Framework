@@ -1,13 +1,14 @@
 /* @flow weak */
 
-var SocketIOConnector = function () {
+import _events from './SocketIOEvents.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 
-  var _subject  = new Rx.BehaviorSubject(),
+let SocketIOConnector = function () {
+
+  let _subject  = new Rxjs.Subject(),
       _socketIO = io(),
       _log      = [],
-      _connectionID,
-      _events   = require('./SocketIOEvents.js');
-
+      _connectionID;
 
   function initialize() {
     _socketIO.on(_events.NOTIFY_CLIENT, onNotifyClient);
@@ -20,11 +21,13 @@ var SocketIOConnector = function () {
   function onNotifyClient(payload) {
     _log.push(payload);
 
-    if (payload.type === _events.PING) {
+    let {type} = payload;
+
+    if (type === _events.PING) {
       notifyServer(_events.PONG, {});
-    } else if (payload.type === _events.PONG) {
+    } else if (type === _events.PONG) {
       console.log('SOCKET.IO PONG!');
-    } else if (payload.type === _events.CONNECT) {
+    } else if (type === _events.CONNECT) {
       _connectionID = payload.id;
     }
     notifySubscribers(payload);
@@ -40,6 +43,7 @@ var SocketIOConnector = function () {
    * @param payload
    */
   function notifyServer(type, payload) {
+    //console.log('notify server',type,payload);
     _socketIO.emit(_events.NOTIFY_SERVER, {
       type        : type,
       connectionID: _connectionID,
@@ -98,4 +102,4 @@ var SocketIOConnector = function () {
 
 };
 
-module.exports = SocketIOConnector();
+export default SocketIOConnector();

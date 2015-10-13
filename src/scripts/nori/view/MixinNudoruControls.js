@@ -1,12 +1,14 @@
 /* @flow weak */
 
-var MixinNudoruControls = function () {
+import _notificationView from '../../nudoru/components/ToastView.js';
+import _toolTipView from '../../nudoru/components/ToolTipView.js';
+import _messageBoxView from '../../nudoru/components/MessageBoxView.js';
+import _messageBoxCreator from '../../nudoru/components/MessageBoxCreator.js';
+import _modalCoverView from '../../nudoru/components/ModalCoverView.js';
 
-  var _notificationView  = require('../../nudoru/components/ToastView.js'),
-      _toolTipView       = require('../../nudoru/components/ToolTipView.js'),
-      _messageBoxView    = require('../../nudoru/components/MessageBoxView.js'),
-      _messageBoxCreator = require('../../nudoru/components/MessageBoxCreator.js'),
-      _modalCoverView    = require('../../nudoru/components/ModalCoverView.js');
+let MixinNudoruControls = function () {
+
+  var _alerts = [];
 
   function initializeNudoruControls() {
     _toolTipView.initialize('tooltip__container');
@@ -27,8 +29,43 @@ var MixinNudoruControls = function () {
     _messageBoxView.remove(id);
   }
 
-  function alert(message, title) {
-    return mbCreator().alert(title || 'Alert', message);
+  function alert(message) {
+    _alerts.push(customAlert(message, 'Alert', 'danger'));
+  }
+
+  function positiveAlert(message, title) {
+    _alerts.push(customAlert(message, title, 'success'));
+  }
+
+  function negativeAlert(message, title) {
+    _alerts.push(customAlert(message, title, 'warning'));
+  }
+
+  function customAlert(message, title, type) {
+    return _messageBoxView.add({
+      title  : title,
+      content: '<p>' + message + '</p>',
+      type   : type,
+      modal  : false,
+      width  : 400,
+      buttons: [
+        {
+          label  : 'Close',
+          id     : 'Close',
+          type   : '',
+          icon   : 'times',
+          onClick: null
+        }
+      ]
+    });
+  }
+
+
+  function closeAllAlerts() {
+    _alerts.forEach(id => {
+      removeMessageBox(id);
+    });
+    _alerts = [];
   }
 
   function addNotification(obj) {
@@ -50,9 +87,12 @@ var MixinNudoruControls = function () {
     removeMessageBox        : removeMessageBox,
     addNotification         : addNotification,
     alert                   : alert,
+    positiveAlert           : positiveAlert,
+    negativeAlert           : negativeAlert,
+    closeAllAlerts          : closeAllAlerts,
     notify                  : notify
   };
 
 };
 
-module.exports = MixinNudoruControls();
+export default MixinNudoruControls();

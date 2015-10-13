@@ -1,3 +1,5 @@
+import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+
 var ModalCoverView = function () {
 
   var _mountPoint  = document,
@@ -17,10 +19,10 @@ var ModalCoverView = function () {
     _modalBackgroundEl  = _mountPoint.querySelector('.modal__background');
     _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
 
-    var modalBGClick     = Rx.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
-        modalButtonClick = Rx.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
+    var modalBGClick     = Rxjs.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
+        modalButtonClick = Rxjs.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
 
-    _modalClickStream = Rx.Observable.merge(modalBGClick, modalButtonClick)
+    _modalClickStream = Rxjs.Observable.merge(modalBGClick, modalButtonClick)
       .subscribe(function () {
         onModalClick();
       });
@@ -134,4 +136,4 @@ var ModalCoverView = function () {
 
 };
 
-module.exports = ModalCoverView();
+export default ModalCoverView();

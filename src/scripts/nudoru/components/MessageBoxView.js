@@ -1,3 +1,5 @@
+import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+
 var MessageBoxView = function () {
 
   var _children               = [],
@@ -149,7 +151,7 @@ var MessageBoxView = function () {
 
       buttonContainer.appendChild(buttonEl);
 
-      var btnStream = Rx.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
+      var btnStream = Rxjs.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
         .subscribe(function () {
           if (buttonObj.hasOwnProperty('onClick')) {
             if (buttonObj.onClick) {
@@ -289,4 +291,4 @@ var MessageBoxView = function () {
 
 };
 
-module.exports = MessageBoxView();
+export default MessageBoxView();

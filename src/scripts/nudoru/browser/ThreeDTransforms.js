@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 
   /**
    * Create shared 3d perspective for all children

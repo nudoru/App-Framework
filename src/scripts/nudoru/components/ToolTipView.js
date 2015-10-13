@@ -1,3 +1,5 @@
+import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+
 var ToolTipView = function () {
 
   var _children     = [],
@@ -124,12 +126,12 @@ var ToolTipView = function () {
       return;
     }
 
-    tooltipObj.elOverStream = Rx.Observable.fromEvent(tooltipObj.targetEl, 'mouseover')
+    tooltipObj.elOverStream = Rxjs.Observable.fromEvent(tooltipObj.targetEl, 'mouseover')
       .subscribe(function (evt) {
         showToolTip(tooltipObj.id);
       });
 
-    tooltipObj.elOutStream = Rx.Observable.fromEvent(tooltipObj.targetEl, 'mouseout')
+    tooltipObj.elOutStream = Rxjs.Observable.fromEvent(tooltipObj.targetEl, 'mouseout')
       .subscribe(function (evt) {
         hideToolTip(tooltipObj.id);
       });
@@ -274,4 +276,4 @@ var ToolTipView = function () {
 
 };
 
-module.exports = ToolTipView();
+export default ToolTipView();

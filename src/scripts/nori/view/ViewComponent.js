@@ -5,29 +5,32 @@
  * Must be extended with custom modules
  */
 
-var _template = require('../utils/Templating.js');
+import _template from '../utils/Templating.js';
+import _renderer from '../utils/Renderer.js';
+import is from '../../nudoru/util/is.js';
 
 var ViewComponent = function () {
 
-  var _isInitialized = false,
-      _configProps,
+  let _isInitialized = false,
+      _props,
       _id,
       _templateObjCache,
       _html,
       _DOMElement,
       _mountPoint,
+      _mountDelay,
       _regions       = {},
-      _isMounted     = false,
-      _renderer      = require('../utils/Renderer');
+      _isMounted     = false;
 
   /**
    * Initialization
-   * @param configProps
+   * @param initProps
    */
-  function initializeComponent(configProps) {
-    _configProps = this.configuration() || configProps;
-    _id          = _configProps.id;
-    _mountPoint  = _configProps.mountPoint;
+  function initializeComponent(initProps) {
+    _props = _.assign({}, this.getDefaultProps(), initProps);
+
+    _id         = _props.id;
+    _mountPoint = _props.mountPoint;
 
     this.setState(this.getInitialState());
     this.setEvents(this.defineEvents());
@@ -43,25 +46,39 @@ var ViewComponent = function () {
     _isInitialized = true;
   }
 
-  function configuration() {
+  /**
+   * Override to set default props
+   *
+   * For a region, which is instantiated from the factory with props, this function
+   * will be overwritten by the code in MixinComponentView to return the passed
+   * initProps object
+   * @returns {undefined}
+   */
+  function getDefaultProps() {
     return undefined;
   }
 
+  /**
+   * Override in implementation
+   *
+   * Define DOM events to be attached after the element is mounted
+   * @returns {undefined}
+   */
   function defineEvents() {
     return undefined;
   }
 
   /**
    * Bind updates to the map ID to this view's update
-   * @param mapObj Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
+   * @param observableStore Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
    */
-  function bindMap(mapObj) {
-    if (!is.function(mapObj.subscribe)) {
-      console.warn('ViewComponent bindMap, map or mapcollection must be observable: ' + mapObj);
+  function bind(observableStore) {
+    if (!is.func(observableStore.subscribe)) {
+      console.warn('ViewComponent bind, must be observable: ' + observableStore);
       return;
     }
 
-    mapObj.subscribe(this.update.bind(this));
+    observableStore.subscribe(this.update.bind(this));
   }
 
   /**
@@ -73,18 +90,15 @@ var ViewComponent = function () {
   }
 
   function update() {
-    var currentState = this.getState();
-    var nextState    = this.componentWillUpdate();
+    let nextState = this.componentWillUpdate();
 
     if (this.shouldComponentUpdate(nextState)) {
       this.setState(nextState);
 
       if (_isMounted) {
-        //if (this.shouldComponentRender(currentState)) {
         this.unmount();
         this.componentRender();
         this.mount();
-        //}
       }
 
       this.updateRegions();
@@ -95,11 +109,12 @@ var ViewComponent = function () {
 
   /**
    * Compare current state and next state to determine if updating should occur
+   * If the next state exists and it's not equal to the current state
    * @param nextState
    * @returns {*}
    */
   function shouldComponentUpdate(nextState) {
-    return is.existy(nextState);
+    return !(_.isEqual(this.getState(), nextState));
   }
 
   /**
@@ -108,7 +123,7 @@ var ViewComponent = function () {
    */
   function componentRender() {
     if (!_templateObjCache) {
-      _templateObjCache = this.template();
+      _templateObjCache = this.template(this.getState());
     }
 
     _html = this.render(this.getState());
@@ -125,9 +140,9 @@ var ViewComponent = function () {
    *
    * @returns {Function}
    */
-  function template() {
+  function template(state) {
     // assumes the template ID matches the component's ID as passed on initialize
-    var html = _template.getSource(this.getID());
+    let html = _template.getSource(this.getID());
     return _.template(html);
   }
 
@@ -145,8 +160,9 @@ var ViewComponent = function () {
    * @param mountEl
    */
   function mount() {
-    if (!_html) {
-      throw new Error('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
+    if (!_html || _html.length === 0) {
+      console.warn('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
+      return;
     }
 
     _isMounted = true;
@@ -157,17 +173,39 @@ var ViewComponent = function () {
     }));
 
     if (this.delegateEvents) {
-      // Pass true to automatically pass form element handlers the elements value or other status
-      this.delegateEvents(true);
+      if (this.shouldDelegateEvents()) {
+        // True to automatically pass form element handlers the elements value or other status
+        this.delegateEvents(true);
+      }
+    }
+
+    if (this.componentDidMount) {
+      //this.componentDidMount.bind(this);
+
+      // TODO fix this issue, shouldn't need this hack
+      // This delay helps animation on components run on mount
+      _mountDelay = _.delay(this.mountAfterDelay.bind(this), 10);
+    }
+
+    this.notifySubscribersOf('mount', this.getID());
+  }
+
+  function mountAfterDelay() {
+    if (_mountDelay) {
+      window.clearTimeout(_mountDelay);
     }
 
     this.mountRegions();
 
-    if (this.componentDidMount) {
-      this.componentDidMount();
-    }
+    this.componentDidMount();
+  }
 
-    this.notifySubscribersOf('mount', this.getID());
+  /**
+   * Override to delegate events or not based on some state trigger
+   * @returns {boolean}
+   */
+  function shouldDelegateEvents() {
+    return true;
   }
 
   /**
@@ -185,9 +223,19 @@ var ViewComponent = function () {
   }
 
   function unmount() {
+
+    if (_mountDelay) {
+      window.clearTimeout(_mountDelay);
+    }
+
+    // Tweens are present in the MixinDOMManipulation. This is convenience
+    if (this.killTweens) {
+      this.killTweens();
+    }
+
     this.componentWillUnmount();
 
-    this.unmountRegions();
+    //this.unmountRegions();
 
     _isMounted = false;
 
@@ -203,6 +251,16 @@ var ViewComponent = function () {
     _html       = '';
     _DOMElement = null;
     this.notifySubscribersOf('unmount', this.getID());
+  }
+
+  function dispose() {
+    this.componentWillDispose();
+    this.disposeRegions();
+    this.unmount();
+  }
+
+  function componentWillDispose() {
+    //
   }
 
   //----------------------------------------------------------------------------
@@ -251,6 +309,12 @@ var ViewComponent = function () {
     });
   }
 
+  function disposeRegions() {
+    getRegionIDs().forEach(region => {
+      _regions[region].dispose();
+    });
+  }
+
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
@@ -259,8 +323,8 @@ var ViewComponent = function () {
     return _isInitialized;
   }
 
-  function getConfigProps() {
-    return _configProps;
+  function getProps() {
+    return _.assign({}, _props);
   }
 
   function isMounted() {
@@ -285,35 +349,40 @@ var ViewComponent = function () {
 
   return {
     initializeComponent  : initializeComponent,
-    configuration        : configuration,
+    getDefaultProps      : getDefaultProps,
     defineRegions        : defineRegions,
     defineEvents         : defineEvents,
     isInitialized        : isInitialized,
-    getConfigProps       : getConfigProps,
+    getProps             : getProps,
     getInitialState      : getInitialState,
     getID                : getID,
     template             : template,
     getDOMElement        : getDOMElement,
     isMounted            : isMounted,
-    bindMap              : bindMap,
+    bind                 : bind,
     componentWillUpdate  : componentWillUpdate,
     shouldComponentUpdate: shouldComponentUpdate,
     update               : update,
     componentRender      : componentRender,
     render               : render,
     mount                : mount,
+    shouldDelegateEvents : shouldDelegateEvents,
+    mountAfterDelay      : mountAfterDelay,
     componentDidMount    : componentDidMount,
     componentWillUnmount : componentWillUnmount,
     unmount              : unmount,
+    dispose              : dispose,
+    componentWillDispose : componentWillDispose,
     getRegion            : getRegion,
     getRegionIDs         : getRegionIDs,
     initializeRegions    : initializeRegions,
     updateRegions        : updateRegions,
     renderRegions        : renderRegions,
     mountRegions         : mountRegions,
-    unmountRegions       : unmountRegions
+    unmountRegions       : unmountRegions,
+    disposeRegions       : disposeRegions
   };
 
 };
 
-module.exports = ViewComponent;
+export default ViewComponent;

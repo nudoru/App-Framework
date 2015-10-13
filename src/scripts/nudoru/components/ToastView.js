@@ -1,3 +1,5 @@
+import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+
 var ToastView = function () {
 
   var _children              = [],
@@ -43,10 +45,10 @@ var ToastView = function () {
     _componentUtils.apply3DToElement(toastObj.element);
 
     var closeBtn         = toastObj.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam    = Rx.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
-        expireTimeStream = Rx.Observable.interval(_defaultExpireDuration);
+        closeBtnSteam    = Rxjs.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
+        expireTimeStream = Rxjs.Observable.interval(_defaultExpireDuration);
 
-    toastObj.defaultButtonStream = Rx.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
+    toastObj.defaultButtonStream = Rxjs.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
       .subscribe(function () {
         remove(toastObj.id);
       });
@@ -149,4 +151,4 @@ var ToastView = function () {
 
 };
 
-module.exports = ToastView();
+export default ToastView();
