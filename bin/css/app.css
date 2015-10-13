@@ -2354,7 +2354,7 @@ h1 {
   margin: 0;
   padding: 0;
   margin-bottom: 1.854rem;
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 3.344rem;
   font-weight: 400;
   line-height: 1.854rem;
@@ -2366,7 +2366,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 1.854rem;
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.618rem;
   font-weight: 400;
   line-height: 1.854rem;
@@ -2378,7 +2378,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 1.854rem;
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.067rem;
   font-weight: 400;
   line-height: 1.854rem;
@@ -2390,7 +2390,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 1.236rem;
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.618rem;
   font-weight: 400;
   line-height: 1.236rem;
@@ -2402,7 +2402,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 1.236rem;
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.277rem;
   font-weight: 400;
   line-height: 1.236rem;
@@ -2414,7 +2414,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 1.236rem;
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.236rem;
@@ -2536,7 +2536,7 @@ blockquote {
   margin-right: 1.236rem;
   padding: 0.618rem;
   background-color: #efeeec;
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.4rem;
   font-weight: 300;
   line-height: 1.854rem;
@@ -3141,12 +3141,12 @@ button, .button-important {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 33px;
   padding: 0 1.236rem;
   margin: 0.309rem;
   background-color: #00a9e0;
-  border-radius: 5px;
+  border-radius: 50px;
   border: none;
   line-height: 0;
   text-align: center;
@@ -3523,7 +3523,7 @@ select:focus, textarea:focus {
   vertical-align: middle;
 }
 .table thead th, .table tfoot th, .table tbody th {
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
   color: #00a9e0;
@@ -4210,7 +4210,7 @@ body {
   margin-right: 0;
 }
 .app__header-nav li a {
-  font-family: "Roboto Condensed", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-decoration: none;
 }
 
