@@ -10,7 +10,10 @@ import _eventDelegatorFactory from './MixinEventDelegator.js';
 let MixinComponentViews = function () {
 
   let _componentViewMap      = Object.create(null),
-      _componentViewKeyIndex = 0;
+      _componentViewKeyIndex = 0,
+      _currentViewID,
+      _defaultMountPoint,
+      _viewIDMap             = Object.create(null);
 
   /**
    * Map a component to a mounting point. If a string is passed,
@@ -106,14 +109,77 @@ let MixinComponentViews = function () {
   }
 
   //----------------------------------------------------------------------------
+  //  Conditional view such as routes or states
+  //  Must be augmented with mixins for state and route change monitoring
+  //----------------------------------------------------------------------------
+
+  /**
+   * Set the location for the view to mount on route changes, any contents will
+   * be removed prior
+   * @param elID
+   */
+  function setViewMountPoint(elID) {
+    _defaultMountPoint = elID;
+  }
+
+  function getViewMountPoint() {
+    return _defaultMountPoint;
+  }
+
+  /**
+   * Map a route to a module view controller
+   * @param templateID
+   * @param component
+   */
+  function mapConditionToViewComponent(condition, templateID, component) {
+    _viewIDMap[condition] = templateID;
+    mapViewComponent(templateID, component, _defaultMountPoint);
+  }
+
+  /**
+   * Show a view (in response to a route change)
+   * @param condition
+   */
+  function showViewForCondition(condition) {
+    let componentID = _viewIDMap[condition];
+    if (!componentID) {
+      console.warn("No view mapped for route: " + condition);
+      return;
+    }
+
+    removeCurrentView();
+
+    _currentViewID = componentID;
+    showViewComponent(_currentViewID);
+
+    // Transition new view in
+    TweenLite.set(_defaultMountPoint, {alpha: 0});
+    TweenLite.to(_defaultMountPoint, 0.25, {alpha: 1, ease: Quad.easeOut});
+  }
+
+  /**
+   * Remove the currently displayed view
+   */
+  function removeCurrentView() {
+    if (_currentViewID) {
+      getComponentViewMap()[_currentViewID].controller.dispose();
+    }
+    _currentViewID = '';
+  }
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
   return {
-    mapViewComponent   : mapViewComponent,
-    createComponentView: createComponentView,
-    showViewComponent  : showViewComponent,
-    getComponentViewMap: getComponentViewMap
+    mapViewComponent           : mapViewComponent,
+    createComponentView        : createComponentView,
+    showViewComponent          : showViewComponent,
+    getComponentViewMap        : getComponentViewMap,
+    showViewForCondition       : showViewForCondition,
+    setViewMountPoint          : setViewMountPoint,
+    getViewMountPoint          : getViewMountPoint,
+    mapConditionToViewComponent: mapConditionToViewComponent
   };
 
 };
