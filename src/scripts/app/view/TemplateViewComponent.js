@@ -28,8 +28,12 @@ let Component = Nori.view().createComponentView({
     //this.bind(AppStore); // Reducer store, map id string or map object
 
     // Bind changes in state or prop to functions
-    // this.state.onChange = function() {};
+    this.state.onChange = this._stateChange;
     // this.props.onChange = function() {};
+  },
+
+  _stateChange() {
+    console.log(this.getID(), 'the state was changed', this.state);
   },
 
   /**
@@ -60,7 +64,7 @@ let Component = Nori.view().createComponentView({
    */
   //defineEvents: function() {
   //  return {
-  //    'click #button-id': handleButton
+  //    'evtstring selector': this._handlerFunc
   //  };
   //},
 

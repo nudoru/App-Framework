@@ -242,6 +242,7 @@ var AppStoreModule = Nori.createStore({
 
   initialState: function initialState() {
     return {
+      currentState: 'chillin',
       greeting: 'Hello world!'
     };
   },
@@ -311,6 +312,7 @@ var AppViewModule = Nori.createView({
   mixins: [_noriViewApplicationViewJs2['default'], _noriViewMixinNudoruControlsJs2['default'], _noriViewMixinRouteViewsJs2['default']],
 
   initialize: function initialize() {
+    // Initialize mixed in views
     this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
     this.initializeRouteViews();
     this.initializeNudoruControls();
@@ -326,7 +328,7 @@ var AppViewModule = Nori.createView({
     this.mapRouteToViewComponent('/controls', 'debug-controls', (0, _TemplateViewComponentJs2['default'])());
 
     // Alternately, map views to different store states with MixinStoreStateViews
-    //this.mapStateToViewComponent('TITLE', 'title', screenTitle);
+    //this.mapStateToViewComponent(state, templateID, componentIDorObj);
   }
 
 });
@@ -388,8 +390,12 @@ var Component = Nori.view().createComponentView({
     //this.bind(AppStore); // Reducer store, map id string or map object
 
     // Bind changes in state or prop to functions
-    // this.state.onChange = function() {};
+    this.state.onChange = this._stateChange;
     // this.props.onChange = function() {};
+  },
+
+  _stateChange: function _stateChange() {
+    console.log(this.getID(), 'the state was changed', this.state);
   },
 
   /**
@@ -420,7 +426,7 @@ var Component = Nori.view().createComponentView({
    */
   //defineEvents: function() {
   //  return {
-  //    'click #button-id': handleButton
+  //    'evtstring selector': this._handlerFunc
   //  };
   //},
 
@@ -2905,7 +2911,7 @@ var ViewComponent = function ViewComponent() {
     // keeping the object reference
     _publicState = _.assign(_publicState, _internalState);
 
-    if (_publicState.onChange) {
+    if (typeof _publicState.onChange === 'function') {
       _publicState.onChange.apply(this);
     }
   }
@@ -2927,7 +2933,7 @@ var ViewComponent = function ViewComponent() {
     // keeping the object reference
     _publicProps = _.assign(_publicProps, _internalProps);
 
-    if (_publicProps.onChange) {
+    if (typeof _publicProps.onChange === 'function') {
       _publicProps.onChange.apply(this);
     }
   }

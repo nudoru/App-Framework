@@ -354,7 +354,7 @@ var ViewComponent = function () {
     // keeping the object reference
     _publicState = _.assign(_publicState, _internalState);
 
-    if (_publicState.onChange) {
+    if (typeof _publicState.onChange === 'function') {
       _publicState.onChange.apply(this);
     }
   }
@@ -376,7 +376,7 @@ var ViewComponent = function () {
     // keeping the object reference
     _publicProps = _.assign(_publicProps, _internalProps);
 
-    if (_publicProps.onChange) {
+    if (typeof _publicProps.onChange === 'function') {
       _publicProps.onChange.apply(this);
     }
   }

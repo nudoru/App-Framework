@@ -17,6 +17,7 @@ let AppViewModule = Nori.createView({
   ],
 
   initialize: function () {
+    // Initialize mixed in views
     this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
     this.initializeRouteViews();
     this.initializeNudoruControls();
@@ -32,7 +33,7 @@ let AppViewModule = Nori.createView({
     this.mapRouteToViewComponent('/controls', 'debug-controls', TemplateViewFactory());
 
     // Alternately, map views to different store states with MixinStoreStateViews
-    //this.mapStateToViewComponent('TITLE', 'title', screenTitle);
+    //this.mapStateToViewComponent(state, templateID, componentIDorObj);
   },
 
 });
