@@ -729,7 +729,7 @@ var _vendorImmutableMinJs = require('../../vendor/immutable.min.js');
 var _vendorImmutableMinJs2 = _interopRequireDefault(_vendorImmutableMinJs);
 
 var ImmutableMap = function ImmutableMap() {
-  var _map = _vendorImmutableMinJs2['default'].OrderedMap();
+  var _map = _vendorImmutableMinJs2['default'].Map();
 
   /**
    * Returns the Map object
@@ -752,12 +752,11 @@ var ImmutableMap = function ImmutableMap() {
    * @param next
    */
   function setState(next) {
-    var c = getState(),
-        d = _.assign({}, c, next);
-
-    _map = _vendorImmutableMinJs2['default'].OrderedMap(_vendorImmutableMinJs2['default'].fromJS(d));
-
-    //_map = _map.merge(next);
+    //let c = getState(),
+    //    d = _.assign({}, c, next);
+    //
+    //_map  = immutable.Map(immutable.fromJS(d));
+    _map = _map.merge(next);
   }
 
   function toJSON() {

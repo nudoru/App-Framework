@@ -2307,7 +2307,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 .padded {
-  padding: 0.618rem;
+  padding: 11px;
 }
 
 .padding-none {
@@ -2315,49 +2315,49 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 .padding-normal {
-  padding: 0.618rem !important;
+  padding: 11px !important;
 }
 
 .padding-top-double {
-  padding-top: 1.236rem !important;
+  padding-top: 22px !important;
 }
 
 .padding-top-triple {
-  padding-top: 1.854rem !important;
+  padding-top: 33px !important;
 }
 
 .padding-bottom-double {
-  padding-bottom: 1.236rem !important;
+  padding-bottom: 22px !important;
 }
 
 .padding-bottom-triple {
-  padding-bottom: 1.854rem !important;
+  padding-bottom: 33px !important;
 }
 
 .margin-top-double {
-  margin-top: 1.236rem !important;
+  margin-top: 22px !important;
 }
 
 .margin-top-triple {
-  margin-top: 1.854rem !important;
+  margin-top: 33px !important;
 }
 
 .margin-bottom-double {
-  margin-bottom: 1.236rem !important;
+  margin-bottom: 22px !important;
 }
 
 .margin-bottom-triple {
-  margin-bottom: 1.854rem !important;
+  margin-bottom: 33px !important;
 }
 
 h1 {
   margin: 0;
   padding: 0;
-  margin-bottom: 1.854rem;
+  margin-bottom: 33px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 3.344rem;
   font-weight: 400;
-  line-height: 1.854rem;
+  line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
 }
@@ -2365,11 +2365,11 @@ h1 {
 h2 {
   margin: 0;
   padding: 0;
-  margin-bottom: 1.854rem;
+  margin-bottom: 33px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.618rem;
   font-weight: 400;
-  line-height: 1.854rem;
+  line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
 }
@@ -2377,11 +2377,11 @@ h2 {
 .panel__footer-message h1, h3 {
   margin: 0;
   padding: 0;
-  margin-bottom: 1.854rem;
+  margin-bottom: 33px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.067rem;
   font-weight: 400;
-  line-height: 1.854rem;
+  line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
 }
@@ -2389,11 +2389,11 @@ h2 {
 .panel__footer-message h2, h4, legend, .table caption {
   margin: 0;
   padding: 0;
-  margin-bottom: 1.236rem;
+  margin-bottom: 22px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.618rem;
   font-weight: 400;
-  line-height: 1.236rem;
+  line-height: 22px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
 }
@@ -2401,11 +2401,11 @@ h2 {
 .panel__footer-message h3, h5 {
   margin: 0;
   padding: 0;
-  margin-bottom: 1.236rem;
+  margin-bottom: 22px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.277rem;
   font-weight: 400;
-  line-height: 1.236rem;
+  line-height: 22px;
   text-rendering: optimizeLegibility;
   font-weight: 400;
 }
@@ -2413,11 +2413,11 @@ h2 {
 .panel__footer-message h4, .panel__footer-message h5, .panel__footer-message h6, h6 {
   margin: 0;
   padding: 0;
-  margin-bottom: 1.236rem;
+  margin-bottom: 22px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.236rem;
+  line-height: 22px;
   text-rendering: optimizeLegibility;
   font-weight: 700;
 }
@@ -2440,35 +2440,35 @@ input[type=file],
 select, textarea, select.spaced {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
-  line-height: 1.545rem;
+  line-height: 27.5px;
   font-weight: 400;
   margin-top: 0;
-  margin-bottom: 1.236rem;
+  margin-bottom: 22px;
 }
 
 .label-small {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.618rem;
-  line-height: 1.854rem;
+  line-height: 33px;
   font-weight: 400;
   margin-top: 0;
-  margin-bottom: 1.236rem;
+  margin-bottom: 22px;
 }
 
 .label-big, .initialization__message {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.618rem;
-  line-height: 1.854rem;
+  line-height: 33px;
   font-weight: 400;
   margin-top: 0;
-  margin-bottom: 1.236rem;
+  margin-bottom: 22px;
 }
 
 .h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, tr.row-header-inline td, .tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p, .h6-alternate {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin-bottom: 1.236rem;
+  margin-bottom: 22px;
   padding-bottom: 0;
-  padding-top: 0.309rem;
+  padding-top: 5.5px;
 }
 
 .h1-alternate {
@@ -2532,14 +2532,14 @@ em {
 }
 
 blockquote {
-  margin-left: 1.236rem;
-  margin-right: 1.236rem;
-  padding: 0.618rem;
+  margin-left: 22px;
+  margin-right: 22px;
+  padding: 11px;
   background-color: #efeeec;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.4rem;
   font-weight: 300;
-  line-height: 1.854rem;
+  line-height: 33px;
 }
 
 pre {
@@ -2550,7 +2550,7 @@ pre {
   -moz-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
-  padding: 0.618rem;
+  padding: 11px;
   background-color: #efeeec;
 }
 
@@ -2610,12 +2610,12 @@ ol {
 }
 
 li {
-  margin-left: 0.618rem;
+  margin-left: 11px;
   margin-bottom: 0rem;
 }
 
 ul ul, ol ol, ul ol, ol ul {
-  margin: 0 0 0 1.236rem;
+  margin: 0 0 0 22px;
 }
 
 ol ol {
@@ -2643,7 +2643,7 @@ input:focus, textarea:focus, button:focus {
 }
 
 hr {
-  margin: 1.236rem 0;
+  margin: 22px 0;
   padding: 0;
   border: none;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -2681,14 +2681,14 @@ hr {
 }
 
 .grid-padded {
-  padding: 1.236rem 0 1.236rem 1.236rem;
+  padding: 22px 0 22px 22px;
 }
 
 .grid-test-shaded [class*='grid__col-'] {
   background-color: #efeeec;
   border: 1px solid #eae8e6 !important;
   text-align: center;
-  padding: 0.618rem;
+  padding: 11px;
 }
 
 .grid__12-container {
@@ -2707,7 +2707,7 @@ hr {
 [class*='grid__col-'] {
   float: left;
   min-height: 1px;
-  padding-right: 1.236rem;
+  padding-right: 22px;
 }
 [class*='grid__col-']:last-of-type {
   padding-right: 0;
@@ -2994,37 +2994,36 @@ hr {
 }
 
 .icon-left i.fa {
-  margin-right: 0.618rem;
+  margin-right: 11px;
 }
 
 .icon-right i.fa {
-  margin-left: 0.618rem;
+  margin-left: 11px;
 }
 
-.well, .well-dark {
-  margin-top: 0.309rem;
-  margin-bottom: 0.309rem;
-  padding: 0.618rem;
-  border-radius: 10px;
+.card, .card-dark {
+  box-shadow: 0 7px 15px -5px rgba(0, 0, 0, 0.2);
+  margin: 22px;
+  padding: 22px;
+  border-radius: 5px;
   border: 1px solid #eae8e6;
-  background-color: #faf9f9;
 }
 
-.well-dark {
-  background-color: rgba(0, 0, 0, 0.05);
+.card-dark {
+  background-color: #faf9f9;
 }
 
 .table th, .table td {
   padding: 0;
   margin: 0;
-  line-height: 1.236rem;
+  line-height: 22px;
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #646464;
   white-space: nowrap;
 }
 
 .label, .panel__header h1, .messagebox__default .header h1, .panel__footer h1, .messagebox__default .footer h1, button, .button-important, .label-small, .label-big {
-  padding: 0.309rem;
+  padding: 5.5px;
   display: inline-block;
 }
 
@@ -3059,8 +3058,8 @@ hr {
 }
 
 .panel, .messagebox__default, .toast__item, .tooltip__item {
-  padding: 0.618rem;
-  margin-bottom: 0.618rem;
+  padding: 11px;
+  margin-bottom: 11px;
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -3072,7 +3071,7 @@ hr {
 
 .panel__border, .messagebox__default, .toast__item, .tooltip__item {
   border: 1px solid #eae8e6;
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 .panel__shadow {
@@ -3082,9 +3081,9 @@ hr {
 .panel__header, .messagebox__default .header, .panel__footer, .messagebox__default .footer {
   overflow: hidden;
   display: block;
-  margin-right: -0.618rem;
-  margin-left: -0.618rem;
-  padding: 0.309rem 0.618rem;
+  margin-right: -11px;
+  margin-left: -11px;
+  padding: 5.5px 11px;
   box-shadow: inset 1px 1px 0 #fff;
 }
 .panel__header h1, .messagebox__default .header h1, .panel__footer h1, .messagebox__default .footer h1 {
@@ -3093,15 +3092,15 @@ hr {
 .panel__header h1 i.fa, .messagebox__default .header h1 i.fa, .panel__footer h1 i.fa, .messagebox__default .footer h1 i.fa {
   font-family: "FontAwesome";
   color: #646464;
-  margin-right: 0.618rem;
+  margin-right: 11px;
 }
 .panel__header button, .messagebox__default .header button, .panel__footer button, .messagebox__default .footer button {
   float: right;
 }
 
 .panel__header, .messagebox__default .header {
-  margin-top: -0.618rem;
-  margin-bottom: 0.618rem;
+  margin-top: -11px;
+  margin-bottom: 11px;
   border-bottom: 1px solid #eae8e6;
   background-color: #faf9f9;
 }
@@ -3109,11 +3108,11 @@ hr {
 .panel__footer-message {
   overflow: hidden;
   display: block;
-  margin-right: -0.618rem;
-  margin-left: -0.618rem;
-  padding: 0.618rem;
-  margin-top: 0.618rem;
-  margin-bottom: -0.618rem;
+  margin-right: -11px;
+  margin-left: -11px;
+  padding: 11px;
+  margin-top: 11px;
+  margin-bottom: -11px;
   border-top: 1px solid #eae8e6;
   background-color: #faf9f9;
   box-shadow: inset 1px 1px 0 #fff;
@@ -3124,12 +3123,12 @@ hr {
 }
 .panel__footer-message p {
   font-size: 0.9rem;
-  line-height: 1.236rem;
+  line-height: 22px;
 }
 
 .panel__footer, .messagebox__default .footer {
-  margin-top: 0.618rem;
-  margin-bottom: -0.618rem;
+  margin-top: 11px;
+  margin-bottom: -11px;
   border-top: 1px solid #eae8e6;
   background-color: #faf9f9;
 }
@@ -3143,8 +3142,8 @@ button, .button-important {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 33px;
-  padding: 0 1.236rem;
-  margin: 0.309rem;
+  padding: 0 22px;
+  margin: 5.5px;
   background-color: #00a9e0;
   border-radius: 50px;
   border: none;
@@ -3177,7 +3176,7 @@ button:hover, .button-important:hover, button:active, .button-important:active {
 
 .button-small {
   font-size: 0.7rem;
-  padding: 0 0.618rem;
+  padding: 0 11px;
   height: 25px;
   line-height: 22px;
   margin-left: 2px;
@@ -3193,22 +3192,22 @@ button:hover, .button-important:hover, button:active, .button-important:active {
 }
 
 .button__icon-left {
-  padding-left: 0.618rem;
+  padding-left: 11px;
 }
 .button__icon-left i.fa {
-  margin-right: 0.618rem;
+  margin-right: 11px;
 }
 
 .button__icon-right {
-  padding-right: 0.618rem;
+  padding-right: 11px;
 }
 .button__icon-right i.fa {
-  margin-left: 0.618rem;
+  margin-left: 11px;
 }
 
 .button-important {
   font-size: 1rem;
-  padding: 0 1.854rem;
+  padding: 0 33px;
 }
 
 .button-no-border {
@@ -3216,8 +3215,8 @@ button:hover, .button-important:hover, button:active, .button-important:active {
   background-color: rgba(0, 0, 0, 0.02);
   box-shadow: none;
   text-shadow: none;
-  padding-left: 0.618rem;
-  padding-right: 0.618rem;
+  padding-left: 11px;
+  padding-right: 11px;
   color: #005eb8;
 }
 .button-no-border:hover, .button-no-border:active {
@@ -3316,7 +3315,7 @@ select, textarea {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
   margin: 0 3px;
-  padding: 3px 0.309rem;
+  padding: 3px 5.5px;
   border: 1px solid #c8c8c8;
   border-radius: 2px;
   background-color: #fff;
@@ -3324,7 +3323,7 @@ select, textarea {
   vertical-align: middle;
   box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
   height: 33px;
-  line-height: 1.236rem;
+  line-height: 22px;
 }
 input[type=text]:focus,
 input[type=password]:focus,
@@ -3367,7 +3366,7 @@ textarea {
 
 input[type=radio],
 input[type=checkbox] {
-  margin-right: 0.309rem;
+  margin-right: 5.5px;
 }
 input[type=radio]:focus,
 input[type=checkbox]:focus {
@@ -3389,11 +3388,11 @@ legend {
 }
 .form-stacked input, .form-stacked select, .form-stacked textarea {
   display: block;
-  margin: 0.618rem 0 1.236rem 0;
+  margin: 11px 0 22px 0;
 }
 .form-stacked input[type=radio], .form-stacked input[type=checkbox] {
   display: inline;
-  margin-right: 0.309rem;
+  margin-right: 5.5px;
 }
 
 input.form-input-error {
@@ -3425,10 +3424,10 @@ input.subtle {
 }
 
 select.spaced {
-  line-height: 1.236rem;
+  line-height: 22px;
 }
 select.spaced option {
-  padding: 0.309rem;
+  padding: 5.5px;
 }
 
 .input-focus, input[type=text]:focus,
@@ -3507,7 +3506,7 @@ select:focus, textarea:focus {
 }
 .table {
   margin: 0;
-  margin-bottom: 0.618rem;
+  margin-bottom: 11px;
   padding: 0;
   width: 100%;
   table-layout: fixed;
@@ -3518,7 +3517,7 @@ select:focus, textarea:focus {
   border-bottom: 1px solid #eae8e6;
 }
 .table th, .table td {
-  padding: 0.309rem 3px;
+  padding: 5.5px 3px;
   border: none;
   vertical-align: middle;
 }
@@ -3532,7 +3531,7 @@ select:focus, textarea:focus {
 }
 .table thead th i.fa, .table tfoot th i.fa, .table tbody th i.fa {
   font-family: "FontAwesome";
-  margin-right: 0.309rem;
+  margin-right: 5.5px;
 }
 .table thead th {
   border-bottom: 1px solid #00a9e0;
@@ -3623,8 +3622,8 @@ tr.row-header-inline {
 }
 tr.row-header-inline td {
   text-align: center;
-  padding-top: 1.236rem !important;
-  padding-bottom: 0.618rem !important;
+  padding-top: 22px !important;
+  padding-bottom: 11px !important;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid #00a9e0;
 }
@@ -3671,7 +3670,7 @@ tr.row-header-inline td {
 
 .modal__close-button {
   position: absolute;
-  bottom: 0.618rem;
+  bottom: 11px;
   left: 50%;
   margin-left: -20px;
   width: 40px;
@@ -3706,18 +3705,18 @@ tr.row-header-inline td {
   font-weight: 400;
   font-size: 0.8rem;
   text-shadow: 0 1px 0 #fff;
-  line-height: 1.236rem;
+  line-height: 22px;
 }
 .messagebox__default .content {
-  padding: 0.618rem;
-  line-height: 1.236rem;
+  padding: 11px;
+  line-height: 22px;
 }
 .messagebox__default .content p {
   font-size: 1rem;
 }
 .messagebox__default .footer {
   padding: 0;
-  height: 2.472rem;
+  height: 44px;
   box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.05);
 }
 .messagebox__default .footer .footer-buttons {
@@ -3735,7 +3734,7 @@ tr.row-header-inline td {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
   background-color: rgba(0, 0, 0, 0.02);
-  height: 2.472rem;
+  height: 44px;
   width: 100%;
   border-color: transparent;
   border-radius: 0;
@@ -3842,8 +3841,8 @@ tr.row-header-inline td {
 
 #toast__container {
   position: fixed;
-  top: 0.618rem;
-  right: 1.236rem;
+  top: 11px;
+  right: 22px;
   z-index: 1090;
 }
 
@@ -3860,7 +3859,7 @@ tr.row-header-inline td {
 }
 
 .toast__item-content, .toast__item-controls {
-  padding: 0.618rem;
+  padding: 11px;
   display: table-cell;
   vertical-align: middle;
   text-align: left;
@@ -3873,7 +3872,7 @@ tr.row-header-inline td {
 .toast__item-content h1, .toast__item-content p {
   padding: 0;
   margin: 0;
-  line-height: 0.927rem;
+  line-height: 16.5px;
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   color: #005eb8;
@@ -3881,7 +3880,7 @@ tr.row-header-inline td {
 .toast__item-content h1 {
   font-size: 0.7rem;
   font-weight: 700;
-  margin-bottom: 0.309rem;
+  margin-bottom: 5.5px;
 }
 
 .toast__item-controls {
@@ -3961,8 +3960,8 @@ tr.row-header-inline td {
 }
 .tooltip__item .arrow {
   position: absolute;
-  width: 0.618rem;
-  height: 0.618rem;
+  width: 11px;
+  height: 11px;
   background-color: #fff;
   -moz-transform: rotate(45);
   -o-transform: rotate(45);
@@ -3972,21 +3971,21 @@ tr.row-header-inline td {
 }
 
 .tooltip__item-content {
-  padding: 0.618rem;
+  padding: 11px;
   display: table-cell;
 }
 
 .tooltip__item-content .title, .tooltip__item-content p {
   padding: 0;
   margin: 0;
-  line-height: 0.927rem;
+  line-height: 16.5px;
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   color: #005eb8;
 }
 .tooltip__item-content .title {
   font-weight: 700;
-  margin-right: 0.309rem;
+  margin-right: 5.5px;
 }
 
 .tooltip__information {
@@ -4047,13 +4046,13 @@ tr.row-header-inline td {
 .tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p {
   margin: 5px;
   padding: 0;
-  line-height: 1.236rem;
+  line-height: 22px;
   color: #005eb8;
   text-shadow: none;
 }
 
 .tooltip__top .arrow {
-  bottom: -0.309rem;
+  bottom: -5.5px;
   left: 0;
 }
 .tooltip__top p {
@@ -4068,7 +4067,7 @@ tr.row-header-inline td {
 }
 
 .tooltip__right .arrow {
-  left: -0.309rem;
+  left: -5.5px;
   top: 5px;
 }
 
@@ -4080,7 +4079,7 @@ tr.row-header-inline td {
 }
 
 .tooltip__bottom .arrow {
-  top: -0.309rem;
+  top: -5.5px;
   left: 0;
 }
 .tooltip__bottom p {
@@ -4098,7 +4097,7 @@ tr.row-header-inline td {
 }
 
 .tooltip__left .arrow {
-  right: -0.309rem;
+  right: -5.5px;
   top: 5px;
 }
 .tooltip__left p {
@@ -4152,14 +4151,14 @@ body {
   heigth: 50px;
   margin: auto;
   top: 200px;
-  padding: 1.236rem;
+  padding: 22px;
   background-color: #fff;
   box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
 }
 .initialization__message h1 {
   padding: 0;
   margin: 0;
-  margin-bottom: 0.618rem;
+  margin-bottom: 11px;
   color: #005eb8;
   font-size: 1.2em;
 }
@@ -4173,7 +4172,7 @@ body {
   display: block;
   width: 90%;
   margin: 0 auto;
-  padding: 1.236rem;
+  padding: 22px;
 }
 
 .app__header {
@@ -4192,7 +4191,7 @@ body {
 
 .app__header-logo {
   float: left;
-  margin-right: 0.618rem;
+  margin-right: 11px;
 }
 .app__header-logo i.fa {
   color: #968c83;
@@ -4204,7 +4203,7 @@ body {
   float: right;
 }
 .app__header-nav li {
-  margin-right: 1.236rem;
+  margin-right: 22px;
 }
 .app__header-nav li:last-of-type {
   margin-right: 0;
@@ -4219,8 +4218,8 @@ body {
   display: block;
   width: 100%;
   overflow: hidden;
-  padding-top: 1.854rem;
-  padding-bottom: 1.854rem;
+  padding-top: 33px;
+  padding-bottom: 33px;
 }
 .app__hero h1, .app__hero h2, .app__hero h3, .app__hero h4, .app__hero h5 h6, .app__hero p, .app__hero li {
   color: #fff;
@@ -4233,8 +4232,8 @@ body {
 }
 
 .app__content {
-  margin-top: -0.618rem;
-  margin-bottom: 1.854rem;
+  margin-top: -11px;
+  margin-bottom: 33px;
 }
 .app__content .app__column {
   background-color: #fff;

@@ -9,7 +9,7 @@
 import immutable from '../../vendor/immutable.min.js';
 
 let ImmutableMap = function () {
-  let _map = immutable.OrderedMap();
+  let _map = immutable.Map();
 
   /**
    * Returns the Map object
@@ -32,12 +32,11 @@ let ImmutableMap = function () {
    * @param next
    */
   function setState(next) {
-    let c = getState(),
-        d = _.assign({}, c, next);
-
-    _map  = immutable.OrderedMap(immutable.fromJS(d));
-
-    //_map = _map.merge(next);
+    //let c = getState(),
+    //    d = _.assign({}, c, next);
+    //
+    //_map  = immutable.Map(immutable.fromJS(d));
+    _map = _map.merge(next);
   }
 
   function toJSON() {

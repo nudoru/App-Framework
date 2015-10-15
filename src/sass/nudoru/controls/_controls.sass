@@ -12,7 +12,7 @@ $control-button-height: $control-form-element-height
 
 $control-border: 1px solid $color-white-grey-line
 
-$control-border-radius: 3px
+$control-border-radius: 5px
 $control-border-radius-large: 10px
 $control-border-radius-small: 2px
 
@@ -79,17 +79,19 @@ $control-shadow: 0 5px 5px -4px rgba(0,0,0,.25)
   i.fa
     margin-left: $base-line-height
 
-.well
-  margin-top: $half-base-line-height
-  margin-bottom: $half-base-line-height
-  padding: $base-line-height
-  border-radius: $control-border-radius-large
+.card
+  +shadow__one-edge-faint
+  //margin-top: $half-base-line-height
+  //margin-bottom: $half-base-line-height
+  margin: $double-base-line-height
+  padding: $double-base-line-height
+  border-radius: $control-border-radius
   border: $control-border
-  background-color: $color-white-grey-fill
 
-.well-dark
-  @extend .well
-  background-color: rgba(0,0,0,.05)
+
+.card-dark
+  @extend .card
+  background-color: $color-white-grey-fill
 
 @import "labels"
 @import "panels"
