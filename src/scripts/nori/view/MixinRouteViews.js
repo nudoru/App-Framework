@@ -7,9 +7,9 @@
 let MixinRouteViews = function () {
 
   let _this,
-      _currentRouteViewID,
-      _routeViewMountPoint,
-      _routeViewIDMap = Object.create(null);
+      _currentViewID,
+      _defaultMountPoint,
+      _viewIDMap = Object.create(null);
 
   /**
    * Set up listeners
@@ -20,7 +20,7 @@ let MixinRouteViews = function () {
     this.createSubject('viewChange');
 
     Nori.router().subscribe(function onRouteChange(payload) {
-      handleRouteChange(payload.routeObj);
+      handleChange(payload.routeObj);
     });
   }
 
@@ -28,8 +28,8 @@ let MixinRouteViews = function () {
    * Show route from URL hash on change
    * @param routeObj
    */
-  function handleRouteChange(routeObj) {
-    showRouteViewComponent.bind(_this)(routeObj.route);
+  function handleChange(routeObj) {
+    showViewForCondition.bind(_this)(routeObj.route);
   }
 
   /**
@@ -38,8 +38,8 @@ let MixinRouteViews = function () {
    * @param silent If true, will not notify subscribers of the change, prevents
    * double showing on initial load
    */
-  function showViewFromURLHash(silent) {
-    this.showRouteViewComponent(Nori.getCurrentRoute().route);
+  function showViewForChangedCondition(silent) {
+    this.showViewForCondition(Nori.getCurrentRoute().route);
     if (!silent) {
       Nori.router().notifySubscribers();
     }
@@ -51,42 +51,42 @@ let MixinRouteViews = function () {
    * @param elID
    */
   function setViewMountPoint(elID) {
-    _routeViewMountPoint = elID;
+    _defaultMountPoint = elID;
   }
 
   function getViewMountPoint() {
-    return _routeViewMountPoint;
+    return _defaultMountPoint;
   }
 
   /**
    * Map a route to a module view controller
    * @param templateID
-   * @param componentIDorObj
+   * @param component
    */
-  function mapRouteToViewComponent(route, templateID, componentIDorObj) {
-    _routeViewIDMap[route] = templateID;
-    this.mapViewComponent(templateID, componentIDorObj, _routeViewMountPoint);
+  function mapConditionToViewComponent(condition, templateID, component) {
+    _viewIDMap[condition] = templateID;
+    this.mapViewComponent(templateID, component, _defaultMountPoint);
   }
 
   /**
    * Show a view (in response to a route change)
-   * @param route
+   * @param condition
    */
-  function showRouteViewComponent(route) {
-    let componentID = _routeViewIDMap[route];
+  function showViewForCondition(condition) {
+    let componentID = _viewIDMap[condition];
     if (!componentID) {
-      console.warn("No view mapped for route: " + route);
+      console.warn("No view mapped for route: " + condition);
       return;
     }
 
     removeCurrentRouteView();
 
-    _currentRouteViewID = componentID;
-    this.showViewComponent(_currentRouteViewID);
+    _currentViewID = componentID;
+    this.showViewComponent(_currentViewID);
 
     // Transition new view in
-    TweenLite.set(_routeViewMountPoint, {alpha: 0});
-    TweenLite.to(_routeViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeIn});
+    TweenLite.set(_defaultMountPoint, {alpha: 0});
+    TweenLite.to(_defaultMountPoint, 0.25, {alpha: 1, ease: Quad.easeOut});
 
     this.notifySubscribersOf('viewChange', componentID);
   }
@@ -95,19 +95,19 @@ let MixinRouteViews = function () {
    * Remove the currently displayed view
    */
   function removeCurrentRouteView() {
-    if (_currentRouteViewID) {
-      _this.getComponentViewMap()[_currentRouteViewID].controller.dispose();
+    if (_currentViewID) {
+      _this.getComponentViewMap()[_currentViewID].controller.dispose();
     }
-    _currentRouteViewID = '';
+    _currentViewID = '';
   }
 
   return {
-    initializeRouteViews   : initializeRouteViews,
-    showViewFromURLHash    : showViewFromURLHash,
-    showRouteViewComponent : showRouteViewComponent,
-    setViewMountPoint      : setViewMountPoint,
-    getViewMountPoint      : getViewMountPoint,
-    mapRouteToViewComponent: mapRouteToViewComponent
+    initializeRouteViews       : initializeRouteViews,
+    showViewForChangedCondition: showViewForChangedCondition,
+    showViewForCondition       : showViewForCondition,
+    setViewMountPoint          : setViewMountPoint,
+    getViewMountPoint          : getViewMountPoint,
+    mapConditionToViewComponent: mapConditionToViewComponent
   };
 
 };

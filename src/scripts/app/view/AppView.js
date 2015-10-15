@@ -28,9 +28,9 @@ let AppViewModule = Nori.createView({
   configureViews() {
     // Container for routed views
     this.setViewMountPoint('#contents');
-    this.mapRouteToViewComponent('/', 'default', TemplateViewFactory());
-    this.mapRouteToViewComponent('/styles', 'debug-styletest', TemplateViewFactory());
-    this.mapRouteToViewComponent('/controls', 'debug-controls', TemplateViewFactory());
+    this.mapConditionToViewComponent('/', 'default', TemplateViewFactory());
+    this.mapConditionToViewComponent('/styles', 'debug-styletest', TemplateViewFactory());
+    this.mapConditionToViewComponent('/controls', 'debug-controls', TemplateViewFactory());
 
     // Alternately, map views to different store states with MixinStoreStateViews
     //this.mapStateToViewComponent(state, templateID, componentIDorObj);

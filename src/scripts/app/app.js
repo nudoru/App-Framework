@@ -31,7 +31,7 @@ let App = Nori.createApplication({
    */
   runApplication: function () {
     AppView.removeLoadingMessage();
-    AppView.showViewFromURLHash(true); // Start with the route in the current URL
+    AppView.showViewForChangedCondition(true); // Start with the route in the current URL
   }
 
 });

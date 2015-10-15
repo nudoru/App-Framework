@@ -7,11 +7,11 @@
 let MixinStoreStateViews = function () {
 
   let _this,
-      _watchedStore,
       _currentViewID,
-      _currentStoreState,
-      _stateViewMountPoint,
-      _stateViewIDMap = Object.create(null);
+      _defaultMountPoint,
+      _viewIDMap = Object.create(null),
+      _watchedStore,
+      _currentStoreState;
 
   /**
    * Set up listeners
@@ -23,7 +23,7 @@ let MixinStoreStateViews = function () {
     this.createSubject('viewChange');
 
     _watchedStore.subscribe(function onStateChange() {
-      handleStateChange();
+      handleChange();
     });
   }
 
@@ -31,16 +31,16 @@ let MixinStoreStateViews = function () {
    * Show route from URL hash on change
    * @param routeObj
    */
-  function handleStateChange() {
-    showViewForCurrentStoreState();
+  function handleChange() {
+    showViewForChangedCondition();
   }
 
-  function showViewForCurrentStoreState() {
+  function showViewForChangedCondition() {
     let state = _watchedStore.getState().currentState;
     if (state) {
       if (state !== _currentStoreState) {
         _currentStoreState = state;
-        showStateViewComponent.bind(_this)(_currentStoreState);
+        showViewForCondition.bind(_this)(_currentStoreState);
       }
     }
   }
@@ -51,31 +51,31 @@ let MixinStoreStateViews = function () {
    * @param elID
    */
   function setViewMountPoint(elID) {
-    _stateViewMountPoint = elID;
+    _defaultMountPoint = elID;
   }
 
   function getViewMountPoint() {
-    return _stateViewMountPoint;
+    return _defaultMountPoint;
   }
 
   /**
    * Map a route to a module view controller
    * @param templateID
-   * @param componentIDorObj
+   * @param component
    */
-  function mapStateToViewComponent(state, templateID, componentIDorObj) {
-    _stateViewIDMap[state] = templateID;
-    this.mapViewComponent(templateID, componentIDorObj, _stateViewMountPoint);
+  function mapConditionToViewComponent(condition, templateID, component) {
+    _viewIDMap[condition] = templateID;
+    this.mapViewComponent(templateID, component, _defaultMountPoint);
   }
 
   /**
    * Show a view (in response to a route change)
-   * @param state
+   * @param condition
    */
-  function showStateViewComponent(state) {
-    let componentID = _stateViewIDMap[state];
+  function showViewForCondition(condition) {
+    let componentID = _viewIDMap[condition];
     if (!componentID) {
-      console.warn("No view mapped for route: " + state);
+      console.warn("No view mapped for route: " + condition);
       return;
     }
 
@@ -85,8 +85,8 @@ let MixinStoreStateViews = function () {
     this.showViewComponent(_currentViewID);
 
     // Transition new view in
-    TweenLite.set(_stateViewMountPoint, {alpha: 0});
-    TweenLite.to(_stateViewMountPoint, 0.25, {alpha: 1, ease: Quad.easeOut});
+    TweenLite.set(_defaultMountPoint, {alpha: 0});
+    TweenLite.to(_defaultMountPoint, 0.25, {alpha: 1, ease: Quad.easeOut});
 
     this.notifySubscribersOf('viewChange', componentID);
   }
@@ -102,12 +102,12 @@ let MixinStoreStateViews = function () {
   }
 
   return {
-    initializeStateViews        : initializeStateViews,
-    showViewForCurrentStoreState: showViewForCurrentStoreState,
-    showStateViewComponent      : showStateViewComponent,
-    setViewMountPoint           : setViewMountPoint,
-    getViewMountPoint           : getViewMountPoint,
-    mapStateToViewComponent     : mapStateToViewComponent
+    initializeStateViews       : initializeStateViews,
+    showViewForChangedState    : showViewForChangedCondition,
+    showViewForCondition       : showViewForCondition,
+    setViewMountPoint          : setViewMountPoint,
+    getViewMountPoint          : getViewMountPoint,
+    mapConditionToViewComponent: mapConditionToViewComponent
   };
 
 };
