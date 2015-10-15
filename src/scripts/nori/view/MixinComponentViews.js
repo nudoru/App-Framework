@@ -6,9 +6,6 @@
 
 import _componentViewFactory from './ViewComponent.js';
 import _eventDelegatorFactory from './MixinEventDelegator.js';
-import _observableFactory from '../utils/MixinObservableSubject.js';
-import _stateObjFactory from '../store/SimpleStore.js';
-import _immutableMapFactory from '../store/ImmutableMap.js';
 
 let MixinComponentViews = function () {
 
@@ -44,8 +41,6 @@ let MixinComponentViews = function () {
       componentAssembly = [
         _componentViewFactory(),
         _eventDelegatorFactory(),
-        _observableFactory(),
-        _immutableMapFactory(),
         componentSource
       ];
 

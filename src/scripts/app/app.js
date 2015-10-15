@@ -1,8 +1,8 @@
-import _appActions from './action/ActionCreator.js';
-import _appActionConstants from './action/ActionConstants.js';
-import _noriActions from '../nori/action/ActionCreator.js';
-import _appStore from './store/AppStore.js';
-import _appView from './view/AppView.js';
+import AppActions from './action/ActionCreator.js';
+import AppActionConstants from './action/ActionConstants.js';
+import NoriActions from '../nori/action/ActionCreator.js';
+import AppStore from './store/AppStore.js';
+import AppView from './view/AppView.js';
 
 
 
@@ -20,8 +20,8 @@ let App = Nori.createApplication({
    * Called when App is required in main.js
    */
   initialize: function () {
-    _appView.initialize();
-    _appStore.initialize();
+    AppView.initialize();
+    AppStore.initialize();
 
     this.runApplication();
   },
@@ -30,8 +30,8 @@ let App = Nori.createApplication({
    * Remove the "Please wait" cover and start the app
    */
   runApplication: function () {
-    _appView.removeLoadingMessage();
-    _appView.showViewFromURLHash(true); // Start with the route in the current URL
+    AppView.removeLoadingMessage();
+    AppView.showViewFromURLHash(true); // Start with the route in the current URL
   }
 
 });

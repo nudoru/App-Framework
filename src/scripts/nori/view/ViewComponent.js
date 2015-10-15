@@ -9,41 +9,49 @@ import _template from '../utils/Templating.js';
 import _renderer from '../utils/Renderer.js';
 import is from '../../nudoru/util/is.js';
 
+// Lifecycle state constants
+const LS_NO_INIT   = 0,
+      LS_INITED    = 1,
+      LS_UPDATING  = 2,
+      LS_RENDERING = 3,
+      LS_MOUNTED   = 4,
+      LS_UNMOUNTED = 5,
+      LS_DISPOSED  = 9;
+
 var ViewComponent = function () {
 
-  let _isInitialized = false,
-      _props,
+  let _internalState  = {},
+      _internalProps  = {},
+      _publicState    = {},
+      _publicProps    = {},
+      _lifecycleState = LS_NO_INIT,
+      _isMounted      = false,
+      _regions        = {},
       _id,
       _templateObjCache,
       _html,
       _DOMElement,
       _mountPoint,
-      _mountDelay,
-      _regions       = {},
-      _isMounted     = false;
+      _mountDelay;
+
 
   /**
    * Initialization
    * @param initProps
    */
   function initializeComponent(initProps) {
-    _props = _.assign({}, this.getDefaultProps(), initProps);
-
-    _id         = _props.id;
-    _mountPoint = _props.mountPoint;
-
+    setProps(_.assign({}, this.getDefaultProps(), initProps));
     this.setState(this.getInitialState());
     this.setEvents(this.defineEvents());
 
-    _regions = this.defineRegions();
+    _id         = _internalProps.id;
+    _mountPoint = _internalProps.mountPoint;
 
-    this.createSubject('update');
-    this.createSubject('mount');
-    this.createSubject('unmount');
+    _regions = this.defineRegions();
 
     this.initializeRegions();
 
-    _isInitialized = true;
+    _lifecycleState = LS_INITED;
   }
 
   /**
@@ -90,6 +98,8 @@ var ViewComponent = function () {
   }
 
   function update() {
+    _lifecycleState = LS_UPDATING;
+
     let nextState = this.componentWillUpdate();
 
     if (this.shouldComponentUpdate(nextState)) {
@@ -102,8 +112,10 @@ var ViewComponent = function () {
       }
 
       this.updateRegions();
+    }
 
-      this.notifySubscribersOf('update', this.getID());
+    if (_lifecycleState === LS_UPDATING) {
+      _lifecycleState = LS_INITED;
     }
   }
 
@@ -122,6 +134,8 @@ var ViewComponent = function () {
    * @returns {*}
    */
   function componentRender() {
+    _lifecycleState = LS_RENDERING;
+
     if (!_templateObjCache) {
       _templateObjCache = this.template(this.getState());
     }
@@ -165,6 +179,8 @@ var ViewComponent = function () {
       return;
     }
 
+    _lifecycleState = LS_MOUNTED;
+
     _isMounted = true;
 
     _DOMElement = (_renderer.render({
@@ -181,23 +197,22 @@ var ViewComponent = function () {
 
     if (this.componentDidMount) {
       //this.componentDidMount.bind(this);
-
-      // TODO fix this issue, shouldn't need this hack
-      // This delay helps animation on components run on mount
-      _mountDelay = _.delay(this.mountAfterDelay.bind(this), 10);
+      _mountDelay = _.delay(this.mountAfterDelay.bind(this), 1);
     }
-
-    this.notifySubscribersOf('mount', this.getID());
   }
 
+  /**
+   * HACK
+   * Experiencing issues with animations running in componentDidMount
+   * after renders and state changes. This delay fixes the issues.
+   */
   function mountAfterDelay() {
     if (_mountDelay) {
       window.clearTimeout(_mountDelay);
     }
 
-    this.mountRegions();
-
     this.componentDidMount();
+    this.mountRegions();
   }
 
   /**
@@ -212,18 +227,15 @@ var ViewComponent = function () {
    * Call after it's been added to a view
    */
   function componentDidMount() {
-    // stub
   }
 
   /**
    * Call when unloading
    */
   function componentWillUnmount() {
-    // stub
   }
 
   function unmount() {
-
     if (_mountDelay) {
       window.clearTimeout(_mountDelay);
     }
@@ -235,6 +247,7 @@ var ViewComponent = function () {
 
     this.componentWillUnmount();
 
+    // NO
     //this.unmountRegions();
 
     _isMounted = false;
@@ -250,13 +263,16 @@ var ViewComponent = function () {
 
     _html       = '';
     _DOMElement = null;
-    this.notifySubscribersOf('unmount', this.getID());
+
+    _lifecycleState = LS_UNMOUNTED;
   }
 
   function dispose() {
     this.componentWillDispose();
     this.disposeRegions();
     this.unmount();
+
+    _lifecycleState = LS_DISPOSED;
   }
 
   function componentWillDispose() {
@@ -266,6 +282,8 @@ var ViewComponent = function () {
   //----------------------------------------------------------------------------
   //  Regions
   //----------------------------------------------------------------------------
+
+  //TODO reduce code repetition
 
   function defineRegions() {
     return undefined;
@@ -316,23 +334,70 @@ var ViewComponent = function () {
   }
 
   //----------------------------------------------------------------------------
-  //  Accessors
+  //  Props and state
   //----------------------------------------------------------------------------
 
-  function isInitialized() {
-    return _isInitialized;
+  function getInitialState() {
+    this.setState({});
+  }
+
+  function getState() {
+    return _.assign({}, _internalState);
+  }
+
+  function setState(nextState) {
+    if(_.isEqual(_internalState, nextState)) {
+      return;
+    }
+
+    _internalState = _.assign({}, _internalState, nextState);
+    // keeping the object reference
+    _publicState = _.assign(_publicState, _internalState);
+
+    if (_publicState.onChange) {
+      _publicState.onChange.apply(this);
+    }
   }
 
   function getProps() {
-    return _.assign({}, _props);
+    return _.assign({}, _internalProps);
+  }
+
+  function setProps(nextProps) {
+    if(_.isEqual(_internalProps, nextProps)) {
+      return;
+    }
+
+    if(this.componentWillReceiveProps && _lifecycleState > LS_INITED) {
+      this.componentWillReceiveProps(nextProps);
+    }
+
+    _internalProps = _.merge({}, _internalProps, nextProps);
+    // keeping the object reference
+    _publicProps = _.assign(_publicProps, _internalProps);
+
+    if (_publicProps.onChange) {
+      _publicProps.onChange.apply(this);
+    }
+  }
+
+  function componentWillReceiveProps(nextProps) {
+  }
+
+  //----------------------------------------------------------------------------
+  //  Accessors
+  //----------------------------------------------------------------------------
+
+  function getLifeCycleState() {
+    return _lifecycleState;
+  }
+
+  function isInitialized() {
+    return _lifecycleState > LS_NO_INIT;
   }
 
   function isMounted() {
     return _isMounted;
-  }
-
-  function getInitialState() {
-    this.setState({});
   }
 
   function getID() {
@@ -348,39 +413,46 @@ var ViewComponent = function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeComponent  : initializeComponent,
-    getDefaultProps      : getDefaultProps,
-    defineRegions        : defineRegions,
-    defineEvents         : defineEvents,
-    isInitialized        : isInitialized,
-    getProps             : getProps,
-    getInitialState      : getInitialState,
-    getID                : getID,
-    template             : template,
-    getDOMElement        : getDOMElement,
-    isMounted            : isMounted,
-    bind                 : bind,
-    componentWillUpdate  : componentWillUpdate,
-    shouldComponentUpdate: shouldComponentUpdate,
-    update               : update,
-    componentRender      : componentRender,
-    render               : render,
-    mount                : mount,
-    shouldDelegateEvents : shouldDelegateEvents,
-    mountAfterDelay      : mountAfterDelay,
-    componentDidMount    : componentDidMount,
-    componentWillUnmount : componentWillUnmount,
-    unmount              : unmount,
-    dispose              : dispose,
-    componentWillDispose : componentWillDispose,
-    getRegion            : getRegion,
-    getRegionIDs         : getRegionIDs,
-    initializeRegions    : initializeRegions,
-    updateRegions        : updateRegions,
-    renderRegions        : renderRegions,
-    mountRegions         : mountRegions,
-    unmountRegions       : unmountRegions,
-    disposeRegions       : disposeRegions
+    initializeComponent      : initializeComponent,
+    state                    : _publicState,
+    props                    : _publicProps,
+    getProps                 : getProps,
+    setProps                 : setProps,
+    getInitialState          : getInitialState,
+    getState                 : getState,
+    setState                 : setState,
+    getDefaultProps          : getDefaultProps,
+    defineRegions            : defineRegions,
+    defineEvents             : defineEvents,
+    getLifeCycleState        : getLifeCycleState,
+    isInitialized            : isInitialized,
+    getID                    : getID,
+    template                 : template,
+    getDOMElement            : getDOMElement,
+    isMounted                : isMounted,
+    bind                     : bind,
+    componentWillReceiveProps: componentWillReceiveProps,
+    componentWillUpdate      : componentWillUpdate,
+    shouldComponentUpdate    : shouldComponentUpdate,
+    update                   : update,
+    componentRender          : componentRender,
+    render                   : render,
+    mount                    : mount,
+    shouldDelegateEvents     : shouldDelegateEvents,
+    mountAfterDelay          : mountAfterDelay,
+    componentDidMount        : componentDidMount,
+    componentWillUnmount     : componentWillUnmount,
+    unmount                  : unmount,
+    dispose                  : dispose,
+    componentWillDispose     : componentWillDispose,
+    getRegion                : getRegion,
+    getRegionIDs             : getRegionIDs,
+    initializeRegions        : initializeRegions,
+    updateRegions            : updateRegions,
+    renderRegions            : renderRegions,
+    mountRegions             : mountRegions,
+    unmountRegions           : unmountRegions,
+    disposeRegions           : disposeRegions
   };
 
 };

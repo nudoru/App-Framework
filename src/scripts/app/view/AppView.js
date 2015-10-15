@@ -1,11 +1,8 @@
-import _appStore from '../store/AppStore.js';
-import _mixinApplicationView from '../../nori/view/ApplicationView.js';
-import _mixinNudoruControls from '../../nori/view/MixinNudoruControls.js';
-import _mixinRouteViews from '../../nori/view/MixinRouteViews.js';
-import _templateViewFactory from './TemplateViewComponent.js';
-
-let _imagesLoadedInst,
-    _preloadImages = [];
+import AppStore from '../store/AppStore.js';
+import MixinApplicationView from '../../nori/view/ApplicationView.js';
+import MixinNudoruControls from '../../nori/view/MixinNudoruControls.js';
+import MixinRouteViews from '../../nori/view/MixinRouteViews.js';
+import TemplateViewFactory from './TemplateViewComponent.js';
 
 /**
  * View for an application.
@@ -14,9 +11,9 @@ let _imagesLoadedInst,
 let AppViewModule = Nori.createView({
 
   mixins: [
-    _mixinApplicationView,
-    _mixinNudoruControls,
-    _mixinRouteViews
+    MixinApplicationView,
+    MixinNudoruControls,
+    MixinRouteViews
   ],
 
   initialize: function () {
@@ -27,20 +24,12 @@ let AppViewModule = Nori.createView({
     this.configureViews();
   },
 
-  preloadImages() {
-    // refer to docs http://desandro.github.io/imagesloaded/
-    //imagesLoadedInst = new imagesLoaded(_preloadImages, this.imagesPreloaded.bind(this));
-  },
-
-  imagesPreloaded() {
-  },
-
   configureViews() {
     // Container for routed views
     this.setViewMountPoint('#contents');
-    this.mapRouteToViewComponent('/', 'default', _templateViewFactory());
-    this.mapRouteToViewComponent('/styles', 'debug-styletest', _templateViewFactory());
-    this.mapRouteToViewComponent('/controls', 'debug-controls', _templateViewFactory());
+    this.mapRouteToViewComponent('/', 'default', TemplateViewFactory());
+    this.mapRouteToViewComponent('/styles', 'debug-styletest', TemplateViewFactory());
+    this.mapRouteToViewComponent('/controls', 'debug-controls', TemplateViewFactory());
 
     // Alternately, map views to different store states with MixinStoreStateViews
     //this.mapStateToViewComponent('TITLE', 'title', screenTitle);

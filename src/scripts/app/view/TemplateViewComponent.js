@@ -1,9 +1,9 @@
-import _noriActions from '../../nori/action/ActionCreator';
-import _appView from './AppView';
-import _appStore from '../store/AppStore';
-import _template from '../../nori/utils/Templating.js';
-import _domUtils from '../../nudoru/browser/DOMUtils.js';
-import _mixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
+import NoriActions from '../../nori/action/ActionCreator';
+import AppView from './AppView';
+import AppStore from '../store/AppStore';
+import Template from '../../nori/utils/Templating.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import MixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -15,7 +15,7 @@ let Component = Nori.view().createComponentView({
    * common functionality between then.
    */
   mixins: [
-    _mixinDOMManipulation
+    MixinDOMManipulation
   ],
 
   /**
@@ -25,21 +25,23 @@ let Component = Nori.view().createComponentView({
    */
   initialize(initProps) {
     //Bind to a map, update will be called on changes to the map
-    //this.bind(_appStore); // Reducer store, map id string or map object
+    //this.bind(AppStore); // Reducer store, map id string or map object
+
+    // Bind changes in state or prop to functions
+    // this.state.onChange = function() {};
+    // this.props.onChange = function() {};
   },
+
+  /**
+   * Default returns AppStore.getState():
+   */
+  //getInitialState() {},
 
   /**
    * Sub view components. Provide config props as param to factory method
    * @returns {{regionID: *}}
    */
-  //defineRegions() {
-  //  return {
-  //    regionID : _regionModule({
-  //      id        : 'game__playerstats',
-  //      mountPoint: '#game__localplayerstats'
-  //    })
-  //  };
-  //},
+  //defineRegions() {},
 
   /**
    * Returns a Lodash client side template function by getting the HTML source from
@@ -50,11 +52,7 @@ let Component = Nori.view().createComponentView({
    *
    * @returns {Function}
    */
-  //template: function() {
-  //  // assumes the template ID matches the component's ID as passed on initialize
-  //  var html = _template.getSource(this.getID());
-  //  return _.template(html);
-  //},
+  //template: function() {},
 
   /**
    * Create an object to be used to define events on DOM elements
@@ -70,14 +68,14 @@ let Component = Nori.view().createComponentView({
    * Set initial state properties. Call once on first render
    */
   getInitialState() {
-    return _appStore.getState();
+    return AppStore.getState();
   },
 
   /**
-   * State change on bound stores (map, etc.) Return nextState object
+   * State change on bound stores. Return nextState object
    */
   componentWillUpdate() {
-    var nextState = _appStore.getState();
+    var nextState = AppStore.getState();
     nextState.greeting += ' (updated)';
     return nextState;
   },
@@ -86,15 +84,13 @@ let Component = Nori.view().createComponentView({
    * Component HTML was attached to the DOM
    */
   componentDidMount() {
-    //
+    let el = this.getDOMElement();
   },
 
   /**
    * Component will be removed from the DOM
    */
-  componentWillUnmount() {
-    // Clean up
-  }
+  componentWillUnmount() {}
 
 });
 

@@ -302,9 +302,6 @@ var _TemplateViewComponentJs = require('./TemplateViewComponent.js');
 
 var _TemplateViewComponentJs2 = _interopRequireDefault(_TemplateViewComponentJs);
 
-var _imagesLoadedInst = undefined,
-    _preloadImages = [];
-
 /**
  * View for an application.
  */
@@ -320,13 +317,6 @@ var AppViewModule = Nori.createView({
 
     this.configureViews();
   },
-
-  preloadImages: function preloadImages() {
-    // refer to docs http://desandro.github.io/imagesloaded/
-    //imagesLoadedInst = new imagesLoaded(_preloadImages, this.imagesPreloaded.bind(this));
-  },
-
-  imagesPreloaded: function imagesPreloaded() {},
 
   configureViews: function configureViews() {
     // Container for routed views
@@ -395,21 +385,23 @@ var Component = Nori.view().createComponentView({
    */
   initialize: function initialize(initProps) {
     //Bind to a map, update will be called on changes to the map
-    //this.bind(_appStore); // Reducer store, map id string or map object
+    //this.bind(AppStore); // Reducer store, map id string or map object
+
+    // Bind changes in state or prop to functions
+    // this.state.onChange = function() {};
+    // this.props.onChange = function() {};
   },
+
+  /**
+   * Default returns AppStore.getState():
+   */
+  //getInitialState() {},
 
   /**
    * Sub view components. Provide config props as param to factory method
    * @returns {{regionID: *}}
    */
-  //defineRegions() {
-  //  return {
-  //    regionID : _regionModule({
-  //      id        : 'game__playerstats',
-  //      mountPoint: '#game__localplayerstats'
-  //    })
-  //  };
-  //},
+  //defineRegions() {},
 
   /**
    * Returns a Lodash client side template function by getting the HTML source from
@@ -420,11 +412,7 @@ var Component = Nori.view().createComponentView({
    *
    * @returns {Function}
    */
-  //template: function() {
-  //  // assumes the template ID matches the component's ID as passed on initialize
-  //  var html = _template.getSource(this.getID());
-  //  return _.template(html);
-  //},
+  //template: function() {},
 
   /**
    * Create an object to be used to define events on DOM elements
@@ -444,7 +432,7 @@ var Component = Nori.view().createComponentView({
   },
 
   /**
-   * State change on bound stores (map, etc.) Return nextState object
+   * State change on bound stores. Return nextState object
    */
   componentWillUpdate: function componentWillUpdate() {
     var nextState = _storeAppStore2['default'].getState();
@@ -456,15 +444,13 @@ var Component = Nori.view().createComponentView({
    * Component HTML was attached to the DOM
    */
   componentDidMount: function componentDidMount() {
-    //
+    var el = this.getDOMElement();
   },
 
   /**
    * Component will be removed from the DOM
    */
-  componentWillUnmount: function componentWillUnmount() {
-    // Clean up
-  }
+  componentWillUnmount: function componentWillUnmount() {}
 
 });
 
@@ -1873,18 +1859,6 @@ var _MixinEventDelegatorJs = require('./MixinEventDelegator.js');
 
 var _MixinEventDelegatorJs2 = _interopRequireDefault(_MixinEventDelegatorJs);
 
-var _utilsMixinObservableSubjectJs = require('../utils/MixinObservableSubject.js');
-
-var _utilsMixinObservableSubjectJs2 = _interopRequireDefault(_utilsMixinObservableSubjectJs);
-
-var _storeSimpleStoreJs = require('../store/SimpleStore.js');
-
-var _storeSimpleStoreJs2 = _interopRequireDefault(_storeSimpleStoreJs);
-
-var _storeImmutableMapJs = require('../store/ImmutableMap.js');
-
-var _storeImmutableMapJs2 = _interopRequireDefault(_storeImmutableMapJs);
-
 var MixinComponentViews = function MixinComponentViews() {
 
   var _componentViewMap = Object.create(null),
@@ -1918,7 +1892,7 @@ var MixinComponentViews = function MixinComponentViews() {
           finalComponent = undefined,
           previousInitialize = undefined;
 
-      componentAssembly = [(0, _ViewComponentJs2['default'])(), (0, _MixinEventDelegatorJs2['default'])(), (0, _utilsMixinObservableSubjectJs2['default'])(), (0, _storeImmutableMapJs2['default'])(), componentSource];
+      componentAssembly = [(0, _ViewComponentJs2['default'])(), (0, _MixinEventDelegatorJs2['default'])(), componentSource];
 
       if (componentSource.mixins) {
         componentAssembly = componentAssembly.concat(componentSource.mixins);
@@ -1996,7 +1970,7 @@ var MixinComponentViews = function MixinComponentViews() {
 exports['default'] = MixinComponentViews();
 module.exports = exports['default'];
 
-},{"../store/ImmutableMap.js":12,"../store/SimpleStore.js":14,"../utils/MixinObservableSubject.js":16,"./MixinEventDelegator.js":24,"./ViewComponent.js":27}],23:[function(require,module,exports){
+},{"./MixinEventDelegator.js":24,"./ViewComponent.js":27}],23:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2590,41 +2564,48 @@ var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
 var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 
+// Lifecycle state constants
+var LS_NO_INIT = 0,
+    LS_INITED = 1,
+    LS_UPDATING = 2,
+    LS_RENDERING = 3,
+    LS_MOUNTED = 4,
+    LS_UNMOUNTED = 5,
+    LS_DISPOSED = 9;
+
 var ViewComponent = function ViewComponent() {
 
-  var _isInitialized = false,
-      _props = undefined,
+  var _internalState = {},
+      _internalProps = {},
+      _publicState = {},
+      _publicProps = {},
+      _lifecycleState = LS_NO_INIT,
+      _isMounted = false,
+      _regions = {},
       _id = undefined,
       _templateObjCache = undefined,
       _html = undefined,
       _DOMElement = undefined,
       _mountPoint = undefined,
-      _mountDelay = undefined,
-      _regions = {},
-      _isMounted = false;
+      _mountDelay = undefined;
 
   /**
    * Initialization
    * @param initProps
    */
   function initializeComponent(initProps) {
-    _props = _.assign({}, this.getDefaultProps(), initProps);
-
-    _id = _props.id;
-    _mountPoint = _props.mountPoint;
-
+    setProps(_.assign({}, this.getDefaultProps(), initProps));
     this.setState(this.getInitialState());
     this.setEvents(this.defineEvents());
 
-    _regions = this.defineRegions();
+    _id = _internalProps.id;
+    _mountPoint = _internalProps.mountPoint;
 
-    this.createSubject('update');
-    this.createSubject('mount');
-    this.createSubject('unmount');
+    _regions = this.defineRegions();
 
     this.initializeRegions();
 
-    _isInitialized = true;
+    _lifecycleState = LS_INITED;
   }
 
   /**
@@ -2671,6 +2652,8 @@ var ViewComponent = function ViewComponent() {
   }
 
   function update() {
+    _lifecycleState = LS_UPDATING;
+
     var nextState = this.componentWillUpdate();
 
     if (this.shouldComponentUpdate(nextState)) {
@@ -2683,8 +2666,10 @@ var ViewComponent = function ViewComponent() {
       }
 
       this.updateRegions();
+    }
 
-      this.notifySubscribersOf('update', this.getID());
+    if (_lifecycleState === LS_UPDATING) {
+      _lifecycleState = LS_INITED;
     }
   }
 
@@ -2703,6 +2688,8 @@ var ViewComponent = function ViewComponent() {
    * @returns {*}
    */
   function componentRender() {
+    _lifecycleState = LS_RENDERING;
+
     if (!_templateObjCache) {
       _templateObjCache = this.template(this.getState());
     }
@@ -2746,6 +2733,8 @@ var ViewComponent = function ViewComponent() {
       return;
     }
 
+    _lifecycleState = LS_MOUNTED;
+
     _isMounted = true;
 
     _DOMElement = _utilsRendererJs2['default'].render({
@@ -2762,23 +2751,22 @@ var ViewComponent = function ViewComponent() {
 
     if (this.componentDidMount) {
       //this.componentDidMount.bind(this);
-
-      // TODO fix this issue, shouldn't need this hack
-      // This delay helps animation on components run on mount
-      _mountDelay = _.delay(this.mountAfterDelay.bind(this), 10);
+      _mountDelay = _.delay(this.mountAfterDelay.bind(this), 1);
     }
-
-    this.notifySubscribersOf('mount', this.getID());
   }
 
+  /**
+   * HACK
+   * Experiencing issues with animations running in componentDidMount
+   * after renders and state changes. This delay fixes the issues.
+   */
   function mountAfterDelay() {
     if (_mountDelay) {
       window.clearTimeout(_mountDelay);
     }
 
-    this.mountRegions();
-
     this.componentDidMount();
+    this.mountRegions();
   }
 
   /**
@@ -2793,17 +2781,13 @@ var ViewComponent = function ViewComponent() {
    * Call after it's been added to a view
    */
   function componentDidMount() {}
-  // stub
 
   /**
    * Call when unloading
    */
-  function componentWillUnmount() {
-    // stub
-  }
+  function componentWillUnmount() {}
 
   function unmount() {
-
     if (_mountDelay) {
       window.clearTimeout(_mountDelay);
     }
@@ -2815,6 +2799,7 @@ var ViewComponent = function ViewComponent() {
 
     this.componentWillUnmount();
 
+    // NO
     //this.unmountRegions();
 
     _isMounted = false;
@@ -2830,13 +2815,16 @@ var ViewComponent = function ViewComponent() {
 
     _html = '';
     _DOMElement = null;
-    this.notifySubscribersOf('unmount', this.getID());
+
+    _lifecycleState = LS_UNMOUNTED;
   }
 
   function dispose() {
     this.componentWillDispose();
     this.disposeRegions();
     this.unmount();
+
+    _lifecycleState = LS_DISPOSED;
   }
 
   function componentWillDispose() {}
@@ -2845,6 +2833,8 @@ var ViewComponent = function ViewComponent() {
   //----------------------------------------------------------------------------
   //  Regions
   //----------------------------------------------------------------------------
+
+  //TODO reduce code repetition
 
   function defineRegions() {
     return undefined;
@@ -2895,23 +2885,69 @@ var ViewComponent = function ViewComponent() {
   }
 
   //----------------------------------------------------------------------------
-  //  Accessors
+  //  Props and state
   //----------------------------------------------------------------------------
 
-  function isInitialized() {
-    return _isInitialized;
+  function getInitialState() {
+    this.setState({});
+  }
+
+  function getState() {
+    return _.assign({}, _internalState);
+  }
+
+  function setState(nextState) {
+    if (_.isEqual(_internalState, nextState)) {
+      return;
+    }
+
+    _internalState = _.assign({}, _internalState, nextState);
+    // keeping the object reference
+    _publicState = _.assign(_publicState, _internalState);
+
+    if (_publicState.onChange) {
+      _publicState.onChange.apply(this);
+    }
   }
 
   function getProps() {
-    return _.assign({}, _props);
+    return _.assign({}, _internalProps);
+  }
+
+  function setProps(nextProps) {
+    if (_.isEqual(_internalProps, nextProps)) {
+      return;
+    }
+
+    if (this.componentWillReceiveProps && _lifecycleState > LS_INITED) {
+      this.componentWillReceiveProps(nextProps);
+    }
+
+    _internalProps = _.merge({}, _internalProps, nextProps);
+    // keeping the object reference
+    _publicProps = _.assign(_publicProps, _internalProps);
+
+    if (_publicProps.onChange) {
+      _publicProps.onChange.apply(this);
+    }
+  }
+
+  function componentWillReceiveProps(nextProps) {}
+
+  //----------------------------------------------------------------------------
+  //  Accessors
+  //----------------------------------------------------------------------------
+
+  function getLifeCycleState() {
+    return _lifecycleState;
+  }
+
+  function isInitialized() {
+    return _lifecycleState > LS_NO_INIT;
   }
 
   function isMounted() {
     return _isMounted;
-  }
-
-  function getInitialState() {
-    this.setState({});
   }
 
   function getID() {
@@ -2928,17 +2964,24 @@ var ViewComponent = function ViewComponent() {
 
   return {
     initializeComponent: initializeComponent,
+    state: _publicState,
+    props: _publicProps,
+    getProps: getProps,
+    setProps: setProps,
+    getInitialState: getInitialState,
+    getState: getState,
+    setState: setState,
     getDefaultProps: getDefaultProps,
     defineRegions: defineRegions,
     defineEvents: defineEvents,
+    getLifeCycleState: getLifeCycleState,
     isInitialized: isInitialized,
-    getProps: getProps,
-    getInitialState: getInitialState,
     getID: getID,
     template: template,
     getDOMElement: getDOMElement,
     isMounted: isMounted,
     bind: bind,
+    componentWillReceiveProps: componentWillReceiveProps,
     componentWillUpdate: componentWillUpdate,
     shouldComponentUpdate: shouldComponentUpdate,
     update: update,

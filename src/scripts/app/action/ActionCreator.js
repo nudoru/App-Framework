@@ -1,4 +1,4 @@
-import _appActionConstants from './ActionConstants.js';
+import AppActionConstants from './ActionConstants.js';
 
 /**
  * Purely for convenience, an Event ("action") Creator ala Flux spec. Follow
@@ -8,7 +8,7 @@ let ActionCreator = {
 
   mutateSomeData(data) {
     var actionObj = {
-      type   : _appActionConstants.MUTATION_TYPE,
+      type   : AppActionConstants.MUTATION_TYPE,
       payload: {
         data: data
       }
