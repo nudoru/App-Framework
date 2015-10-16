@@ -84,51 +84,55 @@ let Nori = function () {
   }
 
   /**
-   * Create a new Nori application instance
-   * @param custom
-   * @returns {*}
+   * Return a new Nori class by combining a template and customizer with mixins
+   * @param template
+   * @param customizer
+   * @returns {Function}
    */
-  function createApplication(custom) {
-    custom.mixins.push(this);
-    return buildFromMixins(custom);
-  }
-
-  /**
-   * Creates main application store
-   * @param custom
-   * @returns {*}
-   */
-  function createStore(custom) {
-    return function cs() {
-      return _.assign({}, _storeTemplate, buildFromMixins(custom));
-    };
-  }
-
-  /**
-   * Creates main application view
-   * @param custom
-   * @returns {*}
-   */
-  function createView(custom) {
-    return function cv() {
-      return _.assign({}, _viewTemplate, buildFromMixins(custom));
+  function createClass(template, customizer) {
+    template = template || {};
+    return function factory() {
+      return _.assign({}, template, buildFromMixins(customizer));
     };
   }
 
   /**
    * Mixes in the modules specified in the custom application object
-   * @param sourceObject
+   * @param customizer
    * @returns {*}
    */
-  function buildFromMixins(sourceObject) {
-    let mixins;
-
-    if (sourceObject.mixins) {
-      mixins = sourceObject.mixins;
-    }
-
-    mixins.push(sourceObject);
+  function buildFromMixins(customizer) {
+    let mixins = customizer.mixins || [];
+    mixins.push(customizer);
     return assignArray({}, mixins);
+  }
+
+  /**
+   * Create a new Nori application instance
+   * @param customizer
+   * @returns {*}
+   */
+  function createApplication(customizer) {
+    customizer.mixins.push(this);
+    return createClass({}, customizer)();
+  }
+
+  /**
+   * Creates main application store
+   * @param customizer
+   * @returns {*}
+   */
+  function createStore(customizer) {
+    return createClass(_storeTemplate, customizer);
+  }
+
+  /**
+   * Creates main application view
+   * @param customizer
+   * @returns {*}
+   */
+  function createView(customizer) {
+    return createClass(_viewTemplate, customizer);
   }
 
   //----------------------------------------------------------------------------
@@ -141,6 +145,7 @@ let Nori = function () {
     router           : getRouter,
     view             : view,
     store            : store,
+    createClass      : createClass,
     createApplication: createApplication,
     createStore      : createStore,
     createView       : createView,

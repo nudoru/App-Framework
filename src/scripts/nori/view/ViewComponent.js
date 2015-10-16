@@ -188,14 +188,14 @@ var ViewComponent = function () {
       html  : _html
     }));
 
-    if (this.delegateEvents) {
+    if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents()) {
         // True to automatically pass form element handlers the elements value or other status
         this.delegateEvents(true);
       }
     }
 
-    if (this.componentDidMount) {
+    if (typeof this.componentDidMount === 'function') {
       //this.componentDidMount.bind(this);
       _mountDelay = _.delay(this.mountAfterDelay.bind(this), 1);
     }
@@ -241,7 +241,7 @@ var ViewComponent = function () {
     }
 
     // Tweens are present in the MixinDOMManipulation. This is convenience
-    if (this.killTweens) {
+    if (typeof this.killTweens === 'function') {
       this.killTweens();
     }
 
@@ -252,7 +252,7 @@ var ViewComponent = function () {
 
     _isMounted = false;
 
-    if (this.undelegateEvents) {
+    if (typeof this.undelegateEvents === 'function') {
       this.undelegateEvents();
     }
 

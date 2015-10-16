@@ -33,33 +33,27 @@ let MixinComponentViews = function () {
 
   /**
    * Factory to create component view modules by concating multiple source objects
-   * @param componentSource Custom module source
+   * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponentView(componentSource) {
+  function createComponentView(customizer) {
     return function (initProps) {
 
-      let componentAssembly, finalComponent, previousInitialize;
+      let finalComponent, previousInitialize;
 
-      componentAssembly = [
-        _componentViewFactory(),
-        _eventDelegatorFactory(),
-        componentSource
-      ];
+      customizer.mixins = customizer.mixins || [];
+      customizer.mixins.push(_componentViewFactory());
+      customizer.mixins.push(_eventDelegatorFactory());
 
-      if (componentSource.mixins) {
-        componentAssembly = componentAssembly.concat(componentSource.mixins);
-      }
-
-      finalComponent     = Nori.assignArray({}, componentAssembly);
+      finalComponent     = Nori.buildFromMixins(customizer);
       finalComponent.key = _componentViewKeyIndex++;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize = finalComponent.initialize;
 
-      finalComponent.initialize = function initialize(initObj) {
-        finalComponent.initializeComponent(initObj);
-        previousInitialize.call(finalComponent, initObj);
+      finalComponent.initialize = function initialize(props) {
+        finalComponent.initializeComponent(props);
+        previousInitialize.call(finalComponent, props);
       };
 
       if (initProps) {

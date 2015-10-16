@@ -2,7 +2,7 @@
 
 /**
  * Ajax / Rest module.
- * Returns an RxJS Obervable
+ * Returns a Promise
  *
  * Usage:
  *
@@ -61,7 +61,8 @@
  *
  */
 
-import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+//import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+//import BB from '../../vendor/bluebird.min.js';
 
 let Rest = function () {
 
@@ -74,7 +75,8 @@ let Rest = function () {
         headers = reqObj.headers || [],
         data    = reqObj.data || null;
 
-    return new Rxjs.Observable.create(function makeReq(observer) {
+    //return new Rxjs.Observable.create(function makeReq(observer) {
+    return new Promise(function makeReq(resolve, reject) {
       xhr.open(method, url, true);
 
       xhr.onreadystatechange = function () {
@@ -82,9 +84,11 @@ let Rest = function () {
           if (xhr.status >= 200 && xhr.status < 300) {
             try {
               if (json) {
-                observer.onNext(JSON.parse(xhr.responseText));
+                //observer.onNext(JSON.parse(xhr.responseText));
+                resolve(JSON.parse(xhr.responseText));
               } else {
-                observer.onError(xhr.responseText);
+                //observer.onError(xhr.responseText);
+                reject(xhr.responseText);
               }
             }
             catch (e) {
@@ -128,7 +132,8 @@ let Rest = function () {
 
       function handleError(type, message) {
         message = message || '';
-        observer.onError(type + ' ' + message);
+        //observer.onError(type + ' ' + message);
+        reject(type + ' ' + message);
       }
     });
   }
