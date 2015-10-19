@@ -4,8 +4,6 @@ import NoriActions from '../nori/action/ActionCreator.js';
 import AppStore from './store/AppStore.js';
 import AppView from './view/AppView.js';
 
-
-
 /**
  * "Controller" for a Nori application. The controller is responsible for
  * bootstrapping the app and possibly handling socket/server interaction.

@@ -15,7 +15,7 @@ import is from '../../nudoru/util/is.js';
 import _stateObjFactory from './SimpleStore.js';
 import _immutableMapFactory from './ImmutableMap.js';
 
-let MixinReducerStore = function () {
+let ReducerStore = function () {
   let _this,
       _state,
       _stateReducers = [];
@@ -64,7 +64,7 @@ let MixinReducerStore = function () {
    */
   function initializeReducerStore() {
     if (!this.createSubject) {
-      console.warn('nori/store/MixinReducerStore needs nori/utils/MixinObservableSubject to notify');
+      console.warn('nori/store/ReducerStore needs nori/utils/MixinObservableSubject to notify');
     }
 
     _this = this;
@@ -149,4 +149,4 @@ let MixinReducerStore = function () {
 
 };
 
-export default MixinReducerStore();
+export default ReducerStore();

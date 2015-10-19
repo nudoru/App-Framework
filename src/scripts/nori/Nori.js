@@ -1,11 +1,9 @@
 /* @flow weak */
 
 import _mixinObservableSubject from './utils/MixinObservableSubject.js';
-import _mixinReducerStore from './store/MixinReducerStore.js';
+import _mixinReducerStore from './store/ReducerStore.js';
 import _mixinComponentViews from './view/MixinComponentViews.js';
 import _mixinEventDelegator from './view/MixinEventDelegator.js';
-import _dispatcher from './utils/Dispatcher.js';
-import _router from './utils/Router.js';
 
 let Nori = function () {
 
@@ -19,14 +17,6 @@ let Nori = function () {
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getDispatcher() {
-    return _dispatcher;
-  }
-
-  function getRouter() {
-    return _router;
-  }
-
   /**
    * Allow for optional external configuration data from outside of the compiled
    * app bundle. For easy of settings tweaks after the build by non technical devs
@@ -34,10 +24,6 @@ let Nori = function () {
    */
   function getConfig() {
     return _.assign({}, (window.APP_CONFIG_DATA || {}));
-  }
-
-  function getCurrentRoute() {
-    return _router.getCurrentRoute();
   }
 
   function view() {
@@ -49,7 +35,7 @@ let Nori = function () {
   }
 
   //----------------------------------------------------------------------------
-  //  Template parts
+  //  Templates
   //----------------------------------------------------------------------------
 
   _storeTemplate = createStore({
@@ -68,7 +54,7 @@ let Nori = function () {
   })();
 
   //----------------------------------------------------------------------------
-  //  Factories - concatenative inheritance, decorators
+  //  Factories
   //----------------------------------------------------------------------------
 
   /**
@@ -141,8 +127,6 @@ let Nori = function () {
 
   return {
     config           : getConfig,
-    dispatcher       : getDispatcher,
-    router           : getRouter,
     view             : view,
     store            : store,
     createClass      : createClass,
@@ -150,7 +134,6 @@ let Nori = function () {
     createStore      : createStore,
     createView       : createView,
     buildFromMixins  : buildFromMixins,
-    getCurrentRoute  : getCurrentRoute,
     assignArray      : assignArray
   };
 

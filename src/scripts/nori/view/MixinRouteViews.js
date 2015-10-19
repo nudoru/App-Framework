@@ -1,5 +1,7 @@
 /* @flow weak */
 
+import _router from '../utils/Router.js';
+
 /**
  * Mixin view that allows for component views to be display on routing changes
  */
@@ -10,7 +12,7 @@ let MixinRouteViews = function () {
    * Set up listeners
    */
   function initializeRouteViews() {
-    Nori.router().subscribe(onRouteChange.bind(this));
+    _router.subscribe(onRouteChange.bind(this));
   }
 
   function onRouteChange(payload) {
@@ -24,9 +26,9 @@ let MixinRouteViews = function () {
    * double showing on initial load
    */
   function showViewForChangedCondition(silent) {
-    this.showViewForCondition(Nori.getCurrentRoute().route);
+    this.showViewForCondition(_router.getCurrentRoute().route);
     if (!silent) {
-      Nori.router().notifySubscribers();
+      _router.notifySubscribers();
     }
   }
 
