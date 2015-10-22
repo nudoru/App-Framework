@@ -1,23 +1,45 @@
+import NoriActions from '../../nori/action/ActionCreator';
+import AppView from './AppView';
+import AppStore from '../store/AppStore';
+import Template from '../../nori/view/Templating.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import MixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
+
 /**
- * Module for testing Nudoru component classes and any thing else
+ * Module for a dynamic application view for a route or a persistent view
  */
-var DebugComponent = function () {
 
-  var _lIpsum  = require('../../nudoru/browser/Lorem.js'),
-      _toolTip = require('../../nudoru/components/ToolTipView.js'),
-      _appView = require('./AppView.js'),
-      _actionOneEl,
-      _actionTwoEl,
-      _actionThreeEl,
-      _actionFourEl,
-      _actionFiveEl,
-      _actionSixEl;
+let _lIpsum  = require('../../nudoru/browser/Lorem.js'),
+    _toolTip = require('../../nudoru/components/ToolTipView.js'),
+    _actionOneEl,
+    _actionTwoEl,
+    _actionThreeEl,
+    _actionFourEl,
+    _actionFiveEl,
+    _actionSixEl;
 
-  function initialize(initObj) {
+let Component = Nori.view().createComponent({
+  /**
+   * Mixins are other modules/objects that multiple components share, provides
+   * common functionality between then.
+   */
+  mixins: [
+    MixinDOMManipulation
+  ],
+
+  /**
+   * Initialize and bind, called once on first render. Parent component is
+   * initialized from app view
+   * @param initProps
+   */
+  initialize(initProps) {
     _lIpsum.initialize();
-  }
+  },
 
-  function componentDidMount() {
+  /**
+   * Component HTML was attached to the DOM
+   */
+  componentDidMount() {
     console.log(this.getID() + ', subview did mount');
 
     _actionOneEl   = document.getElementById('action-one');
@@ -63,7 +85,7 @@ var DebugComponent = function () {
 
 
     _actionOneEl.addEventListener('click', function actOne(e) {
-      _appView.addMessageBox({
+      AppView.addMessageBox({
         title  : _lIpsum.getSentence(2, 4),
         content: _lIpsum.getParagraph(2, 4),
         type   : 'warning',
@@ -73,7 +95,7 @@ var DebugComponent = function () {
     });
 
     _actionTwoEl.addEventListener('click', function actTwo(e) {
-      _appView.addMessageBox({
+      AppView.addMessageBox({
         title  : _lIpsum.getSentence(10, 20),
         content: _lIpsum.getParagraph(2, 4),
         type   : 'default',
@@ -108,7 +130,7 @@ var DebugComponent = function () {
     });
 
     _actionThreeEl.addEventListener('click', function actThree(e) {
-      _appView.addNotification({
+      AppView.addNotification({
         title  : _lIpsum.getSentence(3, 6),
         type   : 'information',
         content: _lIpsum.getParagraph(1, 2)
@@ -128,14 +150,10 @@ var DebugComponent = function () {
     _actionSixEl.addEventListener('click', function actFour(e) {
       console.log('nothing yet');
     });
+  },
 
-  }
+  componentWillUnmount() {}
 
-  return {
-    initialize       : initialize,
-    componentDidMount: componentDidMount
-  };
+});
 
-};
-
-module.exports = DebugComponent;
+export default Component;

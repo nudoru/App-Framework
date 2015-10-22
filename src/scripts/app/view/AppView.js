@@ -3,6 +3,7 @@ import MixinApplicationView from '../../nori/view/ApplicationView.js';
 import MixinNudoruControls from '../../nudoru/components/MixinNudoruControls.js';
 import MixinRouteViews from '../../nori/view/MixinRouteViews.js';
 import TemplateViewFactory from './TemplateViewComponent.js';
+import ComponentTesting from './ComponentsTesting.js';
 
 /**
  * View for an application.
@@ -29,6 +30,7 @@ let AppViewModule = Nori.createView({
     this.mapConditionToViewComponent('/', 'default', TemplateViewFactory());
     this.mapConditionToViewComponent('/styles', 'debug-styletest', TemplateViewFactory());
     this.mapConditionToViewComponent('/controls', 'debug-controls', TemplateViewFactory());
+    this.mapConditionToViewComponent('/comps', 'debug-components', ComponentTesting());
   },
 
 });
