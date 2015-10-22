@@ -5,13 +5,13 @@
  * Based on Flux Actions
  * For more information and guidelines: https://github.com/acdlite/flux-standard-action
  */
-import _noriActionConstants from './ActionConstants.js';
+import NoriActionConstants from './ActionConstants.js';
 
-var NoriActionCreator = {
+export default {
 
   changeStoreState: function (data, id) {
     return {
-      type   : _noriActionConstants.CHANGE_STORE_STATE,
+      type   : NoriActionConstants.CHANGE_STORE_STATE,
       payload: {
         id  : id,
         data: data
@@ -20,5 +20,3 @@ var NoriActionCreator = {
   }
 
 };
-
-export default NoriActionCreator;

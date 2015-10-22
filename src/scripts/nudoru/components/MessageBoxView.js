@@ -23,7 +23,7 @@ var MessageBoxView = function () {
       _mountPoint,
       _buttonIconTemplateID   = 'messagebox--button-icon',
       _buttonNoIconTemplateID = 'messagebox--button-noicon',
-      _template               = require('../../nori/utils/Templating.js'),
+      _template               = require('../../nori/view/Templating.js'),
       _modal                  = require('./ModalCoverView.js'),
       _browserInfo            = require('../../nudoru/browser/BrowserInfo.js'),
       _domUtils               = require('../../nudoru/browser/DOMUtils.js'),

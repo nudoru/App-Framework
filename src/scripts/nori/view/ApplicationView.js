@@ -1,35 +1,31 @@
 /* @flow weak */
 
-import _template from '../utils/Templating.js';
-import _domUtils from '../../nudoru/browser/DOMUtils.js';
+import Template from '../view/Templating.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-let ApplicationView = function () {
-
-  //----------------------------------------------------------------------------
-  //  Initialization
-  //----------------------------------------------------------------------------
+let ApplicationViewModule = function () {
 
   /**
    * Initialize
    * @param scaffoldTemplates template IDs to attached to the body for the app
    */
   function initializeApplicationView(scaffoldTemplates) {
-    attachApplicationScaffolding(scaffoldTemplates);
+    $attachApplicationScaffolding(scaffoldTemplates);
   }
 
   /**
    * Attach app HTML structure
    * @param templates
    */
-  function attachApplicationScaffolding(templates) {
+  function $attachApplicationScaffolding(templates) {
     if (!templates) {
       return;
     }
 
-    let bodyEl = document.querySelector('body');
+    let bodyEl        = document.querySelector('body');
 
     templates.forEach(function (templ) {
-      bodyEl.appendChild(_domUtils.HTMLStrToNode(_template.getSource(templ, {})));
+      bodyEl.appendChild(DOMUtils.HTMLStrToNode(Template.getSource(templ, {})));
     });
   }
 
@@ -44,10 +40,6 @@ let ApplicationView = function () {
     cover.removeChild(message);
   }
 
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
-
   return {
     initializeApplicationView: initializeApplicationView,
     removeLoadingMessage     : removeLoadingMessage
@@ -55,4 +47,5 @@ let ApplicationView = function () {
 
 };
 
-export default ApplicationView();
+
+export default ApplicationViewModule;

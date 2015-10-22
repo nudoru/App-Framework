@@ -15,42 +15,34 @@
  *
  */
 
-import _rx from '../utils/Rx.js';
-import _browserInfo from '../../nudoru/browser/BrowserInfo.js';
-import is from '../../nudoru/util/is.js';
+import Rx from '../utils/Rx.js';
+import BrowserInfo from '../../nudoru/browser/BrowserInfo.js';
+import MouseToTouchEventStr from '../../nudoru/browser/MouseToTouchEvents.js';
+import Is from '../../nudoru/util/is.js';
 
 let MixinEventDelegator = function () {
 
-  let _eventsMap,
-      _eventSubscribers;
-
-  function setEvents(evtObj) {
-    _eventsMap = evtObj;
-  }
-
-  function getEvents() {
-    return _eventsMap;
-  }
+  let _eventSubscribers;
 
   /**
    * Automates setting events on DOM elements.
    * 'evtStr selector':callback
    * 'evtStr selector, evtStr selector': sharedCallback
    */
-  function delegateEvents(autoForm) {
-    if (!_eventsMap) {
+  function delegateEvents(eventObj, autoForm) {
+    if (!eventObj) {
       return;
     }
 
     _eventSubscribers = Object.create(null);
 
-    for (var evtStrings in _eventsMap) {
-      if (_eventsMap.hasOwnProperty(evtStrings)) {
+    for (var evtStrings in eventObj) {
+      if (eventObj.hasOwnProperty(evtStrings)) {
 
         let mappings     = evtStrings.split(','),
-            eventHandler = _eventsMap[evtStrings];
+            eventHandler = eventObj[evtStrings];
 
-        if (!is.func(eventHandler)) {
+        if (!Is.func(eventHandler)) {
           console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
           return;
         }
@@ -63,34 +55,14 @@ let MixinEventDelegator = function () {
           let eventStr = evtMap.split(' ')[0].trim(),
               selector = evtMap.split(' ')[1].trim();
 
-          if (_browserInfo.mobile.any()) {
-            eventStr = convertMouseToTouchEventStr(eventStr);
+          if (BrowserInfo.mobile.any()) {
+            eventStr = MouseToTouchEventStr(eventStr);
           }
 
-          _eventSubscribers[evtMap] = createHandler(selector, eventStr, eventHandler, autoForm);
+          _eventSubscribers[evtMap] = $createSubscriber(selector, eventStr, eventHandler, autoForm);
         });
         /* jshint +W083 */
       }
-    }
-  }
-
-  /**
-   * Map common mouse events to touch equivalents
-   * @param eventStr
-   * @returns {*}
-   */
-  function convertMouseToTouchEventStr(eventStr) {
-    switch (eventStr) {
-      case('click'):
-        return 'touchend';
-      case('mousedown'):
-        return 'touchstart';
-      case('mouseup'):
-        return 'touchend';
-      case('mousemove'):
-        return 'touchmove';
-      default:
-        return eventStr;
     }
   }
 
@@ -102,19 +74,22 @@ let MixinEventDelegator = function () {
    * @param autoForm True to automatically pass common form element data to the handler
    * @returns {*}
    */
-  function createHandler(selector, eventStr, handler, autoForm) {
-    let observable = _rx.dom(selector, eventStr),
+  function $createSubscriber(selector, eventStr, handler, autoForm) {
+    let observable = Rx.dom(selector, eventStr),
         el         = document.querySelector(selector),
         tag, type;
 
     if (!el) {
-      console.warn('MixinEventDelegator, createHandler, Element not found:', selector);
+      console.warn('MixinEventDelegator, $createSubscriber, Element not found:', selector);
       return;
     }
 
     tag  = el.tagName.toLowerCase();
     type = el.getAttribute('type');
 
+    /**
+     * Convencince for form element handlers
+     */
     if (autoForm) {
       if (tag === 'input' || tag === 'textarea') {
         if (!type || type === 'text') {
@@ -141,8 +116,9 @@ let MixinEventDelegator = function () {
   /**
    * Cleanly remove events
    */
-  function undelegateEvents() {
-    if (!_eventsMap) {
+  function undelegateEvents(eventObj) {
+
+    if (!eventObj) {
       return;
     }
 
@@ -159,8 +135,6 @@ let MixinEventDelegator = function () {
   }
 
   return {
-    setEvents       : setEvents,
-    getEvents       : getEvents,
     undelegateEvents: undelegateEvents,
     delegateEvents  : delegateEvents
   };

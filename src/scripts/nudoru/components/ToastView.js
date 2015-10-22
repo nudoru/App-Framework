@@ -20,7 +20,7 @@ var ToastView = function () {
         'danger'     : 'toast__danger'
       },
       _mountPoint,
-      _template              = require('../../nori/utils/Templating.js'),
+      _template              = require('../../nori/view/Templating.js'),
       _browserInfo           = require('../../nudoru/browser/BrowserInfo.js'),
       _domUtils              = require('../../nudoru/browser/DOMUtils.js'),
       _componentUtils        = require('../../nudoru/browser/ThreeDTransforms.js');

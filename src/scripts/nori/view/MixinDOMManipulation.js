@@ -1,9 +1,9 @@
-import is from '../../nudoru/util/is.js';
+import Is from '../../nudoru/util/is.js';
 
 /**
  * DOM manipulation and animation helpers for ViewComponents
  */
-let MixinDOMManipulation = function () {
+let MixinDOMManipulationModule = function () {
 
   let _tweenedEls = [],
       _zIndex     = 1000;
@@ -16,7 +16,7 @@ let MixinDOMManipulation = function () {
   function getElement(selector) {
     let el;
 
-    if (is.string(selector)) {
+    if (Is.string(selector)) {
       el = document.querySelector(selector);
     } else {
       el = selector;
@@ -117,4 +117,6 @@ let MixinDOMManipulation = function () {
 
 };
 
-export default MixinDOMManipulation();
+let MixinDOMManipulation = MixinDOMManipulationModule();
+
+export default MixinDOMManipulation;

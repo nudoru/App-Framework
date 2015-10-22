@@ -61,12 +61,9 @@
  *
  */
 
-//import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
-//import BB from '../../vendor/bluebird.min.js';
+export default {
 
-let Rest = function () {
-
-  function request(reqObj) {
+  request(reqObj) {
 
     let xhr     = new XMLHttpRequest(),
         json    = reqObj.json || false,
@@ -138,10 +135,4 @@ let Rest = function () {
     });
   }
 
-  return {
-    request: request
-  };
-
 };
-
-export default Rest();

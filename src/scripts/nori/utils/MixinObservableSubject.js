@@ -7,25 +7,11 @@
  * more complex eventing needs.
  */
 
-import is from '../../nudoru/util/is.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 
-let MixinObservableSubject = function () {
+export default function() {
 
-  let _subject    = new Rxjs.Subject(),
-      _subjectMap = {};
-
-  /**
-   * Create a new subject
-   * @param name
-   * @returns {*}
-   */
-  function createSubject(name) {
-    if (!_subjectMap.hasOwnProperty(name)) {
-      _subjectMap[name] = new Rxjs.Subject();
-    }
-    return _subjectMap[name];
-  }
+  let _subjectMap = {};
 
   /**
    * Subscribe handler to updates. If the handler is a string, the new subject
@@ -33,20 +19,11 @@ let MixinObservableSubject = function () {
    * @param handler
    * @returns {*}
    */
-  function subscribe(handlerOrName, optHandler) {
-    if (is.string(handlerOrName)) {
-      return createSubject(handlerOrName).subscribe(optHandler);
-    } else {
-      return _subject.subscribe(handlerOrName);
+  function subscribe(name, handler) {
+    if (!_subjectMap.hasOwnProperty(name)) {
+      _subjectMap[name] = new Rxjs.Subject();
     }
-  }
-
-  /**
-   * Dispatch updated to subscribers
-   * @param payload
-   */
-  function notifySubscribers(payload) {
-    _subject.onNext(payload);
+    return _subjectMap[name].subscribe(handler);
   }
 
   /**
@@ -54,7 +31,7 @@ let MixinObservableSubject = function () {
    * @param name
    * @param payload
    */
-  function notifySubscribersOf(name, payload) {
+  function notify(name, payload) {
     if (_subjectMap.hasOwnProperty(name)) {
       _subjectMap[name].onNext(payload);
     } else {
@@ -63,12 +40,8 @@ let MixinObservableSubject = function () {
   }
 
   return {
-    subscribe          : subscribe,
-    createSubject      : createSubject,
-    notifySubscribers  : notifySubscribers,
-    notifySubscribersOf: notifySubscribersOf
+    subscribe: subscribe,
+    notify   : notify
   };
 
-};
-
-export default MixinObservableSubject;
+}

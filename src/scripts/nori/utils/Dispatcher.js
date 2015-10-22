@@ -16,7 +16,7 @@
 
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 
-let Dispatcher = function () {
+let DispatcherModule = function () {
 
   let _subjectMap  = {},
       _receiverMap = {},
@@ -233,4 +233,6 @@ let Dispatcher = function () {
 
 };
 
-export default Dispatcher();
+let Dispatcher = DispatcherModule();
+
+export default Dispatcher;

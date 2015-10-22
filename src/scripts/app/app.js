@@ -9,7 +9,7 @@ import AppView from './view/AppView.js';
  * bootstrapping the app and possibly handling socket/server interaction.
  * Any additional functionality should be handled in a specific module.
  */
-let App = Nori.createApplication({
+let App = Nori.createClass({
 
   mixins: [],
 
@@ -32,6 +32,6 @@ let App = Nori.createApplication({
     AppView.showViewForChangedCondition(true); // Start with the route in the current URL
   }
 
-});
+})();
 
 export default App;

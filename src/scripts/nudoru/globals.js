@@ -1,4 +1,4 @@
-const noop = function () {
+const NOOP = function () {
 };
 
 // Avoid 'console' errors in browsers that lack a console. (IE9)
@@ -16,37 +16,37 @@ const noop = function () {
   while (length--) {
     method = methods[length];
     if (!console[method]) {
-      console[method] = noop;
+      console[method] = NOOP;
     }
   }
 }());
 
 //https://javascriptweblog.wordpress.com/2010/06/14/dipping-into-wu-js-autocurry/
-var autoCurry = (function () {
-  var toArray = function toArray(arr, from) {
-        return Array.prototype.slice.call(arr, from || 0);
-      },
-      curry   = function curry(fn /* variadic number of args */) {
-        var args = toArray(arguments, 1);
-        return function curried() {
-          return fn.apply(this, args.concat(toArray(arguments)));
-        };
-      };
-  return function autoCurry(fn, numArgs) {
-    numArgs = numArgs || fn.length;
-    return function autoCurried() {
-      if (arguments.length < numArgs) {
-        return numArgs - arguments.length > 0 ?
-          autoCurry(curry.apply(this, [fn].concat(toArray(arguments))),
-            numArgs - arguments.length) :
-          curry.apply(this, [fn].concat(toArray(arguments)));
-      }
-      else {
-        return fn.apply(this, arguments);
-      }
-    };
-  };
-}());
+//var autoCurry = (function () {
+//  var toArray = function toArray(arr, from) {
+//        return Array.prototype.slice.call(arr, from || 0);
+//      },
+//      curry   = function curry(fn /* variadic number of args */) {
+//        var args = toArray(arguments, 1);
+//        return function curried() {
+//          return fn.apply(this, args.concat(toArray(arguments)));
+//        };
+//      };
+//  return function autoCurry(fn, numArgs) {
+//    numArgs = numArgs || fn.length;
+//    return function autoCurried() {
+//      if (arguments.length < numArgs) {
+//        return numArgs - arguments.length > 0 ?
+//          autoCurry(curry.apply(this, [fn].concat(toArray(arguments))),
+//            numArgs - arguments.length) :
+//          curry.apply(this, [fn].concat(toArray(arguments)));
+//      }
+//      else {
+//        return fn.apply(this, arguments);
+//      }
+//    };
+//  };
+//}());
 
 ////https://www.youtube.com/watch?v=m3svKOdZijA&app=desktop
 //function Maybe(val) {

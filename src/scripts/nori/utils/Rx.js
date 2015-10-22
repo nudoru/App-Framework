@@ -6,10 +6,10 @@
  */
 
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
-import is from '../../nudoru/util/is.js';
+import Is from '../../nudoru/util/is.js';
 
 export default {
-  dom: function (selector, event) {
+  dom (selector, event) {
     let el = document.querySelector(selector);
     if (!el) {
       console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
@@ -18,26 +18,26 @@ export default {
     return Rxjs.Observable.fromEvent(el, event.trim());
   },
 
-  from: function (ittr) {
+  from (ittr) {
     return Rxjs.Observable.from(ittr);
   },
 
-  interval: function (ms) {
+  interval (ms) {
     return Rxjs.Observable.interval(ms);
   },
 
-  doEvery: function (ms, ...args) {
-    if(is.func(args[0])) {
+  doEvery (ms, ...args) {
+    if(Is.func(args[0])) {
       return this.interval(ms).subscribe(args[0]);
     }
     return this.interval(ms).take(args[0]).subscribe(args[1]);
   },
 
-  just: function (value) {
+  just (value) {
     return Rxjs.Observable.just(value);
   },
 
-  empty: function () {
+  empty () {
     return Rxjs.Observable.empty();
   }
 

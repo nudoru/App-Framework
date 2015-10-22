@@ -1,9 +1,10 @@
 /* @flow weak */
 
-import _events from './SocketIOEvents.js';
+import SocketIOEvents from './SocketIOEvents.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import _ from '../../vendor/lodash.min.js';
 
-let SocketIOConnector = function () {
+let SocketIOConnectorModule = function () {
 
   let _subject  = new Rxjs.Subject(),
       _socketIO = io(),
@@ -11,7 +12,7 @@ let SocketIOConnector = function () {
       _connectionID;
 
   function initialize() {
-    _socketIO.on(_events.NOTIFY_CLIENT, onNotifyClient);
+    _socketIO.on(SocketIOEvents.NOTIFY_CLIENT, onNotifyClient);
   }
 
   /**
@@ -23,18 +24,18 @@ let SocketIOConnector = function () {
 
     let {type} = payload;
 
-    if (type === _events.PING) {
-      notifyServer(_events.PONG, {});
-    } else if (type === _events.PONG) {
+    if (type === SocketIOEvents.PING) {
+      notifyServer(SocketIOEvents.PONG, {});
+    } else if (type === SocketIOEvents.PONG) {
       console.log('SOCKET.IO PONG!');
-    } else if (type === _events.CONNECT) {
+    } else if (type === SocketIOEvents.CONNECT) {
       _connectionID = payload.id;
     }
     notifySubscribers(payload);
   }
 
   function ping() {
-    notifyServer(_events.PING, {});
+    notifyServer(SocketIOEvents.PING, {});
   }
 
   /**
@@ -44,7 +45,7 @@ let SocketIOConnector = function () {
    */
   function notifyServer(type, payload) {
     //console.log('notify server',type,payload);
-    _socketIO.emit(_events.NOTIFY_SERVER, {
+    _socketIO.emit(SocketIOEvents.NOTIFY_SERVER, {
       type        : type,
       connectionID: _connectionID,
       payload     : payload
@@ -78,28 +79,22 @@ let SocketIOConnector = function () {
     _subject.onNext(payload);
   }
 
-  /**
-   * Gets the last payload that was dispatched to subscribers
-   * @returns {*}
-   */
-  function getLastNotification() {
-    return _subject.getValue();
-  }
 
-  function getEventConstants() {
-    return _.assign({}, _events);
+  function events() {
+    return _.assign({}, SocketIOEvents);
   }
 
   return {
-    events             : getEventConstants,
+    events             : events,
     initialize         : initialize,
     ping               : ping,
     notifyServer       : notifyServer,
     subscribe          : subscribe,
-    notifySubscribers  : notifySubscribers,
-    getLastNotification: getLastNotification
+    notifySubscribers  : notifySubscribers
   };
 
 };
 
-export default SocketIOConnector();
+let SocketIOConnector = SocketIOConnectorModule();
+
+export default SocketIOConnector;

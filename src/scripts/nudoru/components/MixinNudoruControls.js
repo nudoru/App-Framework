@@ -95,4 +95,4 @@ let MixinNudoruControls = function () {
 
 };
 
-export default MixinNudoruControls();
+export default MixinNudoruControls;

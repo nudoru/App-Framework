@@ -11,25 +11,27 @@
  * Created 8/13/15
  */
 
-import is from '../../nudoru/util/is.js';
-import _stateObjFactory from './SimpleStore.js';
-import _immutableMapFactory from './ImmutableMap.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import _ from '../../vendor/lodash.min.js';
+import Is from '../../nudoru/util/is.js';
+import ImmutableMapFactory from './ImmutableMap.js';
 
 let ReducerStore = function () {
   let _this,
-      _state,
-      _stateReducers = [];
+      _stateObject,
+      _stateReducers = [],
+      _subject       = new Rxjs.Subject();
 
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
 
   /**
-   * _state might not exist if subscribers are added before this store is initialized
+   * _stateObject might not exist if subscribers are added before this store is initialized
    */
   function getState() {
-    if (_state) {
-      return _state.getState();
+    if (_stateObject) {
+      return _stateObject.getState();
     }
     return {};
   }
@@ -42,8 +44,8 @@ let ReducerStore = function () {
    */
   function setState(nextstate = this.initialState()) {
     if (!_.isEqual(nextstate, getState())) {
-      _state.setState(nextstate);
-      _this.notifySubscribers({});
+      _stateObject.setState(nextstate);
+      _this.notify({});
     }
   }
 
@@ -63,19 +65,8 @@ let ReducerStore = function () {
    * Set up event listener/receiver
    */
   function initializeReducerStore() {
-    if (!this.createSubject) {
-      console.warn('nori/store/ReducerStore needs nori/utils/MixinObservableSubject to notify');
-    }
-
     _this = this;
-    //_state = _stateObjFactory();
-    _state = _immutableMapFactory();
-
-    //if (!_stateReducers) {
-    //  throw new Error('ReducerStore, must set a reducer before initialization');
-    //}
-    // Set initial state from empty event
-    //applyReducers({});
+    _stateObject = ImmutableMapFactory();
   }
 
   function initialState() {
@@ -88,7 +79,7 @@ let ReducerStore = function () {
    * @param actionObjOrArry Array of actions or a single action to reduce from
    */
   function apply(actionObjOrArry) {
-    if (is.array(actionObjOrArry)) {
+    if (Is.array(actionObjOrArry)) {
       actionObjOrArry.forEach(actionObj => applyReducers(actionObj));
     } else {
       applyReducers(actionObjOrArry);
@@ -108,6 +99,7 @@ let ReducerStore = function () {
    * @returns {*|{}}
    */
   function applyReducersToState(state, action) {
+    // TODO should or be this.getDefaultState()?
     state = state || {};
     return _stateReducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
   }
@@ -132,6 +124,28 @@ let ReducerStore = function () {
    */
 
   //----------------------------------------------------------------------------
+  //  Update events
+  //----------------------------------------------------------------------------
+
+  /**
+   * Subscribe handler to updates. If the handler is a string, the new subject
+   * will be created.
+   * @param handler
+   * @returns {*}
+   */
+  function subscribe(handler) {
+    return _subject.subscribe(handler);
+  }
+
+  /**
+   * Dispatch updated to subscribers
+   * @param payload
+   */
+  function notify(payload) {
+    _subject.onNext(payload);
+  }
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -144,9 +158,11 @@ let ReducerStore = function () {
     setReducers           : setReducers,
     addReducer            : addReducer,
     applyReducers         : applyReducers,
-    applyReducersToState  : applyReducersToState
+    applyReducersToState  : applyReducersToState,
+    subscribe             : subscribe,
+    notify                : notify
   };
 
 };
 
-export default ReducerStore();
+export default ReducerStore;

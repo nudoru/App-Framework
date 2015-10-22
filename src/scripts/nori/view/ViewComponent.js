@@ -3,19 +3,21 @@
 /**
  * Base module for components
  * Must be extended with custom modules
+ *
+ * Functions beginning with $ should be treated as private
  */
 
-import _template from '../utils/Templating.js';
-import _renderer from '../utils/Renderer.js';
-import is from '../../nudoru/util/is.js';
+import _ from '../../vendor/lodash.min.js';
+import Template from '../view/Templating.js';
+import Renderer from '../view/Renderer.js';
+import Is from '../../nudoru/util/is.js';
 
 // Lifecycle state constants
 const LS_NO_INIT   = 0,
       LS_INITED    = 1,
-      LS_UPDATING  = 2,
-      LS_RENDERING = 3,
-      LS_MOUNTED   = 4,
-      LS_UNMOUNTED = 5,
+      LS_RENDERING = 2,
+      LS_MOUNTED   = 3,
+      LS_UNMOUNTED = 4,
       LS_DISPOSED  = 9;
 
 var ViewComponent = function () {
@@ -24,6 +26,8 @@ var ViewComponent = function () {
       _internalProps  = {},
       _publicState    = {},
       _publicProps    = {},
+      _lastState      = {},
+      _lastProps      = {},
       _lifecycleState = LS_NO_INIT,
       _isMounted      = false,
       _regions        = {},
@@ -34,25 +38,42 @@ var ViewComponent = function () {
       _mountPoint,
       _mountDelay;
 
-
   /**
    * Initialization
    * @param initProps
    */
   function initializeComponent(initProps) {
-    setProps(_.assign({}, this.getDefaultProps(), initProps));
-    this.setState(this.getInitialState());
-    this.setEvents(this.defineEvents());
+    this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    _id         = _internalProps.id;
+    _id = _internalProps.id;
+    if (!_id) {
+      throw new Error('Cannot initialize Component without an ID');
+    }
+
     _mountPoint = _internalProps.mountPoint;
+    _regions    = this.defineRegions();
 
-    _regions = this.defineRegions();
+    this.setState(this.getInitialState());
+    //this.setEvents(this.getDOMEvents());
 
-    this.initializeRegions();
+    this.$initializeRegions();
 
     _lifecycleState = LS_INITED;
   }
+
+  /**
+   * Override in implementation
+   *
+   * Define DOM events to be attached after the element is mounted
+   * @returns {undefined}
+   */
+  function getDOMEvents() {
+    return undefined;
+  }
+
+  //----------------------------------------------------------------------------
+  //  Props and state
+  //----------------------------------------------------------------------------
 
   /**
    * Override to set default props
@@ -63,86 +84,173 @@ var ViewComponent = function () {
    * @returns {undefined}
    */
   function getDefaultProps() {
-    return undefined;
+    return {
+      autoFormEvents: true
+    };
   }
 
   /**
-   * Override in implementation
-   *
-   * Define DOM events to be attached after the element is mounted
-   * @returns {undefined}
+   * Get the initial state of the component
+   * @returns {{}}
    */
-  function defineEvents() {
-    return undefined;
+  function getInitialState() {
+    return {};
   }
 
   /**
-   * Bind updates to the map ID to this view's update
-   * @param observableStore Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
+   * Get the current state
+   * @returns {void|*}
    */
-  function bind(observableStore) {
-    if (!is.func(observableStore.subscribe)) {
-      console.warn('ViewComponent bind, must be observable: ' + observableStore);
+  function getState() {
+    return _.assign({}, _internalState);
+  }
+
+  /**
+   * Get the current props
+   * @returns {void|*}
+   */
+  function getProps() {
+    return _.assign({}, _internalProps);
+  }
+
+  /**
+   * Compares next state and props, returns true if one or both are different than current
+   * @param nextState
+   * @param nextProps
+   * @returns {boolean}
+   */
+  function shouldComponentUpdate(nextProps, nextState) {
+    nextProps = nextProps || _internalProps;
+    nextState = nextState || _internalState;
+
+    let isStateEq = _.isEqual(nextState, _internalState),
+        isPropsEq = _.isEqual(nextProps, _internalProps);
+
+    return !(isStateEq) || !(isPropsEq);
+  }
+
+  /**
+   * Sets the next state and trigger a rerender
+   * @param nextState
+   */
+  function setState(nextState) {
+    if (_lifecycleState === LS_RENDERING) {
+      console.warn('Can\'t update state during rendering', this.getID());
       return;
     }
 
-    observableStore.subscribe(this.update.bind(this));
+    nextState = nextState || this.getInitialState();
+
+    if (!shouldComponentUpdate(null, nextState)) {
+      return;
+    }
+
+    if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
+      this.componentWillUpdate(_publicProps, nextState);
+    }
+
+    _lastState     = _.assign({}, _internalState);
+    _internalState = _.assign({}, _internalState, nextState);
+    // keeping the object reference
+    _publicState = _.assign(_publicState, _internalState);
+
+
+    if (typeof _publicState.onChange === 'function') {
+      _publicState.onChange.apply(this);
+    }
+
+    this.$renderAfterPropsOrStateChange();
+  }
+
+  /**
+   * Before new props are updated
+   */
+  function componentWillReceiveProps(nextProps) {
+  }
+
+  /**
+   * Set new props and trigger rerender
+   * @param nextProps
+   */
+  function setProps(nextProps) {
+    if (_lifecycleState === LS_RENDERING) {
+      console.warn('Can\'t update props during rendering', this.getID());
+      return;
+    }
+
+    if (typeof this.componentWillReceiveProps === 'function' && _lifecycleState >= LS_INITED) {
+      this.componentWillReceiveProps(nextProps);
+    }
+
+    if (!shouldComponentUpdate(nextProps, null)) {
+      return;
+    }
+
+    if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
+      this.componentWillUpdate(nextProps, _internalState);
+    }
+
+    _lastProps     = _.assign({}, _internalProps);
+    _internalProps = _.merge({}, _internalProps, nextProps);
+    // keeping the object reference
+    _publicProps = _.assign(_publicProps, _internalProps);
+
+    if (typeof _publicProps.onChange === 'function') {
+      _publicProps.onChange.apply(this);
+    }
+
+    this.$renderAfterPropsOrStateChange();
+  }
+
+  /**
+   * Handle rerendering after props or state change
+   */
+  function $renderAfterPropsOrStateChange() {
+    if (_lifecycleState > LS_INITED) {
+      this.$renderComponent();
+      if (typeof this.componentDidUpdate === 'function') {
+        this.componentDidUpdate(_lastProps, _lastState);
+      }
+    }
   }
 
   /**
    * Before the view updates and a rerender occurs
-   * Returns nextState of component
    */
-  function componentWillUpdate() {
-    return this.getState();
-  }
-
-  function update() {
-    _lifecycleState = LS_UPDATING;
-
-    let nextState = this.componentWillUpdate();
-
-    if (this.shouldComponentUpdate(nextState)) {
-      this.setState(nextState);
-
-      if (_isMounted) {
-        this.unmount();
-        this.componentRender();
-        this.mount();
-      }
-
-      this.updateRegions();
-    }
-
-    if (_lifecycleState === LS_UPDATING) {
-      _lifecycleState = LS_INITED;
-    }
+  function componentWillUpdate(nextProps, nextState) {
   }
 
   /**
-   * Compare current state and next state to determine if updating should occur
-   * If the next state exists and it's not equal to the current state
-   * @param nextState
-   * @returns {*}
+   * After the updates render to the DOM
    */
-  function shouldComponentUpdate(nextState) {
-    return !(_.isEqual(this.getState(), nextState));
+  function componentDidUpdate(lastProps, lastState) {
   }
 
   /**
    * Render it, need to add it to a parent container, handled in higher level view
+   * @param force If true, will force a render
    * @returns {*}
    */
-  function componentRender() {
+  function $renderComponent(force = false) {
+    let wasMounted = _isMounted;
+
+    if (wasMounted) {
+      this.unmount();
+    }
+
     _lifecycleState = LS_RENDERING;
 
     if (!_templateObjCache) {
-      _templateObjCache = this.template(this.getState());
+      _templateObjCache = this.template(this.getProps(), this.getState());
     }
 
-    _html = this.render(this.getState());
+    _html = this.render(this.getProps(), this.getState());
 
-    this.renderRegions();
+    if (wasMounted) {
+      this.mount();
+    }
+
+    this.$renderRegions();
   }
 
   /**
@@ -154,10 +262,10 @@ var ViewComponent = function () {
    *
    * @returns {Function}
    */
-  function template(state) {
+  function template(props, state) {
     // assumes the template ID matches the component's ID as passed on initialize
-    let html = _template.getSource(this.getID());
-    return _.template(html);
+    let templateId = props.template || this.getID();
+    return Template.getTemplate(templateId);
   }
 
   /**
@@ -165,7 +273,7 @@ var ViewComponent = function () {
    * Should return HTML
    * @returns {*}
    */
-  function render(state) {
+  function render(props, state) {
     return _templateObjCache(state);
   }
 
@@ -174,6 +282,12 @@ var ViewComponent = function () {
    * @param mountEl
    */
   function mount() {
+    // TODO why aren't components unmounting on change first?
+    if (_isMounted) {
+      //console.warn('Component ' + _id + ' is already mounted');
+      return;
+    }
+
     if (!_html || _html.length === 0) {
       console.warn('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
       return;
@@ -181,23 +295,22 @@ var ViewComponent = function () {
 
     _lifecycleState = LS_MOUNTED;
 
-    _isMounted = true;
-
-    _DOMElement = (_renderer.render({
+    _DOMElement = (Renderer.render({
       target: _mountPoint,
       html  : _html
     }));
 
+    _isMounted = true;
+
     if (typeof this.delegateEvents === 'function') {
-      if (this.shouldDelegateEvents()) {
+      if (this.shouldDelegateEvents(this.getProps(), this.getState())) {
         // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(true);
+        this.delegateEvents(this.getDOMEvents(), this.getProps().autoFormEvents);
       }
     }
 
     if (typeof this.componentDidMount === 'function') {
-      //this.componentDidMount.bind(this);
-      _mountDelay = _.delay(this.mountAfterDelay.bind(this), 1);
+      _mountDelay = _.delay(this.$mountAfterDelay.bind(this), 1);
     }
   }
 
@@ -206,20 +319,20 @@ var ViewComponent = function () {
    * Experiencing issues with animations running in componentDidMount
    * after renders and state changes. This delay fixes the issues.
    */
-  function mountAfterDelay() {
+  function $mountAfterDelay() {
     if (_mountDelay) {
       window.clearTimeout(_mountDelay);
     }
 
     this.componentDidMount();
-    this.mountRegions();
+    this.$mountRegions();
   }
 
   /**
    * Override to delegate events or not based on some state trigger
    * @returns {boolean}
    */
-  function shouldDelegateEvents() {
+  function shouldDelegateEvents(props, state) {
     return true;
   }
 
@@ -240,23 +353,21 @@ var ViewComponent = function () {
       window.clearTimeout(_mountDelay);
     }
 
-    // Tweens are present in the MixinDOMManipulation. This is convenience
+    // Tweens are present in the MixinDOMManipulation. For convenience, killing here
     if (typeof this.killTweens === 'function') {
       this.killTweens();
     }
 
     this.componentWillUnmount();
 
-    // NO
-    //this.unmountRegions();
-
     _isMounted = false;
 
     if (typeof this.undelegateEvents === 'function') {
-      this.undelegateEvents();
+      this.undelegateEvents(this.getDOMEvents());
     }
 
-    _renderer.render({
+    // Just clear the contents
+    Renderer.render({
       target: _mountPoint,
       html  : ''
     });
@@ -269,7 +380,7 @@ var ViewComponent = function () {
 
   function dispose() {
     this.componentWillDispose();
-    this.disposeRegions();
+    this.$disposeRegions();
     this.unmount();
 
     _lifecycleState = LS_DISPOSED;
@@ -297,91 +408,34 @@ var ViewComponent = function () {
     return _regions ? Object.keys(_regions) : [];
   }
 
-  function initializeRegions() {
+  function $initializeRegions() {
     getRegionIDs().forEach(region => {
       _regions[region].initialize();
     });
   }
 
-  function updateRegions() {
+  function $renderRegions() {
     getRegionIDs().forEach(region => {
-      _regions[region].update();
+      _regions[region].$renderComponent();
     });
   }
 
-  function renderRegions() {
-    getRegionIDs().forEach(region => {
-      _regions[region].componentRender();
-    });
-  }
-
-  function mountRegions() {
+  function $mountRegions() {
     getRegionIDs().forEach(region => {
       _regions[region].mount();
     });
   }
 
-  function unmountRegions() {
+  function $unmountRegions() {
     getRegionIDs().forEach(region => {
       _regions[region].unmount();
     });
   }
 
-  function disposeRegions() {
+  function $disposeRegions() {
     getRegionIDs().forEach(region => {
       _regions[region].dispose();
     });
-  }
-
-  //----------------------------------------------------------------------------
-  //  Props and state
-  //----------------------------------------------------------------------------
-
-  function getInitialState() {
-    this.setState({});
-  }
-
-  function getState() {
-    return _.assign({}, _internalState);
-  }
-
-  function setState(nextState) {
-    if(_.isEqual(_internalState, nextState)) {
-      return;
-    }
-
-    _internalState = _.assign({}, _internalState, nextState);
-    // keeping the object reference
-    _publicState = _.assign(_publicState, _internalState);
-
-    if (typeof _publicState.onChange === 'function') {
-      _publicState.onChange.apply(this);
-    }
-  }
-
-  function getProps() {
-    return _.assign({}, _internalProps);
-  }
-
-  function setProps(nextProps) {
-    if(_.isEqual(_internalProps, nextProps)) {
-      return;
-    }
-
-    if(this.componentWillReceiveProps && _lifecycleState > LS_INITED) {
-      this.componentWillReceiveProps(nextProps);
-    }
-
-    _internalProps = _.merge({}, _internalProps, nextProps);
-    // keeping the object reference
-    _publicProps = _.assign(_publicProps, _internalProps);
-
-    if (typeof _publicProps.onChange === 'function') {
-      _publicProps.onChange.apply(this);
-    }
-  }
-
-  function componentWillReceiveProps(nextProps) {
   }
 
   //----------------------------------------------------------------------------
@@ -409,50 +463,67 @@ var ViewComponent = function () {
   }
 
   //----------------------------------------------------------------------------
+  //  Utility
+  //----------------------------------------------------------------------------
+
+  /**
+   * Bind updates from a store to a function
+   * @param observable Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
+   */
+  function bind(observable, func) {
+    if (!Is.func(observable.subscribe)) {
+      console.warn('ViewComponent bind, must be observable: ' + observable);
+      return;
+    }
+
+    observable.subscribe(func);
+  }
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
   return {
-    initializeComponent      : initializeComponent,
-    state                    : _publicState,
-    props                    : _publicProps,
-    getProps                 : getProps,
-    setProps                 : setProps,
-    getInitialState          : getInitialState,
-    getState                 : getState,
-    setState                 : setState,
-    getDefaultProps          : getDefaultProps,
-    defineRegions            : defineRegions,
-    defineEvents             : defineEvents,
-    getLifeCycleState        : getLifeCycleState,
-    isInitialized            : isInitialized,
-    getID                    : getID,
-    template                 : template,
-    getDOMElement            : getDOMElement,
-    isMounted                : isMounted,
-    bind                     : bind,
-    componentWillReceiveProps: componentWillReceiveProps,
-    componentWillUpdate      : componentWillUpdate,
-    shouldComponentUpdate    : shouldComponentUpdate,
-    update                   : update,
-    componentRender          : componentRender,
-    render                   : render,
-    mount                    : mount,
-    shouldDelegateEvents     : shouldDelegateEvents,
-    mountAfterDelay          : mountAfterDelay,
-    componentDidMount        : componentDidMount,
-    componentWillUnmount     : componentWillUnmount,
-    unmount                  : unmount,
-    dispose                  : dispose,
-    componentWillDispose     : componentWillDispose,
-    getRegion                : getRegion,
-    getRegionIDs             : getRegionIDs,
-    initializeRegions        : initializeRegions,
-    updateRegions            : updateRegions,
-    renderRegions            : renderRegions,
-    mountRegions             : mountRegions,
-    unmountRegions           : unmountRegions,
-    disposeRegions           : disposeRegions
+    initializeComponent           : initializeComponent,
+    state                         : _publicState,
+    props                         : _publicProps,
+    getProps                      : getProps,
+    setProps                      : setProps,
+    getInitialState               : getInitialState,
+    getState                      : getState,
+    setState                      : setState,
+    getDefaultProps               : getDefaultProps,
+    defineRegions                 : defineRegions,
+    getDOMEvents                  : getDOMEvents,
+    getLifeCycleState             : getLifeCycleState,
+    isInitialized                 : isInitialized,
+    getID                         : getID,
+    template                      : template,
+    getDOMElement                 : getDOMElement,
+    isMounted                     : isMounted,
+    bind                          : bind,
+    componentWillReceiveProps     : componentWillReceiveProps,
+    componentWillUpdate           : componentWillUpdate,
+    componentDidUpdate            : componentDidUpdate,
+    shouldComponentUpdate         : shouldComponentUpdate,
+    $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
+    $renderComponent              : $renderComponent,
+    render                        : render,
+    mount                         : mount,
+    shouldDelegateEvents          : shouldDelegateEvents,
+    $mountAfterDelay              : $mountAfterDelay,
+    componentDidMount             : componentDidMount,
+    componentWillUnmount          : componentWillUnmount,
+    unmount                       : unmount,
+    dispose                       : dispose,
+    componentWillDispose          : componentWillDispose,
+    getRegion                     : getRegion,
+    getRegionIDs                  : getRegionIDs,
+    $initializeRegions            : $initializeRegions,
+    $renderRegions                : $renderRegions,
+    $mountRegions                 : $mountRegions,
+    $unmountRegions               : $unmountRegions,
+    $disposeRegions               : $disposeRegions
   };
 
 };

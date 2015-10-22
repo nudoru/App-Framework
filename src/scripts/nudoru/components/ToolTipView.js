@@ -42,7 +42,7 @@ var ToolTipView = function () {
         'TL': 'tooltip__topleft'
       },
       _mountPoint,
-      _template     = require('../../nori/utils/Templating.js'),
+      _template     = require('../../nori/view/Templating.js'),
       _domUtils     = require('../../nudoru/browser/DOMUtils.js');
 
   function initialize(elID) {

@@ -8,10 +8,6 @@ let MixinBrowserEvents = function () {
       _browserScrollStream,
       _browserResizeStream;
 
-  //----------------------------------------------------------------------------
-  //  Initialization
-  //----------------------------------------------------------------------------
-
   function initializeBrowserEvents(scrollcontainer) {
     if (!this.createSubject) {
       console.warn('nori/view/MixinBrowserEvents needs nori/utils/MixinObservableSubject to notify');
@@ -24,9 +20,6 @@ let MixinBrowserEvents = function () {
     }
 
     createBrowserEventStreams.bind(this)();
-
-    this.createSubject('browserScroll');
-    this.createSubject('browserResize');
   }
 
   /**
@@ -43,11 +36,11 @@ let MixinBrowserEvents = function () {
   }
 
   function handleViewPortResize() {
-    this.notifySubscribersOf('browserResize', getCurrentViewPortSize());
+    //this.notifySubscribersOf('browserResize', getCurrentViewPortSize());
   }
 
   function handleViewPortScroll() {
-    this.notifySubscribersOf('browserScroll', getCurrentViewPortScroll());
+    //this.notifySubscribersOf('browserScroll', getCurrentViewPortScroll());
   }
 
   function getCurrentViewPortSize() {
@@ -76,10 +69,6 @@ let MixinBrowserEvents = function () {
     _scrollableAppContainer = document.querySelector(elID);
   }
 
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
-
   return {
     initializeBrowserEvents : initializeBrowserEvents,
     getMainScrollingView    : getMainScrollingView,
@@ -90,4 +79,4 @@ let MixinBrowserEvents = function () {
 
 };
 
-export default MixinBrowserEvents();
+export default MixinBrowserEvents;

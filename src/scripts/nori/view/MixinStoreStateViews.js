@@ -14,11 +14,10 @@ let MixinStoreStateViews = function () {
    */
   function initializeStateViews(store) {
     _observedStore = store;
-
-    _observedStore.subscribe(onStateChange.bind(this));
+    _observedStore.subscribe($onStateChange.bind(this));
   }
 
-  function onStateChange() {
+  function $onStateChange() {
     showViewForChangedCondition.bind(this)();
   }
 
@@ -39,4 +38,4 @@ let MixinStoreStateViews = function () {
 
 };
 
-export default MixinStoreStateViews();
+export default MixinStoreStateViews;

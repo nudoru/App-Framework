@@ -12,10 +12,10 @@ let MixinRouteViews = function () {
    * Set up listeners
    */
   function initializeRouteViews() {
-    _router.subscribe(onRouteChange.bind(this));
+    _router.subscribe($onRouteChange.bind(this));
   }
 
-  function onRouteChange(payload) {
+  function $onRouteChange(payload) {
     this.showViewForCondition(payload.routeObj.route);
   }
 
@@ -39,4 +39,4 @@ let MixinRouteViews = function () {
 
 };
 
-export default MixinRouteViews();
+export default MixinRouteViews;

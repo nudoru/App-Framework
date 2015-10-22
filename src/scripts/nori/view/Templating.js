@@ -6,9 +6,13 @@
  4/7/15
  */
 
-import _DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import _ from '../../vendor/lodash.min.js';
 
-let Templating = function () {
+// Switch Lodash to use Mustache style templates
+_.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+
+let TemplatingModule = function () {
 
   let _templateMap       = Object.create(null),
       _templateHTMLCache = Object.create(null),
@@ -89,6 +93,15 @@ let Templating = function () {
   }
 
   /**
+   * Returns an underscore template
+   * @param id
+   * @returns {*}
+   */
+  function getTemplateFromHTML(html) {
+    return _.template(cleanTemplateHTML(html));
+  }
+
+  /**
    * Processes the template and returns HTML
    * @param id
    * @param obj
@@ -106,7 +119,7 @@ let Templating = function () {
    * @returns {*}
    */
   function asElement(id, obj) {
-    return _DOMUtils.HTMLStrToNode(asHTML(id, obj));
+    return DOMUtils.HTMLStrToNode(asHTML(id, obj));
   }
 
   /**
@@ -130,12 +143,12 @@ let Templating = function () {
    * Util for SharePoint projects, <script> blocks aren't allowed
    * So this helps create the blocks for insertion in to the DOM
    */
-  function processForDOMInsertion() {
-    let ids = getAllTemplateIDs();
-    ids.forEach(id => {
-      var src = removeWhiteSpace(getSource(id));
-    });
-  }
+  //function processForDOMInsertion() {
+  //  let ids = getAllTemplateIDs();
+  //  ids.forEach(id => {
+  //    var src = removeWhiteSpace(getSource(id));
+  //  });
+  //}
 
   /**
    * Add a template script tag to the DOM
@@ -155,12 +168,14 @@ let Templating = function () {
     addTemplate           : addTemplate,
     getSource             : getSource,
     getAllTemplateIDs     : getAllTemplateIDs,
-    processForDOMInsertion: processForDOMInsertion,
     getTemplate           : getTemplate,
+    getTemplateFromHTML   : getTemplateFromHTML,
     asHTML                : asHTML,
     asElement             : asElement
   };
 
 };
 
-export default Templating();
+let Templating = TemplatingModule();
+
+export default Templating;

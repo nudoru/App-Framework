@@ -1,5 +1,7 @@
 /* @flow weak */
 
+import _ from '../../vendor/lodash.min.js';
+
 let SimpleStore = function () {
   let _internalState = Object.create(null);
 

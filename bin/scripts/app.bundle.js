@@ -122,7 +122,7 @@ var _viewAppViewJs2 = _interopRequireDefault(_viewAppViewJs);
  * bootstrapping the app and possibly handling socket/server interaction.
  * Any additional functionality should be handled in a specific module.
  */
-var App = Nori.createApplication({
+var App = Nori.createClass({
 
   mixins: [],
 
@@ -145,7 +145,7 @@ var App = Nori.createApplication({
     _viewAppViewJs2['default'].showViewForChangedCondition(true); // Start with the route in the current URL
   }
 
-});
+})();
 
 exports['default'] = App;
 module.exports = exports['default'];
@@ -276,7 +276,7 @@ var AppStore = AppStoreModule();
 exports['default'] = AppStore;
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionConstants.js":10,"../../nudoru/core/ArrayUtils.js":35,"../../nudoru/core/NumberUtils.js":36,"../../nudoru/core/StringUtils.js":38,"../action/ActionConstants.js":3}],6:[function(require,module,exports){
+},{"../../nori/action/ActionConstants.js":10,"../../nudoru/core/ArrayUtils.js":34,"../../nudoru/core/NumberUtils.js":38,"../../nudoru/core/StringUtils.js":40,"../action/ActionConstants.js":3}],6:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -291,9 +291,9 @@ var _noriViewApplicationViewJs = require('../../nori/view/ApplicationView.js');
 
 var _noriViewApplicationViewJs2 = _interopRequireDefault(_noriViewApplicationViewJs);
 
-var _noriViewMixinNudoruControlsJs = require('../../nori/view/MixinNudoruControls.js');
+var _nudoruComponentsMixinNudoruControlsJs = require('../../nudoru/components/MixinNudoruControls.js');
 
-var _noriViewMixinNudoruControlsJs2 = _interopRequireDefault(_noriViewMixinNudoruControlsJs);
+var _nudoruComponentsMixinNudoruControlsJs2 = _interopRequireDefault(_nudoruComponentsMixinNudoruControlsJs);
 
 var _noriViewMixinRouteViewsJs = require('../../nori/view/MixinRouteViews.js');
 
@@ -309,10 +309,9 @@ var _TemplateViewComponentJs2 = _interopRequireDefault(_TemplateViewComponentJs)
 
 var AppViewModule = Nori.createView({
 
-  mixins: [_noriViewApplicationViewJs2['default'], _noriViewMixinNudoruControlsJs2['default'], _noriViewMixinRouteViewsJs2['default']],
+  mixins: [(0, _noriViewApplicationViewJs2['default'])(), (0, _nudoruComponentsMixinNudoruControlsJs2['default'])(), (0, _noriViewMixinRouteViewsJs2['default'])()],
 
   initialize: function initialize() {
-    // Initialize mixed in views
     this.initializeApplicationView(['applicationscaffold', 'applicationcomponentsscaffold']);
     this.initializeRouteViews();
     this.initializeNudoruControls();
@@ -321,14 +320,10 @@ var AppViewModule = Nori.createView({
   },
 
   configureViews: function configureViews() {
-    // Container for routed views
     this.setViewMountPoint('#contents');
     this.mapConditionToViewComponent('/', 'default', (0, _TemplateViewComponentJs2['default'])());
     this.mapConditionToViewComponent('/styles', 'debug-styletest', (0, _TemplateViewComponentJs2['default'])());
     this.mapConditionToViewComponent('/controls', 'debug-controls', (0, _TemplateViewComponentJs2['default'])());
-
-    // Alternately, map views to different store states with MixinStoreStateViews
-    //this.mapStateToViewComponent(state, templateID, componentIDorObj);
   }
 
 });
@@ -338,7 +333,7 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/view/ApplicationView.js":20,"../../nori/view/MixinNudoruControls.js":24,"../../nori/view/MixinRouteViews.js":25,"../store/AppStore.js":5,"./TemplateViewComponent.js":7}],7:[function(require,module,exports){
+},{"../../nori/view/ApplicationView.js":16,"../../nori/view/MixinRouteViews.js":20,"../../nudoru/components/MixinNudoruControls.js":30,"../store/AppStore.js":5,"./TemplateViewComponent.js":7}],7:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -357,9 +352,9 @@ var _storeAppStore = require('../store/AppStore');
 
 var _storeAppStore2 = _interopRequireDefault(_storeAppStore);
 
-var _noriUtilsTemplatingJs = require('../../nori/utils/Templating.js');
+var _noriViewTemplatingJs = require('../../nori/view/Templating.js');
 
-var _noriUtilsTemplatingJs2 = _interopRequireDefault(_noriUtilsTemplatingJs);
+var _noriViewTemplatingJs2 = _interopRequireDefault(_noriViewTemplatingJs);
 
 var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
@@ -373,7 +368,7 @@ var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMM
  * Module for a dynamic application view for a route or a persistent view
  */
 
-var Component = Nori.view().createComponentView({
+var Component = Nori.view().createComponent({
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -386,9 +381,6 @@ var Component = Nori.view().createComponentView({
    * @param initProps
    */
   initialize: function initialize(initProps) {
-    //Bind to a map, update will be called on changes to the map
-    //this.bind(AppStore); // Reducer store, map id string or map object
-
     // Bind changes in state or prop to functions
     this.state.onChange = this._stateChange;
     // this.props.onChange = function() {};
@@ -396,6 +388,14 @@ var Component = Nori.view().createComponentView({
 
   _stateChange: function _stateChange() {
     console.log(this.getID(), 'the state was changed', this.state);
+  },
+
+  /**
+   * Implement to set default properties. Will be merged with any passed on creation
+   * or initialize call
+   */
+  getDefaultProps: function getDefaultProps() {
+    return null;
   },
 
   /**
@@ -463,7 +463,7 @@ var Component = Nori.view().createComponentView({
 exports['default'] = Component;
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionCreator":11,"../../nori/utils/Templating.js":19,"../../nori/view/MixinDOMManipulation.js":22,"../../nudoru/browser/DOMUtils.js":28,"../store/AppStore":5,"./AppView":6}],8:[function(require,module,exports){
+},{"../../nori/action/ActionCreator":11,"../../nori/view/MixinDOMManipulation.js":18,"../../nori/view/Templating.js":22,"../../nudoru/browser/DOMUtils.js":25,"../store/AppStore":5,"./AppView":6}],8:[function(require,module,exports){
 /**
  * Initial file for the Application
  */
@@ -490,7 +490,7 @@ module.exports = exports['default'];
   }
 })();
 
-},{"./app/App.js":2,"./nori/Nori.js":9,"./nudoru/browser/BrowserInfo.js":27}],9:[function(require,module,exports){
+},{"./app/App.js":2,"./nori/Nori.js":9,"./nudoru/browser/BrowserInfo.js":24}],9:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -498,10 +498,6 @@ Object.defineProperty(exports, '__esModule', {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 /*  weak */
-
-var _utilsMixinObservableSubjectJs = require('./utils/MixinObservableSubject.js');
-
-var _utilsMixinObservableSubjectJs2 = _interopRequireDefault(_utilsMixinObservableSubjectJs);
 
 var _storeReducerStoreJs = require('./store/ReducerStore.js');
 
@@ -511,17 +507,26 @@ var _viewMixinComponentViewsJs = require('./view/MixinComponentViews.js');
 
 var _viewMixinComponentViewsJs2 = _interopRequireDefault(_viewMixinComponentViewsJs);
 
-var _viewMixinEventDelegatorJs = require('./view/MixinEventDelegator.js');
+var _nudoruCoreAssignArrayJs = require('../nudoru/core/AssignArray.js');
 
-var _viewMixinEventDelegatorJs2 = _interopRequireDefault(_viewMixinEventDelegatorJs);
+var _nudoruCoreAssignArrayJs2 = _interopRequireDefault(_nudoruCoreAssignArrayJs);
+
+var _nudoruCoreBuildFromMixinsJs = require('../nudoru/core/BuildFromMixins.js');
+
+var _nudoruCoreBuildFromMixinsJs2 = _interopRequireDefault(_nudoruCoreBuildFromMixinsJs);
+
+var _nudoruCoreCreateClassJs = require('../nudoru/core/CreateClass.js');
+
+var _nudoruCoreCreateClassJs2 = _interopRequireDefault(_nudoruCoreCreateClassJs);
+
+var _vendorLodashMinJs = require('../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
 var Nori = function Nori() {
 
   var _storeTemplate = undefined,
       _viewTemplate = undefined;
-
-  // Switch Lodash to use Mustache style templates
-  _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -533,7 +538,7 @@ var Nori = function Nori() {
    * @returns {void|*}
    */
   function getConfig() {
-    return _.assign({}, window.APP_CONFIG_DATA || {});
+    return _vendorLodashMinJs2['default'].assign({}, window.APP_CONFIG_DATA || {});
   }
 
   function view() {
@@ -549,51 +554,19 @@ var Nori = function Nori() {
   //----------------------------------------------------------------------------
 
   _storeTemplate = createStore({
-    mixins: [_storeReducerStoreJs2['default'], (0, _utilsMixinObservableSubjectJs2['default'])()]
+    mixins: [(0, _storeReducerStoreJs2['default'])()]
   })();
 
   _viewTemplate = createView({
-    mixins: [_viewMixinComponentViewsJs2['default'], (0, _viewMixinEventDelegatorJs2['default'])(), (0, _utilsMixinObservableSubjectJs2['default'])()]
+    mixins: [(0, _viewMixinComponentViewsJs2['default'])()]
   })();
 
   //----------------------------------------------------------------------------
   //  Factories
   //----------------------------------------------------------------------------
 
-  /**
-   * Merges a collection of objects
-   * @param target
-   * @param sourceArray
-   * @returns {*}
-   */
-  function assignArray(target, sourceArray) {
-    return sourceArray.reduce(function (tgt, mixin) {
-      return _.assign(tgt, mixin);
-    }, target);
-  }
-
-  /**
-   * Return a new Nori class by combining a template and customizer with mixins
-   * @param template
-   * @param customizer
-   * @returns {Function}
-   */
-  function createClass(template, customizer) {
-    template = template || {};
-    return function factory() {
-      return _.assign({}, template, buildFromMixins(customizer));
-    };
-  }
-
-  /**
-   * Mixes in the modules specified in the custom application object
-   * @param customizer
-   * @returns {*}
-   */
-  function buildFromMixins(customizer) {
-    var mixins = customizer.mixins || [];
-    mixins.push(customizer);
-    return assignArray({}, mixins);
+  function createClass(customizer) {
+    return (0, _nudoruCoreCreateClassJs2['default'])({}, customizer);
   }
 
   /**
@@ -602,8 +575,9 @@ var Nori = function Nori() {
    * @returns {*}
    */
   function createApplication(customizer) {
+    customizer.mixins = customizer.mixins || [];
     customizer.mixins.push(this);
-    return createClass({}, customizer)();
+    return (0, _nudoruCoreCreateClassJs2['default'])({}, customizer)();
   }
 
   /**
@@ -612,7 +586,7 @@ var Nori = function Nori() {
    * @returns {*}
    */
   function createStore(customizer) {
-    return createClass(_storeTemplate, customizer);
+    return (0, _nudoruCoreCreateClassJs2['default'])(_storeTemplate, customizer);
   }
 
   /**
@@ -621,7 +595,7 @@ var Nori = function Nori() {
    * @returns {*}
    */
   function createView(customizer) {
-    return createClass(_viewTemplate, customizer);
+    return (0, _nudoruCoreCreateClassJs2['default'])(_viewTemplate, customizer);
   }
 
   //----------------------------------------------------------------------------
@@ -635,16 +609,14 @@ var Nori = function Nori() {
     createClass: createClass,
     createApplication: createApplication,
     createStore: createStore,
-    createView: createView,
-    buildFromMixins: buildFromMixins,
-    assignArray: assignArray
+    createView: createView
   };
 };
 
 exports['default'] = Nori();
 module.exports = exports['default'];
 
-},{"./store/ReducerStore.js":13,"./utils/MixinObservableSubject.js":15,"./view/MixinComponentViews.js":21,"./view/MixinEventDelegator.js":23}],10:[function(require,module,exports){
+},{"../nudoru/core/AssignArray.js":35,"../nudoru/core/BuildFromMixins.js":36,"../nudoru/core/CreateClass.js":37,"../vendor/lodash.min.js":43,"./store/ReducerStore.js":13,"./view/MixinComponentViews.js":17}],10:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -674,7 +646,7 @@ var _ActionConstantsJs = require('./ActionConstants.js');
 
 var _ActionConstantsJs2 = _interopRequireDefault(_ActionConstantsJs);
 
-var NoriActionCreator = {
+exports['default'] = {
 
   changeStoreState: function changeStoreState(data, id) {
     return {
@@ -687,8 +659,6 @@ var NoriActionCreator = {
   }
 
 };
-
-exports['default'] = NoriActionCreator;
 module.exports = exports['default'];
 
 },{"./ActionConstants.js":10}],12:[function(require,module,exports){
@@ -709,6 +679,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var _vendorImmutableMinJs = require('../../vendor/immutable.min.js');
 
 var _vendorImmutableMinJs2 = _interopRequireDefault(_vendorImmutableMinJs);
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
 var ImmutableMap = function ImmutableMap() {
   var _map = _vendorImmutableMinJs2['default'].Map();
@@ -766,7 +740,7 @@ var ImmutableMap = function ImmutableMap() {
 exports['default'] = ImmutableMap;
 module.exports = exports['default'];
 
-},{"../../vendor/immutable.min.js":40}],13:[function(require,module,exports){
+},{"../../vendor/immutable.min.js":42,"../../vendor/lodash.min.js":43}],13:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -786,13 +760,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * Created 8/13/15
  */
 
+var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
+
+var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
 var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
 var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
-var _SimpleStoreJs = require('./SimpleStore.js');
-
-var _SimpleStoreJs2 = _interopRequireDefault(_SimpleStoreJs);
 
 var _ImmutableMapJs = require('./ImmutableMap.js');
 
@@ -800,19 +778,20 @@ var _ImmutableMapJs2 = _interopRequireDefault(_ImmutableMapJs);
 
 var ReducerStore = function ReducerStore() {
   var _this = undefined,
-      _state = undefined,
-      _stateReducers = [];
+      _stateObject = undefined,
+      _stateReducers = [],
+      _subject = new _vendorRxjsRxLiteMinJs2['default'].Subject();
 
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
 
   /**
-   * _state might not exist if subscribers are added before this store is initialized
+   * _stateObject might not exist if subscribers are added before this store is initialized
    */
   function getState() {
-    if (_state) {
-      return _state.getState();
+    if (_stateObject) {
+      return _stateObject.getState();
     }
     return {};
   }
@@ -826,9 +805,9 @@ var ReducerStore = function ReducerStore() {
   function setState() {
     var nextstate = arguments.length <= 0 || arguments[0] === undefined ? this.initialState() : arguments[0];
 
-    if (!_.isEqual(nextstate, getState())) {
-      _state.setState(nextstate);
-      _this.notifySubscribers({});
+    if (!_vendorLodashMinJs2['default'].isEqual(nextstate, getState())) {
+      _stateObject.setState(nextstate);
+      _this.notify({});
     }
   }
 
@@ -848,19 +827,8 @@ var ReducerStore = function ReducerStore() {
    * Set up event listener/receiver
    */
   function initializeReducerStore() {
-    if (!this.createSubject) {
-      console.warn('nori/store/ReducerStore needs nori/utils/MixinObservableSubject to notify');
-    }
-
     _this = this;
-    //_state = _stateObjFactory();
-    _state = (0, _ImmutableMapJs2['default'])();
-
-    //if (!_stateReducers) {
-    //  throw new Error('ReducerStore, must set a reducer before initialization');
-    //}
-    // Set initial state from empty event
-    //applyReducers({});
+    _stateObject = (0, _ImmutableMapJs2['default'])();
   }
 
   function initialState() {
@@ -895,6 +863,7 @@ var ReducerStore = function ReducerStore() {
    * @returns {*|{}}
    */
   function applyReducersToState(state, action) {
+    // TODO should or be this.getDefaultState()?
     state = state || {};
     return _stateReducers.reduce(function (nextState, reducerFunc) {
       return reducerFunc(nextState, action);
@@ -921,6 +890,28 @@ var ReducerStore = function ReducerStore() {
    */
 
   //----------------------------------------------------------------------------
+  //  Update events
+  //----------------------------------------------------------------------------
+
+  /**
+   * Subscribe handler to updates. If the handler is a string, the new subject
+   * will be created.
+   * @param handler
+   * @returns {*}
+   */
+  function subscribe(handler) {
+    return _subject.subscribe(handler);
+  }
+
+  /**
+   * Dispatch updated to subscribers
+   * @param payload
+   */
+  function notify(payload) {
+    _subject.onNext(payload);
+  }
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -933,203 +924,16 @@ var ReducerStore = function ReducerStore() {
     setReducers: setReducers,
     addReducer: addReducer,
     applyReducers: applyReducers,
-    applyReducersToState: applyReducersToState
-  };
-};
-
-exports['default'] = ReducerStore();
-module.exports = exports['default'];
-
-},{"../../nudoru/util/is.js":39,"./ImmutableMap.js":12,"./SimpleStore.js":14}],14:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-/*  weak */
-
-var SimpleStore = function SimpleStore() {
-  var _internalState = Object.create(null);
-
-  /**
-   * Return a copy of the state
-   * @returns {void|*}
-   */
-  function getState() {
-    return _.assign({}, _internalState);
-  }
-
-  /**
-   * Sets the state
-   * @param nextState
-   */
-  function setState(nextState) {
-    _internalState = _.assign({}, _internalState, nextState);
-  }
-
-  function toJSON() {
-    return JSON.stringify(getState());
-  }
-
-  function fromJSON(data) {
-    try {
-      setState(JSON.parse(data));
-    } catch (e) {
-      console.warn('Nori, SimpleStore, could not parse JSON');
-      setState({});
-    }
-  }
-
-  return {
-    getState: getState,
-    setState: setState,
-    toJSON: toJSON,
-    fromJSON: fromJSON
-  };
-};
-
-exports['default'] = SimpleStore;
-module.exports = exports['default'];
-
-},{}],15:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
-
-/**
- * Add RxJS Subject to a module.
- *
- * Add one simple observable subject or more complex ability to create others for
- * more complex eventing needs.
- */
-
-var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
-
-var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
-var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
-
-var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
-
-var MixinObservableSubject = function MixinObservableSubject() {
-
-  var _subject = new _vendorRxjsRxLiteMinJs2['default'].Subject(),
-      _subjectMap = {};
-
-  /**
-   * Create a new subject
-   * @param name
-   * @returns {*}
-   */
-  function createSubject(name) {
-    if (!_subjectMap.hasOwnProperty(name)) {
-      _subjectMap[name] = new _vendorRxjsRxLiteMinJs2['default'].Subject();
-    }
-    return _subjectMap[name];
-  }
-
-  /**
-   * Subscribe handler to updates. If the handler is a string, the new subject
-   * will be created.
-   * @param handler
-   * @returns {*}
-   */
-  function subscribe(handlerOrName, optHandler) {
-    if (_nudoruUtilIsJs2['default'].string(handlerOrName)) {
-      return createSubject(handlerOrName).subscribe(optHandler);
-    } else {
-      return _subject.subscribe(handlerOrName);
-    }
-  }
-
-  /**
-   * Dispatch updated to subscribers
-   * @param payload
-   */
-  function notifySubscribers(payload) {
-    _subject.onNext(payload);
-  }
-
-  /**
-   * Dispatch updated to named subscribers
-   * @param name
-   * @param payload
-   */
-  function notifySubscribersOf(name, payload) {
-    if (_subjectMap.hasOwnProperty(name)) {
-      _subjectMap[name].onNext(payload);
-    } else {
-      console.warn('MixinObservableSubject, no subscribers of ' + name);
-    }
-  }
-
-  return {
+    applyReducersToState: applyReducersToState,
     subscribe: subscribe,
-    createSubject: createSubject,
-    notifySubscribers: notifySubscribers,
-    notifySubscribersOf: notifySubscribersOf
+    notify: notify
   };
 };
 
-exports['default'] = MixinObservableSubject;
+exports['default'] = ReducerStore;
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":39,"../../vendor/rxjs/rx.lite.min.js":41}],16:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
-
-/**
- * Utility to handle all view DOM attachment tasks
- */
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
-
-var Renderer = function Renderer() {
-  function render(_ref) {
-    var target = _ref.target;
-    var html = _ref.html;
-    var callback = _ref.callback;
-
-    var domEl = undefined,
-        mountPoint = document.querySelector(target),
-        currentHTML = mountPoint.innerHTML;
-
-    if (html) {
-      domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-      if (html !== currentHTML) {
-        // TODO experiment with the jsdiff function
-        mountPoint.innerHTML = '';
-        mountPoint.appendChild(domEl);
-      } else {
-        console.log('> is SAME');
-      }
-    }
-
-    if (callback) {
-      callback(domEl);
-    }
-
-    return domEl;
-  }
-
-  return {
-    render: render
-  };
-};
-
-exports['default'] = Renderer();
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/DOMUtils.js":28}],17:[function(require,module,exports){
+},{"../../nudoru/util/is.js":41,"../../vendor/lodash.min.js":43,"../../vendor/rxjs/rx.lite.min.js":44,"./ImmutableMap.js":12}],14:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1160,7 +964,7 @@ var Router = function Router() {
    * Set event handlers
    */
   function initialize() {
-    _hashChangeObservable = _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(window, 'hashchange').subscribe(notifySubscribers);
+    _hashChangeObservable = _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(window, 'hashchange').subscribe(notify);
   }
 
   /**
@@ -1176,10 +980,10 @@ var Router = function Router() {
    * Notify of a change in route
    * @param fromApp True if the route was caused by an app event not URL or history change
    */
-  function notifySubscribers() {
+  function notify() {
     var eventPayload = {
       routeObj: getCurrentRoute(), // { route:, data: }
-      fragment: getURLFragment()
+      fragment: $getURLFragment()
     };
 
     _subject.onNext(eventPayload);
@@ -1190,11 +994,11 @@ var Router = function Router() {
    * @returns {{route: string, query: {}}}
    */
   function getCurrentRoute() {
-    var fragment = getURLFragment(),
+    var fragment = $getURLFragment(),
         parts = fragment.split('?'),
         route = '/' + parts[0],
         queryStr = decodeURIComponent(parts[1]),
-        queryStrObj = parseQueryStr(queryStr);
+        queryStrObj = $parseQueryStr(queryStr);
 
     if (queryStr === '=undefined') {
       queryStrObj = {};
@@ -1208,7 +1012,7 @@ var Router = function Router() {
    * @param queryStr
    * @returns {{}}
    */
-  function parseQueryStr(queryStr) {
+  function $parseQueryStr(queryStr) {
     var obj = {},
         parts = queryStr.split('&');
 
@@ -1239,7 +1043,7 @@ var Router = function Router() {
       path += data.join('&');
     }
 
-    updateURLFragment(path);
+    $updateURLFragment(path);
   }
 
   /**
@@ -1247,7 +1051,7 @@ var Router = function Router() {
    * Leading and trailing slashes are removed
    * @returns {string}
    */
-  function getURLFragment() {
+  function $getURLFragment() {
     var fragment = location.hash.slice(1);
     return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
   }
@@ -1256,14 +1060,14 @@ var Router = function Router() {
    * Set the URL hash fragment
    * @param path
    */
-  function updateURLFragment(path) {
+  function $updateURLFragment(path) {
     window.location.hash = path;
   }
 
   return {
     initialize: initialize,
     subscribe: subscribe,
-    notifySubscribers: notifySubscribers,
+    notify: notify,
     getCurrentRoute: getCurrentRoute,
     set: set
   };
@@ -1275,7 +1079,7 @@ r.initialize();
 exports['default'] = r;
 module.exports = exports['default'];
 
-},{"../../nudoru/core/ObjectUtils.js":37,"../../vendor/rxjs/rx.lite.min.js":41}],18:[function(require,module,exports){
+},{"../../nudoru/core/ObjectUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":44}],15:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1333,7 +1137,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":39,"../../vendor/rxjs/rx.lite.min.js":41}],19:[function(require,module,exports){
+},{"../../nudoru/util/is.js":41,"../../vendor/rxjs/rx.lite.min.js":44}],16:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1342,209 +1146,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 /*  weak */
 
-/*
- Simple wrapper for Underscore / HTML templates
- Matt Perkins
- 4/7/15
- */
+var _viewTemplatingJs = require('../view/Templating.js');
+
+var _viewTemplatingJs2 = _interopRequireDefault(_viewTemplatingJs);
 
 var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var Templating = function Templating() {
-
-  var _templateMap = Object.create(null),
-      _templateHTMLCache = Object.create(null),
-      _templateCache = Object.create(null);
-
-  function addTemplate(id, html) {
-    _templateMap[id] = html;
-  }
-
-  function getSourceFromTemplateMap(id) {
-    var source = _templateMap[id];
-    if (source) {
-      return cleanTemplateHTML(source);
-    }
-    return;
-  }
-
-  function getSourceFromHTML(id) {
-    var src = document.getElementById(id),
-        srchtml = undefined;
-
-    if (src) {
-      srchtml = src.innerHTML;
-    } else {
-      console.warn('nudoru/core/Templating, template not found: "' + id + '"');
-      srchtml = '<div>Template not found: ' + id + '</div>';
-    }
-
-    return cleanTemplateHTML(srchtml);
-  }
-
-  /**
-   * Get the template html from the script tag with id
-   * @param id
-   * @returns {*}
-   */
-  function getSource(id) {
-    if (_templateHTMLCache[id]) {
-      return _templateHTMLCache[id];
-    }
-
-    var sourcehtml = getSourceFromTemplateMap(id);
-
-    if (!sourcehtml) {
-      sourcehtml = getSourceFromHTML(id);
-    }
-
-    _templateHTMLCache[id] = sourcehtml;
-    return sourcehtml;
-  }
-
-  /**
-   * Returns all IDs belonging to text/template type script tags
-   * @returns {Array}
-   */
-  function getAllTemplateIDs() {
-    var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
-
-    return scriptTags.filter(function (tag) {
-      return tag.getAttribute('type') === 'text/template';
-    }).map(function (tag) {
-      return tag.getAttribute('id');
-    });
-  }
-
-  /**
-   * Returns an underscore template
-   * @param id
-   * @returns {*}
-   */
-  function getTemplate(id) {
-    if (_templateCache[id]) {
-      return _templateCache[id];
-    }
-    var templ = _.template(getSource(id));
-    _templateCache[id] = templ;
-    return templ;
-  }
-
-  /**
-   * Processes the template and returns HTML
-   * @param id
-   * @param obj
-   * @returns {*}
-   */
-  function asHTML(id, obj) {
-    var temp = getTemplate(id);
-    return temp(obj);
-  }
-
-  /**
-   * Processes the template and returns an HTML Element
-   * @param id
-   * @param obj
-   * @returns {*}
-   */
-  function asElement(id, obj) {
-    return _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(asHTML(id, obj));
-  }
-
-  /**
-   * Cleans template HTML
-   */
-  function cleanTemplateHTML(str) {
-    return str.trim();
-  }
-
-  /**
-   * Remove returns, spaces and tabs
-   * @param str
-   * @returns {XML|string}
-   */
-  function removeWhiteSpace(str) {
-    return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
-  }
-
-  /**
-   * Iterate over all templates, clean them up and log
-   * Util for SharePoint projects, <script> blocks aren't allowed
-   * So this helps create the blocks for insertion in to the DOM
-   */
-  function processForDOMInsertion() {
-    var ids = getAllTemplateIDs();
-    ids.forEach(function (id) {
-      var src = removeWhiteSpace(getSource(id));
-    });
-  }
-
-  /**
-   * Add a template script tag to the DOM
-   * Util for SharePoint projects, <script> blocks aren't allowed
-   * @param id
-   * @param html
-   */
-  //function addClientSideTemplateToDOM(id, html) {
-  //  var s       = document.createElement('script');
-  //  s.type      = 'text/template';
-  //  s.id        = id;
-  //  s.innerHTML = html;
-  //  document.getElementsByTagName('head')[0].appendChild(s);
-  //}
-
-  return {
-    addTemplate: addTemplate,
-    getSource: getSource,
-    getAllTemplateIDs: getAllTemplateIDs,
-    processForDOMInsertion: processForDOMInsertion,
-    getTemplate: getTemplate,
-    asHTML: asHTML,
-    asElement: asElement
-  };
-};
-
-exports['default'] = Templating();
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/DOMUtils.js":28}],20:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
-
-var _utilsTemplatingJs = require('../utils/Templating.js');
-
-var _utilsTemplatingJs2 = _interopRequireDefault(_utilsTemplatingJs);
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
-
-var ApplicationView = function ApplicationView() {
-
-  //----------------------------------------------------------------------------
-  //  Initialization
-  //----------------------------------------------------------------------------
+var ApplicationViewModule = function ApplicationViewModule() {
 
   /**
    * Initialize
    * @param scaffoldTemplates template IDs to attached to the body for the app
    */
   function initializeApplicationView(scaffoldTemplates) {
-    attachApplicationScaffolding(scaffoldTemplates);
+    $attachApplicationScaffolding(scaffoldTemplates);
   }
 
   /**
    * Attach app HTML structure
    * @param templates
    */
-  function attachApplicationScaffolding(templates) {
+  function $attachApplicationScaffolding(templates) {
     if (!templates) {
       return;
     }
@@ -1552,7 +1176,7 @@ var ApplicationView = function ApplicationView() {
     var bodyEl = document.querySelector('body');
 
     templates.forEach(function (templ) {
-      bodyEl.appendChild(_nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(_utilsTemplatingJs2['default'].getSource(templ, {})));
+      bodyEl.appendChild(_nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(_viewTemplatingJs2['default'].getSource(templ, {})));
     });
   }
 
@@ -1567,20 +1191,16 @@ var ApplicationView = function ApplicationView() {
     cover.removeChild(message);
   }
 
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
-
   return {
     initializeApplicationView: initializeApplicationView,
     removeLoadingMessage: removeLoadingMessage
   };
 };
 
-exports['default'] = ApplicationView();
+exports['default'] = ApplicationViewModule;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":28,"../utils/Templating.js":19}],21:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":25,"../view/Templating.js":22}],17:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1593,6 +1213,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * Mixin view that allows for component views
  */
 
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
 var _ViewComponentJs = require('./ViewComponent.js');
 
 var _ViewComponentJs2 = _interopRequireDefault(_ViewComponentJs);
@@ -1600,6 +1224,10 @@ var _ViewComponentJs2 = _interopRequireDefault(_ViewComponentJs);
 var _MixinEventDelegatorJs = require('./MixinEventDelegator.js');
 
 var _MixinEventDelegatorJs2 = _interopRequireDefault(_MixinEventDelegatorJs);
+
+var _nudoruCoreBuildFromMixinsJs = require('../../nudoru/core/BuildFromMixins.js');
+
+var _nudoruCoreBuildFromMixinsJs2 = _interopRequireDefault(_nudoruCoreBuildFromMixinsJs);
 
 var MixinComponentViews = function MixinComponentViews() {
 
@@ -1630,21 +1258,22 @@ var MixinComponentViews = function MixinComponentViews() {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponentView(customizer) {
+  function createComponent(customizer) {
     return function (initProps) {
-
       var finalComponent = undefined,
-          previousInitialize = undefined;
+          previousInitialize = undefined,
+          previousGetDefaultProps = undefined;
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.push((0, _ViewComponentJs2['default'])());
       customizer.mixins.push((0, _MixinEventDelegatorJs2['default'])());
 
-      finalComponent = Nori.buildFromMixins(customizer);
+      finalComponent = (0, _nudoruCoreBuildFromMixinsJs2['default'])(customizer);
       finalComponent.key = _componentViewKeyIndex++;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize = finalComponent.initialize;
+      previousGetDefaultProps = finalComponent.getDefaultProps;
 
       finalComponent.initialize = function initialize(props) {
         finalComponent.initializeComponent(props);
@@ -1654,11 +1283,11 @@ var MixinComponentViews = function MixinComponentViews() {
       if (initProps) {
         // Overwrite the function in the component
         finalComponent.getDefaultProps = function () {
-          return initProps;
+          return _vendorLodashMinJs2['default'].merge({}, previousGetDefaultProps.call(finalComponent), initProps);
         };
       }
 
-      return _.assign({}, finalComponent);
+      return _vendorLodashMinJs2['default'].assign({}, finalComponent);
     };
   }
 
@@ -1675,17 +1304,18 @@ var MixinComponentViews = function MixinComponentViews() {
     }
 
     if (!componentView.controller.isInitialized()) {
+      // Not initialized, set props
       mountPoint = mountPoint || componentView.mountPoint;
       componentView.controller.initialize({
         id: componentID,
         template: componentView.htmlTemplate,
         mountPoint: mountPoint
       });
-    } else {
-      componentView.controller.update();
     }
 
-    componentView.controller.componentRender();
+    // Force render
+    componentView.controller.$renderComponent(true);
+    // wasn't mounted before, so mount it
     componentView.controller.mount();
   }
 
@@ -1694,7 +1324,7 @@ var MixinComponentViews = function MixinComponentViews() {
    * @returns {null}
    */
   function getComponentViewMap() {
-    return _.assign({}, _componentViewMap);
+    return _vendorLodashMinJs2['default'].assign({}, _componentViewMap);
   }
 
   //----------------------------------------------------------------------------
@@ -1736,7 +1366,7 @@ var MixinComponentViews = function MixinComponentViews() {
       return;
     }
 
-    removeCurrentView();
+    $removeCurrentView();
 
     _currentViewID = componentID;
     showViewComponent(_currentViewID);
@@ -1749,7 +1379,7 @@ var MixinComponentViews = function MixinComponentViews() {
   /**
    * Remove the currently displayed view
    */
-  function removeCurrentView() {
+  function $removeCurrentView() {
     if (_currentViewID) {
       getComponentViewMap()[_currentViewID].controller.dispose();
     }
@@ -1762,7 +1392,7 @@ var MixinComponentViews = function MixinComponentViews() {
 
   return {
     mapViewComponent: mapViewComponent,
-    createComponentView: createComponentView,
+    createComponent: createComponent,
     showViewComponent: showViewComponent,
     getComponentViewMap: getComponentViewMap,
     showViewForCondition: showViewForCondition,
@@ -1772,10 +1402,10 @@ var MixinComponentViews = function MixinComponentViews() {
   };
 };
 
-exports['default'] = MixinComponentViews();
+exports['default'] = MixinComponentViews;
 module.exports = exports['default'];
 
-},{"./MixinEventDelegator.js":23,"./ViewComponent.js":26}],22:[function(require,module,exports){
+},{"../../nudoru/core/BuildFromMixins.js":36,"../../vendor/lodash.min.js":43,"./MixinEventDelegator.js":19,"./ViewComponent.js":23}],18:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1789,7 +1419,7 @@ var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 /**
  * DOM manipulation and animation helpers for ViewComponents
  */
-var MixinDOMManipulation = function MixinDOMManipulation() {
+var MixinDOMManipulationModule = function MixinDOMManipulationModule() {
 
   var _tweenedEls = [],
       _zIndex = 1000;
@@ -1902,10 +1532,12 @@ var MixinDOMManipulation = function MixinDOMManipulation() {
   };
 };
 
-exports['default'] = MixinDOMManipulation();
+var MixinDOMManipulation = MixinDOMManipulationModule();
+
+exports['default'] = MixinDOMManipulation;
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":39}],23:[function(require,module,exports){
+},{"../../nudoru/util/is.js":41}],19:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1937,41 +1569,36 @@ var _nudoruBrowserBrowserInfoJs = require('../../nudoru/browser/BrowserInfo.js')
 
 var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
 
+var _nudoruBrowserMouseToTouchEventsJs = require('../../nudoru/browser/MouseToTouchEvents.js');
+
+var _nudoruBrowserMouseToTouchEventsJs2 = _interopRequireDefault(_nudoruBrowserMouseToTouchEventsJs);
+
 var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
 var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 
 var MixinEventDelegator = function MixinEventDelegator() {
 
-  var _eventsMap = undefined,
-      _eventSubscribers = undefined;
-
-  function setEvents(evtObj) {
-    _eventsMap = evtObj;
-  }
-
-  function getEvents() {
-    return _eventsMap;
-  }
+  var _eventSubscribers = undefined;
 
   /**
    * Automates setting events on DOM elements.
    * 'evtStr selector':callback
    * 'evtStr selector, evtStr selector': sharedCallback
    */
-  function delegateEvents(autoForm) {
-    if (!_eventsMap) {
+  function delegateEvents(eventObj, autoForm) {
+    if (!eventObj) {
       return;
     }
 
     _eventSubscribers = Object.create(null);
 
-    for (var evtStrings in _eventsMap) {
-      if (_eventsMap.hasOwnProperty(evtStrings)) {
+    for (var evtStrings in eventObj) {
+      if (eventObj.hasOwnProperty(evtStrings)) {
         var _ret = (function () {
 
           var mappings = evtStrings.split(','),
-              eventHandler = _eventsMap[evtStrings];
+              eventHandler = eventObj[evtStrings];
 
           if (!_nudoruUtilIsJs2['default'].func(eventHandler)) {
             console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
@@ -1989,36 +1616,16 @@ var MixinEventDelegator = function MixinEventDelegator() {
                 selector = evtMap.split(' ')[1].trim();
 
             if (_nudoruBrowserBrowserInfoJs2['default'].mobile.any()) {
-              eventStr = convertMouseToTouchEventStr(eventStr);
+              eventStr = (0, _nudoruBrowserMouseToTouchEventsJs2['default'])(eventStr);
             }
 
-            _eventSubscribers[evtMap] = createHandler(selector, eventStr, eventHandler, autoForm);
+            _eventSubscribers[evtMap] = $createSubscriber(selector, eventStr, eventHandler, autoForm);
           });
           /* jshint +W083 */
         })();
 
         if (typeof _ret === 'object') return _ret.v;
       }
-    }
-  }
-
-  /**
-   * Map common mouse events to touch equivalents
-   * @param eventStr
-   * @returns {*}
-   */
-  function convertMouseToTouchEventStr(eventStr) {
-    switch (eventStr) {
-      case 'click':
-        return 'touchend';
-      case 'mousedown':
-        return 'touchstart';
-      case 'mouseup':
-        return 'touchend';
-      case 'mousemove':
-        return 'touchmove';
-      default:
-        return eventStr;
     }
   }
 
@@ -2030,20 +1637,23 @@ var MixinEventDelegator = function MixinEventDelegator() {
    * @param autoForm True to automatically pass common form element data to the handler
    * @returns {*}
    */
-  function createHandler(selector, eventStr, handler, autoForm) {
+  function $createSubscriber(selector, eventStr, handler, autoForm) {
     var observable = _utilsRxJs2['default'].dom(selector, eventStr),
         el = document.querySelector(selector),
         tag = undefined,
         type = undefined;
 
     if (!el) {
-      console.warn('MixinEventDelegator, createHandler, Element not found:', selector);
+      console.warn('MixinEventDelegator, $createSubscriber, Element not found:', selector);
       return;
     }
 
     tag = el.tagName.toLowerCase();
     type = el.getAttribute('type');
 
+    /**
+     * Convencince for form element handlers
+     */
     if (autoForm) {
       if (tag === 'input' || tag === 'textarea') {
         if (!type || type === 'text') {
@@ -2078,8 +1688,9 @@ var MixinEventDelegator = function MixinEventDelegator() {
   /**
    * Cleanly remove events
    */
-  function undelegateEvents() {
-    if (!_eventsMap) {
+  function undelegateEvents(eventObj) {
+
+    if (!eventObj) {
       return;
     }
 
@@ -2096,8 +1707,6 @@ var MixinEventDelegator = function MixinEventDelegator() {
   }
 
   return {
-    setEvents: setEvents,
-    getEvents: getEvents,
     undelegateEvents: undelegateEvents,
     delegateEvents: delegateEvents
   };
@@ -2106,124 +1715,7 @@ var MixinEventDelegator = function MixinEventDelegator() {
 exports['default'] = MixinEventDelegator;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/util/is.js":39,"../utils/Rx.js":18}],24:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
-
-var _nudoruComponentsToastViewJs = require('../../nudoru/components/ToastView.js');
-
-var _nudoruComponentsToastViewJs2 = _interopRequireDefault(_nudoruComponentsToastViewJs);
-
-var _nudoruComponentsToolTipViewJs = require('../../nudoru/components/ToolTipView.js');
-
-var _nudoruComponentsToolTipViewJs2 = _interopRequireDefault(_nudoruComponentsToolTipViewJs);
-
-var _nudoruComponentsMessageBoxViewJs = require('../../nudoru/components/MessageBoxView.js');
-
-var _nudoruComponentsMessageBoxViewJs2 = _interopRequireDefault(_nudoruComponentsMessageBoxViewJs);
-
-var _nudoruComponentsMessageBoxCreatorJs = require('../../nudoru/components/MessageBoxCreator.js');
-
-var _nudoruComponentsMessageBoxCreatorJs2 = _interopRequireDefault(_nudoruComponentsMessageBoxCreatorJs);
-
-var _nudoruComponentsModalCoverViewJs = require('../../nudoru/components/ModalCoverView.js');
-
-var _nudoruComponentsModalCoverViewJs2 = _interopRequireDefault(_nudoruComponentsModalCoverViewJs);
-
-var MixinNudoruControls = function MixinNudoruControls() {
-
-  var _alerts = [];
-
-  function initializeNudoruControls() {
-    _nudoruComponentsToolTipViewJs2['default'].initialize('tooltip__container');
-    _nudoruComponentsToastViewJs2['default'].initialize('toast__container');
-    _nudoruComponentsMessageBoxViewJs2['default'].initialize('messagebox__container');
-    _nudoruComponentsModalCoverViewJs2['default'].initialize();
-  }
-
-  function mbCreator() {
-    return _nudoruComponentsMessageBoxCreatorJs2['default'];
-  }
-
-  function addMessageBox(obj) {
-    return _nudoruComponentsMessageBoxViewJs2['default'].add(obj);
-  }
-
-  function removeMessageBox(id) {
-    _nudoruComponentsMessageBoxViewJs2['default'].remove(id);
-  }
-
-  function alert(message) {
-    _alerts.push(customAlert(message, 'Alert', 'danger'));
-  }
-
-  function positiveAlert(message, title) {
-    _alerts.push(customAlert(message, title, 'success'));
-  }
-
-  function negativeAlert(message, title) {
-    _alerts.push(customAlert(message, title, 'warning'));
-  }
-
-  function customAlert(message, title, type) {
-    return _nudoruComponentsMessageBoxViewJs2['default'].add({
-      title: title,
-      content: '<p>' + message + '</p>',
-      type: type,
-      modal: false,
-      width: 400,
-      buttons: [{
-        label: 'Close',
-        id: 'Close',
-        type: '',
-        icon: 'times',
-        onClick: null
-      }]
-    });
-  }
-
-  function closeAllAlerts() {
-    _alerts.forEach(function (id) {
-      removeMessageBox(id);
-    });
-    _alerts = [];
-  }
-
-  function addNotification(obj) {
-    return _nudoruComponentsToastViewJs2['default'].add(obj);
-  }
-
-  function notify(message, title, type) {
-    return addNotification({
-      title: title || '',
-      type: type || _nudoruComponentsToastViewJs2['default'].type().DEFAULT,
-      message: message
-    });
-  }
-
-  return {
-    initializeNudoruControls: initializeNudoruControls,
-    mbCreator: mbCreator,
-    addMessageBox: addMessageBox,
-    removeMessageBox: removeMessageBox,
-    addNotification: addNotification,
-    alert: alert,
-    positiveAlert: positiveAlert,
-    negativeAlert: negativeAlert,
-    closeAllAlerts: closeAllAlerts,
-    notify: notify
-  };
-};
-
-exports['default'] = MixinNudoruControls();
-module.exports = exports['default'];
-
-},{"../../nudoru/components/MessageBoxCreator.js":30,"../../nudoru/components/MessageBoxView.js":31,"../../nudoru/components/ModalCoverView.js":32,"../../nudoru/components/ToastView.js":33,"../../nudoru/components/ToolTipView.js":34}],25:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":24,"../../nudoru/browser/MouseToTouchEvents.js":26,"../../nudoru/util/is.js":41,"../utils/Rx.js":15}],20:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2246,10 +1738,10 @@ var MixinRouteViews = function MixinRouteViews() {
    * Set up listeners
    */
   function initializeRouteViews() {
-    _utilsRouterJs2['default'].subscribe(onRouteChange.bind(this));
+    _utilsRouterJs2['default'].subscribe($onRouteChange.bind(this));
   }
 
-  function onRouteChange(payload) {
+  function $onRouteChange(payload) {
     this.showViewForCondition(payload.routeObj.route);
   }
 
@@ -2272,10 +1764,259 @@ var MixinRouteViews = function MixinRouteViews() {
   };
 };
 
-exports['default'] = MixinRouteViews();
+exports['default'] = MixinRouteViews;
 module.exports = exports['default'];
 
-},{"../utils/Router.js":17}],26:[function(require,module,exports){
+},{"../utils/Router.js":14}],21:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/*  weak */
+
+/**
+ * Utility to handle all view DOM attachment tasks
+ */
+
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+var RendererModule = function RendererModule() {
+  function render(_ref) {
+    var target = _ref.target;
+    var html = _ref.html;
+    var callback = _ref.callback;
+
+    var domEl = undefined,
+        mountPoint = document.querySelector(target),
+        currentHTML = mountPoint.innerHTML;
+
+    if (html) {
+      domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
+      if (html !== currentHTML) {
+        // TODO experiment with the jsdiff function
+        mountPoint.innerHTML = '';
+        mountPoint.appendChild(domEl);
+      } else {
+        console.log('> is SAME');
+      }
+    }
+
+    if (callback) {
+      callback(domEl);
+    }
+
+    return domEl;
+  }
+
+  return {
+    render: render
+  };
+};
+
+var Renderer = RendererModule();
+
+exports['default'] = Renderer;
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/DOMUtils.js":25}],22:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/*  weak */
+
+/*
+ Simple wrapper for Underscore / HTML templates
+ Matt Perkins
+ 4/7/15
+ */
+
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
+// Switch Lodash to use Mustache style templates
+_vendorLodashMinJs2['default'].templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+
+var TemplatingModule = function TemplatingModule() {
+
+  var _templateMap = Object.create(null),
+      _templateHTMLCache = Object.create(null),
+      _templateCache = Object.create(null);
+
+  function addTemplate(id, html) {
+    _templateMap[id] = html;
+  }
+
+  function getSourceFromTemplateMap(id) {
+    var source = _templateMap[id];
+    if (source) {
+      return cleanTemplateHTML(source);
+    }
+    return;
+  }
+
+  function getSourceFromHTML(id) {
+    var src = document.getElementById(id),
+        srchtml = undefined;
+
+    if (src) {
+      srchtml = src.innerHTML;
+    } else {
+      console.warn('nudoru/core/Templating, template not found: "' + id + '"');
+      srchtml = '<div>Template not found: ' + id + '</div>';
+    }
+
+    return cleanTemplateHTML(srchtml);
+  }
+
+  /**
+   * Get the template html from the script tag with id
+   * @param id
+   * @returns {*}
+   */
+  function getSource(id) {
+    if (_templateHTMLCache[id]) {
+      return _templateHTMLCache[id];
+    }
+
+    var sourcehtml = getSourceFromTemplateMap(id);
+
+    if (!sourcehtml) {
+      sourcehtml = getSourceFromHTML(id);
+    }
+
+    _templateHTMLCache[id] = sourcehtml;
+    return sourcehtml;
+  }
+
+  /**
+   * Returns all IDs belonging to text/template type script tags
+   * @returns {Array}
+   */
+  function getAllTemplateIDs() {
+    var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
+
+    return scriptTags.filter(function (tag) {
+      return tag.getAttribute('type') === 'text/template';
+    }).map(function (tag) {
+      return tag.getAttribute('id');
+    });
+  }
+
+  /**
+   * Returns an underscore template
+   * @param id
+   * @returns {*}
+   */
+  function getTemplate(id) {
+    if (_templateCache[id]) {
+      return _templateCache[id];
+    }
+    var templ = _vendorLodashMinJs2['default'].template(getSource(id));
+    _templateCache[id] = templ;
+    return templ;
+  }
+
+  /**
+   * Returns an underscore template
+   * @param id
+   * @returns {*}
+   */
+  function getTemplateFromHTML(html) {
+    return _vendorLodashMinJs2['default'].template(cleanTemplateHTML(html));
+  }
+
+  /**
+   * Processes the template and returns HTML
+   * @param id
+   * @param obj
+   * @returns {*}
+   */
+  function asHTML(id, obj) {
+    var temp = getTemplate(id);
+    return temp(obj);
+  }
+
+  /**
+   * Processes the template and returns an HTML Element
+   * @param id
+   * @param obj
+   * @returns {*}
+   */
+  function asElement(id, obj) {
+    return _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(asHTML(id, obj));
+  }
+
+  /**
+   * Cleans template HTML
+   */
+  function cleanTemplateHTML(str) {
+    return str.trim();
+  }
+
+  /**
+   * Remove returns, spaces and tabs
+   * @param str
+   * @returns {XML|string}
+   */
+  function removeWhiteSpace(str) {
+    return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
+  }
+
+  /**
+   * Iterate over all templates, clean them up and log
+   * Util for SharePoint projects, <script> blocks aren't allowed
+   * So this helps create the blocks for insertion in to the DOM
+   */
+  //function processForDOMInsertion() {
+  //  let ids = getAllTemplateIDs();
+  //  ids.forEach(id => {
+  //    var src = removeWhiteSpace(getSource(id));
+  //  });
+  //}
+
+  /**
+   * Add a template script tag to the DOM
+   * Util for SharePoint projects, <script> blocks aren't allowed
+   * @param id
+   * @param html
+   */
+  //function addClientSideTemplateToDOM(id, html) {
+  //  var s       = document.createElement('script');
+  //  s.type      = 'text/template';
+  //  s.id        = id;
+  //  s.innerHTML = html;
+  //  document.getElementsByTagName('head')[0].appendChild(s);
+  //}
+
+  return {
+    addTemplate: addTemplate,
+    getSource: getSource,
+    getAllTemplateIDs: getAllTemplateIDs,
+    getTemplate: getTemplate,
+    getTemplateFromHTML: getTemplateFromHTML,
+    asHTML: asHTML,
+    asElement: asElement
+  };
+};
+
+var Templating = TemplatingModule();
+
+exports['default'] = Templating;
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/DOMUtils.js":25,"../../vendor/lodash.min.js":43}],23:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2287,15 +2028,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 /**
  * Base module for components
  * Must be extended with custom modules
+ *
+ * Functions beginning with $ should be treated as private
  */
 
-var _utilsTemplatingJs = require('../utils/Templating.js');
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
-var _utilsTemplatingJs2 = _interopRequireDefault(_utilsTemplatingJs);
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-var _utilsRendererJs = require('../utils/Renderer.js');
+var _viewTemplatingJs = require('../view/Templating.js');
 
-var _utilsRendererJs2 = _interopRequireDefault(_utilsRendererJs);
+var _viewTemplatingJs2 = _interopRequireDefault(_viewTemplatingJs);
+
+var _viewRendererJs = require('../view/Renderer.js');
+
+var _viewRendererJs2 = _interopRequireDefault(_viewRendererJs);
 
 var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
@@ -2304,10 +2051,9 @@ var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 // Lifecycle state constants
 var LS_NO_INIT = 0,
     LS_INITED = 1,
-    LS_UPDATING = 2,
-    LS_RENDERING = 3,
-    LS_MOUNTED = 4,
-    LS_UNMOUNTED = 5,
+    LS_RENDERING = 2,
+    LS_MOUNTED = 3,
+    LS_UNMOUNTED = 4,
     LS_DISPOSED = 9;
 
 var ViewComponent = function ViewComponent() {
@@ -2316,6 +2062,8 @@ var ViewComponent = function ViewComponent() {
       _internalProps = {},
       _publicState = {},
       _publicProps = {},
+      _lastState = {},
+      _lastProps = {},
       _lifecycleState = LS_NO_INIT,
       _isMounted = false,
       _regions = {},
@@ -2331,19 +2079,37 @@ var ViewComponent = function ViewComponent() {
    * @param initProps
    */
   function initializeComponent(initProps) {
-    setProps(_.assign({}, this.getDefaultProps(), initProps));
-    this.setState(this.getInitialState());
-    this.setEvents(this.defineEvents());
+    this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
     _id = _internalProps.id;
-    _mountPoint = _internalProps.mountPoint;
+    if (!_id) {
+      throw new Error('Cannot initialize Component without an ID');
+    }
 
+    _mountPoint = _internalProps.mountPoint;
     _regions = this.defineRegions();
 
-    this.initializeRegions();
+    this.setState(this.getInitialState());
+    //this.setEvents(this.getDOMEvents());
+
+    this.$initializeRegions();
 
     _lifecycleState = LS_INITED;
   }
+
+  /**
+   * Override in implementation
+   *
+   * Define DOM events to be attached after the element is mounted
+   * @returns {undefined}
+   */
+  function getDOMEvents() {
+    return undefined;
+  }
+
+  //----------------------------------------------------------------------------
+  //  Props and state
+  //----------------------------------------------------------------------------
 
   /**
    * Override to set default props
@@ -2354,86 +2120,171 @@ var ViewComponent = function ViewComponent() {
    * @returns {undefined}
    */
   function getDefaultProps() {
-    return undefined;
+    return {
+      autoFormEvents: true
+    };
   }
 
   /**
-   * Override in implementation
-   *
-   * Define DOM events to be attached after the element is mounted
-   * @returns {undefined}
+   * Get the initial state of the component
+   * @returns {{}}
    */
-  function defineEvents() {
-    return undefined;
+  function getInitialState() {
+    return {};
   }
 
   /**
-   * Bind updates to the map ID to this view's update
-   * @param observableStore Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
+   * Get the current state
+   * @returns {void|*}
    */
-  function bind(observableStore) {
-    if (!_nudoruUtilIsJs2['default'].func(observableStore.subscribe)) {
-      console.warn('ViewComponent bind, must be observable: ' + observableStore);
+  function getState() {
+    return _vendorLodashMinJs2['default'].assign({}, _internalState);
+  }
+
+  /**
+   * Get the current props
+   * @returns {void|*}
+   */
+  function getProps() {
+    return _vendorLodashMinJs2['default'].assign({}, _internalProps);
+  }
+
+  /**
+   * Compares next state and props, returns true if one or both are different than current
+   * @param nextState
+   * @param nextProps
+   * @returns {boolean}
+   */
+  function shouldComponentUpdate(nextProps, nextState) {
+    nextProps = nextProps || _internalProps;
+    nextState = nextState || _internalState;
+
+    var isStateEq = _vendorLodashMinJs2['default'].isEqual(nextState, _internalState),
+        isPropsEq = _vendorLodashMinJs2['default'].isEqual(nextProps, _internalProps);
+
+    return !isStateEq || !isPropsEq;
+  }
+
+  /**
+   * Sets the next state and trigger a rerender
+   * @param nextState
+   */
+  function setState(nextState) {
+    if (_lifecycleState === LS_RENDERING) {
+      console.warn('Can\'t update state during rendering', this.getID());
       return;
     }
 
-    observableStore.subscribe(this.update.bind(this));
+    nextState = nextState || this.getInitialState();
+
+    if (!shouldComponentUpdate(null, nextState)) {
+      return;
+    }
+
+    if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
+      this.componentWillUpdate(_publicProps, nextState);
+    }
+
+    _lastState = _vendorLodashMinJs2['default'].assign({}, _internalState);
+    _internalState = _vendorLodashMinJs2['default'].assign({}, _internalState, nextState);
+    // keeping the object reference
+    _publicState = _vendorLodashMinJs2['default'].assign(_publicState, _internalState);
+
+    if (typeof _publicState.onChange === 'function') {
+      _publicState.onChange.apply(this);
+    }
+
+    this.$renderAfterPropsOrStateChange();
+  }
+
+  /**
+   * Before new props are updated
+   */
+  function componentWillReceiveProps(nextProps) {}
+
+  /**
+   * Set new props and trigger rerender
+   * @param nextProps
+   */
+  function setProps(nextProps) {
+    if (_lifecycleState === LS_RENDERING) {
+      console.warn('Can\'t update props during rendering', this.getID());
+      return;
+    }
+
+    if (typeof this.componentWillReceiveProps === 'function' && _lifecycleState >= LS_INITED) {
+      this.componentWillReceiveProps(nextProps);
+    }
+
+    if (!shouldComponentUpdate(nextProps, null)) {
+      return;
+    }
+
+    if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
+      this.componentWillUpdate(nextProps, _internalState);
+    }
+
+    _lastProps = _vendorLodashMinJs2['default'].assign({}, _internalProps);
+    _internalProps = _vendorLodashMinJs2['default'].merge({}, _internalProps, nextProps);
+    // keeping the object reference
+    _publicProps = _vendorLodashMinJs2['default'].assign(_publicProps, _internalProps);
+
+    if (typeof _publicProps.onChange === 'function') {
+      _publicProps.onChange.apply(this);
+    }
+
+    this.$renderAfterPropsOrStateChange();
+  }
+
+  /**
+   * Handle rerendering after props or state change
+   */
+  function $renderAfterPropsOrStateChange() {
+    if (_lifecycleState > LS_INITED) {
+      this.$renderComponent();
+      if (typeof this.componentDidUpdate === 'function') {
+        this.componentDidUpdate(_lastProps, _lastState);
+      }
+    }
   }
 
   /**
    * Before the view updates and a rerender occurs
-   * Returns nextState of component
    */
-  function componentWillUpdate() {
-    return this.getState();
-  }
-
-  function update() {
-    _lifecycleState = LS_UPDATING;
-
-    var nextState = this.componentWillUpdate();
-
-    if (this.shouldComponentUpdate(nextState)) {
-      this.setState(nextState);
-
-      if (_isMounted) {
-        this.unmount();
-        this.componentRender();
-        this.mount();
-      }
-
-      this.updateRegions();
-    }
-
-    if (_lifecycleState === LS_UPDATING) {
-      _lifecycleState = LS_INITED;
-    }
-  }
+  function componentWillUpdate(nextProps, nextState) {}
 
   /**
-   * Compare current state and next state to determine if updating should occur
-   * If the next state exists and it's not equal to the current state
-   * @param nextState
-   * @returns {*}
+   * After the updates render to the DOM
    */
-  function shouldComponentUpdate(nextState) {
-    return !_.isEqual(this.getState(), nextState);
-  }
+  function componentDidUpdate(lastProps, lastState) {}
 
   /**
    * Render it, need to add it to a parent container, handled in higher level view
+   * @param force If true, will force a render
    * @returns {*}
    */
-  function componentRender() {
+  function $renderComponent() {
+    var force = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+    var wasMounted = _isMounted;
+
+    if (wasMounted) {
+      this.unmount();
+    }
+
     _lifecycleState = LS_RENDERING;
 
     if (!_templateObjCache) {
-      _templateObjCache = this.template(this.getState());
+      _templateObjCache = this.template(this.getProps(), this.getState());
     }
 
-    _html = this.render(this.getState());
+    _html = this.render(this.getProps(), this.getState());
 
-    this.renderRegions();
+    if (wasMounted) {
+      this.mount();
+    }
+
+    this.$renderRegions();
   }
 
   /**
@@ -2445,10 +2296,10 @@ var ViewComponent = function ViewComponent() {
    *
    * @returns {Function}
    */
-  function template(state) {
+  function template(props, state) {
     // assumes the template ID matches the component's ID as passed on initialize
-    var html = _utilsTemplatingJs2['default'].getSource(this.getID());
-    return _.template(html);
+    var templateId = props.template || this.getID();
+    return _viewTemplatingJs2['default'].getTemplate(templateId);
   }
 
   /**
@@ -2456,7 +2307,7 @@ var ViewComponent = function ViewComponent() {
    * Should return HTML
    * @returns {*}
    */
-  function render(state) {
+  function render(props, state) {
     return _templateObjCache(state);
   }
 
@@ -2465,6 +2316,12 @@ var ViewComponent = function ViewComponent() {
    * @param mountEl
    */
   function mount() {
+    // TODO why aren't components unmounting on change first?
+    if (_isMounted) {
+      //console.warn('Component ' + _id + ' is already mounted');
+      return;
+    }
+
     if (!_html || _html.length === 0) {
       console.warn('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
       return;
@@ -2472,23 +2329,22 @@ var ViewComponent = function ViewComponent() {
 
     _lifecycleState = LS_MOUNTED;
 
-    _isMounted = true;
-
-    _DOMElement = _utilsRendererJs2['default'].render({
+    _DOMElement = _viewRendererJs2['default'].render({
       target: _mountPoint,
       html: _html
     });
 
+    _isMounted = true;
+
     if (typeof this.delegateEvents === 'function') {
-      if (this.shouldDelegateEvents()) {
+      if (this.shouldDelegateEvents(this.getProps(), this.getState())) {
         // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(true);
+        this.delegateEvents(this.getDOMEvents(), this.getProps().autoFormEvents);
       }
     }
 
     if (typeof this.componentDidMount === 'function') {
-      //this.componentDidMount.bind(this);
-      _mountDelay = _.delay(this.mountAfterDelay.bind(this), 1);
+      _mountDelay = _vendorLodashMinJs2['default'].delay(this.$mountAfterDelay.bind(this), 1);
     }
   }
 
@@ -2497,20 +2353,20 @@ var ViewComponent = function ViewComponent() {
    * Experiencing issues with animations running in componentDidMount
    * after renders and state changes. This delay fixes the issues.
    */
-  function mountAfterDelay() {
+  function $mountAfterDelay() {
     if (_mountDelay) {
       window.clearTimeout(_mountDelay);
     }
 
     this.componentDidMount();
-    this.mountRegions();
+    this.$mountRegions();
   }
 
   /**
    * Override to delegate events or not based on some state trigger
    * @returns {boolean}
    */
-  function shouldDelegateEvents() {
+  function shouldDelegateEvents(props, state) {
     return true;
   }
 
@@ -2529,23 +2385,21 @@ var ViewComponent = function ViewComponent() {
       window.clearTimeout(_mountDelay);
     }
 
-    // Tweens are present in the MixinDOMManipulation. This is convenience
+    // Tweens are present in the MixinDOMManipulation. For convenience, killing here
     if (typeof this.killTweens === 'function') {
       this.killTweens();
     }
 
     this.componentWillUnmount();
 
-    // NO
-    //this.unmountRegions();
-
     _isMounted = false;
 
     if (typeof this.undelegateEvents === 'function') {
-      this.undelegateEvents();
+      this.undelegateEvents(this.getDOMEvents());
     }
 
-    _utilsRendererJs2['default'].render({
+    // Just clear the contents
+    _viewRendererJs2['default'].render({
       target: _mountPoint,
       html: ''
     });
@@ -2558,7 +2412,7 @@ var ViewComponent = function ViewComponent() {
 
   function dispose() {
     this.componentWillDispose();
-    this.disposeRegions();
+    this.$disposeRegions();
     this.unmount();
 
     _lifecycleState = LS_DISPOSED;
@@ -2585,91 +2439,35 @@ var ViewComponent = function ViewComponent() {
     return _regions ? Object.keys(_regions) : [];
   }
 
-  function initializeRegions() {
+  function $initializeRegions() {
     getRegionIDs().forEach(function (region) {
       _regions[region].initialize();
     });
   }
 
-  function updateRegions() {
+  function $renderRegions() {
     getRegionIDs().forEach(function (region) {
-      _regions[region].update();
+      _regions[region].$renderComponent();
     });
   }
 
-  function renderRegions() {
-    getRegionIDs().forEach(function (region) {
-      _regions[region].componentRender();
-    });
-  }
-
-  function mountRegions() {
+  function $mountRegions() {
     getRegionIDs().forEach(function (region) {
       _regions[region].mount();
     });
   }
 
-  function unmountRegions() {
+  function $unmountRegions() {
     getRegionIDs().forEach(function (region) {
       _regions[region].unmount();
     });
   }
 
-  function disposeRegions() {
+  function $disposeRegions() {
     getRegionIDs().forEach(function (region) {
       _regions[region].dispose();
     });
   }
-
-  //----------------------------------------------------------------------------
-  //  Props and state
-  //----------------------------------------------------------------------------
-
-  function getInitialState() {
-    this.setState({});
-  }
-
-  function getState() {
-    return _.assign({}, _internalState);
-  }
-
-  function setState(nextState) {
-    if (_.isEqual(_internalState, nextState)) {
-      return;
-    }
-
-    _internalState = _.assign({}, _internalState, nextState);
-    // keeping the object reference
-    _publicState = _.assign(_publicState, _internalState);
-
-    if (typeof _publicState.onChange === 'function') {
-      _publicState.onChange.apply(this);
-    }
-  }
-
-  function getProps() {
-    return _.assign({}, _internalProps);
-  }
-
-  function setProps(nextProps) {
-    if (_.isEqual(_internalProps, nextProps)) {
-      return;
-    }
-
-    if (this.componentWillReceiveProps && _lifecycleState > LS_INITED) {
-      this.componentWillReceiveProps(nextProps);
-    }
-
-    _internalProps = _.merge({}, _internalProps, nextProps);
-    // keeping the object reference
-    _publicProps = _.assign(_publicProps, _internalProps);
-
-    if (typeof _publicProps.onChange === 'function') {
-      _publicProps.onChange.apply(this);
-    }
-  }
-
-  function componentWillReceiveProps(nextProps) {}
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -2696,6 +2494,23 @@ var ViewComponent = function ViewComponent() {
   }
 
   //----------------------------------------------------------------------------
+  //  Utility
+  //----------------------------------------------------------------------------
+
+  /**
+   * Bind updates from a store to a function
+   * @param observable Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
+   */
+  function bind(observable, func) {
+    if (!_nudoruUtilIsJs2['default'].func(observable.subscribe)) {
+      console.warn('ViewComponent bind, must be observable: ' + observable);
+      return;
+    }
+
+    observable.subscribe(func);
+  }
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -2710,7 +2525,7 @@ var ViewComponent = function ViewComponent() {
     setState: setState,
     getDefaultProps: getDefaultProps,
     defineRegions: defineRegions,
-    defineEvents: defineEvents,
+    getDOMEvents: getDOMEvents,
     getLifeCycleState: getLifeCycleState,
     isInitialized: isInitialized,
     getID: getID,
@@ -2720,13 +2535,14 @@ var ViewComponent = function ViewComponent() {
     bind: bind,
     componentWillReceiveProps: componentWillReceiveProps,
     componentWillUpdate: componentWillUpdate,
+    componentDidUpdate: componentDidUpdate,
     shouldComponentUpdate: shouldComponentUpdate,
-    update: update,
-    componentRender: componentRender,
+    $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
+    $renderComponent: $renderComponent,
     render: render,
     mount: mount,
     shouldDelegateEvents: shouldDelegateEvents,
-    mountAfterDelay: mountAfterDelay,
+    $mountAfterDelay: $mountAfterDelay,
     componentDidMount: componentDidMount,
     componentWillUnmount: componentWillUnmount,
     unmount: unmount,
@@ -2734,19 +2550,18 @@ var ViewComponent = function ViewComponent() {
     componentWillDispose: componentWillDispose,
     getRegion: getRegion,
     getRegionIDs: getRegionIDs,
-    initializeRegions: initializeRegions,
-    updateRegions: updateRegions,
-    renderRegions: renderRegions,
-    mountRegions: mountRegions,
-    unmountRegions: unmountRegions,
-    disposeRegions: disposeRegions
+    $initializeRegions: $initializeRegions,
+    $renderRegions: $renderRegions,
+    $mountRegions: $mountRegions,
+    $unmountRegions: $unmountRegions,
+    $disposeRegions: $disposeRegions
   };
 };
 
 exports['default'] = ViewComponent;
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":39,"../utils/Renderer.js":16,"../utils/Templating.js":19}],27:[function(require,module,exports){
+},{"../../nudoru/util/is.js":41,"../../vendor/lodash.min.js":43,"../view/Renderer.js":21,"../view/Templating.js":22}],24:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -2815,7 +2630,7 @@ var browserInfo = {
 exports["default"] = browserInfo;
 module.exports = exports["default"];
 
-},{}],28:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3025,7 +2840,34 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],29:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+/**
+ * Converts mouse event strings to touch based equivalents
+ * @param eventStr
+ * @returns {*}
+ */
+
+exports['default'] = function (eventStr) {
+  switch (eventStr) {
+    case 'click':
+      return 'touchend';
+    case 'mousedown':
+      return 'touchstart';
+    case 'mouseup':
+      return 'touchend';
+    case 'mousemove':
+      return 'touchmove';
+    default:
+      return eventStr;
+  }
+};
+
+module.exports = exports['default'];
+
+},{}],27:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -3076,7 +2918,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],30:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3186,7 +3028,7 @@ var MessageBoxCreator = function MessageBoxCreator() {
 exports['default'] = MessageBoxCreator();
 module.exports = exports['default'];
 
-},{"./MessageBoxView":31}],31:[function(require,module,exports){
+},{"./MessageBoxView":29}],29:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3220,7 +3062,7 @@ var MessageBoxView = function MessageBoxView() {
       _mountPoint,
       _buttonIconTemplateID = 'messagebox--button-icon',
       _buttonNoIconTemplateID = 'messagebox--button-noicon',
-      _template = require('../../nori/utils/Templating.js'),
+      _template = require('../../nori/view/Templating.js'),
       _modal = require('./ModalCoverView.js'),
       _browserInfo = require('../../nudoru/browser/BrowserInfo.js'),
       _domUtils = require('../../nudoru/browser/DOMUtils.js'),
@@ -3488,7 +3330,124 @@ var MessageBoxView = function MessageBoxView() {
 exports['default'] = MessageBoxView();
 module.exports = exports['default'];
 
-},{"../../nori/utils/Templating.js":19,"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/browser/DOMUtils.js":28,"../../nudoru/browser/ThreeDTransforms.js":29,"../../vendor/rxjs/rx.lite.min.js":41,"./ModalCoverView.js":32}],32:[function(require,module,exports){
+},{"../../nori/view/Templating.js":22,"../../nudoru/browser/BrowserInfo.js":24,"../../nudoru/browser/DOMUtils.js":25,"../../nudoru/browser/ThreeDTransforms.js":27,"../../vendor/rxjs/rx.lite.min.js":44,"./ModalCoverView.js":31}],30:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/*  weak */
+
+var _nudoruComponentsToastViewJs = require('../../nudoru/components/ToastView.js');
+
+var _nudoruComponentsToastViewJs2 = _interopRequireDefault(_nudoruComponentsToastViewJs);
+
+var _nudoruComponentsToolTipViewJs = require('../../nudoru/components/ToolTipView.js');
+
+var _nudoruComponentsToolTipViewJs2 = _interopRequireDefault(_nudoruComponentsToolTipViewJs);
+
+var _nudoruComponentsMessageBoxViewJs = require('../../nudoru/components/MessageBoxView.js');
+
+var _nudoruComponentsMessageBoxViewJs2 = _interopRequireDefault(_nudoruComponentsMessageBoxViewJs);
+
+var _nudoruComponentsMessageBoxCreatorJs = require('../../nudoru/components/MessageBoxCreator.js');
+
+var _nudoruComponentsMessageBoxCreatorJs2 = _interopRequireDefault(_nudoruComponentsMessageBoxCreatorJs);
+
+var _nudoruComponentsModalCoverViewJs = require('../../nudoru/components/ModalCoverView.js');
+
+var _nudoruComponentsModalCoverViewJs2 = _interopRequireDefault(_nudoruComponentsModalCoverViewJs);
+
+var MixinNudoruControls = function MixinNudoruControls() {
+
+  var _alerts = [];
+
+  function initializeNudoruControls() {
+    _nudoruComponentsToolTipViewJs2['default'].initialize('tooltip__container');
+    _nudoruComponentsToastViewJs2['default'].initialize('toast__container');
+    _nudoruComponentsMessageBoxViewJs2['default'].initialize('messagebox__container');
+    _nudoruComponentsModalCoverViewJs2['default'].initialize();
+  }
+
+  function mbCreator() {
+    return _nudoruComponentsMessageBoxCreatorJs2['default'];
+  }
+
+  function addMessageBox(obj) {
+    return _nudoruComponentsMessageBoxViewJs2['default'].add(obj);
+  }
+
+  function removeMessageBox(id) {
+    _nudoruComponentsMessageBoxViewJs2['default'].remove(id);
+  }
+
+  function alert(message) {
+    _alerts.push(customAlert(message, 'Alert', 'danger'));
+  }
+
+  function positiveAlert(message, title) {
+    _alerts.push(customAlert(message, title, 'success'));
+  }
+
+  function negativeAlert(message, title) {
+    _alerts.push(customAlert(message, title, 'warning'));
+  }
+
+  function customAlert(message, title, type) {
+    return _nudoruComponentsMessageBoxViewJs2['default'].add({
+      title: title,
+      content: '<p>' + message + '</p>',
+      type: type,
+      modal: false,
+      width: 400,
+      buttons: [{
+        label: 'Close',
+        id: 'Close',
+        type: '',
+        icon: 'times',
+        onClick: null
+      }]
+    });
+  }
+
+  function closeAllAlerts() {
+    _alerts.forEach(function (id) {
+      removeMessageBox(id);
+    });
+    _alerts = [];
+  }
+
+  function addNotification(obj) {
+    return _nudoruComponentsToastViewJs2['default'].add(obj);
+  }
+
+  function notify(message, title, type) {
+    return addNotification({
+      title: title || '',
+      type: type || _nudoruComponentsToastViewJs2['default'].type().DEFAULT,
+      message: message
+    });
+  }
+
+  return {
+    initializeNudoruControls: initializeNudoruControls,
+    mbCreator: mbCreator,
+    addMessageBox: addMessageBox,
+    removeMessageBox: removeMessageBox,
+    addNotification: addNotification,
+    alert: alert,
+    positiveAlert: positiveAlert,
+    negativeAlert: negativeAlert,
+    closeAllAlerts: closeAllAlerts,
+    notify: notify
+  };
+};
+
+exports['default'] = MixinNudoruControls;
+module.exports = exports['default'];
+
+},{"../../nudoru/components/MessageBoxCreator.js":28,"../../nudoru/components/MessageBoxView.js":29,"../../nudoru/components/ModalCoverView.js":31,"../../nudoru/components/ToastView.js":32,"../../nudoru/components/ToolTipView.js":33}],31:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3635,7 +3594,7 @@ var ModalCoverView = function ModalCoverView() {
 exports['default'] = ModalCoverView();
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":27,"../../vendor/rxjs/rx.lite.min.js":41}],33:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":24,"../../vendor/rxjs/rx.lite.min.js":44}],32:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3666,7 +3625,7 @@ var ToastView = function ToastView() {
     'danger': 'toast__danger'
   },
       _mountPoint,
-      _template = require('../../nori/utils/Templating.js'),
+      _template = require('../../nori/view/Templating.js'),
       _browserInfo = require('../../nudoru/browser/BrowserInfo.js'),
       _domUtils = require('../../nudoru/browser/DOMUtils.js'),
       _componentUtils = require('../../nudoru/browser/ThreeDTransforms.js');
@@ -3798,7 +3757,7 @@ var ToastView = function ToastView() {
 exports['default'] = ToastView();
 module.exports = exports['default'];
 
-},{"../../nori/utils/Templating.js":19,"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/browser/DOMUtils.js":28,"../../nudoru/browser/ThreeDTransforms.js":29,"../../vendor/rxjs/rx.lite.min.js":41}],34:[function(require,module,exports){
+},{"../../nori/view/Templating.js":22,"../../nudoru/browser/BrowserInfo.js":24,"../../nudoru/browser/DOMUtils.js":25,"../../nudoru/browser/ThreeDTransforms.js":27,"../../vendor/rxjs/rx.lite.min.js":44}],33:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3851,7 +3810,7 @@ var ToolTipView = function ToolTipView() {
     'TL': 'tooltip__topleft'
   },
       _mountPoint,
-      _template = require('../../nori/utils/Templating.js'),
+      _template = require('../../nori/view/Templating.js'),
       _domUtils = require('../../nudoru/browser/DOMUtils.js');
 
   function initialize(elID) {
@@ -4080,7 +4039,7 @@ var ToolTipView = function ToolTipView() {
 exports['default'] = ToolTipView();
 module.exports = exports['default'];
 
-},{"../../nori/utils/Templating.js":19,"../../nudoru/browser/DOMUtils.js":28,"../../vendor/rxjs/rx.lite.min.js":41}],35:[function(require,module,exports){
+},{"../../nori/view/Templating.js":22,"../../nudoru/browser/DOMUtils.js":25,"../../vendor/rxjs/rx.lite.min.js":44}],34:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4173,7 +4132,89 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./NumberUtils.js":36}],36:[function(require,module,exports){
+},{"./NumberUtils.js":38}],35:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Merges a collection of objects
+ * @param target
+ * @param sourceArray
+ * @returns {*}
+ */
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
+exports['default'] = function (target, sourceArray) {
+  return sourceArray.reduce(function (tgt, mixin) {
+    return _vendorLodashMinJs2['default'].assign(tgt, mixin);
+  }, target);
+};
+
+module.exports = exports['default'];
+
+},{"../../vendor/lodash.min.js":43}],36:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Mixes in the modules specified in the custom application object
+ * @param customizer
+ * @returns {*}
+ */
+
+var _AssignArrayJs = require('./AssignArray.js');
+
+var _AssignArrayJs2 = _interopRequireDefault(_AssignArrayJs);
+
+exports['default'] = function (customizer) {
+  var mixins = customizer.mixins || [];
+  mixins.push(customizer);
+  return (0, _AssignArrayJs2['default'])({}, mixins);
+};
+
+module.exports = exports['default'];
+
+},{"./AssignArray.js":35}],37:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Return a new Nori class by combining a template and customizer with mixins
+ * @param template
+ * @param customizer
+ * @returns {Function}
+ */
+
+var _BuildFromMixinsJs = require('./BuildFromMixins.js');
+
+var _BuildFromMixinsJs2 = _interopRequireDefault(_BuildFromMixinsJs);
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
+exports['default'] = function (template, customizer) {
+  template = template || {};
+  return function factory() {
+    return _vendorLodashMinJs2['default'].assign({}, template, (0, _BuildFromMixinsJs2['default'])(customizer));
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../vendor/lodash.min.js":43,"./BuildFromMixins.js":36}],38:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -4205,7 +4246,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4419,7 +4460,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4473,7 +4514,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -4521,7 +4562,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /**
  *  Copyright (c) 2014-2015, Facebook, Inc.
  *  All rights reserved.
@@ -6108,7 +6149,1481 @@ module.exports = exports["default"];
     } }), l.prototype.has = un.includes, Xe(x, p.prototype), Xe(k, v.prototype), Xe(A, l.prototype), Xe(V, p.prototype), Xe(Y, v.prototype), Xe(Q, l.prototype);var an = { Iterable: _, Seq: O, Collection: H, Map: Lt, OrderedMap: Ie, List: fe, Stack: Ee, Set: Ae, OrderedSet: Le, Record: Ce, Range: Ye, Repeat: Qe, is: X, fromJS: F };return an;
 });
 
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
+(function (global){
+/**
+ * @license
+ * lodash 3.10.1 (Custom Build) lodash.com/license | Underscore.js 1.8.3 underscorejs.org/LICENSE
+ * Build: `lodash modern -o ./lodash.js`
+ */
+;(function () {
+  function n(n, t) {
+    if (n !== t) {
+      var r = null === n,
+          e = n === w,
+          u = n === n,
+          o = null === t,
+          i = t === w,
+          f = t === t;if (n > t && !o || !u || r && !i && f || e && f) return 1;if (n < t && !r || !f || o && !e && u || i && u) return -1;
+    }return 0;
+  }function t(n, t, r) {
+    for (var e = n.length, u = r ? e : -1; r ? u-- : ++u < e;) if (t(n[u], u, n)) return u;return -1;
+  }function r(n, t, r) {
+    if (t !== t) return p(n, r);r -= 1;for (var e = n.length; ++r < e;) if (n[r] === t) return r;return -1;
+  }function e(n) {
+    return typeof n == "function" || false;
+  }function u(n) {
+    return null == n ? "" : n + "";
+  }function o(n, t) {
+    for (var r = -1, e = n.length; ++r < e && -1 < t.indexOf(n.charAt(r)););
+    return r;
+  }function i(n, t) {
+    for (var r = n.length; r-- && -1 < t.indexOf(n.charAt(r)););return r;
+  }function f(t, r) {
+    return n(t.a, r.a) || t.b - r.b;
+  }function a(n) {
+    return Nn[n];
+  }function c(n) {
+    return Tn[n];
+  }function l(n, t, r) {
+    return (t ? n = Bn[n] : r && (n = Dn[n]), "\\" + n);
+  }function s(n) {
+    return "\\" + Dn[n];
+  }function p(n, t, r) {
+    var e = n.length;for (t += r ? 0 : -1; r ? t-- : ++t < e;) {
+      var u = n[t];if (u !== u) return t;
+    }return -1;
+  }function h(n) {
+    return !!n && typeof n == "object";
+  }function _(n) {
+    return 160 >= n && 9 <= n && 13 >= n || 32 == n || 160 == n || 5760 == n || 6158 == n || 8192 <= n && (8202 >= n || 8232 == n || 8233 == n || 8239 == n || 8287 == n || 12288 == n || 65279 == n);
+  }function v(n, t) {
+    for (var r = -1, e = n.length, u = -1, o = []; ++r < e;) n[r] === t && (n[r] = z, o[++u] = r);return o;
+  }function g(n) {
+    for (var t = -1, r = n.length; ++t < r && _(n.charCodeAt(t)););return t;
+  }function y(n) {
+    for (var t = n.length; t-- && _(n.charCodeAt(t)););return t;
+  }function d(n) {
+    return Ln[n];
+  }function m(_) {
+    function Nn(n) {
+      if (h(n) && !(Oo(n) || n instanceof zn)) {
+        if (n instanceof Ln) return n;if (nu.call(n, "__chain__") && nu.call(n, "__wrapped__")) return Mr(n);
+      }return new Ln(n);
+    }function Tn() {}function Ln(n, t, r) {
+      this.__wrapped__ = n, this.__actions__ = r || [], this.__chain__ = !!t;
+    }function zn(n) {
+      this.__wrapped__ = n, this.__actions__ = [], this.__dir__ = 1, this.__filtered__ = false, this.__iteratees__ = [], this.__takeCount__ = Ru, this.__views__ = [];
+    }function Bn() {
+      this.__data__ = {};
+    }function Dn(n) {
+      var t = n ? n.length : 0;for (this.data = { hash: gu(null), set: new lu() }; t--;) this.push(n[t]);
+    }function Mn(n, t) {
+      var r = n.data;return (typeof t == "string" || ge(t) ? r.set.has(t) : r.hash[t]) ? 0 : -1;
+    }function qn(n, t) {
+      var r = -1,
+          e = n.length;for (t || (t = Be(e)); ++r < e;) t[r] = n[r];return t;
+    }function Pn(n, t) {
+      for (var r = -1, e = n.length; ++r < e && false !== t(n[r], r, n););
+      return n;
+    }function Kn(n, t) {
+      for (var r = -1, e = n.length; ++r < e;) if (!t(n[r], r, n)) return false;return true;
+    }function Vn(n, t) {
+      for (var r = -1, e = n.length, u = -1, o = []; ++r < e;) {
+        var i = n[r];t(i, r, n) && (o[++u] = i);
+      }return o;
+    }function Gn(n, t) {
+      for (var r = -1, e = n.length, u = Be(e); ++r < e;) u[r] = t(n[r], r, n);return u;
+    }function Jn(n, t) {
+      for (var r = -1, e = t.length, u = n.length; ++r < e;) n[u + r] = t[r];return n;
+    }function Xn(n, t, r, e) {
+      var u = -1,
+          o = n.length;for (e && o && (r = n[++u]); ++u < o;) r = t(r, n[u], u, n);return r;
+    }function Hn(n, t) {
+      for (var r = -1, e = n.length; ++r < e;) if (t(n[r], r, n)) return true;
+      return false;
+    }function Qn(n, t, r, e) {
+      return n !== w && nu.call(e, r) ? n : t;
+    }function nt(n, t, r) {
+      for (var e = -1, u = zo(t), o = u.length; ++e < o;) {
+        var i = u[e],
+            f = n[i],
+            a = r(f, t[i], i, n, t);(a === a ? a === f : f !== f) && (f !== w || i in n) || (n[i] = a);
+      }return n;
+    }function tt(n, t) {
+      return null == t ? n : et(t, zo(t), n);
+    }function rt(n, t) {
+      for (var r = -1, e = null == n, u = !e && Er(n), o = u ? n.length : 0, i = t.length, f = Be(i); ++r < i;) {
+        var a = t[r];f[r] = u ? Cr(a, o) ? n[a] : w : e ? w : n[a];
+      }return f;
+    }function et(n, t, r) {
+      r || (r = {});for (var e = -1, u = t.length; ++e < u;) {
+        var o = t[e];r[o] = n[o];
+      }return r;
+    }function ut(n, t, r) {
+      var e = typeof n;return "function" == e ? t === w ? n : Bt(n, t, r) : null == n ? Fe : "object" == e ? bt(n) : t === w ? ze(n) : xt(n, t);
+    }function ot(n, t, r, e, u, o, i) {
+      var f;if ((r && (f = u ? r(n, e, u) : r(n)), f !== w)) return f;if (!ge(n)) return n;if (e = Oo(n)) {
+        if ((f = kr(n), !t)) return qn(n, f);
+      } else {
+        var a = ru.call(n),
+            c = a == K;if (a != Z && a != B && (!c || u)) return Fn[a] ? Rr(n, a, t) : u ? n : {};if ((f = Ir(c ? {} : n), !t)) return tt(f, n);
+      }for (o || (o = []), i || (i = []), u = o.length; u--;) if (o[u] == n) return i[u];return (o.push(n), i.push(f), (e ? Pn : _t)(n, function (e, u) {
+        f[u] = ot(e, t, r, u, n, o, i);
+      }), f);
+    }function it(n, t, r) {
+      if (typeof n != "function") throw new Ge(L);return su(function () {
+        n.apply(w, r);
+      }, t);
+    }function ft(n, t) {
+      var e = n ? n.length : 0,
+          u = [];if (!e) return u;var o = -1,
+          i = xr(),
+          f = i === r,
+          a = f && t.length >= F && gu && lu ? new Dn(t) : null,
+          c = t.length;a && (i = Mn, f = false, t = a);n: for (; ++o < e;) if ((a = n[o], f && a === a)) {
+        for (var l = c; l--;) if (t[l] === a) continue n;u.push(a);
+      } else 0 > i(t, a, 0) && u.push(a);return u;
+    }function at(n, t) {
+      var r = true;return (Su(n, function (n, e, u) {
+        return r = !!t(n, e, u);
+      }), r);
+    }function ct(n, t, r, e) {
+      var u = e,
+          o = u;return (Su(n, function (n, i, f) {
+        i = +t(n, i, f), (r(i, u) || i === e && i === o) && (u = i, o = n);
+      }), o);
+    }function lt(n, t) {
+      var r = [];return (Su(n, function (n, e, u) {
+        t(n, e, u) && r.push(n);
+      }), r);
+    }function st(n, t, r, e) {
+      var u;return (r(n, function (n, r, o) {
+        return t(n, r, o) ? (u = e ? r : n, false) : void 0;
+      }), u);
+    }function pt(n, t, r, e) {
+      e || (e = []);for (var u = -1, o = n.length; ++u < o;) {
+        var i = n[u];h(i) && Er(i) && (r || Oo(i) || pe(i)) ? t ? pt(i, t, r, e) : Jn(e, i) : r || (e[e.length] = i);
+      }return e;
+    }function ht(n, t) {
+      Nu(n, t, Re);
+    }function _t(n, t) {
+      return Nu(n, t, zo);
+    }function vt(n, t) {
+      return Tu(n, t, zo);
+    }function gt(n, t) {
+      for (var r = -1, e = t.length, u = -1, o = []; ++r < e;) {
+        var i = t[r];
+        ve(n[i]) && (o[++u] = i);
+      }return o;
+    }function yt(n, t, r) {
+      if (null != n) {
+        r !== w && r in Br(n) && (t = [r]), r = 0;for (var e = t.length; null != n && r < e;) n = n[t[r++]];return r && r == e ? n : w;
+      }
+    }function dt(n, t, r, e, u, o) {
+      if (n === t) n = true;else if (null == n || null == t || !ge(n) && !h(t)) n = n !== n && t !== t;else n: {
+        var i = dt,
+            f = Oo(n),
+            a = Oo(t),
+            c = D,
+            l = D;f || (c = ru.call(n), c == B ? c = Z : c != Z && (f = xe(n))), a || (l = ru.call(t), l == B ? l = Z : l != Z && xe(t));var s = c == Z,
+            a = l == Z,
+            l = c == l;if (!l || f || s) {
+          if (!e && (c = s && nu.call(n, "__wrapped__"), a = a && nu.call(t, "__wrapped__"), c || a)) {
+            n = i(c ? n.value() : n, a ? t.value() : t, r, e, u, o);
+            break n;
+          }if (l) {
+            for (u || (u = []), o || (o = []), c = u.length; c--;) if (u[c] == n) {
+              n = o[c] == t;break n;
+            }u.push(n), o.push(t), n = (f ? yr : mr)(n, t, i, r, e, u, o), u.pop(), o.pop();
+          } else n = false;
+        } else n = dr(n, t, c);
+      }return n;
+    }function mt(n, t, r) {
+      var e = t.length,
+          u = e,
+          o = !r;if (null == n) return !u;for (n = Br(n); e--;) {
+        var i = t[e];if (o && i[2] ? i[1] !== n[i[0]] : !(i[0] in n)) return false;
+      }for (; ++e < u;) {
+        var i = t[e],
+            f = i[0],
+            a = n[f],
+            c = i[1];if (o && i[2]) {
+          if (a === w && !(f in n)) return false;
+        } else if ((i = r ? r(a, c, f) : w, i === w ? !dt(c, a, r, true) : !i)) return false;
+      }return true;
+    }function wt(n, t) {
+      var r = -1,
+          e = Er(n) ? Be(n.length) : [];
+      return (Su(n, function (n, u, o) {
+        e[++r] = t(n, u, o);
+      }), e);
+    }function bt(n) {
+      var t = Ar(n);if (1 == t.length && t[0][2]) {
+        var r = t[0][0],
+            e = t[0][1];return function (n) {
+          return null == n ? false : n[r] === e && (e !== w || r in Br(n));
+        };
+      }return function (n) {
+        return mt(n, t);
+      };
+    }function xt(n, t) {
+      var r = Oo(n),
+          e = Wr(n) && t === t && !ge(t),
+          u = n + "";return (n = Dr(n), function (o) {
+        if (null == o) return false;var i = u;if ((o = Br(o), !(!r && e || i in o))) {
+          if ((o = 1 == n.length ? o : yt(o, Et(n, 0, -1)), null == o)) return false;i = Zr(n), o = Br(o);
+        }return o[i] === t ? t !== w || i in o : dt(t, o[i], w, true);
+      });
+    }function At(n, t, r, e, u) {
+      if (!ge(n)) return n;var o = Er(t) && (Oo(t) || xe(t)),
+          i = o ? w : zo(t);return (Pn(i || t, function (f, a) {
+        if ((i && (a = f, f = t[a]), h(f))) {
+          e || (e = []), u || (u = []);n: {
+            for (var c = a, l = e, s = u, p = l.length, _ = t[c]; p--;) if (l[p] == _) {
+              n[c] = s[p];break n;
+            }var p = n[c],
+                v = r ? r(p, _, c, n, t) : w,
+                g = v === w;g && (v = _, Er(_) && (Oo(_) || xe(_)) ? v = Oo(p) ? p : Er(p) ? qn(p) : [] : me(_) || pe(_) ? v = pe(p) ? ke(p) : me(p) ? p : {} : g = false), l.push(_), s.push(v), g ? n[c] = At(v, _, r, l, s) : (v === v ? v !== p : p === p) && (n[c] = v);
+          }
+        } else c = n[a], l = r ? r(c, f, a, n, t) : w, (s = l === w) && (l = f), l === w && (!o || a in n) || !s && (l === l ? l === c : c !== c) || (n[a] = l);
+      }), n);
+    }function jt(n) {
+      return function (t) {
+        return null == t ? w : t[n];
+      };
+    }function kt(n) {
+      var t = n + "";return (n = Dr(n), function (r) {
+        return yt(r, n, t);
+      });
+    }function It(n, t) {
+      for (var r = n ? t.length : 0; r--;) {
+        var e = t[r];if (e != u && Cr(e)) {
+          var u = e;pu.call(n, e, 1);
+        }
+      }
+    }function Rt(n, t) {
+      return n + yu(ku() * (t - n + 1));
+    }function Ot(n, t, r, e, u) {
+      return (u(n, function (n, u, o) {
+        r = e ? (e = false, n) : t(r, n, u, o);
+      }), r);
+    }function Et(n, t, r) {
+      var e = -1,
+          u = n.length;for (t = null == t ? 0 : +t || 0, 0 > t && (t = -t > u ? 0 : u + t), r = r === w || r > u ? u : +r || 0, 0 > r && (r += u), u = t > r ? 0 : r - t >>> 0, t >>>= 0, r = Be(u); ++e < u;) r[e] = n[e + t];
+      return r;
+    }function Ct(n, t) {
+      var r;return (Su(n, function (n, e, u) {
+        return (r = t(n, e, u), !r);
+      }), !!r);
+    }function Ut(n, t) {
+      var r = n.length;for (n.sort(t); r--;) n[r] = n[r].c;return n;
+    }function Wt(t, r, e) {
+      var u = wr(),
+          o = -1;return (r = Gn(r, function (n) {
+        return u(n);
+      }), t = wt(t, function (n) {
+        return { a: Gn(r, function (t) {
+            return t(n);
+          }), b: ++o, c: n };
+      }), Ut(t, function (t, r) {
+        var u;n: {
+          for (var o = -1, i = t.a, f = r.a, a = i.length, c = e.length; ++o < a;) if (u = n(i[o], f[o])) {
+            if (o >= c) break n;o = e[o], u *= "asc" === o || true === o ? 1 : -1;break n;
+          }u = t.b - r.b;
+        }return u;
+      }));
+    }function $t(n, t) {
+      var r = 0;return (Su(n, function (n, e, u) {
+        r += +t(n, e, u) || 0;
+      }), r);
+    }function St(n, t) {
+      var e = -1,
+          u = xr(),
+          o = n.length,
+          i = u === r,
+          f = i && o >= F,
+          a = f && gu && lu ? new Dn(void 0) : null,
+          c = [];a ? (u = Mn, i = false) : (f = false, a = t ? [] : c);n: for (; ++e < o;) {
+        var l = n[e],
+            s = t ? t(l, e, n) : l;if (i && l === l) {
+          for (var p = a.length; p--;) if (a[p] === s) continue n;t && a.push(s), c.push(l);
+        } else 0 > u(a, s, 0) && ((t || f) && a.push(s), c.push(l));
+      }return c;
+    }function Ft(n, t) {
+      for (var r = -1, e = t.length, u = Be(e); ++r < e;) u[r] = n[t[r]];return u;
+    }function Nt(n, t, r, e) {
+      for (var u = n.length, o = e ? u : -1; (e ? o-- : ++o < u) && t(n[o], o, n););
+      return r ? Et(n, e ? 0 : o, e ? o + 1 : u) : Et(n, e ? o + 1 : 0, e ? u : o);
+    }function Tt(n, t) {
+      var r = n;r instanceof zn && (r = r.value());for (var e = -1, u = t.length; ++e < u;) var o = t[e], r = o.func.apply(o.thisArg, Jn([r], o.args));return r;
+    }function Lt(n, t, r) {
+      var e = 0,
+          u = n ? n.length : e;if (typeof t == "number" && t === t && u <= Eu) {
+        for (; e < u;) {
+          var o = e + u >>> 1,
+              i = n[o];(r ? i <= t : i < t) && null !== i ? e = o + 1 : u = o;
+        }return u;
+      }return zt(n, t, Fe, r);
+    }function zt(n, t, r, e) {
+      t = r(t);for (var u = 0, o = n ? n.length : 0, i = t !== t, f = null === t, a = t === w; u < o;) {
+        var c = yu((u + o) / 2),
+            l = r(n[c]),
+            s = l !== w,
+            p = l === l;
+        (i ? p || e : f ? p && s && (e || null != l) : a ? p && (e || s) : null == l ? 0 : e ? l <= t : l < t) ? u = c + 1 : o = c;
+      }return xu(o, Ou);
+    }function Bt(n, t, r) {
+      if (typeof n != "function") return Fe;if (t === w) return n;switch (r) {case 1:
+          return function (r) {
+            return n.call(t, r);
+          };case 3:
+          return function (r, e, u) {
+            return n.call(t, r, e, u);
+          };case 4:
+          return function (r, e, u, o) {
+            return n.call(t, r, e, u, o);
+          };case 5:
+          return function (r, e, u, o, i) {
+            return n.call(t, r, e, u, o, i);
+          };}return function () {
+        return n.apply(t, arguments);
+      };
+    }function Dt(n) {
+      var t = new ou(n.byteLength);return (new hu(t).set(new hu(n)), t);
+    }function Mt(n, t, r) {
+      for (var e = r.length, u = -1, o = bu(n.length - e, 0), i = -1, f = t.length, a = Be(f + o); ++i < f;) a[i] = t[i];for (; ++u < e;) a[r[u]] = n[u];for (; o--;) a[i++] = n[u++];return a;
+    }function qt(n, t, r) {
+      for (var e = -1, u = r.length, o = -1, i = bu(n.length - u, 0), f = -1, a = t.length, c = Be(i + a); ++o < i;) c[o] = n[o];for (i = o; ++f < a;) c[i + f] = t[f];for (; ++e < u;) c[i + r[e]] = n[o++];return c;
+    }function Pt(n, t) {
+      return function (r, e, u) {
+        var o = t ? t() : {};if ((e = wr(e, u, 3), Oo(r))) {
+          u = -1;for (var i = r.length; ++u < i;) {
+            var f = r[u];n(o, f, e(f, u, r), r);
+          }
+        } else Su(r, function (t, r, u) {
+          n(o, t, e(t, r, u), u);
+        });return o;
+      };
+    }function Kt(n) {
+      return le(function (t, r) {
+        var e = -1,
+            u = null == t ? 0 : r.length,
+            o = 2 < u ? r[u - 2] : w,
+            i = 2 < u ? r[2] : w,
+            f = 1 < u ? r[u - 1] : w;for (typeof o == "function" ? (o = Bt(o, f, 5), u -= 2) : (o = typeof f == "function" ? f : w, u -= o ? 1 : 0), i && Ur(r[0], r[1], i) && (o = 3 > u ? w : o, u = 1); ++e < u;) (i = r[e]) && n(t, i, o);return t;
+      });
+    }function Vt(n, t) {
+      return function (r, e) {
+        var u = r ? Bu(r) : 0;if (!Sr(u)) return n(r, e);for (var o = t ? u : -1, i = Br(r); (t ? o-- : ++o < u) && false !== e(i[o], o, i););return r;
+      };
+    }function Zt(n) {
+      return function (t, r, e) {
+        var u = Br(t);e = e(t);for (var o = e.length, i = n ? o : -1; n ? i-- : ++i < o;) {
+          var f = e[i];if (false === r(u[f], f, u)) break;
+        }return t;
+      };
+    }function Yt(n, t) {
+      function r() {
+        return (this && this !== Zn && this instanceof r ? e : n).apply(t, arguments);
+      }var e = Jt(n);return r;
+    }function Gt(n) {
+      return function (t) {
+        var r = -1;t = $e(Ce(t));for (var e = t.length, u = ""; ++r < e;) u = n(u, t[r], r);return u;
+      };
+    }function Jt(n) {
+      return function () {
+        var t = arguments;switch (t.length) {case 0:
+            return new n();case 1:
+            return new n(t[0]);case 2:
+            return new n(t[0], t[1]);case 3:
+            return new n(t[0], t[1], t[2]);case 4:
+            return new n(t[0], t[1], t[2], t[3]);case 5:
+            return new n(t[0], t[1], t[2], t[3], t[4]);case 6:
+            return new n(t[0], t[1], t[2], t[3], t[4], t[5]);case 7:
+            return new n(t[0], t[1], t[2], t[3], t[4], t[5], t[6]);}var r = $u(n.prototype),
+            t = n.apply(r, t);return ge(t) ? t : r;
+      };
+    }function Xt(n) {
+      function t(r, e, u) {
+        return (u && Ur(r, e, u) && (e = w), r = gr(r, n, w, w, w, w, w, e), r.placeholder = t.placeholder, r);
+      }return t;
+    }function Ht(n, t) {
+      return le(function (r) {
+        var e = r[0];return null == e ? e : (r.push(t), n.apply(w, r));
+      });
+    }function Qt(n, t) {
+      return function (r, e, u) {
+        if ((u && Ur(r, e, u) && (e = w), e = wr(e, u, 3), 1 == e.length)) {
+          u = r = Oo(r) ? r : zr(r);for (var o = e, i = -1, f = u.length, a = t, c = a; ++i < f;) {
+            var l = u[i],
+                s = +o(l);n(s, a) && (a = s, c = l);
+          }if ((u = c, !r.length || u !== t)) return u;
+        }return ct(r, e, n, t);
+      };
+    }function nr(n, r) {
+      return function (e, u, o) {
+        return (u = wr(u, o, 3), Oo(e) ? (u = t(e, u, r), -1 < u ? e[u] : w) : st(e, u, n));
+      };
+    }function tr(n) {
+      return function (r, e, u) {
+        return r && r.length ? (e = wr(e, u, 3), t(r, e, n)) : -1;
+      };
+    }function rr(n) {
+      return function (t, r, e) {
+        return (r = wr(r, e, 3), st(t, r, n, true));
+      };
+    }function er(n) {
+      return function () {
+        for (var t, r = arguments.length, e = n ? r : -1, u = 0, o = Be(r); n ? e-- : ++e < r;) {
+          var i = o[u++] = arguments[e];if (typeof i != "function") throw new Ge(L);!t && Ln.prototype.thru && "wrapper" == br(i) && (t = new Ln([], true));
+        }for (e = t ? -1 : r; ++e < r;) {
+          var i = o[e],
+              u = br(i),
+              f = "wrapper" == u ? zu(i) : w;t = f && $r(f[0]) && f[1] == (E | k | R | C) && !f[4].length && 1 == f[9] ? t[br(f[0])].apply(t, f[3]) : 1 == i.length && $r(i) ? t[u]() : t.thru(i);
+        }return function () {
+          var n = arguments,
+              e = n[0];if (t && 1 == n.length && Oo(e) && e.length >= F) return t.plant(e).value();for (var u = 0, n = r ? o[u].apply(this, n) : e; ++u < r;) n = o[u].call(this, n);return n;
+        };
+      };
+    }function ur(n, t) {
+      return function (r, e, u) {
+        return typeof e == "function" && u === w && Oo(r) ? n(r, e) : t(r, Bt(e, u, 3));
+      };
+    }function or(n) {
+      return function (t, r, e) {
+        return ((typeof r != "function" || e !== w) && (r = Bt(r, e, 3)), n(t, r, Re));
+      };
+    }function ir(n) {
+      return function (t, r, e) {
+        return ((typeof r != "function" || e !== w) && (r = Bt(r, e, 3)), n(t, r));
+      };
+    }function fr(n) {
+      return function (t, r, e) {
+        var u = {};return (r = wr(r, e, 3), _t(t, function (t, e, o) {
+          o = r(t, e, o), e = n ? o : e, t = n ? t : o, u[e] = t;
+        }), u);
+      };
+    }function ar(n) {
+      return function (t, r, e) {
+        return (t = u(t), (n ? t : "") + pr(t, r, e) + (n ? "" : t));
+      };
+    }function cr(n) {
+      var t = le(function (r, e) {
+        var u = v(e, t.placeholder);return gr(r, n, w, e, u);
+      });return t;
+    }function lr(n, t) {
+      return function (r, e, u, o) {
+        var i = 3 > arguments.length;return typeof e == "function" && o === w && Oo(r) ? n(r, e, u, i) : Ot(r, wr(e, o, 4), u, i, t);
+      };
+    }function sr(n, t, r, e, u, o, i, f, a, c) {
+      function l() {
+        for (var m = arguments.length, b = m, j = Be(m); b--;) j[b] = arguments[b];if ((e && (j = Mt(j, e, u)), o && (j = qt(j, o, i)), _ || y)) {
+          var b = l.placeholder,
+              k = v(j, b),
+              m = m - k.length;if (m < c) {
+            var I = f ? qn(f) : w,
+                m = bu(c - m, 0),
+                E = _ ? k : w,
+                k = _ ? w : k,
+                C = _ ? j : w,
+                j = _ ? w : j;return (t |= _ ? R : O, t &= ~(_ ? O : R), g || (t &= ~(x | A)), j = [n, t, r, C, E, j, k, I, a, m], I = sr.apply(w, j), $r(n) && Du(I, j), I.placeholder = b, I);
+          }
+        }if ((b = p ? r : this, I = h ? b[n] : n, f)) for (m = j.length, E = xu(f.length, m), k = qn(j); E--;) C = f[E], j[E] = Cr(C, m) ? k[C] : w;return (s && a < j.length && (j.length = a), this && this !== Zn && this instanceof l && (I = d || Jt(n)), I.apply(b, j));
+      }var s = t & E,
+          p = t & x,
+          h = t & A,
+          _ = t & k,
+          g = t & j,
+          y = t & I,
+          d = h ? w : Jt(n);return l;
+    }function pr(n, t, r) {
+      return (n = n.length, t = +t, n < t && mu(t) ? (t -= n, r = null == r ? " " : r + "", Ue(r, vu(t / r.length)).slice(0, t)) : "");
+    }function hr(n, t, r, e) {
+      function u() {
+        for (var t = -1, f = arguments.length, a = -1, c = e.length, l = Be(c + f); ++a < c;) l[a] = e[a];
+        for (; f--;) l[a++] = arguments[++t];return (this && this !== Zn && this instanceof u ? i : n).apply(o ? r : this, l);
+      }var o = t & x,
+          i = Jt(n);return u;
+    }function _r(n) {
+      var t = Pe[n];return function (n, r) {
+        return (r = r === w ? 0 : +r || 0) ? (r = au(10, r), t(n * r) / r) : t(n);
+      };
+    }function vr(n) {
+      return function (t, r, e, u) {
+        var o = wr(e);return null == e && o === ut ? Lt(t, r, n) : zt(t, r, o(e, u, 1), n);
+      };
+    }function gr(n, t, r, e, u, o, i, f) {
+      var a = t & A;if (!a && typeof n != "function") throw new Ge(L);var c = e ? e.length : 0;if ((c || (t &= ~(R | O), e = u = w), c -= u ? u.length : 0, t & O)) {
+        var l = e,
+            s = u;e = u = w;
+      }var p = a ? w : zu(n);
+      return (r = [n, t, r, e, u, l, s, o, i, f], p && (e = r[1], t = p[1], f = e | t, u = t == E && e == k || t == E && e == C && r[7].length <= p[8] || t == (E | C) && e == k, (f < E || u) && (t & x && (r[2] = p[2], f |= e & x ? 0 : j), (e = p[3]) && (u = r[3], r[3] = u ? Mt(u, e, p[4]) : qn(e), r[4] = u ? v(r[3], z) : qn(p[4])), (e = p[5]) && (u = r[5], r[5] = u ? qt(u, e, p[6]) : qn(e), r[6] = u ? v(r[5], z) : qn(p[6])), (e = p[7]) && (r[7] = qn(e)), t & E && (r[8] = null == r[8] ? p[8] : xu(r[8], p[8])), null == r[9] && (r[9] = p[9]), r[0] = p[0], r[1] = f), t = r[1], f = r[9]), r[9] = null == f ? a ? 0 : n.length : bu(f - c, 0) || 0, (p ? Lu : Du)(t == x ? Yt(r[0], r[2]) : t != R && t != (x | R) || r[4].length ? sr.apply(w, r) : hr.apply(w, r), r));
+    }function yr(n, t, r, e, u, o, i) {
+      var f = -1,
+          a = n.length,
+          c = t.length;if (a != c && (!u || c <= a)) return false;for (; ++f < a;) {
+        var l = n[f],
+            c = t[f],
+            s = e ? e(u ? c : l, u ? l : c, f) : w;if (s !== w) {
+          if (s) continue;return false;
+        }if (u) {
+          if (!Hn(t, function (n) {
+            return l === n || r(l, n, e, u, o, i);
+          })) return false;
+        } else if (l !== c && !r(l, c, e, u, o, i)) return false;
+      }return true;
+    }function dr(n, t, r) {
+      switch (r) {case M:case q:
+          return +n == +t;case P:
+          return n.name == t.name && n.message == t.message;case V:
+          return n != +n ? t != +t : n == +t;case Y:case G:
+          return n == t + "";}return false;
+    }function mr(n, t, r, e, u, o, i) {
+      var f = zo(n),
+          a = f.length,
+          c = zo(t).length;
+      if (a != c && !u) return false;for (c = a; c--;) {
+        var l = f[c];if (!(u ? l in t : nu.call(t, l))) return false;
+      }for (var s = u; ++c < a;) {
+        var l = f[c],
+            p = n[l],
+            h = t[l],
+            _ = e ? e(u ? h : p, u ? p : h, l) : w;if (_ === w ? !r(p, h, e, u, o, i) : !_) return false;s || (s = "constructor" == l);
+      }return s || (r = n.constructor, e = t.constructor, !(r != e && "constructor" in n && "constructor" in t) || typeof r == "function" && r instanceof r && typeof e == "function" && e instanceof e) ? true : false;
+    }function wr(n, t, r) {
+      var e = Nn.callback || Se,
+          e = e === Se ? ut : e;return r ? e(n, t, r) : e;
+    }function br(n) {
+      for (var t = n.name + "", r = Wu[t], e = r ? r.length : 0; e--;) {
+        var u = r[e],
+            o = u.func;if (null == o || o == n) return u.name;
+      }return t;
+    }function xr(n, t, e) {
+      var u = Nn.indexOf || Vr,
+          u = u === Vr ? r : u;return n ? u(n, t, e) : u;
+    }function Ar(n) {
+      n = Oe(n);for (var t = n.length; t--;) {
+        var r = n[t][1];n[t][2] = r === r && !ge(r);
+      }return n;
+    }function jr(n, t) {
+      var r = null == n ? w : n[t];return ye(r) ? r : w;
+    }function kr(n) {
+      var t = n.length,
+          r = new n.constructor(t);return (t && "string" == typeof n[0] && nu.call(n, "index") && (r.index = n.index, r.input = n.input), r);
+    }function Ir(n) {
+      return (n = n.constructor, typeof n == "function" && n instanceof n || (n = Ve), new n());
+    }function Rr(n, t, r) {
+      var e = n.constructor;switch (t) {case J:
+          return Dt(n);case M:case q:
+          return new e(+n);case X:case H:case Q:case nn:case tn:case rn:case en:case un:case on:
+          return (t = n.buffer, new e(r ? Dt(t) : t, n.byteOffset, n.length));case V:case G:
+          return new e(n);case Y:
+          var u = new e(n.source, kn.exec(n));u.lastIndex = n.lastIndex;}return u;
+    }function Or(n, t, r) {
+      return (null == n || Wr(t, n) || (t = Dr(t), n = 1 == t.length ? n : yt(n, Et(t, 0, -1)), t = Zr(t)), t = null == n ? n : n[t], null == t ? w : t.apply(n, r));
+    }function Er(n) {
+      return null != n && Sr(Bu(n));
+    }function Cr(n, t) {
+      return (n = typeof n == "number" || On.test(n) ? +n : -1, t = null == t ? Cu : t, -1 < n && 0 == n % 1 && n < t);
+    }function Ur(n, t, r) {
+      if (!ge(r)) return false;var e = typeof t;return ("number" == e ? Er(r) && Cr(t, r.length) : "string" == e && t in r) ? (t = r[t], n === n ? n === t : t !== t) : false;
+    }function Wr(n, t) {
+      var r = typeof n;return "string" == r && dn.test(n) || "number" == r ? true : Oo(n) ? false : !yn.test(n) || null != t && n in Br(t);
+    }function $r(n) {
+      var t = br(n),
+          r = Nn[t];return typeof r == "function" && t in zn.prototype ? n === r ? true : (t = zu(r), !!t && n === t[0]) : false;
+    }function Sr(n) {
+      return typeof n == "number" && -1 < n && 0 == n % 1 && n <= Cu;
+    }function Fr(n, t) {
+      return n === w ? t : Eo(n, t, Fr);
+    }function Nr(n, t) {
+      n = Br(n);for (var r = -1, e = t.length, u = {}; ++r < e;) {
+        var o = t[r];o in n && (u[o] = n[o]);
+      }return u;
+    }function Tr(n, t) {
+      var r = {};return (ht(n, function (n, e, u) {
+        t(n, e, u) && (r[e] = n);
+      }), r);
+    }function Lr(n) {
+      for (var t = Re(n), r = t.length, e = r && n.length, u = !!e && Sr(e) && (Oo(n) || pe(n)), o = -1, i = []; ++o < r;) {
+        var f = t[o];(u && Cr(f, e) || nu.call(n, f)) && i.push(f);
+      }return i;
+    }function zr(n) {
+      return null == n ? [] : Er(n) ? ge(n) ? n : Ve(n) : Ee(n);
+    }function Br(n) {
+      return ge(n) ? n : Ve(n);
+    }function Dr(n) {
+      if (Oo(n)) return n;
+      var t = [];return (u(n).replace(mn, function (n, r, e, u) {
+        t.push(e ? u.replace(An, "$1") : r || n);
+      }), t);
+    }function Mr(n) {
+      return n instanceof zn ? n.clone() : new Ln(n.__wrapped__, n.__chain__, qn(n.__actions__));
+    }function qr(n, t, r) {
+      return n && n.length ? ((r ? Ur(n, t, r) : null == t) && (t = 1), Et(n, 0 > t ? 0 : t)) : [];
+    }function Pr(n, t, r) {
+      var e = n ? n.length : 0;return e ? ((r ? Ur(n, t, r) : null == t) && (t = 1), t = e - (+t || 0), Et(n, 0, 0 > t ? 0 : t)) : [];
+    }function Kr(n) {
+      return n ? n[0] : w;
+    }function Vr(n, t, e) {
+      var u = n ? n.length : 0;if (!u) return -1;if (typeof e == "number") e = 0 > e ? bu(u + e, 0) : e;else if (e) return (e = Lt(n, t), e < u && (t === t ? t === n[e] : n[e] !== n[e]) ? e : -1);return r(n, t, e || 0);
+    }function Zr(n) {
+      var t = n ? n.length : 0;return t ? n[t - 1] : w;
+    }function Yr(n) {
+      return qr(n, 1);
+    }function Gr(n, t, e, u) {
+      if (!n || !n.length) return [];null != t && typeof t != "boolean" && (u = e, e = Ur(n, t, u) ? w : t, t = false);var o = wr();if (((null != e || o !== ut) && (e = o(e, u, 3)), t && xr() === r)) {
+        t = e;var i;e = -1, u = n.length;for (var o = -1, f = []; ++e < u;) {
+          var a = n[e],
+              c = t ? t(a, e, n) : a;e && i === c || (i = c, f[++o] = a);
+        }n = f;
+      } else n = St(n, e);return n;
+    }function Jr(n) {
+      if (!n || !n.length) return [];var t = -1,
+          r = 0;n = Vn(n, function (n) {
+        return Er(n) ? (r = bu(n.length, r), true) : void 0;
+      });for (var e = Be(r); ++t < r;) e[t] = Gn(n, jt(t));return e;
+    }function Xr(n, t, r) {
+      return n && n.length ? (n = Jr(n), null == t ? n : (t = Bt(t, r, 4), Gn(n, function (n) {
+        return Xn(n, t, w, true);
+      }))) : [];
+    }function Hr(n, t) {
+      var r = -1,
+          e = n ? n.length : 0,
+          u = {};for (!e || t || Oo(n[0]) || (t = []); ++r < e;) {
+        var o = n[r];t ? u[o] = t[r] : o && (u[o[0]] = o[1]);
+      }return u;
+    }function Qr(n) {
+      return (n = Nn(n), n.__chain__ = true, n);
+    }function ne(n, t, r) {
+      return t.call(r, n);
+    }function te(n, t, r) {
+      var e = Oo(n) ? Kn : at;return (r && Ur(n, t, r) && (t = w), (typeof t != "function" || r !== w) && (t = wr(t, r, 3)), e(n, t));
+    }function re(n, t, r) {
+      var e = Oo(n) ? Vn : lt;return (t = wr(t, r, 3), e(n, t));
+    }function ee(n, t, r, e) {
+      var u = n ? Bu(n) : 0;return (Sr(u) || (n = Ee(n), u = n.length), r = typeof r != "number" || e && Ur(t, r, e) ? 0 : 0 > r ? bu(u + r, 0) : r || 0, typeof n == "string" || !Oo(n) && be(n) ? r <= u && -1 < n.indexOf(t, r) : !!u && -1 < xr(n, t, r));
+    }function ue(n, t, r) {
+      var e = Oo(n) ? Gn : wt;return (t = wr(t, r, 3), e(n, t));
+    }function oe(n, t, r) {
+      if (r ? Ur(n, t, r) : null == t) {
+        n = zr(n);var e = n.length;return 0 < e ? n[Rt(0, e - 1)] : w;
+      }r = -1, n = je(n);var e = n.length,
+          u = e - 1;for (t = xu(0 > t ? 0 : +t || 0, e); ++r < t;) {
+        var e = Rt(r, u),
+            o = n[e];
+        n[e] = n[r], n[r] = o;
+      }return (n.length = t, n);
+    }function ie(n, t, r) {
+      var e = Oo(n) ? Hn : Ct;return (r && Ur(n, t, r) && (t = w), (typeof t != "function" || r !== w) && (t = wr(t, r, 3)), e(n, t));
+    }function fe(n, t) {
+      var r;if (typeof t != "function") {
+        if (typeof n != "function") throw new Ge(L);var e = n;n = t, t = e;
+      }return function () {
+        return (0 < --n && (r = t.apply(this, arguments)), 1 >= n && (t = w), r);
+      };
+    }function ae(n, t, r) {
+      function e(t, r) {
+        r && iu(r), a = p = h = w, t && (_ = ho(), c = n.apply(s, f), p || a || (f = s = w));
+      }function u() {
+        var n = t - (ho() - l);0 >= n || n > t ? e(h, a) : p = su(u, n);
+      }function o() {
+        e(g, p);
+      }function i() {
+        if ((f = arguments, l = ho(), s = this, h = g && (p || !y), false === v)) var r = y && !p;else {
+          a || y || (_ = l);var e = v - (l - _),
+              i = 0 >= e || e > v;i ? (a && (a = iu(a)), _ = l, c = n.apply(s, f)) : a || (a = su(o, e));
+        }return (i && p ? p = iu(p) : p || t === v || (p = su(u, t)), r && (i = true, c = n.apply(s, f)), !i || p || a || (f = s = w), c);
+      }var f,
+          a,
+          c,
+          l,
+          s,
+          p,
+          h,
+          _ = 0,
+          v = false,
+          g = true;if (typeof n != "function") throw new Ge(L);if ((t = 0 > t ? 0 : +t || 0, true === r)) var y = true,
+          g = false;else ge(r) && (y = !!r.leading, v = "maxWait" in r && bu(+r.maxWait || 0, t), g = "trailing" in r ? !!r.trailing : g);return (i.cancel = function () {
+        p && iu(p), a && iu(a), _ = 0, a = p = h = w;
+      }, i);
+    }function ce(n, t) {
+      function r() {
+        var e = arguments,
+            u = t ? t.apply(this, e) : e[0],
+            o = r.cache;return o.has(u) ? o.get(u) : (e = n.apply(this, e), r.cache = o.set(u, e), e);
+      }if (typeof n != "function" || t && typeof t != "function") throw new Ge(L);return (r.cache = new ce.Cache(), r);
+    }function le(n, t) {
+      if (typeof n != "function") throw new Ge(L);return (t = bu(t === w ? n.length - 1 : +t || 0, 0), function () {
+        for (var r = arguments, e = -1, u = bu(r.length - t, 0), o = Be(u); ++e < u;) o[e] = r[t + e];switch (t) {case 0:
+            return n.call(this, o);case 1:
+            return n.call(this, r[0], o);
+          case 2:
+            return n.call(this, r[0], r[1], o);}for (u = Be(t + 1), e = -1; ++e < t;) u[e] = r[e];return (u[t] = o, n.apply(this, u));
+      });
+    }function se(n, t) {
+      return n > t;
+    }function pe(n) {
+      return h(n) && Er(n) && nu.call(n, "callee") && !cu.call(n, "callee");
+    }function he(n, t, r, e) {
+      return (e = (r = typeof r == "function" ? Bt(r, e, 3) : w) ? r(n, t) : w, e === w ? dt(n, t, r) : !!e);
+    }function _e(n) {
+      return h(n) && typeof n.message == "string" && ru.call(n) == P;
+    }function ve(n) {
+      return ge(n) && ru.call(n) == K;
+    }function ge(n) {
+      var t = typeof n;return !!n && ("object" == t || "function" == t);
+    }function ye(n) {
+      return null == n ? false : ve(n) ? uu.test(Qe.call(n)) : h(n) && Rn.test(n);
+    }function de(n) {
+      return typeof n == "number" || h(n) && ru.call(n) == V;
+    }function me(n) {
+      var t;if (!h(n) || ru.call(n) != Z || pe(n) || !(nu.call(n, "constructor") || (t = n.constructor, typeof t != "function" || t instanceof t))) return false;var r;return (ht(n, function (n, t) {
+        r = t;
+      }), r === w || nu.call(n, r));
+    }function we(n) {
+      return ge(n) && ru.call(n) == Y;
+    }function be(n) {
+      return typeof n == "string" || h(n) && ru.call(n) == G;
+    }function xe(n) {
+      return h(n) && Sr(n.length) && !!Sn[ru.call(n)];
+    }function Ae(n, t) {
+      return n < t;
+    }function je(n) {
+      var t = n ? Bu(n) : 0;return Sr(t) ? t ? qn(n) : [] : Ee(n);
+    }function ke(n) {
+      return et(n, Re(n));
+    }function Ie(n) {
+      return gt(n, Re(n));
+    }function Re(n) {
+      if (null == n) return [];ge(n) || (n = Ve(n));for (var t = n.length, t = t && Sr(t) && (Oo(n) || pe(n)) && t || 0, r = n.constructor, e = -1, r = typeof r == "function" && r.prototype === n, u = Be(t), o = 0 < t; ++e < t;) u[e] = e + "";for (var i in n) o && Cr(i, t) || "constructor" == i && (r || !nu.call(n, i)) || u.push(i);return u;
+    }function Oe(n) {
+      n = Br(n);for (var t = -1, r = zo(n), e = r.length, u = Be(e); ++t < e;) {
+        var o = r[t];
+        u[t] = [o, n[o]];
+      }return u;
+    }function Ee(n) {
+      return Ft(n, zo(n));
+    }function Ce(n) {
+      return (n = u(n)) && n.replace(En, a).replace(xn, "");
+    }function Ue(n, t) {
+      var r = "";if ((n = u(n), t = +t, 1 > t || !n || !mu(t))) return r;do t % 2 && (r += n), t = yu(t / 2), n += n; while (t);return r;
+    }function We(n, t, r) {
+      var e = n;return (n = u(n)) ? (r ? Ur(e, t, r) : null == t) ? n.slice(g(n), y(n) + 1) : (t += "", n.slice(o(n, t), i(n, t) + 1)) : n;
+    }function $e(n, t, r) {
+      return (r && Ur(n, t, r) && (t = w), n = u(n), n.match(t || Wn) || []);
+    }function Se(n, t, r) {
+      return (r && Ur(n, t, r) && (t = w), h(n) ? Ne(n) : ut(n, t));
+    }function Fe(n) {
+      return n;
+    }function Ne(n) {
+      return bt(ot(n, true));
+    }function Te(n, t, r) {
+      if (null == r) {
+        var e = ge(t),
+            u = e ? zo(t) : w;((u = u && u.length ? gt(t, u) : w) ? u.length : e) || (u = false, r = t, t = n, n = this);
+      }u || (u = gt(t, zo(t)));var o = true,
+          e = -1,
+          i = ve(n),
+          f = u.length;false === r ? o = false : ge(r) && "chain" in r && (o = r.chain);for (; ++e < f;) {
+        r = u[e];var a = t[r];n[r] = a, i && (n.prototype[r] = (function (t) {
+          return function () {
+            var r = this.__chain__;if (o || r) {
+              var e = n(this.__wrapped__);return ((e.__actions__ = qn(this.__actions__)).push({ func: t, args: arguments, thisArg: n }), e.__chain__ = r, e);
+            }return t.apply(n, Jn([this.value()], arguments));
+          };
+        })(a));
+      }return n;
+    }function Le() {}function ze(n) {
+      return Wr(n) ? jt(n) : kt(n);
+    }_ = _ ? Yn.defaults(Zn.Object(), _, Yn.pick(Zn, $n)) : Zn;var Be = _.Array,
+        De = _.Date,
+        Me = _.Error,
+        qe = _.Function,
+        Pe = _.Math,
+        Ke = _.Number,
+        Ve = _.Object,
+        Ze = _.RegExp,
+        Ye = _.String,
+        Ge = _.TypeError,
+        Je = Be.prototype,
+        Xe = Ve.prototype,
+        He = Ye.prototype,
+        Qe = qe.prototype.toString,
+        nu = Xe.hasOwnProperty,
+        tu = 0,
+        ru = Xe.toString,
+        eu = Zn._,
+        uu = Ze("^" + Qe.call(nu).replace(/[\\^$.*+?()[\]{}|]/g, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"),
+        ou = _.ArrayBuffer,
+        iu = _.clearTimeout,
+        fu = _.parseFloat,
+        au = Pe.pow,
+        cu = Xe.propertyIsEnumerable,
+        lu = jr(_, "Set"),
+        su = _.setTimeout,
+        pu = Je.splice,
+        hu = _.Uint8Array,
+        _u = jr(_, "WeakMap"),
+        vu = Pe.ceil,
+        gu = jr(Ve, "create"),
+        yu = Pe.floor,
+        du = jr(Be, "isArray"),
+        mu = _.isFinite,
+        wu = jr(Ve, "keys"),
+        bu = Pe.max,
+        xu = Pe.min,
+        Au = jr(De, "now"),
+        ju = _.parseInt,
+        ku = Pe.random,
+        Iu = Ke.NEGATIVE_INFINITY,
+        Ru = Ke.POSITIVE_INFINITY,
+        Ou = 4294967294,
+        Eu = 2147483647,
+        Cu = 9007199254740991,
+        Uu = _u && new _u(),
+        Wu = {};
+    Nn.support = {}, Nn.templateSettings = { escape: _n, evaluate: vn, interpolate: gn, variable: "", imports: { _: Nn } };var $u = (function () {
+      function n() {}return function (t) {
+        if (ge(t)) {
+          n.prototype = t;var r = new n();n.prototype = w;
+        }return r || {};
+      };
+    })(),
+        Su = Vt(_t),
+        Fu = Vt(vt, true),
+        Nu = Zt(),
+        Tu = Zt(true),
+        Lu = Uu ? function (n, t) {
+      return (Uu.set(n, t), n);
+    } : Fe,
+        zu = Uu ? function (n) {
+      return Uu.get(n);
+    } : Le,
+        Bu = jt("length"),
+        Du = (function () {
+      var n = 0,
+          t = 0;return function (r, e) {
+        var u = ho(),
+            o = S - (u - t);if ((t = u, 0 < o)) {
+          if (++n >= $) return r;
+        } else n = 0;return Lu(r, e);
+      };
+    })(),
+        Mu = le(function (n, t) {
+      return h(n) && Er(n) ? ft(n, pt(t, false, true)) : [];
+    }),
+        qu = tr(),
+        Pu = tr(true),
+        Ku = le(function (n) {
+      for (var t = n.length, e = t, u = Be(l), o = xr(), i = o === r, f = []; e--;) {
+        var a = n[e] = Er(a = n[e]) ? a : [];u[e] = i && 120 <= a.length && gu && lu ? new Dn(e && a) : null;
+      }var i = n[0],
+          c = -1,
+          l = i ? i.length : 0,
+          s = u[0];n: for (; ++c < l;) if ((a = i[c], 0 > (s ? Mn(s, a) : o(f, a, 0)))) {
+        for (e = t; --e;) {
+          var p = u[e];if (0 > (p ? Mn(p, a) : o(n[e], a, 0))) continue n;
+        }s && s.push(a), f.push(a);
+      }return f;
+    }),
+        Vu = le(function (t, r) {
+      r = pt(r);var e = rt(t, r);return (It(t, r.sort(n)), e);
+    }),
+        Zu = vr(),
+        Yu = vr(true),
+        Gu = le(function (n) {
+      return St(pt(n, false, true));
+    }),
+        Ju = le(function (n, t) {
+      return Er(n) ? ft(n, t) : [];
+    }),
+        Xu = le(Jr),
+        Hu = le(function (n) {
+      var t = n.length,
+          r = 2 < t ? n[t - 2] : w,
+          e = 1 < t ? n[t - 1] : w;return (2 < t && typeof r == "function" ? t -= 2 : (r = 1 < t && typeof e == "function" ? (--t, e) : w, e = w), n.length = t, Xr(n, r, e));
+    }),
+        Qu = le(function (n) {
+      return (n = pt(n), this.thru(function (t) {
+        t = Oo(t) ? t : [Br(t)];for (var r = n, e = -1, u = t.length, o = -1, i = r.length, f = Be(u + i); ++e < u;) f[e] = t[e];for (; ++o < i;) f[e++] = r[o];return f;
+      }));
+    }),
+        no = le(function (n, t) {
+      return rt(n, pt(t));
+    }),
+        to = Pt(function (n, t, r) {
+      nu.call(n, r) ? ++n[r] : n[r] = 1;
+    }),
+        ro = nr(Su),
+        eo = nr(Fu, true),
+        uo = ur(Pn, Su),
+        oo = ur(function (n, t) {
+      for (var r = n.length; r-- && false !== t(n[r], r, n););return n;
+    }, Fu),
+        io = Pt(function (n, t, r) {
+      nu.call(n, r) ? n[r].push(t) : n[r] = [t];
+    }),
+        fo = Pt(function (n, t, r) {
+      n[r] = t;
+    }),
+        ao = le(function (n, t, r) {
+      var e = -1,
+          u = typeof t == "function",
+          o = Wr(t),
+          i = Er(n) ? Be(n.length) : [];return (Su(n, function (n) {
+        var f = u ? t : o && null != n ? n[t] : w;i[++e] = f ? f.apply(n, r) : Or(n, t, r);
+      }), i);
+    }),
+        co = Pt(function (n, t, r) {
+      n[r ? 0 : 1].push(t);
+    }, function () {
+      return [[], []];
+    }),
+        lo = lr(Xn, Su),
+        so = lr(function (n, t, r, e) {
+      var u = n.length;for (e && u && (r = n[--u]); u--;) r = t(r, n[u], u, n);return r;
+    }, Fu),
+        po = le(function (n, t) {
+      if (null == n) return [];var r = t[2];return (r && Ur(t[0], t[1], r) && (t.length = 1), Wt(n, pt(t), []));
+    }),
+        ho = Au || function () {
+      return new De().getTime();
+    },
+        _o = le(function (n, t, r) {
+      var e = x;if (r.length) var u = v(r, _o.placeholder),
+          e = e | R;return gr(n, e, t, r, u);
+    }),
+        vo = le(function (n, t) {
+      t = t.length ? pt(t) : Ie(n);for (var r = -1, e = t.length; ++r < e;) {
+        var u = t[r];n[u] = gr(n[u], x, n);
+      }return n;
+    }),
+        go = le(function (n, t, r) {
+      var e = x | A;if (r.length) var u = v(r, go.placeholder),
+          e = e | R;return gr(t, e, n, r, u);
+    }),
+        yo = Xt(k),
+        mo = Xt(I),
+        wo = le(function (n, t) {
+      return it(n, 1, t);
+    }),
+        bo = le(function (n, t, r) {
+      return it(n, t, r);
+    }),
+        xo = er(),
+        Ao = er(true),
+        jo = le(function (n, t) {
+      if ((t = pt(t), typeof n != "function" || !Kn(t, e))) throw new Ge(L);var r = t.length;return le(function (e) {
+        for (var u = xu(e.length, r); u--;) e[u] = t[u](e[u]);return n.apply(this, e);
+      });
+    }),
+        ko = cr(R),
+        Io = cr(O),
+        Ro = le(function (n, t) {
+      return gr(n, C, w, w, w, pt(t));
+    }),
+        Oo = du || function (n) {
+      return h(n) && Sr(n.length) && ru.call(n) == D;
+    },
+        Eo = Kt(At),
+        Co = Kt(function (n, t, r) {
+      return r ? nt(n, t, r) : tt(n, t);
+    }),
+        Uo = Ht(Co, function (n, t) {
+      return n === w ? t : n;
+    }),
+        Wo = Ht(Eo, Fr),
+        $o = rr(_t),
+        So = rr(vt),
+        Fo = or(Nu),
+        No = or(Tu),
+        To = ir(_t),
+        Lo = ir(vt),
+        zo = wu ? function (n) {
+      var t = null == n ? w : n.constructor;return typeof t == "function" && t.prototype === n || typeof n != "function" && Er(n) ? Lr(n) : ge(n) ? wu(n) : [];
+    } : Lr,
+        Bo = fr(true),
+        Do = fr(),
+        Mo = le(function (n, t) {
+      if (null == n) return {};if ("function" != typeof t[0]) return (t = Gn(pt(t), Ye), Nr(n, ft(Re(n), t)));var r = Bt(t[0], t[1], 3);return Tr(n, function (n, t, e) {
+        return !r(n, t, e);
+      });
+    }),
+        qo = le(function (n, t) {
+      return null == n ? {} : "function" == typeof t[0] ? Tr(n, Bt(t[0], t[1], 3)) : Nr(n, pt(t));
+    }),
+        Po = Gt(function (n, t, r) {
+      return (t = t.toLowerCase(), n + (r ? t.charAt(0).toUpperCase() + t.slice(1) : t));
+    }),
+        Ko = Gt(function (n, t, r) {
+      return n + (r ? "-" : "") + t.toLowerCase();
+    }),
+        Vo = ar(),
+        Zo = ar(true),
+        Yo = Gt(function (n, t, r) {
+      return n + (r ? "_" : "") + t.toLowerCase();
+    }),
+        Go = Gt(function (n, t, r) {
+      return n + (r ? " " : "") + (t.charAt(0).toUpperCase() + t.slice(1));
+    }),
+        Jo = le(function (n, t) {
+      try {
+        return n.apply(w, t);
+      } catch (r) {
+        return _e(r) ? r : new Me(r);
+      }
+    }),
+        Xo = le(function (n, t) {
+      return function (r) {
+        return Or(r, n, t);
+      };
+    }),
+        Ho = le(function (n, t) {
+      return function (r) {
+        return Or(n, r, t);
+      };
+    }),
+        Qo = _r("ceil"),
+        ni = _r("floor"),
+        ti = Qt(se, Iu),
+        ri = Qt(Ae, Ru),
+        ei = _r("round");return (Nn.prototype = Tn.prototype, Ln.prototype = $u(Tn.prototype), Ln.prototype.constructor = Ln, zn.prototype = $u(Tn.prototype), zn.prototype.constructor = zn, Bn.prototype["delete"] = function (n) {
+      return this.has(n) && delete this.__data__[n];
+    }, Bn.prototype.get = function (n) {
+      return "__proto__" == n ? w : this.__data__[n];
+    }, Bn.prototype.has = function (n) {
+      return "__proto__" != n && nu.call(this.__data__, n);
+    }, Bn.prototype.set = function (n, t) {
+      return ("__proto__" != n && (this.__data__[n] = t), this);
+    }, Dn.prototype.push = function (n) {
+      var t = this.data;typeof n == "string" || ge(n) ? t.set.add(n) : t.hash[n] = true;
+    }, ce.Cache = Bn, Nn.after = function (n, t) {
+      if (typeof t != "function") {
+        if (typeof n != "function") throw new Ge(L);var r = n;n = t, t = r;
+      }return (n = mu(n = +n) ? n : 0, function () {
+        return 1 > --n ? t.apply(this, arguments) : void 0;
+      });
+    }, Nn.ary = function (n, t, r) {
+      return (r && Ur(n, t, r) && (t = w), t = n && null == t ? n.length : bu(+t || 0, 0), gr(n, E, w, w, w, w, t));
+    }, Nn.assign = Co, Nn.at = no, Nn.before = fe, Nn.bind = _o, Nn.bindAll = vo, Nn.bindKey = go, Nn.callback = Se, Nn.chain = Qr, Nn.chunk = function (n, t, r) {
+      t = (r ? Ur(n, t, r) : null == t) ? 1 : bu(yu(t) || 1, 1), r = 0;for (var e = n ? n.length : 0, u = -1, o = Be(vu(e / t)); r < e;) o[++u] = Et(n, r, r += t);
+      return o;
+    }, Nn.compact = function (n) {
+      for (var t = -1, r = n ? n.length : 0, e = -1, u = []; ++t < r;) {
+        var o = n[t];o && (u[++e] = o);
+      }return u;
+    }, Nn.constant = function (n) {
+      return function () {
+        return n;
+      };
+    }, Nn.countBy = to, Nn.create = function (n, t, r) {
+      var e = $u(n);return (r && Ur(n, t, r) && (t = w), t ? tt(e, t) : e);
+    }, Nn.curry = yo, Nn.curryRight = mo, Nn.debounce = ae, Nn.defaults = Uo, Nn.defaultsDeep = Wo, Nn.defer = wo, Nn.delay = bo, Nn.difference = Mu, Nn.drop = qr, Nn.dropRight = Pr, Nn.dropRightWhile = function (n, t, r) {
+      return n && n.length ? Nt(n, wr(t, r, 3), true, true) : [];
+    }, Nn.dropWhile = function (n, t, r) {
+      return n && n.length ? Nt(n, wr(t, r, 3), true) : [];
+    }, Nn.fill = function (n, t, r, e) {
+      var u = n ? n.length : 0;if (!u) return [];for (r && typeof r != "number" && Ur(n, t, r) && (r = 0, e = u), u = n.length, r = null == r ? 0 : +r || 0, 0 > r && (r = -r > u ? 0 : u + r), e = e === w || e > u ? u : +e || 0, 0 > e && (e += u), u = r > e ? 0 : e >>> 0, r >>>= 0; r < u;) n[r++] = t;return n;
+    }, Nn.filter = re, Nn.flatten = function (n, t, r) {
+      var e = n ? n.length : 0;return (r && Ur(n, t, r) && (t = false), e ? pt(n, t) : []);
+    }, Nn.flattenDeep = function (n) {
+      return n && n.length ? pt(n, true) : [];
+    }, Nn.flow = xo, Nn.flowRight = Ao, Nn.forEach = uo, Nn.forEachRight = oo, Nn.forIn = Fo, Nn.forInRight = No, Nn.forOwn = To, Nn.forOwnRight = Lo, Nn.functions = Ie, Nn.groupBy = io, Nn.indexBy = fo, Nn.initial = function (n) {
+      return Pr(n, 1);
+    }, Nn.intersection = Ku, Nn.invert = function (n, t, r) {
+      r && Ur(n, t, r) && (t = w), r = -1;for (var e = zo(n), u = e.length, o = {}; ++r < u;) {
+        var i = e[r],
+            f = n[i];t ? nu.call(o, f) ? o[f].push(i) : o[f] = [i] : o[f] = i;
+      }return o;
+    }, Nn.invoke = ao, Nn.keys = zo, Nn.keysIn = Re, Nn.map = ue, Nn.mapKeys = Bo, Nn.mapValues = Do, Nn.matches = Ne, Nn.matchesProperty = function (n, t) {
+      return xt(n, ot(t, true));
+    }, Nn.memoize = ce, Nn.merge = Eo, Nn.method = Xo, Nn.methodOf = Ho, Nn.mixin = Te, Nn.modArgs = jo, Nn.negate = function (n) {
+      if (typeof n != "function") throw new Ge(L);return function () {
+        return !n.apply(this, arguments);
+      };
+    }, Nn.omit = Mo, Nn.once = function (n) {
+      return fe(2, n);
+    }, Nn.pairs = Oe, Nn.partial = ko, Nn.partialRight = Io, Nn.partition = co, Nn.pick = qo, Nn.pluck = function (n, t) {
+      return ue(n, ze(t));
+    }, Nn.property = ze, Nn.propertyOf = function (n) {
+      return function (t) {
+        return yt(n, Dr(t), t + "");
+      };
+    }, Nn.pull = function () {
+      var n = arguments,
+          t = n[0];if (!t || !t.length) return t;for (var r = 0, e = xr(), u = n.length; ++r < u;) for (var o = 0, i = n[r]; -1 < (o = e(t, i, o));) pu.call(t, o, 1);
+      return t;
+    }, Nn.pullAt = Vu, Nn.range = function (n, t, r) {
+      r && Ur(n, t, r) && (t = r = w), n = +n || 0, r = null == r ? 1 : +r || 0, null == t ? (t = n, n = 0) : t = +t || 0;var e = -1;t = bu(vu((t - n) / (r || 1)), 0);for (var u = Be(t); ++e < t;) u[e] = n, n += r;return u;
+    }, Nn.rearg = Ro, Nn.reject = function (n, t, r) {
+      var e = Oo(n) ? Vn : lt;return (t = wr(t, r, 3), e(n, function (n, r, e) {
+        return !t(n, r, e);
+      }));
+    }, Nn.remove = function (n, t, r) {
+      var e = [];if (!n || !n.length) return e;var u = -1,
+          o = [],
+          i = n.length;for (t = wr(t, r, 3); ++u < i;) r = n[u], t(r, u, n) && (e.push(r), o.push(u));return (It(n, o), e);
+    }, Nn.rest = Yr, Nn.restParam = le, Nn.set = function (n, t, r) {
+      if (null == n) return n;var e = t + "";t = null != n[e] || Wr(t, n) ? [e] : Dr(t);for (var e = -1, u = t.length, o = u - 1, i = n; null != i && ++e < u;) {
+        var f = t[e];ge(i) && (e == o ? i[f] = r : null == i[f] && (i[f] = Cr(t[e + 1]) ? [] : {})), i = i[f];
+      }return n;
+    }, Nn.shuffle = function (n) {
+      return oe(n, Ru);
+    }, Nn.slice = function (n, t, r) {
+      var e = n ? n.length : 0;return e ? (r && typeof r != "number" && Ur(n, t, r) && (t = 0, r = e), Et(n, t, r)) : [];
+    }, Nn.sortBy = function (n, t, r) {
+      if (null == n) return [];r && Ur(n, t, r) && (t = w);var e = -1;return (t = wr(t, r, 3), n = wt(n, function (n, r, u) {
+        return { a: t(n, r, u),
+          b: ++e, c: n };
+      }), Ut(n, f));
+    }, Nn.sortByAll = po, Nn.sortByOrder = function (n, t, r, e) {
+      return null == n ? [] : (e && Ur(t, r, e) && (r = w), Oo(t) || (t = null == t ? [] : [t]), Oo(r) || (r = null == r ? [] : [r]), Wt(n, t, r));
+    }, Nn.spread = function (n) {
+      if (typeof n != "function") throw new Ge(L);return function (t) {
+        return n.apply(this, t);
+      };
+    }, Nn.take = function (n, t, r) {
+      return n && n.length ? ((r ? Ur(n, t, r) : null == t) && (t = 1), Et(n, 0, 0 > t ? 0 : t)) : [];
+    }, Nn.takeRight = function (n, t, r) {
+      var e = n ? n.length : 0;return e ? ((r ? Ur(n, t, r) : null == t) && (t = 1), t = e - (+t || 0), Et(n, 0 > t ? 0 : t)) : [];
+    }, Nn.takeRightWhile = function (n, t, r) {
+      return n && n.length ? Nt(n, wr(t, r, 3), false, true) : [];
+    }, Nn.takeWhile = function (n, t, r) {
+      return n && n.length ? Nt(n, wr(t, r, 3)) : [];
+    }, Nn.tap = function (n, t, r) {
+      return (t.call(r, n), n);
+    }, Nn.throttle = function (n, t, r) {
+      var e = true,
+          u = true;if (typeof n != "function") throw new Ge(L);return (false === r ? e = false : ge(r) && (e = "leading" in r ? !!r.leading : e, u = "trailing" in r ? !!r.trailing : u), ae(n, t, { leading: e, maxWait: +t, trailing: u }));
+    }, Nn.thru = ne, Nn.times = function (n, t, r) {
+      if ((n = yu(n), 1 > n || !mu(n))) return [];var e = -1,
+          u = Be(xu(n, 4294967295));for (t = Bt(t, r, 1); ++e < n;) 4294967295 > e ? u[e] = t(e) : t(e);
+      return u;
+    }, Nn.toArray = je, Nn.toPlainObject = ke, Nn.transform = function (n, t, r, e) {
+      var u = Oo(n) || xe(n);return (t = wr(t, e, 4), null == r && (u || ge(n) ? (e = n.constructor, r = u ? Oo(n) ? new e() : [] : $u(ve(e) ? e.prototype : w)) : r = {}), (u ? Pn : _t)(n, function (n, e, u) {
+        return t(r, n, e, u);
+      }), r);
+    }, Nn.union = Gu, Nn.uniq = Gr, Nn.unzip = Jr, Nn.unzipWith = Xr, Nn.values = Ee, Nn.valuesIn = function (n) {
+      return Ft(n, Re(n));
+    }, Nn.where = function (n, t) {
+      return re(n, bt(t));
+    }, Nn.without = Ju, Nn.wrap = function (n, t) {
+      return (t = null == t ? Fe : t, gr(t, R, w, [n], []));
+    }, Nn.xor = function () {
+      for (var n = -1, t = arguments.length; ++n < t;) {
+        var r = arguments[n];if (Er(r)) var e = e ? Jn(ft(e, r), ft(r, e)) : r;
+      }return e ? St(e) : [];
+    }, Nn.zip = Xu, Nn.zipObject = Hr, Nn.zipWith = Hu, Nn.backflow = Ao, Nn.collect = ue, Nn.compose = Ao, Nn.each = uo, Nn.eachRight = oo, Nn.extend = Co, Nn.iteratee = Se, Nn.methods = Ie, Nn.object = Hr, Nn.select = re, Nn.tail = Yr, Nn.unique = Gr, Te(Nn, Nn), Nn.add = function (n, t) {
+      return (+n || 0) + (+t || 0);
+    }, Nn.attempt = Jo, Nn.camelCase = Po, Nn.capitalize = function (n) {
+      return (n = u(n)) && n.charAt(0).toUpperCase() + n.slice(1);
+    }, Nn.ceil = Qo, Nn.clone = function (n, t, r, e) {
+      return (t && typeof t != "boolean" && Ur(n, t, r) ? t = false : typeof t == "function" && (e = r, r = t, t = false), typeof r == "function" ? ot(n, t, Bt(r, e, 3)) : ot(n, t));
+    }, Nn.cloneDeep = function (n, t, r) {
+      return typeof t == "function" ? ot(n, true, Bt(t, r, 3)) : ot(n, true);
+    }, Nn.deburr = Ce, Nn.endsWith = function (n, t, r) {
+      n = u(n), t += "";var e = n.length;return (r = r === w ? e : xu(0 > r ? 0 : +r || 0, e), r -= t.length, 0 <= r && n.indexOf(t, r) == r);
+    }, Nn.escape = function (n) {
+      return (n = u(n)) && hn.test(n) ? n.replace(sn, c) : n;
+    }, Nn.escapeRegExp = function (n) {
+      return (n = u(n)) && bn.test(n) ? n.replace(wn, l) : n || "(?:)";
+    }, Nn.every = te, Nn.find = ro, Nn.findIndex = qu, Nn.findKey = $o, Nn.findLast = eo, Nn.findLastIndex = Pu, Nn.findLastKey = So, Nn.findWhere = function (n, t) {
+      return ro(n, bt(t));
+    }, Nn.first = Kr, Nn.floor = ni, Nn.get = function (n, t, r) {
+      return (n = null == n ? w : yt(n, Dr(t), t + ""), n === w ? r : n);
+    }, Nn.gt = se, Nn.gte = function (n, t) {
+      return n >= t;
+    }, Nn.has = function (n, t) {
+      if (null == n) return false;var r = nu.call(n, t);if (!r && !Wr(t)) {
+        if ((t = Dr(t), n = 1 == t.length ? n : yt(n, Et(t, 0, -1)), null == n)) return false;t = Zr(t), r = nu.call(n, t);
+      }return r || Sr(n.length) && Cr(t, n.length) && (Oo(n) || pe(n));
+    }, Nn.identity = Fe, Nn.includes = ee, Nn.indexOf = Vr, Nn.inRange = function (n, t, r) {
+      return (t = +t || 0, r === w ? (r = t, t = 0) : r = +r || 0, n >= xu(t, r) && n < bu(t, r));
+    }, Nn.isArguments = pe, Nn.isArray = Oo, Nn.isBoolean = function (n) {
+      return true === n || false === n || h(n) && ru.call(n) == M;
+    }, Nn.isDate = function (n) {
+      return h(n) && ru.call(n) == q;
+    }, Nn.isElement = function (n) {
+      return !!n && 1 === n.nodeType && h(n) && !me(n);
+    }, Nn.isEmpty = function (n) {
+      return null == n ? true : Er(n) && (Oo(n) || be(n) || pe(n) || h(n) && ve(n.splice)) ? !n.length : !zo(n).length;
+    }, Nn.isEqual = he, Nn.isError = _e, Nn.isFinite = function (n) {
+      return typeof n == "number" && mu(n);
+    }, Nn.isFunction = ve, Nn.isMatch = function (n, t, r, e) {
+      return (r = typeof r == "function" ? Bt(r, e, 3) : w, mt(n, Ar(t), r));
+    }, Nn.isNaN = function (n) {
+      return de(n) && n != +n;
+    }, Nn.isNative = ye, Nn.isNull = function (n) {
+      return null === n;
+    }, Nn.isNumber = de, Nn.isObject = ge, Nn.isPlainObject = me, Nn.isRegExp = we, Nn.isString = be, Nn.isTypedArray = xe, Nn.isUndefined = function (n) {
+      return n === w;
+    }, Nn.kebabCase = Ko, Nn.last = Zr, Nn.lastIndexOf = function (n, t, r) {
+      var e = n ? n.length : 0;if (!e) return -1;var u = e;if (typeof r == "number") u = (0 > r ? bu(e + r, 0) : xu(r || 0, e - 1)) + 1;else if (r) return (u = Lt(n, t, true) - 1, n = n[u], (t === t ? t === n : n !== n) ? u : -1);
+      if (t !== t) return p(n, u, true);for (; u--;) if (n[u] === t) return u;return -1;
+    }, Nn.lt = Ae, Nn.lte = function (n, t) {
+      return n <= t;
+    }, Nn.max = ti, Nn.min = ri, Nn.noConflict = function () {
+      return (Zn._ = eu, this);
+    }, Nn.noop = Le, Nn.now = ho, Nn.pad = function (n, t, r) {
+      n = u(n), t = +t;var e = n.length;return e < t && mu(t) ? (e = (t - e) / 2, t = yu(e), e = vu(e), r = pr("", e, r), r.slice(0, t) + n + r) : n;
+    }, Nn.padLeft = Vo, Nn.padRight = Zo, Nn.parseInt = function (n, t, r) {
+      return ((r ? Ur(n, t, r) : null == t) ? t = 0 : t && (t = +t), n = We(n), ju(n, t || (In.test(n) ? 16 : 10)));
+    }, Nn.random = function (n, t, r) {
+      r && Ur(n, t, r) && (t = r = w);
+      var e = null == n,
+          u = null == t;return (null == r && (u && typeof n == "boolean" ? (r = n, n = 1) : typeof t == "boolean" && (r = t, u = true)), e && u && (t = 1, u = false), n = +n || 0, u ? (t = n, n = 0) : t = +t || 0, r || n % 1 || t % 1 ? (r = ku(), xu(n + r * (t - n + fu("1e-" + ((r + "").length - 1))), t)) : Rt(n, t));
+    }, Nn.reduce = lo, Nn.reduceRight = so, Nn.repeat = Ue, Nn.result = function (n, t, r) {
+      var e = null == n ? w : n[t];return (e === w && (null == n || Wr(t, n) || (t = Dr(t), n = 1 == t.length ? n : yt(n, Et(t, 0, -1)), e = null == n ? w : n[Zr(t)]), e = e === w ? r : e), ve(e) ? e.call(n) : e);
+    }, Nn.round = ei, Nn.runInContext = m, Nn.size = function (n) {
+      var t = n ? Bu(n) : 0;
+      return Sr(t) ? t : zo(n).length;
+    }, Nn.snakeCase = Yo, Nn.some = ie, Nn.sortedIndex = Zu, Nn.sortedLastIndex = Yu, Nn.startCase = Go, Nn.startsWith = function (n, t, r) {
+      return (n = u(n), r = null == r ? 0 : xu(0 > r ? 0 : +r || 0, n.length), n.lastIndexOf(t, r) == r);
+    }, Nn.sum = function (n, t, r) {
+      if ((r && Ur(n, t, r) && (t = w), t = wr(t, r, 3), 1 == t.length)) {
+        n = Oo(n) ? n : zr(n), r = n.length;for (var e = 0; r--;) e += +t(n[r]) || 0;n = e;
+      } else n = $t(n, t);return n;
+    }, Nn.template = function (n, t, r) {
+      var e = Nn.templateSettings;r && Ur(n, t, r) && (t = r = w), n = u(n), t = nt(tt({}, r || t), e, Qn), r = nt(tt({}, t.imports), e.imports, Qn);
+      var o,
+          i,
+          f = zo(r),
+          a = Ft(r, f),
+          c = 0;r = t.interpolate || Cn;var l = "__p+='";r = Ze((t.escape || Cn).source + "|" + r.source + "|" + (r === gn ? jn : Cn).source + "|" + (t.evaluate || Cn).source + "|$", "g");var p = "sourceURL" in t ? "//# sourceURL=" + t.sourceURL + "\n" : "";if ((n.replace(r, function (t, r, e, u, f, a) {
+        return (e || (e = u), l += n.slice(c, a).replace(Un, s), r && (o = true, l += "'+__e(" + r + ")+'"), f && (i = true, l += "';" + f + ";\n__p+='"), e && (l += "'+((__t=(" + e + "))==null?'':__t)+'"), c = a + t.length, t);
+      }), l += "';", (t = t.variable) || (l = "with(obj){" + l + "}"), l = (i ? l.replace(fn, "") : l).replace(an, "$1").replace(cn, "$1;"), l = "function(" + (t || "obj") + "){" + (t ? "" : "obj||(obj={});") + "var __t,__p=''" + (o ? ",__e=_.escape" : "") + (i ? ",__j=Array.prototype.join;function print(){__p+=__j.call(arguments,'')}" : ";") + l + "return __p}", t = Jo(function () {
+        return qe(f, p + "return " + l).apply(w, a);
+      }), t.source = l, _e(t))) throw t;return t;
+    }, Nn.trim = We, Nn.trimLeft = function (n, t, r) {
+      var e = n;return (n = u(n)) ? n.slice((r ? Ur(e, t, r) : null == t) ? g(n) : o(n, t + "")) : n;
+    }, Nn.trimRight = function (n, t, r) {
+      var e = n;return (n = u(n)) ? (r ? Ur(e, t, r) : null == t) ? n.slice(0, y(n) + 1) : n.slice(0, i(n, t + "") + 1) : n;
+    }, Nn.trunc = function (n, t, r) {
+      r && Ur(n, t, r) && (t = w);var e = U;if ((r = W, null != t)) if (ge(t)) {
+        var o = "separator" in t ? t.separator : o,
+            e = "length" in t ? +t.length || 0 : e;r = "omission" in t ? u(t.omission) : r;
+      } else e = +t || 0;if ((n = u(n), e >= n.length)) return n;if ((e -= r.length, 1 > e)) return r;if ((t = n.slice(0, e), null == o)) return t + r;if (we(o)) {
+        if (n.slice(e).search(o)) {
+          var i,
+              f = n.slice(0, e);for (o.global || (o = Ze(o.source, (kn.exec(o) || "") + "g")), o.lastIndex = 0; n = o.exec(f);) i = n.index;t = t.slice(0, null == i ? e : i);
+        }
+      } else n.indexOf(o, e) != e && (o = t.lastIndexOf(o), -1 < o && (t = t.slice(0, o)));return t + r;
+    }, Nn.unescape = function (n) {
+      return (n = u(n)) && pn.test(n) ? n.replace(ln, d) : n;
+    }, Nn.uniqueId = function (n) {
+      var t = ++tu;return u(n) + t;
+    }, Nn.words = $e, Nn.all = te, Nn.any = ie, Nn.contains = ee, Nn.eq = he, Nn.detect = ro, Nn.foldl = lo, Nn.foldr = so, Nn.head = Kr, Nn.include = ee, Nn.inject = lo, Te(Nn, (function () {
+      var n = {};return (_t(Nn, function (t, r) {
+        Nn.prototype[r] || (n[r] = t);
+      }), n);
+    })(), false), Nn.sample = oe, Nn.prototype.sample = function (n) {
+      return this.__chain__ || null != n ? this.thru(function (t) {
+        return oe(t, n);
+      }) : oe(this.value());
+    }, Nn.VERSION = b, Pn("bind bindKey curry curryRight partial partialRight".split(" "), function (n) {
+      Nn[n].placeholder = Nn;
+    }), Pn(["drop", "take"], function (n, t) {
+      zn.prototype[n] = function (r) {
+        var e = this.__filtered__;if (e && !t) return new zn(this);r = null == r ? 1 : bu(yu(r) || 0, 0);var u = this.clone();return (e ? u.__takeCount__ = xu(u.__takeCount__, r) : u.__views__.push({ size: r, type: n + (0 > u.__dir__ ? "Right" : "") }), u);
+      }, zn.prototype[n + "Right"] = function (t) {
+        return this.reverse()[n](t).reverse();
+      };
+    }), Pn(["filter", "map", "takeWhile"], function (n, t) {
+      var r = t + 1,
+          e = r != T;zn.prototype[n] = function (n, t) {
+        var u = this.clone();return (u.__iteratees__.push({ iteratee: wr(n, t, 1), type: r }), u.__filtered__ = u.__filtered__ || e, u);
+      };
+    }), Pn(["first", "last"], function (n, t) {
+      var r = "take" + (t ? "Right" : "");zn.prototype[n] = function () {
+        return this[r](1).value()[0];
+      };
+    }), Pn(["initial", "rest"], function (n, t) {
+      var r = "drop" + (t ? "" : "Right");zn.prototype[n] = function () {
+        return this.__filtered__ ? new zn(this) : this[r](1);
+      };
+    }), Pn(["pluck", "where"], function (n, t) {
+      var r = t ? "filter" : "map",
+          e = t ? bt : ze;zn.prototype[n] = function (n) {
+        return this[r](e(n));
+      };
+    }), zn.prototype.compact = function () {
+      return this.filter(Fe);
+    }, zn.prototype.reject = function (n, t) {
+      return (n = wr(n, t, 1), this.filter(function (t) {
+        return !n(t);
+      }));
+    }, zn.prototype.slice = function (n, t) {
+      n = null == n ? 0 : +n || 0;var r = this;return r.__filtered__ && (0 < n || 0 > t) ? new zn(r) : (0 > n ? r = r.takeRight(-n) : n && (r = r.drop(n)), t !== w && (t = +t || 0, r = 0 > t ? r.dropRight(-t) : r.take(t - n)), r);
+    }, zn.prototype.takeRightWhile = function (n, t) {
+      return this.reverse().takeWhile(n, t).reverse();
+    }, zn.prototype.toArray = function () {
+      return this.take(Ru);
+    }, _t(zn.prototype, function (n, t) {
+      var r = /^(?:filter|map|reject)|While$/.test(t),
+          e = /^(?:first|last)$/.test(t),
+          u = Nn[e ? "take" + ("last" == t ? "Right" : "") : t];u && (Nn.prototype[t] = function () {
+        function t(n) {
+          return e && i ? u(n, 1)[0] : u.apply(w, Jn([n], o));
+        }var o = e ? [1] : arguments,
+            i = this.__chain__,
+            f = this.__wrapped__,
+            a = !!this.__actions__.length,
+            c = f instanceof zn,
+            l = o[0],
+            s = c || Oo(f);return (s && r && typeof l == "function" && 1 != l.length && (c = s = false), l = { func: ne, args: [t], thisArg: w }, a = c && !a, e && !i ? a ? (f = f.clone(), f.__actions__.push(l), n.call(f)) : u.call(w, this.value())[0] : !e && s ? (f = a ? f : new zn(this), f = n.apply(f, o), f.__actions__.push(l), new Ln(f, i)) : this.thru(t));
+      });
+    }), Pn("join pop push replace shift sort splice split unshift".split(" "), function (n) {
+      var t = (/^(?:replace|split)$/.test(n) ? He : Je)[n],
+          r = /^(?:push|sort|unshift)$/.test(n) ? "tap" : "thru",
+          e = /^(?:join|pop|replace|shift)$/.test(n);Nn.prototype[n] = function () {
+        var n = arguments;return e && !this.__chain__ ? t.apply(this.value(), n) : this[r](function (r) {
+          return t.apply(r, n);
+        });
+      };
+    }), _t(zn.prototype, function (n, t) {
+      var r = Nn[t];if (r) {
+        var e = r.name + "";(Wu[e] || (Wu[e] = [])).push({
+          name: t, func: r });
+      }
+    }), Wu[sr(w, A).name] = [{ name: "wrapper", func: w }], zn.prototype.clone = function () {
+      var n = new zn(this.__wrapped__);return (n.__actions__ = qn(this.__actions__), n.__dir__ = this.__dir__, n.__filtered__ = this.__filtered__, n.__iteratees__ = qn(this.__iteratees__), n.__takeCount__ = this.__takeCount__, n.__views__ = qn(this.__views__), n);
+    }, zn.prototype.reverse = function () {
+      if (this.__filtered__) {
+        var n = new zn(this);n.__dir__ = -1, n.__filtered__ = true;
+      } else n = this.clone(), n.__dir__ *= -1;return n;
+    }, zn.prototype.value = function () {
+      var n,
+          t = this.__wrapped__.value(),
+          r = this.__dir__,
+          e = Oo(t),
+          u = 0 > r,
+          o = e ? t.length : 0;n = o;for (var i = this.__views__, f = 0, a = -1, c = i.length; ++a < c;) {
+        var l = i[a],
+            s = l.size;switch (l.type) {case "drop":
+            f += s;break;case "dropRight":
+            n -= s;break;case "take":
+            n = xu(n, f + s);break;case "takeRight":
+            f = bu(f, n - s);}
+      }if ((n = { start: f, end: n }, i = n.start, f = n.end, n = f - i, u = u ? f : i - 1, i = this.__iteratees__, f = i.length, a = 0, c = xu(n, this.__takeCount__), !e || o < F || o == n && c == n)) return Tt(t, this.__actions__);e = [];n: for (; n-- && a < c;) {
+        for (u += r, o = -1, l = t[u]; ++o < f;) {
+          var p = i[o],
+              s = p.type,
+              p = p.iteratee(l);
+          if (s == T) l = p;else if (!p) {
+            if (s == N) continue n;break n;
+          }
+        }e[a++] = l;
+      }return e;
+    }, Nn.prototype.chain = function () {
+      return Qr(this);
+    }, Nn.prototype.commit = function () {
+      return new Ln(this.value(), this.__chain__);
+    }, Nn.prototype.concat = Qu, Nn.prototype.plant = function (n) {
+      for (var t, r = this; r instanceof Tn;) {
+        var e = Mr(r);t ? u.__wrapped__ = e : t = e;var u = e,
+            r = r.__wrapped__;
+      }return (u.__wrapped__ = n, t);
+    }, Nn.prototype.reverse = function () {
+      function n(n) {
+        return n.reverse();
+      }var t = this.__wrapped__;return t instanceof zn ? (this.__actions__.length && (t = new zn(this)), t = t.reverse(), t.__actions__.push({ func: ne, args: [n], thisArg: w }), new Ln(t, this.__chain__)) : this.thru(n);
+    }, Nn.prototype.toString = function () {
+      return this.value() + "";
+    }, Nn.prototype.run = Nn.prototype.toJSON = Nn.prototype.valueOf = Nn.prototype.value = function () {
+      return Tt(this.__wrapped__, this.__actions__);
+    }, Nn.prototype.collect = Nn.prototype.map, Nn.prototype.head = Nn.prototype.first, Nn.prototype.select = Nn.prototype.filter, Nn.prototype.tail = Nn.prototype.rest, Nn);
+  }var w,
+      b = "3.10.1",
+      x = 1,
+      A = 2,
+      j = 4,
+      k = 8,
+      I = 16,
+      R = 32,
+      O = 64,
+      E = 128,
+      C = 256,
+      U = 30,
+      W = "...",
+      $ = 150,
+      S = 16,
+      F = 200,
+      N = 1,
+      T = 2,
+      L = "Expected a function",
+      z = "__lodash_placeholder__",
+      B = "[object Arguments]",
+      D = "[object Array]",
+      M = "[object Boolean]",
+      q = "[object Date]",
+      P = "[object Error]",
+      K = "[object Function]",
+      V = "[object Number]",
+      Z = "[object Object]",
+      Y = "[object RegExp]",
+      G = "[object String]",
+      J = "[object ArrayBuffer]",
+      X = "[object Float32Array]",
+      H = "[object Float64Array]",
+      Q = "[object Int8Array]",
+      nn = "[object Int16Array]",
+      tn = "[object Int32Array]",
+      rn = "[object Uint8Array]",
+      en = "[object Uint8ClampedArray]",
+      un = "[object Uint16Array]",
+      on = "[object Uint32Array]",
+      fn = /\b__p\+='';/g,
+      an = /\b(__p\+=)''\+/g,
+      cn = /(__e\(.*?\)|\b__t\))\+'';/g,
+      ln = /&(?:amp|lt|gt|quot|#39|#96);/g,
+      sn = /[&<>"'`]/g,
+      pn = RegExp(ln.source),
+      hn = RegExp(sn.source),
+      _n = /<%-([\s\S]+?)%>/g,
+      vn = /<%([\s\S]+?)%>/g,
+      gn = /<%=([\s\S]+?)%>/g,
+      yn = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\n\\]|\\.)*?\1)\]/,
+      dn = /^\w*$/,
+      mn = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\n\\]|\\.)*?)\2)\]/g,
+      wn = /^[:!,]|[\\^$.*+?()[\]{}|\/]|(^[0-9a-fA-Fnrtuvx])|([\n\r\u2028\u2029])/g,
+      bn = RegExp(wn.source),
+      xn = /[\u0300-\u036f\ufe20-\ufe23]/g,
+      An = /\\(\\)?/g,
+      jn = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g,
+      kn = /\w*$/,
+      In = /^0[xX]/,
+      Rn = /^\[object .+?Constructor\]$/,
+      On = /^\d+$/,
+      En = /[\xc0-\xd6\xd8-\xde\xdf-\xf6\xf8-\xff]/g,
+      Cn = /($^)/,
+      Un = /['\n\r\u2028\u2029\\]/g,
+      Wn = RegExp("[A-Z\\xc0-\\xd6\\xd8-\\xde]+(?=[A-Z\\xc0-\\xd6\\xd8-\\xde][a-z\\xdf-\\xf6\\xf8-\\xff]+)|[A-Z\\xc0-\\xd6\\xd8-\\xde]?[a-z\\xdf-\\xf6\\xf8-\\xff]+|[A-Z\\xc0-\\xd6\\xd8-\\xde]+|[0-9]+", "g"),
+      $n = "Array ArrayBuffer Date Error Float32Array Float64Array Function Int8Array Int16Array Int32Array Math Number Object RegExp Set String _ clearTimeout isFinite parseFloat parseInt setTimeout TypeError Uint8Array Uint8ClampedArray Uint16Array Uint32Array WeakMap".split(" "),
+      Sn = {};
+  Sn[X] = Sn[H] = Sn[Q] = Sn[nn] = Sn[tn] = Sn[rn] = Sn[en] = Sn[un] = Sn[on] = true, Sn[B] = Sn[D] = Sn[J] = Sn[M] = Sn[q] = Sn[P] = Sn[K] = Sn["[object Map]"] = Sn[V] = Sn[Z] = Sn[Y] = Sn["[object Set]"] = Sn[G] = Sn["[object WeakMap]"] = false;var Fn = {};Fn[B] = Fn[D] = Fn[J] = Fn[M] = Fn[q] = Fn[X] = Fn[H] = Fn[Q] = Fn[nn] = Fn[tn] = Fn[V] = Fn[Z] = Fn[Y] = Fn[G] = Fn[rn] = Fn[en] = Fn[un] = Fn[on] = true, Fn[P] = Fn[K] = Fn["[object Map]"] = Fn["[object Set]"] = Fn["[object WeakMap]"] = false;var Nn = { "\xc0": "A", "\xc1": "A", "\xc2": "A", "\xc3": "A", "\xc4": "A", "\xc5": "A", "\xe0": "a", "\xe1": "a", "\xe2": "a",
+    "\xe3": "a", "\xe4": "a", "\xe5": "a", "\xc7": "C", "\xe7": "c", "\xd0": "D", "\xf0": "d", "\xc8": "E", "\xc9": "E", "\xca": "E", "\xcb": "E", "\xe8": "e", "\xe9": "e", "\xea": "e", "\xeb": "e", "\xcc": "I", "\xcd": "I", "\xce": "I", "\xcf": "I", "\xec": "i", "\xed": "i", "\xee": "i", "\xef": "i", "\xd1": "N", "\xf1": "n", "\xd2": "O", "\xd3": "O", "\xd4": "O", "\xd5": "O", "\xd6": "O", "\xd8": "O", "\xf2": "o", "\xf3": "o", "\xf4": "o", "\xf5": "o", "\xf6": "o", "\xf8": "o", "\xd9": "U", "\xda": "U", "\xdb": "U", "\xdc": "U", "\xf9": "u", "\xfa": "u", "\xfb": "u", "\xfc": "u", "\xdd": "Y",
+    "\xfd": "y", "\xff": "y", "\xc6": "Ae", "\xe6": "ae", "\xde": "Th", "\xfe": "th", "\xdf": "ss" },
+      Tn = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "`": "&#96;" },
+      Ln = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&#96;": "`" },
+      zn = { "function": true, object: true },
+      Bn = { 0: "x30", 1: "x31", 2: "x32", 3: "x33", 4: "x34", 5: "x35", 6: "x36", 7: "x37", 8: "x38", 9: "x39", A: "x41", B: "x42", C: "x43", D: "x44", E: "x45", F: "x46", a: "x61", b: "x62", c: "x63", d: "x64", e: "x65", f: "x66", n: "x6e", r: "x72", t: "x74", u: "x75", v: "x76", x: "x78" },
+      Dn = { "\\": "\\",
+    "'": "'", "\n": "n", "\r": "r", "\u2028": "u2028", "\u2029": "u2029" },
+      Mn = zn[typeof exports] && exports && !exports.nodeType && exports,
+      qn = zn[typeof module] && module && !module.nodeType && module,
+      Pn = zn[typeof self] && self && self.Object && self,
+      Kn = zn[typeof window] && window && window.Object && window,
+      Vn = qn && qn.exports === Mn && Mn,
+      Zn = Mn && qn && typeof global == "object" && global && global.Object && global || Kn !== (this && this.window) && Kn || Pn || this,
+      Yn = m();typeof define == "function" && typeof define.amd == "object" && define.amd ? (Zn._ = Yn, define(function () {
+    return Yn;
+  })) : Mn && qn ? Vn ? (qn.exports = Yn)._ = Yn : Mn._ = Yn : Zn._ = Yn;
+}).call(this);
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],44:[function(require,module,exports){
 (function (process,global){
 /* Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.*/
 (function (a) {

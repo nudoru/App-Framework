@@ -6,10 +6,11 @@
  * View Docs http://facebook.github.io/immutable-js/docs/#/Map
  */
 
-import immutable from '../../vendor/immutable.min.js';
+import Immutable from '../../vendor/immutable.min.js';
+import _ from '../../vendor/lodash.min.js';
 
 let ImmutableMap = function () {
-  let _map = immutable.Map();
+  let _map = Immutable.Map();
 
   /**
    * Returns the Map object

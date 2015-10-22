@@ -1,8 +1,8 @@
 /* @flow weak */
 
-var Cookie = function () {
+export default {
 
-  function create(name, value, days) {
+  create(name, value, days) {
     var expires = "", date;
     if (days) {
       date    = new Date();
@@ -10,9 +10,9 @@ var Cookie = function () {
       expires = "; expires=" + date.toGMTString();
     }
     document.cookie = name + "=" + value + expires + "; path=/";
-  }
+  },
 
-  function read(name) {
+  read(name) {
     var nameEQ = name + "=",
         ca     = document.cookie.split(';'),
         i, c;
@@ -28,18 +28,10 @@ var Cookie = function () {
       }
     }
     return null;
-  }
+  },
 
-  function remove(name) {
+  remove(name) {
     create(name, '', -1);
   }
 
-  return {
-    create: create,
-    read  : read,
-    remove: remove
-  };
-
 };
-
-export default Cookie();

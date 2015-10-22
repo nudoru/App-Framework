@@ -89,7 +89,6 @@ gulp.task('concatglobals', function () {
     'src/scripts/vendor/gsap/TimeLineLite.min.js',
     'src/scripts/vendor/gsap/easing/EasePack.min.js',
     'src/scripts/vendor/gsap/plugins/CSSPlugin.min.js',
-    'src/scripts/vendor/lodash.min.js',
     //'src/scripts/vendor/imagesloaded.pkgd.min.js',
     //'src/scripts/vendor/objectDiff.js',
     'src/scripts/nudoru/globals.js'

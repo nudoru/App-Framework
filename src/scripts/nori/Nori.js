@@ -1,17 +1,17 @@
 /* @flow weak */
 
-import _mixinObservableSubject from './utils/MixinObservableSubject.js';
-import _mixinReducerStore from './store/ReducerStore.js';
-import _mixinComponentViews from './view/MixinComponentViews.js';
-import _mixinEventDelegator from './view/MixinEventDelegator.js';
+import MixinReducerStore from './store/ReducerStore.js';
+import MixinComponentViews from './view/MixinComponentViews.js';
+import AssignArray from '../nudoru/core/AssignArray.js';
+import BuildFromMixins from '../nudoru/core/BuildFromMixins.js';
+import CreateClass from '../nudoru/core/CreateClass.js';
+import _ from '../vendor/lodash.min.js';
 
 let Nori = function () {
 
   let _storeTemplate,
       _viewTemplate;
 
-  // Switch Lodash to use Mustache style templates
-  _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
   //----------------------------------------------------------------------------
   //  Accessors
@@ -40,16 +40,13 @@ let Nori = function () {
 
   _storeTemplate = createStore({
     mixins: [
-      _mixinReducerStore,
-      _mixinObservableSubject()
+      MixinReducerStore()
     ]
   })();
 
   _viewTemplate = createView({
     mixins: [
-      _mixinComponentViews,
-      _mixinEventDelegator(),
-      _mixinObservableSubject()
+      MixinComponentViews()
     ]
   })();
 
@@ -57,40 +54,8 @@ let Nori = function () {
   //  Factories
   //----------------------------------------------------------------------------
 
-  /**
-   * Merges a collection of objects
-   * @param target
-   * @param sourceArray
-   * @returns {*}
-   */
-  function assignArray(target, sourceArray) {
-    return sourceArray.reduce((tgt, mixin) => {
-      return _.assign(tgt, mixin);
-    }, target);
-  }
-
-  /**
-   * Return a new Nori class by combining a template and customizer with mixins
-   * @param template
-   * @param customizer
-   * @returns {Function}
-   */
-  function createClass(template, customizer) {
-    template = template || {};
-    return function factory() {
-      return _.assign({}, template, buildFromMixins(customizer));
-    };
-  }
-
-  /**
-   * Mixes in the modules specified in the custom application object
-   * @param customizer
-   * @returns {*}
-   */
-  function buildFromMixins(customizer) {
-    let mixins = customizer.mixins || [];
-    mixins.push(customizer);
-    return assignArray({}, mixins);
+  function createClass(customizer) {
+    return CreateClass({}, customizer);
   }
 
   /**
@@ -99,8 +64,9 @@ let Nori = function () {
    * @returns {*}
    */
   function createApplication(customizer) {
+    customizer.mixins = customizer.mixins || [];
     customizer.mixins.push(this);
-    return createClass({}, customizer)();
+    return CreateClass({}, customizer)();
   }
 
   /**
@@ -109,7 +75,7 @@ let Nori = function () {
    * @returns {*}
    */
   function createStore(customizer) {
-    return createClass(_storeTemplate, customizer);
+    return CreateClass(_storeTemplate, customizer);
   }
 
   /**
@@ -118,7 +84,7 @@ let Nori = function () {
    * @returns {*}
    */
   function createView(customizer) {
-    return createClass(_viewTemplate, customizer);
+    return CreateClass(_viewTemplate, customizer);
   }
 
   //----------------------------------------------------------------------------
@@ -132,9 +98,7 @@ let Nori = function () {
     createClass      : createClass,
     createApplication: createApplication,
     createStore      : createStore,
-    createView       : createView,
-    buildFromMixins  : buildFromMixins,
-    assignArray      : assignArray
+    createView       : createView
   };
 
 };

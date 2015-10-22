@@ -5,19 +5,19 @@
  * Supporting IE9 so using hashes instead of the history API for now
  */
 
-import _objUtils from '../../nudoru/core/ObjectUtils.js';
+import ObjUtils from '../../nudoru/core/ObjectUtils.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 
 let Router = function () {
 
-  let _subject  = new Rxjs.Subject(),
+  let _subject = new Rxjs.Subject(),
       _hashChangeObservable;
 
   /**
    * Set event handlers
    */
   function initialize() {
-    _hashChangeObservable = Rxjs.Observable.fromEvent(window, 'hashchange').subscribe(notifySubscribers);
+    _hashChangeObservable = Rxjs.Observable.fromEvent(window, 'hashchange').subscribe(notify);
   }
 
   /**
@@ -33,10 +33,10 @@ let Router = function () {
    * Notify of a change in route
    * @param fromApp True if the route was caused by an app event not URL or history change
    */
-  function notifySubscribers() {
+  function notify() {
     let eventPayload = {
       routeObj: getCurrentRoute(), // { route:, data: }
-      fragment: getURLFragment()
+      fragment: $getURLFragment()
     };
 
     _subject.onNext(eventPayload);
@@ -47,11 +47,11 @@ let Router = function () {
    * @returns {{route: string, query: {}}}
    */
   function getCurrentRoute() {
-    let fragment    = getURLFragment(),
+    let fragment    = $getURLFragment(),
         parts       = fragment.split('?'),
         route       = '/' + parts[0],
         queryStr    = decodeURIComponent(parts[1]),
-        queryStrObj = parseQueryStr(queryStr);
+        queryStrObj = $parseQueryStr(queryStr);
 
     if (queryStr === '=undefined') {
       queryStrObj = {};
@@ -65,7 +65,7 @@ let Router = function () {
    * @param queryStr
    * @returns {{}}
    */
-  function parseQueryStr(queryStr) {
+  function $parseQueryStr(queryStr) {
     let obj   = {},
         parts = queryStr.split('&');
 
@@ -86,7 +86,7 @@ let Router = function () {
   function set(route, dataObj) {
     let path = route,
         data = [];
-    if (!_objUtils.isNull(dataObj)) {
+    if (!ObjUtils.isNull(dataObj)) {
       path += "?";
       for (var prop in dataObj) {
         if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
@@ -96,7 +96,7 @@ let Router = function () {
       path += data.join('&');
     }
 
-    updateURLFragment(path);
+    $updateURLFragment(path);
   }
 
   /**
@@ -104,7 +104,7 @@ let Router = function () {
    * Leading and trailing slashes are removed
    * @returns {string}
    */
-  function getURLFragment() {
+  function $getURLFragment() {
     let fragment = location.hash.slice(1);
     return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
   }
@@ -113,16 +113,16 @@ let Router = function () {
    * Set the URL hash fragment
    * @param path
    */
-  function updateURLFragment(path) {
+  function $updateURLFragment(path) {
     window.location.hash = path;
   }
 
   return {
-    initialize       : initialize,
-    subscribe        : subscribe,
-    notifySubscribers: notifySubscribers,
-    getCurrentRoute  : getCurrentRoute,
-    set              : set
+    initialize     : initialize,
+    subscribe      : subscribe,
+    notify         : notify,
+    getCurrentRoute: getCurrentRoute,
+    set            : set
   };
 
 };
