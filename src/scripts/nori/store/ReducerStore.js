@@ -1,24 +1,19 @@
 /* @flow weak */
 
 /**
- * Mixin for Nori stores to add functionality similar to Redux' Reducer and single
- * object state tree concept. Mixin should be composed to nori/store/ApplicationStore
- * during creation of main AppStore
- *
- * https://gaearon.github.io/redux/docs/api/Store.html
- * https://gaearon.github.io/redux/docs/basics/Reducers.html
- *
- * Created 8/13/15
+ * Store modeled after Redux
  */
 
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import _ from '../../vendor/lodash.min.js';
 import Is from '../../nudoru/util/is.js';
-import ImmutableMapFactory from './ImmutableMap.js';
+import ImmutableStoreFactory from './ImmutableStore.js';
 
 let ReducerStore = function () {
   let _this,
-      _stateObject,
+      _isReducing    = false,
+      _queue         = [],
+      _stateObject   = ImmutableStoreFactory(),
       _stateReducers = [],
       _subject       = new Rxjs.Subject();
 
@@ -30,10 +25,7 @@ let ReducerStore = function () {
    * _stateObject might not exist if subscribers are added before this store is initialized
    */
   function getState() {
-    if (_stateObject) {
-      return _stateObject.getState();
-    }
-    return {};
+    return _stateObject.getState();
   }
 
   /**
@@ -66,7 +58,6 @@ let ReducerStore = function () {
    */
   function initializeReducerStore() {
     _this = this;
-    _stateObject = ImmutableMapFactory();
   }
 
   function initialState() {
@@ -80,14 +71,27 @@ let ReducerStore = function () {
    */
   function apply(actionObjOrArry) {
     if (Is.array(actionObjOrArry)) {
-      actionObjOrArry.forEach(actionObj => applyReducers(actionObj));
+      _queue = _queue.concat(actionObjOrArry);
     } else {
-      applyReducers(actionObjOrArry);
+      _queue.push(actionObjOrArry);
+    }
+
+    processActionQueue(getState());
+  }
+
+  function processActionQueue(state) {
+    while (_queue.length) {
+      let actionObject = _queue.shift();
+      applyReducers(state, actionObject);
     }
   }
 
-  function applyReducers(actionObject) {
-    let nextState = applyReducersToState(getState(), actionObject);
+  function applyReducers(state, actionObject) {
+    if (typeof actionObject.type === 'undefined') {
+      console.warn('Reducer store, cannot apply undefined action type');
+      return;
+    }
+    let nextState = applyReducersToState(state, actionObject);
     setState(nextState);
   }
 
@@ -99,9 +103,19 @@ let ReducerStore = function () {
    * @returns {*|{}}
    */
   function applyReducersToState(state, action) {
-    // TODO should or be this.getDefaultState()?
+    let nextState;
+
+    // TODO {} or this.getDefaultState()?
     state = state || {};
-    return _stateReducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
+
+    try {
+      nextState = _stateReducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
+    } catch (e) {
+      console.warn('Reducer store, error applying reducers', e);
+      nextState = state;
+    }
+
+    return nextState;
   }
 
   /**
@@ -127,20 +141,10 @@ let ReducerStore = function () {
   //  Update events
   //----------------------------------------------------------------------------
 
-  /**
-   * Subscribe handler to updates. If the handler is a string, the new subject
-   * will be created.
-   * @param handler
-   * @returns {*}
-   */
   function subscribe(handler) {
     return _subject.subscribe(handler);
   }
 
-  /**
-   * Dispatch updated to subscribers
-   * @param payload
-   */
   function notify(payload) {
     _subject.onNext(payload);
   }

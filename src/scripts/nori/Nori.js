@@ -2,9 +2,9 @@
 
 import MixinReducerStore from './store/ReducerStore.js';
 import MixinComponentViews from './view/MixinComponentViews.js';
-import AssignArray from '../nudoru/core/AssignArray.js';
-import BuildFromMixins from '../nudoru/core/BuildFromMixins.js';
-import CreateClass from '../nudoru/core/CreateClass.js';
+import AssignArray from './utils/AssignArray.js';
+import BuildFromMixins from './utils/BuildFromMixins.js';
+import CreateClass from './utils/CreateClass.js';
 import _ from '../vendor/lodash.min.js';
 
 let Nori = function () {

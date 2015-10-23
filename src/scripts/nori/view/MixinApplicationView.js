@@ -32,17 +32,17 @@ let ApplicationViewModule = function () {
   /**
    * After app initialization, remove the loading message
    */
-  function removeLoadingMessage() {
-    let cover   = document.querySelector('#initialization__cover'),
-        message = document.querySelector('.initialization__message');
-
-    cover.parentNode.removeChild(cover);
-    cover.removeChild(message);
-  }
+  //function removeLoadingMessage() {
+  //  let cover   = document.querySelector('#initialization__cover'),
+  //      message = document.querySelector('.initialization__message');
+  //
+  //  cover.parentNode.removeChild(cover);
+  //  cover.removeChild(message);
+  //}
 
   return {
-    initializeApplicationView: initializeApplicationView,
-    removeLoadingMessage     : removeLoadingMessage
+    initializeApplicationView: initializeApplicationView
+  //  removeLoadingMessage     : removeLoadingMessage
   };
 
 };
