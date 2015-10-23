@@ -151,9 +151,7 @@ var ViewComponent = function () {
 
     _lastState     = _.assign({}, _internalState);
     _internalState = _.assign({}, _internalState, nextState);
-    // keeping the object reference
     _publicState = _.assign(_publicState, _internalState);
-
 
     if (typeof _publicState.onChange === 'function') {
       _publicState.onChange.apply(this);
@@ -192,7 +190,6 @@ var ViewComponent = function () {
 
     _lastProps     = _.assign({}, _internalProps);
     _internalProps = _.merge({}, _internalProps, nextProps);
-    // keeping the object reference
     _publicProps = _.assign(_publicProps, _internalProps);
 
     if (typeof _publicProps.onChange === 'function') {

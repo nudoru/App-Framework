@@ -602,7 +602,7 @@ var Component = Nori.view().createComponent({
   },
 
   getInitialState: function getInitialState() {
-    return {};
+    return _storeAppStore2['default'].getState();
   },
 
   //defineRegions() {},
@@ -845,7 +845,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 /*  weak */
 
 /**
- * Wraps Immutable.js's OrderedMap in the same syntax as the SimpleStore module
+ * Wraps Immutable.js OrderedMap in the same syntax as the SimpleStore module
  *
  * View Docs http://facebook.github.io/immutable-js/docs/#/Map
  */
@@ -2382,7 +2382,6 @@ var ViewComponent = function ViewComponent() {
 
     _lastState = _vendorLodashMinJs2['default'].assign({}, _internalState);
     _internalState = _vendorLodashMinJs2['default'].assign({}, _internalState, nextState);
-    // keeping the object reference
     _publicState = _vendorLodashMinJs2['default'].assign(_publicState, _internalState);
 
     if (typeof _publicState.onChange === 'function') {
@@ -2421,7 +2420,6 @@ var ViewComponent = function ViewComponent() {
 
     _lastProps = _vendorLodashMinJs2['default'].assign({}, _internalProps);
     _internalProps = _vendorLodashMinJs2['default'].merge({}, _internalProps, nextProps);
-    // keeping the object reference
     _publicProps = _vendorLodashMinJs2['default'].assign(_publicProps, _internalProps);
 
     if (typeof _publicProps.onChange === 'function') {

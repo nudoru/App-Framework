@@ -1,7 +1,7 @@
 /* @flow weak */
 
 /**
- * Wraps Immutable.js's OrderedMap in the same syntax as the SimpleStore module
+ * Wraps Immutable.js OrderedMap in the same syntax as the SimpleStore module
  *
  * View Docs http://facebook.github.io/immutable-js/docs/#/Map
  */

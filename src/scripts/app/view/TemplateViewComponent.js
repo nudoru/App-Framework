@@ -30,7 +30,7 @@ let Component = Nori.view().createComponent({
   },
 
   getInitialState() {
-    return {};
+    return AppStore.getState();
   },
 
   //defineRegions() {},
