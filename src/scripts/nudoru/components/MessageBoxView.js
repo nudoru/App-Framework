@@ -1,6 +1,10 @@
-import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import Template from '../../nori/view/Templating.js';
+import ModalCover from './ModalCoverView.js';
+import BrowserInfo from '../../nudoru/browser/BrowserInfo.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-var MessageBoxView = function () {
+var MessageBoxViewModule = function () {
 
   var _children               = [],
       _counter                = 0,
@@ -22,12 +26,7 @@ var MessageBoxView = function () {
       },
       _mountPoint,
       _buttonIconTemplateID   = 'messagebox--button-icon',
-      _buttonNoIconTemplateID = 'messagebox--button-noicon',
-      _template               = require('../../nori/view/Templating.js'),
-      _modal                  = require('./ModalCoverView.js'),
-      _browserInfo            = require('../../nudoru/browser/BrowserInfo.js'),
-      _domUtils               = require('../../nudoru/browser/DOMUtils.js'),
-      _componentUtils         = require('../../nudoru/browser/ThreeDTransforms.js');
+      _buttonNoIconTemplateID = 'messagebox--button-noicon';
 
   /**
    * Initialize and set the mount point / box container
@@ -52,9 +51,6 @@ var MessageBoxView = function () {
     assignTypeClassToElement(type, boxObj.element);
     configureButtons(boxObj);
 
-    _componentUtils.applyUnique3DToElement(boxObj.element);
-
-    // Set 3d CSS props for in/out transition
     TweenLite.set(boxObj.element, {
       css: {
         zIndex: _highestZ,
@@ -63,7 +59,7 @@ var MessageBoxView = function () {
     });
 
     // center after width has been set
-    _domUtils.centerElementInViewPort(boxObj.element);
+    DOMUtils.centerElementInViewPort(boxObj.element);
 
     // Make it draggable
     Draggable.create('#' + boxObj.id, {
@@ -78,7 +74,7 @@ var MessageBoxView = function () {
 
     // Show the modal cover
     if (initObj.modal) {
-      _modal.showNonDismissable(true);
+      ModalCover.showNonDismissable(true);
     }
 
     return boxObj.id;
@@ -91,7 +87,7 @@ var MessageBoxView = function () {
    */
   function assignTypeClassToElement(type, element) {
     if (type !== 'default') {
-      _domUtils.addClass(element, _typeStyleMap[type]);
+      DOMUtils.addClass(element, _typeStyleMap[type]);
     }
   }
 
@@ -106,7 +102,7 @@ var MessageBoxView = function () {
           dataObj: initObj,
           id     : id,
           modal  : initObj.modal,
-          element: _template.asElement('messagebox--default', {
+          element: Template.asElement('messagebox--default', {
             id     : id,
             title  : initObj.title,
             content: initObj.content
@@ -136,7 +132,7 @@ var MessageBoxView = function () {
 
     var buttonContainer = boxObj.element.querySelector('.footer-buttons');
 
-    _domUtils.removeAllElements(buttonContainer);
+    DOMUtils.removeAllElements(buttonContainer);
 
     buttonData.forEach(function makeButton(buttonObj) {
       buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
@@ -144,14 +140,14 @@ var MessageBoxView = function () {
       var buttonEl;
 
       if (buttonObj.hasOwnProperty('icon')) {
-        buttonEl = _template.asElement(_buttonIconTemplateID, buttonObj);
+        buttonEl = Template.asElement(_buttonIconTemplateID, buttonObj);
       } else {
-        buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+        buttonEl = Template.asElement(_buttonNoIconTemplateID, buttonObj);
       }
 
       buttonContainer.appendChild(buttonEl);
 
-      var btnStream = Rxjs.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr())
+      var btnStream = Rxjs.Observable.fromEvent(buttonEl, BrowserInfo.mouseClickEvtStr())
         .subscribe(function () {
           if (buttonObj.hasOwnProperty('onClick')) {
             if (buttonObj.onClick) {
@@ -171,7 +167,7 @@ var MessageBoxView = function () {
    * @returns {*}
    */
   function captureFormData(boxID) {
-    return _domUtils.captureFormData(getObjByID(boxID).element);
+    return DOMUtils.captureFormData(getObjByID(boxID).element);
   }
 
   /**
@@ -193,10 +189,9 @@ var MessageBoxView = function () {
    * @param el
    */
   function transitionIn(el) {
-    TweenLite.to(el, 0, {alpha: 0, rotationX: 45, scale: 2});
+    TweenLite.to(el, 0, {alpha: 0, scale: 1.25});
     TweenLite.to(el, 0.5, {
       alpha    : 1,
-      rotationX: 0,
       scale    : 1,
       ease     : Circ.easeOut
     });
@@ -209,8 +204,7 @@ var MessageBoxView = function () {
   function transitionOut(el) {
     TweenLite.to(el, 0.25, {
       alpha    : 0,
-      rotationX: -45,
-      scale    : 0.25,
+      scale    : 0.75,
       ease     : Circ.easeIn, onComplete: function () {
         onTransitionOutComplete(el);
       }
@@ -252,7 +246,7 @@ var MessageBoxView = function () {
     });
 
     if (!isModal) {
-      _modal.hide(true);
+      ModalCover.hide(true);
     }
   }
 
@@ -291,4 +285,6 @@ var MessageBoxView = function () {
 
 };
 
-export default MessageBoxView();
+let MessageBoxView = MessageBoxViewModule();
+
+export default MessageBoxView;

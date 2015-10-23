@@ -27,25 +27,24 @@ let AppViewModule = Nori.createView({
   },
 
   configureViews() {
-    this.setViewMountPoint('#contents');
-    this.mapConditionToViewComponent('/', 'default', TemplateViewFactory());
-    this.mapConditionToViewComponent('/styles', 'debug-styletest', TemplateViewFactory());
-    this.mapConditionToViewComponent('/controls', 'debug-controls', TemplateViewFactory());
-    this.mapConditionToViewComponent('/comps', 'debug-components', ComponentTesting());
+    this.registerViewCondition('/', 'default', TemplateViewFactory(), '#contents');
+    this.registerViewCondition('/styles', 'debug-styletest', TemplateViewFactory(), '#contents');
+    this.registerViewCondition('/controls', 'debug-controls', TemplateViewFactory(), '#contents');
+    this.registerViewCondition('/comps', 'debug-components', ComponentTesting(), '#contents');
   },
 
   /**
    * Attach app HTML structure
    * @param templates
    */
-    attachTemplatesToEl(mountSelector, templatArray) {
+    attachTemplatesToEl(mountSelector, templateArray) {
     let mountEl = document.querySelector(mountSelector);
 
-    if (!templatArray) {
+    if (!templateArray) {
       return;
     }
 
-    templatArray.forEach(function (templ) {
+    templateArray.forEach(function (templ) {
       mountEl.appendChild(DOMUtils.HTMLStrToNode(Template.getSource(templ, {})));
     });
   },
@@ -59,7 +58,7 @@ let AppViewModule = Nori.createView({
 
     cover.parentNode.removeChild(cover);
     cover.removeChild(message);
-  },
+  }
 
 });
 

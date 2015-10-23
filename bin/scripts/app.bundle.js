@@ -329,25 +329,24 @@ var AppViewModule = Nori.createView({
   },
 
   configureViews: function configureViews() {
-    this.setViewMountPoint('#contents');
-    this.mapConditionToViewComponent('/', 'default', (0, _TemplateViewComponentJs2['default'])());
-    this.mapConditionToViewComponent('/styles', 'debug-styletest', (0, _TemplateViewComponentJs2['default'])());
-    this.mapConditionToViewComponent('/controls', 'debug-controls', (0, _TemplateViewComponentJs2['default'])());
-    this.mapConditionToViewComponent('/comps', 'debug-components', (0, _ComponentsTestingJs2['default'])());
+    this.registerViewCondition('/', 'default', (0, _TemplateViewComponentJs2['default'])(), '#contents');
+    this.registerViewCondition('/styles', 'debug-styletest', (0, _TemplateViewComponentJs2['default'])(), '#contents');
+    this.registerViewCondition('/controls', 'debug-controls', (0, _TemplateViewComponentJs2['default'])(), '#contents');
+    this.registerViewCondition('/comps', 'debug-components', (0, _ComponentsTestingJs2['default'])(), '#contents');
   },
 
   /**
    * Attach app HTML structure
    * @param templates
    */
-  attachTemplatesToEl: function attachTemplatesToEl(mountSelector, templatArray) {
+  attachTemplatesToEl: function attachTemplatesToEl(mountSelector, templateArray) {
     var mountEl = document.querySelector(mountSelector);
 
-    if (!templatArray) {
+    if (!templateArray) {
       return;
     }
 
-    templatArray.forEach(function (templ) {
+    templateArray.forEach(function (templ) {
       mountEl.appendChild(_nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(_noriViewTemplatingJs2['default'].getSource(templ, {})));
     });
   },
@@ -1426,11 +1425,10 @@ var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
 
 var MixinComponentViews = function MixinComponentViews() {
 
-  var _componentViewMap = Object.create(null),
-      _componentViewKeyIndex = 0,
-      _currentViewID = undefined,
-      _defaultMountPoint = undefined,
-      _viewIDMap = Object.create(null);
+  var _viewMap = Object.create(null),
+      _viewIDMap = Object.create(null),
+      _viewKeyIndex = 0,
+      _currentViewID = undefined;
 
   /**
    * Map a component to a mounting point. If a string is passed,
@@ -1441,8 +1439,8 @@ var MixinComponentViews = function MixinComponentViews() {
    * @param componentIDorObj
    * @param mountPoint
    */
-  function mapViewComponent(componentID, componentObj, mountPoint) {
-    _componentViewMap[componentID] = {
+  function registerView(componentID, componentObj, mountPoint) {
+    _viewMap[componentID] = {
       controller: componentObj,
       mountPoint: mountPoint
     };
@@ -1464,7 +1462,7 @@ var MixinComponentViews = function MixinComponentViews() {
       customizer.mixins.push((0, _MixinEventDelegatorJs2['default'])());
 
       finalComponent = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-      finalComponent.key = _componentViewKeyIndex++;
+      finalComponent.key = _viewKeyIndex++;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize = finalComponent.initialize;
@@ -1487,39 +1485,39 @@ var MixinComponentViews = function MixinComponentViews() {
   }
 
   /**
-   * Show a mapped componentView
+   * Show a mapped view
    * @param componentID
    * @param dataObj
    */
-  function showViewComponent(componentID, mountPoint) {
-    var componentView = _componentViewMap[componentID];
-    if (!componentView) {
-      console.warn('No componentView mapped for id: ' + componentID);
+  function showView(componentID, mountPoint) {
+    var view = _viewMap[componentID];
+    if (!view) {
+      console.warn('No view mapped for id: ' + componentID);
       return;
     }
 
-    if (!componentView.controller.isInitialized()) {
+    if (!view.controller.isInitialized()) {
       // Not initialized, set props
-      mountPoint = mountPoint || componentView.mountPoint;
-      componentView.controller.initialize({
+      mountPoint = mountPoint || view.mountPoint;
+      view.controller.initialize({
         id: componentID,
-        template: componentView.htmlTemplate,
+        template: view.htmlTemplate,
         mountPoint: mountPoint
       });
     }
 
     // Force render
-    componentView.controller.$renderComponent(true);
+    view.controller.$renderComponent(true);
     // wasn't mounted before, so mount it
-    componentView.controller.mount();
+    view.controller.mount();
   }
 
   /**
    * Returns a copy of the map object for component views
    * @returns {null}
    */
-  function getComponentViewMap() {
-    return _vendorLodashMinJs2['default'].assign({}, _componentViewMap);
+  function getViewMap() {
+    return _vendorLodashMinJs2['default'].assign({}, _viewMap);
   }
 
   //----------------------------------------------------------------------------
@@ -1528,26 +1526,13 @@ var MixinComponentViews = function MixinComponentViews() {
   //----------------------------------------------------------------------------
 
   /**
-   * Set the location for the view to mount on route changes, any contents will
-   * be removed prior
-   * @param elID
-   */
-  function setViewMountPoint(elID) {
-    _defaultMountPoint = elID;
-  }
-
-  function getViewMountPoint() {
-    return _defaultMountPoint;
-  }
-
-  /**
    * Map a route to a module view controller
    * @param templateID
    * @param component
    */
-  function mapConditionToViewComponent(condition, templateID, component) {
+  function registerViewCondition(condition, templateID, component, selector) {
     _viewIDMap[condition] = templateID;
-    mapViewComponent(templateID, component, _defaultMountPoint);
+    registerView(templateID, component, selector);
   }
 
   /**
@@ -1564,11 +1549,7 @@ var MixinComponentViews = function MixinComponentViews() {
     $removeCurrentView();
 
     _currentViewID = componentID;
-    showViewComponent(_currentViewID);
-
-    // Transition new view in
-    TweenLite.set(_defaultMountPoint, { alpha: 0 });
-    TweenLite.to(_defaultMountPoint, 0.25, { alpha: 1, ease: Quad.easeOut });
+    showView(_currentViewID);
   }
 
   /**
@@ -1576,7 +1557,7 @@ var MixinComponentViews = function MixinComponentViews() {
    */
   function $removeCurrentView() {
     if (_currentViewID) {
-      getComponentViewMap()[_currentViewID].controller.dispose();
+      getViewMap()[_currentViewID].controller.dispose();
     }
     _currentViewID = '';
   }
@@ -1586,14 +1567,12 @@ var MixinComponentViews = function MixinComponentViews() {
   //----------------------------------------------------------------------------
 
   return {
-    mapViewComponent: mapViewComponent,
+    registerView: registerView,
     createComponent: createComponent,
-    showViewComponent: showViewComponent,
-    getComponentViewMap: getComponentViewMap,
+    showView: showView,
+    getViewMap: getViewMap,
     showViewForCondition: showViewForCondition,
-    setViewMountPoint: setViewMountPoint,
-    getViewMountPoint: getViewMountPoint,
-    mapConditionToViewComponent: mapConditionToViewComponent
+    registerViewCondition: registerViewCondition
   };
 };
 
@@ -1987,7 +1966,14 @@ var RendererModule = function RendererModule() {
 
     var domEl = undefined,
         mountPoint = document.querySelector(target),
-        currentHTML = mountPoint.innerHTML;
+        currentHTML = undefined;
+
+    if (!mountPoint) {
+      console.warn('Render, target selector not found', target);
+      return;
+    }
+
+    currentHTML = mountPoint.innerHTML;
 
     if (html) {
       domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
@@ -3380,13 +3366,29 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
 
-var Rxjs = _interopRequireWildcard(_vendorRxjsRxLiteMinJs);
+var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
 
-var MessageBoxView = function MessageBoxView() {
+var _noriViewTemplatingJs = require('../../nori/view/Templating.js');
+
+var _noriViewTemplatingJs2 = _interopRequireDefault(_noriViewTemplatingJs);
+
+var _ModalCoverViewJs = require('./ModalCoverView.js');
+
+var _ModalCoverViewJs2 = _interopRequireDefault(_ModalCoverViewJs);
+
+var _nudoruBrowserBrowserInfoJs = require('../../nudoru/browser/BrowserInfo.js');
+
+var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
+
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+var MessageBoxViewModule = function MessageBoxViewModule() {
 
   var _children = [],
       _counter = 0,
@@ -3408,12 +3410,7 @@ var MessageBoxView = function MessageBoxView() {
   },
       _mountPoint,
       _buttonIconTemplateID = 'messagebox--button-icon',
-      _buttonNoIconTemplateID = 'messagebox--button-noicon',
-      _template = require('../../nori/view/Templating.js'),
-      _modal = require('./ModalCoverView.js'),
-      _browserInfo = require('../../nudoru/browser/BrowserInfo.js'),
-      _domUtils = require('../../nudoru/browser/DOMUtils.js'),
-      _componentUtils = require('../../nudoru/browser/ThreeDTransforms.js');
+      _buttonNoIconTemplateID = 'messagebox--button-noicon';
 
   /**
    * Initialize and set the mount point / box container
@@ -3438,9 +3435,6 @@ var MessageBoxView = function MessageBoxView() {
     assignTypeClassToElement(type, boxObj.element);
     configureButtons(boxObj);
 
-    _componentUtils.applyUnique3DToElement(boxObj.element);
-
-    // Set 3d CSS props for in/out transition
     TweenLite.set(boxObj.element, {
       css: {
         zIndex: _highestZ,
@@ -3449,7 +3443,7 @@ var MessageBoxView = function MessageBoxView() {
     });
 
     // center after width has been set
-    _domUtils.centerElementInViewPort(boxObj.element);
+    _nudoruBrowserDOMUtilsJs2['default'].centerElementInViewPort(boxObj.element);
 
     // Make it draggable
     Draggable.create('#' + boxObj.id, {
@@ -3464,7 +3458,7 @@ var MessageBoxView = function MessageBoxView() {
 
     // Show the modal cover
     if (initObj.modal) {
-      _modal.showNonDismissable(true);
+      _ModalCoverViewJs2['default'].showNonDismissable(true);
     }
 
     return boxObj.id;
@@ -3477,7 +3471,7 @@ var MessageBoxView = function MessageBoxView() {
    */
   function assignTypeClassToElement(type, element) {
     if (type !== 'default') {
-      _domUtils.addClass(element, _typeStyleMap[type]);
+      _nudoruBrowserDOMUtilsJs2['default'].addClass(element, _typeStyleMap[type]);
     }
   }
 
@@ -3492,7 +3486,7 @@ var MessageBoxView = function MessageBoxView() {
       dataObj: initObj,
       id: id,
       modal: initObj.modal,
-      element: _template.asElement('messagebox--default', {
+      element: _noriViewTemplatingJs2['default'].asElement('messagebox--default', {
         id: id,
         title: initObj.title,
         content: initObj.content
@@ -3522,7 +3516,7 @@ var MessageBoxView = function MessageBoxView() {
 
     var buttonContainer = boxObj.element.querySelector('.footer-buttons');
 
-    _domUtils.removeAllElements(buttonContainer);
+    _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(buttonContainer);
 
     buttonData.forEach(function makeButton(buttonObj) {
       buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
@@ -3530,14 +3524,14 @@ var MessageBoxView = function MessageBoxView() {
       var buttonEl;
 
       if (buttonObj.hasOwnProperty('icon')) {
-        buttonEl = _template.asElement(_buttonIconTemplateID, buttonObj);
+        buttonEl = _noriViewTemplatingJs2['default'].asElement(_buttonIconTemplateID, buttonObj);
       } else {
-        buttonEl = _template.asElement(_buttonNoIconTemplateID, buttonObj);
+        buttonEl = _noriViewTemplatingJs2['default'].asElement(_buttonNoIconTemplateID, buttonObj);
       }
 
       buttonContainer.appendChild(buttonEl);
 
-      var btnStream = Rxjs.Observable.fromEvent(buttonEl, _browserInfo.mouseClickEvtStr()).subscribe(function () {
+      var btnStream = _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(buttonEl, _nudoruBrowserBrowserInfoJs2['default'].mouseClickEvtStr()).subscribe(function () {
         if (buttonObj.hasOwnProperty('onClick')) {
           if (buttonObj.onClick) {
             buttonObj.onClick.call(this, captureFormData(boxObj.id));
@@ -3555,7 +3549,7 @@ var MessageBoxView = function MessageBoxView() {
    * @returns {*}
    */
   function captureFormData(boxID) {
-    return _domUtils.captureFormData(getObjByID(boxID).element);
+    return _nudoruBrowserDOMUtilsJs2['default'].captureFormData(getObjByID(boxID).element);
   }
 
   /**
@@ -3577,10 +3571,9 @@ var MessageBoxView = function MessageBoxView() {
    * @param el
    */
   function transitionIn(el) {
-    TweenLite.to(el, 0, { alpha: 0, rotationX: 45, scale: 2 });
+    TweenLite.to(el, 0, { alpha: 0, scale: 1.25 });
     TweenLite.to(el, 0.5, {
       alpha: 1,
-      rotationX: 0,
       scale: 1,
       ease: Circ.easeOut
     });
@@ -3593,8 +3586,7 @@ var MessageBoxView = function MessageBoxView() {
   function transitionOut(el) {
     TweenLite.to(el, 0.25, {
       alpha: 0,
-      rotationX: -45,
-      scale: 0.25,
+      scale: 0.75,
       ease: Circ.easeIn, onComplete: function onComplete() {
         onTransitionOutComplete(el);
       }
@@ -3636,7 +3628,7 @@ var MessageBoxView = function MessageBoxView() {
     });
 
     if (!isModal) {
-      _modal.hide(true);
+      _ModalCoverViewJs2['default'].hide(true);
     }
   }
 
@@ -3674,10 +3666,12 @@ var MessageBoxView = function MessageBoxView() {
   };
 };
 
-exports['default'] = MessageBoxView();
+var MessageBoxView = MessageBoxViewModule();
+
+exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":25,"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/browser/DOMUtils.js":28,"../../nudoru/browser/ThreeDTransforms.js":31,"../../vendor/rxjs/rx.lite.min.js":45,"./ModalCoverView.js":35}],34:[function(require,module,exports){
+},{"../../nori/view/Templating.js":25,"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/browser/DOMUtils.js":28,"../../vendor/rxjs/rx.lite.min.js":45,"./ModalCoverView.js":35}],34:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });

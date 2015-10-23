@@ -10,7 +10,14 @@ let RendererModule = function () {
   function render({target, html, callback}) {
     let domEl,
         mountPoint  = document.querySelector(target),
-        currentHTML = mountPoint.innerHTML;
+        currentHTML;
+
+    if(!mountPoint) {
+      console.warn('Render, target selector not found',target);
+      return;
+    }
+
+    currentHTML = mountPoint.innerHTML;
 
     if (html) {
       domEl = DOMUtils.HTMLStrToNode(html);

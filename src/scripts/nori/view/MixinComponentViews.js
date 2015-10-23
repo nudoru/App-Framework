@@ -11,11 +11,10 @@ import BuildFromMixins from '../utils/BuildFromMixins.js';
 
 let MixinComponentViews = function () {
 
-  let _componentViewMap      = Object.create(null),
-      _componentViewKeyIndex = 0,
-      _currentViewID,
-      _defaultMountPoint,
-      _viewIDMap             = Object.create(null);
+  let _viewMap      = Object.create(null),
+      _viewIDMap    = Object.create(null),
+      _viewKeyIndex = 0,
+      _currentViewID;
 
   /**
    * Map a component to a mounting point. If a string is passed,
@@ -26,8 +25,8 @@ let MixinComponentViews = function () {
    * @param componentIDorObj
    * @param mountPoint
    */
-  function mapViewComponent(componentID, componentObj, mountPoint) {
-    _componentViewMap[componentID] = {
+  function registerView(componentID, componentObj, mountPoint) {
+    _viewMap[componentID] = {
       controller: componentObj,
       mountPoint: mountPoint
     };
@@ -47,7 +46,7 @@ let MixinComponentViews = function () {
       customizer.mixins.push(EventDelegatorFactory());
 
       finalComponent     = BuildFromMixins(customizer);
-      finalComponent.key = _componentViewKeyIndex++;
+      finalComponent.key = _viewKeyIndex++;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize      = finalComponent.initialize;
@@ -70,39 +69,39 @@ let MixinComponentViews = function () {
   }
 
   /**
-   * Show a mapped componentView
+   * Show a mapped view
    * @param componentID
    * @param dataObj
    */
-  function showViewComponent(componentID, mountPoint) {
-    let componentView = _componentViewMap[componentID];
-    if (!componentView) {
-      console.warn('No componentView mapped for id: ' + componentID);
+  function showView(componentID, mountPoint) {
+    let view = _viewMap[componentID];
+    if (!view) {
+      console.warn('No view mapped for id: ' + componentID);
       return;
     }
 
-    if (!componentView.controller.isInitialized()) {
+    if (!view.controller.isInitialized()) {
       // Not initialized, set props
-      mountPoint = mountPoint || componentView.mountPoint;
-      componentView.controller.initialize({
+      mountPoint = mountPoint || view.mountPoint;
+      view.controller.initialize({
         id        : componentID,
-        template  : componentView.htmlTemplate,
+        template  : view.htmlTemplate,
         mountPoint: mountPoint
       });
     }
 
     // Force render
-    componentView.controller.$renderComponent(true);
+    view.controller.$renderComponent(true);
     // wasn't mounted before, so mount it
-    componentView.controller.mount();
+    view.controller.mount();
   }
 
   /**
    * Returns a copy of the map object for component views
    * @returns {null}
    */
-  function getComponentViewMap() {
-    return _.assign({}, _componentViewMap);
+  function getViewMap() {
+    return _.assign({}, _viewMap);
   }
 
   //----------------------------------------------------------------------------
@@ -111,26 +110,13 @@ let MixinComponentViews = function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Set the location for the view to mount on route changes, any contents will
-   * be removed prior
-   * @param elID
-   */
-  function setViewMountPoint(elID) {
-    _defaultMountPoint = elID;
-  }
-
-  function getViewMountPoint() {
-    return _defaultMountPoint;
-  }
-
-  /**
    * Map a route to a module view controller
    * @param templateID
    * @param component
    */
-  function mapConditionToViewComponent(condition, templateID, component) {
+  function registerViewCondition(condition, templateID, component, selector) {
     _viewIDMap[condition] = templateID;
-    mapViewComponent(templateID, component, _defaultMountPoint);
+    registerView(templateID, component, selector);
   }
 
   /**
@@ -147,11 +133,7 @@ let MixinComponentViews = function () {
     $removeCurrentView();
 
     _currentViewID = componentID;
-    showViewComponent(_currentViewID);
-
-    // Transition new view in
-    TweenLite.set(_defaultMountPoint, {alpha: 0});
-    TweenLite.to(_defaultMountPoint, 0.25, {alpha: 1, ease: Quad.easeOut});
+    showView(_currentViewID);
   }
 
   /**
@@ -159,7 +141,7 @@ let MixinComponentViews = function () {
    */
   function $removeCurrentView() {
     if (_currentViewID) {
-      getComponentViewMap()[_currentViewID].controller.dispose();
+      getViewMap()[_currentViewID].controller.dispose();
     }
     _currentViewID = '';
   }
@@ -169,14 +151,12 @@ let MixinComponentViews = function () {
   //----------------------------------------------------------------------------
 
   return {
-    mapViewComponent           : mapViewComponent,
-    createComponent            : createComponent,
-    showViewComponent          : showViewComponent,
-    getComponentViewMap        : getComponentViewMap,
-    showViewForCondition       : showViewForCondition,
-    setViewMountPoint          : setViewMountPoint,
-    getViewMountPoint          : getViewMountPoint,
-    mapConditionToViewComponent: mapConditionToViewComponent
+    registerView         : registerView,
+    createComponent      : createComponent,
+    showView             : showView,
+    getViewMap           : getViewMap,
+    showViewForCondition : showViewForCondition,
+    registerViewCondition: registerViewCondition
   };
 
 };
