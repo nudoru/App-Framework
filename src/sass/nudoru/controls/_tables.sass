@@ -1,6 +1,6 @@
 //https://css-tricks.com/complete-guide-table-element/
 
-$table-cell-padding: 3px
+$table-cell-padding: $half-base-line-height
 
 .table
   margin: 0
@@ -12,20 +12,22 @@ $table-cell-padding: 3px
   border-collapse: collapse
 
   caption
-    @extend %header-4
+    @extend %header-6
+    width: 100%
     border-bottom: $control-border
+    padding-bottom: $half-base-line-height
 
   th, td
     @extend %label-base-formatting
-    padding: $half-base-line-height $table-cell-padding
+    padding: $table-cell-padding
     border: none
     vertical-align: middle
 
   thead, tfoot, tbody
     th
       font-family: $font-header
-      font-size: .8rem
-      font-weight: 700
+      font-size: $ms-0
+      font-weight: 400
       color: $control-primary-color
       border-bottom: $control-border
       text-align: left
@@ -130,7 +132,7 @@ tr.row-header-inline
 
 .table-rows-zebra
   tbody tr:nth-child(odd)
-    +gradient-vertical($control-table-zebra-color, scale-lightness($control-table-zebra-color, 75%))
+    background-color: rgba(0,0,0,.05) !important
 
 .table-cols-zebra
   tbody
@@ -140,8 +142,8 @@ tr.row-header-inline
         background-color: $control-table-zebra-color
 
 .table-rows-highlight
-  tbody:hover > tr td
-    color: #aaa
+  //tbody:hover > tr td
+  //  color: #999
   tbody
     tr
       +transition-prop(background-color, .25s)

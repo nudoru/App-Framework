@@ -2,14 +2,15 @@
   +transition-all()
   +control-emboss-shadow
   @extend .label
-  font-family: $font-header
-  height: $control-button-height
-  padding: 0 $double-base-line-height
+  font-family: $font-content
+  font-size: .8rem
+  //height: $control-button-height
+  padding: $half-base-line-height $base-line-height*2
   margin: $half-base-line-height
   background-color: $control-primary-color
   border-radius: $control-button-border-radius
   border: none
-  line-height: 0 //$control-button-height
+  //line-height: $control-button-height
   text-align: center
   color: #fff
   cursor: pointer
@@ -46,6 +47,7 @@ button
 
 .button-round
   padding: 0
+  height: $control-button-height
   width: $control-button-height
 
 .button__icon-left
@@ -61,7 +63,6 @@ button
 .button-important
   @extend %button
   font-size: 1rem
-  padding: 0 $triple-base-line-height
 
 .button-no-border
   border: 1px solid $color-nocolor

@@ -2386,7 +2386,7 @@ h2 {
   font-weight: 300;
 }
 
-.panel__footer-message h2, h4, legend, .table caption {
+.panel__footer-message h2, h4 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2410,7 +2410,7 @@ h2 {
   font-weight: 400;
 }
 
-.panel__footer-message h4, .panel__footer-message h5, .panel__footer-message h6, h6 {
+.panel__footer-message h4, .panel__footer-message h5, .panel__footer-message h6, h6, legend, .table caption {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -3140,14 +3140,13 @@ button, .button-important {
   -ms-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  height: 33px;
-  padding: 0 22px;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  padding: 5.5px 22px;
   margin: 5.5px;
   background-color: #00a9e0;
   border-radius: 50px;
   border: none;
-  line-height: 0;
   text-align: center;
   color: #fff;
   cursor: pointer;
@@ -3188,6 +3187,7 @@ button:hover, .button-important:hover, button:active, .button-important:active {
 
 .button-round, .toast__item-controls button {
   padding: 0;
+  height: 33px;
   width: 33px;
 }
 
@@ -3207,7 +3207,6 @@ button:hover, .button-important:hover, button:active, .button-important:active {
 
 .button-important {
   font-size: 1rem;
-  padding: 0 33px;
 }
 
 .button-no-border {
@@ -3381,6 +3380,7 @@ fieldset {
 legend {
   width: 100%;
   border-bottom: 1px solid #eae8e6;
+  padding-bottom: 5.5px;
 }
 
 .form-stacked label {
@@ -3514,17 +3514,19 @@ select:focus, textarea:focus {
   border-collapse: collapse;
 }
 .table caption {
+  width: 100%;
   border-bottom: 1px solid #eae8e6;
+  padding-bottom: 5.5px;
 }
 .table th, .table td {
-  padding: 5.5px 3px;
+  padding: 5.5px;
   border: none;
   vertical-align: middle;
 }
 .table thead th, .table tfoot th, .table tbody th {
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 400;
   color: #00a9e0;
   border-bottom: 1px solid #eae8e6;
   text-align: left;
@@ -3629,12 +3631,7 @@ tr.row-header-inline td {
 }
 
 .table-rows-zebra tbody tr:nth-child(odd) {
-  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#f0f0f0), to(#fbfbfb));
-  background-image: -webkit-linear-gradient(top, #f0f0f0, 0%, #fbfbfb, 100%);
-  background-image: -moz-linear-gradient(top, #f0f0f0 0%, #fbfbfb 100%);
-  background-image: linear-gradient(to bottom, #f0f0f0 0%, #fbfbfb 100%);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ie-hex-str($start-color)', endColorstr='#ie-hex-str($end-color)', GradientType=0);
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .table-cols-zebra tbody tr {
@@ -3644,9 +3641,6 @@ tr.row-header-inline td {
   background-color: #f0f0f0;
 }
 
-.table-rows-highlight tbody:hover > tr td {
-  color: #aaa;
-}
 .table-rows-highlight tbody tr {
   -webkit-transition: background-color 0.25s ease-out;
   -moz-transition: background-color 0.25s ease-out;
@@ -3703,7 +3697,7 @@ tr.row-header-inline td {
 .messagebox__default .header h1 {
   color: #005eb8;
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: 1rem;
   text-shadow: 0 1px 0 #fff;
   line-height: 22px;
 }
@@ -3712,7 +3706,7 @@ tr.row-header-inline td {
   line-height: 22px;
 }
 .messagebox__default .content p {
-  font-size: 1rem;
+  font-size: 1.277rem;
 }
 .messagebox__default .footer {
   padding: 0;
