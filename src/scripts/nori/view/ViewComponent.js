@@ -59,7 +59,7 @@ let ViewComponent = function () {
     _mountPoint = _internalProps.mountPoint;
     _children   = this.defineChildren();
 
-    this.setState(this.getInitialState());
+    this.setState(this.getDefaultState());
     //this.setEvents(this.getDOMEvents());
 
     this.$initializeChildren();
@@ -99,7 +99,7 @@ let ViewComponent = function () {
    * Get the initial state of the component
    * @returns {{}}
    */
-  function getInitialState() {
+  function getDefaultState() {
     return {};
   }
 
@@ -129,7 +129,7 @@ let ViewComponent = function () {
       return;
     }
 
-    nextState = nextState || this.getInitialState();
+    nextState = nextState || this.getDefaultState();
 
     if (!shouldComponentUpdate(null, nextState)) {
       return;
@@ -473,44 +473,44 @@ let ViewComponent = function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeComponent           : initializeComponent,
     state                         : _publicState,
     props                         : _publicProps,
-    setProps                      : setProps,
-    getInitialState               : getInitialState,
-    setState                      : setState,
-    getDefaultProps               : getDefaultProps,
-    defineChildren                : defineChildren,
-    getDOMEvents                  : getDOMEvents,
-    getLifeCycleState             : getLifeCycleState,
-    isInitialized                 : isInitialized,
-    getID                         : getID,
-    template                      : template,
-    getDOMElement                 : getDOMElement,
-    isMounted                     : isMounted,
-    bind                          : bind,
-    componentWillReceiveProps     : componentWillReceiveProps,
-    componentWillUpdate           : componentWillUpdate,
-    componentDidUpdate            : componentDidUpdate,
-    shouldComponentUpdate         : shouldComponentUpdate,
-    $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
-    $renderComponent              : $renderComponent,
-    render                        : render,
-    mount                         : mount,
-    shouldDelegateEvents          : shouldDelegateEvents,
-    $mountAfterDelay              : $mountAfterDelay,
-    componentDidMount             : componentDidMount,
-    componentWillUnmount          : componentWillUnmount,
-    unmount                       : unmount,
-    dispose                       : dispose,
-    componentWillDispose          : componentWillDispose,
-    getChild                      : getChild,
-    getChildIDs                   : getChildIDs,
-    $initializeChildren           : $initializeChildren,
-    $renderChildren               : $renderChildren,
-    $mountChildren                : $mountChildren,
-    $unmountChildren              : $unmountChildren,
-    $disposeChildren              : $disposeChildren
+    initializeComponent,
+    setProps,
+    getDefaultState,
+    setState,
+    getDefaultProps,
+    defineChildren,
+    getDOMEvents,
+    getLifeCycleState,
+    isInitialized,
+    getID,
+    template,
+    getDOMElement,
+    isMounted,
+    bind,
+    componentWillReceiveProps,
+    componentWillUpdate,
+    componentDidUpdate,
+    shouldComponentUpdate,
+    $renderAfterPropsOrStateChange,
+    $renderComponent,
+    render,
+    mount,
+    shouldDelegateEvents,
+    $mountAfterDelay,
+    componentDidMount,
+    componentWillUnmount,
+    unmount,
+    dispose,
+    componentWillDispose,
+    getChild,
+    getChildIDs,
+    $initializeChildren,
+    $renderChildren,
+    $mountChildren,
+    $unmountChildren,
+    $disposeChildren
   };
 
 };

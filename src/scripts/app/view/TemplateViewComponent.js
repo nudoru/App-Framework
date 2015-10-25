@@ -29,7 +29,7 @@ let Component = Nori.view().createComponent({
     return {};
   },
 
-  getInitialState() {
+  getDefaultState() {
     return AppStore.getState();
   },
 

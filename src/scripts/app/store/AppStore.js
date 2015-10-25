@@ -25,7 +25,7 @@ let AppStoreModule = Nori.createStore({
     this.setState();
   },
 
-  initialState() {
+  getDefaultState() {
     return {
       currentState: 'chillin',
       greeting: 'Hello world!'

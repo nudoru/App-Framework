@@ -6,12 +6,11 @@
 
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import _ from '../../vendor/lodash.min.js';
-import Is from '../../nudoru/util/is.js';
 
-let ReducerStore = function () {
+export default function () {
   let _this,
+      _internalState,
       _actionQueue   = [],
-      _internalState = {},
       _stateReducers = [],
       _subject       = new Rxjs.Subject();
 
@@ -21,19 +20,6 @@ let ReducerStore = function () {
 
   function getState() {
     return _.assign({}, _internalState);
-  }
-
-  /**
-   * Set the state of the store. Will default to initial state shape returned from
-   * initialState() function. Will only update the state if it's not equal to
-   * current
-   * @param nextstate
-   */
-  function setState(nextState = this.initialState()) {
-    if (!_.isEqual(nextState, _internalState)) {
-      _internalState = _.assign({}, _internalState, nextState);
-      _this.notify({});
-    }
   }
 
   function setReducers(reducerArray) {
@@ -53,9 +39,10 @@ let ReducerStore = function () {
    */
   function initializeReducerStore() {
     _this = this;
+    _this.apply({type:'@@initialize@@'});
   }
 
-  function initialState() {
+  function getDefaultState() {
     return {};
   }
 
@@ -65,19 +52,23 @@ let ReducerStore = function () {
    * @param actionObjOrArry Array of actions or a single action to reduce from
    */
   function apply(actionObjOrArry) {
-    if (Is.array(actionObjOrArry)) {
+    if(_stateReducers.length === 0) {
+      throw new Error('ReducerStore must have at least one reducer set');
+    }
+
+    if (Array.isArray(actionObjOrArry)) {
       _actionQueue = _actionQueue.concat(actionObjOrArry);
     } else {
       _actionQueue.push(actionObjOrArry);
     }
 
-    processActionQueue(getState());
+    processActionQueue(_internalState);
   }
 
   function processActionQueue(state) {
     while (_actionQueue.length) {
       let actionObject = _actionQueue.shift();
-      applyReducers(state, actionObject);
+      _this.applyReducers(state, actionObject);
     }
   }
 
@@ -86,8 +77,13 @@ let ReducerStore = function () {
       console.warn('Reducer store, cannot apply undefined action type');
       return;
     }
-    let nextState = applyReducersToState(state, actionObject);
-    setState(nextState);
+
+    let nextState = _this.reduceToState(actionObject, state);
+
+    if(!_.isEqual(_internalState, nextState)) {
+      _internalState = nextState;
+      _this.notify();
+    }
   }
 
   /**
@@ -97,11 +93,8 @@ let ReducerStore = function () {
    * @param action
    * @returns {*|{}}
    */
-  function applyReducersToState(state, action) {
+  function reduceToState(action, state = this.getDefaultState()) {
     let nextState;
-
-    // TODO {} or this.getDefaultState()?
-    state = state || {};
 
     try {
       nextState = _stateReducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
@@ -149,19 +142,16 @@ let ReducerStore = function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeReducerStore: initializeReducerStore,
-    initialState          : initialState,
-    getState              : getState,
-    setState              : setState,
-    apply                 : apply,
-    setReducers           : setReducers,
-    addReducer            : addReducer,
-    applyReducers         : applyReducers,
-    applyReducersToState  : applyReducersToState,
-    subscribe             : subscribe,
-    notify                : notify
+    initializeReducerStore,
+    getDefaultState,
+    getState,
+    apply,
+    setReducers,
+    addReducer,
+    applyReducers,
+    reduceToState,
+    subscribe,
+    notify
   };
 
 };
-
-export default ReducerStore;

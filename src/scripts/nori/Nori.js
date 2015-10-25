@@ -22,7 +22,7 @@ let Nori = function () {
    * app bundle. For easy of settings tweaks after the build by non technical devs
    * @returns {void|*}
    */
-  function getConfig() {
+  function config() {
     return _.assign({}, (window.APP_CONFIG_DATA || {}));
   }
 
@@ -92,13 +92,13 @@ let Nori = function () {
   //----------------------------------------------------------------------------
 
   return {
-    config           : getConfig,
-    view             : view,
-    store            : store,
-    createClass      : createClass,
-    createApplication: createApplication,
-    createStore      : createStore,
-    createView       : createView
+    config,
+    view,
+    store,
+    createClass,
+    createApplication,
+    createStore,
+    createView
   };
 
 };
