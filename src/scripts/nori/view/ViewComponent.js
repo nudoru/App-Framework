@@ -5,12 +5,18 @@
  * Must be extended with custom modules
  *
  * Functions beginning with $ should be treated as private
+ *
+ * Lifecycle should match React:
+ *
+ * First render: getDefaultProps, getInitialState, componentWillMount, render, componentDidMount
+ * Props change: componentWillReceiveProps, shouldComponentUpdate, componentWillUpdate, render, componentDidUpdate
+ * State change: shouldComponentUpdate, componentWillUpdate, render, componentDidUpdate
+ * Unmount: componentWillUnmount
  */
 
 import _ from '../../vendor/lodash.min.js';
 import Template from '../view/Templating.js';
 import Renderer from '../view/Renderer.js';
-import Is from '../../nudoru/util/is.js';
 
 // Lifecycle state constants
 const LS_NO_INIT   = 0,
@@ -18,9 +24,9 @@ const LS_NO_INIT   = 0,
       LS_RENDERING = 2,
       LS_MOUNTED   = 3,
       LS_UNMOUNTED = 4,
-      LS_DISPOSED  = 9;
+      LS_DISPOSED  = 99;
 
-var ViewComponent = function () {
+let ViewComponent = function () {
 
   let _internalState  = {},
       _internalProps  = {},
@@ -30,7 +36,7 @@ var ViewComponent = function () {
       _lastProps      = {},
       _lifecycleState = LS_NO_INIT,
       _isMounted      = false,
-      _regions        = {},
+      _children       = {},
       _id,
       _templateObjCache,
       _html,
@@ -51,12 +57,12 @@ var ViewComponent = function () {
     }
 
     _mountPoint = _internalProps.mountPoint;
-    _regions    = this.defineRegions();
+    _children   = this.defineChildren();
 
     this.setState(this.getInitialState());
     //this.setEvents(this.getDOMEvents());
 
-    this.$initializeRegions();
+    this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
   }
@@ -151,7 +157,7 @@ var ViewComponent = function () {
 
     _lastState     = _.assign({}, _internalState);
     _internalState = _.assign({}, _internalState, nextState);
-    _publicState = _.assign(_publicState, _internalState);
+    _publicState   = _.assign(_publicState, _internalState);
 
     if (typeof _publicState.onChange === 'function') {
       _publicState.onChange.apply(this);
@@ -176,6 +182,7 @@ var ViewComponent = function () {
       return;
     }
 
+    // ensure this runs only after initial init
     if (typeof this.componentWillReceiveProps === 'function' && _lifecycleState >= LS_INITED) {
       this.componentWillReceiveProps(nextProps);
     }
@@ -190,7 +197,7 @@ var ViewComponent = function () {
 
     _lastProps     = _.assign({}, _internalProps);
     _internalProps = _.merge({}, _internalProps, nextProps);
-    _publicProps = _.assign(_publicProps, _internalProps);
+    _publicProps   = _.assign(_publicProps, _internalProps);
 
     if (typeof _publicProps.onChange === 'function') {
       _publicProps.onChange.apply(this);
@@ -247,17 +254,15 @@ var ViewComponent = function () {
       this.mount();
     }
 
-    this.$renderRegions();
+    this.$renderChildren();
   }
 
   /**
    * Returns a Lodash client side template function by getting the HTML source from
    * the matching <script type='text/template'> tag in the document. OR you may
-   * specify the custom HTML to use here.
+   * specify the custom HTML to use here. Mustache style delimiters used.
    *
-   * The method is called only on the first render and cached to speed up renders
-   *
-   * @returns {Function}
+   * The method is called only on the first render and cached to speed up future calls
    */
   function template(props, state) {
     // assumes the template ID matches the component's ID as passed on initialize
@@ -271,7 +276,12 @@ var ViewComponent = function () {
    * @returns {*}
    */
   function render(props, state) {
-    return _templateObjCache(state);
+    let combined = _.merge({}, props, state),
+        template = _templateObjCache || this.template(props, state);
+
+    console.log(this.getID(), combined);
+
+    return template(combined);
   }
 
   /**
@@ -322,7 +332,7 @@ var ViewComponent = function () {
     }
 
     this.componentDidMount();
-    this.$mountRegions();
+    this.$mountChildren();
   }
 
   /**
@@ -377,7 +387,7 @@ var ViewComponent = function () {
 
   function dispose() {
     this.componentWillDispose();
-    this.$disposeRegions();
+    this.$disposeChildren();
     this.unmount();
 
     _lifecycleState = LS_DISPOSED;
@@ -388,50 +398,50 @@ var ViewComponent = function () {
   }
 
   //----------------------------------------------------------------------------
-  //  Regions
+  //  Children
   //----------------------------------------------------------------------------
 
   //TODO reduce code repetition
 
-  function defineRegions() {
+  function defineChildren() {
     return undefined;
   }
 
-  function getRegion(id) {
-    return _regions[id];
+  function getChild(id) {
+    return _children[id];
   }
 
-  function getRegionIDs() {
-    return _regions ? Object.keys(_regions) : [];
+  function getChildIDs() {
+    return _children ? Object.keys(_children) : [];
   }
 
-  function $initializeRegions() {
-    getRegionIDs().forEach(region => {
-      _regions[region].initialize();
+  function $initializeChildren() {
+    getChildIDs().forEach(region => {
+      _children[region].initialize();
     });
   }
 
-  function $renderRegions() {
-    getRegionIDs().forEach(region => {
-      _regions[region].$renderComponent();
+  function $renderChildren() {
+    getChildIDs().forEach(region => {
+      _children[region].$renderComponent();
     });
   }
 
-  function $mountRegions() {
-    getRegionIDs().forEach(region => {
-      _regions[region].mount();
+  function $mountChildren() {
+    getChildIDs().forEach(region => {
+      _children[region].mount();
     });
   }
 
-  function $unmountRegions() {
-    getRegionIDs().forEach(region => {
-      _regions[region].unmount();
+  function $unmountChildren() {
+    getChildIDs().forEach(region => {
+      _children[region].unmount();
     });
   }
 
-  function $disposeRegions() {
-    getRegionIDs().forEach(region => {
-      _regions[region].dispose();
+  function $disposeChildren() {
+    getChildIDs().forEach(region => {
+      _children[region].dispose();
     });
   }
 
@@ -468,7 +478,7 @@ var ViewComponent = function () {
    * @param observable Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
    */
   function bind(observable, func) {
-    if (!Is.func(observable.subscribe)) {
+    if (typeof observable.subscribe !== 'function') {
       console.warn('ViewComponent bind, must be observable: ' + observable);
       return;
     }
@@ -490,7 +500,7 @@ var ViewComponent = function () {
     getState                      : getState,
     setState                      : setState,
     getDefaultProps               : getDefaultProps,
-    defineRegions                 : defineRegions,
+    defineChildren                : defineChildren,
     getDOMEvents                  : getDOMEvents,
     getLifeCycleState             : getLifeCycleState,
     isInitialized                 : isInitialized,
@@ -514,13 +524,13 @@ var ViewComponent = function () {
     unmount                       : unmount,
     dispose                       : dispose,
     componentWillDispose          : componentWillDispose,
-    getRegion                     : getRegion,
-    getRegionIDs                  : getRegionIDs,
-    $initializeRegions            : $initializeRegions,
-    $renderRegions                : $renderRegions,
-    $mountRegions                 : $mountRegions,
-    $unmountRegions               : $unmountRegions,
-    $disposeRegions               : $disposeRegions
+    getChild                      : getChild,
+    getChildIDs                   : getChildIDs,
+    $initializeChildren           : $initializeChildren,
+    $renderChildren               : $renderChildren,
+    $mountChildren                : $mountChildren,
+    $unmountChildren              : $unmountChildren,
+    $disposeChildren              : $disposeChildren
   };
 
 };

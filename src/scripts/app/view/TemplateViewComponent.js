@@ -33,7 +33,7 @@ let Component = Nori.view().createComponent({
     return AppStore.getState();
   },
 
-  //defineRegions() {},
+  //defineChildren() {},
 
   //getDOMEvents() {
   //  return {
