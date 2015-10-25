@@ -1,15 +1,16 @@
-import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import BrowserInfo  from '../../nudoru/browser/BrowserInfo.js';
 
-var ModalCoverView = function () {
 
-  var _mountPoint  = document,
+let ModalCoverViewModule = function () {
+
+  let _mountPoint = document,
       _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
       _modalClickStream,
       _isVisible,
-      _notDismissible,
-      _browserInfo = require('../../nudoru/browser/BrowserInfo.js');
+      _notDismissible;
 
   function initialize() {
 
@@ -19,8 +20,8 @@ var ModalCoverView = function () {
     _modalBackgroundEl  = _mountPoint.querySelector('.modal__background');
     _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
 
-    var modalBGClick     = Rxjs.Observable.fromEvent(_modalBackgroundEl, _browserInfo.mouseClickEvtStr()),
-        modalButtonClick = Rxjs.Observable.fromEvent(_modalCloseButtonEl, _browserInfo.mouseClickEvtStr());
+    let modalBGClick     = Rxjs.Observable.fromEvent(_modalBackgroundEl, BrowserInfo.mouseClickEvtStr()),
+        modalButtonClick = Rxjs.Observable.fromEvent(_modalCloseButtonEl, BrowserInfo.mouseClickEvtStr());
 
     _modalClickStream = Rxjs.Observable.merge(modalBGClick, modalButtonClick)
       .subscribe(function () {
@@ -42,12 +43,15 @@ var ModalCoverView = function () {
   }
 
   function showModalCover(shouldAnimate) {
-    _isVisible   = true;
+    _isVisible = true;
+
     var duration = shouldAnimate ? 0.25 : 0;
+
     TweenLite.to(_modalCoverEl, duration, {
       autoAlpha: 1,
       ease     : Quad.easeOut
     });
+
     TweenLite.to(_modalBackgroundEl, duration, {
       alpha: 1,
       ease : Quad.easeOut
@@ -73,7 +77,7 @@ var ModalCoverView = function () {
   }
 
   /**
-   * A 'hard' modal view cannot be dismissed with a click, must be via code
+   * Cannot be dismissed with a click, must be via code
    * @param shouldAnimate
    */
   function showNonDismissable(shouldAnimate) {
@@ -136,4 +140,6 @@ var ModalCoverView = function () {
 
 };
 
-export default ModalCoverView();
+let ModalCoverView = ModalCoverViewModule();
+
+export default ModalCoverView;

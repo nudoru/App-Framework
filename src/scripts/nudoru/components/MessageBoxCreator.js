@@ -1,12 +1,12 @@
-var MessageBoxCreator = function () {
+import MessageBoxView from './MessageBoxView';
 
-  var _messageBoxView = require('./MessageBoxView');
+var MessageBoxCreatorModule = function () {
 
   function alert(title, message, modal, cb) {
-    return _messageBoxView.add({
+    return MessageBoxView.add({
       title  : title,
       content: '<p>' + message + '</p>',
-      type   : _messageBoxView.type().DANGER,
+      type   : MessageBoxView.type().DANGER,
       modal  : modal,
       width  : 400,
       buttons: [
@@ -22,10 +22,10 @@ var MessageBoxCreator = function () {
   }
 
   function confirm(title, message, okCB, modal) {
-    return _messageBoxView.add({
+    return MessageBoxView.add({
       title  : title,
       content: '<p>' + message + '</p>',
-      type   : _messageBoxView.type().DEFAULT,
+      type   : MessageBoxView.type().DEFAULT,
       modal  : modal,
       width  : 400,
       buttons: [
@@ -47,10 +47,10 @@ var MessageBoxCreator = function () {
   }
 
   function prompt(title, message, okCB, modal) {
-    return _messageBoxView.add({
+    return MessageBoxView.add({
       title  : title,
       content: '<p class="text-center padding-bottom-double">' + message + '</p><textarea name="response" class="input-text" type="text" style="width:400px; height:75px; resize: none" autofocus="true"></textarea>',
-      type   : _messageBoxView.type().DEFAULT,
+      type   : MessageBoxView.type().DEFAULT,
       modal  : modal,
       width  : 450,
       buttons: [
@@ -80,10 +80,10 @@ var MessageBoxCreator = function () {
 
     selectHTML += '</select>';
 
-    return _messageBoxView.add({
+    return MessageBoxView.add({
       title  : title,
       content: '<p class="text-center padding-bottom-double">' + message + '</p><div class="text-center">' + selectHTML + '</div>',
-      type   : _messageBoxView.type().DEFAULT,
+      type   : MessageBoxView.type().DEFAULT,
       modal  : modal,
       width  : 500,
       buttons: [
@@ -113,4 +113,6 @@ var MessageBoxCreator = function () {
 
 };
 
-export default MessageBoxCreator();
+let MessageBoxCreator = MessageBoxCreatorModule();
+
+export default MessageBoxCreator;

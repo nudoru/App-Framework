@@ -4,9 +4,9 @@ import ModalCover from './ModalCoverView.js';
 import BrowserInfo from '../../nudoru/browser/BrowserInfo.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-var MessageBoxViewModule = function () {
+let MessageBoxViewModule = function () {
 
-  var _children               = [],
+  let _children               = [],
       _counter                = 0,
       _highestZ               = 1000,
       _defaultWidth           = 400,
@@ -42,7 +42,7 @@ var MessageBoxViewModule = function () {
    * @returns {*}
    */
   function add(initObj) {
-    var type   = initObj.type || _types.DEFAULT,
+    let type   = initObj.type || _types.DEFAULT,
         boxObj = createBoxObject(initObj);
 
     // setup
@@ -118,7 +118,7 @@ var MessageBoxViewModule = function () {
    * @param boxObj
    */
   function configureButtons(boxObj) {
-    var buttonData = boxObj.dataObj.buttons;
+    let buttonData = boxObj.dataObj.buttons;
 
     // default button if none
     if (!buttonData) {
@@ -130,14 +130,14 @@ var MessageBoxViewModule = function () {
       }];
     }
 
-    var buttonContainer = boxObj.element.querySelector('.footer-buttons');
+    let buttonContainer = boxObj.element.querySelector('.footer-buttons');
 
     DOMUtils.removeAllElements(buttonContainer);
 
     buttonData.forEach(function makeButton(buttonObj) {
       buttonObj.id = boxObj.id + '-button-' + buttonObj.id;
 
-      var buttonEl;
+      let buttonEl;
 
       if (buttonObj.hasOwnProperty('icon')) {
         buttonEl = Template.asElement(_buttonIconTemplateID, buttonObj);
@@ -147,7 +147,7 @@ var MessageBoxViewModule = function () {
 
       buttonContainer.appendChild(buttonEl);
 
-      var btnStream = Rxjs.Observable.fromEvent(buttonEl, BrowserInfo.mouseClickEvtStr())
+      let btnStream = Rxjs.Observable.fromEvent(buttonEl, BrowserInfo.mouseClickEvtStr())
         .subscribe(function () {
           if (buttonObj.hasOwnProperty('onClick')) {
             if (buttonObj.onClick) {
@@ -175,7 +175,7 @@ var MessageBoxViewModule = function () {
    * @param id
    */
   function remove(id) {
-    var idx = getObjIndexByID(id),
+    let idx = getObjIndexByID(id),
         boxObj;
 
     if (idx > -1) {
@@ -216,7 +216,7 @@ var MessageBoxViewModule = function () {
    * @param el
    */
   function onTransitionOutComplete(el) {
-    var idx    = getObjIndexByID(el.getAttribute('id')),
+    let idx    = getObjIndexByID(el.getAttribute('id')),
         boxObj = _children[idx];
 
     boxObj.streams.forEach(function (stream) {
@@ -237,7 +237,7 @@ var MessageBoxViewModule = function () {
    * Determine if any open boxes have modal true
    */
   function checkModalStatus() {
-    var isModal = false;
+    let isModal = false;
 
     _children.forEach(function (boxObj) {
       if (boxObj.modal === true) {

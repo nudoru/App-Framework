@@ -1,8 +1,11 @@
-import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import Template from '../../nori/view/Templating.js';
+import BrowserInfo from '../../nudoru/browser/BrowserInfo.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-var ToastView = function () {
+let ToastViewModule = function () {
 
-  var _children              = [],
+  let _children              = [],
       _counter               = 0,
       _defaultExpireDuration = 7000,
       _types                 = {
@@ -19,11 +22,8 @@ var ToastView = function () {
         'warning'    : 'toast__warning',
         'danger'     : 'toast__danger'
       },
-      _mountPoint,
-      _template              = require('../../nori/view/Templating.js'),
-      _browserInfo           = require('../../nudoru/browser/BrowserInfo.js'),
-      _domUtils              = require('../../nudoru/browser/DOMUtils.js'),
-      _componentUtils        = require('../../nudoru/browser/ThreeDTransforms.js');
+      _mountPoint;
+
 
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
@@ -41,11 +41,9 @@ var ToastView = function () {
 
     assignTypeClassToElement(initObj.type, toastObj.element);
 
-    _componentUtils.apply3DToContainer(_mountPoint);
-    _componentUtils.apply3DToElement(toastObj.element);
 
     var closeBtn         = toastObj.element.querySelector('.toast__item-controls > button'),
-        closeBtnSteam    = Rxjs.Observable.fromEvent(closeBtn, _browserInfo.mouseClickEvtStr()),
+        closeBtnSteam    = Rxjs.Observable.fromEvent(closeBtn, BrowserInfo.mouseClickEvtStr()),
         expireTimeStream = Rxjs.Observable.interval(_defaultExpireDuration);
 
     toastObj.defaultButtonStream = Rxjs.Observable.merge(closeBtnSteam, expireTimeStream).take(1)
@@ -60,7 +58,7 @@ var ToastView = function () {
 
   function assignTypeClassToElement(type, element) {
     if (type !== 'default') {
-      _domUtils.addClass(element, _typeStyleMap[type]);
+      DOMUtils.addClass(element, _typeStyleMap[type]);
     }
   }
 
@@ -68,7 +66,7 @@ var ToastView = function () {
     var id  = 'js__toast-toastitem-' + (_counter++).toString(),
         obj = {
           id                 : id,
-          element            : _template.asElement('component--toast', {
+          element            : Template.asElement('component--toast', {
             id     : id,
             title  : title,
             message: message
@@ -98,9 +96,9 @@ var ToastView = function () {
 
   function transitionOut(el) {
     TweenLite.to(el, 0.25, {
-      rotationX: -45,
-      alpha    : 0,
-      ease     : Quad.easeIn, onComplete: function () {
+      alpha: 0,
+      x    : '+200px',
+      ease : Quad.easeIn, onComplete: function () {
         onTransitionOutComplete(el);
       }
     });
@@ -151,4 +149,6 @@ var ToastView = function () {
 
 };
 
-export default ToastView();
+let ToastView = ToastViewModule();
+
+export default ToastView;

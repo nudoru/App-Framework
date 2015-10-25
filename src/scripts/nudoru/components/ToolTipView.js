@@ -1,8 +1,10 @@
-import * as Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
+import Template from '../../nori/view/Templating.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-var ToolTipView = function () {
+let ToolTipViewModule = function () {
 
-  var _children     = [],
+  let _children     = [],
       _counter      = 0,
       _defaultWidth = 200,
       _types        = {
@@ -41,9 +43,8 @@ var ToolTipView = function () {
         'L' : 'tooltip__left',
         'TL': 'tooltip__topleft'
       },
-      _mountPoint,
-      _template     = require('../../nori/view/Templating.js'),
-      _domUtils     = require('../../nudoru/browser/DOMUtils.js');
+      _mountPoint;
+
 
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
@@ -53,7 +54,7 @@ var ToolTipView = function () {
   function add(initObj) {
     initObj.type = initObj.type || _types.DEFAULT;
 
-    var tooltipObj = createToolTipObject(initObj.title,
+    let tooltipObj = createToolTipObject(initObj.title,
       initObj.content,
       initObj.position,
       initObj.targetEl,
@@ -93,13 +94,13 @@ var ToolTipView = function () {
 
   function assignTypeClassToElement(type, position, element) {
     if (type !== 'default') {
-      _domUtils.addClass(element, _typeStyleMap[type]);
+      DOMUtils.addClass(element, _typeStyleMap[type]);
     }
-    _domUtils.addClass(element, _positionMap[position]);
+    DOMUtils.addClass(element, _positionMap[position]);
   }
 
   function createToolTipObject(title, message, position, target, gutter, alwaysVisible) {
-    var id  = 'js__tooltip-tooltipitem-' + (_counter++).toString(),
+    let id  = 'js__tooltip-tooltipitem-' + (_counter++).toString(),
         obj = {
           id           : id,
           position     : position,
@@ -110,7 +111,7 @@ var ToolTipView = function () {
           elOutStream  : null,
           height       : 0,
           width        : 0,
-          element      : _template.asElement('component--tooltip', {
+          element      : Template.asElement('component--tooltip', {
             id     : id,
             title  : title,
             message: message
@@ -276,4 +277,6 @@ var ToolTipView = function () {
 
 };
 
-export default ToolTipView();
+let ToolTipView = ToolTipViewModule();
+
+export default ToolTipView;

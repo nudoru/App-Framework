@@ -7,13 +7,11 @@
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import _ from '../../vendor/lodash.min.js';
 import Is from '../../nudoru/util/is.js';
-import ImmutableStoreFactory from './ImmutableStore.js';
 
 let ReducerStore = function () {
   let _this,
-      _isReducing    = false,
-      _queue         = [],
-      _stateObject   = ImmutableStoreFactory(),
+      _actionQueue   = [],
+      _internalState = {},
       _stateReducers = [],
       _subject       = new Rxjs.Subject();
 
@@ -21,11 +19,8 @@ let ReducerStore = function () {
   //  Accessors
   //----------------------------------------------------------------------------
 
-  /**
-   * _stateObject might not exist if subscribers are added before this store is initialized
-   */
   function getState() {
-    return _stateObject.getState();
+    return _.assign({}, _internalState);
   }
 
   /**
@@ -34,9 +29,9 @@ let ReducerStore = function () {
    * current
    * @param nextstate
    */
-  function setState(nextstate = this.initialState()) {
-    if (!_.isEqual(nextstate, getState())) {
-      _stateObject.setState(nextstate);
+  function setState(nextState = this.initialState()) {
+    if (!_.isEqual(nextState, _internalState)) {
+      _internalState = _.assign({}, _internalState, nextState);
       _this.notify({});
     }
   }
@@ -71,17 +66,17 @@ let ReducerStore = function () {
    */
   function apply(actionObjOrArry) {
     if (Is.array(actionObjOrArry)) {
-      _queue = _queue.concat(actionObjOrArry);
+      _actionQueue = _actionQueue.concat(actionObjOrArry);
     } else {
-      _queue.push(actionObjOrArry);
+      _actionQueue.push(actionObjOrArry);
     }
 
     processActionQueue(getState());
   }
 
   function processActionQueue(state) {
-    while (_queue.length) {
-      let actionObject = _queue.shift();
+    while (_actionQueue.length) {
+      let actionObject = _actionQueue.shift();
       applyReducers(state, actionObject);
     }
   }
