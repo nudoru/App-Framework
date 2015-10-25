@@ -104,22 +104,6 @@ let ViewComponent = function () {
   }
 
   /**
-   * Get the current state
-   * @returns {void|*}
-   */
-  function getState() {
-    return _.assign({}, _internalState);
-  }
-
-  /**
-   * Get the current props
-   * @returns {void|*}
-   */
-  function getProps() {
-    return _.assign({}, _internalProps);
-  }
-
-  /**
    * Compares next state and props, returns true if one or both are different than current
    * @param nextState
    * @param nextProps
@@ -245,10 +229,10 @@ let ViewComponent = function () {
     _lifecycleState = LS_RENDERING;
 
     if (!_templateObjCache) {
-      _templateObjCache = this.template(this.getProps(), this.getState());
+      _templateObjCache = this.template(this.props, this.state);
     }
 
-    _html = this.render(this.getProps(), this.getState());
+    _html = this.render(this.props, this.state);
 
     if (wasMounted) {
       this.mount();
@@ -279,8 +263,6 @@ let ViewComponent = function () {
     let combined = _.merge({}, props, state),
         template = _templateObjCache || this.template(props, state);
 
-    console.log(this.getID(), combined);
-
     return template(combined);
   }
 
@@ -310,9 +292,9 @@ let ViewComponent = function () {
     _isMounted = true;
 
     if (typeof this.delegateEvents === 'function') {
-      if (this.shouldDelegateEvents(this.getProps(), this.getState())) {
+      if (this.shouldDelegateEvents(this.props, this.state)) {
         // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(this.getDOMEvents(), this.getProps().autoFormEvents);
+        this.delegateEvents(this.getDOMEvents(), this.props.autoFormEvents);
       }
     }
 
@@ -494,10 +476,8 @@ let ViewComponent = function () {
     initializeComponent           : initializeComponent,
     state                         : _publicState,
     props                         : _publicProps,
-    getProps                      : getProps,
     setProps                      : setProps,
     getInitialState               : getInitialState,
-    getState                      : getState,
     setState                      : setState,
     getDefaultProps               : getDefaultProps,
     defineChildren                : defineChildren,
