@@ -4,13 +4,14 @@
  * Store modeled after Redux
  */
 
+import Is from '../../nudoru/util/is.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import _ from '../../vendor/lodash.min.js';
 
+const STORE_INITIALIZE_TYPE = '$$$initstore$$$';
+
 export default function () {
-  let _this,
-      _internalState,
-      _actionQueue   = [],
+  let _internalState,
       _stateReducers = [],
       _subject       = new Rxjs.Subject();
 
@@ -35,13 +36,15 @@ export default function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Set up event listener/receiver
+   * Run the the reducers with the default state
    */
   function initializeReducerStore() {
-    _this = this;
-    _this.apply({type:'@@initialize@@'});
+    this.apply({type: STORE_INITIALIZE_TYPE});
   }
 
+  /**
+   * Returns the default state "shape"
+   */
   function getDefaultState() {
     return {};
   }
@@ -49,40 +52,42 @@ export default function () {
   /**
    * Apply the action object to the reducers to change state
    * are sent to all reducers to update the state
-   * @param actionObjOrArry Array of actions or a single action to reduce from
    */
-  function apply(actionObjOrArry) {
-    if(_stateReducers.length === 0) {
+  function apply(action) {
+    if (_stateReducers.length === 0) {
       throw new Error('ReducerStore must have at least one reducer set');
     }
 
-    if (Array.isArray(actionObjOrArry)) {
-      _actionQueue = _actionQueue.concat(actionObjOrArry);
-    } else {
-      _actionQueue.push(actionObjOrArry);
-    }
-
-    processActionQueue(_internalState);
-  }
-
-  function processActionQueue(state) {
-    while (_actionQueue.length) {
-      let actionObject = _actionQueue.shift();
-      _this.applyReducers(state, actionObject);
+    if(isValidAction(action)) {
+      // Apply called as the result of an event/subscription. Fix context back to
+      // correct scope
+      applyReducers.bind(this)(action, _internalState);
     }
   }
 
-  function applyReducers(state, actionObject) {
-    if (typeof actionObject.type === 'undefined') {
+  function isValidAction(action) {
+    if(!Is.object(action)) {
+      console.warn('ReducerStore, action must be plain JS object', action);
+      return false;
+    }
+
+    if (typeof action.type === 'undefined') {
       console.warn('Reducer store, cannot apply undefined action type');
-      return;
+      return false;
     }
 
-    let nextState = _this.reduceToState(actionObject, state);
+    return true;
+  }
 
-    if(!_.isEqual(_internalState, nextState)) {
+  function applyReducers(action, state) {
+    state = state || this.getDefaultState();
+
+    let nextState = this.reduceToNextState(action, state);
+
+    // Don't update the state if it's the same
+    if (!_.isEqual(_internalState, nextState)) {
       _internalState = nextState;
-      _this.notify();
+      this.notify(action.type, this.getState());
     }
   }
 
@@ -93,7 +98,7 @@ export default function () {
    * @param action
    * @returns {*|{}}
    */
-  function reduceToState(action, state = this.getDefaultState()) {
+  function reduceToNextState(action, state) {
     let nextState;
 
     try {
@@ -133,8 +138,8 @@ export default function () {
     return _subject.subscribe(handler);
   }
 
-  function notify(payload) {
-    _subject.onNext(payload);
+  function notify(type, state) {
+    _subject.onNext({type: type, state:state});
   }
 
   //----------------------------------------------------------------------------
@@ -149,9 +154,9 @@ export default function () {
     setReducers,
     addReducer,
     applyReducers,
-    reduceToState,
+    reduceToNextState,
     subscribe,
     notify
   };
 
-};
+}

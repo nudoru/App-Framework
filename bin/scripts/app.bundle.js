@@ -236,11 +236,9 @@ var AppStoreModule = Nori.createStore({
   initialize: function initialize() {
     this.addReducer(this.appStateReducerFunction);
     this.initializeReducerStore();
-
-    this.setState();
   },
 
-  initialState: function initialState() {
+  getDefaultState: function getDefaultState() {
     return {
       currentState: 'chillin',
       greeting: 'Hello world!'
@@ -600,11 +598,11 @@ var Component = Nori.view().createComponent({
     return {};
   },
 
-  getInitialState: function getInitialState() {
+  getDefaultState: function getDefaultState() {
     return _storeAppStore2['default'].getState();
   },
 
-  //defineRegions() {},
+  //defineChildren() {},
 
   //getDOMEvents() {
   //  return {
@@ -710,7 +708,7 @@ var Nori = function Nori() {
    * app bundle. For easy of settings tweaks after the build by non technical devs
    * @returns {void|*}
    */
-  function getConfig() {
+  function config() {
     return _vendorLodashMinJs2['default'].assign({}, window.APP_CONFIG_DATA || {});
   }
 
@@ -776,7 +774,7 @@ var Nori = function Nori() {
   //----------------------------------------------------------------------------
 
   return {
-    config: getConfig,
+    config: config,
     view: view,
     store: store,
     createClass: createClass,
@@ -847,6 +845,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * Store modeled after Redux
  */
 
+var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
+
+var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
+
 var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
 
 var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
@@ -855,14 +857,10 @@ var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
+var STORE_INITIALIZE_TYPE = '$$$initstore$$$';
 
-var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
-var ReducerStore = function ReducerStore() {
-  var _this = undefined,
-      _actionQueue = [],
-      _internalState = {},
+exports['default'] = function () {
+  var _internalState = undefined,
       _stateReducers = [],
       _subject = new _vendorRxjsRxLiteMinJs2['default'].Subject();
 
@@ -872,21 +870,6 @@ var ReducerStore = function ReducerStore() {
 
   function getState() {
     return _vendorLodashMinJs2['default'].assign({}, _internalState);
-  }
-
-  /**
-   * Set the state of the store. Will default to initial state shape returned from
-   * initialState() function. Will only update the state if it's not equal to
-   * current
-   * @param nextstate
-   */
-  function setState() {
-    var nextState = arguments.length <= 0 || arguments[0] === undefined ? this.initialState() : arguments[0];
-
-    if (!_vendorLodashMinJs2['default'].isEqual(nextState, _internalState)) {
-      _internalState = _vendorLodashMinJs2['default'].assign({}, _internalState, nextState);
-      _this.notify({});
-    }
   }
 
   function setReducers(reducerArray) {
@@ -902,45 +885,59 @@ var ReducerStore = function ReducerStore() {
   //----------------------------------------------------------------------------
 
   /**
-   * Set up event listener/receiver
+   * Run the the reducers with the default state
    */
   function initializeReducerStore() {
-    _this = this;
+    this.apply({ type: STORE_INITIALIZE_TYPE });
   }
 
-  function initialState() {
+  /**
+   * Returns the default state "shape"
+   */
+  function getDefaultState() {
     return {};
   }
 
   /**
    * Apply the action object to the reducers to change state
    * are sent to all reducers to update the state
-   * @param actionObjOrArry Array of actions or a single action to reduce from
    */
-  function apply(actionObjOrArry) {
-    if (_nudoruUtilIsJs2['default'].array(actionObjOrArry)) {
-      _actionQueue = _actionQueue.concat(actionObjOrArry);
-    } else {
-      _actionQueue.push(actionObjOrArry);
+  function apply(action) {
+    if (_stateReducers.length === 0) {
+      throw new Error('ReducerStore must have at least one reducer set');
     }
 
-    processActionQueue(getState());
-  }
-
-  function processActionQueue(state) {
-    while (_actionQueue.length) {
-      var actionObject = _actionQueue.shift();
-      applyReducers(state, actionObject);
+    if (isValidAction(action)) {
+      // Apply called as the result of an event/subscription. Fix context back to
+      // correct scope
+      applyReducers.bind(this)(action, _internalState);
     }
   }
 
-  function applyReducers(state, actionObject) {
-    if (typeof actionObject.type === 'undefined') {
+  function isValidAction(action) {
+    if (!_nudoruUtilIsJs2['default'].object(action)) {
+      console.warn('ReducerStore, action must be plain JS object', action);
+      return false;
+    }
+
+    if (typeof action.type === 'undefined') {
       console.warn('Reducer store, cannot apply undefined action type');
-      return;
+      return false;
     }
-    var nextState = applyReducersToState(state, actionObject);
-    setState(nextState);
+
+    return true;
+  }
+
+  function applyReducers(action, state) {
+    state = state || this.getDefaultState();
+
+    var nextState = this.reduceToNextState(action, state);
+
+    // Don't update the state if it's the same
+    if (!_vendorLodashMinJs2['default'].isEqual(_internalState, nextState)) {
+      _internalState = nextState;
+      this.notify(action.type, this.getState());
+    }
   }
 
   /**
@@ -950,11 +947,8 @@ var ReducerStore = function ReducerStore() {
    * @param action
    * @returns {*|{}}
    */
-  function applyReducersToState(state, action) {
+  function reduceToNextState(action, state) {
     var nextState = undefined;
-
-    // TODO {} or this.getDefaultState()?
-    state = state || {};
 
     try {
       nextState = _stateReducers.reduce(function (nextState, reducerFunc) {
@@ -995,8 +989,8 @@ var ReducerStore = function ReducerStore() {
     return _subject.subscribe(handler);
   }
 
-  function notify(payload) {
-    _subject.onNext(payload);
+  function notify(type, state) {
+    _subject.onNext({ type: type, state: state });
   }
 
   //----------------------------------------------------------------------------
@@ -1005,20 +999,18 @@ var ReducerStore = function ReducerStore() {
 
   return {
     initializeReducerStore: initializeReducerStore,
-    initialState: initialState,
+    getDefaultState: getDefaultState,
     getState: getState,
-    setState: setState,
     apply: apply,
     setReducers: setReducers,
     addReducer: addReducer,
     applyReducers: applyReducers,
-    applyReducersToState: applyReducersToState,
+    reduceToNextState: reduceToNextState,
     subscribe: subscribe,
     notify: notify
   };
 };
 
-exports['default'] = ReducerStore;
 module.exports = exports['default'];
 
 },{"../../nudoru/util/is.js":40,"../../vendor/lodash.min.js":41,"../../vendor/rxjs/rx.lite.min.js":42}],14:[function(require,module,exports){
@@ -2124,6 +2116,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * Must be extended with custom modules
  *
  * Functions beginning with $ should be treated as private
+ *
+ * Lifecycle should match React:
+ *
+ * First render: getDefaultProps, getInitialState, componentWillMount, render, componentDidMount
+ * Props change: componentWillReceiveProps, shouldComponentUpdate, componentWillUpdate, render, componentDidUpdate
+ * State change: shouldComponentUpdate, componentWillUpdate, render, componentDidUpdate
+ * Unmount: componentWillUnmount
  */
 
 var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
@@ -2138,17 +2137,13 @@ var _viewRendererJs = require('../view/Renderer.js');
 
 var _viewRendererJs2 = _interopRequireDefault(_viewRendererJs);
 
-var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
-
-var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
 // Lifecycle state constants
 var LS_NO_INIT = 0,
     LS_INITED = 1,
     LS_RENDERING = 2,
     LS_MOUNTED = 3,
     LS_UNMOUNTED = 4,
-    LS_DISPOSED = 9;
+    LS_DISPOSED = 99;
 
 var ViewComponent = function ViewComponent() {
 
@@ -2160,7 +2155,7 @@ var ViewComponent = function ViewComponent() {
       _lastProps = {},
       _lifecycleState = LS_NO_INIT,
       _isMounted = false,
-      _regions = {},
+      _children = {},
       _id = undefined,
       _templateObjCache = undefined,
       _html = undefined,
@@ -2181,12 +2176,12 @@ var ViewComponent = function ViewComponent() {
     }
 
     _mountPoint = _internalProps.mountPoint;
-    _regions = this.defineRegions();
+    _children = this.defineChildren();
 
-    this.setState(this.getInitialState());
+    this.setState(this.getDefaultState());
     //this.setEvents(this.getDOMEvents());
 
-    this.$initializeRegions();
+    this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
   }
@@ -2223,24 +2218,8 @@ var ViewComponent = function ViewComponent() {
    * Get the initial state of the component
    * @returns {{}}
    */
-  function getInitialState() {
+  function getDefaultState() {
     return {};
-  }
-
-  /**
-   * Get the current state
-   * @returns {void|*}
-   */
-  function getState() {
-    return _vendorLodashMinJs2['default'].assign({}, _internalState);
-  }
-
-  /**
-   * Get the current props
-   * @returns {void|*}
-   */
-  function getProps() {
-    return _vendorLodashMinJs2['default'].assign({}, _internalProps);
   }
 
   /**
@@ -2269,7 +2248,7 @@ var ViewComponent = function ViewComponent() {
       return;
     }
 
-    nextState = nextState || this.getInitialState();
+    nextState = nextState || this.getDefaultState();
 
     if (!shouldComponentUpdate(null, nextState)) {
       return;
@@ -2305,6 +2284,7 @@ var ViewComponent = function ViewComponent() {
       return;
     }
 
+    // ensure this runs only after initial init
     if (typeof this.componentWillReceiveProps === 'function' && _lifecycleState >= LS_INITED) {
       this.componentWillReceiveProps(nextProps);
     }
@@ -2367,26 +2347,24 @@ var ViewComponent = function ViewComponent() {
     _lifecycleState = LS_RENDERING;
 
     if (!_templateObjCache) {
-      _templateObjCache = this.template(this.getProps(), this.getState());
+      _templateObjCache = this.template(this.props, this.state);
     }
 
-    _html = this.render(this.getProps(), this.getState());
+    _html = this.render(this.props, this.state);
 
     if (wasMounted) {
       this.mount();
     }
 
-    this.$renderRegions();
+    this.$renderChildren();
   }
 
   /**
    * Returns a Lodash client side template function by getting the HTML source from
    * the matching <script type='text/template'> tag in the document. OR you may
-   * specify the custom HTML to use here.
+   * specify the custom HTML to use here. Mustache style delimiters used.
    *
-   * The method is called only on the first render and cached to speed up renders
-   *
-   * @returns {Function}
+   * The method is called only on the first render and cached to speed up future calls
    */
   function template(props, state) {
     // assumes the template ID matches the component's ID as passed on initialize
@@ -2400,7 +2378,10 @@ var ViewComponent = function ViewComponent() {
    * @returns {*}
    */
   function render(props, state) {
-    return _templateObjCache(state);
+    var combined = _vendorLodashMinJs2['default'].merge({}, props, state),
+        template = _templateObjCache || this.template(props, state);
+
+    return template(combined);
   }
 
   /**
@@ -2429,9 +2410,9 @@ var ViewComponent = function ViewComponent() {
     _isMounted = true;
 
     if (typeof this.delegateEvents === 'function') {
-      if (this.shouldDelegateEvents(this.getProps(), this.getState())) {
+      if (this.shouldDelegateEvents(this.props, this.state)) {
         // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(this.getDOMEvents(), this.getProps().autoFormEvents);
+        this.delegateEvents(this.getDOMEvents(), this.props.autoFormEvents);
       }
     }
 
@@ -2451,7 +2432,7 @@ var ViewComponent = function ViewComponent() {
     }
 
     this.componentDidMount();
-    this.$mountRegions();
+    this.$mountChildren();
   }
 
   /**
@@ -2504,7 +2485,7 @@ var ViewComponent = function ViewComponent() {
 
   function dispose() {
     this.componentWillDispose();
-    this.$disposeRegions();
+    this.$disposeChildren();
     this.unmount();
 
     _lifecycleState = LS_DISPOSED;
@@ -2514,50 +2495,50 @@ var ViewComponent = function ViewComponent() {
   //
 
   //----------------------------------------------------------------------------
-  //  Regions
+  //  Children
   //----------------------------------------------------------------------------
 
   //TODO reduce code repetition
 
-  function defineRegions() {
+  function defineChildren() {
     return undefined;
   }
 
-  function getRegion(id) {
-    return _regions[id];
+  function getChild(id) {
+    return _children[id];
   }
 
-  function getRegionIDs() {
-    return _regions ? Object.keys(_regions) : [];
+  function getChildIDs() {
+    return _children ? Object.keys(_children) : [];
   }
 
-  function $initializeRegions() {
-    getRegionIDs().forEach(function (region) {
-      _regions[region].initialize();
+  function $initializeChildren() {
+    getChildIDs().forEach(function (region) {
+      _children[region].initialize();
     });
   }
 
-  function $renderRegions() {
-    getRegionIDs().forEach(function (region) {
-      _regions[region].$renderComponent();
+  function $renderChildren() {
+    getChildIDs().forEach(function (region) {
+      _children[region].$renderComponent();
     });
   }
 
-  function $mountRegions() {
-    getRegionIDs().forEach(function (region) {
-      _regions[region].mount();
+  function $mountChildren() {
+    getChildIDs().forEach(function (region) {
+      _children[region].mount();
     });
   }
 
-  function $unmountRegions() {
-    getRegionIDs().forEach(function (region) {
-      _regions[region].unmount();
+  function $unmountChildren() {
+    getChildIDs().forEach(function (region) {
+      _children[region].unmount();
     });
   }
 
-  function $disposeRegions() {
-    getRegionIDs().forEach(function (region) {
-      _regions[region].dispose();
+  function $disposeChildren() {
+    getChildIDs().forEach(function (region) {
+      _children[region].dispose();
     });
   }
 
@@ -2594,7 +2575,7 @@ var ViewComponent = function ViewComponent() {
    * @param observable Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
    */
   function bind(observable, func) {
-    if (!_nudoruUtilIsJs2['default'].func(observable.subscribe)) {
+    if (typeof observable.subscribe !== 'function') {
       console.warn('ViewComponent bind, must be observable: ' + observable);
       return;
     }
@@ -2607,16 +2588,14 @@ var ViewComponent = function ViewComponent() {
   //----------------------------------------------------------------------------
 
   return {
-    initializeComponent: initializeComponent,
     state: _publicState,
     props: _publicProps,
-    getProps: getProps,
+    initializeComponent: initializeComponent,
     setProps: setProps,
-    getInitialState: getInitialState,
-    getState: getState,
+    getDefaultState: getDefaultState,
     setState: setState,
     getDefaultProps: getDefaultProps,
-    defineRegions: defineRegions,
+    defineChildren: defineChildren,
     getDOMEvents: getDOMEvents,
     getLifeCycleState: getLifeCycleState,
     isInitialized: isInitialized,
@@ -2640,20 +2619,20 @@ var ViewComponent = function ViewComponent() {
     unmount: unmount,
     dispose: dispose,
     componentWillDispose: componentWillDispose,
-    getRegion: getRegion,
-    getRegionIDs: getRegionIDs,
-    $initializeRegions: $initializeRegions,
-    $renderRegions: $renderRegions,
-    $mountRegions: $mountRegions,
-    $unmountRegions: $unmountRegions,
-    $disposeRegions: $disposeRegions
+    getChild: getChild,
+    getChildIDs: getChildIDs,
+    $initializeChildren: $initializeChildren,
+    $renderChildren: $renderChildren,
+    $mountChildren: $mountChildren,
+    $unmountChildren: $unmountChildren,
+    $disposeChildren: $disposeChildren
   };
 };
 
 exports['default'] = ViewComponent;
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":40,"../../vendor/lodash.min.js":41,"../view/Renderer.js":23,"../view/Templating.js":24}],26:[function(require,module,exports){
+},{"../../vendor/lodash.min.js":41,"../view/Renderer.js":23,"../view/Templating.js":24}],26:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });

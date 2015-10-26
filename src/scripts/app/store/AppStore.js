@@ -21,8 +21,6 @@ let AppStoreModule = Nori.createStore({
   initialize() {
     this.addReducer(this.appStateReducerFunction);
     this.initializeReducerStore();
-
-    this.setState();
   },
 
   getDefaultState() {
