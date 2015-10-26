@@ -57,7 +57,6 @@ export default function () {
     if (_stateReducers.length === 0) {
       throw new Error('ReducerStore must have at least one reducer set');
     }
-
     if(isValidAction(action)) {
       // Apply called as the result of an event/subscription. Fix context back to
       // correct scope
@@ -119,8 +118,8 @@ export default function () {
         switch (event.type) {
           case _noriActionConstants.MODEL_DATA_CHANGED:
             // can compose other reducers
-            // return _.merge({}, state, otherStateTransformer(state));
-            return _.merge({}, state, {prop: event.payload.value});
+            // return _.assign({}, state, otherStateTransformer(state));
+            return _.assign({}, state, {prop: event.payload.value});
           case undefined:
             return state;
           default:

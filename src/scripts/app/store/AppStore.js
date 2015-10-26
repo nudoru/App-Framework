@@ -3,6 +3,7 @@ import AppActionConstants from '../action/ActionConstants.js';
 import StringUtils from '../../nudoru/core/StringUtils.js';
 import NumUtils from '../../nudoru/core/NumberUtils.js';
 import ArrayUtils from '../../nudoru/core/ArrayUtils.js';
+import _ from '../../vendor/lodash.min.js';
 
 /**
  * This application store contains "reducer store" functionality based on Redux.
@@ -23,6 +24,9 @@ let AppStoreModule = Nori.createStore({
     this.initializeReducerStore();
   },
 
+  /**
+   * Starting application state
+   */
   getDefaultState() {
     return {
       currentState: 'chillin',
@@ -35,9 +39,6 @@ let AppStoreModule = Nori.createStore({
    * state and does not modify the state directly.
    * Can compose state transformations
    * return _.assign({}, state, otherStateTransformer(state));
-   * @param state
-   * @param action
-   * @returns {*}
    */
   appStateReducerFunction(state, action) {
     state = state || {};
@@ -45,7 +46,7 @@ let AppStoreModule = Nori.createStore({
     switch (action.type) {
 
       case NoriActionConstants.CHANGE_STORE_STATE:
-        return _.merge({}, state, action.payload.data);
+        return _.assign({}, state, action.payload.data);
 
       default:
         return state;

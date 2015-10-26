@@ -1,3 +1,4 @@
+import StoreWatcher from '../nori/utils/StoreWatcher.js';
 import AppActions from './action/ActionCreator.js';
 import AppActionConstants from './action/ActionConstants.js';
 import NoriActions from '../nori/action/ActionCreator.js';
@@ -11,7 +12,7 @@ import AppView from './view/AppView.js';
  */
 let App = Nori.createClass({
 
-  mixins: [],
+  mixins: [StoreWatcher()],
 
   /**
    * Initialize
@@ -20,6 +21,8 @@ let App = Nori.createClass({
   initialize: function () {
     AppView.initialize();
     AppStore.initialize();
+
+    this.watchStore(AppStore);
 
     this.runApplication();
   },

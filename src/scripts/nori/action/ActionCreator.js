@@ -9,11 +9,10 @@ import NoriActionConstants from './ActionConstants.js';
 
 export default {
 
-  changeStoreState: function (data, id) {
+  changeStoreState: function (data) {
     return {
       type   : NoriActionConstants.CHANGE_STORE_STATE,
       payload: {
-        id  : id,
         data: data
       }
     };

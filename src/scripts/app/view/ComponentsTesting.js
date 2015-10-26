@@ -9,14 +9,14 @@ import MixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
  * Module for a dynamic application view for a route or a persistent view
  */
 
-let _lIpsum  = require('../../nudoru/browser/Lorem.js'),
-    _toolTip = require('../../nudoru/components/ToolTipView.js'),
-    _actionOneEl,
-    _actionTwoEl,
-    _actionThreeEl,
-    _actionFourEl,
-    _actionFiveEl,
-    _actionSixEl;
+let _lIpsum = require('../../nudoru/browser/Lorem.js'),
+_toolTip    = require('../../nudoru/components/ToolTipView.js'),
+_actionOneEl,
+_actionTwoEl,
+_actionThreeEl,
+_actionFourEl,
+_actionFiveEl,
+_actionSixEl;
 
 let Component = Nori.view().createComponent({
   /**
@@ -32,14 +32,14 @@ let Component = Nori.view().createComponent({
    * initialized from app view
    * @param initProps
    */
-  initialize(initProps) {
+    initialize(initProps) {
     _lIpsum.initialize();
   },
 
   /**
    * Component HTML was attached to the DOM
    */
-  componentDidMount() {
+    componentDidMount() {
     console.log(this.getID() + ', subview did mount');
 
     _actionOneEl   = document.getElementById('action-one');
@@ -144,15 +144,16 @@ let Component = Nori.view().createComponent({
     });
 
     _actionFiveEl.addEventListener('click', function actFour(e) {
-      Nori.router().set('/styles', {prop: 'some data', moar: '25'});
+      AppStore.apply(NoriActions.changeStoreState({foo:'bar'}));
     });
 
     _actionSixEl.addEventListener('click', function actFour(e) {
-      console.log('nothing yet');
+      //
     });
   },
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+  }
 
 });
 
