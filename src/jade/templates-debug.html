@@ -251,34 +251,39 @@ BEGIN Templates for DEBUG Sub Views
     </div>
 </script>
 
+<script id="debug-test-child" type="text/template">
+    <div>
+        <button>{{label}}</button>
+    </div>
+</script>
+
 <script id="debug-components" type="text/template">
     <div>
-        <div class="column-container">
-            <div class="one-third-left-column">
-                <h1 class="h1-alternate">Mock Components</h1>
-                <ul class="list-plain">
-                    <li>
-                        <button id="action-one">Action One</button>
-                    </li>
-                    <li>
-                        <button id="action-two">Action Two</button>
-                    </li>
-                    <li>
-                        <button id="action-three">Action Three</button>
-                    </li>
-                    <li>
-                        <button id="action-four">Action Four</button>
-                    </li>
-                    <li>
-                        <button id="action-five">Action Five</button>
-                    </li>
-                    <li>
-                        <button id="action-six">Action Six</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="two-thirds-right-column"></div>
-        </div>
+        <h3>Child testing</h3>
+            <div id='debug-child'></div>
+        <hr/>
+        <h3>Mock Components</h3>
+        <ul class="list-plain">
+            <li>
+                <button id="action-one">Action One</button>
+            </li>
+            <li>
+                <button id="action-two">Action Two</button>
+            </li>
+            <li>
+                <button id="action-three">Action Three</button>
+            </li>
+            <li>
+                <button id="action-four">Action Four</button>
+            </li>
+            <li>
+                <button id="action-five">Action Five</button>
+            </li>
+            <li>
+                <button id="action-six">Action Six</button>
+            </li>
+        </ul>
+
     </div>
 </script>
 

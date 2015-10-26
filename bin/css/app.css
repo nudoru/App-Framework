@@ -2350,6 +2350,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   margin-bottom: 33px !important;
 }
 
+.overflow-visible {
+  overflow: visible !important;
+}
+
 h1 {
   margin: 0;
   padding: 0;
@@ -2374,7 +2378,7 @@ h2 {
   font-weight: 300;
 }
 
-.panel__footer-message h1, h3 {
+.panel__footer-message h1, .app__hero-small h1, h3 {
   margin: 0;
   padding: 0;
   margin-bottom: 33px;
@@ -2386,7 +2390,7 @@ h2 {
   font-weight: 300;
 }
 
-.panel__footer-message h2, h4 {
+.panel__footer-message h2, .app__hero-small h2, h4 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2398,7 +2402,7 @@ h2 {
   font-weight: 300;
 }
 
-.panel__footer-message h3, h5 {
+.panel__footer-message h3, .app__hero-small h3, h5 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2410,7 +2414,7 @@ h2 {
   font-weight: 400;
 }
 
-.panel__footer-message h4, .panel__footer-message h5, .panel__footer-message h6, h6, legend, .table caption {
+.panel__footer-message h4, .app__hero-small h4, .panel__footer-message h5, .app__hero-small h5, .panel__footer-message h6, .app__hero-small h6, h6, legend, .table caption {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -4110,7 +4114,7 @@ tr.row-header-inline td {
 
 body {
   overflow: hidden;
-  background: url("../img/light_toast.png");
+  background-color: #eee;
 }
 
 #app__container {
@@ -4164,8 +4168,12 @@ body {
 
 .app__column {
   display: block;
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
+  padding: 22px;
+}
+
+.app__padded-content {
   padding: 22px;
 }
 
@@ -4207,29 +4215,38 @@ body {
   text-decoration: none;
 }
 
-.app__hero {
-  background: url("../img/shattered-island.gif");
+.app__hero, .app__hero-small {
+  background-color: #6e6259;
   display: block;
   width: 100%;
   overflow: hidden;
   padding-top: 33px;
   padding-bottom: 33px;
 }
-.app__hero h1, .app__hero h2, .app__hero h3, .app__hero h4, .app__hero h5 h6, .app__hero p, .app__hero li {
+.app__hero h1, .app__hero-small h1, .app__hero h2, .app__hero-small h2, .app__hero h3, .app__hero-small h3, .app__hero h4, .app__hero-small h4, .app__hero h5 h6, .app__hero-small h5 h6, .app__hero p, .app__hero-small p, .app__hero li, .app__hero-small li {
   color: #fff;
   text-align: center;
-  text-shadow: 0 2px 0 #000;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
 }
-.app__hero h1 {
+.app__hero h1, .app__hero-small h1 {
   margin: 0;
   padding: 0;
 }
 
-.app__content {
-  margin-top: -11px;
-  margin-bottom: 33px;
+.app__hero-small {
+  padding: 11px 0;
 }
-.app__content .app__column {
+
+.app__content {
+  margin: 0;
   background-color: #fff;
-  box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
+}
+
+.app__side-bar {
+  background-color: #968c83;
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
+}
+.app__side-bar h1, .app__side-bar h2, .app__side-bar h3, .app__side-bar h4, .app__side-bar h5 h6, .app__side-bar p, .app__side-bar li {
+  color: #fff;
 }

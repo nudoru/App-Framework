@@ -156,7 +156,7 @@ var App = Nori.createClass({
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"../nori/action/ActionCreator.js":12,"../nori/utils/MixinStoreWatcher.js":17,"./action/ActionConstants.js":3,"./action/ActionCreator.js":4,"./store/AppStore.js":5,"./view/AppView.js":6}],3:[function(require,module,exports){
+},{"../nori/action/ActionCreator.js":13,"../nori/utils/MixinStoreWatcher.js":18,"./action/ActionConstants.js":3,"./action/ActionCreator.js":4,"./store/AppStore.js":5,"./view/AppView.js":6}],3:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -284,7 +284,7 @@ var AppStore = AppStoreModule();
 exports['default'] = AppStore;
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionConstants.js":11,"../../nudoru/core/ArrayUtils.js":37,"../../nudoru/core/NumberUtils.js":38,"../../nudoru/core/StringUtils.js":40,"../../vendor/lodash.min.js":42,"../action/ActionConstants.js":3}],6:[function(require,module,exports){
+},{"../../nori/action/ActionConstants.js":12,"../../nudoru/core/ArrayUtils.js":38,"../../nudoru/core/NumberUtils.js":39,"../../nudoru/core/StringUtils.js":41,"../../vendor/lodash.min.js":43,"../action/ActionConstants.js":3}],6:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -377,7 +377,30 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/view/MixinRouteViews.js":23,"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":28,"../../nudoru/components/MixinNudoruControls.js":33,"../store/AppStore.js":5,"./ComponentsTesting.js":7,"./TemplateViewComponent.js":8}],7:[function(require,module,exports){
+},{"../../nori/view/MixinRouteViews.js":24,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/components/MixinNudoruControls.js":34,"../store/AppStore.js":5,"./ComponentsTesting.js":8,"./TemplateViewComponent.js":9}],7:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var counter = 0;
+
+var Component = Nori.view().createComponent({
+
+  getDOMEvents: function getDOMEvents() {
+    var _this = this;
+
+    return {
+      'click button': function clickButton() {
+        return _this.setProps({ label: 'Clicked ' + ++counter + ' times' });
+      }
+    };
+  }
+
+});
+
+exports['default'] = Component;
+module.exports = exports['default'];
+
+},{}],8:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -408,6 +431,10 @@ var _noriViewMixinDOMManipulationJs = require('../../nori/view/MixinDOMManipulat
 
 var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMManipulationJs);
 
+var _ChildTestJs = require('./ChildTest.js');
+
+var _ChildTestJs2 = _interopRequireDefault(_ChildTestJs);
+
 /**
  * Module for a dynamic application view for a route or a persistent view
  */
@@ -419,7 +446,8 @@ var _lIpsum = require('../../nudoru/browser/Lorem.js'),
     _actionThreeEl = undefined,
     _actionFourEl = undefined,
     _actionFiveEl = undefined,
-    _actionSixEl = undefined;
+    _actionSixEl = undefined,
+    _this = undefined;
 
 var Component = Nori.view().createComponent({
   /**
@@ -435,6 +463,17 @@ var Component = Nori.view().createComponent({
    */
   initialize: function initialize(initProps) {
     _lIpsum.initialize();
+    _this = this;
+  },
+
+  defineChildren: function defineChildren() {
+    return {
+      testChild: (0, _ChildTestJs2['default'])({
+        id: 'debug-test-child',
+        mountPoint: '#debug-child',
+        label: 'Testing, yo!'
+      })
+    };
   },
 
   /**
@@ -536,7 +575,8 @@ var Component = Nori.view().createComponent({
     });
 
     _actionFourEl.addEventListener('click', function actFour(e) {
-      console.log('Four');
+      var test = _this.getChild('testChild');
+      test.setProps({ label: 'From the parent' });
     });
 
     _actionFiveEl.addEventListener('click', function actFour(e) {
@@ -555,7 +595,7 @@ var Component = Nori.view().createComponent({
 exports['default'] = Component;
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionCreator":12,"../../nori/view/MixinDOMManipulation.js":21,"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":28,"../../nudoru/browser/Lorem.js":29,"../../nudoru/components/ToolTipView.js":36,"../store/AppStore":5,"./AppView":6}],8:[function(require,module,exports){
+},{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -644,7 +684,7 @@ var Component = Nori.view().createComponent({
 exports['default'] = Component;
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionCreator":12,"../../nori/view/MixinDOMManipulation.js":21,"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":28,"../store/AppStore":5,"./AppView":6}],9:[function(require,module,exports){
+},{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
 /**
  * Initial file for the Application
  */
@@ -671,7 +711,7 @@ module.exports = exports['default'];
   }
 })();
 
-},{"./app/App.js":2,"./nori/Nori.js":10,"./nudoru/browser/BrowserInfo.js":27}],10:[function(require,module,exports){
+},{"./app/App.js":2,"./nori/Nori.js":11,"./nudoru/browser/BrowserInfo.js":28}],11:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -797,7 +837,7 @@ var Nori = function Nori() {
 exports['default'] = Nori();
 module.exports = exports['default'];
 
-},{"../vendor/lodash.min.js":42,"./store/ReducerStore.js":13,"./utils/AssignArray.js":14,"./utils/BuildFromMixins.js":15,"./utils/CreateClass.js":16,"./view/MixinComponentViews.js":20}],11:[function(require,module,exports){
+},{"../vendor/lodash.min.js":43,"./store/ReducerStore.js":14,"./utils/AssignArray.js":15,"./utils/BuildFromMixins.js":16,"./utils/CreateClass.js":17,"./view/MixinComponentViews.js":21}],12:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -808,7 +848,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -841,7 +881,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./ActionConstants.js":11}],13:[function(require,module,exports){
+},{"./ActionConstants.js":12}],14:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1021,7 +1061,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":41,"../../vendor/lodash.min.js":42,"../../vendor/rxjs/rx.lite.min.js":43}],14:[function(require,module,exports){
+},{"../../nudoru/util/is.js":42,"../../vendor/lodash.min.js":43,"../../vendor/rxjs/rx.lite.min.js":44}],15:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1047,7 +1087,7 @@ exports['default'] = function (target, sourceArray) {
 
 module.exports = exports['default'];
 
-},{"../../vendor/lodash.min.js":42}],15:[function(require,module,exports){
+},{"../../vendor/lodash.min.js":43}],16:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1072,7 +1112,7 @@ exports['default'] = function (customizer) {
 
 module.exports = exports['default'];
 
-},{"./AssignArray.js":14}],16:[function(require,module,exports){
+},{"./AssignArray.js":15}],17:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1103,7 +1143,7 @@ exports['default'] = function (template, customizer) {
 
 module.exports = exports['default'];
 
-},{"../../vendor/lodash.min.js":42,"./BuildFromMixins.js":15}],17:[function(require,module,exports){
+},{"../../vendor/lodash.min.js":43,"./BuildFromMixins.js":16}],18:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -1151,7 +1191,7 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1290,7 +1330,7 @@ var r = Router();
 exports['default'] = r;
 module.exports = exports['default'];
 
-},{"../../nudoru/core/ObjectUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":43}],19:[function(require,module,exports){
+},{"../../nudoru/core/ObjectUtils.js":40,"../../vendor/rxjs/rx.lite.min.js":44}],20:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1348,7 +1388,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":41,"../../vendor/rxjs/rx.lite.min.js":43}],20:[function(require,module,exports){
+},{"../../nudoru/util/is.js":42,"../../vendor/rxjs/rx.lite.min.js":44}],21:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1532,7 +1572,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../vendor/lodash.min.js":42,"../utils/BuildFromMixins.js":15,"./MixinEventDelegator.js":22,"./ViewComponent.js":26}],21:[function(require,module,exports){
+},{"../../vendor/lodash.min.js":43,"../utils/BuildFromMixins.js":16,"./MixinEventDelegator.js":23,"./ViewComponent.js":27}],22:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1664,7 +1704,7 @@ var MixinDOMManipulation = MixinDOMManipulationModule();
 exports['default'] = MixinDOMManipulation;
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":41}],22:[function(require,module,exports){
+},{"../../nudoru/util/is.js":42}],23:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1841,7 +1881,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/browser/MouseToTouchEvents.js":30,"../../nudoru/util/is.js":41,"../utils/Rx.js":19}],23:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/MouseToTouchEvents.js":31,"../../nudoru/util/is.js":42,"../utils/Rx.js":20}],24:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1892,7 +1932,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../utils/Router.js":18}],24:[function(require,module,exports){
+},{"../utils/Router.js":19}],25:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1955,7 +1995,7 @@ var Renderer = RendererModule();
 exports['default'] = Renderer;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":28}],25:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":29}],26:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2149,7 +2189,7 @@ var Templating = TemplatingModule();
 exports['default'] = Templating;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":28,"../../vendor/lodash.min.js":42}],26:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43}],27:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2194,10 +2234,7 @@ var LS_NO_INIT = 0,
     LS_RENDERING = 2,
     LS_MOUNTED = 3,
     LS_UNMOUNTED = 4,
-    LS_DISPOSED = 99,
-    RESERVED_PROPS = {
-  key: true
-};
+    LS_DISPOSED = 99;
 
 var ViewComponent = function ViewComponent() {
 
@@ -2218,6 +2255,10 @@ var ViewComponent = function ViewComponent() {
       _mountPoint = undefined,
       _mountDelay = undefined;
 
+  function initialize(initProps) {
+    this.initializeComponent(initProps);
+  }
+
   /**
    * Initialization
    * @param initProps
@@ -2225,16 +2266,25 @@ var ViewComponent = function ViewComponent() {
   function initializeComponent(initProps) {
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
-    _id = _internalProps.id;
-    if (!_id) {
+    if (_internalProps.hasOwnProperty('id')) {
+      _id = _internalProps.id;
+    } else {
       throw new Error('Cannot initialize Component without an ID');
     }
 
-    _mountPoint = _internalProps.mountPoint;
+    if (_internalProps.hasOwnProperty('mountPoint')) {
+      _mountPoint = _internalProps.mountPoint;
+    } else {
+      throw new Error('Cannot initialize Component without a mount selector');
+    }
+
+    if (_internalProps.hasOwnProperty('parent')) {
+      _parent = _internalProps.parent;
+    }
+
     _children = this.defineChildren();
 
     this.setState(this.getDefaultState());
-    //this.setEvents(this.getDOMEvents());
 
     this.$initializeChildren();
 
@@ -2553,11 +2603,15 @@ var ViewComponent = function ViewComponent() {
   //TODO reduce code repetition
 
   function defineChildren() {
-    return undefined;
+    return null;
   }
 
   function getChild(id) {
-    return _children[id];
+    if (_children.hasOwnProperty(id)) {
+      return _children[id];
+    }
+    console.warn(this.getID(), 'Child not found', id);
+    return null;
   }
 
   function getChildIDs() {
@@ -2565,8 +2619,10 @@ var ViewComponent = function ViewComponent() {
   }
 
   function $initializeChildren() {
+    var _this = this;
+
     getChildIDs().forEach(function (region) {
-      _children[region].initialize();
+      _children[region].initialize({ parent: _this });
     });
   }
 
@@ -2642,6 +2698,7 @@ var ViewComponent = function ViewComponent() {
   return {
     state: _publicState,
     props: _publicProps,
+    initialize: initialize,
     initializeComponent: initializeComponent,
     setProps: setProps,
     getDefaultState: getDefaultState,
@@ -2684,7 +2741,7 @@ var ViewComponent = function ViewComponent() {
 exports['default'] = ViewComponent;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":28,"../../vendor/lodash.min.js":42,"../view/Renderer.js":24,"../view/Templating.js":25}],27:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43,"../view/Renderer.js":25,"../view/Templating.js":26}],28:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -2753,7 +2810,7 @@ var browserInfo = {
 exports["default"] = browserInfo;
 module.exports = exports["default"];
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2963,7 +3020,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3117,7 +3174,7 @@ var Lorem = function Lorem() {
 exports['default'] = Lorem();
 module.exports = exports['default'];
 
-},{"../core/ArrayUtils.js":37,"../core/NumberUtils.js":38,"../core/StringUtils.js":40}],30:[function(require,module,exports){
+},{"../core/ArrayUtils.js":38,"../core/NumberUtils.js":39,"../core/StringUtils.js":41}],31:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3144,7 +3201,7 @@ exports['default'] = function (eventStr) {
 
 module.exports = exports['default'];
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3261,7 +3318,7 @@ var MessageBoxCreator = MessageBoxCreatorModule();
 exports['default'] = MessageBoxCreator;
 module.exports = exports['default'];
 
-},{"./MessageBoxView":32}],32:[function(require,module,exports){
+},{"./MessageBoxView":33}],33:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3571,7 +3628,7 @@ var MessageBoxView = MessageBoxViewModule();
 exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":25,"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/browser/DOMUtils.js":28,"../../vendor/rxjs/rx.lite.min.js":43,"./ModalCoverView.js":34}],33:[function(require,module,exports){
+},{"../../nori/view/Templating.js":26,"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44,"./ModalCoverView.js":35}],34:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3688,7 +3745,7 @@ var MixinNudoruControls = function MixinNudoruControls() {
 exports['default'] = MixinNudoruControls;
 module.exports = exports['default'];
 
-},{"../../nudoru/components/MessageBoxCreator.js":31,"../../nudoru/components/MessageBoxView.js":32,"../../nudoru/components/ModalCoverView.js":34,"../../nudoru/components/ToastView.js":35,"../../nudoru/components/ToolTipView.js":36}],34:[function(require,module,exports){
+},{"../../nudoru/components/MessageBoxCreator.js":32,"../../nudoru/components/MessageBoxView.js":33,"../../nudoru/components/ModalCoverView.js":35,"../../nudoru/components/ToastView.js":36,"../../nudoru/components/ToolTipView.js":37}],35:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3843,7 +3900,7 @@ var ModalCoverView = ModalCoverViewModule();
 exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":27,"../../vendor/rxjs/rx.lite.min.js":43}],35:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":28,"../../vendor/rxjs/rx.lite.min.js":44}],36:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4013,7 +4070,7 @@ var ToastView = ToastViewModule();
 exports['default'] = ToastView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":25,"../../nudoru/browser/BrowserInfo.js":27,"../../nudoru/browser/DOMUtils.js":28,"../../vendor/rxjs/rx.lite.min.js":43}],36:[function(require,module,exports){
+},{"../../nori/view/Templating.js":26,"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44}],37:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4303,7 +4360,7 @@ var ToolTipView = ToolTipViewModule();
 exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":28,"../../vendor/rxjs/rx.lite.min.js":43}],37:[function(require,module,exports){
+},{"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44}],38:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4396,7 +4453,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./NumberUtils.js":38}],38:[function(require,module,exports){
+},{"./NumberUtils.js":39}],39:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -4428,7 +4485,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4642,7 +4699,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4696,7 +4753,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -4744,7 +4801,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -6218,7 +6275,7 @@ module.exports = exports["default"];
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function (process,global){
 /* Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.*/
 (function (a) {
@@ -8463,4 +8520,4 @@ module.exports = exports["default"];
 }).call(this);
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}]},{},[9]);
+},{"_process":1}]},{},[10]);

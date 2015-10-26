@@ -46,6 +46,10 @@ let ViewComponent = function () {
       _mountPoint,
       _mountDelay;
 
+  function initialize(initProps) {
+    this.initializeComponent(initProps);
+  }
+
   /**
    * Initialization
    * @param initProps
@@ -394,11 +398,15 @@ let ViewComponent = function () {
   //TODO reduce code repetition
 
   function defineChildren() {
-    return undefined;
+    return null;
   }
 
   function getChild(id) {
-    return _children[id];
+    if(_children.hasOwnProperty(id)) {
+      return _children[id];
+    }
+    console.warn(this.getID(),'Child not found',id);
+    return null;
   }
 
   function getChildIDs() {
@@ -483,6 +491,7 @@ let ViewComponent = function () {
   return {
     state: _publicState,
     props: _publicProps,
+    initialize,
     initializeComponent,
     setProps,
     getDefaultState,

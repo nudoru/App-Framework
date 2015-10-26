@@ -84,7 +84,7 @@ END Templates for Sub Views
 BEGIN Templates for Application Structure
 -->
 
-<script id="applicationscaffold" type="text/template">
+<script id="applicationscaffold-hero" type="text/template">
     <div id="app__container">
         <div id="app__contents">
             <header class="app__header">
@@ -102,6 +102,41 @@ BEGIN Templates for Application Structure
                 <div class="app__column">
                     <section id="contents"></section>
                 </div>
+            </section>
+        </div>
+    </div>
+</script>
+
+<script id="applicationscaffold" type="text/template">
+    <div id="app__container">
+        <div id="app__contents">
+            <header class="app__header">
+                <div class="app__padded-content">
+                    <div class="app__header-logo"><i class="fa fa-cogs"></i></div>
+                    <h1>Appliation</h1>
+                </div>
+            </header>
+            <section class="app__hero-small">
+                <div class="app__column">
+                    <h2>App starting template.</h2>
+                </div>
+            </section>
+            <section class="app__content">
+                <div class="grid__12-container">
+                    <div class="grid__row">
+                        <div class="grid__col-3 app__side-bar">
+                            <div class="app__padded-content">
+                                <p>Stuff</p>
+                            </div>
+                        </div>
+                        <div class="grid__col-9">
+                            <div class="app__padded-content">
+                                <section id="contents"></section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="app__column"></div>-->
             </section>
         </div>
     </div>
@@ -380,34 +415,39 @@ BEGIN Templates for DEBUG Sub Views
     </div>
 </script>
 
+<script id="debug-test-child" type="text/template">
+    <div>
+        <button>{{label}}</button>
+    </div>
+</script>
+
 <script id="debug-components" type="text/template">
     <div>
-        <div class="column-container">
-            <div class="one-third-left-column">
-                <h1 class="h1-alternate">Mock Components</h1>
-                <ul class="list-plain">
-                    <li>
-                        <button id="action-one">Action One</button>
-                    </li>
-                    <li>
-                        <button id="action-two">Action Two</button>
-                    </li>
-                    <li>
-                        <button id="action-three">Action Three</button>
-                    </li>
-                    <li>
-                        <button id="action-four">Action Four</button>
-                    </li>
-                    <li>
-                        <button id="action-five">Action Five</button>
-                    </li>
-                    <li>
-                        <button id="action-six">Action Six</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="two-thirds-right-column"></div>
-        </div>
+        <h3>Child testing</h3>
+            <div id='debug-child'></div>
+        <hr/>
+        <h3>Mock Components</h3>
+        <ul class="list-plain">
+            <li>
+                <button id="action-one">Action One</button>
+            </li>
+            <li>
+                <button id="action-two">Action Two</button>
+            </li>
+            <li>
+                <button id="action-three">Action Three</button>
+            </li>
+            <li>
+                <button id="action-four">Action Four</button>
+            </li>
+            <li>
+                <button id="action-five">Action Five</button>
+            </li>
+            <li>
+                <button id="action-six">Action Six</button>
+            </li>
+        </ul>
+
     </div>
 </script>
 

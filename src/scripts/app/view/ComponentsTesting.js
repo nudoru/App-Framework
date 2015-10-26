@@ -4,6 +4,7 @@ import AppStore from '../store/AppStore';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import MixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
+import ChildTest from './ChildTest.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -16,7 +17,8 @@ _actionTwoEl,
 _actionThreeEl,
 _actionFourEl,
 _actionFiveEl,
-_actionSixEl;
+_actionSixEl,
+_this;
 
 let Component = Nori.view().createComponent({
   /**
@@ -34,6 +36,17 @@ let Component = Nori.view().createComponent({
    */
     initialize(initProps) {
     _lIpsum.initialize();
+    _this = this;
+  },
+
+  defineChildren () {
+    return {
+      testChild: ChildTest({
+        id        : 'debug-test-child',
+        mountPoint: '#debug-child',
+        label     : 'Testing, yo!'
+      })
+    }
   },
 
   /**
@@ -140,11 +153,12 @@ let Component = Nori.view().createComponent({
     });
 
     _actionFourEl.addEventListener('click', function actFour(e) {
-      console.log('Four');
+      var test = _this.getChild('testChild');
+      test.setProps({label:'From the parent'});
     });
 
     _actionFiveEl.addEventListener('click', function actFour(e) {
-      AppStore.apply(NoriActions.changeStoreState({foo:'bar'}));
+      AppStore.apply(NoriActions.changeStoreState({foo: 'bar'}));
     });
 
     _actionSixEl.addEventListener('click', function actFour(e) {

@@ -33,6 +33,6 @@ export default function () {
     watchStore,
     mapActionType,
     unmapActionType
-  }
+  };
 
 }
