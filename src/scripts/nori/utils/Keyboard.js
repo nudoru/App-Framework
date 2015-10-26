@@ -19,7 +19,7 @@
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import _ from '../../vendor/lodash.min.js';
 
-let Keyboard = function () {
+export default function () {
 
   let _callbackMap = {},
       _subscription,
@@ -232,13 +232,11 @@ let Keyboard = function () {
   }
 
   return {
-    initialize : initialize,
-    getKeyCodes: getKeyCodes,
-    mapKey     : mapKey,
-    unmapKey   : unmapKey,
-    dispose    : dispose
+    initialize,
+    getKeyCodes,
+    mapKey,
+    unmapKey,
+    dispose
   };
 
-};
-
-export default Keyboard;
+}

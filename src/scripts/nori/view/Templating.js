@@ -165,13 +165,13 @@ let TemplatingModule = function () {
   //}
 
   return {
-    addTemplate           : addTemplate,
-    getSource             : getSource,
-    getAllTemplateIDs     : getAllTemplateIDs,
-    getTemplate           : getTemplate,
-    getTemplateFromHTML   : getTemplateFromHTML,
-    asHTML                : asHTML,
-    asElement             : asElement
+    addTemplate,
+    getSource,
+    getAllTemplateIDs,
+    getTemplate,
+    getTemplateFromHTML,
+    asHTML,
+    asElement
   };
 
 };

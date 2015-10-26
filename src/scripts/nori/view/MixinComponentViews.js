@@ -9,7 +9,7 @@ import ViewComponentFactory from './ViewComponent.js';
 import EventDelegatorFactory from './MixinEventDelegator.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
 
-let MixinComponentViews = function () {
+export default function () {
 
   let _viewMap      = Object.create(null),
       _viewIDMap    = Object.create(null),
@@ -151,14 +151,12 @@ let MixinComponentViews = function () {
   //----------------------------------------------------------------------------
 
   return {
-    registerView         : registerView,
-    createComponent      : createComponent,
-    showView             : showView,
-    getViewMap           : getViewMap,
-    showViewForCondition : showViewForCondition,
-    registerViewCondition: registerViewCondition
+    registerView,
+    createComponent,
+    showView,
+    getViewMap,
+    showViewForCondition,
+    registerViewCondition
   };
 
-};
-
-export default MixinComponentViews;
+}

@@ -105,14 +105,14 @@ let MixinDOMManipulationModule = function () {
   }
 
   return {
-    toTop      : toTop,
-    showEl     : showEl,
-    hideEl     : hideEl,
-    tweenSet   : tweenSet,
-    tweenTo    : tweenTo,
-    tweenFrom  : tweenFrom,
-    tweenFromTo: tweenFromTo,
-    killTweens : killTweens
+    toTop,
+    showEl,
+    hideEl,
+    tweenSet,
+    tweenTo,
+    tweenFrom,
+    tweenFromTo,
+    killTweens
   };
 
 };

@@ -6,7 +6,7 @@ import _router from '../utils/Router.js';
  * Mixin view that allows for component views to be display on routing changes
  */
 
-let MixinRouteViews = function () {
+export default function () {
 
   /**
    * Set up listeners
@@ -33,10 +33,8 @@ let MixinRouteViews = function () {
   }
 
   return {
-    initializeRouteViews       : initializeRouteViews,
-    showViewForChangedCondition: showViewForChangedCondition
+    initializeRouteViews,
+    showViewForChangedCondition
   };
 
-};
-
-export default MixinRouteViews;
+}

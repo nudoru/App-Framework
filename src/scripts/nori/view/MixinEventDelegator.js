@@ -20,7 +20,7 @@ import BrowserInfo from '../../nudoru/browser/BrowserInfo.js';
 import MouseToTouchEventStr from '../../nudoru/browser/MouseToTouchEvents.js';
 import Is from '../../nudoru/util/is.js';
 
-let MixinEventDelegator = function () {
+export default function () {
 
   let _eventSubscribers;
 
@@ -135,10 +135,8 @@ let MixinEventDelegator = function () {
   }
 
   return {
-    undelegateEvents: undelegateEvents,
-    delegateEvents  : delegateEvents
+    undelegateEvents,
+    delegateEvents
   };
 
-};
-
-export default MixinEventDelegator;
+}

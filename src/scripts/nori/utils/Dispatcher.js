@@ -223,12 +223,12 @@ let DispatcherModule = function () {
   }
 
   return {
-    subscribe         : subscribe,
-    unsubscribe       : unsubscribe,
-    publish           : publish,
-    getLog            : getLog,
-    registerReceiver  : registerReceiver,
-    unregisterReceiver: unregisterReceiver
+    subscribe,
+    unsubscribe,
+    publish,
+    getLog,
+    registerReceiver,
+    unregisterReceiver
   };
 
 };

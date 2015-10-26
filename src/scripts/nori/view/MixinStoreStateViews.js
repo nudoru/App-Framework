@@ -4,7 +4,7 @@
  * Mixin view that allows for component views to be display on store state changes
  */
 
-let MixinStoreStateViews = function () {
+export default function () {
 
   let _observedStore,
       _currentStoreState;
@@ -32,10 +32,8 @@ let MixinStoreStateViews = function () {
   }
 
   return {
-    initializeStateViews   : initializeStateViews,
-    showViewForChangedState: showViewForChangedCondition
+    initializeStateViews,
+    showViewForChangedState
   };
 
-};
-
-export default MixinStoreStateViews;
+}

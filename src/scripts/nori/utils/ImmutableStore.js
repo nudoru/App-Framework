@@ -9,7 +9,7 @@
 import Immutable from '../../vendor/immutable.min.js';
 import _ from '../../vendor/lodash.min.js';
 
-let ImmutableMap = function () {
+export default function () {
   let _map = Immutable.Map();
 
   /**
@@ -54,13 +54,11 @@ let ImmutableMap = function () {
   }
 
   return {
-    getState: getState,
-    setState: setState,
-    getMap  : getMap,
-    toJSON  : toJSON,
-    fromJSON: fromJSON
+    getState,
+    setState,
+    getMap,
+    toJSON,
+    fromJSON
   };
 
-};
-
-export default ImmutableMap;
+}

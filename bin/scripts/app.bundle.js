@@ -1123,13 +1123,6 @@ var Router = function Router() {
       _hashChangeObservable = undefined;
 
   /**
-   * Set event handlers
-   */
-  function initialize() {
-    _hashChangeObservable = _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(window, 'hashchange').subscribe(notify);
-  }
-
-  /**
    * subscribe a handler to the url change events
    * @param handler
    * @returns {*}
@@ -1226,8 +1219,9 @@ var Router = function Router() {
     window.location.hash = path;
   }
 
+  _hashChangeObservable = _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(window, 'hashchange').subscribe(notify);
+
   return {
-    initialize: initialize,
     subscribe: subscribe,
     notify: notify,
     getCurrentRoute: getCurrentRoute,
@@ -1236,7 +1230,6 @@ var Router = function Router() {
 };
 
 var r = Router();
-r.initialize();
 
 exports['default'] = r;
 module.exports = exports['default'];
@@ -1328,7 +1321,7 @@ var _utilsBuildFromMixinsJs = require('../utils/BuildFromMixins.js');
 
 var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
 
-var MixinComponentViews = function MixinComponentViews() {
+exports['default'] = function () {
 
   var _viewMap = Object.create(null),
       _viewIDMap = Object.create(null),
@@ -1481,7 +1474,6 @@ var MixinComponentViews = function MixinComponentViews() {
   };
 };
 
-exports['default'] = MixinComponentViews;
 module.exports = exports['default'];
 
 },{"../../vendor/lodash.min.js":41,"../utils/BuildFromMixins.js":15,"./MixinEventDelegator.js":21,"./ViewComponent.js":25}],20:[function(require,module,exports){
@@ -1656,7 +1648,7 @@ var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
 var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 
-var MixinEventDelegator = function MixinEventDelegator() {
+exports['default'] = function () {
 
   var _eventSubscribers = undefined;
 
@@ -1791,7 +1783,6 @@ var MixinEventDelegator = function MixinEventDelegator() {
   };
 };
 
-exports['default'] = MixinEventDelegator;
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/BrowserInfo.js":26,"../../nudoru/browser/MouseToTouchEvents.js":29,"../../nudoru/util/is.js":40,"../utils/Rx.js":18}],22:[function(require,module,exports){
@@ -1811,7 +1802,7 @@ var _utilsRouterJs2 = _interopRequireDefault(_utilsRouterJs);
  * Mixin view that allows for component views to be display on routing changes
  */
 
-var MixinRouteViews = function MixinRouteViews() {
+exports['default'] = function () {
 
   /**
    * Set up listeners
@@ -1843,7 +1834,6 @@ var MixinRouteViews = function MixinRouteViews() {
   };
 };
 
-exports['default'] = MixinRouteViews;
 module.exports = exports['default'];
 
 },{"../utils/Router.js":17}],23:[function(require,module,exports){

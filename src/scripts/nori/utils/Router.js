@@ -14,13 +14,6 @@ let Router = function () {
       _hashChangeObservable;
 
   /**
-   * Set event handlers
-   */
-  function initialize() {
-    _hashChangeObservable = Rxjs.Observable.fromEvent(window, 'hashchange').subscribe(notify);
-  }
-
-  /**
    * subscribe a handler to the url change events
    * @param handler
    * @returns {*}
@@ -117,17 +110,17 @@ let Router = function () {
     window.location.hash = path;
   }
 
+  _hashChangeObservable = Rxjs.Observable.fromEvent(window, 'hashchange').subscribe(notify);
+
   return {
-    initialize     : initialize,
-    subscribe      : subscribe,
-    notify         : notify,
-    getCurrentRoute: getCurrentRoute,
-    set            : set
+    subscribe,
+    notify,
+    getCurrentRoute,
+    set
   };
 
 };
 
 let r = Router();
-r.initialize();
 
 export default r;

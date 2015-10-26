@@ -2,7 +2,7 @@
 
 import _ from '../../vendor/lodash.min.js';
 
-let SimpleStore = function () {
+export default function () {
   let _internalState = Object.create(null);
 
   /**
@@ -35,12 +35,10 @@ let SimpleStore = function () {
   }
 
   return {
-    getState: getState,
-    setState: setState,
-    toJSON  : toJSON,
-    fromJSON: fromJSON
+    getState,
+    setState,
+    toJSON,
+    fromJSON
   };
 
-};
-
-export default SimpleStore;
+}

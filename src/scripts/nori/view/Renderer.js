@@ -38,7 +38,7 @@ let RendererModule = function () {
   }
 
   return {
-    render: render
+    render
   };
 
 };
