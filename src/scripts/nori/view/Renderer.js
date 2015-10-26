@@ -7,7 +7,7 @@
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
 let RendererModule = function () {
-  function render({target, html, callback}) {
+  function render({key, target, html, callback}) {
     let domEl,
         mountPoint  = document.querySelector(target),
         currentHTML;

@@ -17,6 +17,7 @@
 import _ from '../../vendor/lodash.min.js';
 import Template from '../view/Templating.js';
 import Renderer from '../view/Renderer.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
 // Lifecycle state constants
 const LS_NO_INIT   = 0,
@@ -285,6 +286,7 @@ let ViewComponent = function () {
     _lifecycleState = LS_MOUNTED;
 
     _DOMElement = (Renderer.render({
+      key   : this.key,
       target: _mountPoint,
       html  : _html
     }));
@@ -355,11 +357,7 @@ let ViewComponent = function () {
       this.undelegateEvents(this.getDOMEvents());
     }
 
-    // Just clear the contents
-    Renderer.render({
-      target: _mountPoint,
-      html  : ''
-    });
+    DOMUtils.removeAllElements(document.querySelector(_mountPoint));
 
     _html       = '';
     _DOMElement = null;
@@ -473,8 +471,8 @@ let ViewComponent = function () {
   //----------------------------------------------------------------------------
 
   return {
-    state                         : _publicState,
-    props                         : _publicProps,
+    state: _publicState,
+    props: _publicProps,
     initializeComponent,
     setProps,
     getDefaultState,
