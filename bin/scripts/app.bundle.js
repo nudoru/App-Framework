@@ -2194,7 +2194,10 @@ var LS_NO_INIT = 0,
     LS_RENDERING = 2,
     LS_MOUNTED = 3,
     LS_UNMOUNTED = 4,
-    LS_DISPOSED = 99;
+    LS_DISPOSED = 99,
+    RESERVED_PROPS = {
+  key: true
+};
 
 var ViewComponent = function ViewComponent() {
 
@@ -2207,6 +2210,7 @@ var ViewComponent = function ViewComponent() {
       _lifecycleState = LS_NO_INIT,
       _isMounted = false,
       _children = {},
+      _parent = undefined,
       _id = undefined,
       _templateObjCache = undefined,
       _html = undefined,

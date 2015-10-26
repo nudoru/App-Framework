@@ -38,6 +38,7 @@ let ViewComponent = function () {
       _lifecycleState = LS_NO_INIT,
       _isMounted      = false,
       _children       = {},
+      _parent,
       _id,
       _templateObjCache,
       _html,
@@ -52,16 +53,25 @@ let ViewComponent = function () {
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    _id = _internalProps.id;
-    if (!_id) {
+    if (_internalProps.hasOwnProperty('id')) {
+      _id = _internalProps.id;
+    } else {
       throw new Error('Cannot initialize Component without an ID');
     }
 
-    _mountPoint = _internalProps.mountPoint;
+    if (_internalProps.hasOwnProperty('mountPoint')) {
+      _mountPoint = _internalProps.mountPoint;
+    } else {
+      throw new Error('Cannot initialize Component without a mount selector');
+    }
+
+    if (_internalProps.hasOwnProperty('parent')) {
+      _parent = _internalProps.parent;
+    }
+
     _children   = this.defineChildren();
 
     this.setState(this.getDefaultState());
-    //this.setEvents(this.getDOMEvents());
 
     this.$initializeChildren();
 
@@ -397,7 +407,7 @@ let ViewComponent = function () {
 
   function $initializeChildren() {
     getChildIDs().forEach(region => {
-      _children[region].initialize();
+      _children[region].initialize({parent: this});
     });
   }
 
