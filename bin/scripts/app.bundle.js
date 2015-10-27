@@ -337,10 +337,10 @@ var AppViewModule = Nori.createView({
   },
 
   configureViews: function configureViews() {
-    this.registerViewCondition('/', 'default', (0, _TemplateViewComponentJs2['default'])(), '#contents');
-    this.registerViewCondition('/styles', 'debug-styletest', (0, _TemplateViewComponentJs2['default'])(), '#contents');
-    this.registerViewCondition('/controls', 'debug-controls', (0, _TemplateViewComponentJs2['default'])(), '#contents');
-    this.registerViewCondition('/comps', 'debug-components', (0, _ComponentsTestingJs2['default'])(), '#contents');
+    this.route('/', 'default', (0, _TemplateViewComponentJs2['default'])(), '#contents');
+    this.route('/styles', 'debug-styletest', (0, _TemplateViewComponentJs2['default'])(), '#contents');
+    this.route('/controls', 'debug-controls', (0, _TemplateViewComponentJs2['default'])(), '#contents');
+    this.route('/comps', 'debug-components', (0, _ComponentsTestingJs2['default'])(), '#contents');
   },
 
   /**
@@ -1529,7 +1529,7 @@ exports['default'] = function () {
    * @param templateID
    * @param component
    */
-  function registerViewCondition(condition, templateID, component, selector) {
+  function route(condition, templateID, component, selector) {
     _viewIDMap[condition] = templateID;
     registerView(templateID, component, selector);
   }
@@ -1571,7 +1571,7 @@ exports['default'] = function () {
     showView: showView,
     getViewMap: getViewMap,
     showViewForCondition: showViewForCondition,
-    registerViewCondition: registerViewCondition
+    route: route
   };
 };
 

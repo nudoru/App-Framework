@@ -114,7 +114,7 @@ export default function () {
    * @param templateID
    * @param component
    */
-  function registerViewCondition(condition, templateID, component, selector) {
+  function route(condition, templateID, component, selector) {
     _viewIDMap[condition] = templateID;
     registerView(templateID, component, selector);
   }
@@ -156,7 +156,7 @@ export default function () {
     showView,
     getViewMap,
     showViewForCondition,
-    registerViewCondition
+    route
   };
 
 }

@@ -27,10 +27,10 @@ let AppViewModule = Nori.createView({
   },
 
   configureViews() {
-    this.registerViewCondition('/', 'default', TemplateViewFactory(), '#contents');
-    this.registerViewCondition('/styles', 'debug-styletest', TemplateViewFactory(), '#contents');
-    this.registerViewCondition('/controls', 'debug-controls', TemplateViewFactory(), '#contents');
-    this.registerViewCondition('/comps', 'debug-components', ComponentTesting(), '#contents');
+    this.route('/', 'default', TemplateViewFactory(), '#contents');
+    this.route('/styles', 'debug-styletest', TemplateViewFactory(), '#contents');
+    this.route('/controls', 'debug-controls', TemplateViewFactory(), '#contents');
+    this.route('/comps', 'debug-components', ComponentTesting(), '#contents');
   },
 
   /**
