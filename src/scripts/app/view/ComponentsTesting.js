@@ -20,7 +20,7 @@ _actionFiveEl,
 _actionSixEl,
 _this;
 
-let Component = Nori.view().createComponent({
+export default Nori.view().createComponent({
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -53,8 +53,6 @@ let Component = Nori.view().createComponent({
    * Component HTML was attached to the DOM
    */
     componentDidMount() {
-    console.log(this.getID() + ', subview did mount');
-
     _actionOneEl   = document.getElementById('action-one');
     _actionTwoEl   = document.getElementById('action-two');
     _actionThreeEl = document.getElementById('action-three');
@@ -170,5 +168,3 @@ let Component = Nori.view().createComponent({
   }
 
 });
-
-export default Component;

@@ -383,7 +383,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 var counter = 0;
 
-var Component = Nori.view().createComponent({
+exports['default'] = Nori.view().createComponent({
 
   getDOMEvents: function getDOMEvents() {
     var _this = this;
@@ -393,11 +393,13 @@ var Component = Nori.view().createComponent({
         return _this.setProps({ label: 'Clicked ' + ++counter + ' times' });
       }
     };
+  },
+
+  template: function template(props, state) {
+    return this.from('\n      <div>\n        <button>{{label}}</button>\n      </div>\n    ');
   }
 
 });
-
-exports['default'] = Component;
 module.exports = exports['default'];
 
 },{}],8:[function(require,module,exports){
@@ -449,7 +451,7 @@ var _lIpsum = require('../../nudoru/browser/Lorem.js'),
     _actionSixEl = undefined,
     _this = undefined;
 
-var Component = Nori.view().createComponent({
+exports['default'] = Nori.view().createComponent({
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -480,8 +482,6 @@ var Component = Nori.view().createComponent({
    * Component HTML was attached to the DOM
    */
   componentDidMount: function componentDidMount() {
-    console.log(this.getID() + ', subview did mount');
-
     _actionOneEl = document.getElementById('action-one');
     _actionTwoEl = document.getElementById('action-two');
     _actionThreeEl = document.getElementById('action-three');
@@ -591,8 +591,6 @@ var Component = Nori.view().createComponent({
   componentWillUnmount: function componentWillUnmount() {}
 
 });
-
-exports['default'] = Component;
 module.exports = exports['default'];
 
 },{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
@@ -630,7 +628,7 @@ var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMM
  * Module for a dynamic application view for a route or a persistent view
  */
 
-var Component = Nori.view().createComponent({
+exports['default'] = Nori.view().createComponent({
 
   mixins: [_noriViewMixinDOMManipulationJs2['default']],
 
@@ -669,20 +667,27 @@ var Component = Nori.view().createComponent({
   //componentDidUpdate(lastProps, lastState) {
   //},
 
+  // Return a _.template object
+  //template(props, state) {
+  //  return this.from(`<div></div>`);
+  //},
+
+  // Return HTML
+  //render(props, state) {
+  //  let combined = _.merge({}, props, state);
+  //},
+
   componentDidMount: function componentDidMount() {
     var el = this.getDOMElement();
   }
 
 });
-
+module.exports = exports['default'];
 //componentWillUnmount() {
 //},
 
 //componentWillDispose() {
 //},
-
-exports['default'] = Component;
-module.exports = exports['default'];
 
 },{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
 /**
@@ -2236,7 +2241,7 @@ var LS_NO_INIT = 0,
     LS_UNMOUNTED = 4,
     LS_DISPOSED = 99;
 
-var ViewComponent = function ViewComponent() {
+exports['default'] = function () {
 
   var _internalState = {},
       _internalProps = {},
@@ -2255,6 +2260,9 @@ var ViewComponent = function ViewComponent() {
       _mountPoint = undefined,
       _mountDelay = undefined;
 
+  /**
+   * Subclasses can override.
+   */
   function initialize(initProps) {
     this.initializeComponent(initProps);
   }
@@ -2691,6 +2699,10 @@ var ViewComponent = function ViewComponent() {
     observable.subscribe(func);
   }
 
+  function from(html) {
+    return _viewTemplatingJs2['default'].getTemplateFromHTML(html);
+  }
+
   //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
@@ -2713,6 +2725,7 @@ var ViewComponent = function ViewComponent() {
     getDOMElement: getDOMElement,
     isMounted: isMounted,
     bind: bind,
+    from: from,
     componentWillReceiveProps: componentWillReceiveProps,
     componentWillUpdate: componentWillUpdate,
     componentDidUpdate: componentDidUpdate,
@@ -2738,7 +2751,7 @@ var ViewComponent = function ViewComponent() {
   };
 };
 
-exports['default'] = ViewComponent;
+;
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43,"../view/Renderer.js":25,"../view/Templating.js":26}],28:[function(require,module,exports){

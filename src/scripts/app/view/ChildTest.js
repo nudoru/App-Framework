@@ -1,14 +1,19 @@
 let counter = 0;
 
-let Component = Nori.view().createComponent({
+export default Nori.view().createComponent({
 
   getDOMEvents() {
     return {
-      'click button': () => this.setProps({label:'Clicked ' + (++counter )+ ' times'})
+      'click button': () => this.setProps({label:'Clicked ' + (++counter) + ' times'})
     };
   },
 
+  template(props, state) {
+    return this.from(`
+      <div>
+        <button>{{label}}</button>
+      </div>
+    `);
+  }
 
 });
-
-export default Component;

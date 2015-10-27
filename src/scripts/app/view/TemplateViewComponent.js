@@ -9,7 +9,7 @@ import MixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
  * Module for a dynamic application view for a route or a persistent view
  */
 
-let Component = Nori.view().createComponent({
+export default Nori.view().createComponent({
 
   mixins: [
     MixinDOMManipulation
@@ -50,6 +50,16 @@ let Component = Nori.view().createComponent({
   //componentDidUpdate(lastProps, lastState) {
   //},
 
+  // Return a _.template object
+  //template(props, state) {
+  //  return this.from(`<div></div>`);
+  //},
+
+  // Return HTML
+  //render(props, state) {
+  //  let combined = _.merge({}, props, state);
+  //},
+
   componentDidMount() {
     let el = this.getDOMElement();
   },
@@ -61,5 +71,3 @@ let Component = Nori.view().createComponent({
   //},
 
 });
-
-export default Component;

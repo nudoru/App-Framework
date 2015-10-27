@@ -27,7 +27,7 @@ const LS_NO_INIT   = 0,
       LS_UNMOUNTED = 4,
       LS_DISPOSED  = 99;
 
-let ViewComponent = function () {
+export default function () {
 
   let _internalState  = {},
       _internalProps  = {},
@@ -46,6 +46,9 @@ let ViewComponent = function () {
       _mountPoint,
       _mountDelay;
 
+  /**
+   * Subclasses can override.
+   */
   function initialize(initProps) {
     this.initializeComponent(initProps);
   }
@@ -484,6 +487,10 @@ let ViewComponent = function () {
     observable.subscribe(func);
   }
 
+  function from(html) {
+    return Template.getTemplateFromHTML(html);
+  }
+
   //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
@@ -506,6 +513,7 @@ let ViewComponent = function () {
     getDOMElement,
     isMounted,
     bind,
+    from,
     componentWillReceiveProps,
     componentWillUpdate,
     componentDidUpdate,
@@ -531,5 +539,3 @@ let ViewComponent = function () {
   };
 
 };
-
-export default ViewComponent;
