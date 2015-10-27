@@ -27,10 +27,30 @@ let AppViewModule = Nori.createView({
   },
 
   configureViews() {
-    this.route('/', 'default', TemplateViewFactory(), '#contents');
-    this.route('/styles', 'debug-styletest', TemplateViewFactory(), '#contents');
-    this.route('/controls', 'debug-controls', TemplateViewFactory(), '#contents');
-    this.route('/comps', 'debug-components', ComponentTesting(), '#contents');
+    let vcDefault    = TemplateViewFactory('default', {template: 'default'}),
+        vcStyles     = TemplateViewFactory('styles', {template: 'debug-styletest'}),
+        vcControls   = TemplateViewFactory('controls', {template: 'debug-controls'}),
+        vcComponents = ComponentTesting('components', {template: 'debug-components'});
+
+    //let vcBase = TemplateViewFactory().$clone(),
+    //    vcDefault    = vcBase('default', {template: 'default'}),
+    //    vcStyles     = vcBase('styles', {template: 'debug-styletest'}),
+    //    vcControls   = vcBase('controls', {template: 'debug-controls'}),
+    //    vcComponents = ComponentTesting('components', {template: 'debug-components'});
+    //
+    //console.log(vcBase);
+
+    // map id's with instances and mount location selector
+    this.set('default', vcDefault, '#contents');
+    this.set('styles', vcStyles, '#contents');
+    this.set('controls', vcControls, '#contents');
+    this.set('components', vcComponents, '#contents');
+
+    // condition, component ID
+    this.route('/', 'default');
+    this.route('/styles', 'styles');
+    this.route('/controls', 'controls');
+    this.route('/comps', 'components');
   },
 
   /**

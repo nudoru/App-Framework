@@ -41,12 +41,11 @@ export default Nori.view().createComponent({
 
   defineChildren () {
     return {
-      testChild: ChildTest({
-        id        : 'debug-test-child',
-        mountPoint: '#debug-child',
-        label     : 'Testing, yo!'
+      testChild: ChildTest('testChild', {
+        mount: '#debug-child',
+        label: 'Testing, yo!'
       })
-    }
+    };
   },
 
   /**
@@ -152,7 +151,7 @@ export default Nori.view().createComponent({
 
     _actionFourEl.addEventListener('click', function actFour(e) {
       var test = _this.getChild('testChild');
-      test.setProps({label:'From the parent'});
+      test.setProps({label: 'From the parent'});
     });
 
     _actionFiveEl.addEventListener('click', function actFour(e) {

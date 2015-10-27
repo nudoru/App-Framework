@@ -60,14 +60,15 @@ export default function () {
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    if (_internalProps.hasOwnProperty('id')) {
-      _id = _internalProps.id;
-    } else {
+    _id = this.id || _internalProps.id;
+
+    if (!_id) {
+      // TODO _id = 'vc_'+this.key;
       throw new Error('Cannot initialize Component without an ID');
     }
 
-    if (_internalProps.hasOwnProperty('mountPoint')) {
-      _mountPoint = _internalProps.mountPoint;
+    if (_internalProps.hasOwnProperty('mount')) {
+      _mountPoint = _internalProps.mount;
     } else {
       throw new Error('Cannot initialize Component without a mount selector');
     }
@@ -92,7 +93,7 @@ export default function () {
    * @returns {undefined}
    */
   function getDOMEvents() {
-    return undefined;
+    return null;
   }
 
   //----------------------------------------------------------------------------

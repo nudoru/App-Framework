@@ -337,10 +337,30 @@ var AppViewModule = Nori.createView({
   },
 
   configureViews: function configureViews() {
-    this.route('/', 'default', (0, _TemplateViewComponentJs2['default'])(), '#contents');
-    this.route('/styles', 'debug-styletest', (0, _TemplateViewComponentJs2['default'])(), '#contents');
-    this.route('/controls', 'debug-controls', (0, _TemplateViewComponentJs2['default'])(), '#contents');
-    this.route('/comps', 'debug-components', (0, _ComponentsTestingJs2['default'])(), '#contents');
+    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { template: 'default' }),
+        vcStyles = (0, _TemplateViewComponentJs2['default'])('styles', { template: 'debug-styletest' }),
+        vcControls = (0, _TemplateViewComponentJs2['default'])('controls', { template: 'debug-controls' }),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { template: 'debug-components' });
+
+    //let vcBase = TemplateViewFactory().$clone(),
+    //    vcDefault    = vcBase('default', {template: 'default'}),
+    //    vcStyles     = vcBase('styles', {template: 'debug-styletest'}),
+    //    vcControls   = vcBase('controls', {template: 'debug-controls'}),
+    //    vcComponents = ComponentTesting('components', {template: 'debug-components'});
+    //
+    //console.log(vcBase);
+
+    // map id's with instances and mount location selector
+    this.set('default', vcDefault, '#contents');
+    this.set('styles', vcStyles, '#contents');
+    this.set('controls', vcControls, '#contents');
+    this.set('components', vcComponents, '#contents');
+
+    // condition, component ID
+    this.route('/', 'default');
+    this.route('/styles', 'styles');
+    this.route('/controls', 'controls');
+    this.route('/comps', 'components');
   },
 
   /**
@@ -470,9 +490,8 @@ exports['default'] = Nori.view().createComponent({
 
   defineChildren: function defineChildren() {
     return {
-      testChild: (0, _ChildTestJs2['default'])({
-        id: 'debug-test-child',
-        mountPoint: '#debug-child',
+      testChild: (0, _ChildTestJs2['default'])('testChild', {
+        mount: '#debug-child',
         label: 'Testing, yo!'
       })
     };
@@ -1424,10 +1443,93 @@ var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
 
 exports['default'] = function () {
 
-  var _viewMap = Object.create(null),
-      _viewIDMap = Object.create(null),
+  var _viewMap = {},
+      _routeViewMap = {},
       _viewKeyIndex = 0,
       _currentViewID = undefined;
+
+  /**
+   * Factory to create component view modules by concating multiple source objects
+   * @param customizer Custom module source
+   * @returns {*}
+   */
+  function createComponent(source) {
+    var customizer = _vendorLodashMinJs2['default'].assign({}, source);
+
+    customizer.__initCount = customizer.__initCount || 0;
+
+    return function (id, initProps) {
+      var template = undefined,
+          finalComponent = undefined,
+          previousInitialize = undefined,
+          previousGetDefaultProps = undefined;
+
+      if (customizer.__initCount++ >= 1) {
+        console.warn('View component factory called more than once for', id);
+      }
+
+      customizer.mixins = customizer.mixins || [];
+      customizer.mixins.push((0, _ViewComponentJs2['default'])());
+      customizer.mixins.push((0, _MixinEventDelegatorJs2['default'])());
+
+      template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
+      template.key = _viewKeyIndex++;
+      template.id = id || 'vcomponent_' + _viewKeyIndex;
+
+      // Compose a new initialize function by inserting call to component super module
+      previousInitialize = template.initialize;
+      previousGetDefaultProps = template.getDefaultProps;
+
+      template.initialize = function initialize(props) {
+        template.initializeComponent(props);
+        previousInitialize.call(template, props);
+      };
+
+      if (initProps) {
+        // Overwrite the function in the component
+        template.getDefaultProps = function () {
+          return _vendorLodashMinJs2['default'].merge({}, previousGetDefaultProps.call(template), initProps);
+        };
+      }
+
+      //template.$clone = function() {
+      //  return function(cid, cprops) {
+      //    let cloned = _.assign({}, template);
+      //    cloned.id = cid;
+      //    if (cprops) {
+      //      // Overwrite the function in the component
+      //      cloned.getDefaultProps = function () {
+      //        return _.merge({}, previousGetDefaultProps.call(template), cprops);
+      //      };
+      //    }
+      //    return cloned;
+      //  };
+      //};
+
+      return _vendorLodashMinJs2['default'].assign({}, template);
+    };
+  }
+
+  function set(id, controller, mountSelector) {
+    _viewMap[id] = {
+      controller: controller,
+      mount: mountSelector
+    };
+  }
+
+  //----------------------------------------------------------------------------
+  //  Conditional view such as routes or states
+  //  Must be augmented with mixins for state and route change monitoring
+  //----------------------------------------------------------------------------
+
+  /**
+   * Map a route to a module view controller
+   * @param componentID
+   * @param component
+   */
+  function route(condition, componentID) {
+    _routeViewMap[condition] = componentID;
+  }
 
   /**
    * Map a component to a mounting point. If a string is passed,
@@ -1436,51 +1538,27 @@ exports['default'] = function () {
    *
    * @param componentID
    * @param componentIDorObj
-   * @param mountPoint
+   * @param mountSelector
    */
-  function registerView(componentID, componentObj, mountPoint) {
-    _viewMap[componentID] = {
-      controller: componentObj,
-      mountPoint: mountPoint
-    };
-  }
+  //function registerView(componentID, mountSelector) {
+  //
+  //}
 
   /**
-   * Factory to create component view modules by concating multiple source objects
-   * @param customizer Custom module source
-   * @returns {*}
+   * Show a view (in response to a route change)
+   * @param condition
    */
-  function createComponent(customizer) {
-    return function (initProps) {
-      var finalComponent = undefined,
-          previousInitialize = undefined,
-          previousGetDefaultProps = undefined;
+  function showViewForCondition(condition) {
+    var componentID = _routeViewMap[condition];
+    if (!componentID) {
+      console.warn("No view mapped for route: " + condition);
+      return;
+    }
 
-      customizer.mixins = customizer.mixins || [];
-      customizer.mixins.push((0, _ViewComponentJs2['default'])());
-      customizer.mixins.push((0, _MixinEventDelegatorJs2['default'])());
+    $removeCurrentView();
 
-      finalComponent = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-      finalComponent.key = _viewKeyIndex++;
-
-      // Compose a new initialize function by inserting call to component super module
-      previousInitialize = finalComponent.initialize;
-      previousGetDefaultProps = finalComponent.getDefaultProps;
-
-      finalComponent.initialize = function initialize(props) {
-        finalComponent.initializeComponent(props);
-        previousInitialize.call(finalComponent, props);
-      };
-
-      if (initProps) {
-        // Overwrite the function in the component
-        finalComponent.getDefaultProps = function () {
-          return _vendorLodashMinJs2['default'].merge({}, previousGetDefaultProps.call(finalComponent), initProps);
-        };
-      }
-
-      return _vendorLodashMinJs2['default'].assign({}, finalComponent);
-    };
+    _currentViewID = componentID;
+    showView(_currentViewID);
   }
 
   /**
@@ -1497,11 +1575,10 @@ exports['default'] = function () {
 
     if (!view.controller.isInitialized()) {
       // Not initialized, set props
-      mountPoint = mountPoint || view.mountPoint;
+      mountPoint = mountPoint || view.mount;
       view.controller.initialize({
         id: componentID,
-        template: view.htmlTemplate,
-        mountPoint: mountPoint
+        mount: mountPoint
       });
     }
 
@@ -1512,51 +1589,11 @@ exports['default'] = function () {
   }
 
   /**
-   * Returns a copy of the map object for component views
-   * @returns {null}
-   */
-  function getViewMap() {
-    return _vendorLodashMinJs2['default'].assign({}, _viewMap);
-  }
-
-  //----------------------------------------------------------------------------
-  //  Conditional view such as routes or states
-  //  Must be augmented with mixins for state and route change monitoring
-  //----------------------------------------------------------------------------
-
-  /**
-   * Map a route to a module view controller
-   * @param templateID
-   * @param component
-   */
-  function route(condition, templateID, component, selector) {
-    _viewIDMap[condition] = templateID;
-    registerView(templateID, component, selector);
-  }
-
-  /**
-   * Show a view (in response to a route change)
-   * @param condition
-   */
-  function showViewForCondition(condition) {
-    var componentID = _viewIDMap[condition];
-    if (!componentID) {
-      console.warn("No view mapped for route: " + condition);
-      return;
-    }
-
-    $removeCurrentView();
-
-    _currentViewID = componentID;
-    showView(_currentViewID);
-  }
-
-  /**
    * Remove the currently displayed view
    */
   function $removeCurrentView() {
     if (_currentViewID) {
-      getViewMap()[_currentViewID].controller.dispose();
+      _viewMap[_currentViewID].controller.dispose();
     }
     _currentViewID = '';
   }
@@ -1566,10 +1603,10 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   return {
-    registerView: registerView,
+    //registerView,
     createComponent: createComponent,
+    set: set,
     showView: showView,
-    getViewMap: getViewMap,
     showViewForCondition: showViewForCondition,
     route: route
   };
@@ -2274,14 +2311,15 @@ exports['default'] = function () {
   function initializeComponent(initProps) {
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
-    if (_internalProps.hasOwnProperty('id')) {
-      _id = _internalProps.id;
-    } else {
+    _id = this.id || _internalProps.id;
+
+    if (!_id) {
+      // TODO _id = 'vc_'+this.key;
       throw new Error('Cannot initialize Component without an ID');
     }
 
-    if (_internalProps.hasOwnProperty('mountPoint')) {
-      _mountPoint = _internalProps.mountPoint;
+    if (_internalProps.hasOwnProperty('mount')) {
+      _mountPoint = _internalProps.mount;
     } else {
       throw new Error('Cannot initialize Component without a mount selector');
     }
@@ -2306,7 +2344,7 @@ exports['default'] = function () {
    * @returns {undefined}
    */
   function getDOMEvents() {
-    return undefined;
+    return null;
   }
 
   //----------------------------------------------------------------------------

@@ -11,10 +11,91 @@ import BuildFromMixins from '../utils/BuildFromMixins.js';
 
 export default function () {
 
-  let _viewMap      = Object.create(null),
-      _viewIDMap    = Object.create(null),
+  let _viewMap      = {},
+      _routeViewMap = {},
       _viewKeyIndex = 0,
       _currentViewID;
+
+
+  /**
+   * Factory to create component view modules by concating multiple source objects
+   * @param customizer Custom module source
+   * @returns {*}
+   */
+  function createComponent(source) {
+    let customizer = _.assign({}, source);
+
+    customizer.__initCount = customizer.__initCount || 0;
+
+    return function (id, initProps) {
+      let template, finalComponent, previousInitialize, previousGetDefaultProps;
+
+      if(customizer.__initCount++ >= 1) {
+       console.warn('View component factory called more than once for', id);
+      }
+
+      customizer.mixins = customizer.mixins || [];
+      customizer.mixins.push(ViewComponentFactory());
+      customizer.mixins.push(EventDelegatorFactory());
+
+      template     = BuildFromMixins(customizer);
+      template.key = _viewKeyIndex++;
+      template.id  = id || 'vcomponent_'+_viewKeyIndex;
+
+      // Compose a new initialize function by inserting call to component super module
+      previousInitialize      = template.initialize;
+      previousGetDefaultProps = template.getDefaultProps;
+
+      template.initialize = function initialize(props) {
+        template.initializeComponent(props);
+        previousInitialize.call(template, props);
+      };
+
+      if (initProps) {
+        // Overwrite the function in the component
+        template.getDefaultProps = function () {
+          return _.merge({}, previousGetDefaultProps.call(template), initProps);
+        };
+      }
+
+      //template.$clone = function() {
+      //  return function(cid, cprops) {
+      //    let cloned = _.assign({}, template);
+      //    cloned.id = cid;
+      //    if (cprops) {
+      //      // Overwrite the function in the component
+      //      cloned.getDefaultProps = function () {
+      //        return _.merge({}, previousGetDefaultProps.call(template), cprops);
+      //      };
+      //    }
+      //    return cloned;
+      //  };
+      //};
+
+      return _.assign({}, template);
+    };
+  }
+
+  function set(id, controller, mountSelector) {
+    _viewMap[id] = {
+      controller: controller,
+      mount     : mountSelector
+    };
+  }
+
+  //----------------------------------------------------------------------------
+  //  Conditional view such as routes or states
+  //  Must be augmented with mixins for state and route change monitoring
+  //----------------------------------------------------------------------------
+
+  /**
+   * Map a route to a module view controller
+   * @param componentID
+   * @param component
+   */
+  function route(condition, componentID) {
+    _routeViewMap[condition] = componentID;
+  }
 
   /**
    * Map a component to a mounting point. If a string is passed,
@@ -23,49 +104,27 @@ export default function () {
    *
    * @param componentID
    * @param componentIDorObj
-   * @param mountPoint
+   * @param mountSelector
    */
-  function registerView(componentID, componentObj, mountPoint) {
-    _viewMap[componentID] = {
-      controller: componentObj,
-      mountPoint: mountPoint
-    };
-  }
+  //function registerView(componentID, mountSelector) {
+  //
+  //}
 
   /**
-   * Factory to create component view modules by concating multiple source objects
-   * @param customizer Custom module source
-   * @returns {*}
+   * Show a view (in response to a route change)
+   * @param condition
    */
-  function createComponent(customizer) {
-    return function (initProps) {
-      let finalComponent, previousInitialize, previousGetDefaultProps;
+  function showViewForCondition(condition) {
+    let componentID = _routeViewMap[condition];
+    if (!componentID) {
+      console.warn("No view mapped for route: " + condition);
+      return;
+    }
 
-      customizer.mixins = customizer.mixins || [];
-      customizer.mixins.push(ViewComponentFactory());
-      customizer.mixins.push(EventDelegatorFactory());
+    $removeCurrentView();
 
-      finalComponent     = BuildFromMixins(customizer);
-      finalComponent.key = _viewKeyIndex++;
-
-      // Compose a new initialize function by inserting call to component super module
-      previousInitialize      = finalComponent.initialize;
-      previousGetDefaultProps = finalComponent.getDefaultProps;
-
-      finalComponent.initialize = function initialize(props) {
-        finalComponent.initializeComponent(props);
-        previousInitialize.call(finalComponent, props);
-      };
-
-      if (initProps) {
-        // Overwrite the function in the component
-        finalComponent.getDefaultProps = function () {
-          return _.merge({}, previousGetDefaultProps.call(finalComponent), initProps);
-        };
-      }
-
-      return _.assign({}, finalComponent);
-    };
+    _currentViewID = componentID;
+    showView(_currentViewID);
   }
 
   /**
@@ -82,11 +141,10 @@ export default function () {
 
     if (!view.controller.isInitialized()) {
       // Not initialized, set props
-      mountPoint = mountPoint || view.mountPoint;
+      mountPoint = mountPoint || view.mount;
       view.controller.initialize({
-        id        : componentID,
-        template  : view.htmlTemplate,
-        mountPoint: mountPoint
+        id   : componentID,
+        mount: mountPoint
       });
     }
 
@@ -97,51 +155,11 @@ export default function () {
   }
 
   /**
-   * Returns a copy of the map object for component views
-   * @returns {null}
-   */
-  function getViewMap() {
-    return _.assign({}, _viewMap);
-  }
-
-  //----------------------------------------------------------------------------
-  //  Conditional view such as routes or states
-  //  Must be augmented with mixins for state and route change monitoring
-  //----------------------------------------------------------------------------
-
-  /**
-   * Map a route to a module view controller
-   * @param templateID
-   * @param component
-   */
-  function route(condition, templateID, component, selector) {
-    _viewIDMap[condition] = templateID;
-    registerView(templateID, component, selector);
-  }
-
-  /**
-   * Show a view (in response to a route change)
-   * @param condition
-   */
-  function showViewForCondition(condition) {
-    let componentID = _viewIDMap[condition];
-    if (!componentID) {
-      console.warn("No view mapped for route: " + condition);
-      return;
-    }
-
-    $removeCurrentView();
-
-    _currentViewID = componentID;
-    showView(_currentViewID);
-  }
-
-  /**
    * Remove the currently displayed view
    */
   function $removeCurrentView() {
     if (_currentViewID) {
-      getViewMap()[_currentViewID].controller.dispose();
+      _viewMap[_currentViewID].controller.dispose();
     }
     _currentViewID = '';
   }
@@ -151,10 +169,10 @@ export default function () {
   //----------------------------------------------------------------------------
 
   return {
-    registerView,
+    //registerView,
     createComponent,
+    set,
     showView,
-    getViewMap,
     showViewForCondition,
     route
   };
