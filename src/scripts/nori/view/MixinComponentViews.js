@@ -22,25 +22,18 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(source) {
-    let customizer = _.assign({}, source);
-
-    customizer.__initCount = customizer.__initCount || 0;
-
+  function createComponent(templateType, customizer) {
     return function (id, initProps) {
-      let template, finalComponent, previousInitialize, previousGetDefaultProps;
-
-      if(customizer.__initCount++ >= 1) {
-       console.warn('View component factory called more than once for', id);
-      }
+      let template, previousInitialize, previousGetDefaultProps;
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.push(ViewComponentFactory());
       customizer.mixins.push(EventDelegatorFactory());
 
-      template     = BuildFromMixins(customizer);
-      template.key = _viewKeyIndex++;
-      template.id  = id || 'vcomponent_'+_viewKeyIndex;
+      template            = BuildFromMixins(customizer);
+      template.__key      = _viewKeyIndex++;
+      template.__id       = id || 'vcomponent_' + _viewKeyIndex;
+      template.__template = templateType;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize      = template.initialize;
@@ -52,25 +45,10 @@ export default function () {
       };
 
       if (initProps) {
-        // Overwrite the function in the component
         template.getDefaultProps = function () {
           return _.merge({}, previousGetDefaultProps.call(template), initProps);
         };
       }
-
-      //template.$clone = function() {
-      //  return function(cid, cprops) {
-      //    let cloned = _.assign({}, template);
-      //    cloned.id = cid;
-      //    if (cprops) {
-      //      // Overwrite the function in the component
-      //      cloned.getDefaultProps = function () {
-      //        return _.merge({}, previousGetDefaultProps.call(template), cprops);
-      //      };
-      //    }
-      //    return cloned;
-      //  };
-      //};
 
       return _.assign({}, template);
     };
@@ -96,19 +74,6 @@ export default function () {
   function route(condition, componentID) {
     _routeViewMap[condition] = componentID;
   }
-
-  /**
-   * Map a component to a mounting point. If a string is passed,
-   * the correct object will be created from the factory method, otherwise,
-   * the passed component object is used.
-   *
-   * @param componentID
-   * @param componentIDorObj
-   * @param mountSelector
-   */
-  //function registerView(componentID, mountSelector) {
-  //
-  //}
 
   /**
    * Show a view (in response to a route change)
@@ -169,7 +134,6 @@ export default function () {
   //----------------------------------------------------------------------------
 
   return {
-    //registerView,
     createComponent,
     set,
     showView,

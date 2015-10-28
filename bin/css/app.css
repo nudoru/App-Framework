@@ -3961,11 +3961,7 @@ tr.row-header-inline td {
   width: 11px;
   height: 11px;
   background-color: #fff;
-  -moz-transform: rotate(45);
-  -o-transform: rotate(45);
-  -ms-transform: rotate(45);
-  -webkit-transform: rotate(45);
-  transform: rotate(45);
+  transform: rotate(45deg);
 }
 
 .tooltip__item-content {

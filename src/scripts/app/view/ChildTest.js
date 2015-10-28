@@ -1,6 +1,6 @@
 let counter = 0;
 
-export default Nori.view().createComponent({
+export default Nori.view().createComponent('', {
 
   getDOMEvents() {
     return {

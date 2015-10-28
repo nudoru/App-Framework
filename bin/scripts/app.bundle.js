@@ -323,6 +323,9 @@ var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs)
  * View for an application.
  */
 
+var vcStyles = Nori.view().createComponent('debug-styletest', {})('styles'),
+    vcControls = Nori.view().createComponent('debug-controls', {})('controls');
+
 var AppViewModule = Nori.createView({
 
   mixins: [(0, _nudoruComponentsMixinNudoruControlsJs2['default'])(), (0, _noriViewMixinRouteViewsJs2['default'])()],
@@ -333,22 +336,12 @@ var AppViewModule = Nori.createView({
     this.initializeRouteViews();
     this.initializeNudoruControls();
 
-    this.configureViews();
+    this.mapRoutes();
   },
 
-  configureViews: function configureViews() {
-    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { template: 'default' }),
-        vcStyles = (0, _TemplateViewComponentJs2['default'])('styles', { template: 'debug-styletest' }),
-        vcControls = (0, _TemplateViewComponentJs2['default'])('controls', { template: 'debug-controls' }),
-        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { template: 'debug-components' });
-
-    //let vcBase = TemplateViewFactory().$clone(),
-    //    vcDefault    = vcBase('default', {template: 'default'}),
-    //    vcStyles     = vcBase('styles', {template: 'debug-styletest'}),
-    //    vcControls   = vcBase('controls', {template: 'debug-controls'}),
-    //    vcComponents = ComponentTesting('components', {template: 'debug-components'});
-    //
-    //console.log(vcBase);
+  mapRoutes: function mapRoutes() {
+    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default'),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components');
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault, '#contents');
@@ -403,7 +396,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 var counter = 0;
 
-exports['default'] = Nori.view().createComponent({
+exports['default'] = Nori.view().createComponent('', {
 
   getDOMEvents: function getDOMEvents() {
     var _this = this;
@@ -471,7 +464,7 @@ var _lIpsum = require('../../nudoru/browser/Lorem.js'),
     _actionSixEl = undefined,
     _this = undefined;
 
-exports['default'] = Nori.view().createComponent({
+exports['default'] = Nori.view().createComponent('debug-components', {
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -647,7 +640,7 @@ var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMM
  * Module for a dynamic application view for a route or a persistent view
  */
 
-exports['default'] = Nori.view().createComponent({
+exports['default'] = Nori.view().createComponent('default', {
 
   mixins: [_noriViewMixinDOMManipulationJs2['default']],
 
@@ -1453,28 +1446,20 @@ exports['default'] = function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(source) {
-    var customizer = _vendorLodashMinJs2['default'].assign({}, source);
-
-    customizer.__initCount = customizer.__initCount || 0;
-
+  function createComponent(templateType, customizer) {
     return function (id, initProps) {
       var template = undefined,
-          finalComponent = undefined,
           previousInitialize = undefined,
           previousGetDefaultProps = undefined;
-
-      if (customizer.__initCount++ >= 1) {
-        console.warn('View component factory called more than once for', id);
-      }
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.push((0, _ViewComponentJs2['default'])());
       customizer.mixins.push((0, _MixinEventDelegatorJs2['default'])());
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-      template.key = _viewKeyIndex++;
-      template.id = id || 'vcomponent_' + _viewKeyIndex;
+      template.__key = _viewKeyIndex++;
+      template.__id = id || 'vcomponent_' + _viewKeyIndex;
+      template.__template = templateType;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize = template.initialize;
@@ -1486,25 +1471,10 @@ exports['default'] = function () {
       };
 
       if (initProps) {
-        // Overwrite the function in the component
         template.getDefaultProps = function () {
           return _vendorLodashMinJs2['default'].merge({}, previousGetDefaultProps.call(template), initProps);
         };
       }
-
-      //template.$clone = function() {
-      //  return function(cid, cprops) {
-      //    let cloned = _.assign({}, template);
-      //    cloned.id = cid;
-      //    if (cprops) {
-      //      // Overwrite the function in the component
-      //      cloned.getDefaultProps = function () {
-      //        return _.merge({}, previousGetDefaultProps.call(template), cprops);
-      //      };
-      //    }
-      //    return cloned;
-      //  };
-      //};
 
       return _vendorLodashMinJs2['default'].assign({}, template);
     };
@@ -1530,19 +1500,6 @@ exports['default'] = function () {
   function route(condition, componentID) {
     _routeViewMap[condition] = componentID;
   }
-
-  /**
-   * Map a component to a mounting point. If a string is passed,
-   * the correct object will be created from the factory method, otherwise,
-   * the passed component object is used.
-   *
-   * @param componentID
-   * @param componentIDorObj
-   * @param mountSelector
-   */
-  //function registerView(componentID, mountSelector) {
-  //
-  //}
 
   /**
    * Show a view (in response to a route change)
@@ -1603,7 +1560,6 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   return {
-    //registerView,
     createComponent: createComponent,
     set: set,
     showView: showView,
@@ -2280,6 +2236,9 @@ var LS_NO_INIT = 0,
 
 exports['default'] = function () {
 
+  // Properties added to component on creation:
+  // __id, __key, __template
+
   var _internalState = {},
       _internalProps = {},
       _publicState = {},
@@ -2290,7 +2249,6 @@ exports['default'] = function () {
       _isMounted = false,
       _children = {},
       _parent = undefined,
-      _id = undefined,
       _templateObjCache = undefined,
       _html = undefined,
       _DOMElement = undefined,
@@ -2310,13 +2268,6 @@ exports['default'] = function () {
    */
   function initializeComponent(initProps) {
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
-
-    _id = this.id || _internalProps.id;
-
-    if (!_id) {
-      // TODO _id = 'vc_'+this.key;
-      throw new Error('Cannot initialize Component without an ID');
-    }
 
     if (_internalProps.hasOwnProperty('mount')) {
       _mountPoint = _internalProps.mount;
@@ -2519,7 +2470,7 @@ exports['default'] = function () {
    */
   function template(props, state) {
     // assumes the template ID matches the component's ID as passed on initialize
-    var templateId = props.template || this.getID();
+    var templateId = this.__template || this.getID();
     return _viewTemplatingJs2['default'].getTemplate(templateId);
   }
 
@@ -2542,12 +2493,12 @@ exports['default'] = function () {
   function mount() {
     // TODO why aren't components unmounting on change first?
     if (_isMounted) {
-      //console.warn('Component ' + _id + ' is already mounted');
+      //console.warn('Component ' + this.getID() + ' is already mounted');
       return;
     }
 
     if (!_html || _html.length === 0) {
-      console.warn('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
+      console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
 
@@ -2713,7 +2664,7 @@ exports['default'] = function () {
   }
 
   function getID() {
-    return _id;
+    return this.__id;
   }
 
   function getDOMElement() {

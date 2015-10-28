@@ -10,6 +10,9 @@ import DOMUtils from '../../nudoru/browser/DOMUtils.js';
  * View for an application.
  */
 
+let vcStyles = Nori.view().createComponent('debug-styletest', {})('styles'),
+vcControls   = Nori.view().createComponent('debug-controls', {})('controls');
+
 let AppViewModule = Nori.createView({
 
   mixins: [
@@ -23,22 +26,12 @@ let AppViewModule = Nori.createView({
     this.initializeRouteViews();
     this.initializeNudoruControls();
 
-    this.configureViews();
+    this.mapRoutes();
   },
 
-  configureViews() {
-    let vcDefault    = TemplateViewFactory('default', {template: 'default'}),
-        vcStyles     = TemplateViewFactory('styles', {template: 'debug-styletest'}),
-        vcControls   = TemplateViewFactory('controls', {template: 'debug-controls'}),
-        vcComponents = ComponentTesting('components', {template: 'debug-components'});
-
-    //let vcBase = TemplateViewFactory().$clone(),
-    //    vcDefault    = vcBase('default', {template: 'default'}),
-    //    vcStyles     = vcBase('styles', {template: 'debug-styletest'}),
-    //    vcControls   = vcBase('controls', {template: 'debug-controls'}),
-    //    vcComponents = ComponentTesting('components', {template: 'debug-components'});
-    //
-    //console.log(vcBase);
+  mapRoutes() {
+    let vcDefault    = TemplateViewFactory('default'),
+        vcComponents = ComponentTesting('components');
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault, '#contents');

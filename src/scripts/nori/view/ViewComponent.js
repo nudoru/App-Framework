@@ -29,6 +29,9 @@ const LS_NO_INIT   = 0,
 
 export default function () {
 
+  // Properties added to component on creation:
+  // __id, __key, __template
+
   let _internalState  = {},
       _internalProps  = {},
       _publicState    = {},
@@ -39,7 +42,6 @@ export default function () {
       _isMounted      = false,
       _children       = {},
       _parent,
-      _id,
       _templateObjCache,
       _html,
       _DOMElement,
@@ -59,13 +61,6 @@ export default function () {
    */
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
-
-    _id = this.id || _internalProps.id;
-
-    if (!_id) {
-      // TODO _id = 'vc_'+this.key;
-      throw new Error('Cannot initialize Component without an ID');
-    }
 
     if (_internalProps.hasOwnProperty('mount')) {
       _mountPoint = _internalProps.mount;
@@ -269,7 +264,7 @@ export default function () {
    */
   function template(props, state) {
     // assumes the template ID matches the component's ID as passed on initialize
-    let templateId = props.template || this.getID();
+    let templateId = this.__template || this.getID();
     return Template.getTemplate(templateId);
   }
 
@@ -292,12 +287,12 @@ export default function () {
   function mount() {
     // TODO why aren't components unmounting on change first?
     if (_isMounted) {
-      //console.warn('Component ' + _id + ' is already mounted');
+      //console.warn('Component ' + this.getID() + ' is already mounted');
       return;
     }
 
     if (!_html || _html.length === 0) {
-      console.warn('Component ' + _id + ' cannot mount with no HTML. Call render() first?');
+      console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
 
@@ -464,7 +459,7 @@ export default function () {
   }
 
   function getID() {
-    return _id;
+    return this.__id;
   }
 
   function getDOMElement() {
