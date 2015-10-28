@@ -600,7 +600,7 @@ exports['default'] = Nori.view().createComponent('debug-components', {
     });
 
     _actionFourEl.addEventListener('click', function actFour(e) {
-      var test = _this.getChild('testChild');
+      var test = _this.child('testChild1');
       test.setProps({ label: 'From the parent' });
     });
 
@@ -613,12 +613,14 @@ exports['default'] = Nori.view().createComponent('debug-components', {
     });
 
     ['foo', 'bar', 'baz'].forEach(function (id) {
-      _this2.addChild(id, (0, _ChildTestJs2['default'])('testChild' + id, {
+      _this2.addChild(id, (0, _ChildTestJs2['default'])('dBtn' + id, {
         mount: '#debug-child',
         mountMethod: 'append',
-        label: 'Dynamic!' + id
+        label: 'Dynamic! ' + id
       }));
     });
+
+    this.child('testChild2').setProps({ label: 'updated!' });
   },
 
   componentWillUnmount: function componentWillUnmount() {}
@@ -2566,9 +2568,12 @@ exports['default'] = function () {
       }
     }
 
-    if (typeof this.componentDidMount === 'function') {
-      _mountDelay = _vendorLodashMinJs2['default'].delay(this.$mountAfterDelay.bind(this), 1);
-    }
+    //if (typeof this.componentDidMount === 'function') {
+    //  _mountDelay = _.delay(this.$mountAfterDelay.bind(this), 1);
+    //}
+
+    this.$mountChildren();
+    this.componentDidMount();
   }
 
   /**
@@ -2576,14 +2581,14 @@ exports['default'] = function () {
    * Experiencing issues with animations running in componentDidMount
    * after renders and state changes. This delay fixes the issues.
    */
-  function $mountAfterDelay() {
-    if (_mountDelay) {
-      window.clearTimeout(_mountDelay);
-    }
-
-    this.$mountChildren();
-    this.componentDidMount();
-  }
+  //function $mountAfterDelay() {
+  //  if (_mountDelay) {
+  //    window.clearTimeout(_mountDelay);
+  //  }
+  //
+  //  this.$mountChildren();
+  //  this.componentDidMount();
+  //}
 
   /**
    * Override to delegate events or not based on some state trigger
@@ -2641,7 +2646,7 @@ exports['default'] = function () {
     this.unmount();
 
     _lastAdjacentNode = null;
-    _children = null;
+    _templateObjCache = null;
 
     _lifecycleState = LS_NO_INIT;
   }
@@ -2677,6 +2682,7 @@ exports['default'] = function () {
   }
 
   function addChild(id, child) {
+    //let localID = _.camelCase(id);
     _children = _children || {};
 
     if (_children.hasOwnProperty(id)) {
@@ -2685,6 +2691,8 @@ exports['default'] = function () {
     }
 
     _children[id] = child;
+
+    //this[localID] = child;
 
     if (_lifecycleState === LS_MOUNTED) {
       // TODO need checks on each to determine if it was an already existing child
@@ -2698,12 +2706,13 @@ exports['default'] = function () {
     if (_children.hasOwnProperty(id)) {
       _children[id].dispose();
       delete _children[id];
+      //delete this[_.camelCase(id)];
     } else {
-      console.warn('Cannot remove child. ', id, 'not found');
-    }
+        console.warn('Cannot remove child. ', id, 'not found');
+      }
   }
 
-  function getChild(id) {
+  function child(id) {
     if (_children.hasOwnProperty(id)) {
       return _children[id];
     }
@@ -2745,6 +2754,7 @@ exports['default'] = function () {
     getChildIDs().forEach(function (region) {
       _children[region].dispose();
     });
+    _children = null;
   }
 
   //----------------------------------------------------------------------------
@@ -2824,7 +2834,7 @@ exports['default'] = function () {
     render: render,
     mount: mount,
     shouldDelegateEvents: shouldDelegateEvents,
-    $mountAfterDelay: $mountAfterDelay,
+    //$mountAfterDelay,
     componentDidMount: componentDidMount,
     componentWillUnmount: componentWillUnmount,
     unmount: unmount,
@@ -2833,7 +2843,7 @@ exports['default'] = function () {
     addChild: addChild,
     addChildren: addChildren,
     disposeChild: disposeChild,
-    getChild: getChild,
+    child: child,
     getChildIDs: getChildIDs,
     $initializeChildren: $initializeChildren,
     $renderChildren: $renderChildren,

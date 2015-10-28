@@ -317,7 +317,7 @@ export default function () {
       html          : _html
     });
 
-    _isMounted        = true;
+    _isMounted = true;
 
     if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents(this.props, this.state)) {
@@ -326,9 +326,12 @@ export default function () {
       }
     }
 
-    if (typeof this.componentDidMount === 'function') {
-      _mountDelay = _.delay(this.$mountAfterDelay.bind(this), 1);
-    }
+    //if (typeof this.componentDidMount === 'function') {
+    //  _mountDelay = _.delay(this.$mountAfterDelay.bind(this), 1);
+    //}
+
+    this.$mountChildren();
+    this.componentDidMount();
   }
 
   /**
@@ -336,14 +339,14 @@ export default function () {
    * Experiencing issues with animations running in componentDidMount
    * after renders and state changes. This delay fixes the issues.
    */
-  function $mountAfterDelay() {
-    if (_mountDelay) {
-      window.clearTimeout(_mountDelay);
-    }
-
-    this.$mountChildren();
-    this.componentDidMount();
-  }
+  //function $mountAfterDelay() {
+  //  if (_mountDelay) {
+  //    window.clearTimeout(_mountDelay);
+  //  }
+  //
+  //  this.$mountChildren();
+  //  this.componentDidMount();
+  //}
 
   /**
    * Override to delegate events or not based on some state trigger
@@ -403,7 +406,7 @@ export default function () {
     this.unmount();
 
     _lastAdjacentNode = null;
-    _children = null;
+    _templateObjCache = null;
 
     _lifecycleState = LS_NO_INIT;
   }
@@ -438,16 +441,19 @@ export default function () {
   }
 
   function addChild(id, child) {
-    _children     = _children || {};
+    //let localID = _.camelCase(id);
+    _children = _children || {};
 
-    if(_children.hasOwnProperty(id)) {
-      console.warn('Component already has child with id',id);
+    if (_children.hasOwnProperty(id)) {
+      console.warn('Component already has child with id', id);
       return;
     }
 
     _children[id] = child;
 
-    if(_lifecycleState === LS_MOUNTED) {
+    //this[localID] = child;
+
+    if (_lifecycleState === LS_MOUNTED) {
       // TODO need checks on each to determine if it was an already existing child
       $initializeChildren();
       $renderChildren();
@@ -459,12 +465,13 @@ export default function () {
     if (_children.hasOwnProperty(id)) {
       _children[id].dispose();
       delete _children[id];
+      //delete this[_.camelCase(id)];
     } else {
       console.warn('Cannot remove child. ', id, 'not found');
     }
   }
 
-  function getChild(id) {
+  function child(id) {
     if (_children.hasOwnProperty(id)) {
       return _children[id];
     }
@@ -504,6 +511,7 @@ export default function () {
     getChildIDs().forEach(region => {
       _children[region].dispose();
     });
+    _children = null;
   }
 
   //----------------------------------------------------------------------------
@@ -583,7 +591,7 @@ export default function () {
     render,
     mount,
     shouldDelegateEvents,
-    $mountAfterDelay,
+    //$mountAfterDelay,
     componentDidMount,
     componentWillUnmount,
     unmount,
@@ -592,7 +600,7 @@ export default function () {
     addChild,
     addChildren,
     disposeChild,
-    getChild,
+    child,
     getChildIDs,
     $initializeChildren,
     $renderChildren,

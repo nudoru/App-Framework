@@ -161,7 +161,7 @@ export default Nori.view().createComponent('debug-components', {
     });
 
     _actionFourEl.addEventListener('click', function actFour(e) {
-      var test = _this.getChild('testChild');
+      var test = _this.child('testChild1');
       test.setProps({label: 'From the parent'});
     });
 
@@ -174,12 +174,15 @@ export default Nori.view().createComponent('debug-components', {
     });
 
     ['foo','bar','baz'].forEach(id => {
-      this.addChild(id, ChildTest('testChild'+id, {
+      this.addChild(id, ChildTest('dBtn'+id, {
         mount: '#debug-child',
         mountMethod: 'append',
-        label: 'Dynamic!'+id
+        label: 'Dynamic! '+id
       }))
     });
+
+
+    this.child('testChild2').setProps({label:'updated!'});
 
   },
 
