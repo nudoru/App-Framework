@@ -394,22 +394,22 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var counter = 0;
-
 exports['default'] = Nori.view().createComponent('', {
+
+  counter: 0,
 
   getDOMEvents: function getDOMEvents() {
     var _this = this;
 
     return {
       'click button': function clickButton() {
-        return _this.setProps({ label: 'Clicked ' + ++counter + ' times' });
+        return _this.setProps({ label: 'Clicked ' + ++_this.counter + ' times' });
       }
     };
   },
 
   template: function template(props, state) {
-    return this.from('\n      <div>\n        <button>{{label}}</button>\n      </div>\n    ');
+    return this.from('\n      <div>\n        <button>{{id}}, {{label}}</button>\n      </div>\n    ');
   }
 
 });
@@ -483,9 +483,20 @@ exports['default'] = Nori.view().createComponent('debug-components', {
 
   defineChildren: function defineChildren() {
     return {
-      testChild: (0, _ChildTestJs2['default'])('testChild', {
+      testChild: (0, _ChildTestJs2['default'])('testChild1', {
         mount: '#debug-child',
-        label: 'Testing, yo!'
+        mountMethod: 'append',
+        label: 'Testing, yo! 1'
+      }),
+      testChild2: (0, _ChildTestJs2['default'])('testChild2', {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Testing, yo! 2'
+      }),
+      testChild3: (0, _ChildTestJs2['default'])('testChild3', {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Testing, yo! 3'
       })
     };
   },
@@ -1371,7 +1382,12 @@ var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 
 exports['default'] = {
   dom: function dom(selector, event) {
-    var el = document.querySelector(selector);
+    var el = selector;
+
+    if (_nudoruUtilIsJs2['default'].string(selector)) {
+      el = document.querySelector(selector);
+    }
+
     if (!el) {
       console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
       return;
@@ -1446,11 +1462,14 @@ exports['default'] = function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(templateType, customizer) {
+  function createComponent(templateType, source) {
     return function (id, initProps) {
-      var template = undefined,
+      var customizer = undefined,
+          template = undefined,
           previousInitialize = undefined,
           previousGetDefaultProps = undefined;
+
+      customizer = _vendorLodashMinJs2['default'].cloneDeep(source);
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.push((0, _ViewComponentJs2['default'])());
@@ -1751,12 +1770,14 @@ exports['default'] = function () {
    * 'evtStr selector':callback
    * 'evtStr selector, evtStr selector': sharedCallback
    */
-  function delegateEvents(eventObj, autoForm) {
+  function delegateEvents(context, eventObj, autoForm) {
     if (!eventObj) {
       return;
     }
 
     _eventSubscribers = Object.create(null);
+
+    context = context || document;
 
     for (var evtStrings in eventObj) {
       if (eventObj.hasOwnProperty(evtStrings)) {
@@ -1784,7 +1805,7 @@ exports['default'] = function () {
               eventStr = (0, _nudoruBrowserMouseToTouchEventsJs2['default'])(eventStr);
             }
 
-            _eventSubscribers[evtMap] = $createSubscriber(selector, eventStr, eventHandler, autoForm);
+            _eventSubscribers[evtMap] = $createSubscriber(context, selector, eventStr, eventHandler, autoForm);
           });
           /* jshint +W083 */
         })();
@@ -1802,9 +1823,9 @@ exports['default'] = function () {
    * @param autoForm True to automatically pass common form element data to the handler
    * @returns {*}
    */
-  function $createSubscriber(selector, eventStr, handler, autoForm) {
-    var observable = _utilsRxJs2['default'].dom(selector, eventStr),
-        el = document.querySelector(selector),
+  function $createSubscriber(context, selector, eventStr, handler, autoForm) {
+    var el = context.querySelector(selector),
+        observable = undefined,
         tag = undefined,
         type = undefined;
 
@@ -1812,6 +1833,8 @@ exports['default'] = function () {
       console.warn('MixinEventDelegator, $createSubscriber, Element not found:', selector);
       return;
     }
+
+    observable = _utilsRxJs2['default'].dom(el, eventStr);
 
     tag = el.tagName.toLowerCase();
     type = el.getAttribute('type');
@@ -1947,50 +1970,51 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var RendererModule = function RendererModule() {
-  function render(_ref) {
-    var key = _ref.key;
-    var target = _ref.target;
-    var html = _ref.html;
-    var callback = _ref.callback;
+var MNT_REPLACE = 'replace',
+    MNT_APPEND = 'append';
 
-    var domEl = undefined,
-        mountPoint = document.querySelector(target),
-        currentHTML = undefined;
+exports['default'] = function (_ref) {
+  var key = _ref.key;
+  var method = _ref.method;
+  var lastAdjacent = _ref.lastAdjacent;
+  var targetSelector = _ref.targetSelector;
+  var html = _ref.html;
+  var callback = _ref.callback;
 
-    if (!mountPoint) {
-      console.warn('Render, target selector not found', target);
-      return;
-    }
+  var domEl = undefined,
+      mountPoint = document.querySelector(targetSelector),
+      currentHTML = undefined;
 
-    currentHTML = mountPoint.innerHTML;
+  method = method || MNT_REPLACE;
 
-    if (html) {
-      domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-      if (html !== currentHTML) {
-        // TODO experiment with the jsdiff function
+  if (!mountPoint) {
+    console.warn('Render, target selector not found', targetSelector);
+    return;
+  }
+
+  currentHTML = mountPoint.innerHTML;
+
+  domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
+  domEl.setAttribute('data-noriKey', key);
+
+  if (html) {
+    if (html !== currentHTML) {
+      if (method === MNT_REPLACE) {
         mountPoint.innerHTML = '';
         mountPoint.appendChild(domEl);
       } else {
-        console.log('> is SAME');
+        mountPoint.insertBefore(domEl, lastAdjacent);
       }
     }
-
-    if (callback) {
-      callback(domEl);
-    }
-
-    return domEl;
   }
 
-  return {
-    render: render
-  };
+  if (callback) {
+    callback(domEl);
+  }
+
+  return domEl;
 };
 
-var Renderer = RendererModule();
-
-exports['default'] = Renderer;
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/DOMUtils.js":29}],26:[function(require,module,exports){
@@ -2232,7 +2256,9 @@ var LS_NO_INIT = 0,
     LS_RENDERING = 2,
     LS_MOUNTED = 3,
     LS_UNMOUNTED = 4,
-    LS_DISPOSED = 99;
+    LS_DISPOSED = 99,
+    MNT_REPLACE = 'replace',
+    MNT_APPEND = 'append';
 
 exports['default'] = function () {
 
@@ -2252,6 +2278,7 @@ exports['default'] = function () {
       _templateObjCache = undefined,
       _html = undefined,
       _DOMElement = undefined,
+      _lastAdjacentNode = undefined,
       _mountPoint = undefined,
       _mountDelay = undefined;
 
@@ -2267,12 +2294,20 @@ exports['default'] = function () {
    * @param initProps
    */
   function initializeComponent(initProps) {
+    initProps.id = this.__id;
+    initProps.key = this.__key;
+    initProps.template = this.__template;
+
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
     if (_internalProps.hasOwnProperty('mount')) {
       _mountPoint = _internalProps.mount;
     } else {
-      throw new Error('Cannot initialize Component without a mount selector');
+      console.warn(this.__id, 'Component without a mount selector');
+    }
+
+    if (!_internalProps.hasOwnProperty('mountMethod')) {
+      _internalProps.mountMethod = MNT_REPLACE;
     }
 
     if (_internalProps.hasOwnProperty('parent')) {
@@ -2491,6 +2526,8 @@ exports['default'] = function () {
    * @param mountEl
    */
   function mount() {
+    var newDOMElement = undefined;
+
     // TODO why aren't components unmounting on change first?
     if (_isMounted) {
       //console.warn('Component ' + this.getID() + ' is already mounted');
@@ -2504,18 +2541,22 @@ exports['default'] = function () {
 
     _lifecycleState = LS_MOUNTED;
 
-    _DOMElement = _viewRendererJs2['default'].render({
-      key: this.key,
-      target: _mountPoint,
+    newDOMElement = (0, _viewRendererJs2['default'])({
+      key: this.__key,
+      method: this.props.mountMethod,
+      lastAdjacent: _lastAdjacentNode,
+      targetSelector: _mountPoint,
       html: _html
     });
 
+    _DOMElement = newDOMElement;
     _isMounted = true;
+    _lastAdjacentNode = _DOMElement.nextSibling;
 
     if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents(this.props, this.state)) {
         // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(this.getDOMEvents(), this.props.autoFormEvents);
+        this.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
       }
     }
 
@@ -2566,6 +2607,8 @@ exports['default'] = function () {
       this.killTweens();
     }
 
+    _lastAdjacentNode = _DOMElement.nextSibling;
+
     this.componentWillUnmount();
 
     _isMounted = false;
@@ -2574,7 +2617,11 @@ exports['default'] = function () {
       this.undelegateEvents(this.getDOMEvents());
     }
 
-    _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_mountPoint));
+    if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
+      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_mountPoint));
+    } else {
+      _nudoruBrowserDOMUtilsJs2['default'].removeElement(_DOMElement);
+    }
 
     _html = '';
     _DOMElement = null;
@@ -2599,8 +2646,15 @@ exports['default'] = function () {
 
   //TODO reduce code repetition
 
+  /**
+   * Called in initializeComponent to create children during the initialization phase
+   */
   function defineChildren() {
     return null;
+  }
+
+  function addChild(child) {
+    _children.push(child);
   }
 
   function getChild(id) {
@@ -2740,7 +2794,6 @@ exports['default'] = function () {
   };
 };
 
-;
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43,"../view/Renderer.js":25,"../view/Templating.js":26}],28:[function(require,module,exports){
@@ -2862,6 +2915,10 @@ exports['default'] = {
     while (el.firstChild) {
       el.removeChild(el.firstChild);
     }
+  },
+
+  removeElement: function removeElement(el) {
+    el.parentNode.removeChild(el);
   },
 
   //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro

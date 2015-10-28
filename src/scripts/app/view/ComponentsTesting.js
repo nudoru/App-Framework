@@ -41,9 +41,20 @@ export default Nori.view().createComponent('debug-components', {
 
   defineChildren () {
     return {
-      testChild: ChildTest('testChild', {
+      testChild: ChildTest('testChild1', {
         mount: '#debug-child',
-        label: 'Testing, yo!'
+        mountMethod: 'append',
+        label: 'Testing, yo! 1'
+      }),
+      testChild2: ChildTest('testChild2', {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Testing, yo! 2'
+      }),
+      testChild3: ChildTest('testChild3', {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Testing, yo! 3'
       })
     };
   },

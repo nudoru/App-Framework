@@ -29,12 +29,14 @@ export default function () {
    * 'evtStr selector':callback
    * 'evtStr selector, evtStr selector': sharedCallback
    */
-  function delegateEvents(eventObj, autoForm) {
+  function delegateEvents(context, eventObj, autoForm) {
     if (!eventObj) {
       return;
     }
 
     _eventSubscribers = Object.create(null);
+
+    context = context || document;
 
     for (var evtStrings in eventObj) {
       if (eventObj.hasOwnProperty(evtStrings)) {
@@ -59,7 +61,7 @@ export default function () {
             eventStr = MouseToTouchEventStr(eventStr);
           }
 
-          _eventSubscribers[evtMap] = $createSubscriber(selector, eventStr, eventHandler, autoForm);
+          _eventSubscribers[evtMap] = $createSubscriber(context, selector, eventStr, eventHandler, autoForm);
         });
         /* jshint +W083 */
       }
@@ -74,15 +76,17 @@ export default function () {
    * @param autoForm True to automatically pass common form element data to the handler
    * @returns {*}
    */
-  function $createSubscriber(selector, eventStr, handler, autoForm) {
-    let observable = Rx.dom(selector, eventStr),
-        el         = document.querySelector(selector),
+  function $createSubscriber(context, selector, eventStr, handler, autoForm) {
+    let el         = context.querySelector(selector),
+        observable,
         tag, type;
 
     if (!el) {
       console.warn('MixinEventDelegator, $createSubscriber, Element not found:', selector);
       return;
     }
+
+    observable = Rx.dom(el, eventStr);
 
     tag  = el.tagName.toLowerCase();
     type = el.getAttribute('type');

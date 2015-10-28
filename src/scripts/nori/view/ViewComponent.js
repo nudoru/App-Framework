@@ -25,7 +25,9 @@ const LS_NO_INIT   = 0,
       LS_RENDERING = 2,
       LS_MOUNTED   = 3,
       LS_UNMOUNTED = 4,
-      LS_DISPOSED  = 99;
+      LS_DISPOSED  = 99,
+      MNT_REPLACE  = 'replace',
+      MNT_APPEND   = 'append';
 
 export default function () {
 
@@ -45,6 +47,7 @@ export default function () {
       _templateObjCache,
       _html,
       _DOMElement,
+      _lastAdjacentNode,
       _mountPoint,
       _mountDelay;
 
@@ -60,19 +63,27 @@ export default function () {
    * @param initProps
    */
   function initializeComponent(initProps) {
+    initProps.id       = this.__id;
+    initProps.key      = this.__key;
+    initProps.template = this.__template;
+
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
     if (_internalProps.hasOwnProperty('mount')) {
       _mountPoint = _internalProps.mount;
     } else {
-      throw new Error('Cannot initialize Component without a mount selector');
+      console.warn(this.__id, 'Component without a mount selector');
+    }
+
+    if (!_internalProps.hasOwnProperty('mountMethod')) {
+      _internalProps.mountMethod = MNT_REPLACE;
     }
 
     if (_internalProps.hasOwnProperty('parent')) {
       _parent = _internalProps.parent;
     }
 
-    _children   = this.defineChildren();
+    _children = this.defineChildren();
 
     this.setState(this.getDefaultState());
 
@@ -285,6 +296,8 @@ export default function () {
    * @param mountEl
    */
   function mount() {
+    let newDOMElement;
+
     // TODO why aren't components unmounting on change first?
     if (_isMounted) {
       //console.warn('Component ' + this.getID() + ' is already mounted');
@@ -298,18 +311,22 @@ export default function () {
 
     _lifecycleState = LS_MOUNTED;
 
-    _DOMElement = (Renderer.render({
-      key   : this.key,
-      target: _mountPoint,
-      html  : _html
-    }));
+    newDOMElement = Renderer({
+      key           : this.__key,
+      method        : this.props.mountMethod,
+      lastAdjacent  : _lastAdjacentNode,
+      targetSelector: _mountPoint,
+      html          : _html
+    });
 
+    _DOMElement = newDOMElement;
     _isMounted = true;
+    _lastAdjacentNode = _DOMElement.nextSibling;
 
     if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents(this.props, this.state)) {
         // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(this.getDOMEvents(), this.props.autoFormEvents);
+        this.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
       }
     }
 
@@ -362,6 +379,8 @@ export default function () {
       this.killTweens();
     }
 
+    _lastAdjacentNode = _DOMElement.nextSibling;
+
     this.componentWillUnmount();
 
     _isMounted = false;
@@ -370,7 +389,11 @@ export default function () {
       this.undelegateEvents(this.getDOMEvents());
     }
 
-    DOMUtils.removeAllElements(document.querySelector(_mountPoint));
+    if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
+      DOMUtils.removeAllElements(document.querySelector(_mountPoint));
+    } else {
+      DOMUtils.removeElement(_DOMElement);
+    }
 
     _html       = '';
     _DOMElement = null;
@@ -396,15 +419,22 @@ export default function () {
 
   //TODO reduce code repetition
 
+  /**
+   * Called in initializeComponent to create children during the initialization phase
+   */
   function defineChildren() {
     return null;
   }
 
+  function addChild(child) {
+    _children.push(child);
+  }
+
   function getChild(id) {
-    if(_children.hasOwnProperty(id)) {
+    if (_children.hasOwnProperty(id)) {
       return _children[id];
     }
-    console.warn(this.getID(),'Child not found',id);
+    console.warn(this.getID(), 'Child not found', id);
     return null;
   }
 
@@ -533,5 +563,4 @@ export default function () {
     $unmountChildren,
     $disposeChildren
   };
-
-};
+}

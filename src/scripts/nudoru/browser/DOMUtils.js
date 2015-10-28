@@ -2,7 +2,7 @@ export default {
 
   // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
   // element must be entirely on screen
-  isElementEntirelyInViewport: function (el) {
+  isElementEntirelyInViewport(el) {
     var rect = el.getBoundingClientRect();
     return (
       rect.top >= 0 &&
@@ -13,7 +13,7 @@ export default {
   },
 
   // element may be partialy on screen
-  isElementInViewport: function (el) {
+  isElementInViewport(el) {
     var rect = el.getBoundingClientRect();
     return rect.bottom > 0 &&
       rect.right > 0 &&
@@ -21,11 +21,11 @@ export default {
       rect.top < (window.innerHeight || document.documentElement.clientHeight);
   },
 
-  isDomObj: function (obj) {
+  isDomObj(obj) {
     return !!(obj.nodeType || (obj === window));
   },
 
-  position: function (el) {
+  position(el) {
     return {
       left: el.offsetLeft,
       top : el.offsetTop
@@ -33,7 +33,7 @@ export default {
   },
 
   // from http://jsperf.com/jquery-offset-vs-offsetparent-loop
-  offset: function (el) {
+  offset(el) {
     var ol = 0,
         ot = 0;
     if (el.offsetParent) {
@@ -48,20 +48,24 @@ export default {
     };
   },
 
-  removeAllElements: function (el) {
+  removeAllElements(el) {
     while (el.firstChild) {
       el.removeChild(el.firstChild);
     }
   },
 
+  removeElement(el) {
+    el.parentNode.removeChild(el);
+  },
+  
   //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
-  HTMLStrToNode: function (str) {
+  HTMLStrToNode(str) {
     var temp       = document.createElement('div');
     temp.innerHTML = str;
     return temp.firstChild;
   },
 
-  wrapElement: function (wrapperStr, el) {
+  wrapElement(wrapperStr, el) {
     var wrapperEl = this.HTMLStrToNode(wrapperStr),
         elParent  = el.parentNode;
 
@@ -71,7 +75,7 @@ export default {
   },
 
   // http://stackoverflow.com/questions/15329167/closest-ancestor-matching-selector-using-native-dom
-  closest: function (el, selector) {
+  closest(el, selector) {
     var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
     while (el) {
       if (matchesSelector.bind(el)(selector)) {
@@ -84,7 +88,7 @@ export default {
   },
 
   // from youmightnotneedjquery.com
-  hasClass: function (el, className) {
+  hasClass(el, className) {
     if (el.classList) {
       el.classList.contains(className);
     } else {
@@ -92,7 +96,7 @@ export default {
     }
   },
 
-  addClass: function (el, className) {
+  addClass(el, className) {
     if (el.classList) {
       el.classList.add(className);
     } else {
@@ -100,7 +104,7 @@ export default {
     }
   },
 
-  removeClass: function (el, className) {
+  removeClass(el, className) {
     if (el.classList) {
       el.classList.remove(className);
     } else {
@@ -108,7 +112,7 @@ export default {
     }
   },
 
-  toggleClass: function (el, className) {
+  toggleClass(el, className) {
     if (this.hasClass(el, className)) {
       this.removeClass(el, className);
     } else {
@@ -117,7 +121,7 @@ export default {
   },
 
   // From impress.js
-  applyCSS: function (el, props) {
+  applyCSS(el, props) {
     var key, pkey;
     for (key in props) {
       if (props.hasOwnProperty(key)) {
@@ -130,7 +134,7 @@ export default {
   // from impress.js
   // `computeWindowScale` counts the scale factor between window size and size
   // defined for the presentation in the config.
-  computeWindowScale: function (config) {
+  computeWindowScale(config) {
     var hScale = window.innerHeight / config.height,
         wScale = window.innerWidth / config.width,
         scale  = hScale > wScale ? wScale : hScale;
@@ -149,11 +153,11 @@ export default {
   /**
    * Get an array of elements in the container returned as Array instead of a Node list
    */
-  getQSElementsAsArray: function (el, cls) {
+  getQSElementsAsArray(el, cls) {
     return Array.prototype.slice.call(el.querySelectorAll(cls), 0);
   },
 
-  centerElementInViewPort: function (el) {
+  centerElementInViewPort(el) {
     var vpH = window.innerHeight,
         vpW = window.innerWidth,
         elR = el.getBoundingClientRect(),
@@ -169,7 +173,7 @@ export default {
    * @param el
    * @returns {null}
    */
-  captureFormData: function (el) {
+  captureFormData(el) {
     var dataObj = Object.create(null),
         textareaEls, inputEls, selectEls;
 

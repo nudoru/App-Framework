@@ -6,43 +6,40 @@
 
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-let RendererModule = function () {
-  function render({key, target, html, callback}) {
-    let domEl,
-        mountPoint  = document.querySelector(target),
-        currentHTML;
+const MNT_REPLACE = 'replace',
+      MNT_APPEND  = 'append';
 
-    if(!mountPoint) {
-      console.warn('Render, target selector not found',target);
-      return;
-    }
+export default function ({key, method, lastAdjacent, targetSelector, html, callback}) {
+  let domEl,
+      mountPoint = document.querySelector(targetSelector),
+      currentHTML;
 
-    currentHTML = mountPoint.innerHTML;
+  method = method || MNT_REPLACE;
 
-    if (html) {
-      domEl = DOMUtils.HTMLStrToNode(html);
-      if (html !== currentHTML) {
-        // TODO experiment with the jsdiff function
+  if (!mountPoint) {
+    console.warn('Render, target selector not found', targetSelector);
+    return;
+  }
+
+  currentHTML = mountPoint.innerHTML;
+
+  domEl = DOMUtils.HTMLStrToNode(html);
+  domEl.setAttribute('data-noriKey', key);
+
+  if (html) {
+    if (html !== currentHTML) {
+      if (method === MNT_REPLACE) {
         mountPoint.innerHTML = '';
         mountPoint.appendChild(domEl);
       } else {
-        console.log('> is SAME');
+        mountPoint.insertBefore(domEl, lastAdjacent);
       }
     }
-
-    if (callback) {
-      callback(domEl);
-    }
-
-    return domEl;
   }
 
-  return {
-    render
-  };
+  if (callback) {
+    callback(domEl);
+  }
 
-};
-
-let Renderer = RendererModule();
-
-export default Renderer;
+  return domEl;
+}

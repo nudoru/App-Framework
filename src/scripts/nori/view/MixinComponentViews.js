@@ -22,9 +22,11 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(templateType, customizer) {
+  function createComponent(templateType, source) {
     return function (id, initProps) {
-      let template, previousInitialize, previousGetDefaultProps;
+      let customizer, template, previousInitialize, previousGetDefaultProps;
+
+      customizer = _.cloneDeep(source);
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.push(ViewComponentFactory());
