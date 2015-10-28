@@ -7,7 +7,7 @@ export default Nori.view().createComponent('', {
       'click button': () => this.setProps({label:'Clicked ' + (++this.counter) + ' times'})
     };
   },
-  
+
   template(props, state) {
     return this.from(`
       <div>

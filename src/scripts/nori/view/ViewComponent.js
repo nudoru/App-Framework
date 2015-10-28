@@ -42,7 +42,7 @@ export default function () {
       _lastProps      = {},
       _lifecycleState = LS_NO_INIT,
       _isMounted      = false,
-      _children       = {},
+      _children,
       _parent,
       _templateObjCache,
       _html,
@@ -83,7 +83,7 @@ export default function () {
       _parent = _internalProps.parent;
     }
 
-    _children = this.defineChildren();
+    this.addChildren(this.defineChildren());
 
     this.setState(this.getDefaultState());
 
@@ -296,8 +296,6 @@ export default function () {
    * @param mountEl
    */
   function mount() {
-    let newDOMElement;
-
     // TODO why aren't components unmounting on change first?
     if (_isMounted) {
       //console.warn('Component ' + this.getID() + ' is already mounted');
@@ -311,7 +309,7 @@ export default function () {
 
     _lifecycleState = LS_MOUNTED;
 
-    newDOMElement = Renderer({
+    _DOMElement = Renderer({
       key           : this.__key,
       method        : this.props.mountMethod,
       lastAdjacent  : _lastAdjacentNode,
@@ -319,9 +317,7 @@ export default function () {
       html          : _html
     });
 
-    _DOMElement = newDOMElement;
-    _isMounted = true;
-    _lastAdjacentNode = _DOMElement.nextSibling;
+    _isMounted        = true;
 
     if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents(this.props, this.state)) {
@@ -345,8 +341,8 @@ export default function () {
       window.clearTimeout(_mountDelay);
     }
 
-    this.componentDidMount();
     this.$mountChildren();
+    this.componentDidMount();
   }
 
   /**
@@ -406,7 +402,10 @@ export default function () {
     this.$disposeChildren();
     this.unmount();
 
-    _lifecycleState = LS_DISPOSED;
+    _lastAdjacentNode = null;
+    _children = null;
+
+    _lifecycleState = LS_NO_INIT;
   }
 
   function componentWillDispose() {
@@ -426,8 +425,43 @@ export default function () {
     return null;
   }
 
-  function addChild(child) {
-    _children.push(child);
+  function addChildren(childObjs) {
+    if (childObjs) {
+      Object.keys(childObjs).forEach(id => {
+        if (childObjs.hasOwnProperty(id)) {
+          this.addChild(id, childObjs[id])
+        }
+      });
+    } else {
+      _children = null;
+    }
+  }
+
+  function addChild(id, child) {
+    _children     = _children || {};
+
+    if(_children.hasOwnProperty(id)) {
+      console.warn('Component already has child with id',id);
+      return;
+    }
+
+    _children[id] = child;
+
+    if(_lifecycleState === LS_MOUNTED) {
+      // TODO need checks on each to determine if it was an already existing child
+      $initializeChildren();
+      $renderChildren();
+      $mountChildren();
+    }
+  }
+
+  function disposeChild(id) {
+    if (_children.hasOwnProperty(id)) {
+      _children[id].dispose();
+      delete _children[id];
+    } else {
+      console.warn('Cannot remove child. ', id, 'not found');
+    }
   }
 
   function getChild(id) {
@@ -555,6 +589,9 @@ export default function () {
     unmount,
     dispose,
     componentWillDispose,
+    addChild,
+    addChildren,
+    disposeChild,
     getChild,
     getChildIDs,
     $initializeChildren,

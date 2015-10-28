@@ -10,6 +10,7 @@ const MNT_REPLACE = 'replace',
       MNT_APPEND  = 'append';
 
 export default function ({key, method, lastAdjacent, targetSelector, html, callback}) {
+
   let domEl,
       mountPoint = document.querySelector(targetSelector),
       currentHTML;
@@ -24,7 +25,7 @@ export default function ({key, method, lastAdjacent, targetSelector, html, callb
   currentHTML = mountPoint.innerHTML;
 
   domEl = DOMUtils.HTMLStrToNode(html);
-  domEl.setAttribute('data-noriKey', key);
+  domEl.setAttribute('data-nori_vcid', key);
 
   if (html) {
     if (html !== currentHTML) {

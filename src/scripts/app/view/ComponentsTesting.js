@@ -172,6 +172,15 @@ export default Nori.view().createComponent('debug-components', {
     _actionSixEl.addEventListener('click', function actFour(e) {
       //
     });
+
+    ['foo','bar','baz'].forEach(id => {
+      this.addChild(id, ChildTest('testChild'+id, {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Dynamic!'+id
+      }))
+    });
+
   },
 
   componentWillUnmount() {

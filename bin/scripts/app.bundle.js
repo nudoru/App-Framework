@@ -505,6 +505,8 @@ exports['default'] = Nori.view().createComponent('debug-components', {
    * Component HTML was attached to the DOM
    */
   componentDidMount: function componentDidMount() {
+    var _this2 = this;
+
     _actionOneEl = document.getElementById('action-one');
     _actionTwoEl = document.getElementById('action-two');
     _actionThreeEl = document.getElementById('action-three');
@@ -608,6 +610,14 @@ exports['default'] = Nori.view().createComponent('debug-components', {
 
     _actionSixEl.addEventListener('click', function actFour(e) {
       //
+    });
+
+    ['foo', 'bar', 'baz'].forEach(function (id) {
+      _this2.addChild(id, (0, _ChildTestJs2['default'])('testChild' + id, {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Dynamic!' + id
+      }));
     });
   },
 
@@ -1995,7 +2005,7 @@ exports['default'] = function (_ref) {
   currentHTML = mountPoint.innerHTML;
 
   domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-  domEl.setAttribute('data-noriKey', key);
+  domEl.setAttribute('data-nori_vcid', key);
 
   if (html) {
     if (html !== currentHTML) {
@@ -2273,7 +2283,7 @@ exports['default'] = function () {
       _lastProps = {},
       _lifecycleState = LS_NO_INIT,
       _isMounted = false,
-      _children = {},
+      _children = undefined,
       _parent = undefined,
       _templateObjCache = undefined,
       _html = undefined,
@@ -2314,7 +2324,7 @@ exports['default'] = function () {
       _parent = _internalProps.parent;
     }
 
-    _children = this.defineChildren();
+    this.addChildren(this.defineChildren());
 
     this.setState(this.getDefaultState());
 
@@ -2526,8 +2536,6 @@ exports['default'] = function () {
    * @param mountEl
    */
   function mount() {
-    var newDOMElement = undefined;
-
     // TODO why aren't components unmounting on change first?
     if (_isMounted) {
       //console.warn('Component ' + this.getID() + ' is already mounted');
@@ -2541,7 +2549,7 @@ exports['default'] = function () {
 
     _lifecycleState = LS_MOUNTED;
 
-    newDOMElement = (0, _viewRendererJs2['default'])({
+    _DOMElement = (0, _viewRendererJs2['default'])({
       key: this.__key,
       method: this.props.mountMethod,
       lastAdjacent: _lastAdjacentNode,
@@ -2549,9 +2557,7 @@ exports['default'] = function () {
       html: _html
     });
 
-    _DOMElement = newDOMElement;
     _isMounted = true;
-    _lastAdjacentNode = _DOMElement.nextSibling;
 
     if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents(this.props, this.state)) {
@@ -2575,8 +2581,8 @@ exports['default'] = function () {
       window.clearTimeout(_mountDelay);
     }
 
-    this.componentDidMount();
     this.$mountChildren();
+    this.componentDidMount();
   }
 
   /**
@@ -2634,7 +2640,10 @@ exports['default'] = function () {
     this.$disposeChildren();
     this.unmount();
 
-    _lifecycleState = LS_DISPOSED;
+    _lastAdjacentNode = null;
+    _children = null;
+
+    _lifecycleState = LS_NO_INIT;
   }
 
   function componentWillDispose() {}
@@ -2653,8 +2662,45 @@ exports['default'] = function () {
     return null;
   }
 
-  function addChild(child) {
-    _children.push(child);
+  function addChildren(childObjs) {
+    var _this = this;
+
+    if (childObjs) {
+      Object.keys(childObjs).forEach(function (id) {
+        if (childObjs.hasOwnProperty(id)) {
+          _this.addChild(id, childObjs[id]);
+        }
+      });
+    } else {
+      _children = null;
+    }
+  }
+
+  function addChild(id, child) {
+    _children = _children || {};
+
+    if (_children.hasOwnProperty(id)) {
+      console.warn('Component already has child with id', id);
+      return;
+    }
+
+    _children[id] = child;
+
+    if (_lifecycleState === LS_MOUNTED) {
+      // TODO need checks on each to determine if it was an already existing child
+      $initializeChildren();
+      $renderChildren();
+      $mountChildren();
+    }
+  }
+
+  function disposeChild(id) {
+    if (_children.hasOwnProperty(id)) {
+      _children[id].dispose();
+      delete _children[id];
+    } else {
+      console.warn('Cannot remove child. ', id, 'not found');
+    }
   }
 
   function getChild(id) {
@@ -2670,10 +2716,10 @@ exports['default'] = function () {
   }
 
   function $initializeChildren() {
-    var _this = this;
+    var _this2 = this;
 
     getChildIDs().forEach(function (region) {
-      _children[region].initialize({ parent: _this });
+      _children[region].initialize({ parent: _this2 });
     });
   }
 
@@ -2784,6 +2830,9 @@ exports['default'] = function () {
     unmount: unmount,
     dispose: dispose,
     componentWillDispose: componentWillDispose,
+    addChild: addChild,
+    addChildren: addChildren,
+    disposeChild: disposeChild,
     getChild: getChild,
     getChildIDs: getChildIDs,
     $initializeChildren: $initializeChildren,
