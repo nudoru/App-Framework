@@ -402,14 +402,14 @@ exports['default'] = Nori.view().createComponent('', {
     var _this = this;
 
     return {
-      'click button': function clickButton() {
+      'click p': function clickP() {
         return _this.setProps({ label: 'Clicked ' + ++_this.counter + ' times' });
       }
     };
   },
 
   template: function template(props, state) {
-    return this.from('\n      <div>\n        <button>{{id}}, {{label}}</button>\n      </div>\n    ');
+    return this.from('\n      <div class="nori__block">\n        <p>{{id}}, {{label}}</p>\n      </div>\n    ');
   }
 
 });
@@ -449,6 +449,10 @@ var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMM
 var _ChildTestJs = require('./ChildTest.js');
 
 var _ChildTestJs2 = _interopRequireDefault(_ChildTestJs);
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -505,19 +509,34 @@ exports['default'] = Nori.view().createComponent('debug-components', {
    * Component HTML was attached to the DOM
    */
   componentDidMount: function componentDidMount() {
-    var _this2 = this;
 
+    console.time('comps');
+    var dyn = {};
+
+    _vendorLodashMinJs2['default'].range(1, 3000).forEach(function (id) {
+      id = 'dynamic' + String(id);
+      dyn[id] = (0, _ChildTestJs2['default'])('dBtn' + id, {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Dynamic! ' + id
+      });
+    });
+
+    this.addChildren(dyn);
+
+    console.timeEnd('comps');
+
+    console.log('done', this);
+  },
+
+  _testNudoruComponents: function _testNudoruComponents() {
+    "use strict";
     _actionOneEl = document.getElementById('action-one');
     _actionTwoEl = document.getElementById('action-two');
     _actionThreeEl = document.getElementById('action-three');
     _actionFourEl = document.getElementById('action-four');
     _actionFiveEl = document.getElementById('action-five');
     _actionSixEl = document.getElementById('action-six');
-
-    //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
-    //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
-    //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
-    //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
 
     _toolTip.add({
       title: '',
@@ -611,16 +630,6 @@ exports['default'] = Nori.view().createComponent('debug-components', {
     _actionSixEl.addEventListener('click', function actFour(e) {
       //
     });
-
-    ['foo', 'bar', 'baz'].forEach(function (id) {
-      _this2.addChild(id, (0, _ChildTestJs2['default'])('dBtn' + id, {
-        mount: '#debug-child',
-        mountMethod: 'append',
-        label: 'Dynamic! ' + id
-      }));
-    });
-
-    this.child('testChild2').setProps({ label: 'updated!' });
   },
 
   componentWillUnmount: function componentWillUnmount() {}
@@ -628,7 +637,7 @@ exports['default'] = Nori.view().createComponent('debug-components', {
 });
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
+},{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../../vendor/lodash.min.js":43,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1497,7 +1506,7 @@ exports['default'] = function () {
       previousGetDefaultProps = template.getDefaultProps;
 
       template.initialize = function initialize(props) {
-        template.initializeComponent(props);
+        template.initializeComponent.call(template, props);
         previousInitialize.call(template, props);
       };
 
@@ -1991,37 +2000,35 @@ exports['default'] = function (_ref) {
   var lastAdjacent = _ref.lastAdjacent;
   var targetSelector = _ref.targetSelector;
   var html = _ref.html;
-  var callback = _ref.callback;
 
   var domEl = undefined,
       mountPoint = document.querySelector(targetSelector),
       currentHTML = undefined;
 
   method = method || MNT_REPLACE;
+  key = key || 'nk';
 
   if (!mountPoint) {
     console.warn('Render, target selector not found', targetSelector);
     return;
   }
 
-  currentHTML = mountPoint.innerHTML;
-
-  domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-  domEl.setAttribute('data-nori_vcid', key);
-
   if (html) {
-    if (html !== currentHTML) {
-      if (method === MNT_REPLACE) {
+    var jsClass = 'js__nvc' + key;
+    domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
+    domEl.setAttribute('data-norivcid', key);
+    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
+    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, jsClass);
+
+    if (method === MNT_REPLACE) {
+      currentHTML = mountPoint.innerHTML;
+      if (html !== currentHTML) {
         mountPoint.innerHTML = '';
         mountPoint.appendChild(domEl);
-      } else {
-        mountPoint.insertBefore(domEl, lastAdjacent);
       }
+    } else {
+      mountPoint.insertBefore(domEl, lastAdjacent);
     }
-  }
-
-  if (callback) {
-    callback(domEl);
   }
 
   return domEl;
@@ -2298,7 +2305,7 @@ exports['default'] = function () {
    * Subclasses can override.
    */
   function initialize(initProps) {
-    this.initializeComponent(initProps);
+    this.initializeComponent(initProps, this);
   }
 
   /**
@@ -2658,8 +2665,6 @@ exports['default'] = function () {
   //  Children
   //----------------------------------------------------------------------------
 
-  //TODO reduce code repetition
-
   /**
    * Called in initializeComponent to create children during the initialization phase
    */
@@ -2673,16 +2678,16 @@ exports['default'] = function () {
     if (childObjs) {
       Object.keys(childObjs).forEach(function (id) {
         if (childObjs.hasOwnProperty(id)) {
-          _this.addChild(id, childObjs[id]);
+          _this.addChild(id, childObjs[id], false);
         }
       });
+      $forceChildren();
     } else {
       _children = null;
     }
   }
 
-  function addChild(id, child) {
-    //let localID = _.camelCase(id);
+  function addChild(id, child, update) {
     _children = _children || {};
 
     if (_children.hasOwnProperty(id)) {
@@ -2692,24 +2697,47 @@ exports['default'] = function () {
 
     _children[id] = child;
 
-    //this[localID] = child;
+    this[$getLocalVCID(id)] = child;
+
+    if (update) {
+      $forceChildren();
+    }
+  }
+
+  /**
+   * Force init, render and mount of all children. Called after a new child is added
+   * IF the current view is mounted and the children aren't
+   */
+  function $forceChildren() {
+    var _this2 = this;
 
     if (_lifecycleState === LS_MOUNTED) {
-      // TODO need checks on each to determine if it was an already existing child
-      $initializeChildren();
-      $renderChildren();
-      $mountChildren();
+      getChildIDs().forEach(function (id) {
+        var isMounted = _children[id].getLifeCycleState() === LS_MOUNTED;
+        if (!isMounted) {
+          _children[id].initialize({ parent: _this2 });
+          _children[id].$renderComponent();
+          _children[id].mount();
+        }
+      });
     }
+  }
+
+  // before attaching to this, clean it up a little
+  function $getLocalVCID(id) {
+    return 'C' + _vendorLodashMinJs2['default'].camelCase(id);
   }
 
   function disposeChild(id) {
     if (_children.hasOwnProperty(id)) {
       _children[id].dispose();
       delete _children[id];
-      //delete this[_.camelCase(id)];
-    } else {
-        console.warn('Cannot remove child. ', id, 'not found');
+      if (this.hasOwnProperty($getLocalVCID(id))) {
+        delete this[$getLocalVCID(id)];
       }
+    } else {
+      console.warn('Cannot remove child. ', id, 'not found');
+    }
   }
 
   function child(id) {
@@ -2724,11 +2752,13 @@ exports['default'] = function () {
     return _children ? Object.keys(_children) : [];
   }
 
+  //TODO reduce code repetition ------------------------------------------------
+
   function $initializeChildren() {
-    var _this2 = this;
+    var _this3 = this;
 
     getChildIDs().forEach(function (region) {
-      _children[region].initialize({ parent: _this2 });
+      _children[region].initialize({ parent: _this3 });
     });
   }
 
@@ -2777,6 +2807,14 @@ exports['default'] = function () {
     return this.__id;
   }
 
+  function getKey() {
+    return this.__key;
+  }
+
+  function setKey(newKey) {
+    this.__key = newKey;
+  }
+
   function getDOMElement() {
     return _DOMElement;
   }
@@ -2820,6 +2858,8 @@ exports['default'] = function () {
     getLifeCycleState: getLifeCycleState,
     isInitialized: isInitialized,
     getID: getID,
+    getKey: getKey,
+    setKey: setKey,
     template: template,
     getDOMElement: getDOMElement,
     isMounted: isMounted,
@@ -2844,6 +2884,7 @@ exports['default'] = function () {
     addChildren: addChildren,
     disposeChild: disposeChild,
     child: child,
+    $getLocalVCID: $getLocalVCID,
     getChildIDs: getChildIDs,
     $initializeChildren: $initializeChildren,
     $renderChildren: $renderChildren,
@@ -2925,10 +2966,10 @@ exports["default"] = browserInfo;
 module.exports = exports["default"];
 
 },{}],29:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports['default'] = {
+exports["default"] = {
 
   // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
   // element must be entirely on screen
@@ -2981,10 +3022,51 @@ exports['default'] = {
   },
 
   //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
-  HTMLStrToNode: function HTMLStrToNode(str) {
+  HTMLStrToNode2: function HTMLStrToNode2(str) {
     var temp = document.createElement('div');
     temp.innerHTML = str;
     return temp.firstChild;
+  },
+
+  //http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
+  HTMLStrToNode: function HTMLStrToNode(html) {
+    /* code taken from jQuery */
+    var wrapMap = {
+      option: [1, "<select multiple='multiple'>", "</select>"],
+      legend: [1, "<fieldset>", "</fieldset>"],
+      area: [1, "<map>", "</map>"],
+      param: [1, "<object>", "</object>"],
+      thead: [1, "<table>", "</table>"],
+      tr: [2, "<table><tbody>", "</tbody></table>"],
+      col: [2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"],
+      td: [3, "<table><tbody><tr>", "</tr></tbody></table>"],
+
+      // IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
+      // unless wrapped in a div with non-breaking characters in front of it.
+      _default: [1, "<div>", "</div>"]
+    };
+    wrapMap.optgroup = wrapMap.option;
+    wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+    wrapMap.th = wrapMap.td;
+    var element = document.createElement('div');
+    var match = /<\s*\w.*?>/g.exec(html);
+    if (match != null) {
+      var tag = match[0].replace(/</g, '').replace(/>/g, '');
+      var map = wrapMap[tag] || wrapMap._default,
+          element;
+      html = map[1] + html + map[2];
+      element.innerHTML = html;
+      // Descend through wrappers to the right content
+      var j = map[0] + 1;
+      while (j--) {
+        element = element.lastChild;
+      }
+    } else {
+      // if only text is passed
+      element.innerHTML = html;
+      element = element.lastChild;
+    }
+    return element;
   },
 
   wrapElement: function wrapElement(wrapperStr, el) {
@@ -3136,7 +3218,7 @@ exports['default'] = {
   }
 
 };
-module.exports = exports['default'];
+module.exports = exports["default"];
 
 },{}],30:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {

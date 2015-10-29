@@ -55,7 +55,7 @@ export default function () {
    * Subclasses can override.
    */
   function initialize(initProps) {
-    this.initializeComponent(initProps);
+    this.initializeComponent(initProps, this);
   }
 
   /**
@@ -419,7 +419,6 @@ export default function () {
   //  Children
   //----------------------------------------------------------------------------
 
-  //TODO reduce code repetition
 
   /**
    * Called in initializeComponent to create children during the initialization phase
@@ -432,16 +431,16 @@ export default function () {
     if (childObjs) {
       Object.keys(childObjs).forEach(id => {
         if (childObjs.hasOwnProperty(id)) {
-          this.addChild(id, childObjs[id])
+          this.addChild(id, childObjs[id], false);
         }
       });
+      $forceChildren();
     } else {
       _children = null;
     }
   }
 
-  function addChild(id, child) {
-    //let localID = _.camelCase(id);
+  function addChild(id, child, update) {
     _children = _children || {};
 
     if (_children.hasOwnProperty(id)) {
@@ -451,21 +450,42 @@ export default function () {
 
     _children[id] = child;
 
-    //this[localID] = child;
+    this[$getLocalVCID(id)] = child;
 
-    if (_lifecycleState === LS_MOUNTED) {
-      // TODO need checks on each to determine if it was an already existing child
-      $initializeChildren();
-      $renderChildren();
-      $mountChildren();
+    if(update) {
+      $forceChildren();
     }
+  }
+
+  /**
+   * Force init, render and mount of all children. Called after a new child is added
+   * IF the current view is mounted and the children aren't
+   */
+  function $forceChildren() {
+    if (_lifecycleState === LS_MOUNTED) {
+      getChildIDs().forEach(id => {
+        var isMounted = _children[id].getLifeCycleState() === LS_MOUNTED;
+        if(!isMounted) {
+          _children[id].initialize({parent: this});
+          _children[id].$renderComponent();
+          _children[id].mount();
+        }
+      });
+    }
+  }
+
+  // before attaching to this, clean it up a little
+  function $getLocalVCID(id) {
+    return 'C' + _.camelCase(id);
   }
 
   function disposeChild(id) {
     if (_children.hasOwnProperty(id)) {
       _children[id].dispose();
       delete _children[id];
-      //delete this[_.camelCase(id)];
+      if(this.hasOwnProperty($getLocalVCID(id))) {
+        delete this[$getLocalVCID(id)];
+      }
     } else {
       console.warn('Cannot remove child. ', id, 'not found');
     }
@@ -482,6 +502,9 @@ export default function () {
   function getChildIDs() {
     return _children ? Object.keys(_children) : [];
   }
+
+  //TODO reduce code repetition ------------------------------------------------
+
 
   function $initializeChildren() {
     getChildIDs().forEach(region => {
@@ -534,6 +557,14 @@ export default function () {
     return this.__id;
   }
 
+  function getKey() {
+    return this.__key;
+  }
+
+  function setKey(newKey) {
+    this.__key = newKey;
+  }
+
   function getDOMElement() {
     return _DOMElement;
   }
@@ -577,6 +608,8 @@ export default function () {
     getLifeCycleState,
     isInitialized,
     getID,
+    getKey,
+    setKey,
     template,
     getDOMElement,
     isMounted,
@@ -601,6 +634,7 @@ export default function () {
     addChildren,
     disposeChild,
     child,
+    $getLocalVCID,
     getChildIDs,
     $initializeChildren,
     $renderChildren,

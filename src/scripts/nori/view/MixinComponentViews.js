@@ -24,7 +24,10 @@ export default function () {
    */
   function createComponent(templateType, source) {
     return function (id, initProps) {
-      let customizer, template, previousInitialize, previousGetDefaultProps;
+      let customizer,
+          template,
+          previousInitialize,
+          previousGetDefaultProps;
 
       customizer = _.cloneDeep(source);
 
@@ -42,7 +45,7 @@ export default function () {
       previousGetDefaultProps = template.getDefaultProps;
 
       template.initialize = function initialize(props) {
-        template.initializeComponent(props);
+        template.initializeComponent.call(template, props);
         previousInitialize.call(template, props);
       };
 

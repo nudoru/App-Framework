@@ -57,12 +57,52 @@ export default {
   removeElement(el) {
     el.parentNode.removeChild(el);
   },
-  
+
   //http://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro
-  HTMLStrToNode(str) {
+  HTMLStrToNode2(str) {
     var temp       = document.createElement('div');
     temp.innerHTML = str;
     return temp.firstChild;
+  },
+
+  //http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
+  HTMLStrToNode(html) {
+    /* code taken from jQuery */
+    var wrapMap      = {
+      option: [1, "<select multiple='multiple'>", "</select>"],
+      legend: [1, "<fieldset>", "</fieldset>"],
+      area  : [1, "<map>", "</map>"],
+      param : [1, "<object>", "</object>"],
+      thead : [1, "<table>", "</table>"],
+      tr    : [2, "<table><tbody>", "</tbody></table>"],
+      col   : [2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"],
+      td    : [3, "<table><tbody><tr>", "</tr></tbody></table>"],
+
+      // IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
+      // unless wrapped in a div with non-breaking characters in front of it.
+      _default: [1, "<div>", "</div>"]
+    };
+    wrapMap.optgroup = wrapMap.option;
+    wrapMap.tbody    = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+    wrapMap.th  = wrapMap.td;
+    var element = document.createElement('div');
+    var match   = /<\s*\w.*?>/g.exec(html);
+    if (match != null) {
+      var tag           = match[0].replace(/</g, '').replace(/>/g, '');
+      var map           = wrapMap[tag] || wrapMap._default, element;
+      html              = map[1] + html + map[2];
+      element.innerHTML = html;
+      // Descend through wrappers to the right content
+      var j = map[0] + 1;
+      while (j--) {
+        element = element.lastChild;
+      }
+    } else {
+      // if only text is passed
+      element.innerHTML = html;
+      element           = element.lastChild;
+    }
+    return element;
   },
 
   wrapElement(wrapperStr, el) {
@@ -153,7 +193,7 @@ export default {
   /**
    * Get an array of elements in the container returned as Array instead of a Node list
    */
-  getQSElementsAsArray(el, cls) {
+    getQSElementsAsArray(el, cls) {
     return Array.prototype.slice.call(el.querySelectorAll(cls), 0);
   },
 
@@ -173,7 +213,7 @@ export default {
    * @param el
    * @returns {null}
    */
-  captureFormData(el) {
+    captureFormData(el) {
     var dataObj = Object.create(null),
         textareaEls, inputEls, selectEls;
 

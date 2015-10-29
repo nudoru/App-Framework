@@ -9,37 +9,36 @@ import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 const MNT_REPLACE = 'replace',
       MNT_APPEND  = 'append';
 
-export default function ({key, method, lastAdjacent, targetSelector, html, callback}) {
+export default function ({key, method, lastAdjacent, targetSelector, html}) {
 
   let domEl,
       mountPoint = document.querySelector(targetSelector),
       currentHTML;
 
   method = method || MNT_REPLACE;
+  key = key || 'nk';
 
   if (!mountPoint) {
     console.warn('Render, target selector not found', targetSelector);
     return;
   }
 
-  currentHTML = mountPoint.innerHTML;
-
-  domEl = DOMUtils.HTMLStrToNode(html);
-  domEl.setAttribute('data-nori_vcid', key);
-
   if (html) {
-    if (html !== currentHTML) {
-      if (method === MNT_REPLACE) {
+    let jsClass = 'js__nvc'+key;
+    domEl = DOMUtils.HTMLStrToNode(html);
+    domEl.setAttribute('data-norivcid', key);
+    DOMUtils.addClass(domEl, 'nori__vc');
+    DOMUtils.addClass(domEl, jsClass);
+
+    if (method === MNT_REPLACE) {
+      currentHTML = mountPoint.innerHTML;
+      if (html !== currentHTML) {
         mountPoint.innerHTML = '';
         mountPoint.appendChild(domEl);
-      } else {
-        mountPoint.insertBefore(domEl, lastAdjacent);
       }
+    } else {
+      mountPoint.insertBefore(domEl, lastAdjacent);
     }
-  }
-
-  if (callback) {
-    callback(domEl);
   }
 
   return domEl;

@@ -5,6 +5,7 @@ import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import MixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
 import ChildTest from './ChildTest.js';
+import _ from '../../vendor/lodash.min.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -63,17 +64,34 @@ export default Nori.view().createComponent('debug-components', {
    * Component HTML was attached to the DOM
    */
     componentDidMount() {
+
+    console.time('comps');
+    let dyn = {};
+
+    _.range(1,3000).forEach(id => {
+      id = 'dynamic'+String(id);
+      dyn[id] = ChildTest('dBtn'+id, {
+        mount: '#debug-child',
+        mountMethod: 'append',
+        label: 'Dynamic! '+id
+      });
+    });
+
+    this.addChildren(dyn);
+
+    console.timeEnd('comps');
+
+    console.log('done', this);
+  },
+
+  _testNudoruComponents() {
+    "use strict";
     _actionOneEl   = document.getElementById('action-one');
     _actionTwoEl   = document.getElementById('action-two');
     _actionThreeEl = document.getElementById('action-three');
     _actionFourEl  = document.getElementById('action-four');
     _actionFiveEl  = document.getElementById('action-five');
     _actionSixEl   = document.getElementById('action-six');
-
-    //_toolTip.add({title:'', content:"This is a button, it's purpose is unknown.", position:'TR', targetEl: _actionFourEl, type:'information'});
-    //_toolTip.add({title:'', content:"This is a button, click it and rainbows will appear.", position:'BR', targetEl: _actionFourEl, type:'success'});
-    //_toolTip.add({title:'', content:"This is a button, it doesn't make a sound.", position:'BL', targetEl: _actionFourEl, type:'warning'});
-    //_toolTip.add({title:'', content:"This is a button, behold the magic and mystery.", position:'TL', targetEl: _actionFourEl, type:'danger'});
 
     _toolTip.add({
       title   : '',
@@ -172,18 +190,6 @@ export default Nori.view().createComponent('debug-components', {
     _actionSixEl.addEventListener('click', function actFour(e) {
       //
     });
-
-    ['foo','bar','baz'].forEach(id => {
-      this.addChild(id, ChildTest('dBtn'+id, {
-        mount: '#debug-child',
-        mountMethod: 'append',
-        label: 'Dynamic! '+id
-      }))
-    });
-
-
-    this.child('testChild2').setProps({label:'updated!'});
-
   },
 
   componentWillUnmount() {

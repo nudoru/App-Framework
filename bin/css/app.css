@@ -4108,6 +4108,32 @@ tr.row-header-inline td {
   text-align: right;
 }
 
+.nori__vc .error {
+  border: 1px solid #f00;
+}
+
+.nori__block {
+  display: inline-block;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  padding: 5px;
+  margin: 0 5px 5px 0;
+  user-select: none;
+}
+.nori__block p {
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  line-height: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
 body {
   overflow: hidden;
   background-color: #eee;
@@ -4177,8 +4203,7 @@ body {
   display: block;
   width: 100%;
   overflow: hidden;
-  background-color: #fff;
-  box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
+  background-color: #eee;
 }
 .app__header h1 {
   margin: 0;
