@@ -33,6 +33,7 @@ export default function ({key, method, lastAdjacent, targetSelector, html}) {
     if (method === MNT_REPLACE) {
       currentHTML = mountPoint.innerHTML;
       if (html !== currentHTML) {
+        //DOMUtils.removeAllElements(mountPoint);
         mountPoint.innerHTML = '';
         mountPoint.appendChild(domEl);
       }

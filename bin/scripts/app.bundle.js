@@ -2023,6 +2023,7 @@ exports['default'] = function (_ref) {
     if (method === MNT_REPLACE) {
       currentHTML = mountPoint.innerHTML;
       if (html !== currentHTML) {
+        //DOMUtils.removeAllElements(mountPoint);
         mountPoint.innerHTML = '';
         mountPoint.appendChild(domEl);
       }
