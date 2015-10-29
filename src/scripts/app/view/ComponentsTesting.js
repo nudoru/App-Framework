@@ -77,10 +77,11 @@ export default Nori.view().createComponent('debug-components', {
     });
 
     this.addChildren(dyn);
+
+    this._testNudoruComponents();
   },
 
   _testNudoruComponents() {
-    "use strict";
     _actionOneEl   = document.getElementById('action-one');
     _actionTwoEl   = document.getElementById('action-two');
     _actionThreeEl = document.getElementById('action-three');
@@ -174,8 +175,7 @@ export default Nori.view().createComponent('debug-components', {
     });
 
     _actionFourEl.addEventListener('click', function actFour(e) {
-      var test = _this.child('testChild1');
-      test.setProps({label: 'From the parent'});
+      _this.child('testChild').setProps({label: 'From the parent'});
     });
 
     _actionFiveEl.addEventListener('click', function actFour(e) {

@@ -522,10 +522,11 @@ exports['default'] = Nori.view().createComponent('debug-components', {
     });
 
     this.addChildren(dyn);
+
+    this._testNudoruComponents();
   },
 
   _testNudoruComponents: function _testNudoruComponents() {
-    "use strict";
     _actionOneEl = document.getElementById('action-one');
     _actionTwoEl = document.getElementById('action-two');
     _actionThreeEl = document.getElementById('action-three');
@@ -614,8 +615,7 @@ exports['default'] = Nori.view().createComponent('debug-components', {
     });
 
     _actionFourEl.addEventListener('click', function actFour(e) {
-      var test = _this.child('testChild1');
-      test.setProps({ label: 'From the parent' });
+      _this.child('testChild').setProps({ label: 'From the parent' });
     });
 
     _actionFiveEl.addEventListener('click', function actFour(e) {
@@ -2547,11 +2547,11 @@ exports['default'] = function () {
    */
   function mount() {
     if (isMounted()) {
-      this.unmount();
+      //this.unmount();
       console.warn('Component ' + this.getID() + ' is already mounted');
       return;
     }
-    console.log('mount', this.getID(), this.getHTML());
+
     if (!this.getHTML() || this.getHTML().length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
@@ -2831,6 +2831,10 @@ exports['default'] = function () {
     return _DOMElement;
   }
 
+  function getMountPoint() {
+    return _mountPoint;
+  }
+
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -2876,6 +2880,7 @@ exports['default'] = function () {
     getDOMElement: getDOMElement,
     getHTML: getHTML,
     setHTML: setHTML,
+    getMountPoint: getMountPoint,
     isMounted: isMounted,
     bind: bind,
     from: from,

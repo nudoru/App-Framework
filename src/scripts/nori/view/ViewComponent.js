@@ -265,7 +265,7 @@ export default function () {
     this.$renderChildren();
 
     this.setHTML(this.render(this.props, this.state));
-    
+
     //if (wasMounted) {
     //  this.mount();
     //}
@@ -302,11 +302,11 @@ export default function () {
    */
   function mount() {
     if (isMounted()) {
-      this.unmount();
+      //this.unmount();
       console.warn('Component ' + this.getID() + ' is already mounted');
       return;
     }
-console.log('mount',this.getID(),this.getHTML())
+
     if (!this.getHTML() || this.getHTML().length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
@@ -584,6 +584,10 @@ console.log('mount',this.getID(),this.getHTML())
     return _DOMElement;
   }
 
+  function getMountPoint() {
+    return _mountPoint;
+  }
+
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -629,6 +633,7 @@ console.log('mount',this.getID(),this.getHTML())
     getDOMElement,
     getHTML,
     setHTML,
+    getMountPoint,
     isMounted,
     bind,
     from,
