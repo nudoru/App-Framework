@@ -510,10 +510,9 @@ exports['default'] = Nori.view().createComponent('debug-components', {
    */
   componentDidMount: function componentDidMount() {
 
-    console.time('comps');
     var dyn = {};
 
-    _vendorLodashMinJs2['default'].range(1, 3000).forEach(function (id) {
+    _vendorLodashMinJs2['default'].range(1, 30).forEach(function (id) {
       id = 'dynamic' + String(id);
       dyn[id] = (0, _ChildTestJs2['default'])('dBtn' + id, {
         mount: '#debug-child',
@@ -523,10 +522,6 @@ exports['default'] = Nori.view().createComponent('debug-components', {
     });
 
     this.addChildren(dyn);
-
-    console.timeEnd('comps');
-
-    console.log('done', this);
   },
 
   _testNudoruComponents: function _testNudoruComponents() {
@@ -2292,7 +2287,6 @@ exports['default'] = function () {
       _lastState = {},
       _lastProps = {},
       _lifecycleState = LS_NO_INIT,
-      _isMounted = false,
       _children = undefined,
       _parent = undefined,
       _templateObjCache = undefined,
@@ -2471,6 +2465,12 @@ exports['default'] = function () {
   function $renderAfterPropsOrStateChange() {
     if (_lifecycleState > LS_INITED) {
       this.$renderComponent();
+
+      if (this.isMounted()) {
+        this.unmount();
+        this.mount();
+      }
+
       if (typeof this.componentDidUpdate === 'function') {
         this.componentDidUpdate(_lastProps, _lastState);
       }
@@ -2495,11 +2495,11 @@ exports['default'] = function () {
   function $renderComponent() {
     var force = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-    var wasMounted = _isMounted;
+    //let wasMounted = isMounted();
 
-    if (wasMounted) {
-      this.unmount();
-    }
+    //if (wasMounted) {
+    //  this.unmount();
+    //}
 
     _lifecycleState = LS_RENDERING;
 
@@ -2507,13 +2507,13 @@ exports['default'] = function () {
       _templateObjCache = this.template(this.props, this.state);
     }
 
-    _html = this.render(this.props, this.state);
-
-    if (wasMounted) {
-      this.mount();
-    }
-
     this.$renderChildren();
+
+    this.setHTML(this.render(this.props, this.state));
+
+    //if (wasMounted) {
+    //  this.mount();
+    //}
   }
 
   /**
@@ -2546,13 +2546,13 @@ exports['default'] = function () {
    * @param mountEl
    */
   function mount() {
-    // TODO why aren't components unmounting on change first?
-    if (_isMounted) {
-      //console.warn('Component ' + this.getID() + ' is already mounted');
+    if (isMounted()) {
+      this.unmount();
+      console.warn('Component ' + this.getID() + ' is already mounted');
       return;
     }
-
-    if (!_html || _html.length === 0) {
+    console.log('mount', this.getID(), this.getHTML());
+    if (!this.getHTML() || this.getHTML().length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
@@ -2564,10 +2564,8 @@ exports['default'] = function () {
       method: this.props.mountMethod,
       lastAdjacent: _lastAdjacentNode,
       targetSelector: _mountPoint,
-      html: _html
+      html: this.getHTML()
     });
-
-    _isMounted = true;
 
     if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents(this.props, this.state)) {
@@ -2630,8 +2628,6 @@ exports['default'] = function () {
 
     this.componentWillUnmount();
 
-    _isMounted = false;
-
     if (typeof this.undelegateEvents === 'function') {
       this.undelegateEvents(this.getDOMEvents());
     }
@@ -2642,7 +2638,6 @@ exports['default'] = function () {
       _nudoruBrowserDOMUtilsJs2['default'].removeElement(_DOMElement);
     }
 
-    _html = '';
     _DOMElement = null;
 
     _lifecycleState = LS_UNMOUNTED;
@@ -2758,32 +2753,40 @@ exports['default'] = function () {
   function $initializeChildren() {
     var _this3 = this;
 
-    getChildIDs().forEach(function (region) {
-      _children[region].initialize({ parent: _this3 });
+    getChildIDs().forEach(function (id) {
+      _children[id].initialize({ parent: _this3 });
     });
   }
 
   function $renderChildren() {
-    getChildIDs().forEach(function (region) {
-      _children[region].$renderComponent();
+    getChildIDs().forEach(function (id) {
+      _children[id].$renderComponent();
     });
   }
 
+  function $getChildHTMLObj() {
+    var htmlObj = {};
+    getChildIDs().forEach(function (id) {
+      htmlObj[id] = _children[id].getHTML();
+    });
+    return htmlObj;
+  }
+
   function $mountChildren() {
-    getChildIDs().forEach(function (region) {
-      _children[region].mount();
+    getChildIDs().forEach(function (id) {
+      _children[id].mount();
     });
   }
 
   function $unmountChildren() {
-    getChildIDs().forEach(function (region) {
-      _children[region].unmount();
+    getChildIDs().forEach(function (id) {
+      _children[id].unmount();
     });
   }
 
   function $disposeChildren() {
-    getChildIDs().forEach(function (region) {
-      _children[region].dispose();
+    getChildIDs().forEach(function (id) {
+      _children[id].dispose();
     });
     _children = null;
   }
@@ -2801,7 +2804,7 @@ exports['default'] = function () {
   }
 
   function isMounted() {
-    return _isMounted;
+    return !!_DOMElement;
   }
 
   function getID() {
@@ -2814,6 +2817,14 @@ exports['default'] = function () {
 
   function setKey(newKey) {
     this.__key = newKey;
+  }
+
+  function getHTML() {
+    return _html;
+  }
+
+  function setHTML(html) {
+    _html = html;
   }
 
   function getDOMElement() {
@@ -2863,6 +2874,8 @@ exports['default'] = function () {
     setKey: setKey,
     template: template,
     getDOMElement: getDOMElement,
+    getHTML: getHTML,
+    setHTML: setHTML,
     isMounted: isMounted,
     bind: bind,
     from: from,

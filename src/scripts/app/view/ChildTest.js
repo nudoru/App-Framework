@@ -4,7 +4,7 @@ export default Nori.view().createComponent('', {
 
   getDOMEvents() {
     return {
-      'click p': () => this.setProps({label:'Clicked ' + (++this.counter) + ' times'})
+      'click p': () => this.setProps({label: 'Clicked ' + (++this.counter) + ' times'})
     };
   },
 

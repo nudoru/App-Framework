@@ -41,7 +41,6 @@ export default function () {
       _lastState      = {},
       _lastProps      = {},
       _lifecycleState = LS_NO_INIT,
-      _isMounted      = false,
       _children,
       _parent,
       _templateObjCache,
@@ -221,6 +220,12 @@ export default function () {
   function $renderAfterPropsOrStateChange() {
     if (_lifecycleState > LS_INITED) {
       this.$renderComponent();
+
+      if(this.isMounted()) {
+        this.unmount();
+        this.mount();
+      }
+
       if (typeof this.componentDidUpdate === 'function') {
         this.componentDidUpdate(_lastProps, _lastState);
       }
@@ -245,11 +250,11 @@ export default function () {
    * @returns {*}
    */
   function $renderComponent(force = false) {
-    let wasMounted = _isMounted;
+    //let wasMounted = isMounted();
 
-    if (wasMounted) {
-      this.unmount();
-    }
+    //if (wasMounted) {
+    //  this.unmount();
+    //}
 
     _lifecycleState = LS_RENDERING;
 
@@ -257,13 +262,13 @@ export default function () {
       _templateObjCache = this.template(this.props, this.state);
     }
 
-    _html = this.render(this.props, this.state);
-
-    if (wasMounted) {
-      this.mount();
-    }
-
     this.$renderChildren();
+
+    this.setHTML(this.render(this.props, this.state));
+    
+    //if (wasMounted) {
+    //  this.mount();
+    //}
   }
 
   /**
@@ -296,13 +301,13 @@ export default function () {
    * @param mountEl
    */
   function mount() {
-    // TODO why aren't components unmounting on change first?
-    if (_isMounted) {
-      //console.warn('Component ' + this.getID() + ' is already mounted');
+    if (isMounted()) {
+      this.unmount();
+      console.warn('Component ' + this.getID() + ' is already mounted');
       return;
     }
-
-    if (!_html || _html.length === 0) {
+console.log('mount',this.getID(),this.getHTML())
+    if (!this.getHTML() || this.getHTML().length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
@@ -314,10 +319,8 @@ export default function () {
       method        : this.props.mountMethod,
       lastAdjacent  : _lastAdjacentNode,
       targetSelector: _mountPoint,
-      html          : _html
+      html          : this.getHTML()
     });
-
-    _isMounted = true;
 
     if (typeof this.delegateEvents === 'function') {
       if (this.shouldDelegateEvents(this.props, this.state)) {
@@ -382,8 +385,6 @@ export default function () {
 
     this.componentWillUnmount();
 
-    _isMounted = false;
-
     if (typeof this.undelegateEvents === 'function') {
       this.undelegateEvents(this.getDOMEvents());
     }
@@ -394,7 +395,6 @@ export default function () {
       DOMUtils.removeElement(_DOMElement);
     }
 
-    _html       = '';
     _DOMElement = null;
 
     _lifecycleState = LS_UNMOUNTED;
@@ -505,34 +505,41 @@ export default function () {
 
   //TODO reduce code repetition ------------------------------------------------
 
-
   function $initializeChildren() {
-    getChildIDs().forEach(region => {
-      _children[region].initialize({parent: this});
+    getChildIDs().forEach(id => {
+      _children[id].initialize({parent: this});
     });
   }
 
   function $renderChildren() {
-    getChildIDs().forEach(region => {
-      _children[region].$renderComponent();
+    getChildIDs().forEach(id => {
+      _children[id].$renderComponent();
     });
   }
 
+  function $getChildHTMLObj() {
+    var htmlObj = {};
+    getChildIDs().forEach(id => {
+      htmlObj[id] = _children[id].getHTML();
+    });
+    return htmlObj;
+  }
+
   function $mountChildren() {
-    getChildIDs().forEach(region => {
-      _children[region].mount();
+    getChildIDs().forEach(id => {
+      _children[id].mount();
     });
   }
 
   function $unmountChildren() {
-    getChildIDs().forEach(region => {
-      _children[region].unmount();
+    getChildIDs().forEach(id => {
+      _children[id].unmount();
     });
   }
 
   function $disposeChildren() {
-    getChildIDs().forEach(region => {
-      _children[region].dispose();
+    getChildIDs().forEach(id => {
+      _children[id].dispose();
     });
     _children = null;
   }
@@ -550,7 +557,7 @@ export default function () {
   }
 
   function isMounted() {
-    return _isMounted;
+    return !!_DOMElement;
   }
 
   function getID() {
@@ -563,6 +570,14 @@ export default function () {
 
   function setKey(newKey) {
     this.__key = newKey;
+  }
+
+  function getHTML() {
+    return _html;
+  }
+
+  function setHTML(html) {
+    _html = html;
   }
 
   function getDOMElement() {
@@ -612,6 +627,8 @@ export default function () {
     setKey,
     template,
     getDOMElement,
+    getHTML,
+    setHTML,
     isMounted,
     bind,
     from,

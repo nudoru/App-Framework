@@ -65,10 +65,9 @@ export default Nori.view().createComponent('debug-components', {
    */
     componentDidMount() {
 
-    console.time('comps');
     let dyn = {};
 
-    _.range(1,3000).forEach(id => {
+    _.range(1,30).forEach(id => {
       id = 'dynamic'+String(id);
       dyn[id] = ChildTest('dBtn'+id, {
         mount: '#debug-child',
@@ -78,10 +77,6 @@ export default Nori.view().createComponent('debug-components', {
     });
 
     this.addChildren(dyn);
-
-    console.timeEnd('comps');
-
-    console.log('done', this);
   },
 
   _testNudoruComponents() {
