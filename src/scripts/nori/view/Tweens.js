@@ -3,7 +3,7 @@ import Is from '../../nudoru/util/is.js';
 /**
  * DOM manipulation and animation helpers for ViewComponents
  */
-let MixinDOMManipulationModule = function () {
+export default function () {
 
   let _tweenedEls = [],
       _zIndex     = 1000;
@@ -115,8 +115,4 @@ let MixinDOMManipulationModule = function () {
     killTweens
   };
 
-};
-
-let MixinDOMManipulation = MixinDOMManipulationModule();
-
-export default MixinDOMManipulation;
+}

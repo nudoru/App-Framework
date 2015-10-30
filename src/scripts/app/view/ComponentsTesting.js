@@ -3,7 +3,7 @@ import AppView from './AppView';
 import AppStore from '../store/AppStore';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
-import MixinDOMManipulation from '../../nori/view/MixinDOMManipulation.js';
+import MixinDOMManipulation from '../../nori/view/Tweens.js';
 import ChildTest from './ChildTest.js';
 import _ from '../../vendor/lodash.min.js';
 

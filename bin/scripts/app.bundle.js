@@ -390,7 +390,7 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/view/MixinRouteViews.js":23,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/components/MixinNudoruControls.js":34,"../store/AppStore.js":5,"./ComponentsTesting.js":8,"./TemplateViewComponent.js":9}],7:[function(require,module,exports){
+},{"../../nori/view/MixinRouteViews.js":22,"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/components/MixinNudoruControls.js":34,"../store/AppStore.js":5,"./ComponentsTesting.js":8,"./TemplateViewComponent.js":9}],7:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -442,9 +442,9 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var _noriViewMixinDOMManipulationJs = require('../../nori/view/MixinDOMManipulation.js');
+var _noriViewTweensJs = require('../../nori/view/Tweens.js');
 
-var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMManipulationJs);
+var _noriViewTweensJs2 = _interopRequireDefault(_noriViewTweensJs);
 
 var _ChildTestJs = require('./ChildTest.js');
 
@@ -473,7 +473,7 @@ exports['default'] = Nori.view().createComponent('debug-components', {
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
    */
-  mixins: [_noriViewMixinDOMManipulationJs2['default']],
+  mixins: [_noriViewTweensJs2['default']],
 
   /**
    * Initialize and bind, called once on first render. Parent component is
@@ -632,7 +632,7 @@ exports['default'] = Nori.view().createComponent('debug-components', {
 });
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../../vendor/lodash.min.js":43,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
+},{"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":25,"../../nori/view/Tweens.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../../vendor/lodash.min.js":43,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -659,9 +659,9 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var _noriViewMixinDOMManipulationJs = require('../../nori/view/MixinDOMManipulation.js');
+var _noriViewTweensJs = require('../../nori/view/Tweens.js');
 
-var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMManipulationJs);
+var _noriViewTweensJs2 = _interopRequireDefault(_noriViewTweensJs);
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -669,7 +669,7 @@ var _noriViewMixinDOMManipulationJs2 = _interopRequireDefault(_noriViewMixinDOMM
 
 exports['default'] = Nori.view().createComponent('default', {
 
-  mixins: [_noriViewMixinDOMManipulationJs2['default']],
+  mixins: [_noriViewTweensJs2['default']],
 
   initialize: function initialize(initProps) {
     // Bind changes in state or prop to functions
@@ -728,7 +728,7 @@ module.exports = exports['default'];
 //componentWillDispose() {
 //},
 
-},{"../../nori/action/ActionCreator":13,"../../nori/view/MixinDOMManipulation.js":22,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
+},{"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":25,"../../nori/view/Tweens.js":26,"../../nudoru/browser/DOMUtils.js":29,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
 /**
  * Initial file for the Application
  */
@@ -1607,138 +1607,6 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
-
-var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
-/**
- * DOM manipulation and animation helpers for ViewComponents
- */
-var MixinDOMManipulationModule = function MixinDOMManipulationModule() {
-
-  var _tweenedEls = [],
-      _zIndex = 1000;
-
-  /**
-   * Returns the element. If passed a string will query DOM and return.
-   * @param selector
-   * @returns {*}
-   */
-  function getElement(selector) {
-    var el = undefined;
-
-    if (_nudoruUtilIsJs2['default'].string(selector)) {
-      el = document.querySelector(selector);
-    } else {
-      el = selector;
-    }
-
-    if (!el) {
-      console.warn('MixinDOMManipulation, selector not found ' + selector);
-    }
-
-    return el;
-  }
-
-  function toTop(selector) {
-    var el = document.querySelector(selector);
-    if (el) {
-      el.style.zIndex = _zIndex++;
-    }
-    console.warn('MixinDOMManipulation, to top, selector not found ' + selector);
-  }
-
-  function addTweenedElement(selector) {
-    var el = getElement(selector);
-
-    if (el) {
-      _tweenedEls.push(el);
-      return el;
-    }
-
-    return null;
-  }
-
-  function tweenTo(selector, dur, props) {
-    var el = addTweenedElement(selector);
-
-    if (!el) {
-      return;
-    }
-    return TweenLite.to(el, dur, props);
-  }
-
-  function tweenFrom(selector, dur, props) {
-    var el = addTweenedElement(selector);
-
-    if (!el) {
-      return;
-    }
-    return TweenLite.from(el, dur, props);
-  }
-
-  function tweenFromTo(selector, dur, startprops, endprops) {
-    var el = addTweenedElement(selector);
-
-    if (!el) {
-      return;
-    }
-    return TweenLite.fromTo(el, dur, startprops, endprops);
-  }
-
-  function killTweens() {
-    _tweenedEls.forEach(function (el) {
-      TweenLite.killTweensOf(el);
-    });
-
-    _tweenedEls = [];
-  }
-
-  function hideEl(selector) {
-    tweenSet(selector, {
-      alpha: 0,
-      display: 'none'
-    });
-  }
-
-  function showEl(selector) {
-    tweenSet(selector, {
-      alpha: 1,
-      display: 'block'
-    });
-  }
-
-  function tweenSet(selector, props) {
-    var el = getElement(selector);
-    if (el) {
-      TweenLite.set(el, props);
-    }
-  }
-
-  return {
-    toTop: toTop,
-    showEl: showEl,
-    hideEl: hideEl,
-    tweenSet: tweenSet,
-    tweenTo: tweenTo,
-    tweenFrom: tweenFrom,
-    tweenFromTo: tweenFromTo,
-    killTweens: killTweens
-  };
-};
-
-var MixinDOMManipulation = MixinDOMManipulationModule();
-
-exports['default'] = MixinDOMManipulation;
-module.exports = exports['default'];
-
-},{"../../nudoru/util/is.js":42}],23:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 var _utilsRouterJs = require('../utils/Router.js');
@@ -1783,7 +1651,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../utils/Router.js":19}],24:[function(require,module,exports){
+},{"../utils/Router.js":19}],23:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1846,7 +1714,7 @@ exports['default'] = function (_ref) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":29}],25:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":29}],24:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2027,7 +1895,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/MouseToTouchEvents.js":31,"../../nudoru/util/is.js":42,"../utils/Rx.js":20}],26:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/MouseToTouchEvents.js":31,"../../nudoru/util/is.js":42,"../utils/Rx.js":20}],25:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2221,7 +2089,137 @@ var Templating = TemplatingModule();
 exports['default'] = Templating;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43}],27:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43}],26:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
+
+var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
+
+/**
+ * DOM manipulation and animation helpers for ViewComponents
+ */
+
+exports['default'] = function () {
+
+  var _tweenedEls = [],
+      _zIndex = 1000;
+
+  /**
+   * Returns the element. If passed a string will query DOM and return.
+   * @param selector
+   * @returns {*}
+   */
+  function getElement(selector) {
+    var el = undefined;
+
+    if (_nudoruUtilIsJs2['default'].string(selector)) {
+      el = document.querySelector(selector);
+    } else {
+      el = selector;
+    }
+
+    if (!el) {
+      console.warn('MixinDOMManipulation, selector not found ' + selector);
+    }
+
+    return el;
+  }
+
+  function toTop(selector) {
+    var el = document.querySelector(selector);
+    if (el) {
+      el.style.zIndex = _zIndex++;
+    }
+    console.warn('MixinDOMManipulation, to top, selector not found ' + selector);
+  }
+
+  function addTweenedElement(selector) {
+    var el = getElement(selector);
+
+    if (el) {
+      _tweenedEls.push(el);
+      return el;
+    }
+
+    return null;
+  }
+
+  function tweenTo(selector, dur, props) {
+    var el = addTweenedElement(selector);
+
+    if (!el) {
+      return;
+    }
+    return TweenLite.to(el, dur, props);
+  }
+
+  function tweenFrom(selector, dur, props) {
+    var el = addTweenedElement(selector);
+
+    if (!el) {
+      return;
+    }
+    return TweenLite.from(el, dur, props);
+  }
+
+  function tweenFromTo(selector, dur, startprops, endprops) {
+    var el = addTweenedElement(selector);
+
+    if (!el) {
+      return;
+    }
+    return TweenLite.fromTo(el, dur, startprops, endprops);
+  }
+
+  function killTweens() {
+    _tweenedEls.forEach(function (el) {
+      TweenLite.killTweensOf(el);
+    });
+
+    _tweenedEls = [];
+  }
+
+  function hideEl(selector) {
+    tweenSet(selector, {
+      alpha: 0,
+      display: 'none'
+    });
+  }
+
+  function showEl(selector) {
+    tweenSet(selector, {
+      alpha: 1,
+      display: 'block'
+    });
+  }
+
+  function tweenSet(selector, props) {
+    var el = getElement(selector);
+    if (el) {
+      TweenLite.set(el, props);
+    }
+  }
+
+  return {
+    toTop: toTop,
+    showEl: showEl,
+    hideEl: hideEl,
+    tweenSet: tweenSet,
+    tweenTo: tweenTo,
+    tweenFrom: tweenFrom,
+    tweenFromTo: tweenFromTo,
+    killTweens: killTweens
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../nudoru/util/is.js":42}],27:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2294,7 +2292,6 @@ exports['default'] = function () {
       _DOMElement = undefined,
       _lastAdjacentNode = undefined,
       _mountPoint = undefined;
-  //_mountDelay;
 
   /**
    * Subclasses can override.
@@ -2495,12 +2492,6 @@ exports['default'] = function () {
   function $renderComponent() {
     var force = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-    //let wasMounted = isMounted();
-
-    //if (wasMounted) {
-    //  this.unmount();
-    //}
-
     _lifecycleState = LS_RENDERING;
 
     if (!_templateObjCache) {
@@ -2510,10 +2501,6 @@ exports['default'] = function () {
     this.$renderChildren();
 
     this.setHTML(this.render(this.props, this.state));
-
-    //if (wasMounted) {
-    //  this.mount();
-    //}
   }
 
   /**
@@ -2524,7 +2511,6 @@ exports['default'] = function () {
    * The method is called only on the first render and cached to speed up future calls
    */
   function template(props, state) {
-    // assumes the template ID matches the component's ID as passed on initialize
     var templateId = this.__template || this.getID();
     return _TemplatingJs2['default'].getTemplate(templateId);
   }
@@ -2568,31 +2554,12 @@ exports['default'] = function () {
     });
 
     if (this.shouldDelegateEvents(this.props, this.state)) {
-      // True to automatically pass form element handlers the elements value or other status
       _events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
-
-    //if (typeof this.componentDidMount === 'function') {
-    //  _mountDelay = _.delay(this.$mountAfterDelay.bind(this), 1);
-    //}
 
     this.$mountChildren();
     this.componentDidMount();
   }
-
-  /**
-   * HACK
-   * Experiencing issues with animations running in componentDidMount
-   * after renders and state changes. This delay fixes the issues.
-   */
-  //function $mountAfterDelay() {
-  //  if (_mountDelay) {
-  //    window.clearTimeout(_mountDelay);
-  //  }
-  //
-  //  this.$mountChildren();
-  //  this.componentDidMount();
-  //}
 
   /**
    * Override to delegate events or not based on some state trigger
@@ -2613,15 +2580,6 @@ exports['default'] = function () {
   function componentWillUnmount() {}
 
   function unmount() {
-    //if (_mountDelay) {
-    //  window.clearTimeout(_mountDelay);
-    //}
-
-    // Tweens are present in the MixinDOMManipulation. For convenience, killing here
-    if (typeof this.killTweens === 'function') {
-      this.killTweens();
-    }
-
     _lastAdjacentNode = _DOMElement.nextSibling;
 
     this.componentWillUnmount();
@@ -2911,7 +2869,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43,"./Renderer.js":24,"./RxEventDelegator.js":25,"./Templating.js":26}],28:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43,"./Renderer.js":23,"./RxEventDelegator.js":24,"./Templating.js":25}],28:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -3843,7 +3801,7 @@ var MessageBoxView = MessageBoxViewModule();
 exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":26,"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44,"./ModalCoverView.js":35}],34:[function(require,module,exports){
+},{"../../nori/view/Templating.js":25,"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44,"./ModalCoverView.js":35}],34:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4285,7 +4243,7 @@ var ToastView = ToastViewModule();
 exports['default'] = ToastView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":26,"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44}],37:[function(require,module,exports){
+},{"../../nori/view/Templating.js":25,"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44}],37:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4575,7 +4533,7 @@ var ToolTipView = ToolTipViewModule();
 exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44}],38:[function(require,module,exports){
+},{"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":29,"../../vendor/rxjs/rx.lite.min.js":44}],38:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });

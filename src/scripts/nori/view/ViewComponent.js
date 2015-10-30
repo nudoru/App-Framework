@@ -50,7 +50,6 @@ export default function () {
       _DOMElement,
       _lastAdjacentNode,
       _mountPoint;
-  //_mountDelay;
 
   /**
    * Subclasses can override.
@@ -252,12 +251,6 @@ export default function () {
    * @returns {*}
    */
   function $renderComponent(force = false) {
-    //let wasMounted = isMounted();
-
-    //if (wasMounted) {
-    //  this.unmount();
-    //}
-
     _lifecycleState = LS_RENDERING;
 
     if (!_templateObjCache) {
@@ -267,10 +260,6 @@ export default function () {
     this.$renderChildren();
 
     this.setHTML(this.render(this.props, this.state));
-
-    //if (wasMounted) {
-    //  this.mount();
-    //}
   }
 
   /**
@@ -281,7 +270,6 @@ export default function () {
    * The method is called only on the first render and cached to speed up future calls
    */
   function template(props, state) {
-    // assumes the template ID matches the component's ID as passed on initialize
     let templateId = this.__template || this.getID();
     return Template.getTemplate(templateId);
   }
@@ -325,31 +313,12 @@ export default function () {
     });
 
     if (this.shouldDelegateEvents(this.props, this.state)) {
-      // True to automatically pass form element handlers the elements value or other status
       _events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
-
-    //if (typeof this.componentDidMount === 'function') {
-    //  _mountDelay = _.delay(this.$mountAfterDelay.bind(this), 1);
-    //}
 
     this.$mountChildren();
     this.componentDidMount();
   }
-
-  /**
-   * HACK
-   * Experiencing issues with animations running in componentDidMount
-   * after renders and state changes. This delay fixes the issues.
-   */
-  //function $mountAfterDelay() {
-  //  if (_mountDelay) {
-  //    window.clearTimeout(_mountDelay);
-  //  }
-  //
-  //  this.$mountChildren();
-  //  this.componentDidMount();
-  //}
 
   /**
    * Override to delegate events or not based on some state trigger
@@ -372,15 +341,6 @@ export default function () {
   }
 
   function unmount() {
-    //if (_mountDelay) {
-    //  window.clearTimeout(_mountDelay);
-    //}
-
-    // Tweens are present in the MixinDOMManipulation. For convenience, killing here
-    if (typeof this.killTweens === 'function') {
-      this.killTweens();
-    }
-
     _lastAdjacentNode = _DOMElement.nextSibling;
 
     this.componentWillUnmount();
