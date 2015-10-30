@@ -29,6 +29,10 @@ const LS_NO_INIT   = 0,
       MNT_REPLACE  = 'replace',
       MNT_APPEND   = 'append';
 
+let Events        = EventDelegator(),
+    reservedProps = ['key', 'id', 'template'];
+
+
 export default function () {
 
   // Properties added to component on creation:
@@ -41,11 +45,9 @@ export default function () {
       _lastState      = {},
       _lastProps      = {},
       _lifecycleState = LS_NO_INIT,
-      _events         = EventDelegator(),
-      _reservedPros   = ['key', 'id', 'template'],
       _children,
       _parent,
-      _templateObjCache,
+      _templateCache,
       _html,
       _DOMElement,
       _lastAdjacentNode,
@@ -75,7 +77,7 @@ export default function () {
     this.setState(this.getDefaultState());
     this.$initializeChildren();
 
-    _lifecycleState         = LS_INITED;
+    _lifecycleState = LS_INITED;
   }
 
   function validateProps() {
@@ -264,8 +266,8 @@ export default function () {
   function $renderComponent(force = false) {
     _lifecycleState = LS_RENDERING;
 
-    if (!_templateObjCache) {
-      _templateObjCache = this.template(this.props, this.state);
+    if (!_templateCache) {
+      _templateCache = this.template(this.props, this.state);
     }
 
     this.$renderChildren();
@@ -289,7 +291,7 @@ export default function () {
    */
   function render(props, state) {
     let combined = _.merge({}, props, state),
-        template = _templateObjCache || this.template(props, state);
+        template = _templateCache || this.template(props, state);
 
     return template(combined);
   }
@@ -319,12 +321,12 @@ export default function () {
     });
 
     if (this.shouldDelegateEvents(this.props, this.state)) {
-      _events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
+      Events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
 
     this.$mountChildren();
 
-    if(typeof this.componentDidMount === 'function') {
+    if (typeof this.componentDidMount === 'function') {
       this.componentDidMount();
     }
   }
@@ -352,11 +354,11 @@ export default function () {
   function unmount() {
     _lastAdjacentNode = _DOMElement.nextSibling;
 
-    if(typeof this.componentWillUnmount === 'function') {
+    if (typeof this.componentWillUnmount === 'function') {
       this.componentWillUnmount();
     }
 
-    _events.undelegateEvents(this.getDOMEvents());
+    Events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
       DOMUtils.removeAllElements(document.querySelector(_mountPoint));
@@ -370,7 +372,7 @@ export default function () {
   }
 
   function dispose() {
-    if(typeof this.componentWillDispose === 'function') {
+    if (typeof this.componentWillDispose === 'function') {
       this.componentWillDispose();
     }
 
@@ -378,7 +380,7 @@ export default function () {
     this.unmount();
 
     _lastAdjacentNode = null;
-    _templateObjCache = null;
+    _templateCache    = null;
 
     _lifecycleState = LS_NO_INIT;
   }
@@ -476,10 +478,10 @@ export default function () {
   }
 
   function $getChildHTMLObj() {
-    return _.reduce(_children,(htmlObj, current, key) => {
+    return _.reduce(_children, (htmlObj, current, key) => {
       htmlObj[key] = current.getHTML();
       return htmlObj;
-    } , {})
+    }, {})
   }
 
   function $mountChildren() {

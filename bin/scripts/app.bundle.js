@@ -2273,6 +2273,9 @@ var LS_NO_INIT = 0,
     MNT_REPLACE = 'replace',
     MNT_APPEND = 'append';
 
+var Events = (0, _RxEventDelegatorJs2['default'])(),
+    reservedProps = ['key', 'id', 'template'];
+
 exports['default'] = function () {
 
   // Properties added to component on creation:
@@ -2285,11 +2288,9 @@ exports['default'] = function () {
       _lastState = {},
       _lastProps = {},
       _lifecycleState = LS_NO_INIT,
-      _events = (0, _RxEventDelegatorJs2['default'])(),
-      _reservedPros = ['key', 'id', 'template'],
       _children = undefined,
       _parent = undefined,
-      _templateObjCache = undefined,
+      _templateCache = undefined,
       _html = undefined,
       _DOMElement = undefined,
       _lastAdjacentNode = undefined,
@@ -2507,8 +2508,8 @@ exports['default'] = function () {
 
     _lifecycleState = LS_RENDERING;
 
-    if (!_templateObjCache) {
-      _templateObjCache = this.template(this.props, this.state);
+    if (!_templateCache) {
+      _templateCache = this.template(this.props, this.state);
     }
 
     this.$renderChildren();
@@ -2532,7 +2533,7 @@ exports['default'] = function () {
    */
   function render(props, state) {
     var combined = _vendorLodashMinJs2['default'].merge({}, props, state),
-        template = _templateObjCache || this.template(props, state);
+        template = _templateCache || this.template(props, state);
 
     return template(combined);
   }
@@ -2562,7 +2563,7 @@ exports['default'] = function () {
     });
 
     if (this.shouldDelegateEvents(this.props, this.state)) {
-      _events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
+      Events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
 
     this.$mountChildren();
@@ -2597,7 +2598,7 @@ exports['default'] = function () {
       this.componentWillUnmount();
     }
 
-    _events.undelegateEvents(this.getDOMEvents());
+    Events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
       _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_mountPoint));
@@ -2619,7 +2620,7 @@ exports['default'] = function () {
     this.unmount();
 
     _lastAdjacentNode = null;
-    _templateObjCache = null;
+    _templateCache = null;
 
     _lifecycleState = LS_NO_INIT;
   }
