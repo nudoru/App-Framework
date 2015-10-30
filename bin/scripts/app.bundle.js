@@ -1462,7 +1462,7 @@ var _utilsBuildFromMixinsJs = require('../utils/BuildFromMixins.js');
 
 var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
 
-//import ComponentMount from './ComponentMount.js';
+//import ComponentMount from '../experimental/ComponentMount.js';
 
 exports['default'] = function () {
 
@@ -1498,7 +1498,7 @@ exports['default'] = function () {
       previousGetDefaultProps = template.getDefaultProps;
 
       template.initialize = function initialize(props) {
-        template.initializeComponent.call(template, props);
+        template.initializeComponent.bind(template)(props);
         previousInitialize.call(template, props);
       };
 
@@ -2264,7 +2264,6 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-// Lifecycle state constants
 var LS_NO_INIT = 0,
     LS_INITED = 1,
     LS_RENDERING = 2,
@@ -2287,6 +2286,7 @@ exports['default'] = function () {
       _lastProps = {},
       _lifecycleState = LS_NO_INIT,
       _events = (0, _RxEventDelegatorJs2['default'])(),
+      _reservedPros = ['key', 'id', 'template'],
       _children = undefined,
       _parent = undefined,
       _templateObjCache = undefined,
@@ -2307,12 +2307,22 @@ exports['default'] = function () {
    * @param initProps
    */
   function initializeComponent(initProps) {
-    initProps.id = this.__id;
-    initProps.key = this.__key;
-    initProps.template = this.__template;
-
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
+    _internalProps.id = this.__id;
+    _internalProps.key = this.__key;
+    _internalProps.template = this.__template;
+
+    this.validateProps();
+
+    this.addChildren(this.defineChildren());
+    this.setState(this.getDefaultState());
+    this.$initializeChildren();
+
+    _lifecycleState = LS_INITED;
+  }
+
+  function validateProps() {
     if (_internalProps.hasOwnProperty('mount')) {
       _mountPoint = _internalProps.mount;
     } else {
@@ -2326,12 +2336,16 @@ exports['default'] = function () {
     if (_internalProps.hasOwnProperty('parent')) {
       _parent = _internalProps.parent;
     }
-
-    this.addChildren(this.defineChildren());
-    this.setState(this.getDefaultState());
-    this.$initializeChildren();
-    _lifecycleState = LS_INITED;
   }
+
+  //function validateObjectForReservedKeys(obj) {
+  //  _reservedPros.forEach(key => {
+  //    if (obj.hasOwnProperty(key)) {
+  //      console.warn(this.getID(), 'props contain reserved key:', key);
+  //    }
+  //  });
+  //  return true;
+  //}
 
   /**
    * Override in implementation
@@ -2609,8 +2623,7 @@ exports['default'] = function () {
   //  Children
   //----------------------------------------------------------------------------
 
-  // TODO warn MUTABLE
-  function getChildren() {
+  function unsafeGetChildren() {
     return _children;
   }
 
@@ -2625,12 +2638,12 @@ exports['default'] = function () {
     var _this = this;
 
     if (childObjs) {
-      Object.keys(childObjs).forEach(function (id) {
+      _vendorLodashMinJs2['default'].forOwn(childObjs, function (child, id) {
         if (childObjs.hasOwnProperty(id)) {
-          _this.addChild(id, childObjs[id], false);
+          _this.addChild(id, child, false);
         }
       });
-      $forceChildren();
+      $forceChildren.bind(this)();
     } else {
       _children = null;
     }
@@ -2646,10 +2659,8 @@ exports['default'] = function () {
 
     _children[id] = child;
 
-    this[$getLocalVCID(id)] = child;
-
     if (update) {
-      $forceChildren();
+      $forceChildren.bind(this)();
     }
   }
 
@@ -2661,29 +2672,20 @@ exports['default'] = function () {
     var _this2 = this;
 
     if (_lifecycleState === LS_MOUNTED) {
-      getChildIDs().forEach(function (id) {
-        var isMounted = _children[id].getLifeCycleState() === LS_MOUNTED;
-        if (!isMounted) {
-          _children[id].initialize({ parent: _this2 });
-          _children[id].$renderComponent();
-          _children[id].mount();
+      _vendorLodashMinJs2['default'].forOwn(_children, function (child) {
+        if (child.getLifeCycleState() !== LS_MOUNTED) {
+          child.initialize({ parent: _this2 });
+          child.$renderComponent();
+          child.mount();
         }
       });
     }
-  }
-
-  // before attaching to this, clean it up a little
-  function $getLocalVCID(id) {
-    return 'C' + _vendorLodashMinJs2['default'].camelCase(id);
   }
 
   function disposeChild(id) {
     if (_children.hasOwnProperty(id)) {
       _children[id].dispose();
       delete _children[id];
-      if (this.hasOwnProperty($getLocalVCID(id))) {
-        delete this[$getLocalVCID(id)];
-      }
     } else {
       console.warn('Cannot remove child. ', id, 'not found');
     }
@@ -2697,49 +2699,42 @@ exports['default'] = function () {
     return null;
   }
 
-  function getChildIDs() {
-    return _children ? Object.keys(_children) : [];
-  }
-
-  //TODO reduce code repetition ------------------------------------------------
-
   function $initializeChildren() {
     var _this3 = this;
 
-    getChildIDs().forEach(function (id) {
-      _children[id].initialize({ parent: _this3 });
+    _vendorLodashMinJs2['default'].forOwn(_children, function (child) {
+      child.initialize({ parent: _this3 });
     });
   }
 
   function $renderChildren() {
-    getChildIDs().forEach(function (id) {
-      _children[id].$renderComponent();
+    _vendorLodashMinJs2['default'].forOwn(_children, function (child) {
+      child.$renderComponent();
     });
   }
 
   function $getChildHTMLObj() {
-    var htmlObj = {};
-    getChildIDs().forEach(function (id) {
-      htmlObj[id] = _children[id].getHTML();
-    });
-    return htmlObj;
+    return _vendorLodashMinJs2['default'].reduce(_children, function (htmlObj, current, key) {
+      htmlObj[key] = current.getHTML();
+      return htmlObj;
+    }, {});
   }
 
   function $mountChildren() {
-    getChildIDs().forEach(function (id) {
-      _children[id].mount();
+    _vendorLodashMinJs2['default'].forOwn(_children, function (child) {
+      child.mount();
     });
   }
 
   function $unmountChildren() {
-    getChildIDs().forEach(function (id) {
-      _children[id].unmount();
+    _vendorLodashMinJs2['default'].forOwn(_children, function (child) {
+      child.unmount();
     });
   }
 
   function $disposeChildren() {
-    getChildIDs().forEach(function (id) {
-      _children[id].dispose();
+    _vendorLodashMinJs2['default'].forOwn(_children, function (child) {
+      child.dispose();
     });
     _children = null;
   }
@@ -2768,10 +2763,6 @@ exports['default'] = function () {
     return this.__key;
   }
 
-  function setKey(newKey) {
-    this.__key = newKey;
-  }
-
   function getHTML() {
     return _html;
   }
@@ -2796,19 +2787,6 @@ exports['default'] = function () {
   //  Utility
   //----------------------------------------------------------------------------
 
-  /**
-   * Bind updates from a store to a function
-   * @param observable Object to subscribe to or ID. Should implement nori/store/MixinObservableStore
-   */
-  function bind(observable, func) {
-    if (typeof observable.subscribe !== 'function') {
-      console.warn('ViewComponent bind, must be observable: ' + observable);
-      return;
-    }
-
-    observable.subscribe(func);
-  }
-
   function from(html) {
     return _TemplatingJs2['default'].getTemplateFromHTML(html);
   }
@@ -2822,6 +2800,7 @@ exports['default'] = function () {
     props: _publicProps,
     initialize: initialize,
     initializeComponent: initializeComponent,
+    validateProps: validateProps,
     setProps: setProps,
     getDefaultState: getDefaultState,
     setState: setState,
@@ -2832,7 +2811,6 @@ exports['default'] = function () {
     isInitialized: isInitialized,
     getID: getID,
     getKey: getKey,
-    setKey: setKey,
     template: template,
     getDOMElement: getDOMElement,
     getHTML: getHTML,
@@ -2840,7 +2818,6 @@ exports['default'] = function () {
     getMountPoint: getMountPoint,
     getLastAdjacentNode: getLastAdjacentNode,
     isMounted: isMounted,
-    bind: bind,
     from: from,
     componentWillReceiveProps: componentWillReceiveProps,
     componentWillUpdate: componentWillUpdate,
@@ -2856,13 +2833,11 @@ exports['default'] = function () {
     unmount: unmount,
     dispose: dispose,
     componentWillDispose: componentWillDispose,
-    getChildren: getChildren,
+    unsafeGetChildren: unsafeGetChildren,
     addChild: addChild,
     addChildren: addChildren,
     disposeChild: disposeChild,
     child: child,
-    $getLocalVCID: $getLocalVCID,
-    getChildIDs: getChildIDs,
     $initializeChildren: $initializeChildren,
     $renderChildren: $renderChildren,
     $mountChildren: $mountChildren,

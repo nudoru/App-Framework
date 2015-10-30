@@ -7,7 +7,7 @@
 import _ from '../../vendor/lodash.min.js';
 import ViewComponentFactory from './ViewComponent.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
-//import ComponentMount from './ComponentMount.js';
+//import ComponentMount from '../experimental/ComponentMount.js';
 
 export default function () {
 
@@ -43,7 +43,7 @@ export default function () {
       previousGetDefaultProps = template.getDefaultProps;
 
       template.initialize = function initialize(props) {
-        template.initializeComponent.call(template, props);
+        template.initializeComponent.bind(template)(props);
         previousInitialize.call(template, props);
       };
 
