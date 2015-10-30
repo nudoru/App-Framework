@@ -6,7 +6,6 @@
 
 import _ from '../../vendor/lodash.min.js';
 import ViewComponentFactory from './ViewComponent.js';
-import EventDelegatorFactory from './MixinEventDelegator.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
 
 export default function () {
@@ -33,7 +32,6 @@ export default function () {
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.push(ViewComponentFactory());
-      customizer.mixins.push(EventDelegatorFactory());
 
       template            = BuildFromMixins(customizer);
       template.__key      = _viewKeyIndex++;

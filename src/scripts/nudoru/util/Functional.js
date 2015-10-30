@@ -1,4 +1,4 @@
-https://javascriptweblog.wordpress.com/2010/06/14/dipping-into-wu-js-autocurry/
+//https://javascriptweblog.wordpress.com/2010/06/14/dipping-into-wu-js-autocurry/
 var autoCurry = (function () {
   var toArray = function toArray(arr, from) {
         return Array.prototype.slice.call(arr, from || 0);

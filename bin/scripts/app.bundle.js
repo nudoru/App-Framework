@@ -390,7 +390,7 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/view/MixinRouteViews.js":24,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/components/MixinNudoruControls.js":34,"../store/AppStore.js":5,"./ComponentsTesting.js":8,"./TemplateViewComponent.js":9}],7:[function(require,module,exports){
+},{"../../nori/view/MixinRouteViews.js":23,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/components/MixinNudoruControls.js":34,"../store/AppStore.js":5,"./ComponentsTesting.js":8,"./TemplateViewComponent.js":9}],7:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1458,10 +1458,6 @@ var _ViewComponentJs = require('./ViewComponent.js');
 
 var _ViewComponentJs2 = _interopRequireDefault(_ViewComponentJs);
 
-var _MixinEventDelegatorJs = require('./MixinEventDelegator.js');
-
-var _MixinEventDelegatorJs2 = _interopRequireDefault(_MixinEventDelegatorJs);
-
 var _utilsBuildFromMixinsJs = require('../utils/BuildFromMixins.js');
 
 var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
@@ -1489,7 +1485,6 @@ exports['default'] = function () {
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.push((0, _ViewComponentJs2['default'])());
-      customizer.mixins.push((0, _MixinEventDelegatorJs2['default'])());
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
       template.__key = _viewKeyIndex++;
@@ -1605,7 +1600,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../vendor/lodash.min.js":43,"../utils/BuildFromMixins.js":16,"./MixinEventDelegator.js":23,"./ViewComponent.js":27}],22:[function(require,module,exports){
+},{"../../vendor/lodash.min.js":43,"../utils/BuildFromMixins.js":16,"./ViewComponent.js":27}],22:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1738,6 +1733,120 @@ exports['default'] = MixinDOMManipulation;
 module.exports = exports['default'];
 
 },{"../../nudoru/util/is.js":42}],23:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/*  weak */
+
+var _utilsRouterJs = require('../utils/Router.js');
+
+var _utilsRouterJs2 = _interopRequireDefault(_utilsRouterJs);
+
+/**
+ * Mixin view that allows for component views to be display on routing changes
+ */
+
+exports['default'] = function () {
+
+  /**
+   * Set up listeners
+   */
+  function initializeRouteViews() {
+    _utilsRouterJs2['default'].subscribe($onRouteChange.bind(this));
+  }
+
+  function $onRouteChange(payload) {
+    this.showViewForCondition(payload.routeObj.route);
+  }
+
+  /**
+   * Typically on app startup, show the view assigned to the current URL hash
+   *
+   * @param silent If true, will not notify subscribers of the change, prevents
+   * double showing on initial load
+   */
+  function showViewForChangedCondition(silent) {
+    this.showViewForCondition(_utilsRouterJs2['default'].getCurrentRoute().route);
+    if (!silent) {
+      _utilsRouterJs2['default'].notifySubscribers();
+    }
+  }
+
+  return {
+    initializeRouteViews: initializeRouteViews,
+    showViewForChangedCondition: showViewForChangedCondition
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../utils/Router.js":19}],24:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/*  weak */
+
+/**
+ * Utility to handle all view DOM attachment tasks
+ */
+
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+var MNT_REPLACE = 'replace',
+    MNT_APPEND = 'append';
+
+exports['default'] = function (_ref) {
+  var key = _ref.key;
+  var method = _ref.method;
+  var lastAdjacent = _ref.lastAdjacent;
+  var targetSelector = _ref.targetSelector;
+  var html = _ref.html;
+
+  var domEl = undefined,
+      mountPoint = document.querySelector(targetSelector),
+      currentHTML = undefined;
+
+  method = method || MNT_REPLACE;
+  key = key || 'nk';
+
+  if (!mountPoint) {
+    console.warn('Render, target selector not found', targetSelector);
+    return;
+  }
+
+  if (html) {
+    var jsClass = 'js__nvc' + key;
+    domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
+    domEl.setAttribute('data-norivcid', key);
+    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
+    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, jsClass);
+
+    if (method === MNT_REPLACE) {
+      currentHTML = mountPoint.innerHTML;
+      if (html !== currentHTML) {
+        //DOMUtils.removeAllElements(mountPoint);
+        mountPoint.innerHTML = '';
+        mountPoint.appendChild(domEl);
+      }
+    } else {
+      mountPoint.insertBefore(domEl, lastAdjacent);
+    }
+  }
+
+  return domEl;
+};
+
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/DOMUtils.js":29}],25:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1918,121 +2027,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/MouseToTouchEvents.js":31,"../../nudoru/util/is.js":42,"../utils/Rx.js":20}],24:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
-
-var _utilsRouterJs = require('../utils/Router.js');
-
-var _utilsRouterJs2 = _interopRequireDefault(_utilsRouterJs);
-
-/**
- * Mixin view that allows for component views to be display on routing changes
- */
-
-exports['default'] = function () {
-
-  /**
-   * Set up listeners
-   */
-  function initializeRouteViews() {
-    _utilsRouterJs2['default'].subscribe($onRouteChange.bind(this));
-  }
-
-  function $onRouteChange(payload) {
-    this.showViewForCondition(payload.routeObj.route);
-  }
-
-  /**
-   * Typically on app startup, show the view assigned to the current URL hash
-   *
-   * @param silent If true, will not notify subscribers of the change, prevents
-   * double showing on initial load
-   */
-  function showViewForChangedCondition(silent) {
-    this.showViewForCondition(_utilsRouterJs2['default'].getCurrentRoute().route);
-    if (!silent) {
-      _utilsRouterJs2['default'].notifySubscribers();
-    }
-  }
-
-  return {
-    initializeRouteViews: initializeRouteViews,
-    showViewForChangedCondition: showViewForChangedCondition
-  };
-};
-
-module.exports = exports['default'];
-
-},{"../utils/Router.js":19}],25:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
-
-/**
- * Utility to handle all view DOM attachment tasks
- */
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
-
-var MNT_REPLACE = 'replace',
-    MNT_APPEND = 'append';
-
-exports['default'] = function (_ref) {
-  var key = _ref.key;
-  var method = _ref.method;
-  var lastAdjacent = _ref.lastAdjacent;
-  var targetSelector = _ref.targetSelector;
-  var html = _ref.html;
-
-  var domEl = undefined,
-      mountPoint = document.querySelector(targetSelector),
-      currentHTML = undefined;
-
-  method = method || MNT_REPLACE;
-  key = key || 'nk';
-
-  if (!mountPoint) {
-    console.warn('Render, target selector not found', targetSelector);
-    return;
-  }
-
-  if (html) {
-    var jsClass = 'js__nvc' + key;
-    domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-    domEl.setAttribute('data-norivcid', key);
-    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
-    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, jsClass);
-
-    if (method === MNT_REPLACE) {
-      currentHTML = mountPoint.innerHTML;
-      if (html !== currentHTML) {
-        //DOMUtils.removeAllElements(mountPoint);
-        mountPoint.innerHTML = '';
-        mountPoint.appendChild(domEl);
-      }
-    } else {
-      mountPoint.insertBefore(domEl, lastAdjacent);
-    }
-  }
-
-  return domEl;
-};
-
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/DOMUtils.js":29}],26:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":28,"../../nudoru/browser/MouseToTouchEvents.js":31,"../../nudoru/util/is.js":42,"../utils/Rx.js":20}],26:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -2253,17 +2248,21 @@ var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-var _viewTemplatingJs = require('../view/Templating.js');
+var _TemplatingJs = require('./Templating.js');
 
-var _viewTemplatingJs2 = _interopRequireDefault(_viewTemplatingJs);
+var _TemplatingJs2 = _interopRequireDefault(_TemplatingJs);
 
-var _viewRendererJs = require('../view/Renderer.js');
+var _RendererJs = require('./Renderer.js');
 
-var _viewRendererJs2 = _interopRequireDefault(_viewRendererJs);
+var _RendererJs2 = _interopRequireDefault(_RendererJs);
 
 var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+var _RxEventDelegatorJs = require('./RxEventDelegator.js');
+
+var _RxEventDelegatorJs2 = _interopRequireDefault(_RxEventDelegatorJs);
 
 // Lifecycle state constants
 var LS_NO_INIT = 0,
@@ -2287,14 +2286,15 @@ exports['default'] = function () {
       _lastState = {},
       _lastProps = {},
       _lifecycleState = LS_NO_INIT,
+      _events = (0, _RxEventDelegatorJs2['default'])(),
       _children = undefined,
       _parent = undefined,
       _templateObjCache = undefined,
       _html = undefined,
       _DOMElement = undefined,
       _lastAdjacentNode = undefined,
-      _mountPoint = undefined,
-      _mountDelay = undefined;
+      _mountPoint = undefined;
+  //_mountDelay;
 
   /**
    * Subclasses can override.
@@ -2526,7 +2526,7 @@ exports['default'] = function () {
   function template(props, state) {
     // assumes the template ID matches the component's ID as passed on initialize
     var templateId = this.__template || this.getID();
-    return _viewTemplatingJs2['default'].getTemplate(templateId);
+    return _TemplatingJs2['default'].getTemplate(templateId);
   }
 
   /**
@@ -2559,7 +2559,7 @@ exports['default'] = function () {
 
     _lifecycleState = LS_MOUNTED;
 
-    _DOMElement = (0, _viewRendererJs2['default'])({
+    _DOMElement = (0, _RendererJs2['default'])({
       key: this.__key,
       method: this.props.mountMethod,
       lastAdjacent: _lastAdjacentNode,
@@ -2567,11 +2567,9 @@ exports['default'] = function () {
       html: this.getHTML()
     });
 
-    if (typeof this.delegateEvents === 'function') {
-      if (this.shouldDelegateEvents(this.props, this.state)) {
-        // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
-      }
+    if (this.shouldDelegateEvents(this.props, this.state)) {
+      // True to automatically pass form element handlers the elements value or other status
+      _events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
 
     //if (typeof this.componentDidMount === 'function') {
@@ -2615,9 +2613,9 @@ exports['default'] = function () {
   function componentWillUnmount() {}
 
   function unmount() {
-    if (_mountDelay) {
-      window.clearTimeout(_mountDelay);
-    }
+    //if (_mountDelay) {
+    //  window.clearTimeout(_mountDelay);
+    //}
 
     // Tweens are present in the MixinDOMManipulation. For convenience, killing here
     if (typeof this.killTweens === 'function') {
@@ -2628,9 +2626,7 @@ exports['default'] = function () {
 
     this.componentWillUnmount();
 
-    if (typeof this.undelegateEvents === 'function') {
-      this.undelegateEvents(this.getDOMEvents());
-    }
+    _events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
       _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_mountPoint));
@@ -2853,7 +2849,7 @@ exports['default'] = function () {
   }
 
   function from(html) {
-    return _viewTemplatingJs2['default'].getTemplateFromHTML(html);
+    return _TemplatingJs2['default'].getTemplateFromHTML(html);
   }
 
   //----------------------------------------------------------------------------
@@ -2915,7 +2911,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43,"../view/Renderer.js":25,"../view/Templating.js":26}],28:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":29,"../../vendor/lodash.min.js":43,"./Renderer.js":24,"./RxEventDelegator.js":25,"./Templating.js":26}],28:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });

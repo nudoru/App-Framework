@@ -15,9 +15,10 @@
  */
 
 import _ from '../../vendor/lodash.min.js';
-import Template from '../view/Templating.js';
-import Renderer from '../view/Renderer.js';
+import Template from './Templating.js';
+import Renderer from './Renderer.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import EventDelegator from './RxEventDelegator.js';
 
 // Lifecycle state constants
 const LS_NO_INIT   = 0,
@@ -41,14 +42,15 @@ export default function () {
       _lastState      = {},
       _lastProps      = {},
       _lifecycleState = LS_NO_INIT,
+      _events         = EventDelegator(),
       _children,
       _parent,
       _templateObjCache,
       _html,
       _DOMElement,
       _lastAdjacentNode,
-      _mountPoint,
-      _mountDelay;
+      _mountPoint;
+  //_mountDelay;
 
   /**
    * Subclasses can override.
@@ -221,7 +223,7 @@ export default function () {
     if (_lifecycleState > LS_INITED) {
       this.$renderComponent();
 
-      if(this.isMounted()) {
+      if (this.isMounted()) {
         this.unmount();
         this.mount();
       }
@@ -322,11 +324,9 @@ export default function () {
       html          : this.getHTML()
     });
 
-    if (typeof this.delegateEvents === 'function') {
-      if (this.shouldDelegateEvents(this.props, this.state)) {
-        // True to automatically pass form element handlers the elements value or other status
-        this.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
-      }
+    if (this.shouldDelegateEvents(this.props, this.state)) {
+      // True to automatically pass form element handlers the elements value or other status
+      _events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
 
     //if (typeof this.componentDidMount === 'function') {
@@ -372,9 +372,9 @@ export default function () {
   }
 
   function unmount() {
-    if (_mountDelay) {
-      window.clearTimeout(_mountDelay);
-    }
+    //if (_mountDelay) {
+    //  window.clearTimeout(_mountDelay);
+    //}
 
     // Tweens are present in the MixinDOMManipulation. For convenience, killing here
     if (typeof this.killTweens === 'function') {
@@ -385,9 +385,7 @@ export default function () {
 
     this.componentWillUnmount();
 
-    if (typeof this.undelegateEvents === 'function') {
-      this.undelegateEvents(this.getDOMEvents());
-    }
+    _events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
       DOMUtils.removeAllElements(document.querySelector(_mountPoint));
@@ -452,7 +450,7 @@ export default function () {
 
     this[$getLocalVCID(id)] = child;
 
-    if(update) {
+    if (update) {
       $forceChildren();
     }
   }
@@ -465,7 +463,7 @@ export default function () {
     if (_lifecycleState === LS_MOUNTED) {
       getChildIDs().forEach(id => {
         var isMounted = _children[id].getLifeCycleState() === LS_MOUNTED;
-        if(!isMounted) {
+        if (!isMounted) {
           _children[id].initialize({parent: this});
           _children[id].$renderComponent();
           _children[id].mount();
@@ -483,7 +481,7 @@ export default function () {
     if (_children.hasOwnProperty(id)) {
       _children[id].dispose();
       delete _children[id];
-      if(this.hasOwnProperty($getLocalVCID(id))) {
+      if (this.hasOwnProperty($getLocalVCID(id))) {
         delete this[$getLocalVCID(id)];
       }
     } else {
