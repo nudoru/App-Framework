@@ -323,7 +323,10 @@ export default function () {
     }
 
     this.$mountChildren();
-    this.componentDidMount();
+
+    if(typeof this.componentDidMount === 'function') {
+      this.componentDidMount();
+    }
   }
 
   /**
@@ -349,7 +352,9 @@ export default function () {
   function unmount() {
     _lastAdjacentNode = _DOMElement.nextSibling;
 
-    this.componentWillUnmount();
+    if(typeof this.componentWillUnmount === 'function') {
+      this.componentWillUnmount();
+    }
 
     _events.undelegateEvents(this.getDOMEvents());
 
@@ -365,7 +370,10 @@ export default function () {
   }
 
   function dispose() {
-    this.componentWillDispose();
+    if(typeof this.componentWillDispose === 'function') {
+      this.componentWillDispose();
+    }
+
     this.$disposeChildren();
     this.unmount();
 
