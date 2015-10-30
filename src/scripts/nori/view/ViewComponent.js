@@ -9,16 +9,17 @@
  * Lifecycle should match React:
  *
  * First render: getDefaultProps, getInitialState, componentWillMount, render, componentDidMount
- * Props change: componentWillReceiveProps, shouldComponentUpdate, componentWillUpdate, render, componentDidUpdate
- * State change: shouldComponentUpdate, componentWillUpdate, render, componentDidUpdate
+ * Props change: componentWillReceiveProps, shouldComponentUpdate, componentWillUpdate, (render), componentDidUpdate
+ * State change: shouldComponentUpdate, componentWillUpdate, (render), componentDidUpdate
  * Unmount: componentWillUnmount
  */
 
 import _ from '../../vendor/lodash.min.js';
 import Template from './Templating.js';
 import Renderer from './Renderer.js';
-import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import EventDelegator from './RxEventDelegator.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+
 
 // Lifecycle state constants
 const LS_NO_INIT   = 0,
@@ -84,11 +85,8 @@ export default function () {
     }
 
     this.addChildren(this.defineChildren());
-
     this.setState(this.getDefaultState());
-
     this.$initializeChildren();
-
     _lifecycleState = LS_INITED;
   }
 
@@ -266,8 +264,6 @@ export default function () {
    * Returns a Lodash client side template function by getting the HTML source from
    * the matching <script type='text/template'> tag in the document. OR you may
    * specify the custom HTML to use here. Mustache style delimiters used.
-   *
-   * The method is called only on the first render and cached to speed up future calls
    */
   function template(props, state) {
     let templateId = this.__template || this.getID();
@@ -277,7 +273,6 @@ export default function () {
   /**
    * May be overridden in a submodule for custom rendering
    * Should return HTML
-   * @returns {*}
    */
   function render(props, state) {
     let combined = _.merge({}, props, state),
@@ -288,11 +283,9 @@ export default function () {
 
   /**
    * Append it to a parent element
-   * @param mountEl
    */
   function mount() {
     if (isMounted()) {
-      //this.unmount();
       console.warn('Component ' + this.getID() + ' is already mounted');
       return;
     }
@@ -377,6 +370,10 @@ export default function () {
   //  Children
   //----------------------------------------------------------------------------
 
+  // TODO warn MUTABLE
+  function getChildren() {
+    return _children;
+  }
 
   /**
    * Called in initializeComponent to create children during the initialization phase
@@ -546,6 +543,10 @@ export default function () {
     return _mountPoint;
   }
 
+  function getLastAdjacentNode() {
+    return _lastAdjacentNode;
+  }
+
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -592,6 +593,7 @@ export default function () {
     getHTML,
     setHTML,
     getMountPoint,
+    getLastAdjacentNode,
     isMounted,
     bind,
     from,
@@ -604,12 +606,12 @@ export default function () {
     render,
     mount,
     shouldDelegateEvents,
-    //$mountAfterDelay,
     componentDidMount,
     componentWillUnmount,
     unmount,
     dispose,
     componentWillDispose,
+    getChildren,
     addChild,
     addChildren,
     disposeChild,

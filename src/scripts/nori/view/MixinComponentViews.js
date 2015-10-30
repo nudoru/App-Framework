@@ -7,6 +7,7 @@
 import _ from '../../vendor/lodash.min.js';
 import ViewComponentFactory from './ViewComponent.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
+//import ComponentMount from './ComponentMount.js';
 
 export default function () {
 
@@ -14,7 +15,6 @@ export default function () {
       _routeViewMap = {},
       _viewKeyIndex = 0,
       _currentViewID;
-
 
   /**
    * Factory to create component view modules by concating multiple source objects
@@ -31,7 +31,7 @@ export default function () {
       customizer = _.cloneDeep(source);
 
       customizer.mixins = customizer.mixins || [];
-      customizer.mixins.push(ViewComponentFactory());
+      customizer.mixins.unshift(ViewComponentFactory());
 
       template            = BuildFromMixins(customizer);
       template.__key      = _viewKeyIndex++;
@@ -116,10 +116,10 @@ export default function () {
       });
     }
 
-    // Force render
     view.controller.$renderComponent(true);
-    // wasn't mounted before, so mount it
     view.controller.mount();
+
+    //ComponentMount.mount(view.controller);
   }
 
   /**
