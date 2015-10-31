@@ -25,7 +25,6 @@ const LS_NO_INIT   = 0,
       LS_RENDERING = 2,
       LS_MOUNTED   = 3,
       LS_UNMOUNTED = 4,
-      LS_DISPOSED  = 99,
       MNT_REPLACE  = 'replace',
       MNT_APPEND   = 'append';
 
@@ -38,19 +37,19 @@ export default function () {
   // Properties added to component on creation:
   // __id, __key, __template
 
-  let _internalState  = {},
-      _internalProps  = {},
+  let __state         = {},
+      __props         = {},
       _publicState    = {},
       _publicProps    = {},
       _lastState      = {},
       _lastProps      = {},
       _lifecycleState = LS_NO_INIT,
       _children,
-      _parent,
       _templateCache,
       _html,
       _DOMElement,
-      _mountPoint;
+      __parent,
+      __mountPoint;
 
   /**
    * Subclasses can override.
@@ -66,9 +65,9 @@ export default function () {
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    _internalProps.id       = this.__id;
-    _internalProps.key      = this.__key;
-    _internalProps.template = this.__template;
+    __props.id       = this.__id;
+    __props.key      = this.__key;
+    __props.template = this.__template;
 
     this.validateProps();
 
@@ -80,18 +79,18 @@ export default function () {
   }
 
   function validateProps() {
-    if (_internalProps.hasOwnProperty('mount')) {
-      _mountPoint = _internalProps.mount;
+    if (__props.hasOwnProperty('mount')) {
+      __mountPoint = __props.mount;
     } else {
       console.warn(this.__id, 'Component without a mount selector');
     }
 
-    if (!_internalProps.hasOwnProperty('mountMethod')) {
-      _internalProps.mountMethod = MNT_REPLACE;
+    if (!__props.hasOwnProperty('mountMethod')) {
+      __props.mountMethod = MNT_REPLACE;
     }
 
-    if (_internalProps.hasOwnProperty('parent')) {
-      _parent = _internalProps.parent;
+    if (__props.hasOwnProperty('parent')) {
+      __parent = __props.parent;
     }
   }
 
@@ -147,11 +146,11 @@ export default function () {
    * @returns {boolean}
    */
   function shouldComponentUpdate(nextProps, nextState) {
-    nextProps = nextProps || _internalProps;
-    nextState = nextState || _internalState;
+    nextProps = nextProps || __props;
+    nextState = nextState || __state;
 
-    let isStateEq = _.isEqual(nextState, _internalState),
-        isPropsEq = _.isEqual(nextProps, _internalProps);
+    let isStateEq = _.isEqual(nextState, __state),
+        isPropsEq = _.isEqual(nextProps, __props);
 
     return !(isStateEq) || !(isPropsEq);
   }
@@ -176,9 +175,9 @@ export default function () {
       this.componentWillUpdate(_publicProps, nextState);
     }
 
-    _lastState     = _.assign({}, _internalState);
-    _internalState = _.assign({}, _internalState, nextState);
-    _publicState   = _.assign(_publicState, _internalState);
+    _lastState   = _.assign({}, __state);
+    __state      = _.assign({}, __state, nextState);
+    _publicState = _.assign(_publicState, __state);
 
     if (typeof _publicState.onChange === 'function') {
       _publicState.onChange.apply(this);
@@ -213,12 +212,12 @@ export default function () {
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(nextProps, _internalState);
+      this.componentWillUpdate(nextProps, __state);
     }
 
-    _lastProps     = _.assign({}, _internalProps);
-    _internalProps = _.merge({}, _internalProps, nextProps);
-    _publicProps   = _.assign(_publicProps, _internalProps);
+    _lastProps   = _.assign({}, __props);
+    __props      = _.merge({}, __props, nextProps);
+    _publicProps = _.assign(_publicProps, __props);
 
     if (typeof _publicProps.onChange === 'function') {
       _publicProps.onChange.apply(this);
@@ -271,7 +270,7 @@ export default function () {
 
     this.$renderChildren();
 
-    this.setHTML(this.render(this.props, this.state));
+    _html = this.render(this.props, this.state);
   }
 
   /**
@@ -317,7 +316,7 @@ export default function () {
       key           : this.__key,
       method        : this.props.mountMethod,
       lastAdjacent  : lastAdjacent,
-      targetSelector: _mountPoint,
+      targetSelector: __mountPoint,
       html          : this.getHTML()
     });
 
@@ -362,7 +361,7 @@ export default function () {
     Events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
-      DOMUtils.removeAllElements(document.querySelector(_mountPoint));
+      DOMUtils.removeAllElements(document.querySelector(__mountPoint));
     } else {
       DOMUtils.removeElement(_DOMElement);
     }
@@ -380,7 +379,7 @@ export default function () {
     this.$disposeChildren();
     this.unmount();
 
-    _templateCache    = null;
+    _templateCache = null;
 
     _lifecycleState = LS_NO_INIT;
   }
@@ -523,16 +522,8 @@ export default function () {
     return this.__id;
   }
 
-  function getKey() {
-    return this.__key;
-  }
-
   function getHTML() {
     return _html;
-  }
-
-  function setHTML(html) {
-    _html = html;
   }
 
   function getDOMElement() {
@@ -540,7 +531,7 @@ export default function () {
   }
 
   function getMountPoint() {
-    return _mountPoint;
+    return __mountPoint;
   }
 
   //----------------------------------------------------------------------------
@@ -571,11 +562,9 @@ export default function () {
     getLifeCycleState,
     isInitialized,
     getID,
-    getKey,
     template,
     getDOMElement,
     getHTML,
-    setHTML,
     getMountPoint,
     isMounted,
     from,

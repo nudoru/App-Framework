@@ -2269,7 +2269,6 @@ var LS_NO_INIT = 0,
     LS_RENDERING = 2,
     LS_MOUNTED = 3,
     LS_UNMOUNTED = 4,
-    LS_DISPOSED = 99,
     MNT_REPLACE = 'replace',
     MNT_APPEND = 'append';
 
@@ -2281,19 +2280,19 @@ exports['default'] = function () {
   // Properties added to component on creation:
   // __id, __key, __template
 
-  var _internalState = {},
-      _internalProps = {},
+  var __state = {},
+      __props = {},
       _publicState = {},
       _publicProps = {},
       _lastState = {},
       _lastProps = {},
       _lifecycleState = LS_NO_INIT,
       _children = undefined,
-      _parent = undefined,
       _templateCache = undefined,
       _html = undefined,
       _DOMElement = undefined,
-      _mountPoint = undefined;
+      __parent = undefined,
+      __mountPoint = undefined;
 
   /**
    * Subclasses can override.
@@ -2309,9 +2308,9 @@ exports['default'] = function () {
   function initializeComponent(initProps) {
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
-    _internalProps.id = this.__id;
-    _internalProps.key = this.__key;
-    _internalProps.template = this.__template;
+    __props.id = this.__id;
+    __props.key = this.__key;
+    __props.template = this.__template;
 
     this.validateProps();
 
@@ -2323,18 +2322,18 @@ exports['default'] = function () {
   }
 
   function validateProps() {
-    if (_internalProps.hasOwnProperty('mount')) {
-      _mountPoint = _internalProps.mount;
+    if (__props.hasOwnProperty('mount')) {
+      __mountPoint = __props.mount;
     } else {
       console.warn(this.__id, 'Component without a mount selector');
     }
 
-    if (!_internalProps.hasOwnProperty('mountMethod')) {
-      _internalProps.mountMethod = MNT_REPLACE;
+    if (!__props.hasOwnProperty('mountMethod')) {
+      __props.mountMethod = MNT_REPLACE;
     }
 
-    if (_internalProps.hasOwnProperty('parent')) {
-      _parent = _internalProps.parent;
+    if (__props.hasOwnProperty('parent')) {
+      __parent = __props.parent;
     }
   }
 
@@ -2390,11 +2389,11 @@ exports['default'] = function () {
    * @returns {boolean}
    */
   function shouldComponentUpdate(nextProps, nextState) {
-    nextProps = nextProps || _internalProps;
-    nextState = nextState || _internalState;
+    nextProps = nextProps || __props;
+    nextState = nextState || __state;
 
-    var isStateEq = _vendorLodashMinJs2['default'].isEqual(nextState, _internalState),
-        isPropsEq = _vendorLodashMinJs2['default'].isEqual(nextProps, _internalProps);
+    var isStateEq = _vendorLodashMinJs2['default'].isEqual(nextState, __state),
+        isPropsEq = _vendorLodashMinJs2['default'].isEqual(nextProps, __props);
 
     return !isStateEq || !isPropsEq;
   }
@@ -2419,9 +2418,9 @@ exports['default'] = function () {
       this.componentWillUpdate(_publicProps, nextState);
     }
 
-    _lastState = _vendorLodashMinJs2['default'].assign({}, _internalState);
-    _internalState = _vendorLodashMinJs2['default'].assign({}, _internalState, nextState);
-    _publicState = _vendorLodashMinJs2['default'].assign(_publicState, _internalState);
+    _lastState = _vendorLodashMinJs2['default'].assign({}, __state);
+    __state = _vendorLodashMinJs2['default'].assign({}, __state, nextState);
+    _publicState = _vendorLodashMinJs2['default'].assign(_publicState, __state);
 
     if (typeof _publicState.onChange === 'function') {
       _publicState.onChange.apply(this);
@@ -2455,12 +2454,12 @@ exports['default'] = function () {
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(nextProps, _internalState);
+      this.componentWillUpdate(nextProps, __state);
     }
 
-    _lastProps = _vendorLodashMinJs2['default'].assign({}, _internalProps);
-    _internalProps = _vendorLodashMinJs2['default'].merge({}, _internalProps, nextProps);
-    _publicProps = _vendorLodashMinJs2['default'].assign(_publicProps, _internalProps);
+    _lastProps = _vendorLodashMinJs2['default'].assign({}, __props);
+    __props = _vendorLodashMinJs2['default'].merge({}, __props, nextProps);
+    _publicProps = _vendorLodashMinJs2['default'].assign(_publicProps, __props);
 
     if (typeof _publicProps.onChange === 'function') {
       _publicProps.onChange.apply(this);
@@ -2513,7 +2512,7 @@ exports['default'] = function () {
 
     this.$renderChildren();
 
-    this.setHTML(this.render(this.props, this.state));
+    _html = this.render(this.props, this.state);
   }
 
   /**
@@ -2559,7 +2558,7 @@ exports['default'] = function () {
       key: this.__key,
       method: this.props.mountMethod,
       lastAdjacent: lastAdjacent,
-      targetSelector: _mountPoint,
+      targetSelector: __mountPoint,
       html: this.getHTML()
     });
 
@@ -2602,7 +2601,7 @@ exports['default'] = function () {
     Events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
-      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_mountPoint));
+      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(__mountPoint));
     } else {
       _nudoruBrowserDOMUtilsJs2['default'].removeElement(_DOMElement);
     }
@@ -2768,16 +2767,8 @@ exports['default'] = function () {
     return this.__id;
   }
 
-  function getKey() {
-    return this.__key;
-  }
-
   function getHTML() {
     return _html;
-  }
-
-  function setHTML(html) {
-    _html = html;
   }
 
   function getDOMElement() {
@@ -2785,7 +2776,7 @@ exports['default'] = function () {
   }
 
   function getMountPoint() {
-    return _mountPoint;
+    return __mountPoint;
   }
 
   //----------------------------------------------------------------------------
@@ -2815,11 +2806,9 @@ exports['default'] = function () {
     getLifeCycleState: getLifeCycleState,
     isInitialized: isInitialized,
     getID: getID,
-    getKey: getKey,
     template: template,
     getDOMElement: getDOMElement,
     getHTML: getHTML,
-    setHTML: setHTML,
     getMountPoint: getMountPoint,
     isMounted: isMounted,
     from: from,
