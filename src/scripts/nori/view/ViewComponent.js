@@ -50,7 +50,6 @@ export default function () {
       _templateCache,
       _html,
       _DOMElement,
-      _lastAdjacentNode,
       _mountPoint;
 
   /**
@@ -236,7 +235,7 @@ export default function () {
       this.$renderComponent();
 
       if (this.isMounted()) {
-        this.unmount();
+        //this.unmount();
         this.mount();
       }
 
@@ -300,14 +299,16 @@ export default function () {
    * Append it to a parent element
    */
   function mount() {
-    if (isMounted()) {
-      console.warn('Component ' + this.getID() + ' is already mounted');
-      return;
-    }
+    let lastAdjacent;
 
     if (!this.getHTML() || this.getHTML().length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
+    }
+
+    if (isMounted()) {
+      lastAdjacent = _DOMElement.nextSibling;
+      this.unmount();
     }
 
     _lifecycleState = LS_MOUNTED;
@@ -315,7 +316,7 @@ export default function () {
     _DOMElement = Renderer({
       key           : this.__key,
       method        : this.props.mountMethod,
-      lastAdjacent  : _lastAdjacentNode,
+      lastAdjacent  : lastAdjacent,
       targetSelector: _mountPoint,
       html          : this.getHTML()
     });
@@ -352,11 +353,11 @@ export default function () {
   }
 
   function unmount() {
-    _lastAdjacentNode = _DOMElement.nextSibling;
-
     if (typeof this.componentWillUnmount === 'function') {
       this.componentWillUnmount();
     }
+
+    $unmountChildren();
 
     Events.undelegateEvents(this.getDOMEvents());
 
@@ -379,7 +380,6 @@ export default function () {
     this.$disposeChildren();
     this.unmount();
 
-    _lastAdjacentNode = null;
     _templateCache    = null;
 
     _lifecycleState = LS_NO_INIT;
@@ -543,10 +543,6 @@ export default function () {
     return _mountPoint;
   }
 
-  function getLastAdjacentNode() {
-    return _lastAdjacentNode;
-  }
-
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -581,7 +577,6 @@ export default function () {
     getHTML,
     setHTML,
     getMountPoint,
-    getLastAdjacentNode,
     isMounted,
     from,
     componentWillReceiveProps,

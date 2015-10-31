@@ -2293,7 +2293,6 @@ exports['default'] = function () {
       _templateCache = undefined,
       _html = undefined,
       _DOMElement = undefined,
-      _lastAdjacentNode = undefined,
       _mountPoint = undefined;
 
   /**
@@ -2478,7 +2477,7 @@ exports['default'] = function () {
       this.$renderComponent();
 
       if (this.isMounted()) {
-        this.unmount();
+        //this.unmount();
         this.mount();
       }
 
@@ -2542,14 +2541,16 @@ exports['default'] = function () {
    * Append it to a parent element
    */
   function mount() {
-    if (isMounted()) {
-      console.warn('Component ' + this.getID() + ' is already mounted');
-      return;
-    }
+    var lastAdjacent = undefined;
 
     if (!this.getHTML() || this.getHTML().length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
+    }
+
+    if (isMounted()) {
+      lastAdjacent = _DOMElement.nextSibling;
+      this.unmount();
     }
 
     _lifecycleState = LS_MOUNTED;
@@ -2557,7 +2558,7 @@ exports['default'] = function () {
     _DOMElement = (0, _RendererJs2['default'])({
       key: this.__key,
       method: this.props.mountMethod,
-      lastAdjacent: _lastAdjacentNode,
+      lastAdjacent: lastAdjacent,
       targetSelector: _mountPoint,
       html: this.getHTML()
     });
@@ -2592,11 +2593,11 @@ exports['default'] = function () {
   function componentWillUnmount() {}
 
   function unmount() {
-    _lastAdjacentNode = _DOMElement.nextSibling;
-
     if (typeof this.componentWillUnmount === 'function') {
       this.componentWillUnmount();
     }
+
+    $unmountChildren();
 
     Events.undelegateEvents(this.getDOMEvents());
 
@@ -2619,7 +2620,6 @@ exports['default'] = function () {
     this.$disposeChildren();
     this.unmount();
 
-    _lastAdjacentNode = null;
     _templateCache = null;
 
     _lifecycleState = LS_NO_INIT;
@@ -2788,10 +2788,6 @@ exports['default'] = function () {
     return _mountPoint;
   }
 
-  function getLastAdjacentNode() {
-    return _lastAdjacentNode;
-  }
-
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -2825,7 +2821,6 @@ exports['default'] = function () {
     getHTML: getHTML,
     setHTML: setHTML,
     getMountPoint: getMountPoint,
-    getLastAdjacentNode: getLastAdjacentNode,
     isMounted: isMounted,
     from: from,
     componentWillReceiveProps: componentWillReceiveProps,
