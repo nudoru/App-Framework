@@ -1,3 +1,4 @@
+import Nori from '../../nori/Nori.js';
 import AppStore from '../store/AppStore.js';
 import MixinNudoruControls from '../../nudoru/components/MixinNudoruControls.js';
 import MixinRouteViews from '../../nori/view/MixinRouteViews.js';

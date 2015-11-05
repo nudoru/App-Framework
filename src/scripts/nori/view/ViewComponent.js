@@ -480,7 +480,7 @@ export default function () {
     return _.reduce(_children, (htmlObj, current, key) => {
       htmlObj[key] = current.getHTML();
       return htmlObj;
-    }, {})
+    }, {});
   }
 
   function $mountChildren() {

@@ -1,3 +1,4 @@
+import Nori from '../../nori/Nori.js';
 import NoriActions from '../../nori/action/ActionCreator';
 import AppView from './AppView';
 import AppStore from '../store/AppStore';

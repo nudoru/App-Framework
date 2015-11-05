@@ -1,3 +1,5 @@
+import Nori from '../../nori/Nori.js';
+
 export default Nori.view().createComponent('', {
 
   counter: 0,

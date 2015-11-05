@@ -97,6 +97,10 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+var _noriNoriJs = require('../nori/Nori.js');
+
+var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
+
 var _noriUtilsMixinStoreWatcherJs = require('../nori/utils/MixinStoreWatcher.js');
 
 var _noriUtilsMixinStoreWatcherJs2 = _interopRequireDefault(_noriUtilsMixinStoreWatcherJs);
@@ -126,7 +130,7 @@ var _viewAppViewJs2 = _interopRequireDefault(_viewAppViewJs);
  * bootstrapping the app and possibly handling socket/server interaction.
  * Any additional functionality should be handled in a specific module.
  */
-var App = Nori.createClass({
+var App = _noriNoriJs2['default'].createClass({
 
   mixins: [(0, _noriUtilsMixinStoreWatcherJs2['default'])()],
 
@@ -156,7 +160,7 @@ var App = Nori.createClass({
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"../nori/action/ActionCreator.js":13,"../nori/utils/MixinStoreWatcher.js":18,"./action/ActionConstants.js":3,"./action/ActionCreator.js":4,"./store/AppStore.js":5,"./view/AppView.js":6}],3:[function(require,module,exports){
+},{"../nori/Nori.js":11,"../nori/action/ActionCreator.js":13,"../nori/utils/MixinStoreWatcher.js":18,"./action/ActionConstants.js":3,"./action/ActionCreator.js":4,"./store/AppStore.js":5,"./view/AppView.js":6}],3:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -205,6 +209,10 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+var _noriNoriJs = require('../../nori/Nori.js');
+
+var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
+
 var _noriActionActionConstantsJs = require('../../nori/action/ActionConstants.js');
 
 var _noriActionActionConstantsJs2 = _interopRequireDefault(_noriActionActionConstantsJs);
@@ -239,7 +247,7 @@ var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
  *
  * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
  */
-var AppStoreModule = Nori.createStore({
+var AppStoreModule = _noriNoriJs2['default'].createStore({
 
   mixins: [],
 
@@ -284,12 +292,16 @@ var AppStore = AppStoreModule();
 exports['default'] = AppStore;
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionConstants.js":12,"../../nudoru/core/ArrayUtils.js":38,"../../nudoru/core/NumberUtils.js":39,"../../nudoru/core/StringUtils.js":41,"../../vendor/lodash.min.js":43,"../action/ActionConstants.js":3}],6:[function(require,module,exports){
+},{"../../nori/Nori.js":11,"../../nori/action/ActionConstants.js":12,"../../nudoru/core/ArrayUtils.js":38,"../../nudoru/core/NumberUtils.js":39,"../../nudoru/core/StringUtils.js":41,"../../vendor/lodash.min.js":43,"../action/ActionConstants.js":3}],6:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _noriNoriJs = require('../../nori/Nori.js');
+
+var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
 var _storeAppStoreJs = require('../store/AppStore.js');
 
@@ -323,10 +335,10 @@ var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs)
  * View for an application.
  */
 
-var vcStyles = Nori.view().createComponent('debug-styletest', {})('styles'),
-    vcControls = Nori.view().createComponent('debug-controls', {})('controls');
+var vcStyles = _noriNoriJs2['default'].view().createComponent('debug-styletest', {})('styles'),
+    vcControls = _noriNoriJs2['default'].view().createComponent('debug-controls', {})('controls');
 
-var AppViewModule = Nori.createView({
+var AppViewModule = _noriNoriJs2['default'].createView({
 
   mixins: [(0, _nudoruComponentsMixinNudoruControlsJs2['default'])(), (0, _noriViewMixinRouteViewsJs2['default'])()],
 
@@ -390,11 +402,18 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/view/MixinRouteViews.js":22,"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/components/MixinNudoruControls.js":34,"../store/AppStore.js":5,"./ComponentsTesting.js":8,"./TemplateViewComponent.js":9}],7:[function(require,module,exports){
+},{"../../nori/Nori.js":11,"../../nori/view/MixinRouteViews.js":22,"../../nori/view/Templating.js":25,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/components/MixinNudoruControls.js":34,"../store/AppStore.js":5,"./ComponentsTesting.js":8,"./TemplateViewComponent.js":9}],7:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-exports['default'] = Nori.view().createComponent('', {
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _noriNoriJs = require('../../nori/Nori.js');
+
+var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
+
+exports['default'] = _noriNoriJs2['default'].view().createComponent('', {
 
   counter: 0,
 
@@ -415,12 +434,16 @@ exports['default'] = Nori.view().createComponent('', {
 });
 module.exports = exports['default'];
 
-},{}],8:[function(require,module,exports){
+},{"../../nori/Nori.js":11}],8:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _noriNoriJs = require('../../nori/Nori.js');
+
+var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
 var _noriActionActionCreator = require('../../nori/action/ActionCreator');
 
@@ -468,7 +491,7 @@ var _lIpsum = require('../../nudoru/browser/Lorem.js'),
     _actionSixEl = undefined,
     _this = undefined;
 
-exports['default'] = Nori.view().createComponent('debug-components', {
+exports['default'] = _noriNoriJs2['default'].view().createComponent('debug-components', {
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -632,12 +655,16 @@ exports['default'] = Nori.view().createComponent('debug-components', {
 });
 module.exports = exports['default'];
 
-},{"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":25,"../../nori/view/Tweens.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../../vendor/lodash.min.js":43,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
+},{"../../nori/Nori.js":11,"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":25,"../../nori/view/Tweens.js":26,"../../nudoru/browser/DOMUtils.js":29,"../../nudoru/browser/Lorem.js":30,"../../nudoru/components/ToolTipView.js":37,"../../vendor/lodash.min.js":43,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _noriNoriJs = require('../../nori/Nori.js');
+
+var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
 var _noriActionActionCreator = require('../../nori/action/ActionCreator');
 
@@ -667,7 +694,7 @@ var _noriViewTweensJs2 = _interopRequireDefault(_noriViewTweensJs);
  * Module for a dynamic application view for a route or a persistent view
  */
 
-exports['default'] = Nori.view().createComponent('default', {
+exports['default'] = _noriNoriJs2['default'].view().createComponent('default', {
 
   mixins: [_noriViewTweensJs2['default']],
 
@@ -728,34 +755,34 @@ module.exports = exports['default'];
 //componentWillDispose() {
 //},
 
-},{"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":25,"../../nori/view/Tweens.js":26,"../../nudoru/browser/DOMUtils.js":29,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
+},{"../../nori/Nori.js":11,"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":25,"../../nori/view/Tweens.js":26,"../../nudoru/browser/DOMUtils.js":29,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 /**
  * Initial file for the Application
  */
 
+var _nudoruBrowserBrowserInfoJs = require('./nudoru/browser/BrowserInfo.js');
+
+var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
+
+var _appAppJs = require('./app/App.js');
+
+var _appAppJs2 = _interopRequireDefault(_appAppJs);
+
 (function () {
 
-  var _browserInfo = require('./nudoru/browser/BrowserInfo.js');
-
-  /**
-   * IE versions 9 and under are blocked, others are allowed to proceed
-   */
-  if (_browserInfo.notSupported || _browserInfo.isIE9) {
+  if (_nudoruBrowserBrowserInfoJs2['default'].notSupported || _nudoruBrowserBrowserInfoJs2['default'].isIE9) {
     document.querySelector('body').innerHTML = '<h3>For the best experience, please use Internet Explorer 10+, Firefox, Chrome or Safari to view this application.</h3>';
   } else {
 
-    /**
-     * Create the application module and initialize
-     */
     window.onload = function () {
-      window.Nori = require('./nori/Nori.js');
-      window.APP = require('./app/App.js');
-      APP.initialize();
+      _appAppJs2['default'].initialize();
     };
   }
 })();
 
-},{"./app/App.js":2,"./nori/Nori.js":11,"./nudoru/browser/BrowserInfo.js":28}],11:[function(require,module,exports){
+},{"./app/App.js":2,"./nudoru/browser/BrowserInfo.js":28}],11:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -788,7 +815,7 @@ var _vendorLodashMinJs = require('../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-var Nori = function Nori() {
+exports['default'] = (function () {
 
   var _storeTemplate = undefined,
       _viewTemplate = undefined;
@@ -876,9 +903,8 @@ var Nori = function Nori() {
     createStore: createStore,
     createView: createView
   };
-};
+})();
 
-exports['default'] = Nori();
 module.exports = exports['default'];
 
 },{"../vendor/lodash.min.js":43,"./store/ReducerStore.js":14,"./utils/AssignArray.js":15,"./utils/BuildFromMixins.js":16,"./utils/CreateClass.js":17,"./view/MixinComponentViews.js":21}],12:[function(require,module,exports){

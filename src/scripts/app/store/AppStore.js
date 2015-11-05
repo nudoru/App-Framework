@@ -1,3 +1,4 @@
+import Nori from '../../nori/Nori.js';
 import NoriActionConstants from '../../nori/action/ActionConstants.js';
 import AppActionConstants from '../action/ActionConstants.js';
 import StringUtils from '../../nudoru/core/StringUtils.js';

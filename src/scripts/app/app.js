@@ -1,3 +1,4 @@
+import Nori from '../nori/Nori.js';
 import StoreWatcher from '../nori/utils/MixinStoreWatcher.js';
 import AppActions from './action/ActionCreator.js';
 import AppActionConstants from './action/ActionConstants.js';

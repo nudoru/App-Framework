@@ -7,12 +7,11 @@ import BuildFromMixins from './utils/BuildFromMixins.js';
 import CreateClass from './utils/CreateClass.js';
 import _ from '../vendor/lodash.min.js';
 
-let Nori = function () {
+export default (function () {
 
   let _storeTemplate,
       _viewTemplate;
-
-
+  
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
@@ -101,6 +100,4 @@ let Nori = function () {
     createView
   };
 
-};
-
-export default Nori();
+})();
