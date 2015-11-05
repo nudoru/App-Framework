@@ -9,14 +9,14 @@ import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 const MNT_REPLACE = 'replace',
       MNT_APPEND  = 'append';
 
-export default function ({key, method, lastAdjacent, targetSelector, html}) {
+export default function ({index, uniqueCls, method, lastAdjacent, targetSelector, html}) {
 
   let domEl,
       mountPoint = document.querySelector(targetSelector),
       currentHTML;
 
   method = method || MNT_REPLACE;
-  key = key || 'nk';
+  index = index || 'nk';
 
   if (!mountPoint) {
     console.warn('Render, target selector not found', targetSelector);
@@ -24,11 +24,10 @@ export default function ({key, method, lastAdjacent, targetSelector, html}) {
   }
 
   if (html) {
-    let jsClass = 'js__nvc'+key;
     domEl = DOMUtils.HTMLStrToNode(html);
-    domEl.setAttribute('data-norivcid', key);
+    //domEl.setAttribute('data-norivcid', index);
     DOMUtils.addClass(domEl, 'nori__vc');
-    DOMUtils.addClass(domEl, jsClass);
+    DOMUtils.addClass(domEl, uniqueCls);
 
     if (method === MNT_REPLACE) {
       currentHTML = mountPoint.innerHTML;

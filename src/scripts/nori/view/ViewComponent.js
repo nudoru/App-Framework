@@ -31,25 +31,23 @@ const LS_NO_INIT   = 0,
 let Events        = EventDelegator(),
     reservedProps = ['key', 'id', 'template'];
 
-
 export default function () {
 
   // Properties added to component on creation:
-  // __id, __key, __template
+  // __id, __index, __template
 
-  let __state         = {},
-      __props         = {},
-      _publicState    = {},
-      _publicProps    = {},
+  let _internalState  = {},
+      _internalProps  = {},
+      state           = {},
+      props           = {},
       _lastState      = {},
       _lastProps      = {},
+      _parentComponent,
       _lifecycleState = LS_NO_INIT,
       _children,
       _templateCache,
       _html,
-      _DOMElement,
-      __parent,
-      __mountPoint;
+      _DOMElementCache;
 
   /**
    * Subclasses can override.
@@ -65,9 +63,9 @@ export default function () {
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    __props.id       = this.__id;
-    __props.key      = this.__key;
-    __props.template = this.__template;
+    _internalProps.id       = this.__id;
+    _internalProps.index    = this.__index;
+    _internalProps.template = this.__template;
 
     this.validateProps();
 
@@ -79,29 +77,16 @@ export default function () {
   }
 
   function validateProps() {
-    if (__props.hasOwnProperty('mount')) {
-      __mountPoint = __props.mount;
-    } else {
+    if (!_internalProps.hasOwnProperty('mount')) {
       console.warn(this.__id, 'Component without a mount selector');
     }
-
-    if (!__props.hasOwnProperty('mountMethod')) {
-      __props.mountMethod = MNT_REPLACE;
+    if (!_internalProps.hasOwnProperty('mountMethod')) {
+      _internalProps.mountMethod = MNT_REPLACE;
     }
-
-    if (__props.hasOwnProperty('parent')) {
-      __parent = __props.parent;
+    if (_internalProps.hasOwnProperty('parent')) {
+      _parentComponent = _internalProps.parent;
     }
   }
-
-  //function validateObjectForReservedKeys(obj) {
-  //  _reservedPros.forEach(key => {
-  //    if (obj.hasOwnProperty(key)) {
-  //      console.warn(this.getID(), 'props contain reserved key:', key);
-  //    }
-  //  });
-  //  return true;
-  //}
 
   /**
    * Override in implementation
@@ -146,11 +131,11 @@ export default function () {
    * @returns {boolean}
    */
   function shouldComponentUpdate(nextProps, nextState) {
-    nextProps = nextProps || __props;
-    nextState = nextState || __state;
+    nextProps = nextProps || _internalProps;
+    nextState = nextState || _internalState;
 
-    let isStateEq = _.isEqual(nextState, __state),
-        isPropsEq = _.isEqual(nextProps, __props);
+    let isStateEq = _.isEqual(nextState, _internalState),
+        isPropsEq = _.isEqual(nextProps, _internalProps);
 
     return !(isStateEq) || !(isPropsEq);
   }
@@ -167,20 +152,20 @@ export default function () {
 
     nextState = nextState || this.getDefaultState();
 
-    if (!shouldComponentUpdate(null, nextState)) {
+    if (!this.shouldComponentUpdate(null, nextState)) {
       return;
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(_publicProps, nextState);
+      this.componentWillUpdate(props, nextState);
     }
 
-    _lastState   = _.assign({}, __state);
-    __state      = _.assign({}, __state, nextState);
-    _publicState = _.assign(_publicState, __state);
+    _lastState     = _.assign({}, _internalState);
+    _internalState = _.assign({}, _internalState, nextState);
+    state          = _.assign(state, _internalState);
 
-    if (typeof _publicState.onChange === 'function') {
-      _publicState.onChange.apply(this);
+    if (typeof state.onChange === 'function') {
+      state.onChange.apply(this);
     }
 
     this.$renderAfterPropsOrStateChange();
@@ -207,20 +192,20 @@ export default function () {
       this.componentWillReceiveProps(nextProps);
     }
 
-    if (!shouldComponentUpdate(nextProps, null)) {
+    if (!this.shouldComponentUpdate(nextProps, null)) {
       return;
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(nextProps, __state);
+      this.componentWillUpdate(nextProps, _internalState);
     }
 
-    _lastProps   = _.assign({}, __props);
-    __props      = _.merge({}, __props, nextProps);
-    _publicProps = _.assign(_publicProps, __props);
+    _lastProps     = _.assign({}, _internalProps);
+    _internalProps = _.merge({}, _internalProps, nextProps);
+    props          = _.assign(props, _internalProps);
 
-    if (typeof _publicProps.onChange === 'function') {
-      _publicProps.onChange.apply(this);
+    if (typeof props.onChange === 'function') {
+      props.onChange.apply(this);
     }
 
     this.$renderAfterPropsOrStateChange();
@@ -234,7 +219,6 @@ export default function () {
       this.$renderComponent();
 
       if (this.isMounted()) {
-        //this.unmount();
         this.mount();
       }
 
@@ -288,10 +272,10 @@ export default function () {
    * Should return HTML
    */
   function render(props, state) {
-    let combined = _.merge({}, props, state),
-        template = _templateCache || this.template(props, state);
+    let combined     = _.merge({}, props, state),
+        templateFunc = _templateCache || this.template(props, state);
 
-    return template(combined);
+    return templateFunc(combined);
   }
 
   /**
@@ -305,18 +289,19 @@ export default function () {
       return;
     }
 
-    if (isMounted()) {
-      lastAdjacent = _DOMElement.nextSibling;
+    if (this.isMounted()) {
+      lastAdjacent = this.getDOMElement().nextSibling;
       this.unmount();
     }
 
     _lifecycleState = LS_MOUNTED;
 
-    _DOMElement = Renderer({
-      key           : this.__key,
+    Renderer({
+      index         : this.__index,
+      uniqueCls     : this.getUniqueClass(),
       method        : this.props.mountMethod,
       lastAdjacent  : lastAdjacent,
-      targetSelector: __mountPoint,
+      targetSelector: this.props.mount,
       html          : this.getHTML()
     });
 
@@ -329,6 +314,10 @@ export default function () {
     if (typeof this.componentDidMount === 'function') {
       this.componentDidMount();
     }
+  }
+
+  function getUniqueClass() {
+    return 'js__nvc' + this.__index;
   }
 
   /**
@@ -356,17 +345,17 @@ export default function () {
       this.componentWillUnmount();
     }
 
-    $unmountChildren();
+    this.$unmountChildren();
 
     Events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
-      DOMUtils.removeAllElements(document.querySelector(__mountPoint));
+      DOMUtils.removeAllElements(document.querySelector(this.props.mount));
     } else {
-      DOMUtils.removeElement(_DOMElement);
+      DOMUtils.removeElement(this.getDOMElement());
     }
 
-    _DOMElement = null;
+    _DOMElementCache = null;
 
     _lifecycleState = LS_UNMOUNTED;
   }
@@ -515,7 +504,7 @@ export default function () {
   }
 
   function isMounted() {
-    return !!_DOMElement;
+    return !!this.getDOMElement();
   }
 
   function getID() {
@@ -527,11 +516,10 @@ export default function () {
   }
 
   function getDOMElement() {
-    return _DOMElement;
-  }
-
-  function getMountPoint() {
-    return __mountPoint;
+    if(!_DOMElementCache) {
+      _DOMElementCache = document.querySelector('.'+this.getUniqueClass());
+    }
+    return _DOMElementCache;
   }
 
   //----------------------------------------------------------------------------
@@ -548,8 +536,8 @@ export default function () {
   //----------------------------------------------------------------------------
 
   return {
-    state: _publicState,
-    props: _publicProps,
+    state: state,
+    props: props,
     initialize,
     initializeComponent,
     validateProps,
@@ -565,7 +553,6 @@ export default function () {
     template,
     getDOMElement,
     getHTML,
-    getMountPoint,
     isMounted,
     from,
     componentWillReceiveProps,
@@ -576,6 +563,7 @@ export default function () {
     $renderComponent,
     render,
     mount,
+    getUniqueClass,
     shouldDelegateEvents,
     componentDidMount,
     componentWillUnmount,

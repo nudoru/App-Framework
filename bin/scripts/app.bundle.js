@@ -1471,7 +1471,7 @@ exports['default'] = function () {
 
   var _viewMap = {},
       _routeViewMap = {},
-      _viewKeyIndex = 0,
+      _viewIDIndex = 0,
       _currentViewID = undefined;
 
   /**
@@ -1492,8 +1492,8 @@ exports['default'] = function () {
       customizer.mixins.unshift((0, _ViewComponentJs2['default'])());
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-      template.__key = _viewKeyIndex++;
-      template.__id = id || 'vcomponent_' + _viewKeyIndex;
+      template.__index = _viewIDIndex++;
+      template.__id = id || 'vcomponent_' + _viewIDIndex;
       template.__template = templateType;
 
       // Compose a new initialize function by inserting call to component super module
@@ -1677,7 +1677,8 @@ var MNT_REPLACE = 'replace',
     MNT_APPEND = 'append';
 
 exports['default'] = function (_ref) {
-  var key = _ref.key;
+  var index = _ref.index;
+  var uniqueCls = _ref.uniqueCls;
   var method = _ref.method;
   var lastAdjacent = _ref.lastAdjacent;
   var targetSelector = _ref.targetSelector;
@@ -1688,7 +1689,7 @@ exports['default'] = function (_ref) {
       currentHTML = undefined;
 
   method = method || MNT_REPLACE;
-  key = key || 'nk';
+  index = index || 'nk';
 
   if (!mountPoint) {
     console.warn('Render, target selector not found', targetSelector);
@@ -1696,11 +1697,10 @@ exports['default'] = function (_ref) {
   }
 
   if (html) {
-    var jsClass = 'js__nvc' + key;
     domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-    domEl.setAttribute('data-norivcid', key);
+    //domEl.setAttribute('data-norivcid', index);
     _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
-    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, jsClass);
+    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, uniqueCls);
 
     if (method === MNT_REPLACE) {
       currentHTML = mountPoint.innerHTML;
@@ -2281,21 +2281,20 @@ var Events = (0, _RxEventDelegatorJs2['default'])(),
 exports['default'] = function () {
 
   // Properties added to component on creation:
-  // __id, __key, __template
+  // __id, __index, __template
 
-  var __state = {},
-      __props = {},
-      _publicState = {},
-      _publicProps = {},
+  var _internalState = {},
+      _internalProps = {},
+      state = {},
+      props = {},
       _lastState = {},
       _lastProps = {},
+      _parentComponent = undefined,
       _lifecycleState = LS_NO_INIT,
       _children = undefined,
       _templateCache = undefined,
       _html = undefined,
-      _DOMElement = undefined,
-      __parent = undefined,
-      __mountPoint = undefined;
+      _DOMElementCache = undefined;
 
   /**
    * Subclasses can override.
@@ -2311,9 +2310,9 @@ exports['default'] = function () {
   function initializeComponent(initProps) {
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
-    __props.id = this.__id;
-    __props.key = this.__key;
-    __props.template = this.__template;
+    _internalProps.id = this.__id;
+    _internalProps.index = this.__index;
+    _internalProps.template = this.__template;
 
     this.validateProps();
 
@@ -2325,29 +2324,16 @@ exports['default'] = function () {
   }
 
   function validateProps() {
-    if (__props.hasOwnProperty('mount')) {
-      __mountPoint = __props.mount;
-    } else {
+    if (!_internalProps.hasOwnProperty('mount')) {
       console.warn(this.__id, 'Component without a mount selector');
     }
-
-    if (!__props.hasOwnProperty('mountMethod')) {
-      __props.mountMethod = MNT_REPLACE;
+    if (!_internalProps.hasOwnProperty('mountMethod')) {
+      _internalProps.mountMethod = MNT_REPLACE;
     }
-
-    if (__props.hasOwnProperty('parent')) {
-      __parent = __props.parent;
+    if (_internalProps.hasOwnProperty('parent')) {
+      _parentComponent = _internalProps.parent;
     }
   }
-
-  //function validateObjectForReservedKeys(obj) {
-  //  _reservedPros.forEach(key => {
-  //    if (obj.hasOwnProperty(key)) {
-  //      console.warn(this.getID(), 'props contain reserved key:', key);
-  //    }
-  //  });
-  //  return true;
-  //}
 
   /**
    * Override in implementation
@@ -2392,11 +2378,11 @@ exports['default'] = function () {
    * @returns {boolean}
    */
   function shouldComponentUpdate(nextProps, nextState) {
-    nextProps = nextProps || __props;
-    nextState = nextState || __state;
+    nextProps = nextProps || _internalProps;
+    nextState = nextState || _internalState;
 
-    var isStateEq = _vendorLodashMinJs2['default'].isEqual(nextState, __state),
-        isPropsEq = _vendorLodashMinJs2['default'].isEqual(nextProps, __props);
+    var isStateEq = _vendorLodashMinJs2['default'].isEqual(nextState, _internalState),
+        isPropsEq = _vendorLodashMinJs2['default'].isEqual(nextProps, _internalProps);
 
     return !isStateEq || !isPropsEq;
   }
@@ -2413,20 +2399,20 @@ exports['default'] = function () {
 
     nextState = nextState || this.getDefaultState();
 
-    if (!shouldComponentUpdate(null, nextState)) {
+    if (!this.shouldComponentUpdate(null, nextState)) {
       return;
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(_publicProps, nextState);
+      this.componentWillUpdate(props, nextState);
     }
 
-    _lastState = _vendorLodashMinJs2['default'].assign({}, __state);
-    __state = _vendorLodashMinJs2['default'].assign({}, __state, nextState);
-    _publicState = _vendorLodashMinJs2['default'].assign(_publicState, __state);
+    _lastState = _vendorLodashMinJs2['default'].assign({}, _internalState);
+    _internalState = _vendorLodashMinJs2['default'].assign({}, _internalState, nextState);
+    state = _vendorLodashMinJs2['default'].assign(state, _internalState);
 
-    if (typeof _publicState.onChange === 'function') {
-      _publicState.onChange.apply(this);
+    if (typeof state.onChange === 'function') {
+      state.onChange.apply(this);
     }
 
     this.$renderAfterPropsOrStateChange();
@@ -2452,20 +2438,20 @@ exports['default'] = function () {
       this.componentWillReceiveProps(nextProps);
     }
 
-    if (!shouldComponentUpdate(nextProps, null)) {
+    if (!this.shouldComponentUpdate(nextProps, null)) {
       return;
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(nextProps, __state);
+      this.componentWillUpdate(nextProps, _internalState);
     }
 
-    _lastProps = _vendorLodashMinJs2['default'].assign({}, __props);
-    __props = _vendorLodashMinJs2['default'].merge({}, __props, nextProps);
-    _publicProps = _vendorLodashMinJs2['default'].assign(_publicProps, __props);
+    _lastProps = _vendorLodashMinJs2['default'].assign({}, _internalProps);
+    _internalProps = _vendorLodashMinJs2['default'].merge({}, _internalProps, nextProps);
+    props = _vendorLodashMinJs2['default'].assign(props, _internalProps);
 
-    if (typeof _publicProps.onChange === 'function') {
-      _publicProps.onChange.apply(this);
+    if (typeof props.onChange === 'function') {
+      props.onChange.apply(this);
     }
 
     this.$renderAfterPropsOrStateChange();
@@ -2479,7 +2465,6 @@ exports['default'] = function () {
       this.$renderComponent();
 
       if (this.isMounted()) {
-        //this.unmount();
         this.mount();
       }
 
@@ -2534,9 +2519,9 @@ exports['default'] = function () {
    */
   function render(props, state) {
     var combined = _vendorLodashMinJs2['default'].merge({}, props, state),
-        template = _templateCache || this.template(props, state);
+        templateFunc = _templateCache || this.template(props, state);
 
-    return template(combined);
+    return templateFunc(combined);
   }
 
   /**
@@ -2550,18 +2535,19 @@ exports['default'] = function () {
       return;
     }
 
-    if (isMounted()) {
-      lastAdjacent = _DOMElement.nextSibling;
+    if (this.isMounted()) {
+      lastAdjacent = this.getDOMElement().nextSibling;
       this.unmount();
     }
 
     _lifecycleState = LS_MOUNTED;
 
-    _DOMElement = (0, _RendererJs2['default'])({
-      key: this.__key,
+    (0, _RendererJs2['default'])({
+      index: this.__index,
+      uniqueCls: this.getUniqueClass(),
       method: this.props.mountMethod,
       lastAdjacent: lastAdjacent,
-      targetSelector: __mountPoint,
+      targetSelector: this.props.mount,
       html: this.getHTML()
     });
 
@@ -2574,6 +2560,10 @@ exports['default'] = function () {
     if (typeof this.componentDidMount === 'function') {
       this.componentDidMount();
     }
+  }
+
+  function getUniqueClass() {
+    return 'js__nvc' + this.__index;
   }
 
   /**
@@ -2599,17 +2589,17 @@ exports['default'] = function () {
       this.componentWillUnmount();
     }
 
-    $unmountChildren();
+    this.$unmountChildren();
 
     Events.undelegateEvents(this.getDOMEvents());
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
-      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(__mountPoint));
+      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(this.props.mount));
     } else {
-      _nudoruBrowserDOMUtilsJs2['default'].removeElement(_DOMElement);
+      _nudoruBrowserDOMUtilsJs2['default'].removeElement(this.getDOMElement());
     }
 
-    _DOMElement = null;
+    _DOMElementCache = null;
 
     _lifecycleState = LS_UNMOUNTED;
   }
@@ -2763,7 +2753,7 @@ exports['default'] = function () {
   }
 
   function isMounted() {
-    return !!_DOMElement;
+    return !!this.getDOMElement();
   }
 
   function getID() {
@@ -2775,11 +2765,10 @@ exports['default'] = function () {
   }
 
   function getDOMElement() {
-    return _DOMElement;
-  }
-
-  function getMountPoint() {
-    return __mountPoint;
+    if (!_DOMElementCache) {
+      _DOMElementCache = document.querySelector('.' + this.getUniqueClass());
+    }
+    return _DOMElementCache;
   }
 
   //----------------------------------------------------------------------------
@@ -2795,8 +2784,8 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   return {
-    state: _publicState,
-    props: _publicProps,
+    state: state,
+    props: props,
     initialize: initialize,
     initializeComponent: initializeComponent,
     validateProps: validateProps,
@@ -2812,7 +2801,6 @@ exports['default'] = function () {
     template: template,
     getDOMElement: getDOMElement,
     getHTML: getHTML,
-    getMountPoint: getMountPoint,
     isMounted: isMounted,
     from: from,
     componentWillReceiveProps: componentWillReceiveProps,
@@ -2823,6 +2811,7 @@ exports['default'] = function () {
     $renderComponent: $renderComponent,
     render: render,
     mount: mount,
+    getUniqueClass: getUniqueClass,
     shouldDelegateEvents: shouldDelegateEvents,
     componentDidMount: componentDidMount,
     componentWillUnmount: componentWillUnmount,

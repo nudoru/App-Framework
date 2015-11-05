@@ -13,7 +13,7 @@ export default function () {
 
   let _viewMap      = {},
       _routeViewMap = {},
-      _viewKeyIndex = 0,
+      _viewIDIndex  = 0,
       _currentViewID;
 
   /**
@@ -34,8 +34,8 @@ export default function () {
       customizer.mixins.unshift(ViewComponentFactory());
 
       template            = BuildFromMixins(customizer);
-      template.__key      = _viewKeyIndex++;
-      template.__id       = id || 'vcomponent_' + _viewKeyIndex;
+      template.__index    = _viewIDIndex++;
+      template.__id       = id || 'vcomponent_' + _viewIDIndex;
       template.__template = templateType;
 
       // Compose a new initialize function by inserting call to component super module
