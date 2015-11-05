@@ -331,12 +331,12 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-/**
- * View for an application.
- */
 var vcStyles = _noriNoriJs2['default'].view().createComponent('debug-styletest', {})('styles'),
     vcControls = _noriNoriJs2['default'].view().createComponent('debug-controls', {})('controls');
 
+/**
+ * View for an application.
+ */
 var AppViewModule = _noriNoriJs2['default'].createView({
 
   mixins: [(0, _nudoruComponentsMixinNudoruControlsJs2['default'])(), (0, _noriViewMixinRouteViewsJs2['default'])()],

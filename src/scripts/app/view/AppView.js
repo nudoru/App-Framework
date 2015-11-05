@@ -7,13 +7,12 @@ import ComponentTesting from './ComponentsTesting.js';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-/**
- * View for an application.
- */
 let vcStyles = Nori.view().createComponent('debug-styletest', {})('styles'),
     vcControls   = Nori.view().createComponent('debug-controls', {})('controls');
 
-
+/**
+ * View for an application.
+ */
 let AppViewModule = Nori.createView({
 
   mixins: [
