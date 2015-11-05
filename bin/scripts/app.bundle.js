@@ -733,13 +733,13 @@ exports['default'] = _noriNoriJs2['default'].view().createComponent('default', {
   //},
 
   // Return a _.template object
-  //template(props, state) {
+  //template() {
   //  return this.from(`<div></div>`);
   //},
 
   // Return HTML
-  //render(props, state) {
-  //  let combined = _.merge({}, props, state);
+  //render() {
+  //  let combined = _.merge({}, this.props, this.state);
   //},
 
   componentDidMount: function componentDidMount() {
@@ -1492,9 +1492,9 @@ exports['default'] = function () {
       customizer.mixins.unshift((0, _ViewComponentJs2['default'])());
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-      template.__index = _viewIDIndex++;
-      template.__id = id || 'vcomponent_' + _viewIDIndex;
-      template.__type = type;
+      template.__index__ = _viewIDIndex++;
+      template.__id__ = id || 'vcomponent_' + _viewIDIndex;
+      template.__type__ = type;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize = template.initialize;
@@ -2281,7 +2281,7 @@ var Events = (0, _RxEventDelegatorJs2['default'])(),
 exports['default'] = function () {
 
   // Properties added to component on creation:
-  // __id, __index, __type
+  // __id__, __index__, __type__
 
   var _internalState = {},
       _internalProps = {},
@@ -2310,9 +2310,9 @@ exports['default'] = function () {
   function initializeComponent(initProps) {
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
-    _internalProps.id = this.__id;
-    _internalProps.index = this.__index;
-    _internalProps.type = this.__type;
+    _internalProps.id = this.__id__;
+    _internalProps.index = this.__index__;
+    _internalProps.type = this.__type__;
 
     this.validateProps();
 
@@ -2325,7 +2325,7 @@ exports['default'] = function () {
 
   function validateProps() {
     if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.__id, 'Component without a mount selector');
+      console.warn(this.__id__, 'Component without a mount selector');
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
@@ -2333,16 +2333,6 @@ exports['default'] = function () {
     if (_internalProps.hasOwnProperty('parent')) {
       _parentComponent = _internalProps.parent;
     }
-  }
-
-  /**
-   * Override in implementation
-   *
-   * Define DOM events to be attached after the element is mounted
-   * @returns {undefined}
-   */
-  function getDOMEvents() {
-    return null;
   }
 
   //----------------------------------------------------------------------------
@@ -2458,6 +2448,20 @@ exports['default'] = function () {
   }
 
   /**
+   * Before the view updates and a rerender occurs
+   */
+  function componentWillUpdate(nextProps, nextState) {}
+
+  /**
+   * After the updates render to the DOM
+   */
+  function componentDidUpdate(lastProps, lastState) {}
+
+  //----------------------------------------------------------------------------
+  //  Rendering HTML
+  //----------------------------------------------------------------------------
+
+  /**
    * Handle rerendering after props or state change
    */
   function $renderAfterPropsOrStateChange() {
@@ -2473,16 +2477,6 @@ exports['default'] = function () {
       }
     }
   }
-
-  /**
-   * Before the view updates and a rerender occurs
-   */
-  function componentWillUpdate(nextProps, nextState) {}
-
-  /**
-   * After the updates render to the DOM
-   */
-  function componentDidUpdate(lastProps, lastState) {}
 
   /**
    * Render it, need to add it to a parent container, handled in higher level view
@@ -2508,7 +2502,7 @@ exports['default'] = function () {
    * the matching <script type='text/template'> tag in the document. OR you may
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
-  function template(props, state) {
+  function template() {
     var templateId = _internalProps.type || this.getID();
     return _TemplatingJs2['default'].getTemplate(templateId);
   }
@@ -2517,12 +2511,16 @@ exports['default'] = function () {
    * May be overridden in a submodule for custom rendering
    * Should return HTML
    */
-  function render(props, state) {
-    var combined = _vendorLodashMinJs2['default'].merge({}, props, state),
-        templateFunc = _templateCache || this.template(props, state);
+  function render() {
+    var combined = _vendorLodashMinJs2['default'].merge({}, this.props, this.state),
+        templateFunc = _templateCache || this.template();
 
     return templateFunc(combined);
   }
+
+  //----------------------------------------------------------------------------
+  //  Mounting to the DOM
+  //----------------------------------------------------------------------------
 
   /**
    * Append it to a parent element
@@ -2543,7 +2541,7 @@ exports['default'] = function () {
     _lifecycleState = LS_MOUNTED;
 
     (0, _RendererJs2['default'])({
-      index: this.__index,
+      index: this.__index__,
       uniqueCls: this.getUniqueClass(),
       method: this.props.mountMethod,
       lastAdjacent: lastAdjacent,
@@ -2562,16 +2560,22 @@ exports['default'] = function () {
     }
   }
 
-  function getUniqueClass() {
-    return 'js__nvc' + this.__index;
-  }
-
   /**
    * Override to delegate events or not based on some state trigger
    * @returns {boolean}
    */
   function shouldDelegateEvents(props, state) {
     return true;
+  }
+
+  /**
+   * Override in implementation
+   *
+   * Define DOM events to be attached after the element is mounted
+   * @returns {undefined}
+   */
+  function getDOMEvents() {
+    return null;
   }
 
   /**
@@ -2757,7 +2761,7 @@ exports['default'] = function () {
   }
 
   function getID() {
-    return this.__id;
+    return this.__id__;
   }
 
   function getHTML() {
@@ -2769,6 +2773,10 @@ exports['default'] = function () {
       _elementCache = document.querySelector('.' + this.getUniqueClass());
     }
     return _elementCache;
+  }
+
+  function getUniqueClass() {
+    return 'js__nvc' + this.__index__;
   }
 
   //----------------------------------------------------------------------------

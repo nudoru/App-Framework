@@ -34,9 +34,9 @@ export default function () {
       customizer.mixins.unshift(ViewComponentFactory());
 
       template         = BuildFromMixins(customizer);
-      template.__index = _viewIDIndex++;
-      template.__id    = id || 'vcomponent_' + _viewIDIndex;
-      template.__type  = type;
+      template.__index__ = _viewIDIndex++;
+      template.__id__    = id || 'vcomponent_' + _viewIDIndex;
+      template.__type__  = type;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize      = template.initialize;

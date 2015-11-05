@@ -52,13 +52,13 @@ export default Nori.view().createComponent('default', {
   //},
 
   // Return a _.template object
-  //template(props, state) {
+  //template() {
   //  return this.from(`<div></div>`);
   //},
 
   // Return HTML
-  //render(props, state) {
-  //  let combined = _.merge({}, props, state);
+  //render() {
+  //  let combined = _.merge({}, this.props, this.state);
   //},
 
   componentDidMount() {

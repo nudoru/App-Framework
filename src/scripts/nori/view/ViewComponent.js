@@ -34,7 +34,7 @@ let Events        = EventDelegator(),
 export default function () {
 
   // Properties added to component on creation:
-  // __id, __index, __type
+  // __id__, __index__, __type__
 
   let _internalState  = {},
       _internalProps  = {},
@@ -63,9 +63,9 @@ export default function () {
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    _internalProps.id    = this.__id;
-    _internalProps.index = this.__index;
-    _internalProps.type  = this.__type;
+    _internalProps.id    = this.__id__;
+    _internalProps.index = this.__index__;
+    _internalProps.type  = this.__type__;
 
     this.validateProps();
 
@@ -78,7 +78,7 @@ export default function () {
 
   function validateProps() {
     if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.__id, 'Component without a mount selector');
+      console.warn(this.__id__, 'Component without a mount selector');
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
@@ -88,15 +88,7 @@ export default function () {
     }
   }
 
-  /**
-   * Override in implementation
-   *
-   * Define DOM events to be attached after the element is mounted
-   * @returns {undefined}
-   */
-  function getDOMEvents() {
-    return null;
-  }
+
 
   //----------------------------------------------------------------------------
   //  Props and state
@@ -212,6 +204,22 @@ export default function () {
   }
 
   /**
+   * Before the view updates and a rerender occurs
+   */
+  function componentWillUpdate(nextProps, nextState) {
+  }
+
+  /**
+   * After the updates render to the DOM
+   */
+  function componentDidUpdate(lastProps, lastState) {
+  }
+
+  //----------------------------------------------------------------------------
+  //  Rendering HTML
+  //----------------------------------------------------------------------------
+
+  /**
    * Handle rerendering after props or state change
    */
   function $renderAfterPropsOrStateChange() {
@@ -226,18 +234,6 @@ export default function () {
         this.componentDidUpdate(_lastProps, _lastState);
       }
     }
-  }
-
-  /**
-   * Before the view updates and a rerender occurs
-   */
-  function componentWillUpdate(nextProps, nextState) {
-  }
-
-  /**
-   * After the updates render to the DOM
-   */
-  function componentDidUpdate(lastProps, lastState) {
   }
 
   /**
@@ -262,7 +258,7 @@ export default function () {
    * the matching <script type='text/template'> tag in the document. OR you may
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
-  function template(props, state) {
+  function template() {
     let templateId = _internalProps.type || this.getID();
     return Template.getTemplate(templateId);
   }
@@ -271,12 +267,16 @@ export default function () {
    * May be overridden in a submodule for custom rendering
    * Should return HTML
    */
-  function render(props, state) {
-    let combined     = _.merge({}, props, state),
-        templateFunc = _templateCache || this.template(props, state);
+  function render() {
+    let combined     = _.merge({}, this.props, this.state),
+        templateFunc = _templateCache || this.template();
 
     return templateFunc(combined);
   }
+
+  //----------------------------------------------------------------------------
+  //  Mounting to the DOM
+  //----------------------------------------------------------------------------
 
   /**
    * Append it to a parent element
@@ -297,7 +297,7 @@ export default function () {
     _lifecycleState = LS_MOUNTED;
 
     Renderer({
-      index         : this.__index,
+      index         : this.__index__,
       uniqueCls     : this.getUniqueClass(),
       method        : this.props.mountMethod,
       lastAdjacent  : lastAdjacent,
@@ -316,16 +316,22 @@ export default function () {
     }
   }
 
-  function getUniqueClass() {
-    return 'js__nvc' + this.__index;
-  }
-
   /**
    * Override to delegate events or not based on some state trigger
    * @returns {boolean}
    */
   function shouldDelegateEvents(props, state) {
     return true;
+  }
+
+  /**
+   * Override in implementation
+   *
+   * Define DOM events to be attached after the element is mounted
+   * @returns {undefined}
+   */
+  function getDOMEvents() {
+    return null;
   }
 
   /**
@@ -508,7 +514,7 @@ export default function () {
   }
 
   function getID() {
-    return this.__id;
+    return this.__id__;
   }
 
   function getHTML() {
@@ -520,6 +526,10 @@ export default function () {
       _elementCache = document.querySelector('.' + this.getUniqueClass());
     }
     return _elementCache;
+  }
+
+  function getUniqueClass() {
+    return 'js__nvc' + this.__index__;
   }
 
   //----------------------------------------------------------------------------
