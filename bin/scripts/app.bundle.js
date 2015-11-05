@@ -334,7 +334,6 @@ var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs)
 /**
  * View for an application.
  */
-
 var vcStyles = _noriNoriJs2['default'].view().createComponent('debug-styletest', {})('styles'),
     vcControls = _noriNoriJs2['default'].view().createComponent('debug-controls', {})('controls');
 
@@ -815,96 +814,74 @@ var _vendorLodashMinJs = require('../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-exports['default'] = (function () {
-
-  var _storeTemplate = undefined,
-      _viewTemplate = undefined;
+exports['default'] = {
 
   //----------------------------------------------------------------------------
   //  Accessors
   //----------------------------------------------------------------------------
 
   /**
+   * Convenience mapping to create component views
+   */
+  _viewTemplate: null,
+
+  view: function view() {
+    if (!this._viewTemplate) {
+      this._viewTemplate = (0, _viewMixinComponentViewsJs2['default'])();
+    }
+    return this._viewTemplate;
+  },
+
+  /**
    * Allow for optional external configuration data from outside of the compiled
    * app bundle. For easy of settings tweaks after the build by non technical devs
    * @returns {void|*}
    */
-  function config() {
+  config: function config() {
     return _vendorLodashMinJs2['default'].assign({}, window.APP_CONFIG_DATA || {});
-  }
-
-  function view() {
-    return _viewTemplate;
-  }
-
-  function store() {
-    return _storeTemplate;
-  }
-
-  //----------------------------------------------------------------------------
-  //  Templates
-  //----------------------------------------------------------------------------
-
-  _storeTemplate = createStore({
-    mixins: [(0, _storeReducerStoreJs2['default'])()]
-  })();
-
-  _viewTemplate = createView({
-    mixins: [(0, _viewMixinComponentViewsJs2['default'])()]
-  })();
+  },
 
   //----------------------------------------------------------------------------
   //  Factories
   //----------------------------------------------------------------------------
 
-  function createClass(customizer) {
+  createClass: function createClass(customizer) {
     return (0, _utilsCreateClassJs2['default'])({}, customizer);
-  }
+  },
 
   /**
    * Create a new Nori application instance
    * @param customizer
    * @returns {*}
    */
-  function createApplication(customizer) {
+  createApplication: function createApplication(customizer) {
     customizer.mixins = customizer.mixins || [];
     customizer.mixins.push(this);
     return (0, _utilsCreateClassJs2['default'])({}, customizer)();
-  }
+  },
 
   /**
    * Creates main application store
    * @param customizer
    * @returns {*}
    */
-  function createStore(customizer) {
-    return (0, _utilsCreateClassJs2['default'])(_storeTemplate, customizer);
-  }
+  createStore: function createStore(customizer) {
+    customizer.mixins = customizer.mixins || [];
+    customizer.mixins.push((0, _storeReducerStoreJs2['default'])());
+    return (0, _utilsCreateClassJs2['default'])({}, customizer);
+  },
 
   /**
    * Creates main application view
    * @param customizer
    * @returns {*}
    */
-  function createView(customizer) {
-    return (0, _utilsCreateClassJs2['default'])(_viewTemplate, customizer);
+  createView: function createView(customizer) {
+    customizer.mixins = customizer.mixins || [];
+    customizer.mixins.push((0, _viewMixinComponentViewsJs2['default'])());
+    return (0, _utilsCreateClassJs2['default'])({}, customizer);
   }
-
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
-
-  return {
-    config: config,
-    view: view,
-    store: store,
-    createClass: createClass,
-    createApplication: createApplication,
-    createStore: createStore,
-    createView: createView
-  };
-})();
-
+};
 module.exports = exports['default'];
 
 },{"../vendor/lodash.min.js":43,"./store/ReducerStore.js":14,"./utils/AssignArray.js":15,"./utils/BuildFromMixins.js":16,"./utils/CreateClass.js":17,"./view/MixinComponentViews.js":21}],12:[function(require,module,exports){

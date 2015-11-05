@@ -10,9 +10,9 @@ import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 /**
  * View for an application.
  */
-
 let vcStyles = Nori.view().createComponent('debug-styletest', {})('styles'),
-vcControls   = Nori.view().createComponent('debug-controls', {})('controls');
+    vcControls   = Nori.view().createComponent('debug-controls', {})('controls');
+
 
 let AppViewModule = Nori.createView({
 
