@@ -42,7 +42,7 @@ export default function () {
       _lastProps      = {},
       state           = {},
       props           = {},
-      _html,
+      html,
       _parentComponent,
       _lifecycleState = LS_NO_INIT,
       _children,
@@ -78,7 +78,7 @@ export default function () {
 
   function validateProps() {
     if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.__id__, 'Component without a mount selector');
+      console.warn(this.getID(), 'Component without a mount selector');
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
@@ -87,7 +87,6 @@ export default function () {
       _parentComponent = _internalProps.parent;
     }
   }
-
 
 
   //----------------------------------------------------------------------------
@@ -250,7 +249,7 @@ export default function () {
 
     this.$renderChildren();
 
-    _html = this.render(this.props, this.state);
+    html = this.render(this.props, this.state);
   }
 
   /**
@@ -284,7 +283,7 @@ export default function () {
   function mount() {
     let lastAdjacent;
 
-    if (!this.getHTML() || this.getHTML().length === 0) {
+    if (!html || html.length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
@@ -297,12 +296,12 @@ export default function () {
     _lifecycleState = LS_MOUNTED;
 
     Renderer({
-      index         : this.__index__,
+      index         : _internalProps.index,
       uniqueCls     : this.getUniqueClass(),
-      method        : this.props.mountMethod,
+      method        : _internalProps.mountMethod,
       lastAdjacent  : lastAdjacent,
-      targetSelector: this.props.mount,
-      html          : this.getHTML()
+      targetSelector: _internalProps.mount,
+      html          : html
     });
 
     if (this.shouldDelegateEvents(this.props, this.state)) {
@@ -506,7 +505,7 @@ export default function () {
   }
 
   function isInitialized() {
-    return _lifecycleState > LS_NO_INIT;
+    return this.getLifeCycleState() > LS_NO_INIT;
   }
 
   function isMounted() {
@@ -514,11 +513,7 @@ export default function () {
   }
 
   function getID() {
-    return this.__id__;
-  }
-
-  function getHTML() {
-    return _html;
+    return _internalProps.id;
   }
 
   function getDOMElement() {
@@ -529,13 +524,12 @@ export default function () {
   }
 
   function getUniqueClass() {
-    return 'js__nvc' + this.__index__;
+    return 'js__nvc' + _internalProps.index;
   }
 
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
-
 
   function from(html) {
     return Template.getTemplateFromHTML(html);
@@ -548,6 +542,7 @@ export default function () {
   return {
     state: state,
     props: props,
+    html : html,
     initialize,
     initializeComponent,
     validateProps,
@@ -562,7 +557,6 @@ export default function () {
     getID,
     template,
     getDOMElement,
-    getHTML,
     isMounted,
     from,
     componentWillReceiveProps,

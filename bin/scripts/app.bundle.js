@@ -2289,7 +2289,7 @@ exports['default'] = function () {
       _lastProps = {},
       state = {},
       props = {},
-      _html = undefined,
+      html = undefined,
       _parentComponent = undefined,
       _lifecycleState = LS_NO_INIT,
       _children = undefined,
@@ -2325,7 +2325,7 @@ exports['default'] = function () {
 
   function validateProps() {
     if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.__id__, 'Component without a mount selector');
+      console.warn(this.getID(), 'Component without a mount selector');
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
@@ -2494,7 +2494,7 @@ exports['default'] = function () {
 
     this.$renderChildren();
 
-    _html = this.render(this.props, this.state);
+    html = this.render(this.props, this.state);
   }
 
   /**
@@ -2528,7 +2528,7 @@ exports['default'] = function () {
   function mount() {
     var lastAdjacent = undefined;
 
-    if (!this.getHTML() || this.getHTML().length === 0) {
+    if (!html || html.length === 0) {
       console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
@@ -2541,12 +2541,12 @@ exports['default'] = function () {
     _lifecycleState = LS_MOUNTED;
 
     (0, _RendererJs2['default'])({
-      index: this.__index__,
+      index: _internalProps.index,
       uniqueCls: this.getUniqueClass(),
-      method: this.props.mountMethod,
+      method: _internalProps.mountMethod,
       lastAdjacent: lastAdjacent,
-      targetSelector: this.props.mount,
-      html: this.getHTML()
+      targetSelector: _internalProps.mount,
+      html: html
     });
 
     if (this.shouldDelegateEvents(this.props, this.state)) {
@@ -2753,7 +2753,7 @@ exports['default'] = function () {
   }
 
   function isInitialized() {
-    return _lifecycleState > LS_NO_INIT;
+    return this.getLifeCycleState() > LS_NO_INIT;
   }
 
   function isMounted() {
@@ -2761,11 +2761,7 @@ exports['default'] = function () {
   }
 
   function getID() {
-    return this.__id__;
-  }
-
-  function getHTML() {
-    return _html;
+    return _internalProps.id;
   }
 
   function getDOMElement() {
@@ -2776,7 +2772,7 @@ exports['default'] = function () {
   }
 
   function getUniqueClass() {
-    return 'js__nvc' + this.__index__;
+    return 'js__nvc' + _internalProps.index;
   }
 
   //----------------------------------------------------------------------------
@@ -2794,6 +2790,7 @@ exports['default'] = function () {
   return {
     state: state,
     props: props,
+    html: html,
     initialize: initialize,
     initializeComponent: initializeComponent,
     validateProps: validateProps,
@@ -2808,7 +2805,6 @@ exports['default'] = function () {
     getID: getID,
     template: template,
     getDOMElement: getDOMElement,
-    getHTML: getHTML,
     isMounted: isMounted,
     from: from,
     componentWillReceiveProps: componentWillReceiveProps,
