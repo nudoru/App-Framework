@@ -1479,7 +1479,7 @@ exports['default'] = function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(templateType, source) {
+  function createComponent(type, source) {
     return function (id, initProps) {
       var customizer = undefined,
           template = undefined,
@@ -1494,7 +1494,7 @@ exports['default'] = function () {
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
       template.__index = _viewIDIndex++;
       template.__id = id || 'vcomponent_' + _viewIDIndex;
-      template.__template = templateType;
+      template.__type = type;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize = template.initialize;
@@ -2276,25 +2276,25 @@ var LS_NO_INIT = 0,
     MNT_APPEND = 'append';
 
 var Events = (0, _RxEventDelegatorJs2['default'])(),
-    reservedProps = ['key', 'id', 'template'];
+    reservedProps = ['key', 'id', 'type'];
 
 exports['default'] = function () {
 
   // Properties added to component on creation:
-  // __id, __index, __template
+  // __id, __index, __type
 
   var _internalState = {},
       _internalProps = {},
-      state = {},
-      props = {},
       _lastState = {},
       _lastProps = {},
+      state = {},
+      props = {},
+      _html = undefined,
       _parentComponent = undefined,
       _lifecycleState = LS_NO_INIT,
       _children = undefined,
       _templateCache = undefined,
-      _html = undefined,
-      _DOMElementCache = undefined;
+      _elementCache = undefined;
 
   /**
    * Subclasses can override.
@@ -2312,7 +2312,7 @@ exports['default'] = function () {
 
     _internalProps.id = this.__id;
     _internalProps.index = this.__index;
-    _internalProps.template = this.__template;
+    _internalProps.type = this.__type;
 
     this.validateProps();
 
@@ -2509,7 +2509,7 @@ exports['default'] = function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template(props, state) {
-    var templateId = this.__template || this.getID();
+    var templateId = _internalProps.type || this.getID();
     return _TemplatingJs2['default'].getTemplate(templateId);
   }
 
@@ -2599,7 +2599,7 @@ exports['default'] = function () {
       _nudoruBrowserDOMUtilsJs2['default'].removeElement(this.getDOMElement());
     }
 
-    _DOMElementCache = null;
+    _elementCache = null;
 
     _lifecycleState = LS_UNMOUNTED;
   }
@@ -2765,10 +2765,10 @@ exports['default'] = function () {
   }
 
   function getDOMElement() {
-    if (!_DOMElementCache) {
-      _DOMElementCache = document.querySelector('.' + this.getUniqueClass());
+    if (!_elementCache) {
+      _elementCache = document.querySelector('.' + this.getUniqueClass());
     }
-    return _DOMElementCache;
+    return _elementCache;
   }
 
   //----------------------------------------------------------------------------

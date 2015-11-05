@@ -21,7 +21,7 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(templateType, source) {
+  function createComponent(type, source) {
     return function (id, initProps) {
       let customizer,
           template,
@@ -33,10 +33,10 @@ export default function () {
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.unshift(ViewComponentFactory());
 
-      template            = BuildFromMixins(customizer);
-      template.__index    = _viewIDIndex++;
-      template.__id       = id || 'vcomponent_' + _viewIDIndex;
-      template.__template = templateType;
+      template         = BuildFromMixins(customizer);
+      template.__index = _viewIDIndex++;
+      template.__id    = id || 'vcomponent_' + _viewIDIndex;
+      template.__type  = type;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize      = template.initialize;

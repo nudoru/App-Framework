@@ -29,25 +29,25 @@ const LS_NO_INIT   = 0,
       MNT_APPEND   = 'append';
 
 let Events        = EventDelegator(),
-    reservedProps = ['key', 'id', 'template'];
+    reservedProps = ['key', 'id', 'type'];
 
 export default function () {
 
   // Properties added to component on creation:
-  // __id, __index, __template
+  // __id, __index, __type
 
   let _internalState  = {},
       _internalProps  = {},
-      state           = {},
-      props           = {},
       _lastState      = {},
       _lastProps      = {},
+      state           = {},
+      props           = {},
+      _html,
       _parentComponent,
       _lifecycleState = LS_NO_INIT,
       _children,
       _templateCache,
-      _html,
-      _DOMElementCache;
+      _elementCache;
 
   /**
    * Subclasses can override.
@@ -63,9 +63,9 @@ export default function () {
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    _internalProps.id       = this.__id;
-    _internalProps.index    = this.__index;
-    _internalProps.template = this.__template;
+    _internalProps.id    = this.__id;
+    _internalProps.index = this.__index;
+    _internalProps.type  = this.__type;
 
     this.validateProps();
 
@@ -263,7 +263,7 @@ export default function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template(props, state) {
-    let templateId = this.__template || this.getID();
+    let templateId = _internalProps.type || this.getID();
     return Template.getTemplate(templateId);
   }
 
@@ -355,7 +355,7 @@ export default function () {
       DOMUtils.removeElement(this.getDOMElement());
     }
 
-    _DOMElementCache = null;
+    _elementCache = null;
 
     _lifecycleState = LS_UNMOUNTED;
   }
@@ -516,10 +516,10 @@ export default function () {
   }
 
   function getDOMElement() {
-    if(!_DOMElementCache) {
-      _DOMElementCache = document.querySelector('.'+this.getUniqueClass());
+    if (!_elementCache) {
+      _elementCache = document.querySelector('.' + this.getUniqueClass());
     }
-    return _DOMElementCache;
+    return _elementCache;
   }
 
   //----------------------------------------------------------------------------
