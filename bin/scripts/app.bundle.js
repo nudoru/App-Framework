@@ -861,7 +861,7 @@ exports['default'] = {
   },
 
   /**
-   * Creates main application store
+   * Creates an application store
    * @param customizer
    * @returns {*}
    */
@@ -872,7 +872,7 @@ exports['default'] = {
   },
 
   /**
-   * Creates main application view
+   * Creates a application view
    * @param customizer
    * @returns {*}
    */
