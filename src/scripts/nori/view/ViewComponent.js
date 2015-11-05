@@ -43,7 +43,6 @@ export default function () {
       state           = {},
       props           = {},
       html,
-      _parentComponent,
       _lifecycleState = LS_NO_INIT,
       _children,
       _templateCache,
@@ -63,7 +62,7 @@ export default function () {
   function initializeComponent(initProps) {
     this.setProps(_.assign({}, this.getDefaultProps(), initProps));
 
-    _internalProps.id    = this.__id__;
+    _internalProps.id    = _internalProps.id || this.__id__;
     _internalProps.index = this.__index__;
     _internalProps.type  = this.__type__;
 
@@ -82,9 +81,6 @@ export default function () {
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
-    }
-    if (_internalProps.hasOwnProperty('parent')) {
-      _parentComponent = _internalProps.parent;
     }
   }
 

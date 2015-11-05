@@ -21,7 +21,7 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(type, source) {
+  function createComponent(type, source, children) {
     return function (id, initProps) {
       let customizer,
           template,

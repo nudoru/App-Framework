@@ -1479,7 +1479,7 @@ exports['default'] = function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(type, source) {
+  function createComponent(type, source, children) {
     return function (id, initProps) {
       var customizer = undefined,
           template = undefined,
@@ -2290,7 +2290,6 @@ exports['default'] = function () {
       state = {},
       props = {},
       html = undefined,
-      _parentComponent = undefined,
       _lifecycleState = LS_NO_INIT,
       _children = undefined,
       _templateCache = undefined,
@@ -2310,7 +2309,7 @@ exports['default'] = function () {
   function initializeComponent(initProps) {
     this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
 
-    _internalProps.id = this.__id__;
+    _internalProps.id = _internalProps.id || this.__id__;
     _internalProps.index = this.__index__;
     _internalProps.type = this.__type__;
 
@@ -2329,9 +2328,6 @@ exports['default'] = function () {
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
-    }
-    if (_internalProps.hasOwnProperty('parent')) {
-      _parentComponent = _internalProps.parent;
     }
   }
 
