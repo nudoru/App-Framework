@@ -19,7 +19,7 @@ import Template from './Templating.js';
 import Renderer from './Renderer.js';
 import EventDelegator from './RxEventDelegator.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
-import Invariant from '../utils/Invariant.js';
+import Element from './ComponentElement.js';
 
 const LS_NO_INIT   = 0,
       LS_INITED    = 1,
@@ -161,6 +161,10 @@ export default function () {
     }
 
     this.$renderAfterPropsOrStateChange();
+
+    if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
+      this.componentDidUpdate(_lastProps, _lastState);
+    }
   }
 
   /**
@@ -195,6 +199,10 @@ export default function () {
     }
 
     this.$renderAfterPropsOrStateChange();
+
+    if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
+      this.componentDidUpdate(_lastProps, _lastState);
+    }
   }
 
   //----------------------------------------------------------------------------
@@ -202,18 +210,13 @@ export default function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Handle rerendering after props or state change
+   * Handle rendering after props or state change
    */
   function $renderAfterPropsOrStateChange() {
     if (_lifecycleState > LS_INITED) {
       this.$renderComponent();
-
       if (this.isMounted()) {
         this.$mountComponent();
-      }
-
-      if (typeof this.componentDidUpdate === 'function') {
-        this.componentDidUpdate(_lastProps, _lastState);
       }
     }
   }
