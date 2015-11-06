@@ -1,7 +1,6 @@
 import Nori from '../../nori/Nori.js';
 import AppStore from '../store/AppStore.js';
 import MixinNudoruControls from '../../nudoru/components/MixinNudoruControls.js';
-import MixinRouteViews from '../../nori/view/MixinRouteViews.js';
 import TemplateViewFactory from './TemplateViewComponent.js';
 import ComponentTesting from './ComponentsTesting.js';
 import Template from '../../nori/view/Templating.js';
@@ -16,8 +15,7 @@ let vcStyles   = Nori.view().createComponent('debug-styletest', {})('styles'),
 let AppViewModule = Nori.createView({
 
   mixins: [
-    MixinNudoruControls(),
-    MixinRouteViews()
+    MixinNudoruControls()
   ],
 
   initialize: function () {
@@ -79,6 +77,7 @@ let AppViewModule = Nori.createView({
     this.route('/styles', 'styles');
     this.route('/controls', 'controls');
     this.route('/comps', 'components');
+    this.route('')
   },
 
   /**

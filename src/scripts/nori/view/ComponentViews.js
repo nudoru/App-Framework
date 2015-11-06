@@ -7,6 +7,7 @@
 import _ from '../../vendor/lodash.min.js';
 import ViewComponentFactory from './ViewComponent.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
+import Router from '../utils/Router.js';
 //import ComponentMount from '../experimental/ComponentMount.js';
 
 export default function () {
@@ -14,7 +15,11 @@ export default function () {
   let _viewMap      = {},
       _routeViewMap = {},
       _viewIDIndex  = 0,
-      _currentViewID;
+      _routeOnURL = false,
+      _routeOnState = false,
+      _currentViewID,
+      _observedStore,
+      _currentStoreState;
 
   /**
    * Factory to create component view modules by concating multiple source objects
@@ -135,6 +140,72 @@ export default function () {
   }
 
   //----------------------------------------------------------------------------
+  //  Routing
+  //----------------------------------------------------------------------------
+
+  function showViewForChangedCondition(options) {
+    if(_routeOnURL) {
+      showViewForChangedURL(options);
+    } else if(_routeOnState) {
+      showViewForChangedState(options);
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  //  URL Fragment Route
+  //----------------------------------------------------------------------------
+
+  function initializeRouteViews() {
+    _routeOnURL = true;
+    _routeOnState = false;
+
+    Router.subscribe($onRouteChange.bind(this));
+  }
+
+  function $onRouteChange(payload) {
+    showViewForCondition(payload.routeObj.route);
+  }
+
+  /**
+   * Typically on app startup, show the view assigned to the current URL hash
+   *
+   * @param silent If true, will not notify subscribers of the change, prevents
+   * double showing on initial load
+   */
+  function showViewForChangedURL(silent) {
+    showViewForCondition(Router.getCurrentRoute().route);
+    if (!silent) {
+      Router.notifySubscribers();
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  //  Store State Route
+  //----------------------------------------------------------------------------
+
+  function initializeStateViews(store) {
+    _routeOnURL = false;
+    _routeOnState = true;
+
+    _observedStore = store;
+    _observedStore.subscribe($onStateChange.bind(this));
+  }
+
+  function $onStateChange() {
+    showViewForChangedState.bind(this)();
+  }
+
+  function showViewForChangedState() {
+    let state = _observedStore.getState().currentState;
+    if (state) {
+      if (state !== _currentStoreState) {
+        _currentStoreState = state;
+        showViewForCondition(_currentStoreState);
+      }
+    }
+  }
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -143,7 +214,12 @@ export default function () {
     set,
     showView,
     showViewForCondition,
-    route
+    route,
+    showViewForChangedCondition,
+    initializeRouteViews,
+    showViewForChangedURL,
+    initializeStateViews,
+    showViewForChangedState
   };
 
 }
