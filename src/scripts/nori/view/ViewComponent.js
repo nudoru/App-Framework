@@ -68,11 +68,15 @@ export default function () {
 
     this.validateProps();
 
-    this.addChildren(this.defineChildren());
+    if(typeof this.defineChildren === 'function') {
+      this.addChildren(this.defineChildren());
+    }
+
     this.setState(this.getDefaultState());
     this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
+    console.log(this.getID(),'init')
   }
 
   function validateProps() {
@@ -83,7 +87,6 @@ export default function () {
       _internalProps.mountMethod = MNT_REPLACE;
     }
   }
-
 
   //----------------------------------------------------------------------------
   //  Props and state
@@ -159,12 +162,6 @@ export default function () {
   }
 
   /**
-   * Before new props are updated
-   */
-  function componentWillReceiveProps(nextProps) {
-  }
-
-  /**
    * Set new props and trigger rerender
    * @param nextProps
    */
@@ -196,18 +193,6 @@ export default function () {
     }
 
     this.$renderAfterPropsOrStateChange();
-  }
-
-  /**
-   * Before the view updates and a rerender occurs
-   */
-  function componentWillUpdate(nextProps, nextState) {
-  }
-
-  /**
-   * After the updates render to the DOM
-   */
-  function componentDidUpdate(lastProps, lastState) {
   }
 
   //----------------------------------------------------------------------------
@@ -300,7 +285,7 @@ export default function () {
       html          : html
     });
 
-    if (this.shouldDelegateEvents(this.props, this.state)) {
+    if (this.shouldDelegateEvents(this.props, this.state) && typeof this.getDOMEvents === 'function') {
       Events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
 
@@ -319,27 +304,7 @@ export default function () {
     return true;
   }
 
-  /**
-   * Override in implementation
-   *
-   * Define DOM events to be attached after the element is mounted
-   * @returns {undefined}
-   */
-  function getDOMEvents() {
-    return null;
-  }
 
-  /**
-   * Call after it's been added to a view
-   */
-  function componentDidMount() {
-  }
-
-  /**
-   * Call when unloading
-   */
-  function componentWillUnmount() {
-  }
 
   function unmount() {
     if (typeof this.componentWillUnmount === 'function') {
@@ -374,9 +339,7 @@ export default function () {
     _lifecycleState = LS_NO_INIT;
   }
 
-  function componentWillDispose() {
-    //
-  }
+
 
   //----------------------------------------------------------------------------
   //  Children
@@ -384,13 +347,6 @@ export default function () {
 
   function unsafeGetChildren() {
     return _children;
-  }
-
-  /**
-   * Called in initializeComponent to create children during the initialization phase
-   */
-  function defineChildren() {
-    return null;
   }
 
   function addChildren(childObjs) {
@@ -532,6 +488,19 @@ export default function () {
   }
 
   //----------------------------------------------------------------------------
+  //  Lifecycle stubs
+  //----------------------------------------------------------------------------
+
+  //function getDOMEvents() {}
+  //function defineChildren() {}
+  //function componentWillReceiveProps(nextProps) {}
+  //function componentWillUpdate(nextProps, nextState) {}
+  //function componentDidUpdate(lastProps, lastState) {}
+  //function componentDidMount() {}
+  //function componentWillUnmount() {}
+  //function componentWillDispose() {}
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -546,8 +515,6 @@ export default function () {
     getDefaultState,
     setState,
     getDefaultProps,
-    defineChildren,
-    getDOMEvents,
     getLifeCycleState,
     isInitialized,
     getID,
@@ -555,9 +522,6 @@ export default function () {
     getDOMElement,
     isMounted,
     from,
-    componentWillReceiveProps,
-    componentWillUpdate,
-    componentDidUpdate,
     shouldComponentUpdate,
     $renderAfterPropsOrStateChange,
     $renderComponent,
@@ -565,11 +529,8 @@ export default function () {
     mount,
     getUniqueClass,
     shouldDelegateEvents,
-    componentDidMount,
-    componentWillUnmount,
     unmount,
     dispose,
-    componentWillDispose,
     unsafeGetChildren,
     addChild,
     addChildren,

@@ -1479,7 +1479,7 @@ exports['default'] = function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(type, source, children) {
+  function createComponent(type, source) {
     return function (id, initProps) {
       var customizer = undefined,
           template = undefined,
@@ -2315,11 +2315,15 @@ exports['default'] = function () {
 
     this.validateProps();
 
-    this.addChildren(this.defineChildren());
+    if (typeof this.defineChildren === 'function') {
+      this.addChildren(this.defineChildren());
+    }
+
     this.setState(this.getDefaultState());
     this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
+    console.log(this.getID(), 'init');
   }
 
   function validateProps() {
@@ -2405,11 +2409,6 @@ exports['default'] = function () {
   }
 
   /**
-   * Before new props are updated
-   */
-  function componentWillReceiveProps(nextProps) {}
-
-  /**
    * Set new props and trigger rerender
    * @param nextProps
    */
@@ -2442,16 +2441,6 @@ exports['default'] = function () {
 
     this.$renderAfterPropsOrStateChange();
   }
-
-  /**
-   * Before the view updates and a rerender occurs
-   */
-  function componentWillUpdate(nextProps, nextState) {}
-
-  /**
-   * After the updates render to the DOM
-   */
-  function componentDidUpdate(lastProps, lastState) {}
 
   //----------------------------------------------------------------------------
   //  Rendering HTML
@@ -2545,7 +2534,7 @@ exports['default'] = function () {
       html: html
     });
 
-    if (this.shouldDelegateEvents(this.props, this.state)) {
+    if (this.shouldDelegateEvents(this.props, this.state) && typeof this.getDOMEvents === 'function') {
       Events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
     }
 
@@ -2563,26 +2552,6 @@ exports['default'] = function () {
   function shouldDelegateEvents(props, state) {
     return true;
   }
-
-  /**
-   * Override in implementation
-   *
-   * Define DOM events to be attached after the element is mounted
-   * @returns {undefined}
-   */
-  function getDOMEvents() {
-    return null;
-  }
-
-  /**
-   * Call after it's been added to a view
-   */
-  function componentDidMount() {}
-
-  /**
-   * Call when unloading
-   */
-  function componentWillUnmount() {}
 
   function unmount() {
     if (typeof this.componentWillUnmount === 'function') {
@@ -2617,22 +2586,12 @@ exports['default'] = function () {
     _lifecycleState = LS_NO_INIT;
   }
 
-  function componentWillDispose() {}
-  //
-
   //----------------------------------------------------------------------------
   //  Children
   //----------------------------------------------------------------------------
 
   function unsafeGetChildren() {
     return _children;
-  }
-
-  /**
-   * Called in initializeComponent to create children during the initialization phase
-   */
-  function defineChildren() {
-    return null;
   }
 
   function addChildren(childObjs) {
@@ -2780,6 +2739,19 @@ exports['default'] = function () {
   }
 
   //----------------------------------------------------------------------------
+  //  Lifecycle stubs
+  //----------------------------------------------------------------------------
+
+  //function getDOMEvents() {}
+  //function defineChildren() {}
+  //function componentWillReceiveProps(nextProps) {}
+  //function componentWillUpdate(nextProps, nextState) {}
+  //function componentDidUpdate(lastProps, lastState) {}
+  //function componentDidMount() {}
+  //function componentWillUnmount() {}
+  //function componentWillDispose() {}
+
+  //----------------------------------------------------------------------------
   //  API
   //----------------------------------------------------------------------------
 
@@ -2794,8 +2766,6 @@ exports['default'] = function () {
     getDefaultState: getDefaultState,
     setState: setState,
     getDefaultProps: getDefaultProps,
-    defineChildren: defineChildren,
-    getDOMEvents: getDOMEvents,
     getLifeCycleState: getLifeCycleState,
     isInitialized: isInitialized,
     getID: getID,
@@ -2803,9 +2773,6 @@ exports['default'] = function () {
     getDOMElement: getDOMElement,
     isMounted: isMounted,
     from: from,
-    componentWillReceiveProps: componentWillReceiveProps,
-    componentWillUpdate: componentWillUpdate,
-    componentDidUpdate: componentDidUpdate,
     shouldComponentUpdate: shouldComponentUpdate,
     $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
     $renderComponent: $renderComponent,
@@ -2813,11 +2780,8 @@ exports['default'] = function () {
     mount: mount,
     getUniqueClass: getUniqueClass,
     shouldDelegateEvents: shouldDelegateEvents,
-    componentDidMount: componentDidMount,
-    componentWillUnmount: componentWillUnmount,
     unmount: unmount,
     dispose: dispose,
-    componentWillDispose: componentWillDispose,
     unsafeGetChildren: unsafeGetChildren,
     addChild: addChild,
     addChildren: addChildren,
