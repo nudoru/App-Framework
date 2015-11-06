@@ -28,8 +28,7 @@ const LS_NO_INIT   = 0,
       MNT_REPLACE  = 'replace',
       MNT_APPEND   = 'append';
 
-let Events        = EventDelegator(),
-    reservedProps = ['key', 'id', 'type'];
+let reservedProps = ['key', 'id', 'type'];
 
 export default function () {
 
@@ -46,7 +45,8 @@ export default function () {
       _lifecycleState = LS_NO_INIT,
       _children,
       _templateCache,
-      _elementCache;
+      _elementCache,
+      Events          = EventDelegator();
 
   /**
    * Subclasses can override.
@@ -68,7 +68,7 @@ export default function () {
 
     this.validateProps();
 
-    if(typeof this.defineChildren === 'function') {
+    if (typeof this.defineChildren === 'function') {
       this.addChildren(this.defineChildren());
     }
 
@@ -76,12 +76,11 @@ export default function () {
     this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
-    console.log(this.getID(),'init')
   }
 
   function validateProps() {
     if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.getID(), 'Component without a mount selector');
+      console.warn(this.id(), 'Component without a mount selector');
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
@@ -136,7 +135,7 @@ export default function () {
    */
   function setState(nextState) {
     if (_lifecycleState === LS_RENDERING) {
-      console.warn('Can\'t update state during rendering', this.getID());
+      console.warn('Can\'t update state during rendering', this.id());
       return;
     }
 
@@ -167,7 +166,7 @@ export default function () {
    */
   function setProps(nextProps) {
     if (_lifecycleState === LS_RENDERING) {
-      console.warn('Can\'t update props during rendering', this.getID());
+      console.warn('Can\'t update props during rendering', this.id());
       return;
     }
 
@@ -207,7 +206,7 @@ export default function () {
       this.$renderComponent();
 
       if (this.isMounted()) {
-        this.mount();
+        this.$mountComponent();
       }
 
       if (typeof this.componentDidUpdate === 'function') {
@@ -239,7 +238,7 @@ export default function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template() {
-    let templateId = _internalProps.type || this.getID();
+    let templateId = _internalProps.type || this.id();
     return Template.getTemplate(templateId);
   }
 
@@ -258,41 +257,44 @@ export default function () {
   //  Mounting to the DOM
   //----------------------------------------------------------------------------
 
-  /**
-   * Append it to a parent element
-   */
-  function mount() {
-    let lastAdjacent;
-
+  function $mountComponent() {
     if (!html || html.length === 0) {
-      console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
+      console.warn('Component ' + this.id() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
 
-    if (this.isMounted()) {
-      lastAdjacent = this.getDOMElement().nextSibling;
-      this.unmount();
-    }
-
-    _lifecycleState = LS_MOUNTED;
-
-    Renderer({
-      index         : _internalProps.index,
-      uniqueCls     : this.getUniqueClass(),
-      method        : _internalProps.mountMethod,
-      lastAdjacent  : lastAdjacent,
-      targetSelector: _internalProps.mount,
-      html          : html
-    });
-
-    if (this.shouldDelegateEvents(this.props, this.state) && typeof this.getDOMEvents === 'function') {
-      Events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
-    }
+    this.mount();
 
     this.$mountChildren();
 
     if (typeof this.componentDidMount === 'function') {
       this.componentDidMount();
+    }
+  }
+
+  /**
+   * Append it to a parent element
+   */
+  function mount() {
+    let lastAdjacentNode;
+
+    if (this.isMounted()) {
+      lastAdjacentNode = this.element().nextSibling;
+      this.unmount();
+    }
+
+    _lifecycleState = LS_MOUNTED;
+
+    _elementCache = Renderer({
+      uniqueCls     : this.getUniqueClass(),
+      method        : _internalProps.mountMethod,
+      lastAdjacent  : lastAdjacentNode,
+      targetSelector: _internalProps.mount,
+      html          : html
+    });
+
+    if (this.shouldDelegateEvents(this.props, this.state) && typeof this.getDOMEvents === 'function') {
+      Events.delegateEvents(this.element(), this.getDOMEvents(), this.props.autoFormEvents);
     }
   }
 
@@ -304,8 +306,6 @@ export default function () {
     return true;
   }
 
-
-
   function unmount() {
     if (typeof this.componentWillUnmount === 'function') {
       this.componentWillUnmount();
@@ -313,12 +313,14 @@ export default function () {
 
     this.$unmountChildren();
 
-    Events.undelegateEvents(this.getDOMEvents());
+    if (typeof this.getDOMEvents === 'function') {
+      Events.undelegateEvents(this.getDOMEvents());
+    }
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
       DOMUtils.removeAllElements(document.querySelector(this.props.mount));
     } else {
-      DOMUtils.removeElement(this.getDOMElement());
+      DOMUtils.removeElement(this.element());
     }
 
     _elementCache = null;
@@ -338,7 +340,6 @@ export default function () {
 
     _lifecycleState = LS_NO_INIT;
   }
-
 
 
   //----------------------------------------------------------------------------
@@ -406,7 +407,7 @@ export default function () {
     if (_children.hasOwnProperty(id)) {
       return _children[id];
     }
-    console.warn(this.getID(), 'Child not found', id);
+    console.warn(this.id(), 'Child not found', id);
     return null;
   }
 
@@ -431,7 +432,7 @@ export default function () {
 
   function $mountChildren() {
     _.forOwn(_children, child => {
-      child.mount();
+      child.$mountComponent();
     });
   }
 
@@ -461,14 +462,14 @@ export default function () {
   }
 
   function isMounted() {
-    return !!this.getDOMElement();
+    return !!this.element();
   }
 
-  function getID() {
+  function id() {
     return _internalProps.id;
   }
 
-  function getDOMElement() {
+  function element() {
     if (!_elementCache) {
       _elementCache = document.querySelector('.' + this.getUniqueClass());
     }
@@ -517,15 +518,16 @@ export default function () {
     getDefaultProps,
     getLifeCycleState,
     isInitialized,
-    getID,
+    id,
     template,
-    getDOMElement,
+    element,
     isMounted,
     from,
     shouldComponentUpdate,
     $renderAfterPropsOrStateChange,
     $renderComponent,
     render,
+    $mountComponent,
     mount,
     getUniqueClass,
     shouldDelegateEvents,

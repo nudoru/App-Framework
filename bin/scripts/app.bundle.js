@@ -420,14 +420,14 @@ exports['default'] = _noriNoriJs2['default'].view().createComponent('', {
     var _this = this;
 
     return {
-      'click p': function clickP() {
+      'click button': function clickButton() {
         return _this.setProps({ label: 'Clicked ' + ++_this.counter + ' times' });
       }
     };
   },
 
-  template: function template(props, state) {
-    return this.from('\n      <div class="nori__block">\n        <p>{{id}}, {{label}}</p>\n      </div>\n    ');
+  template: function template() {
+    return this.from('\n      <div>\n        <button>{{id}}, {{label}}</button>\n      </div>\n    ');
   }
 
 });
@@ -534,7 +534,7 @@ exports['default'] = _noriNoriJs2['default'].view().createComponent('debug-compo
 
     var dyn = {};
 
-    _vendorLodashMinJs2['default'].range(1, 30).forEach(function (id) {
+    _vendorLodashMinJs2['default'].range(1, 3).forEach(function (id) {
       id = 'dynamic' + String(id);
       dyn[id] = (0, _ChildTestJs2['default'])('dBtn' + id, {
         mount: '#debug-child',
@@ -1502,7 +1502,9 @@ exports['default'] = function () {
 
       template.initialize = function initialize(props) {
         template.initializeComponent.bind(template)(props);
-        previousInitialize.call(template, props);
+        if (previousInitialize) {
+          previousInitialize.call(template, props);
+        }
       };
 
       if (initProps) {
@@ -1575,7 +1577,7 @@ exports['default'] = function () {
     }
 
     view.controller.$renderComponent(true);
-    view.controller.mount();
+    view.controller.$mountComponent();
 
     //ComponentMount.mount(view.controller);
   }
@@ -1677,7 +1679,6 @@ var MNT_REPLACE = 'replace',
     MNT_APPEND = 'append';
 
 exports['default'] = function (_ref) {
-  var index = _ref.index;
   var uniqueCls = _ref.uniqueCls;
   var method = _ref.method;
   var lastAdjacent = _ref.lastAdjacent;
@@ -1685,33 +1686,30 @@ exports['default'] = function (_ref) {
   var html = _ref.html;
 
   var domEl = undefined,
-      mountPoint = document.querySelector(targetSelector),
-      currentHTML = undefined;
-
-  method = method || MNT_REPLACE;
-  index = index || 'nk';
+      currentHTML = undefined,
+      mountPoint = document.querySelector(targetSelector);
 
   if (!mountPoint) {
     console.warn('Render, target selector not found', targetSelector);
     return;
   }
 
-  if (html) {
-    domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-    //domEl.setAttribute('data-norivcid', index);
-    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
-    _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, uniqueCls);
+  method = method || MNT_REPLACE;
+  uniqueCls = uniqueCls || '';
+  html = html || '<div></div>';
 
-    if (method === MNT_REPLACE) {
-      currentHTML = mountPoint.innerHTML;
-      if (html !== currentHTML) {
-        //DOMUtils.removeAllElements(mountPoint);
-        mountPoint.innerHTML = '';
-        mountPoint.appendChild(domEl);
-      }
-    } else {
-      mountPoint.insertBefore(domEl, lastAdjacent);
+  domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
+  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
+  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, uniqueCls);
+
+  if (method === MNT_REPLACE) {
+    currentHTML = mountPoint.innerHTML;
+    if (html !== currentHTML) {
+      mountPoint.innerHTML = '';
+      mountPoint.appendChild(domEl);
     }
+  } else {
+    mountPoint.insertBefore(domEl, lastAdjacent);
   }
 
   return domEl;
@@ -2275,8 +2273,7 @@ var LS_NO_INIT = 0,
     MNT_REPLACE = 'replace',
     MNT_APPEND = 'append';
 
-var Events = (0, _RxEventDelegatorJs2['default'])(),
-    reservedProps = ['key', 'id', 'type'];
+var reservedProps = ['key', 'id', 'type'];
 
 exports['default'] = function () {
 
@@ -2293,7 +2290,8 @@ exports['default'] = function () {
       _lifecycleState = LS_NO_INIT,
       _children = undefined,
       _templateCache = undefined,
-      _elementCache = undefined;
+      _elementCache = undefined,
+      Events = (0, _RxEventDelegatorJs2['default'])();
 
   /**
    * Subclasses can override.
@@ -2323,12 +2321,11 @@ exports['default'] = function () {
     this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
-    console.log(this.getID(), 'init');
   }
 
   function validateProps() {
     if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.getID(), 'Component without a mount selector');
+      console.warn(this.id(), 'Component without a mount selector');
     }
     if (!_internalProps.hasOwnProperty('mountMethod')) {
       _internalProps.mountMethod = MNT_REPLACE;
@@ -2383,7 +2380,7 @@ exports['default'] = function () {
    */
   function setState(nextState) {
     if (_lifecycleState === LS_RENDERING) {
-      console.warn('Can\'t update state during rendering', this.getID());
+      console.warn('Can\'t update state during rendering', this.id());
       return;
     }
 
@@ -2414,7 +2411,7 @@ exports['default'] = function () {
    */
   function setProps(nextProps) {
     if (_lifecycleState === LS_RENDERING) {
-      console.warn('Can\'t update props during rendering', this.getID());
+      console.warn('Can\'t update props during rendering', this.id());
       return;
     }
 
@@ -2454,7 +2451,7 @@ exports['default'] = function () {
       this.$renderComponent();
 
       if (this.isMounted()) {
-        this.mount();
+        this.$mountComponent();
       }
 
       if (typeof this.componentDidUpdate === 'function') {
@@ -2488,7 +2485,7 @@ exports['default'] = function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template() {
-    var templateId = _internalProps.type || this.getID();
+    var templateId = _internalProps.type || this.id();
     return _TemplatingJs2['default'].getTemplate(templateId);
   }
 
@@ -2507,41 +2504,44 @@ exports['default'] = function () {
   //  Mounting to the DOM
   //----------------------------------------------------------------------------
 
-  /**
-   * Append it to a parent element
-   */
-  function mount() {
-    var lastAdjacent = undefined;
-
+  function $mountComponent() {
     if (!html || html.length === 0) {
-      console.warn('Component ' + this.getID() + ' cannot mount with no HTML. Call render() first?');
+      console.warn('Component ' + this.id() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
 
-    if (this.isMounted()) {
-      lastAdjacent = this.getDOMElement().nextSibling;
-      this.unmount();
-    }
-
-    _lifecycleState = LS_MOUNTED;
-
-    (0, _RendererJs2['default'])({
-      index: _internalProps.index,
-      uniqueCls: this.getUniqueClass(),
-      method: _internalProps.mountMethod,
-      lastAdjacent: lastAdjacent,
-      targetSelector: _internalProps.mount,
-      html: html
-    });
-
-    if (this.shouldDelegateEvents(this.props, this.state) && typeof this.getDOMEvents === 'function') {
-      Events.delegateEvents(this.getDOMElement(), this.getDOMEvents(), this.props.autoFormEvents);
-    }
+    this.mount();
 
     this.$mountChildren();
 
     if (typeof this.componentDidMount === 'function') {
       this.componentDidMount();
+    }
+  }
+
+  /**
+   * Append it to a parent element
+   */
+  function mount() {
+    var lastAdjacentNode = undefined;
+
+    if (this.isMounted()) {
+      lastAdjacentNode = this.element().nextSibling;
+      this.unmount();
+    }
+
+    _lifecycleState = LS_MOUNTED;
+
+    _elementCache = (0, _RendererJs2['default'])({
+      uniqueCls: this.getUniqueClass(),
+      method: _internalProps.mountMethod,
+      lastAdjacent: lastAdjacentNode,
+      targetSelector: _internalProps.mount,
+      html: html
+    });
+
+    if (this.shouldDelegateEvents(this.props, this.state) && typeof this.getDOMEvents === 'function') {
+      Events.delegateEvents(this.element(), this.getDOMEvents(), this.props.autoFormEvents);
     }
   }
 
@@ -2560,12 +2560,14 @@ exports['default'] = function () {
 
     this.$unmountChildren();
 
-    Events.undelegateEvents(this.getDOMEvents());
+    if (typeof this.getDOMEvents === 'function') {
+      Events.undelegateEvents(this.getDOMEvents());
+    }
 
     if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
       _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(this.props.mount));
     } else {
-      _nudoruBrowserDOMUtilsJs2['default'].removeElement(this.getDOMElement());
+      _nudoruBrowserDOMUtilsJs2['default'].removeElement(this.element());
     }
 
     _elementCache = null;
@@ -2655,7 +2657,7 @@ exports['default'] = function () {
     if (_children.hasOwnProperty(id)) {
       return _children[id];
     }
-    console.warn(this.getID(), 'Child not found', id);
+    console.warn(this.id(), 'Child not found', id);
     return null;
   }
 
@@ -2682,7 +2684,7 @@ exports['default'] = function () {
 
   function $mountChildren() {
     _vendorLodashMinJs2['default'].forOwn(_children, function (child) {
-      child.mount();
+      child.$mountComponent();
     });
   }
 
@@ -2712,14 +2714,14 @@ exports['default'] = function () {
   }
 
   function isMounted() {
-    return !!this.getDOMElement();
+    return !!this.element();
   }
 
-  function getID() {
+  function id() {
     return _internalProps.id;
   }
 
-  function getDOMElement() {
+  function element() {
     if (!_elementCache) {
       _elementCache = document.querySelector('.' + this.getUniqueClass());
     }
@@ -2768,15 +2770,16 @@ exports['default'] = function () {
     getDefaultProps: getDefaultProps,
     getLifeCycleState: getLifeCycleState,
     isInitialized: isInitialized,
-    getID: getID,
+    id: id,
     template: template,
-    getDOMElement: getDOMElement,
+    element: element,
     isMounted: isMounted,
     from: from,
     shouldComponentUpdate: shouldComponentUpdate,
     $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
     $renderComponent: $renderComponent,
     render: render,
+    $mountComponent: $mountComponent,
     mount: mount,
     getUniqueClass: getUniqueClass,
     shouldDelegateEvents: shouldDelegateEvents,

@@ -44,7 +44,9 @@ export default function () {
 
       template.initialize = function initialize(props) {
         template.initializeComponent.bind(template)(props);
-        previousInitialize.call(template, props);
+        if(previousInitialize) {
+          previousInitialize.call(template, props);
+        }
       };
 
       if (initProps) {
@@ -117,7 +119,7 @@ export default function () {
     }
 
     view.controller.$renderComponent(true);
-    view.controller.mount();
+    view.controller.$mountComponent();
 
     //ComponentMount.mount(view.controller);
   }

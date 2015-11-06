@@ -68,7 +68,7 @@ export default Nori.view().createComponent('debug-components', {
 
     let dyn = {};
 
-    _.range(1,30).forEach(id => {
+    _.range(1,3).forEach(id => {
       id = 'dynamic'+String(id);
       dyn[id] = ChildTest('dBtn'+id, {
         mount: '#debug-child',

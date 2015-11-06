@@ -6,14 +6,14 @@ export default Nori.view().createComponent('', {
 
   getDOMEvents() {
     return {
-      'click p': () => this.setProps({label: 'Clicked ' + (++this.counter) + ' times'})
+      'click button': () => this.setProps({label: 'Clicked ' + (++this.counter) + ' times'})
     };
   },
 
-  template(props, state) {
+  template() {
     return this.from(`
-      <div class="nori__block">
-        <p>{{id}}, {{label}}</p>
+      <div>
+        <button>{{id}}, {{label}}</button>
       </div>
     `);
   }
