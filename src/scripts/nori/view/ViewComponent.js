@@ -220,7 +220,7 @@ export default function () {
    * @param force If true, will force a render
    * @returns {*}
    */
-  function $renderComponent(force = false) {
+  function $renderComponent() {
     _lifecycleState = LS_RENDERING;
 
     if (!_templateCache) {

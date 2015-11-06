@@ -1576,7 +1576,7 @@ exports['default'] = function () {
       });
     }
 
-    view.controller.$renderComponent(true);
+    view.controller.$renderComponent();
     view.controller.$mountComponent();
 
     //ComponentMount.mount(view.controller);
@@ -2466,8 +2466,6 @@ exports['default'] = function () {
    * @returns {*}
    */
   function $renderComponent() {
-    var force = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
     _lifecycleState = LS_RENDERING;
 
     if (!_templateCache) {

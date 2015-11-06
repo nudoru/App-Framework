@@ -118,7 +118,7 @@ export default function () {
       });
     }
 
-    view.controller.$renderComponent(true);
+    view.controller.$renderComponent();
     view.controller.$mountComponent();
 
     //ComponentMount.mount(view.controller);
