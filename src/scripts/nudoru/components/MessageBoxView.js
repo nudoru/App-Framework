@@ -34,6 +34,31 @@ let MessageBoxViewModule = function () {
    */
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
+    defineTemplates();
+  }
+
+  function defineTemplates() {
+    Template.addTemplate('messagebox--default', `<div class="messagebox__default" id="{{ id }}">
+        <div class="header" id="{{ id }}-header">
+             <h1>{{ title }}</h1>
+        </div>
+        <div class="content">
+             {{ content }}
+        </div>
+        <div class="footer">
+            <div class="footer-buttons">
+                <div class="button" id="{{ id }}-button-close">
+                    <button>Close</button>
+                </div>
+            </div>
+        </div>
+    </div>`);
+    Template.addTemplate('messagebox--button-noicon', `<div class="button {{ type }}" id="{{ id }}">
+        <button>{{ label }}</button>
+    </div>`);
+    Template.addTemplate('messagebox--button-icon', `<div class="button icon-left {{ type }}" id="{{ id }}">
+        <button><i class="fa fa-{{ icon }}"></i>{{ label }}</button>
+    </div>`);
   }
 
   /**
@@ -104,7 +129,7 @@ let MessageBoxViewModule = function () {
           modal  : initObj.modal,
           element: Template.asElement('messagebox--default', {
             id     : id,
-            title  : initObj.title,
+            title: initObj.title,
             content: initObj.content
           }),
           streams: []
@@ -191,9 +216,9 @@ let MessageBoxViewModule = function () {
   function transitionIn(el) {
     TweenLite.to(el, 0, {alpha: 0, scale: 1.25});
     TweenLite.to(el, 0.5, {
-      alpha    : 1,
-      scale    : 1,
-      ease     : Circ.easeOut
+      alpha: 1,
+      scale: 1,
+      ease : Circ.easeOut
     });
   }
 
@@ -203,9 +228,9 @@ let MessageBoxViewModule = function () {
    */
   function transitionOut(el) {
     TweenLite.to(el, 0.25, {
-      alpha    : 0,
-      scale    : 0.75,
-      ease     : Circ.easeIn, onComplete: function () {
+      alpha: 0,
+      scale: 0.75,
+      ease : Circ.easeIn, onComplete: function () {
         onTransitionOutComplete(el);
       }
     });

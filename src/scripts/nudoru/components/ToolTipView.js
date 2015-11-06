@@ -48,6 +48,16 @@ let ToolTipViewModule = function () {
 
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
+    defineTemplates();
+  }
+
+  function defineTemplates() {
+    Template.addTemplate('component--tooltip',`<div class="tooltip__item" id="{{ id }}">
+        <div class="tooltip__item-content">
+            <p>{{ message }}</p>
+        </div>
+        <div class="arrow"></div>
+    </div>`);
   }
 
   //obj.title, obj.content, obj.type, obj.target, obj.position

@@ -3477,6 +3477,13 @@ var MessageBoxViewModule = function MessageBoxViewModule() {
    */
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
+    defineTemplates();
+  }
+
+  function defineTemplates() {
+    _noriViewTemplatingJs2['default'].addTemplate('messagebox--default', '<div class="messagebox__default" id="{{ id }}">\n        <div class="header" id="{{ id }}-header">\n             <h1>{{ title }}</h1>\n        </div>\n        <div class="content">\n             {{ content }}\n        </div>\n        <div class="footer">\n            <div class="footer-buttons">\n                <div class="button" id="{{ id }}-button-close">\n                    <button>Close</button>\n                </div>\n            </div>\n        </div>\n    </div>');
+    _noriViewTemplatingJs2['default'].addTemplate('messagebox--button-noicon', '<div class="button {{ type }}" id="{{ id }}">\n        <button>{{ label }}</button>\n    </div>');
+    _noriViewTemplatingJs2['default'].addTemplate('messagebox--button-icon', '<div class="button icon-left {{ type }}" id="{{ id }}">\n        <button><i class="fa fa-{{ icon }}"></i>{{ label }}</button>\n    </div>');
   }
 
   /**
@@ -4048,6 +4055,11 @@ var ToastViewModule = function ToastViewModule() {
 
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
+    defineTemplates();
+  }
+
+  function defineTemplates() {
+    _noriViewTemplatingJs2['default'].addTemplate('component--toast', '<div class="toast__item" id="{{ id }}">\n        <div class="toast__item-content">\n            <h1>{{ title }}</h1>\n            <p>{{ message }}</p>\n        </div>\n        <div class="toast__item-controls">\n            <button><i class="fa fa-close"></i></button>\n        </div>\n    </div>');
   }
 
   //obj.title, obj.content, obj.type
@@ -4236,6 +4248,11 @@ var ToolTipViewModule = function ToolTipViewModule() {
 
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
+    defineTemplates();
+  }
+
+  function defineTemplates() {
+    _noriViewTemplatingJs2['default'].addTemplate('component--tooltip', '<div class="tooltip__item" id="{{ id }}">\n        <div class="tooltip__item-content">\n            <p>{{ message }}</p>\n        </div>\n        <div class="arrow"></div>\n    </div>');
   }
 
   //obj.title, obj.content, obj.type, obj.target, obj.position

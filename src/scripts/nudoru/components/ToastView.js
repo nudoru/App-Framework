@@ -27,6 +27,19 @@ let ToastViewModule = function () {
 
   function initialize(elID) {
     _mountPoint = document.getElementById(elID);
+    defineTemplates();
+  }
+
+  function defineTemplates() {
+    Template.addTemplate('component--toast',`<div class="toast__item" id="{{ id }}">
+        <div class="toast__item-content">
+            <h1>{{ title }}</h1>
+            <p>{{ message }}</p>
+        </div>
+        <div class="toast__item-controls">
+            <button><i class="fa fa-close"></i></button>
+        </div>
+    </div>`);
   }
 
   //obj.title, obj.content, obj.type
