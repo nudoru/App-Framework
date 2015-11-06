@@ -2431,7 +2431,8 @@ exports['default'] = function () {
   // Properties added to component on creation:
   // __id__, __index__, __type__
 
-  var _internalState = {},
+  var _element = (0, _ComponentElementJs2['default'])(),
+      _internalState = {},
       _internalProps = {},
       _lastState = {},
       _lastProps = {},
@@ -2456,32 +2457,22 @@ exports['default'] = function () {
    * @param initProps
    */
   function initializeComponent(initProps) {
-    this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps));
+    this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps, {
+      id: initProps.id || this.__id__,
+      index: this.__index__,
+      type: this.__type__,
+      mountMethod: initProps.mountMethod || MNT_APPEND
+    }));
 
-    _internalProps.id = _internalProps.id || this.__id__;
-    _internalProps.index = this.__index__;
-    _internalProps.type = this.__type__;
-
-    this.validateProps();
+    this.setState(this.getDefaultState());
 
     if (typeof this.defineChildren === 'function') {
       this.addChildren(this.defineChildren());
     }
 
-    this.setState(this.getDefaultState());
-
     this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
-  }
-
-  function validateProps() {
-    if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.id(), 'Component without a mount selector');
-    }
-    if (!_internalProps.hasOwnProperty('mountMethod')) {
-      _internalProps.mountMethod = MNT_REPLACE;
-    }
   }
 
   //----------------------------------------------------------------------------
@@ -2915,7 +2906,6 @@ exports['default'] = function () {
     html: html,
     initialize: initialize,
     initializeComponent: initializeComponent,
-    validateProps: validateProps,
     setProps: setProps,
     getDefaultState: getDefaultState,
     setState: setState,

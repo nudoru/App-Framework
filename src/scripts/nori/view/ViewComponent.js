@@ -37,7 +37,8 @@ export default function () {
   // Properties added to component on creation:
   // __id__, __index__, __type__
 
-  let _internalState  = {},
+  let _element        = Element(),
+      _internalState  = {},
       _internalProps  = {},
       _lastState      = {},
       _lastProps      = {},
@@ -62,32 +63,23 @@ export default function () {
    * @param initProps
    */
   function initializeComponent(initProps) {
-    this.setProps(_.assign({}, this.getDefaultProps(), initProps));
+    this.setProps(_.assign({}, this.getDefaultProps(), initProps, {
+      id         : initProps.id || this.__id__,
+      index      : this.__index__,
+      type       : this.__type__,
+      mountMethod: initProps.mountMethod || MNT_APPEND
+    }));
 
-    _internalProps.id    = _internalProps.id || this.__id__;
-    _internalProps.index = this.__index__;
-    _internalProps.type  = this.__type__;
-
-    this.validateProps();
+    this.setState(this.getDefaultState());
 
     if (typeof this.defineChildren === 'function') {
       this.addChildren(this.defineChildren());
     }
 
-    this.setState(this.getDefaultState());
 
     this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
-  }
-
-  function validateProps() {
-    if (!_internalProps.hasOwnProperty('mount')) {
-      console.warn(this.id(), 'Component without a mount selector');
-    }
-    if (!_internalProps.hasOwnProperty('mountMethod')) {
-      _internalProps.mountMethod = MNT_REPLACE;
-    }
   }
 
   //----------------------------------------------------------------------------
@@ -516,7 +508,6 @@ export default function () {
     html : html,
     initialize,
     initializeComponent,
-    validateProps,
     setProps,
     getDefaultState,
     setState,
