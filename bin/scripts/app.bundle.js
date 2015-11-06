@@ -961,6 +961,10 @@ var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
+var _utilsInvariantJs = require('../utils/Invariant.js');
+
+var _utilsInvariantJs2 = _interopRequireDefault(_utilsInvariantJs);
+
 var STORE_INITIALIZE_TYPE = '$$$initstore$$$';
 
 exports['default'] = function () {
@@ -1007,9 +1011,8 @@ exports['default'] = function () {
    * are sent to all reducers to update the state
    */
   function apply(action) {
-    if (_stateReducers.length === 0) {
-      throw new Error('ReducerStore must have at least one reducer set');
-    }
+    (0, _utilsInvariantJs2['default'])(_stateReducers.length, 'ReducerStore must have at least one reducer set');
+
     if (isValidAction(action)) {
       // Apply called as the result of an event/subscription. Fix context back to
       // correct scope
@@ -1116,7 +1119,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":43,"../../vendor/lodash.min.js":44,"../../vendor/rxjs/rx.lite.min.js":45}],15:[function(require,module,exports){
+},{"../../nudoru/util/is.js":43,"../../vendor/lodash.min.js":44,"../../vendor/rxjs/rx.lite.min.js":45,"../utils/Invariant.js":18}],15:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1199,23 +1202,67 @@ exports['default'] = function (template, customizer) {
 module.exports = exports['default'];
 
 },{"../../vendor/lodash.min.js":44,"./BuildFromMixins.js":16}],18:[function(require,module,exports){
-Object.defineProperty(exports, "__esModule", {
+(function (process){
+//https://raw.githubusercontent.com/zertosh/invariant/master/invariant.js
+
+/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule invariant
+ */
+
+'use strict';
+
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
+var __DEV__ = process.env.NODE_ENV !== 'production';
 
-exports["default"] = function (condition, message, fatal) {
-  if (!condition) {
-    if (fatal) {
-      throw new Error(message);
-    } else {
-      console.warn(message);
+exports['default'] = function (condition, format, a, b, c, d, e, f) {
+  if (__DEV__) {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
     }
+  }
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error('Invariant Violation: ' + format.replace(/%s/g, function () {
+        return args[argIndex++];
+      }));
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
   }
 };
 
-module.exports = exports["default"];
+;
+module.exports = exports['default'];
 
-},{}],19:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":1}],19:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });

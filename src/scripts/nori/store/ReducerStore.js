@@ -7,6 +7,7 @@
 import Is from '../../nudoru/util/is.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import _ from '../../vendor/lodash.min.js';
+import Invariant from '../utils/Invariant.js';
 
 const STORE_INITIALIZE_TYPE = '$$$initstore$$$';
 
@@ -54,9 +55,8 @@ export default function () {
    * are sent to all reducers to update the state
    */
   function apply(action) {
-    if (_stateReducers.length === 0) {
-      throw new Error('ReducerStore must have at least one reducer set');
-    }
+    Invariant(_stateReducers.length, 'ReducerStore must have at least one reducer set');
+
     if(isValidAction(action)) {
       // Apply called as the result of an event/subscription. Fix context back to
       // correct scope
