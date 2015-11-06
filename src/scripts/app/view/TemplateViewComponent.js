@@ -52,18 +52,23 @@ export default Nori.view().createComponent('default', {
   //},
 
   // Return a _.template object
-  //template() {
-  //  return this.from(`<div></div>`);
-  //},
+  template() {
+    return this.from(`
+      <div class="padded">
+        <h1>{{ greeting }}</h1>
+        <p>Default subview template.</p>
+      </div>
+    `);
+  },
 
   // Return HTML
   //render() {
   //  let combined = _.merge({}, this.props, this.state);
   //},
 
-  componentDidMount() {
-    let el = this.getDOMElement();
-  },
+  //componentDidMount() {
+  //  let el = this.element();
+  //},
 
   //componentWillUnmount() {
   //},
