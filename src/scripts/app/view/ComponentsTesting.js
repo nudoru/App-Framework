@@ -22,7 +22,7 @@ _actionFiveEl,
 _actionSixEl,
 _this;
 
-export default Nori.view().createComponent('debug-components', {
+export default Nori.createComponent('debug-components', {
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.

@@ -6,8 +6,8 @@ import ComponentTesting from './ComponentsTesting.js';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-let vcStyles   = Nori.view().createComponent('debug-styletest', {})('styles'),
-    vcControls = Nori.view().createComponent('debug-controls', {})('controls');
+let vcStyles   = Nori.createComponent('debug-styletest', {})('styles'),
+    vcControls = Nori.createComponent('debug-controls', {})('controls');
 
 /**
  * View for an application.

@@ -9,21 +9,7 @@ import _ from '../vendor/lodash.min.js';
 
 export default {
 
-  //----------------------------------------------------------------------------
-  //  Accessors
-  //----------------------------------------------------------------------------
-
-  /**
-   * Convenience mapping to create component views
-   */
-  _viewTemplate : null,
-
-  view() {
-    if(!this._viewTemplate) {
-      this._viewTemplate = ComponentViews();
-    }
-    return this._viewTemplate;
-  },
+  _componentViews: null,
 
   /**
    * Allow for optional external configuration data from outside of the compiled
@@ -73,5 +59,12 @@ export default {
     customizer.mixins = customizer.mixins || [];
     customizer.mixins.push(ComponentViews());
     return CreateClass({}, customizer);
+  },
+
+  createComponent(...args) {
+    if(!this._componentViews) {
+      this._componentViews = ComponentViews();
+    }
+    return this._componentViews.createComponent(args[0], args[1]);
   }
 }

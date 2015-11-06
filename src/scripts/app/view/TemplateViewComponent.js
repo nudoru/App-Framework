@@ -10,7 +10,7 @@ import MixinDOMManipulation from '../../nori/view/Tweens.js';
  * Module for a dynamic application view for a route or a persistent view
  */
 
-export default Nori.view().createComponent('default', {
+export default Nori.createComponent('default', {
 
   mixins: [
     MixinDOMManipulation

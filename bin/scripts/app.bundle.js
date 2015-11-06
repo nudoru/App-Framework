@@ -327,8 +327,8 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var vcStyles = _noriNoriJs2['default'].view().createComponent('debug-styletest', {})('styles'),
-    vcControls = _noriNoriJs2['default'].view().createComponent('debug-controls', {})('controls');
+var vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('styles'),
+    vcControls = _noriNoriJs2['default'].createComponent('debug-controls', {})('controls');
 
 /**
  * View for an application.
@@ -417,7 +417,7 @@ var _noriNoriJs = require('../../nori/Nori.js');
 
 var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
-exports['default'] = _noriNoriJs2['default'].view().createComponent('', {
+exports['default'] = _noriNoriJs2['default'].createComponent('', {
 
   counter: 0,
 
@@ -495,7 +495,7 @@ var _lIpsum = require('../../nudoru/browser/Lorem.js'),
     _actionSixEl = undefined,
     _this = undefined;
 
-exports['default'] = _noriNoriJs2['default'].view().createComponent('debug-components', {
+exports['default'] = _noriNoriJs2['default'].createComponent('debug-components', {
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -698,7 +698,7 @@ var _noriViewTweensJs2 = _interopRequireDefault(_noriViewTweensJs);
  * Module for a dynamic application view for a route or a persistent view
  */
 
-exports['default'] = _noriNoriJs2['default'].view().createComponent('default', {
+exports['default'] = _noriNoriJs2['default'].createComponent('default', {
 
   mixins: [_noriViewTweensJs2['default']],
 
@@ -821,21 +821,7 @@ var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
 exports['default'] = {
 
-  //----------------------------------------------------------------------------
-  //  Accessors
-  //----------------------------------------------------------------------------
-
-  /**
-   * Convenience mapping to create component views
-   */
-  _viewTemplate: null,
-
-  view: function view() {
-    if (!this._viewTemplate) {
-      this._viewTemplate = (0, _viewComponentViewsJs2['default'])();
-    }
-    return this._viewTemplate;
-  },
+  _componentViews: null,
 
   /**
    * Allow for optional external configuration data from outside of the compiled
@@ -885,6 +871,13 @@ exports['default'] = {
     customizer.mixins = customizer.mixins || [];
     customizer.mixins.push((0, _viewComponentViewsJs2['default'])());
     return (0, _utilsCreateClassJs2['default'])({}, customizer);
+  },
+
+  createComponent: function createComponent() {
+    if (!this._componentViews) {
+      this._componentViews = (0, _viewComponentViewsJs2['default'])();
+    }
+    return this._componentViews.createComponent(arguments[0], arguments[1]);
   }
 };
 module.exports = exports['default'];
