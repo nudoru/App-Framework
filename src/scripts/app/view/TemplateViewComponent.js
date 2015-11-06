@@ -53,7 +53,7 @@ export default Nori.view().createComponent('default', {
 
   // Return a _.template object
   template() {
-    return this.from(`
+    return this.tmpl(`
       <div class="padded">
         <h1>{{ greeting }}</h1>
         <p>Default subview template.</p>

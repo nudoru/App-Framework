@@ -20,3 +20,11 @@ const NOOP = function () {
     }
   }
 }());
+
+function $(selector, context) {
+  return (context || document).querySelector(selector)
+}
+
+function $$(selector, context) {
+  return (context || document).querySelectorAll(selector)
+}

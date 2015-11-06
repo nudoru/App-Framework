@@ -6,14 +6,14 @@ export default Nori.view().createComponent('', {
 
   getDOMEvents() {
     return {
-      'click button': () => this.setProps({label: 'Clicked ' + (++this.counter) + ' times'})
+      'click button.button-neutral-light': () => this.setProps({label: 'Clicked ' + (++this.counter) + ' times'})
     };
   },
 
   template() {
-    return this.from(`
+    return this.tmpl(`
       <div>
-        <button>{{id}}, {{label}}</button>
+        <button class="button-neutral-light">{{id}}, {{label}}</button>
       </div>
     `);
   }

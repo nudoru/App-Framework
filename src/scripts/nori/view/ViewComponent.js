@@ -19,6 +19,7 @@ import Template from './Templating.js';
 import Renderer from './Renderer.js';
 import EventDelegator from './RxEventDelegator.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import Invariant from '../utils/Invariant.js';
 
 const LS_NO_INIT   = 0,
       LS_INITED    = 1,
@@ -26,7 +27,8 @@ const LS_NO_INIT   = 0,
       LS_MOUNTED   = 3,
       LS_UNMOUNTED = 4,
       MNT_REPLACE  = 'replace',
-      MNT_APPEND   = 'append';
+      MNT_APPEND   = 'append',
+      CLASS_PREFIX = 'js__vc';
 
 let reservedProps = ['key', 'id', 'type'];
 
@@ -73,6 +75,7 @@ export default function () {
     }
 
     this.setState(this.getDefaultState());
+
     this.$initializeChildren();
 
     _lifecycleState = LS_INITED;
@@ -286,14 +289,14 @@ export default function () {
     _lifecycleState = LS_MOUNTED;
 
     _elementCache = Renderer({
-      uniqueCls     : this.getUniqueClass(),
+      uniqueCls     : this.className(),
       method        : _internalProps.mountMethod,
       lastAdjacent  : lastAdjacentNode,
       targetSelector: _internalProps.mount,
       html          : html
     });
 
-    if (this.shouldDelegateEvents(this.props, this.state) && typeof this.getDOMEvents === 'function') {
+    if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
       Events.delegateEvents(this.element(), this.getDOMEvents(), this.props.autoFormEvents);
     }
   }
@@ -302,7 +305,7 @@ export default function () {
    * Override to delegate events or not based on some state trigger
    * @returns {boolean}
    */
-  function shouldDelegateEvents(props, state) {
+  function shouldDelegateEvents() {
     return true;
   }
 
@@ -346,6 +349,9 @@ export default function () {
   //  Children
   //----------------------------------------------------------------------------
 
+  /**
+   * Unsafe because it returns the object rather than a copy
+   */
   function unsafeGetChildren() {
     return _children;
   }
@@ -385,7 +391,7 @@ export default function () {
   function $forceChildren() {
     if (_lifecycleState === LS_MOUNTED) {
       _.forOwn(_children, child => {
-        if (child.getLifeCycleState() !== LS_MOUNTED) {
+        if (!child.isMounted()) {
           child.initialize({parent: this});
           child.$renderComponent();
           child.mount();
@@ -423,7 +429,7 @@ export default function () {
     });
   }
 
-  function $getChildHTMLObj() {
+  function $getChildHTMLObject() {
     return _.reduce(_children, (htmlObj, current, key) => {
       htmlObj[key] = current.getHTML();
       return htmlObj;
@@ -453,12 +459,8 @@ export default function () {
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getLifeCycleState() {
-    return _lifecycleState;
-  }
-
   function isInitialized() {
-    return this.getLifeCycleState() > LS_NO_INIT;
+    return _lifecycleState > LS_NO_INIT;
   }
 
   function isMounted() {
@@ -471,20 +473,20 @@ export default function () {
 
   function element() {
     if (!_elementCache) {
-      _elementCache = document.querySelector('.' + this.getUniqueClass());
+      _elementCache = document.querySelector('.' + this.className());
     }
     return _elementCache;
   }
 
-  function getUniqueClass() {
-    return 'js__nvc' + _internalProps.index;
+  function className() {
+    return CLASS_PREFIX + _internalProps.index;
   }
 
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
 
-  function from(html) {
+  function tmpl(html) {
     return Template.getTemplateFromHTML(html);
   }
 
@@ -516,20 +518,19 @@ export default function () {
     getDefaultState,
     setState,
     getDefaultProps,
-    getLifeCycleState,
     isInitialized,
     id,
     template,
     element,
     isMounted,
-    from,
+    tmpl,
     shouldComponentUpdate,
     $renderAfterPropsOrStateChange,
     $renderComponent,
     render,
     $mountComponent,
     mount,
-    getUniqueClass,
+    className,
     shouldDelegateEvents,
     unmount,
     dispose,
