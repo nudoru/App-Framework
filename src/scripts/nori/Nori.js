@@ -1,7 +1,7 @@
 /* @flow weak */
 
-import MixinReducerStore from './store/ReducerStore.js';
-import MixinComponentViews from './view/MixinComponentViews.js';
+import ReducerStore from './store/ReducerStore.js';
+import ComponentViews from './view/ComponentViews.js';
 import AssignArray from './utils/AssignArray.js';
 import BuildFromMixins from './utils/BuildFromMixins.js';
 import CreateClass from './utils/CreateClass.js';
@@ -20,7 +20,7 @@ export default {
 
   view() {
     if(!this._viewTemplate) {
-      this._viewTemplate = MixinComponentViews();
+      this._viewTemplate = ComponentViews();
     }
     return this._viewTemplate;
   },
@@ -60,7 +60,7 @@ export default {
    */
   createStore(customizer) {
     customizer.mixins = customizer.mixins || [];
-    customizer.mixins.push(MixinReducerStore());
+    customizer.mixins.push(ReducerStore());
     return CreateClass({}, customizer);
   },
 
@@ -71,7 +71,7 @@ export default {
    */
   createView(customizer) {
     customizer.mixins = customizer.mixins || [];
-    customizer.mixins.push(MixinComponentViews());
+    customizer.mixins.push(ComponentViews());
     return CreateClass({}, customizer);
   }
 }

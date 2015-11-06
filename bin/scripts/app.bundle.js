@@ -101,9 +101,9 @@ var _noriNoriJs = require('../nori/Nori.js');
 
 var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
-var _noriUtilsMixinStoreWatcherJs = require('../nori/utils/MixinStoreWatcher.js');
+var _noriUtilsStoreWatcherJs = require('../nori/utils/StoreWatcher.js');
 
-var _noriUtilsMixinStoreWatcherJs2 = _interopRequireDefault(_noriUtilsMixinStoreWatcherJs);
+var _noriUtilsStoreWatcherJs2 = _interopRequireDefault(_noriUtilsStoreWatcherJs);
 
 var _actionActionCreatorJs = require('./action/ActionCreator.js');
 
@@ -132,7 +132,7 @@ var _viewAppViewJs2 = _interopRequireDefault(_viewAppViewJs);
  */
 var App = _noriNoriJs2['default'].createClass({
 
-  mixins: [(0, _noriUtilsMixinStoreWatcherJs2['default'])()],
+  mixins: [(0, _noriUtilsStoreWatcherJs2['default'])()],
 
   /**
    * Initialize
@@ -160,7 +160,7 @@ var App = _noriNoriJs2['default'].createClass({
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"../nori/Nori.js":11,"../nori/action/ActionCreator.js":13,"../nori/utils/MixinStoreWatcher.js":19,"./action/ActionConstants.js":3,"./action/ActionCreator.js":4,"./store/AppStore.js":5,"./view/AppView.js":6}],3:[function(require,module,exports){
+},{"../nori/Nori.js":11,"../nori/action/ActionCreator.js":13,"../nori/utils/StoreWatcher.js":21,"./action/ActionConstants.js":3,"./action/ActionCreator.js":4,"./store/AppStore.js":5,"./view/AppView.js":6}],3:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -802,9 +802,9 @@ var _storeReducerStoreJs = require('./store/ReducerStore.js');
 
 var _storeReducerStoreJs2 = _interopRequireDefault(_storeReducerStoreJs);
 
-var _viewMixinComponentViewsJs = require('./view/MixinComponentViews.js');
+var _viewComponentViewsJs = require('./view/ComponentViews.js');
 
-var _viewMixinComponentViewsJs2 = _interopRequireDefault(_viewMixinComponentViewsJs);
+var _viewComponentViewsJs2 = _interopRequireDefault(_viewComponentViewsJs);
 
 var _utilsAssignArrayJs = require('./utils/AssignArray.js');
 
@@ -835,7 +835,7 @@ exports['default'] = {
 
   view: function view() {
     if (!this._viewTemplate) {
-      this._viewTemplate = (0, _viewMixinComponentViewsJs2['default'])();
+      this._viewTemplate = (0, _viewComponentViewsJs2['default'])();
     }
     return this._viewTemplate;
   },
@@ -886,13 +886,13 @@ exports['default'] = {
    */
   createView: function createView(customizer) {
     customizer.mixins = customizer.mixins || [];
-    customizer.mixins.push((0, _viewMixinComponentViewsJs2['default'])());
+    customizer.mixins.push((0, _viewComponentViewsJs2['default'])());
     return (0, _utilsCreateClassJs2['default'])({}, customizer);
   }
 };
 module.exports = exports['default'];
 
-},{"../vendor/lodash.min.js":44,"./store/ReducerStore.js":14,"./utils/AssignArray.js":15,"./utils/BuildFromMixins.js":16,"./utils/CreateClass.js":17,"./view/MixinComponentViews.js":22}],12:[function(require,module,exports){
+},{"../vendor/lodash.min.js":44,"./store/ReducerStore.js":14,"./utils/AssignArray.js":15,"./utils/BuildFromMixins.js":16,"./utils/CreateClass.js":17,"./view/ComponentViews.js":22}],12:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1263,54 +1263,6 @@ module.exports = exports['default'];
 
 }).call(this,require('_process'))
 },{"_process":1}],19:[function(require,module,exports){
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports["default"] = function () {
-
-  var _observedStore = undefined,
-      _actionMap = {};
-
-  function watchStore(store) {
-    _observedStore = store;
-    _observedStore.subscribe(onStateMutation.bind(this));
-  }
-
-  function mapActionType(type, handler) {
-    if (_actionMap.hasOwnProperty(type)) {
-      unmapActionType(type);
-    }
-
-    _actionMap[type] = handler;
-  }
-
-  function unmapActionType(type) {
-    if (_actionMap.hasOwnProperty(type)) {
-      _actionMap[type] = null;
-      delete _actionMap[type];
-    }
-  }
-
-  function onStateMutation(_ref) {
-    var type = _ref.type;
-    var state = _ref.state;
-
-    if (_actionMap.hasOwnProperty(type)) {
-      _actionMap[type].call(state);
-    }
-  }
-
-  return {
-    watchStore: watchStore,
-    mapActionType: mapActionType,
-    unmapActionType: unmapActionType
-  };
-};
-
-module.exports = exports["default"];
-
-},{}],20:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1449,7 +1401,7 @@ var r = Router();
 exports['default'] = r;
 module.exports = exports['default'];
 
-},{"../../nudoru/core/ObjectUtils.js":41,"../../vendor/rxjs/rx.lite.min.js":45}],21:[function(require,module,exports){
+},{"../../nudoru/core/ObjectUtils.js":41,"../../vendor/rxjs/rx.lite.min.js":45}],20:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1512,7 +1464,55 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":43,"../../vendor/rxjs/rx.lite.min.js":45}],22:[function(require,module,exports){
+},{"../../nudoru/util/is.js":43,"../../vendor/rxjs/rx.lite.min.js":45}],21:[function(require,module,exports){
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports["default"] = function () {
+
+  var _observedStore = undefined,
+      _actionMap = {};
+
+  function watchStore(store) {
+    _observedStore = store;
+    _observedStore.subscribe(onStateMutation.bind(this));
+  }
+
+  function mapActionType(type, handler) {
+    if (_actionMap.hasOwnProperty(type)) {
+      unmapActionType(type);
+    }
+
+    _actionMap[type] = handler;
+  }
+
+  function unmapActionType(type) {
+    if (_actionMap.hasOwnProperty(type)) {
+      _actionMap[type] = null;
+      delete _actionMap[type];
+    }
+  }
+
+  function onStateMutation(_ref) {
+    var type = _ref.type;
+    var state = _ref.state;
+
+    if (_actionMap.hasOwnProperty(type)) {
+      _actionMap[type].call(state);
+    }
+  }
+
+  return {
+    watchStore: watchStore,
+    mapActionType: mapActionType,
+    unmapActionType: unmapActionType
+  };
+};
+
+module.exports = exports["default"];
+
+},{}],22:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1730,7 +1730,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../utils/Router.js":20}],24:[function(require,module,exports){
+},{"../utils/Router.js":19}],24:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1970,7 +1970,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":29,"../../nudoru/browser/MouseToTouchEvents.js":32,"../../nudoru/util/is.js":43,"../utils/Rx.js":21}],26:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":29,"../../nudoru/browser/MouseToTouchEvents.js":32,"../../nudoru/util/is.js":43,"../utils/Rx.js":20}],26:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
