@@ -2408,6 +2408,10 @@ var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
 var _TemplatingJs = require('./Templating.js');
 
 var _TemplatingJs2 = _interopRequireDefault(_TemplatingJs);
@@ -2419,10 +2423,6 @@ var _RendererJs2 = _interopRequireDefault(_RendererJs);
 var _RxEventDelegatorJs = require('./RxEventDelegator.js');
 
 var _RxEventDelegatorJs2 = _interopRequireDefault(_RxEventDelegatorJs);
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
 var _ComponentElementJs = require('./ComponentElement.js');
 

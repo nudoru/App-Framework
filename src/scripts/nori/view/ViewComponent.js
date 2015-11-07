@@ -15,10 +15,10 @@
  */
 
 import _ from '../../vendor/lodash.min.js';
+import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import Template from './Templating.js';
 import Renderer from './Renderer.js';
 import EventDelegator from './RxEventDelegator.js';
-import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import ComponentElement from './ComponentElement.js';
 
 const LS_NO_INIT   = 0,
