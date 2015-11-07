@@ -67,7 +67,7 @@ export default Nori.createComponent('default', {
   //},
 
   //componentDidMount() {
-  //  let el = this.element();
+  //  let el = this.dom();
   //},
 
   //componentWillUnmount() {

@@ -1,15 +1,21 @@
-export default function element(props, state, parent, children) {
+import _ from '../../vendor/lodash.min.js';
+
+export default function element(props, state, children) {
   return {
-    props: props,
-    state: state,
-    parent: parent || null,
-    children: children || [],
+    props    : props,
+    state    : state,
+    lastProps: null,
+    lastState: null,
+    children : children || {},
+
     getProps() {
       return _.assign({}, this.props);
     },
+
     getState() {
       return _.assign({}, this.state);
     },
+
     shouldUpdate(nextProps, nextState) {
       nextProps = nextProps || this.props;
       nextState = nextState || this.state;
@@ -19,29 +25,37 @@ export default function element(props, state, parent, children) {
 
       return !(isStateEq) || !(isPropsEq);
     },
-    setState(nextState) {
-      if(shouldUpdate(null, nextState)) {
-        this.state = nextState;
-      }
-    },
+
     setProps(nextProps) {
-      if(shouldUpdate(nextProps, null)) {
-        this.props = nextProps;
-      }
+      this.lastProps = _.assign({}, this.props);
+      this.props     = _.assign({}, this.props, nextProps);
     },
+
+    setState(nextState) {
+      this.lastState = _.assign({}, this.state);
+      this.state     = _.assign({}, this.state, nextState);
+    },
+
     getParent() {
-      return this.parent;
+      return this.props.parent;
     },
+
     setParent(newParent) {
-      if(!_.isEqual(newParent, this.parent)) {
-        this.parent = newParent;
+      if (!_.isEqual(newParent, this.props.parent)) {
+        this.setProps({parent: newParent});
       }
     },
-    getChildren() {
-      return this.children;
+
+    addChild(id, newChild) {
+      if(!this.children.hasOwnProperty(id)) {
+        this.children[id] = newChild;
+      }
     },
-    addChild(newChild) {
-      this.children.push(newChild);
-    }
+
+    removeChild(id) {
+      if(this.children.hasOwnProperty(id)) {
+        delete this.children[id];
+      }
+    },
   }
 }

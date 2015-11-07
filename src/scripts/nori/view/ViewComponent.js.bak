@@ -38,19 +38,24 @@ export default function () {
   // __id__, __index__, __type__
 
   let _element        = Element(),
+      _internalState  = {},
+      _internalProps  = {},
+      _lastState      = {},
+      _lastProps      = {},
       state           = {},
       props           = {},
       html,
       _lifecycleState = LS_NO_INIT,
+      _children,
       _templateCache,
-      _domElementCache,
+      _elementCache,
       Events          = EventDelegator();
 
   /**
    * Subclasses can override.
    */
   function initialize(initProps) {
-    this.initializeComponent(initProps);
+    this.initializeComponent(initProps, this);
   }
 
   /**
@@ -70,6 +75,7 @@ export default function () {
     if (typeof this.defineChildren === 'function') {
       this.addChildren(this.defineChildren());
     }
+
 
     this.$initializeChildren();
 
@@ -103,6 +109,22 @@ export default function () {
   }
 
   /**
+   * Compares next state and props, returns true if one or both are different than current
+   * @param nextState
+   * @param nextProps
+   * @returns {boolean}
+   */
+  function shouldComponentUpdate(nextProps, nextState) {
+    nextProps = nextProps || _internalProps;
+    nextState = nextState || _internalState;
+
+    let isStateEq = _.isEqual(nextState, _internalState),
+        isPropsEq = _.isEqual(nextProps, _internalProps);
+
+    return !(isStateEq) || !(isPropsEq);
+  }
+
+  /**
    * Sets the next state and trigger a rerender
    * @param nextState
    */
@@ -114,25 +136,26 @@ export default function () {
 
     nextState = nextState || this.getDefaultState();
 
-    if (!_element.shouldUpdate(null, nextState)) {
+    if (!this.shouldComponentUpdate(null, nextState)) {
       return;
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(_element.props, nextState);
+      this.componentWillUpdate(props, nextState);
     }
 
-    _element.setState(nextState);
-    state = _.assign(state, _element.state);
-
-    this.$renderAfterPropsOrStateChange();
+    _lastState     = _.assign({}, _internalState);
+    _internalState = _.assign({}, _internalState, nextState);
+    state          = _.assign(state, _internalState);
 
     if (typeof state.onChange === 'function') {
       state.onChange.apply(this);
     }
 
+    this.$renderAfterPropsOrStateChange();
+
     if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentDidUpdate(_element.lastProps, _element.lastState);
+      this.componentDidUpdate(_lastProps, _lastState);
     }
   }
 
@@ -151,25 +174,26 @@ export default function () {
       this.componentWillReceiveProps(nextProps);
     }
 
-    if (!_element.shouldUpdate(nextProps, null)) {
+    if (!this.shouldComponentUpdate(nextProps, null)) {
       return;
     }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(nextProps, _element.state);
+      this.componentWillUpdate(nextProps, _internalState);
     }
 
-    _element.setProps(nextProps);
-    props = _.assign(props, _element.props);
-
-    this.$renderAfterPropsOrStateChange();
+    _lastProps     = _.assign({}, _internalProps);
+    _internalProps = _.merge({}, _internalProps, nextProps);
+    props          = _.assign(props, _internalProps);
 
     if (typeof props.onChange === 'function') {
       props.onChange.apply(this);
     }
 
+    this.$renderAfterPropsOrStateChange();
+
     if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentDidUpdate(_element.lastProps, _element.lastState);
+      this.componentDidUpdate(_lastProps, _lastState);
     }
   }
 
@@ -198,12 +222,12 @@ export default function () {
     _lifecycleState = LS_RENDERING;
 
     if (!_templateCache) {
-      _templateCache = this.template(_element.props, _element.state);
+      _templateCache = this.template(this.props, this.state);
     }
 
     this.$renderChildren();
 
-    html = this.render();
+    html = this.render(this.props, this.state);
   }
 
   /**
@@ -212,7 +236,7 @@ export default function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template() {
-    let templateId = _element.props.type || this.id();
+    let templateId = _internalProps.type || this.id();
     return Template.getTemplate(templateId);
   }
 
@@ -221,7 +245,7 @@ export default function () {
    * Should return HTML
    */
   function render() {
-    let combined     = _.merge({}, _element.props, _element.state),
+    let combined     = _.merge({}, this.props, this.state),
         templateFunc = _templateCache || this.template();
 
     return templateFunc(combined);
@@ -253,23 +277,23 @@ export default function () {
     let lastAdjacentNode;
 
     if (this.isMounted()) {
-      lastAdjacentNode = this.dom().nextSibling;
+      lastAdjacentNode = this.element().nextSibling;
       this.unmount();
     }
 
-    _domElementCache = Renderer({
+    _lifecycleState = LS_MOUNTED;
+
+    _elementCache = Renderer({
       uniqueCls     : this.className(),
-      method        : _element.props.mountMethod,
+      method        : _internalProps.mountMethod,
       lastAdjacent  : lastAdjacentNode,
-      targetSelector: _element.props.mount,
+      targetSelector: _internalProps.mount,
       html          : html
     });
 
     if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
-      Events.delegateEvents(this.dom(), this.getDOMEvents(), _element.props.autoFormEvents);
+      Events.delegateEvents(this.element(), this.getDOMEvents(), this.props.autoFormEvents);
     }
-
-    _lifecycleState = LS_MOUNTED;
   }
 
   /**
@@ -291,13 +315,13 @@ export default function () {
       Events.undelegateEvents(this.getDOMEvents());
     }
 
-    if (!_element.props.mountMethod || _element.props.mountMethod === MNT_REPLACE) {
-      DOMUtils.removeAllElements(document.querySelector(_element.props.mount));
+    if (!this.props.mountMethod || this.props.mountMethod === MNT_REPLACE) {
+      DOMUtils.removeAllElements(document.querySelector(this.props.mount));
     } else {
-      DOMUtils.removeElement(this.dom());
+      DOMUtils.removeElement(this.element());
     }
 
-    _domElementCache = null;
+    _elementCache = null;
 
     _lifecycleState = LS_UNMOUNTED;
   }
@@ -320,6 +344,13 @@ export default function () {
   //  Children
   //----------------------------------------------------------------------------
 
+  /**
+   * Unsafe because it returns the object rather than a copy
+   */
+  function unsafeGetChildren() {
+    return _children;
+  }
+
   function addChildren(childObjs) {
     if (childObjs) {
       _.forOwn(childObjs, (child, id) => {
@@ -329,12 +360,19 @@ export default function () {
       });
       $forceChildren.bind(this)();
     } else {
-      _element.children = {};
+      _children = null;
     }
   }
 
   function addChild(id, child, update) {
-    _element.addChild(id, child);
+    _children = _children || {};
+
+    if (_children.hasOwnProperty(id)) {
+      console.warn('Component already has child with id', id);
+      return;
+    }
+
+    _children[id] = child;
 
     if (update) {
       $forceChildren.bind(this)();
@@ -347,7 +385,7 @@ export default function () {
    */
   function $forceChildren() {
     if (_lifecycleState === LS_MOUNTED) {
-      _.forOwn(_element.children, child => {
+      _.forOwn(_children, child => {
         if (!child.isMounted()) {
           child.initialize({parent: this});
           child.$renderComponent();
@@ -358,59 +396,58 @@ export default function () {
   }
 
   function disposeChild(id) {
-    if (_element.children.hasOwnProperty(id)) {
-      _element.children[id].dispose();
-      delete _element.children[id];
+    if (_children.hasOwnProperty(id)) {
+      _children[id].dispose();
+      delete _children[id];
     } else {
       console.warn('Cannot remove child. ', id, 'not found');
     }
   }
 
   function child(id) {
-    if (_element.children.hasOwnProperty(id)) {
-      return _element.children[id];
+    if (_children.hasOwnProperty(id)) {
+      return _children[id];
     }
     console.warn(this.id(), 'Child not found', id);
     return null;
   }
 
   function $initializeChildren() {
-    _.forOwn(_element.children, child => {
+    _.forOwn(_children, child => {
       child.initialize({parent: this});
     });
   }
 
   function $renderChildren() {
-    _.forOwn(_element.children, child => {
+    _.forOwn(_children, child => {
       child.$renderComponent();
     });
   }
 
   function $getChildHTMLObject() {
-    return _.reduce(_element.children, (htmlObj, current, key) => {
+    return _.reduce(_children, (htmlObj, current, key) => {
       htmlObj[key] = current.getHTML();
       return htmlObj;
     }, {});
   }
 
   function $mountChildren() {
-    _.forOwn(_element.children, child => {
+    _.forOwn(_children, child => {
       child.$mountComponent();
     });
   }
 
   function $unmountChildren() {
-    _.forOwn(_element.children, child => {
+    _.forOwn(_children, child => {
       child.unmount();
     });
   }
 
   function $disposeChildren() {
-    _.forOwn(_element.children, child => {
+    _.forOwn(_children, child => {
       child.dispose();
-      _element.removeChild(child.id());
     });
-    _element.children = {};
+    _children = null;
   }
 
   //----------------------------------------------------------------------------
@@ -422,28 +459,22 @@ export default function () {
   }
 
   function isMounted() {
-    let hasDomEl;
-    try {
-      hasDomEl = !!this.dom();
-    } catch(e) {
-      hasDomEl = false;
-    }
-    return hasDomEl;
+    return !!this.element();
   }
 
   function id() {
-    return _element.props.id;
+    return _internalProps.id;
   }
 
-  function dom() {
-    if (!_domElementCache) {
-      _domElementCache = document.querySelector('.' + this.className());
+  function element() {
+    if (!_elementCache) {
+      _elementCache = document.querySelector('.' + this.className());
     }
-    return _domElementCache;
+    return _elementCache;
   }
 
   function className() {
-    return CLASS_PREFIX + _element.props.index;
+    return CLASS_PREFIX + _internalProps.index;
   }
 
   //----------------------------------------------------------------------------
@@ -484,9 +515,10 @@ export default function () {
     isInitialized,
     id,
     template,
-    dom,
+    element,
     isMounted,
     tmpl,
+    shouldComponentUpdate,
     $renderAfterPropsOrStateChange,
     $renderComponent,
     render,
@@ -496,6 +528,7 @@ export default function () {
     shouldDelegateEvents,
     unmount,
     dispose,
+    unsafeGetChildren,
     addChild,
     addChildren,
     disposeChild,
