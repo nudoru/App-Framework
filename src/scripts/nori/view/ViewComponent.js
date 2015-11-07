@@ -54,16 +54,17 @@ export default function () {
     html            = '';
 
     this.setProps(_.assign({}, initProps, {
-      id         : initProps.id || this.__id__,
-      index      : this.__index__,
-      type       : this.__type__,
-      mountMethod: initProps.mountMethod || MNT_APPEND // TODO should be replace?
+      id            : initProps.id || this.__id__,
+      index         : this.__index__,
+      type          : this.__type__,
+      mountMethod   : initProps.mountMethod || MNT_APPEND, // TODO should be replace?
+      autoFormEvents: true
     }));
 
     if (this.__children__) {
       this.__children__.forEach(child => {
         let childObj = child;
-        if(typeof child === 'function') {
+        if (typeof child === 'function') {
           childObj = child();
         }
         this.addChild(childObj.__id__, childObj);
@@ -88,9 +89,7 @@ export default function () {
    * @returns {undefined}
    */
   function getDefaultProps() {
-    return {
-      autoFormEvents: true
-    };
+    return {};
   }
 
   /**
@@ -323,8 +322,6 @@ export default function () {
   }
 
   function addChild(id, child, update) {
-    console.log('add child', id)
-
     _element.addChild(id, child);
 
     if (update) {

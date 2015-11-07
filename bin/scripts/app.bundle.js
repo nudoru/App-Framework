@@ -1632,11 +1632,10 @@ exports['default'] = function () {
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
       template.__index__ = _viewIDIndex++;
-      template.__id__ = id || 'vcomponent_' + _viewIDIndex;
+      template.__id__ = id || 'norivc' + _viewIDIndex;
       template.__type__ = type;
       template.__children__ = children;
 
-      // Compose a new initialize function by inserting call to component super module
       previousInitialize = template.initialize;
       previousGetDefaultProps = template.getDefaultProps;
 
@@ -2467,7 +2466,8 @@ exports['default'] = function () {
       id: initProps.id || this.__id__,
       index: this.__index__,
       type: this.__type__,
-      mountMethod: initProps.mountMethod || MNT_APPEND // TODO should be replace?
+      mountMethod: initProps.mountMethod || MNT_APPEND, // TODO should be replace?
+      autoFormEvents: true
     }));
 
     if (this.__children__) {
@@ -2498,9 +2498,7 @@ exports['default'] = function () {
    * @returns {undefined}
    */
   function getDefaultProps() {
-    return {
-      autoFormEvents: true
-    };
+    return {};
   }
 
   /**
@@ -2734,8 +2732,6 @@ exports['default'] = function () {
   }
 
   function addChild(id, child, update) {
-    console.log('add child', id);
-
     _element.addChild(id, child);
 
     if (update) {

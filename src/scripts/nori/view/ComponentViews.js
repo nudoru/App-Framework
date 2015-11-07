@@ -15,7 +15,7 @@ export default function () {
   let _viewMap      = {},
       _routeViewMap = {},
       _viewIDIndex  = 0,
-      _routeOnURL = false,
+      _routeOnURL   = false,
       _routeOnState = false,
       _currentViewID,
       _observedStore,
@@ -38,19 +38,18 @@ export default function () {
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.unshift(ViewComponentFactory());
 
-      template         = BuildFromMixins(customizer);
-      template.__index__ = _viewIDIndex++;
-      template.__id__    = id || 'vcomponent_' + _viewIDIndex;
-      template.__type__  = type;
+      template              = BuildFromMixins(customizer);
+      template.__index__    = _viewIDIndex++;
+      template.__id__       = id || 'norivc' + _viewIDIndex;
+      template.__type__     = type;
       template.__children__ = children;
 
-      // Compose a new initialize function by inserting call to component super module
       previousInitialize      = template.initialize;
       previousGetDefaultProps = template.getDefaultProps;
 
       template.initialize = function initialize(props) {
         template.initializeComponent.bind(template)(props);
-        if(previousInitialize) {
+        if (previousInitialize) {
           previousInitialize.call(template, props);
         }
       };
@@ -145,9 +144,9 @@ export default function () {
   //----------------------------------------------------------------------------
 
   function showViewForChangedCondition(options) {
-    if(_routeOnURL) {
+    if (_routeOnURL) {
       showViewForChangedURL(options);
-    } else if(_routeOnState) {
+    } else if (_routeOnState) {
       showViewForChangedState(options);
     }
   }
@@ -157,7 +156,7 @@ export default function () {
   //----------------------------------------------------------------------------
 
   function initializeRouteViews() {
-    _routeOnURL = true;
+    _routeOnURL   = true;
     _routeOnState = false;
 
     Router.subscribe($onRouteChange.bind(this));
@@ -185,7 +184,7 @@ export default function () {
   //----------------------------------------------------------------------------
 
   function initializeStateViews(store) {
-    _routeOnURL = false;
+    _routeOnURL   = false;
     _routeOnState = true;
 
     _observedStore = store;
