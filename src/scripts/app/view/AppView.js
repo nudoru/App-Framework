@@ -77,7 +77,6 @@ let AppViewModule = Nori.createView({
     this.route('/styles', 'styles');
     this.route('/controls', 'controls');
     this.route('/comps', 'components');
-    this.route('')
   },
 
   /**

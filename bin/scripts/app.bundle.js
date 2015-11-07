@@ -369,7 +369,6 @@ var AppViewModule = _noriNoriJs2['default'].createView({
         this.route('/styles', 'styles');
         this.route('/controls', 'controls');
         this.route('/comps', 'components');
-        this.route('');
     },
 
     /**
@@ -432,7 +431,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('', {
   },
 
   template: function template() {
-    return this.tmpl('\n      <div>\n        <button class="button-neutral-light">{{id}}, {{label}}</button>\n      </div>\n    ');
+    return this.tmpl('\n      <div>\n        <button class="button-neutral-light">{{id}}, {{label}}</button>\n        <div class="test__subchild"></div>\n      </div>\n    ');
   }
 
 });
@@ -510,26 +509,6 @@ exports['default'] = _noriNoriJs2['default'].createComponent('debug-components',
   initialize: function initialize(initProps) {
     _lIpsum.initialize();
     _this = this;
-  },
-
-  defineChildren: function defineChildren() {
-    return {
-      testChild: (0, _ChildTestJs2['default'])('testChild1', {
-        mount: '#debug-child',
-        mountMethod: 'append',
-        label: 'Testing, yo! 1'
-      }),
-      testChild2: (0, _ChildTestJs2['default'])('testChild2', {
-        mount: '#debug-child',
-        mountMethod: 'append',
-        label: 'Testing, yo! 2'
-      }),
-      testChild3: (0, _ChildTestJs2['default'])('testChild3', {
-        mount: '#debug-child',
-        mountMethod: 'append',
-        label: 'Testing, yo! 3'
-      })
-    };
   },
 
   /**
@@ -656,7 +635,41 @@ exports['default'] = _noriNoriJs2['default'].createComponent('debug-components',
 
   componentWillUnmount: function componentWillUnmount() {}
 
-});
+}, _noriNoriJs2['default'].createComponent('apped123', {
+
+  counter: 0,
+
+  getDefaultProps: function getDefaultProps() {
+    return {
+      mount: '#debug-child',
+      mountMethod: 'append',
+      label: 'Factory1'
+    };
+  },
+
+  getDOMEvents: function getDOMEvents() {
+    var _this2 = this;
+
+    return {
+      'click button.button-neutral-light': function clickButtonButtonNeutralLight() {
+        return _this2.setProps({ label: 'Clicked ' + ++_this2.counter + ' times' });
+      }
+    };
+  },
+
+  template: function template() {
+    return this.tmpl('\n      <div>\n        <button class="button-neutral-light">{{id}}, {{label}}</button>\n        <div class="test__subchild"></div>\n      </div>\n    ');
+  }
+
+}), (0, _ChildTestJs2['default'])('append1', {
+  mount: '#debug-child',
+  mountMethod: 'append',
+  label: 'Appened1'
+}), (0, _ChildTestJs2['default'])('append2', {
+  mount: '#debug-child',
+  mountMethod: 'append',
+  label: 'Appened2'
+}));
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":11,"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":26,"../../nori/view/Tweens.js":27,"../../nudoru/browser/DOMUtils.js":30,"../../nudoru/browser/Lorem.js":31,"../../nudoru/components/ToolTipView.js":38,"../../vendor/lodash.min.js":44,"../store/AppStore":5,"./AppView":6,"./ChildTest.js":7}],9:[function(require,module,exports){
@@ -690,23 +703,16 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var _noriViewTweensJs = require('../../nori/view/Tweens.js');
-
-var _noriViewTweensJs2 = _interopRequireDefault(_noriViewTweensJs);
-
 /**
  * Module for a dynamic application view for a route or a persistent view
  */
 
 exports['default'] = _noriNoriJs2['default'].createComponent('default', {
 
-  mixins: [_noriViewTweensJs2['default']],
+  mixins: [],
 
-  initialize: function initialize(initProps) {},
-
-  getDefaultProps: function getDefaultProps() {
-    return {};
-  },
+  //initialize(initProps) {
+  //},
 
   getDefaultState: function getDefaultState() {
     return _storeAppStore2['default'].getState();
@@ -751,7 +757,7 @@ module.exports = exports['default'];
 //componentWillDispose() {
 //},
 
-},{"../../nori/Nori.js":11,"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":26,"../../nori/view/Tweens.js":27,"../../nudoru/browser/DOMUtils.js":30,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
+},{"../../nori/Nori.js":11,"../../nori/action/ActionCreator":13,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":30,"../store/AppStore":5,"./AppView":6}],10:[function(require,module,exports){
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 /**
@@ -865,11 +871,18 @@ exports['default'] = {
     return (0, _utilsCreateClassJs2['default'])({}, customizer);
   },
 
-  createComponent: function createComponent() {
+  createComponent: function createComponent(type, source) {
+    var _componentViews;
+
     if (!this._componentViews) {
       this._componentViews = (0, _viewComponentViewsJs2['default'])();
     }
-    return this._componentViews.createComponent(arguments[0], arguments[1]);
+
+    for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      children[_key - 2] = arguments[_key];
+    }
+
+    return (_componentViews = this._componentViews).createComponent.apply(_componentViews, [type, source].concat(children));
   }
 };
 module.exports = exports['default'];
@@ -1184,7 +1197,9 @@ exports['default'] = function (template, customizer) {
 module.exports = exports['default'];
 
 },{"../../vendor/lodash.min.js":44,"./BuildFromMixins.js":16}],18:[function(require,module,exports){
-(function (process){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 //https://raw.githubusercontent.com/zertosh/invariant/master/invariant.js
 
 /**
@@ -1198,8 +1213,6 @@ module.exports = exports['default'];
  * @providesModule invariant
  */
 
-'use strict';
-
 /**
  * Use invariant() to assert state which your program assumes to be true.
  *
@@ -1211,17 +1224,12 @@ module.exports = exports['default'];
  * will remain to ensure logic does not differ in production.
  */
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-var __DEV__ = process.env.NODE_ENV !== 'production';
-
 exports['default'] = function (condition, format, a, b, c, d, e, f) {
-  if (__DEV__) {
-    if (format === undefined) {
-      throw new Error('invariant requires an error message argument');
-    }
-  }
+  //if (__DEV__) {
+  //  if (format === undefined) {
+  //    throw new Error('invariant requires an error message argument');
+  //  }
+  //}
 
   if (!condition) {
     var error;
@@ -1240,11 +1248,10 @@ exports['default'] = function (condition, format, a, b, c, d, e, f) {
   }
 };
 
-;
 module.exports = exports['default'];
+//var __DEV__ = process.env.NODE_ENV !== 'production';
 
-}).call(this,require('_process'))
-},{"_process":1}],19:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -1608,6 +1615,10 @@ exports['default'] = function () {
    * @returns {*}
    */
   function createComponent(type, source) {
+    for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      children[_key - 2] = arguments[_key];
+    }
+
     return function (id, initProps) {
       var customizer = undefined,
           template = undefined,
@@ -1623,6 +1634,7 @@ exports['default'] = function () {
       template.__index__ = _viewIDIndex++;
       template.__id__ = id || 'vcomponent_' + _viewIDIndex;
       template.__type__ = type;
+      template.__children__ = children;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize = template.initialize;
@@ -2438,17 +2450,12 @@ exports['default'] = function () {
       html = undefined;
 
   /**
-   * Subclasses can override.
-   */
-  function initialize(initProps) {
-    this.initializeComponent(initProps);
-  }
-
-  /**
    * Initialization
    * @param initProps
    */
   function initializeComponent(initProps) {
+    var _this = this;
+
     _element = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), initProps.parent, {});
     _events = (0, _RxEventDelegatorJs2['default'])();
     _lifecycleState = LS_NO_INIT;
@@ -2460,11 +2467,17 @@ exports['default'] = function () {
       id: initProps.id || this.__id__,
       index: this.__index__,
       type: this.__type__,
-      mountMethod: initProps.mountMethod || MNT_APPEND
+      mountMethod: initProps.mountMethod || MNT_APPEND // TODO should be replace?
     }));
 
-    if (typeof this.defineChildren === 'function') {
-      this.addChildren(this.defineChildren());
+    if (this.__children__) {
+      this.__children__.forEach(function (child) {
+        var childObj = child;
+        if (typeof child === 'function') {
+          childObj = child();
+        }
+        _this.addChild(childObj.__id__, childObj);
+      });
     }
 
     this.$updatePropsAndState();
@@ -2706,12 +2719,12 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   function addChildren(childObjs) {
-    var _this = this;
+    var _this2 = this;
 
     if (childObjs) {
       _vendorLodashMinJs2['default'].forOwn(childObjs, function (child, id) {
         if (childObjs.hasOwnProperty(id)) {
-          _this.addChild(id, child, false);
+          _this2.addChild(id, child, false);
         }
       });
       $forceChildren.bind(this)();
@@ -2721,6 +2734,8 @@ exports['default'] = function () {
   }
 
   function addChild(id, child, update) {
+    console.log('add child', id);
+
     _element.addChild(id, child);
 
     if (update) {
@@ -2733,12 +2748,12 @@ exports['default'] = function () {
    * IF the current view is mounted and the children aren't
    */
   function $forceChildren() {
-    var _this2 = this;
+    var _this3 = this;
 
     if (_lifecycleState === LS_MOUNTED) {
       _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
         if (!child.isMounted()) {
-          child.initialize({ parent: _this2 });
+          child.initialize({ parent: _this3 });
           child.$renderComponent();
           child.mount();
         }
@@ -2764,10 +2779,10 @@ exports['default'] = function () {
   }
 
   function $initializeChildren() {
-    var _this3 = this;
+    var _this4 = this;
 
     _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
-      child.initialize({ parent: _this3 });
+      child.initialize({ parent: _this4 });
     });
   }
 
@@ -2853,7 +2868,6 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   //function getDOMEvents() {}
-  //function defineChildren() {}
   //function componentWillReceiveProps(nextProps) {}
   //function componentWillUpdate(nextProps, nextState) {}
   //function componentDidUpdate(lastProps, lastState) {}
@@ -2869,7 +2883,6 @@ exports['default'] = function () {
     state: state,
     props: props,
     html: html,
-    initialize: initialize,
     initializeComponent: initializeComponent,
     setProps: setProps,
     getDefaultState: getDefaultState,

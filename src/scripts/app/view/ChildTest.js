@@ -14,6 +14,7 @@ export default Nori.createComponent('', {
     return this.tmpl(`
       <div>
         <button class="button-neutral-light">{{id}}, {{label}}</button>
+        <div class="test__subchild"></div>
       </div>
     `);
   }

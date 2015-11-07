@@ -42,33 +42,32 @@ export default function () {
       html;
 
   /**
-   * Subclasses can override.
-   */
-  function initialize(initProps) {
-    this.initializeComponent(initProps);
-  }
-
-  /**
    * Initialization
    * @param initProps
    */
   function initializeComponent(initProps) {
-    _element = ComponentElement(this.__type__, this.getDefaultProps(), this.getDefaultState(), initProps.parent, {});
-    _events = EventDelegator();
+    _element        = ComponentElement(this.__type__, this.getDefaultProps(), this.getDefaultState(), initProps.parent, {});
+    _events         = EventDelegator();
     _lifecycleState = LS_NO_INIT;
-    state = {};
-    props = {};
-    html = '';
+    state           = {};
+    props           = {};
+    html            = '';
 
     this.setProps(_.assign({}, initProps, {
       id         : initProps.id || this.__id__,
       index      : this.__index__,
       type       : this.__type__,
-      mountMethod: initProps.mountMethod || MNT_APPEND
+      mountMethod: initProps.mountMethod || MNT_APPEND // TODO should be replace?
     }));
 
-    if (typeof this.defineChildren === 'function') {
-      this.addChildren(this.defineChildren());
+    if (this.__children__) {
+      this.__children__.forEach(child => {
+        let childObj = child;
+        if(typeof child === 'function') {
+          childObj = child();
+        }
+        this.addChild(childObj.__id__, childObj);
+      });
     }
 
     this.$updatePropsAndState();
@@ -324,6 +323,8 @@ export default function () {
   }
 
   function addChild(id, child, update) {
+    console.log('add child', id)
+
     _element.addChild(id, child);
 
     if (update) {
@@ -452,7 +453,6 @@ export default function () {
   //----------------------------------------------------------------------------
 
   //function getDOMEvents() {}
-  //function defineChildren() {}
   //function componentWillReceiveProps(nextProps) {}
   //function componentWillUpdate(nextProps, nextState) {}
   //function componentDidUpdate(lastProps, lastState) {}
@@ -468,7 +468,6 @@ export default function () {
     state: state,
     props: props,
     html : html,
-    initialize,
     initializeComponent,
     setProps,
     getDefaultState,

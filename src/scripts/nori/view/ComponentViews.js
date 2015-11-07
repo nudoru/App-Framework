@@ -26,7 +26,7 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(type, source) {
+  function createComponent(type, source, ...children) {
     return function (id, initProps) {
       let customizer,
           template,
@@ -42,6 +42,7 @@ export default function () {
       template.__index__ = _viewIDIndex++;
       template.__id__    = id || 'vcomponent_' + _viewIDIndex;
       template.__type__  = type;
+      template.__children__ = children;
 
       // Compose a new initialize function by inserting call to component super module
       previousInitialize      = template.initialize;

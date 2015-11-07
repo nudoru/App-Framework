@@ -11,8 +11,6 @@
  * @providesModule invariant
  */
 
-'use strict';
-
 /**
  * Use invariant() to assert state which your program assumes to be true.
  *
@@ -24,14 +22,14 @@
  * will remain to ensure logic does not differ in production.
  */
 
-var __DEV__ = process.env.NODE_ENV !== 'production';
+//var __DEV__ = process.env.NODE_ENV !== 'production';
 
 export default function(condition, format, a, b, c, d, e, f) {
-  if (__DEV__) {
-    if (format === undefined) {
-      throw new Error('invariant requires an error message argument');
-    }
-  }
+  //if (__DEV__) {
+  //  if (format === undefined) {
+  //    throw new Error('invariant requires an error message argument');
+  //  }
+  //}
 
   if (!condition) {
     var error;
@@ -52,4 +50,4 @@ export default function(condition, format, a, b, c, d, e, f) {
     error.framesToPop = 1; // we don't care about invariant's own frame
     throw error;
   }
-};
+}

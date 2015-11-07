@@ -4,7 +4,6 @@ import AppView from './AppView';
 import AppStore from '../store/AppStore';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
-import MixinDOMManipulation from '../../nori/view/Tweens.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -12,16 +11,10 @@ import MixinDOMManipulation from '../../nori/view/Tweens.js';
 
 export default Nori.createComponent('default', {
 
-  mixins: [
-    MixinDOMManipulation
-  ],
+  mixins: [],
 
-  initialize(initProps) {
-  },
-
-  getDefaultProps() {
-    return {};
-  },
+  //initialize(initProps) {
+  //},
 
   getDefaultState() {
     return AppStore.getState();

@@ -49,5 +49,5 @@ export default function element(type, props, state, parent, children) {
         delete this.children[id];
       }
     },
-  }
+  };
 }
