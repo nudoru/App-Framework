@@ -1,11 +1,13 @@
 import _ from '../../vendor/lodash.min.js';
 
-export default function element(props, state, children) {
+export default function element(type, props, state, parent, children) {
   return {
+    type     : type,
     props    : props,
     state    : state,
     lastProps: null,
     lastState: null,
+    parent   : null,
     children : children || {},
 
     getProps() {
@@ -36,24 +38,14 @@ export default function element(props, state, children) {
       this.state     = _.assign({}, this.state, nextState);
     },
 
-    getParent() {
-      return this.props.parent;
-    },
-
-    setParent(newParent) {
-      if (!_.isEqual(newParent, this.props.parent)) {
-        this.setProps({parent: newParent});
-      }
-    },
-
     addChild(id, newChild) {
-      if(!this.children.hasOwnProperty(id)) {
+      if (!this.children.hasOwnProperty(id)) {
         this.children[id] = newChild;
       }
     },
 
     removeChild(id) {
-      if(this.children.hasOwnProperty(id)) {
+      if (this.children.hasOwnProperty(id)) {
         delete this.children[id];
       }
     },

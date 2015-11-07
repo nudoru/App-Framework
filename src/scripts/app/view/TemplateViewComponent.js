@@ -17,13 +17,6 @@ export default Nori.createComponent('default', {
   ],
 
   initialize(initProps) {
-    // Bind changes in state or prop to functions
-    this.state.onChange = this._stateChange;
-    // this.props.onChange = function() {};
-  },
-
-  _stateChange() {
-    console.log(this.getID(), 'the state was changed', this.state);
   },
 
   getDefaultProps() {

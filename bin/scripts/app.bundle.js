@@ -702,15 +702,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('default', {
 
   mixins: [_noriViewTweensJs2['default']],
 
-  initialize: function initialize(initProps) {
-    // Bind changes in state or prop to functions
-    this.state.onChange = this._stateChange;
-    // this.props.onChange = function() {};
-  },
-
-  _stateChange: function _stateChange() {
-    console.log(this.getID(), 'the state was changed', this.state);
-  },
+  initialize: function initialize(initProps) {},
 
   getDefaultProps: function getDefaultProps() {
     return {};
@@ -1514,12 +1506,14 @@ var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-function element(props, state, children) {
+function element(type, props, state, parent, children) {
   return {
+    type: type,
     props: props,
     state: state,
     lastProps: null,
     lastState: null,
+    parent: null,
     children: children || {},
 
     getProps: function getProps() {
@@ -1548,16 +1542,6 @@ function element(props, state, children) {
     setState: function setState(nextState) {
       this.lastState = _vendorLodashMinJs2['default'].assign({}, this.state);
       this.state = _vendorLodashMinJs2['default'].assign({}, this.state, nextState);
-    },
-
-    getParent: function getParent() {
-      return this.props.parent;
-    },
-
-    setParent: function setParent(newParent) {
-      if (!_vendorLodashMinJs2['default'].isEqual(newParent, this.props.parent)) {
-        this.setProps({ parent: newParent });
-      }
     },
 
     addChild: function addChild(id, newChild) {
@@ -2442,21 +2426,16 @@ var LS_NO_INIT = 0,
     MNT_APPEND = 'append',
     CLASS_PREFIX = 'js__vc';
 
-var reservedProps = ['key', 'id', 'type'];
-
 exports['default'] = function () {
 
-  // Properties added to component on creation:
-  // __id__, __index__, __type__
-
-  var _element = (0, _ComponentElementJs2['default'])(),
-      state = {},
-      props = {},
-      html = undefined,
-      _lifecycleState = LS_NO_INIT,
+  var _element = undefined,
+      _events = undefined,
+      _lifecycleState = undefined,
       _templateCache = undefined,
       _domElementCache = undefined,
-      Events = (0, _RxEventDelegatorJs2['default'])();
+      state = undefined,
+      props = undefined,
+      html = undefined;
 
   /**
    * Subclasses can override.
@@ -2470,21 +2449,26 @@ exports['default'] = function () {
    * @param initProps
    */
   function initializeComponent(initProps) {
-    this.setProps(_vendorLodashMinJs2['default'].assign({}, this.getDefaultProps(), initProps, {
+    _element = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), initProps.parent, {});
+    _events = (0, _RxEventDelegatorJs2['default'])();
+    _lifecycleState = LS_NO_INIT;
+    state = {};
+    props = {};
+    html = '';
+
+    this.setProps(_vendorLodashMinJs2['default'].assign({}, initProps, {
       id: initProps.id || this.__id__,
       index: this.__index__,
       type: this.__type__,
       mountMethod: initProps.mountMethod || MNT_APPEND
     }));
 
-    this.setState(this.getDefaultState());
-
     if (typeof this.defineChildren === 'function') {
       this.addChildren(this.defineChildren());
     }
 
+    this.$updatePropsAndState();
     this.$initializeChildren();
-
     _lifecycleState = LS_INITED;
   }
 
@@ -2496,7 +2480,7 @@ exports['default'] = function () {
    * Override to set default props
    *
    * For a region, which is instantiated from the factory with props, this function
-   * will be overwritten by the code in MixinComponentView to return the passed
+   * will be overwritten by the code in ComponentView to return the passed
    * initProps object
    * @returns {undefined}
    */
@@ -2530,22 +2514,7 @@ exports['default'] = function () {
       return;
     }
 
-    if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(_element.props, nextState);
-    }
-
-    _element.setState(nextState);
-    state = _vendorLodashMinJs2['default'].assign(state, _element.state);
-
-    this.$renderAfterPropsOrStateChange();
-
-    if (typeof state.onChange === 'function') {
-      state.onChange.apply(this);
-    }
-
-    if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentDidUpdate(_element.lastProps, _element.lastState);
-    }
+    this.$updatePropsAndState(null, nextState);
   }
 
   /**
@@ -2567,18 +2536,23 @@ exports['default'] = function () {
       return;
     }
 
+    this.$updatePropsAndState(nextProps, null);
+  }
+
+  function $updatePropsAndState(nextProps, nextState) {
+    nextProps = nextProps || _element.props;
+    nextState = nextState || _element.state;
+
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentWillUpdate(nextProps, _element.state);
+      this.componentWillUpdate(nextProps, nextState);
     }
 
     _element.setProps(nextProps);
+    _element.setState(nextState);
     props = _vendorLodashMinJs2['default'].assign(props, _element.props);
+    state = _vendorLodashMinJs2['default'].assign(state, _element.state);
 
     this.$renderAfterPropsOrStateChange();
-
-    if (typeof props.onChange === 'function') {
-      props.onChange.apply(this);
-    }
 
     if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
       this.componentDidUpdate(_element.lastProps, _element.lastState);
@@ -2678,7 +2652,7 @@ exports['default'] = function () {
     });
 
     if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
-      Events.delegateEvents(this.dom(), this.getDOMEvents(), _element.props.autoFormEvents);
+      _events.delegateEvents(this.dom(), this.getDOMEvents(), _element.props.autoFormEvents);
     }
 
     _lifecycleState = LS_MOUNTED;
@@ -2700,7 +2674,7 @@ exports['default'] = function () {
     this.$unmountChildren();
 
     if (typeof this.getDOMEvents === 'function') {
-      Events.undelegateEvents(this.getDOMEvents());
+      _events.undelegateEvents(this.getDOMEvents());
     }
 
     if (!_element.props.mountMethod || _element.props.mountMethod === MNT_REPLACE) {
@@ -2838,6 +2812,9 @@ exports['default'] = function () {
     return _lifecycleState > LS_NO_INIT;
   }
 
+  /**
+   * Will error if called before initializeComponent called
+   */
   function isMounted() {
     var hasDomEl = undefined;
     try {
@@ -2898,6 +2875,7 @@ exports['default'] = function () {
     getDefaultState: getDefaultState,
     setState: setState,
     getDefaultProps: getDefaultProps,
+    $updatePropsAndState: $updatePropsAndState,
     isInitialized: isInitialized,
     id: id,
     template: template,
