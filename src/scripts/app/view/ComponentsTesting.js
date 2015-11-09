@@ -148,8 +148,8 @@ export default Nori.createComponent('debug-components', {
       _actionThreeEl.addEventListener('click', function actThree(e) {
         AppView.addNotification({
           title  : _lIpsum.getSentence(3, 6),
-          type : 'information',
-          content: _lIpsum.getParagraph(1, 2)
+          //type : 'information',
+          message: _lIpsum.getParagraph(1, 2)
         });
 
         _toolTip.remove(_actionFourEl);

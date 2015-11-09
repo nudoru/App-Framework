@@ -2378,7 +2378,7 @@ h2 {
   font-weight: 300;
 }
 
-.card h1, .card-dark h1, .panel__footer-message h1, .app__hero-small h1, h3 {
+.card h1, .card-dark h1, .app__hero-small h1, h3 {
   margin: 0;
   padding: 0;
   margin-bottom: 33px;
@@ -2390,7 +2390,7 @@ h2 {
   font-weight: 300;
 }
 
-.card h2, .card-dark h2, .panel__footer-message h2, .app__hero-small h2, h4 {
+.card h2, .card-dark h2, .app__hero-small h2, h4 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2402,7 +2402,7 @@ h2 {
   font-weight: 300;
 }
 
-.card h3, .card-dark h3, .panel__footer-message h3, .app__hero-small h3, h5 {
+.card h3, .card-dark h3, .app__hero-small h3, h5 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2414,7 +2414,7 @@ h2 {
   font-weight: 400;
 }
 
-.card h4, .card-dark h4, .panel__footer-message h4, .app__hero-small h4, .card h5, .card-dark h5, .panel__footer-message h5, .app__hero-small h5, .card h6, .card-dark h6, .panel__footer-message h6, .app__hero-small h6, h6, legend, .table caption {
+.card h4, .card-dark h4, .app__hero-small h4, .card h5, .card-dark h5, .app__hero-small h5, .card h6, .card-dark h6, .app__hero-small h6, h6, legend, .table caption {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2977,8 +2977,8 @@ hr {
   width: 12.5%;
 }
 
-.label, .label-small, .label-big, .panel__header h1, .messagebox__default .header h1, .panel__footer h1, .messagebox__default .footer h1, button, .button-important, input[type="radio"],
-input[type="checkbox"], label, input[type="text"],
+.label, .label-small, .label-big, button, .button-important, input[type="radio"],
+input[type="checkbox"], .messagebox__default .header h1, label, input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="url"],
@@ -3001,7 +3001,6 @@ select, textarea, .table th, .table td {
   line-height: 22px;
   color: #6e6259;
   font-weight: 400;
-  white-space: nowrap;
   display: inline-block;
   vertical-align: middle;
 }
@@ -3014,11 +3013,12 @@ select, textarea, .table th, .table td {
   margin-left: 11px;
 }
 
-.label, .label-small, .label-big, .panel__header h1, .messagebox__default .header h1, .panel__footer h1, .messagebox__default .footer h1, button, .button-important, input[type="radio"],
-input[type="checkbox"] {
+.label, .label-small, .label-big, button, .button-important, input[type="radio"],
+input[type="checkbox"], .messagebox__default .header h1 {
   height: 38px;
   padding: 5.5px;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .label-small {
@@ -3064,82 +3064,6 @@ input[type="checkbox"] {
 }
 
 .card-dark {
-  background-color: #faf9f9;
-}
-
-.panel, .messagebox__default, .toast__item, .tooltip__item {
-  padding: 11px;
-  margin-bottom: 11px;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-}
-
-.panel, .messagebox__default, .toast__item, .tooltip__item {
-  background-color: #fff;
-}
-
-.panel__border, .messagebox__default, .toast__item, .tooltip__item {
-  border: 1px solid #eae8e6;
-  border-radius: 5px;
-}
-
-.panel__shadow {
-  box-shadow: 0 0 6px rgba(153, 153, 153, 0.29);
-}
-
-.panel__header, .messagebox__default .header, .panel__footer, .messagebox__default .footer {
-  overflow: hidden;
-  display: block;
-  margin-right: -11px;
-  margin-left: -11px;
-  padding: 5.5px 11px;
-  box-shadow: inset 1px 1px 0 #fff;
-}
-.panel__header h1, .messagebox__default .header h1, .panel__footer h1, .messagebox__default .footer h1 {
-  margin: 0;
-}
-.panel__header h1 i.fa, .messagebox__default .header h1 i.fa, .panel__footer h1 i.fa, .messagebox__default .footer h1 i.fa {
-  font-family: "FontAwesome";
-  color: #646464;
-  margin-right: 11px;
-}
-.panel__header button, .messagebox__default .header button, .panel__footer button, .messagebox__default .footer button {
-  float: right;
-}
-
-.panel__header, .messagebox__default .header {
-  margin-top: -11px;
-  margin-bottom: 11px;
-  border-bottom: 1px solid #eae8e6;
-  background-color: #faf9f9;
-}
-
-.panel__footer-message {
-  overflow: hidden;
-  display: block;
-  margin-right: -11px;
-  margin-left: -11px;
-  padding: 11px;
-  margin-top: 11px;
-  margin-bottom: -11px;
-  border-top: 1px solid #eae8e6;
-  background-color: #faf9f9;
-  box-shadow: inset 1px 1px 0 #fff;
-  text-shadow: 0 1px 0 #fff;
-}
-.panel__footer-message h1, .panel__footer-message h2, .panel__footer-message h3, .panel__footer-message h4, .panel__footer-message h5, .panel__footer-message h6 {
-  color: #005eb8;
-}
-.panel__footer-message p {
-  font-size: 0.9rem;
-  line-height: 22px;
-}
-
-.panel__footer, .messagebox__default .footer {
-  margin-top: 11px;
-  margin-bottom: -11px;
-  border-top: 1px solid #eae8e6;
   background-color: #faf9f9;
 }
 
@@ -3351,6 +3275,11 @@ select:focus, textarea:focus {
   outline: 0;
 }
 
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 5.5px;
+}
+
 fieldset {
   width: 100%;
 }
@@ -3528,15 +3457,22 @@ textarea {
 }
 
 .messagebox__default {
+  box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
+  padding: 11px;
+  margin-bottom: 11px;
+  overflow: hidden;
+  width: 100%;
+  border-radius: 5px;
   position: absolute;
   border: none;
-  box-shadow: 0 15px 25px -3px rgba(0, 0, 0, 0.35);
+  background-color: #fff;
 }
 .messagebox__default .header {
+  margin: -11px;
+  margin-bottom: 11px;
+  padding: 5.5px 11px;
   text-align: center;
-  border-bottom: none;
   background-color: transparent;
-  box-shadow: none;
 }
 .messagebox__default .header h1 {
   color: #005eb8;
@@ -3544,15 +3480,18 @@ textarea {
   font-size: 1rem;
   text-shadow: 0 1px 0 #fff;
   line-height: 22px;
+  white-space: normal;
 }
-.messagebox__default .content {
+.messagebox__default .content, .messagebox__default p {
   padding: 11px;
   line-height: 22px;
 }
-.messagebox__default .content p {
+.messagebox__default .content p, .messagebox__default p p {
   font-size: 1.277rem;
 }
 .messagebox__default .footer {
+  margin: -11px;
+  margin-top: 11px;
   padding: 0;
   height: 44px;
   box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.05);
@@ -3580,7 +3519,7 @@ textarea {
 }
 .messagebox__default .footer .footer-buttons .button button:focus, .messagebox__default .footer .footer-buttons .button button:hover, .messagebox__default .footer .footer-buttons .button button:active {
   text-shadow: none;
-  border-color: transparent !important;
+  border-color: transparent;
 }
 .messagebox__default .footer .footer-buttons .default button {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
@@ -3685,6 +3624,11 @@ textarea {
 }
 
 .toast__item {
+  box-shadow: 0 7px 15px -5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 11px;
+  padding: 0;
+  border: 1px solid #eae8e6;
+  border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: #fff;
   display: table;
@@ -3692,7 +3636,6 @@ textarea {
   top: 0;
   right: 0;
   width: 250px;
-  padding: 0;
   overflow: hidden;
 }
 
@@ -3716,7 +3659,6 @@ textarea {
   color: #005eb8;
 }
 .toast__item-content h1 {
-  font-size: 0.7rem;
   font-weight: 700;
   margin-bottom: 5.5px;
 }
@@ -3730,7 +3672,6 @@ textarea {
 
 .toast__information {
   background-color: #00a9e0;
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__information .toast__item-content h1, .toast__information .toast__item-content p {
   color: #fff;
@@ -3743,7 +3684,6 @@ textarea {
 
 .toast__success {
   background-color: #3d8c40;
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__success .toast__item-content h1, .toast__success .toast__item-content p {
   color: #fff;
@@ -3756,7 +3696,6 @@ textarea {
 
 .toast__warning {
   background-color: #d29d00;
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__warning .toast__item-content h1, .toast__warning .toast__item-content p {
   color: #fff;
@@ -3769,7 +3708,6 @@ textarea {
 
 .toast__danger {
   background-color: #ff3d00;
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
 }
 .toast__danger .toast__item-content h1, .toast__danger .toast__item-content p {
   color: #fff;
@@ -3786,21 +3724,22 @@ textarea {
 }
 
 .tooltip__item {
+  box-shadow: 0 7px 15px -5px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  display: table;
+  margin-bottom: 11px;
+  padding: 0;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   background-color: #fff;
-  position: absolute;
-  display: table;
   width: 200px;
-  padding: 0;
   overflow: visible;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.25);
 }
 .tooltip__item .arrow {
   position: absolute;
   width: 11px;
   height: 11px;
-  background-color: #fff;
+  background-color: inherit;
   transform: rotate(45deg);
 }
 
@@ -3812,7 +3751,7 @@ textarea {
 .tooltip__item-content .title, .tooltip__item-content p {
   padding: 0;
   margin: 0;
-  line-height: 16.5px;
+  line-height: 22px;
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   color: #005eb8;
@@ -3825,18 +3764,12 @@ textarea {
 .tooltip__information {
   background-color: #00a9e0;
 }
-.tooltip__information .arrow {
-  background-color: #00a9e0;
-}
 .tooltip__information .tooltip__item-content h1, .tooltip__information .tooltip__item-content p {
   color: #fff;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .tooltip__success {
-  background-color: #3d8c40;
-}
-.tooltip__success .arrow {
   background-color: #3d8c40;
 }
 .tooltip__success .tooltip__item-content h1, .tooltip__success .tooltip__item-content p {
@@ -3847,18 +3780,12 @@ textarea {
 .tooltip__warning {
   background-color: #d29d00;
 }
-.tooltip__warning .arrow {
-  background-color: #d29d00;
-}
 .tooltip__warning .tooltip__item-content h1, .tooltip__warning .tooltip__item-content p {
   color: #fff;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .tooltip__danger {
-  background-color: #ff3d00;
-}
-.tooltip__danger .arrow {
   background-color: #ff3d00;
 }
 .tooltip__danger .tooltip__item-content h1, .tooltip__danger .tooltip__item-content p {
@@ -3869,9 +3796,6 @@ textarea {
 .tooltip__coachmark {
   background-color: #fff;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5), inset 1px 1px 0 rgba(255, 255, 255, 0.25);
-}
-.tooltip__coachmark .arrow {
-  background-color: #fff;
 }
 .tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p {
   color: #fff;

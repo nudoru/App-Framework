@@ -9,24 +9,22 @@ $arrow-side-color: 5px solid
   z-index: $z-index-tooltip-container
 
 .tooltip__item
-  @extend .panel
-  @extend .panel__border
+  +shadow__one-edge-faint
+  position: absolute
+  display: table
+  margin-bottom: $control-margin
+  padding: 0
   border: 1px solid rgba(0,0,0,.1)
   border-radius: $tooltip-border-radius
   background-color: #fff
-  position: absolute
-  display: table
   width: 200px
-  padding: 0
   overflow: visible
-  box-shadow: 2px 2px 10px rgba(0,0,0,.4), inset 1px 1px 0 rgba(255,255,255,.25)
   .arrow
     position: absolute
     width: $base-line-height
     height: $base-line-height
-    background-color: #fff
+    background-color: inherit
     transform: rotate(45deg)
-
 
 .tooltip__item-content
   padding: $base-line-height
@@ -36,9 +34,9 @@ $arrow-side-color: 5px solid
   .title, p
     padding: 0
     margin: 0
-    line-height: $base-line-height + $half-base-line-height
+    line-height: $double-base-line-height
     font-family: $font-content
-    font-size: .8rem
+    font-size: 0.8rem
     color: $control-primary-color-dark
   .title
     font-weight: 700
@@ -47,8 +45,6 @@ $arrow-side-color: 5px solid
 
 =tooltip-variation($color)
   background-color: $color
-  .arrow
-    background-color: $color
   .tooltip__item-content
     h1, p
       color: #fff

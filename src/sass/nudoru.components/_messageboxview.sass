@@ -14,30 +14,37 @@ $message-box-footer-height: $base-line-height * 4
       background-color: $downcolor
 
 %base-messagebox
-  @extend .panel
-  @extend .panel__border
+  +shadow__one-edge-large
+  padding: $control-padding
+  margin-bottom: $control-margin
+  overflow: hidden
+  width: 100%
+  border-radius: $control-border-radius
   position: absolute
   border: none
-  box-shadow: 0 15px 25px -3px rgba(0,0,0,.35)
+  background-color: #fff
   .header
-    @extend .panel__header
+    margin: -$control-margin
+    margin-bottom: $control-margin
+    padding: $control-padding-small $control-padding
     text-align: center
-    border-bottom: none
     background-color: $color-nocolor
-    box-shadow: none
     h1
+      @extend .label
       color: $control-primary-color-dark
       font-weight: 400
       font-size: $ms-0
       text-shadow: 0 1px 0 #fff
       line-height: $double-base-line-height
-  .content
+      white-space: normal
+  .content, p
     padding: $base-line-height
     line-height: $double-base-line-height
     p
       font-size: $ms-1
   .footer
-    @extend .panel__footer
+    margin: -$control-margin
+    margin-top: $control-margin
     padding: 0
     height: $message-box-footer-height
     box-shadow: inset 0 5px 10px rgba(0,0,0,.05)
@@ -58,7 +65,7 @@ $message-box-footer-height: $base-line-height * 4
           margin: 0
           &:focus, &:hover, &:active
             text-shadow: none
-            border-color: $color-nocolor !important
+            border-color: $color-nocolor
       .default
         +messagebox-button-varient($control-info-color, $control-info-color-dark)
       .positive

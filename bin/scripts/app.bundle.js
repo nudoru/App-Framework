@@ -613,8 +613,8 @@ exports['default'] = _noriNoriJs2['default'].createComponent('debug-components',
     _actionThreeEl.addEventListener('click', function actThree(e) {
       _AppView2['default'].addNotification({
         title: _lIpsum.getSentence(3, 6),
-        type: 'information',
-        content: _lIpsum.getParagraph(1, 2)
+        //type : 'information',
+        message: _lIpsum.getParagraph(1, 2)
       });
 
       _toolTip.remove(_actionFourEl);
