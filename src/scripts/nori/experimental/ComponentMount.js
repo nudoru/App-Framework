@@ -44,7 +44,7 @@ export default {
 
       component.componentDidMount();
     } else {
-      console.warn('Component ' + component.getID() + ' has no HTML.')
+      console.warn('Component ' + component.getID() + ' has no HTML.');
     }
   },
 
@@ -53,4 +53,4 @@ export default {
 
   },
 
-}
+};

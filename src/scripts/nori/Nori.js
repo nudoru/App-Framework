@@ -67,4 +67,4 @@ export default {
     }
     return this._componentViews.createComponent(type, source, ...children);
   }
-}
+};

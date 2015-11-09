@@ -180,7 +180,7 @@ export default Nori.createComponent('debug-components', {
         mount      : '#debug-child',
         mountMethod: 'append',
         label      : 'Factory1'
-      }
+      };
     },
 
     getDOMEvents() {
