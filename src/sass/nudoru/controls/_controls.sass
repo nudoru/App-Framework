@@ -57,7 +57,7 @@ $control-shadow: 0 5px 5px -4px rgba(0,0,0,.25)
 //------------------------------------------------------------------------------
 
 =control-emboss-shadow
-  text-shadow: -1px -1px 0 rgba(0,0,0,.15), 1px 1px 0 rgba(255,255,255,.1)
+  +letter_press
 
 =control-disabled
   background-color: $color-shaded
@@ -88,6 +88,10 @@ $control-shadow: 0 5px 5px -4px rgba(0,0,0,.25)
   font-size: $ms-0
   font-weight: 700
   color: $control-primary-color-dark
+
+%emphasis-title
+  text-transform: uppercase
+  letter-spacing: 0.05rem
 
 .icon-left
   i.fa

@@ -2,6 +2,7 @@
   +transition-all()
   +control-emboss-shadow
   @extend .label
+  @extend %emphasis-title
   padding: $half-base-line-height $triple-base-line-height
   margin: $half-base-line-height
   background: $control-primary-color linear-gradient(hsla(0, 0%, 100%, .25), transparent)
@@ -12,8 +13,6 @@
   text-align: center
   color: #fff
   cursor: pointer
-  text-transform: uppercase
-  letter-spacing: 0.05rem
   i.fa
     position: relative
     font-weight: 400

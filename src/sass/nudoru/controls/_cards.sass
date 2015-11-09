@@ -1,10 +1,28 @@
+$control-card-margin: $double-base-line-height
+
+
 .card
   @extend %small-headers
-  +shadow__one-edge-faint
-  margin: $double-base-line-height 0
-  padding: $double-base-line-height
+  +shadow__card-large
+  overflow: hidden
+  margin: $control-card-margin 0
+  padding: $control-card-margin
   border-radius: $control-border-radius
-  border: $control-border
+  //border: $control-border
+  background: #fff linear-gradient(transparent, hsla(0,0%, 0, .01))
+
+.card__header
+  +control-emboss-shadow
+  @extend %emphasis-title
+  margin: -$control-card-margin
+  margin-bottom: $control-card-margin
+  padding: $control-card-margin
+  padding-bottom: $base-line-height
+  background: $control-primary-color linear-gradient(hsla(0,0%, 255, .1), transparent)
+  color: #fff
+  h1, h2, h3, h4, h5, h6
+    margin: 0
+    padding: 0
 
 .card-dark
   @extend .card

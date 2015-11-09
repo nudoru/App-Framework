@@ -14,7 +14,7 @@ $message-box-footer-height: $base-line-height * 4
       background-color: $downcolor
 
 %base-messagebox
-  +shadow__one-edge-large
+  +shadow__card-large
   padding: $control-padding
   margin-bottom: $control-margin
   overflow: hidden
@@ -30,9 +30,10 @@ $message-box-footer-height: $base-line-height * 4
     background-color: $color-nocolor
     h1
       @extend .label
+      @extend %emphasis-title
       color: $control-primary-color-dark
       font-weight: 400
-      font-size: $ms-0
+      font-size: 0.8rem
       text-shadow: 0 1px 0 #fff
       height: auto
       white-space: normal
