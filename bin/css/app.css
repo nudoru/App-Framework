@@ -2230,200 +2230,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   content: "";
 }
 
-/*!
- * Pikaday
- * Copyright © 2014 David Bushell | BSD & MIT license | http://dbushell.com/
- */
-.pika-single {
-  z-index: 9999;
-  display: block;
-  position: relative;
-  color: #333;
-  background: #fff;
-  border: 1px solid #007377;
-}
-.pika-single.is-hidden {
-  display: none;
-}
-.pika-single.is-bound {
-  position: absolute;
-  box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
-}
-
-.pika-single {
-  *zoom: 1;
-}
-.pika-single:before, .pika-single:after {
-  content: " ";
-  display: table;
-}
-.pika-single:after {
-  clear: both;
-}
-
-.pika-lendar {
-  float: left;
-  width: 240px;
-  margin: 8px;
-}
-
-.pika-title {
-  position: relative;
-  text-align: center;
-  color: #007377 !important;
-}
-.pika-title select {
-  cursor: pointer;
-  position: absolute;
-  z-index: 9998;
-  margin: 0;
-  left: 0;
-  top: 5px;
-  filter: alpha(opacity=0);
-  opacity: 0;
-}
-
-.pika-label {
-  display: inline-block;
-  *display: inline;
-  position: relative;
-  z-index: 9999;
-  overflow: hidden;
-  margin: 0;
-  padding: 5px 3px;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: bold;
-  background-color: #fff;
-}
-
-.pika-prev,
-.pika-next {
-  display: block;
-  cursor: pointer;
-  position: relative;
-  outline: none;
-  border: 0 !important;
-  padding: 0 !important;
-  width: 20px;
-  height: 30px;
-  text-indent: 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  background-color: transparent !important;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 75% 75%;
-  border-radius: 0  !important;
-  box-shadow: none  !important;
-  text-shadow: none  !important;
-  opacity: 0.5;
-  *position: absolute;
-  *top: 0;
-}
-.pika-prev:hover,
-.pika-next:hover {
-  background-color: transparent !important;
-  box-shadow: none;
-  border-radius: 3px !important;
-  opacity: 0.75;
-}
-.pika-prev.is-disabled,
-.pika-next.is-disabled {
-  cursor: default;
-  opacity: .2;
-}
-
-.pika-prev,
-.is-rtl .pika-next {
-  float: left;
-  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==");
-  *left: 0;
-}
-
-.pika-next,
-.is-rtl .pika-prev {
-  float: right;
-  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=");
-  *right: 0;
-}
-
-.pika-select {
-  display: inline-block;
-  *display: inline;
-}
-
-.pika-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  border: 0;
-}
-.pika-table th,
-.pika-table td {
-  width: 14.285714285714286%;
-  padding: 0;
-}
-.pika-table th {
-  color: #999;
-  font-size: 12px;
-  line-height: 25px;
-  font-weight: bold;
-  text-align: center;
-}
-.pika-table abbr {
-  border-bottom: none;
-  cursor: help;
-}
-
-.pika-button {
-  cursor: pointer;
-  display: block;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  outline: none;
-  border: 0 !important;
-  margin: 0 !important;
-  width: 100%;
-  padding: 5px !important;
-  color: #666;
-  font-size: 12px !important;
-  line-height: 15px !important;
-  text-align: right !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  background: #f5f5f5;
-}
-.is-today .pika-button {
-  color: #007377;
-  font-weight: bold;
-}
-.is-selected .pika-button {
-  color: #fff;
-  font-weight: bold;
-  background: #005eb8;
-  box-shadow: inset 0 1px 3px #00a9e0 !important;
-  border-radius: 3px !important;
-}
-.is-disabled .pika-button {
-  pointer-events: none;
-  cursor: default;
-  color: #999;
-  opacity: .3;
-}
-.pika-button:hover {
-  color: #fff;
-  background: #009ca6;
-  box-shadow: none;
-  border-radius: 3px !important;
-}
-
-.pika-week {
-  font-size: 11px;
-  color: #999;
-}
-
 #modal__cover, .modal__background, #initialization__cover {
   position: fixed;
   top: 0;
@@ -3501,10 +3307,6 @@ textarea {
   line-height: 1.2;
 }
 
-fieldset {
-  width: 100%;
-}
-
 .form-stacked label {
   display: block;
 }
@@ -4088,6 +3890,293 @@ textarea {
 }
 .tooltip__topleft p {
   text-align: right;
+}
+
+/*!
+ * Pikaday
+ * Copyright © 2014 David Bushell | BSD & MIT license | http://dbushell.com/
+ */
+.pika-single {
+  z-index: 9999;
+  display: block;
+  position: relative;
+  color: #333;
+  background: #fff;
+  border: 1px solid #007377;
+}
+.pika-single.is-hidden {
+  display: none;
+}
+.pika-single.is-bound {
+  position: absolute;
+  box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
+}
+
+.pika-single {
+  *zoom: 1;
+}
+.pika-single:before, .pika-single:after {
+  content: " ";
+  display: table;
+}
+.pika-single:after {
+  clear: both;
+}
+
+.pika-lendar {
+  float: left;
+  width: 240px;
+  margin: 8px;
+}
+
+.pika-title {
+  position: relative;
+  text-align: center;
+  color: #007377 !important;
+}
+.pika-title select {
+  cursor: pointer;
+  position: absolute;
+  z-index: 9998;
+  margin: 0;
+  left: 0;
+  top: 5px;
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+
+.pika-label {
+  display: inline-block;
+  *display: inline;
+  position: relative;
+  z-index: 9999;
+  overflow: hidden;
+  margin: 0;
+  padding: 5px 3px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+  background-color: #fff;
+}
+
+.pika-prev,
+.pika-next {
+  display: block;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  border: 0 !important;
+  padding: 0 !important;
+  width: 20px;
+  height: 30px;
+  text-indent: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  background-color: transparent !important;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 75% 75%;
+  border-radius: 0  !important;
+  box-shadow: none  !important;
+  text-shadow: none  !important;
+  opacity: 0.5;
+  *position: absolute;
+  *top: 0;
+}
+.pika-prev:hover,
+.pika-next:hover {
+  background-color: transparent !important;
+  box-shadow: none;
+  border-radius: 3px !important;
+  opacity: 0.75;
+}
+.pika-prev.is-disabled,
+.pika-next.is-disabled {
+  cursor: default;
+  opacity: .2;
+}
+
+.pika-prev,
+.is-rtl .pika-next {
+  float: left;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==");
+  *left: 0;
+}
+
+.pika-next,
+.is-rtl .pika-prev {
+  float: right;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=");
+  *right: 0;
+}
+
+.pika-select {
+  display: inline-block;
+  *display: inline;
+}
+
+.pika-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0;
+}
+.pika-table th,
+.pika-table td {
+  width: 14.285714285714286%;
+  padding: 0;
+}
+.pika-table th {
+  color: #999;
+  font-size: 12px;
+  line-height: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+.pika-table abbr {
+  border-bottom: none;
+  cursor: help;
+}
+
+.pika-button {
+  cursor: pointer;
+  display: block;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  outline: none;
+  border: 0 !important;
+  margin: 0 !important;
+  width: 100%;
+  padding: 5px !important;
+  color: #666;
+  font-size: 12px !important;
+  line-height: 15px !important;
+  text-align: right !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  background: #f5f5f5;
+}
+.is-today .pika-button {
+  color: #007377;
+  font-weight: bold;
+}
+.is-selected .pika-button {
+  color: #fff;
+  font-weight: bold;
+  background: #005eb8;
+  box-shadow: inset 0 1px 3px #00a9e0 !important;
+  border-radius: 3px !important;
+}
+.is-disabled .pika-button {
+  pointer-events: none;
+  cursor: default;
+  color: #999;
+  opacity: .3;
+}
+.pika-button:hover {
+  color: #fff;
+  background: #009ca6;
+  box-shadow: none;
+  border-radius: 3px !important;
+}
+
+.pika-week {
+  font-size: 11px;
+  color: #999;
+}
+
+.selected {
+  position: relative;
+  width: 100%;
+}
+.selected ul {
+  padding: 0;
+  margin: 0;
+}
+.selected ul input {
+  border: none;
+  width: 25px;
+  outline: none;
+}
+.selected ul li {
+  list-style: none;
+}
+.selected ul.selected-options {
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  background: white;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.selected ul.selected-options li {
+  cursor: pointer;
+}
+.selected ul.selected-active {
+  background: white;
+  min-height: 10px;
+  overflow: auto;
+}
+.selected ul.selected-active li {
+  display: inline-block;
+}
+.selected.selected-multiple ul.selected-active li {
+  margin: 2px;
+  cursor: pointer;
+}
+.selected.selected-multiple ul.selected-active li.active {
+  display: none;
+}
+.selected.selected-single ul.selected-options li.active {
+  background: lightgrey;
+}
+
+.selected-light input {
+  font-size: 1rem;
+}
+.selected-light ul.selected-options {
+  border: 1px solid #eae8e6;
+  border-radius: 0;
+  background-color: #fff;
+  color: #005eb8;
+}
+.selected-light ul.selected-options li {
+  padding: 5.5px;
+  border-radius: 5px;
+}
+.selected-light ul.selected-options li:hover {
+  background: #F7F7F7;
+}
+.selected-light ul.selected-active {
+  border: 1px solid #968c83;
+  padding: 5.5px;
+  border-radius: 5px;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
+}
+.selected-light ul.selected-active.focus {
+  border-radius: 2px 2px 0 0;
+}
+.selected-light ul.selected-active li {
+  margin: 2px;
+  padding: 5.5px;
+}
+.selected-light.selected-multiple ul.selected-active li {
+  background: #F7F7F7;
+}
+.selected-light.selected-multiple ul.selected-active li:hover {
+  background: #F1F1F1;
+}
+.selected-light.selected-multiple ul.selected-active li:after {
+  content: 'x';
+  color: red;
+  padding-left: 10px;
+}
+.selected-light.selected-single ul.selected-options li.active {
+  background: #F7F7F7;
+}
+.selected-light.selected-single ul.selected-options input {
+  padding: 5.5px;
 }
 
 .nori__vc .error {

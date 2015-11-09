@@ -3,11 +3,11 @@ import AppStore from '../store/AppStore.js';
 import MixinNudoruControls from '../../nudoru/components/MixinNudoruControls.js';
 import TemplateViewFactory from './TemplateViewComponent.js';
 import ComponentTesting from './ComponentsTesting.js';
+import ControlsTesting from './ControlsTesting.js';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-let vcStyles   = Nori.createComponent('debug-styletest', {})('styles'),
-    vcControls = Nori.createComponent('debug-controls', {})('controls');
+let vcStyles   = Nori.createComponent('debug-styletest', {})('styles');
 
 /**
  * View for an application.
@@ -64,7 +64,8 @@ let AppViewModule = Nori.createView({
 
   mapRoutes() {
     let vcDefault    = TemplateViewFactory('default'),
-        vcComponents = ComponentTesting('components');
+        vcComponents = ComponentTesting('components'),
+        vcControls = ControlsTesting('controls');
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault, '#contents');

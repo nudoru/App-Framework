@@ -1,0 +1,132 @@
+.selected {
+  position: relative;
+  width: 100%;
+
+  ul {
+    padding: 0;
+    margin: 0;
+
+    input {
+      border: none;
+      width: 25px;
+      outline: none;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    &.selected-options {
+      position: absolute;
+      z-index: 9999;
+      width: 100%;
+      background: white;
+      max-height: 300px;
+      overflow-y: auto;
+
+      li {
+        cursor: pointer;
+      }
+    }
+
+    &.selected-active {
+      background: white;
+      min-height: 10px;
+      overflow: auto;
+
+      li {
+        display: inline-block;
+      }
+    }
+  }
+
+  &.selected-multiple {
+    ul.selected-active {
+      li {
+        margin: 2px;
+        cursor: pointer;
+
+        &.active {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &.selected-single {
+    ul.selected-options li.active {
+      background: lightgrey;
+    }
+  }
+}
+
+.selected-light {
+  input {
+    font-size: $ms-0;
+  }
+
+  ul {
+    &.selected-options {
+      border: $control-border;
+      border-radius: 0;
+      background-color: #fff;
+      color: $control-primary-color-dark;
+
+      li {
+        padding: $half-base-line-height;
+        border-radius: $control-border-radius;
+
+        &:hover {
+          background: #F7F7F7;
+        }
+      }
+    }
+
+    &.selected-active {
+      border: $control-border-dark;
+      padding: $half-base-line-height;
+      border-radius: $control-border-radius;
+      box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .05);
+
+      &.focus {
+        border-radius: 2px 2px 0 0;
+      }
+
+      li {
+        margin: 2px;
+        padding: $half-base-line-height;
+
+      }
+    }
+  }
+
+  &.selected-multiple {
+    ul.selected-active {
+      li {
+        background: #F7F7F7;
+
+        &:hover {
+          background: #F1F1F1;
+        }
+
+        &:after {
+          content: 'x';
+          color: red;
+          padding-left: 10px;
+        }
+      }
+    }
+  }
+
+  &.selected-single {
+    ul.selected-options {
+      li.active {
+        background: #F7F7F7;
+      }
+
+      input {
+        padding: $half-base-line-height;
+      }
+    }
+  }
+}
