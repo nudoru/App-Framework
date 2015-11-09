@@ -9,10 +9,11 @@
   border: 1px solid rgba(0,0,0,.15)
   font-size: 0.8rem
   line-height: 1.2
-  letter-spacing: 0.02rem
   text-align: center
   color: #fff
   cursor: pointer
+  text-transform: uppercase
+  letter-spacing: 0.05rem
   i.fa
     position: relative
     font-weight: 400
@@ -44,7 +45,7 @@ button
   margin-right: 0
 
 .button-small
-  font-size: .7rem
+  font-size: 0.7rem
   padding: 0 $base-line-height
   height: 25px
   margin-left: 2px
@@ -53,6 +54,8 @@ button
 .button-important
   @extend %button
   font-size: 1.2rem
+  text-transform: none
+  letter-spacing: 0
   padding: $half-base-line-height $base-line-height*4
 
 .button-round
@@ -90,9 +93,9 @@ button
   box-shadow: none
   text-shadow: none
   &:active
-    color: $control-primary-color
+    color: $control-primary-color-dark
     border: 1px solid $control-primary-color
-    background-color: hsla(0,0%,0%,.25)
+    background-color: hsla(0,0%,0%,.1)
 
 .button-neutral-light-negative
   @extend .button-neutral-light

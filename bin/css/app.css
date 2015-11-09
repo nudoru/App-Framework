@@ -3087,10 +3087,11 @@ button, .button-important {
   border: 1px solid rgba(0, 0, 0, 0.15);
   font-size: 0.8rem;
   line-height: 1.2;
-  letter-spacing: 0.02rem;
   text-align: center;
   color: #fff;
   cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
 }
 button i.fa, .button-important i.fa {
   position: relative;
@@ -3137,6 +3138,8 @@ button:hover, .button-important:hover, button:focus, .button-important:focus {
 
 .button-important {
   font-size: 1.2rem;
+  text-transform: none;
+  letter-spacing: 0;
   padding: 5.5px 44px;
 }
 
@@ -3184,9 +3187,9 @@ button:hover, .button-important:hover, button:focus, .button-important:focus {
   text-shadow: none;
 }
 .button-neutral-light:active, .button-neutral-light-negative:active, .button-disabled:active, .messagebox__default .footer .footer-buttons .button button:active, .toast__item-controls button:active {
-  color: #00a9e0;
+  color: #005eb8;
   border: 1px solid #00a9e0;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .button-neutral-light-negative, .button-disabled, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button {
@@ -3281,6 +3284,11 @@ input[type="checkbox"] {
   margin-right: 5.5px;
 }
 
+textarea {
+  min-height: 57px;
+  line-height: 1.2;
+}
+
 fieldset {
   width: 100%;
 }
@@ -3348,19 +3356,19 @@ textarea {
   vertical-align: middle;
 }
 .table th {
-  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
 }
 .table thead th {
   color: #005eb8;
   border-bottom: 1px solid #00a9e0;
   vertical-align: bottom;
-  font-size: 0.8rem;
 }
 .table tfoot th {
   border-bottom: none;
   border-top: 1px solid #6e6259;
   vertical-align: top;
-  font-size: 0.8rem;
   color: #6e6259;
 }
 .table tbody tr {
@@ -3414,7 +3422,7 @@ textarea {
   color: #fff;
 }
 
-.table-rows-zebra tbody td {
+.table-rows-zebra tbody th, .table-rows-zebra tbody td {
   border-bottom: none;
 }
 .table-rows-zebra tbody tr:nth-child(odd) {
@@ -3424,7 +3432,7 @@ textarea {
 .table-cols-zebra tbody tr {
   border-bottom: none;
 }
-.table-cols-zebra tbody tr td:nth-child(odd) {
+.table-cols-zebra tbody tr th:nth-child(odd), .table-cols-zebra tbody tr td:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.03);
 }
 
