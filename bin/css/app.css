@@ -2364,6 +2364,7 @@ h1 {
   line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
+  letter-spacing: -0.1rem;
 }
 
 h2 {
@@ -2376,6 +2377,7 @@ h2 {
   line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
+  letter-spacing: -0.1rem;
 }
 
 .panel__footer-message h1, .app__hero-small h1, h3 {
@@ -2388,6 +2390,7 @@ h2 {
   line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
+  letter-spacing: -0.05rem;
 }
 
 .panel__footer-message h2, .app__hero-small h2, h4 {
@@ -2478,11 +2481,13 @@ select, textarea, select.spaced {
 .h1-alternate {
   font-size: 2.067rem;
   font-weight: 300;
+  letter-spacing: -0.05rem;
 }
 
 .h2-alternate {
   font-size: 1.618rem;
   font-weight: 300;
+  letter-spacing: -0.05rem;
 }
 
 .h3-alternate {
@@ -2515,12 +2520,12 @@ html {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   heigth: 100%;
+  font-size: 100%;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-size: 100%;
   min-height: 100%;
   -webkit-text-size-adjust: none;
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -2536,11 +2541,12 @@ em {
 }
 
 blockquote {
-  margin-left: 22px;
-  margin-right: 22px;
-  padding: 11px;
-  background-color: #efeeec;
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-left: 33px;
+  margin-right: 33px;
+  padding: 22px;
+  border-top: 2px solid rgba(0, 0, 0, 0.25);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.02);
   font-size: 1.4rem;
   font-weight: 300;
   line-height: 33px;
@@ -2554,8 +2560,10 @@ pre {
   -moz-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.1), 1px 1px 0 rgba(255, 255, 255, 0.5);
   padding: 11px;
   background-color: #efeeec;
+  border-radius: 5.5px;
 }
 
 a {
@@ -2569,6 +2577,7 @@ a {
 }
 a:active, a:hover {
   color: #00a9e0;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 a:focus {
   outline: thin-dotted;
@@ -3005,18 +3014,6 @@ hr {
   margin-left: 11px;
 }
 
-.card, .card-dark {
-  box-shadow: 0 7px 15px -5px rgba(0, 0, 0, 0.2);
-  margin: 22px;
-  padding: 22px;
-  border-radius: 5px;
-  border: 1px solid #eae8e6;
-}
-
-.card-dark {
-  background-color: #faf9f9;
-}
-
 .table th, .table td {
   padding: 0;
   margin: 0;
@@ -3059,6 +3056,18 @@ hr {
 
 .label-danger {
   background-color: #ff3d00;
+}
+
+.card, .card-dark {
+  box-shadow: 0 7px 15px -5px rgba(0, 0, 0, 0.2);
+  margin: 22px;
+  padding: 22px;
+  border-radius: 5px;
+  border: 1px solid #eae8e6;
+}
+
+.card-dark {
+  background-color: #faf9f9;
 }
 
 .panel, .messagebox__default, .toast__item, .tooltip__item {

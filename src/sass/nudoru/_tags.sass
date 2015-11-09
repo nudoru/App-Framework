@@ -7,13 +7,14 @@ html
   -webkit-text-size-adjust: 100%
   -ms-text-size-adjust: 100%
   heigth: 100%
+  //font-size: 62.5%
+  font-size: 100%
+
 
 body
   margin: 0
   padding: 0
-  font-size: 100%
   min-height: 100%
-  //font-size: 62.5%; // easier to reference em'partials as pixel equiviants - 1em = 10px
   // prevent Safari from adjusting for readability
   -webkit-text-size-adjust: none
   font-family: $font-content
@@ -47,19 +48,22 @@ em
   font-style: italic
 
 blockquote
-  margin-left: $double-base-line-height
-  margin-right: $double-base-line-height
-  padding: $base-line-height
-  background-color: $color-shaded
-  font-family: $font-header
+  margin-left: $triple-base-line-height
+  margin-right: $triple-base-line-height
+  padding: $double-base-line-height
+  border-top: 2px solid hsla(0, 0%, 0%, .25)
+  border-bottom: 2px solid hsla(0, 0%, 0%, .25)
+  background-color: hsla(0, 0%, 0%, .02)
   font-size: 1.4rem
   font-weight: 300
   line-height: $triple-base-line-height
 
 pre
   +force-break-all-words
+  +letter_press
   padding: $base-line-height
   background-color: $color-shaded
+  border-radius: $border-radius
 
 a
   +transition-all
@@ -67,6 +71,7 @@ a
   outline: none
   &:active, &:hover
     color: $color-link-active
+    background-color: hsla(0,0%,0%,.05)
   &:focus
     outline: thin-dotted
 
