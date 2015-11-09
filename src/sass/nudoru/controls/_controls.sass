@@ -7,10 +7,10 @@ $control-padding: $base-line-height
 $control-padding-small: $half-base-line-height
 $control-margin: $base-line-height
 
-$control-form-element-height: 33px
-$control-button-height: $control-form-element-height
+$control-form-element-height: 38px
 
 $control-border: 1px solid $color-white-grey-line
+$control-border-dark: 1px solid $light-warm-grey
 
 $control-border-radius: 5px
 $control-border-radius-large: 10px
@@ -42,7 +42,7 @@ $control-neutral-color-dark: scale-lightness($control-neutral-color, -20%)
 
 $control-font-color: rgb(100,100,100)
 $control-font-neg-color: rgb(255,255,255)
-$control-table-zebra-color: rgb(240,240,240)
+$control-table-zebra-color: hsla(0, 0%, 0%, .03)
 
 //------------------------------------------------------------------------------
 //  Properties
@@ -70,6 +70,18 @@ $control-shadow: 0 5px 5px -4px rgba(0,0,0,.25)
 //------------------------------------------------------------------------------
 //  Basics
 //------------------------------------------------------------------------------
+
+%control-text-base
+  padding: 0
+  margin: 0
+  font-family: $font-content
+  font-size: $ms-0
+  line-height: $double-base-line-height
+  color: $color-text-content
+  font-weight: 400
+  white-space: nowrap
+  display: inline-block
+  vertical-align: middle
 
 .icon-left
   i.fa

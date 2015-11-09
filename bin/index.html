@@ -138,11 +138,6 @@ BEGIN Templates for DEBUG Sub Views
 <script id="debug-controls" type="text/template">
     <div>
         <h1>Mock Components</h1>
-        <div class="panel panel__border panel__shadow">
-            <div class="panel__header">
-                <h1><i class="fa fa-cog"></i>Header</h1>
-                <button class="button-round"><i class="fa fa-cogs"></i></button>
-            </div>
             <section class="card">
                 <h3>Labels</h3>
                 <div class="label-small">Small Label</div>
@@ -155,6 +150,7 @@ BEGIN Templates for DEBUG Sub Views
             </section>
             <section class="card">
                 <h3>Buttons</h3>
+                <button class="button-small">Small Button</button>
                 <button>Button</button>
                 <button class="button-important">Important Button</button>
                 <button class="button-success">Success Button</button>
@@ -196,7 +192,7 @@ BEGIN Templates for DEBUG Sub Views
             </section>
             <section class="card">
                 <h3>Table</h3>
-                <table class="table table-rows-zebra table-rows-highlight">
+                <table class="table table-rows-zebra table-cols-zebra">
                     <caption>Look, I'm a table caption!</caption>
                     <colgroup></colgroup>
                     <colgroup class="column-feature"></colgroup>
@@ -205,7 +201,7 @@ BEGIN Templates for DEBUG Sub Views
                     <thead>
                     <tr>
                         <th scope="col"><i class="fa fa-book"></i> Col 1</th>
-                        <th scope="col" class="column-header-feature">Col 2</th>
+                        <th scope="col">Col 2</th>
                         <th scope="col">Col 3</th>
                         <th scope="col">Col 4</th>
                     </tr>
@@ -252,12 +248,7 @@ BEGIN Templates for DEBUG Sub Views
                     </tfoot>
                 </table>
             </section>
-            <div class="panel__footer">
-                <!--h1 Footer-->
-                <button>Default</button>
-                <button class="button-neutral">Optional</button>
-            </div>
-        </div>
+
     </div>
 </script>
 

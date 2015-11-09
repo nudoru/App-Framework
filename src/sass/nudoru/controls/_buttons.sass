@@ -2,53 +2,30 @@
   +transition-all()
   +control-emboss-shadow
   @extend .label
-  font-family: $font-content
-  font-size: .8rem
-  //height: $control-button-height
-  padding: $half-base-line-height $base-line-height*2
+  padding: $half-base-line-height $triple-base-line-height
   margin: $half-base-line-height
-  background-color: $control-primary-color
+  background: $control-primary-color linear-gradient(hsla(0, 0%, 100%, .25), transparent)
   border-radius: $control-button-border-radius
-  border: none
-  //line-height: $control-button-height
+  border: 1px solid rgba(0,0,0,.15)
+  font-size: 0.8rem
+  line-height: 1.2
+  letter-spacing: 0.02rem
   text-align: center
   color: #fff
   cursor: pointer
-  border: 1px solid rgba(0,0,0,.15)
-  box-shadow: 1px 2px 2px rgba(0,0,0,.15), inset 1px 1px 0 rgba(255,255,255,.3)
-  white-space: nowrap
   i.fa
     position: relative
     font-weight: 400
-    top: -1px
-  &:focus
-    border: 1px solid rgba(0,0,0,.5)
-  &:hover, &:active
+  &:active
     background-color: $control-primary-color-dark
+    border: 1px solid rgba(0,0,0,.25)
+    box-shadow: inset 0 0 5px hsla(0, 0%, 0%, .5)
+  &:hover, &:focus
+    box-shadow: inset 0 0 5px hsla(0, 0%, 0%, .25)
+    border: 1px solid rgba(0,0,0,.5)
 
 button
   @extend %button
-
-.button-block
-  display: block
-  width: 100%
-  margin-left: 0
-  margin-right: 0
-
-.button-small
-  font-size: .7rem
-  padding: 0 $base-line-height
-  height: 25px
-  line-height: 22px
-  margin-left: 2px
-  margin-right: 2px
-  i.fa
-    top: 1px
-
-.button-round
-  padding: 0
-  height: $control-button-height
-  width: $control-button-height
 
 .button__icon-left
   padding-left: $base-line-height
@@ -60,60 +37,66 @@ button
   i.fa
     margin-left: $base-line-height
 
+.button-block
+  display: block
+  width: 100%
+  margin-left: 0
+  margin-right: 0
+
+.button-small
+  font-size: .7rem
+  padding: 0 $base-line-height
+  height: 25px
+  margin-left: 2px
+  margin-right: 2px
+
 .button-important
   @extend %button
-  font-size: 1rem
+  font-size: 1.2rem
+  padding: $half-base-line-height $base-line-height*4
 
-.button-no-border
-  border: 1px solid $color-nocolor
-  background-color: rgba(0,0,0,.02)
-  box-shadow: none
-  text-shadow: none
-  padding-left: $base-line-height
-  padding-right: $base-line-height
-  color: $control-primary-color-dark
-  &:hover, &:active
-    border: 1px solid rgba(0,0,0,.1)
-    background-color: $color-nocolor
-    color: $control-primary-color
+.button-round
+  padding: 0
+  height: $control-form-element-height
+  width: $control-form-element-height
 
 .button-success
   background-color: $control-success-color
-  &:hover, &:active
+  &:active
     background-color: $control-success-color-dark
   
 .button-warning
   background-color: $control-warning-color
-  &:hover, &:active
+  &:active
     background-color: $control-warning-color-dark
     
 .button-danger
   background-color: $control-danger-color
-  &:hover, &:active
+  &:active
     background-color: $control-danger-color-dark
 
 .button-neutral
   color: #fff
   background-color: $color-base-light
-  &:hover, &:active
+  &:active
     background-color: $color-base-dark
 
 .button-neutral-light
   @extend .button-neutral
-  background-color: rgba(255,255,255,.2)
-  color: $color-base-dark
-  border: 1px solid $color-base-light
+  background-color: rgba(255,255,255,.25)
+  color: $light-warm-grey
+  border: 1px solid $light-warm-grey
   box-shadow: none
   text-shadow: none
-  &:hover, &:active
+  &:active
     color: $control-primary-color
     border: 1px solid $control-primary-color
-    background-color: rgba(0,0,0,.05)
+    background-color: hsla(0,0%,0%,.25)
 
 .button-neutral-light-negative
   @extend .button-neutral-light
   color: #fff
-  &:hover, &:active
+  &:active
     color: #fff
     border: 1px solid #fff
     background-color: rgba(255, 255, 255, .1)

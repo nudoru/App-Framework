@@ -1,6 +1,6 @@
 //https://css-tricks.com/complete-guide-table-element/
 
-$table-cell-padding: $half-base-line-height
+$table-cell-padding: $base-line-height
 
 .table
   margin: 0
@@ -12,65 +12,38 @@ $table-cell-padding: $half-base-line-height
   border-collapse: collapse
 
   caption
-    @extend %header-6
-    width: 100%
-    border-bottom: $control-border
-    padding-bottom: $half-base-line-height
+    @extend legend
 
   th, td
-    @extend %label-base-formatting
+    @extend %control-text-base
+    display: table-cell
     padding: $table-cell-padding
     border: none
     vertical-align: middle
 
-  thead, tfoot, tbody
-    th
-      font-family: $font-header
-      font-size: $ms-0
-      font-weight: 400
-      color: $control-primary-color
-      border-bottom: $control-border
-      text-align: left
-      i.fa
-        font-family: "FontAwesome"
-        margin-right: $half-base-line-height
+  th
+    font-weight: 700
 
   thead
     th
+      color: $control-primary-color
       border-bottom: 1px solid $control-primary-color
       vertical-align: bottom
+      font-size: 0.8rem
 
   tfoot
     th
       border-bottom: none
-      border-top: 1px solid $control-primary-color
+      border-top: 1px solid $dark-warm-grey
       vertical-align: top
-      font-family: $font-content
+      font-size: 0.8rem
       color: $dark-warm-grey
 
   tbody
-    th
-      border: none
-      text-align: right
-      white-space: normal
     tr
       border-bottom: $control-border
-
     tr:last-child
       border-bottom: none
-
-    td
-      text-align: left
-      color: #333
-
-  .column-feature
-    border: 2px solid $control-primary-color-dark
-    background-color: #fff
-
-  .column-header-feature
-    +control-emboss-shadow
-    background-color: $control-primary-color
-    color: #fff
 
   .column-50px
     width: 50px
@@ -116,38 +89,16 @@ $table-cell-padding: $half-base-line-height
     background-color: $control-danger-color
     color: #fff
 
-.header-grey
-  th
-    color: $light-warm-grey !important
-
-tr.row-header-inline
-  background-color: $color-nocolor !important
-  td
-    @extend .h5-alternate
-    text-align: center
-    padding-top: $double-base-line-height !important
-    padding-bottom: $base-line-height !important
-    border-top: 1px solid rgba(0,0,0,.1)
-    border-bottom: 1px solid $control-primary-color
-
 .table-rows-zebra
-  tbody tr:nth-child(odd)
-    background-color: rgba(0,0,0,.05) !important
+  tbody
+    td
+      border-bottom: none
+    tr:nth-child(odd)
+      background-color: hsla(0, 0%, 0%, .03)
 
 .table-cols-zebra
   tbody
     tr
-      border-bottom: none !important
+      border-bottom: none
       td:nth-child(odd)
-        background-color: $control-table-zebra-color
-
-.table-rows-highlight
-  //tbody:hover > tr td
-  //  color: #999
-  tbody
-    tr
-      +transition-prop(background-color, .25s)
-    tr:hover
-      background-color: rgba(0,0,0,.15) !important
-      td
-        color: #333
+        background-color: hsla(0, 0%, 0%, .03)

@@ -1,51 +1,40 @@
-%label-base-formatting
-  padding: 0
-  margin: 0
-  line-height: $double-base-line-height
-  font-family: $control-font
-  color: $control-font-color
-  white-space: nowrap
-
-%label-base
+.label
+  @extend %control-text-base
+  height: $control-form-element-height
   padding: $control-padding-small
   display: inline-block
 
-.label
-  @extend %body-text
-  @extend %label-base
-
 .label-small
-  @extend %body-text-small
-  @extend %label-base
-  font-weight: 400
+  @extend .label
+  font-size: $ms--1
 
 .label-big
-  @extend %body-text-big
-  @extend %label-base
+  @extend .label
+  font-size: $ms-1
 
-%label-bordered
+%label-shaded
   +control-emboss-shadow
-  height: $control-button-height
-  line-height: $control-button-height
+  height: $control-form-element-height
+  line-height: $control-form-element-height
   padding-top: 0
   padding-bottom: 0
   border-radius: $control-border-radius-small
   color: $control-font-neg-color !important
 
 .label-information
-  @extend %label-bordered
+  @extend %label-shaded
   background-color: $control-info-color
 
 .label-success
-  @extend %label-bordered
+  @extend %label-shaded
   background-color: $control-success-color
 
 .label-warning
-  @extend %label-bordered
+  @extend %label-shaded
   background-color: $control-warning-color
 
 .label-danger
-  @extend %label-bordered
+  @extend %label-shaded
   background-color: $control-danger-color
 
 
