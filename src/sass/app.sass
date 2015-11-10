@@ -136,22 +136,20 @@ body
   height: $app-header-height
   overflow: hidden
   background-color: #fff
-  margin-bottom: $triple-base-line-height
   color: $dark-blue
   h1
     @extend .app__padded-content
     margin: 0
-    font-size: $ms-2
+    font-size: $ms-1
     line-height: $ms-1
 
 .app__header-logo
   @extend .app__padded-content
-  +letter_press
   float: left
-  margin-right: $base-line-height
+  margin-right: $double-base-line-height
   height: $app-header-height
-  background: $dark-blue
-  color: #fff
+  background: $color-white-grey-fill
+  color: $color-pop
   i.fa
     font-size: $ms-2
     line-height: $ms-1
@@ -198,7 +196,9 @@ body
   background-color: #eee
 
 .app__side-bar
-  background-color: $light-warm-grey
+  @extend %small-headers
+  background: $dark-warm-grey
+  overflow: hidden
   margin-bottom: -99999px
   padding-bottom: 99999px
   h1,h2,h3,h4,h5 h6,p,li

@@ -2378,7 +2378,7 @@ h2 {
   font-weight: 300;
 }
 
-.card h1, .card-dark h1, .app__hero-small h1, h3 {
+.card h1, .card-dark h1, .app__hero-small h1, .app__side-bar h1, h3 {
   margin: 0;
   padding: 0;
   margin-bottom: 33px;
@@ -2390,7 +2390,7 @@ h2 {
   font-weight: 300;
 }
 
-.card h2, .card-dark h2, .app__hero-small h2, h4 {
+.card h2, .card-dark h2, .app__hero-small h2, .app__side-bar h2, h4 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2402,7 +2402,7 @@ h2 {
   font-weight: 300;
 }
 
-.card h3, .card-dark h3, .app__hero-small h3, h5 {
+.card h3, .card-dark h3, .app__hero-small h3, .app__side-bar h3, h5 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -2414,7 +2414,7 @@ h2 {
   font-weight: 400;
 }
 
-.card h4, .card-dark h4, .app__hero-small h4, .card h5, .card-dark h5, .app__hero-small h5, .card h6, .card-dark h6, .app__hero-small h6, h6 {
+.card h4, .card-dark h4, .app__hero-small h4, .app__side-bar h4, .card h5, .card-dark h5, .app__hero-small h5, .app__side-bar h5, .card h6, .card-dark h6, .app__hero-small h6, .app__side-bar h6, h6 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
@@ -4291,22 +4291,20 @@ body {
   height: 65px;
   overflow: hidden;
   background-color: #fff;
-  margin-bottom: 33px;
   color: #005eb8;
 }
 .app__header h1 {
   margin: 0;
-  font-size: 1.618rem;
+  font-size: 1.277rem;
   line-height: 1.277rem;
 }
 
 .app__header-logo {
-  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
   float: left;
-  margin-right: 11px;
+  margin-right: 22px;
   height: 65px;
-  background: #005eb8;
-  color: #fff;
+  background: #faf9f9;
+  color: #fb8c00;
 }
 .app__header-logo i.fa {
   font-size: 1.618rem;
@@ -4359,7 +4357,8 @@ body {
 }
 
 .app__side-bar {
-  background-color: #968c83;
+  background: #6e6259;
+  overflow: hidden;
   margin-bottom: -99999px;
   padding-bottom: 99999px;
 }
