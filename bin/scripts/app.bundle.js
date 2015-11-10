@@ -4967,8 +4967,7 @@ exports['default'] = function () {
       });
     }
 
-    view.controller.$renderComponent();
-    view.controller.$mountComponent();
+    view.controller.forceUpdate();
 
     //ComponentMount.mount(view.controller);
   }
@@ -5833,16 +5832,18 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   function forceUpdate() {
-    this.$renderAfterPropsOrStateChange();
+    this.$renderAfterPropsOrStateChange(true);
   }
 
   /**
    * Handle rendering after props or state change
    */
   function $renderAfterPropsOrStateChange() {
-    if (_lifecycleState > LS_INITED) {
+    var force = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+    if (_lifecycleState >= LS_INITED) {
       this.$renderComponent();
-      if (this.isMounted()) {
+      if (this.isMounted() || force) {
         this.$mountComponent();
       }
     }

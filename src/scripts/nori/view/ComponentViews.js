@@ -123,8 +123,7 @@ export default function () {
       });
     }
 
-    view.controller.$renderComponent();
-    view.controller.$mountComponent();
+    view.controller.forceUpdate();
 
     //ComponentMount.mount(view.controller);
   }

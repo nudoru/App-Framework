@@ -169,16 +169,16 @@ export default function () {
   //----------------------------------------------------------------------------
 
   function forceUpdate() {
-    this.$renderAfterPropsOrStateChange();
+    this.$renderAfterPropsOrStateChange(true);
   }
 
   /**
    * Handle rendering after props or state change
    */
-  function $renderAfterPropsOrStateChange() {
-    if (_lifecycleState > LS_INITED) {
+  function $renderAfterPropsOrStateChange(force = false) {
+    if (_lifecycleState >= LS_INITED) {
       this.$renderComponent();
-      if (this.isMounted()) {
+      if (this.isMounted() || force) {
         this.$mountComponent();
       }
     }
