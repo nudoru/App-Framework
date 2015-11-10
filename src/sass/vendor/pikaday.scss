@@ -176,17 +176,17 @@
     border-radius: 0;
     box-shadow: none;
     text-shadow: none;
-    background: $color-white-grey-fill;
+    background: #fff;
 
     .is-today & {
-        color: $clr-orange-900;
+        color: $color-pop;
         font-weight: bold;
     }
 
     .is-selected & {
         color: #fff;
         font-weight: bold;
-        background: $clr-orange-900;
+        background: $color-pop;
         border-radius: 50px;
     }
 

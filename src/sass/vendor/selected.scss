@@ -96,7 +96,7 @@
       @include transition-all();
       border: $control-border-dark;
       padding: 1px;
-      border-radius: $control-border-radius;
+      border-radius: $control-border-radius*1.5;
       box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .05);
 
       &.focus {

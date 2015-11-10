@@ -4059,16 +4059,16 @@ textarea {
   border-radius: 0;
   box-shadow: none;
   text-shadow: none;
-  background: #faf9f9;
+  background: #fff;
 }
 .is-today .pika-button {
-  color: #e65100;
+  color: #fb8c00;
   font-weight: bold;
 }
 .is-selected .pika-button {
   color: #fff;
   font-weight: bold;
-  background: #e65100;
+  background: #fb8c00;
   border-radius: 50px;
 }
 .is-disabled .pika-button {
@@ -4168,7 +4168,7 @@ textarea {
   transition: all 0.1s ease-out;
   border: 1px solid #968c83;
   padding: 1px;
-  border-radius: 5px;
+  border-radius: 7.5px;
   box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
 }
 .selected-light ul.selected-active.focus {
@@ -4309,7 +4309,7 @@ body {
   color: #fff;
 }
 .app__header-logo i.fa {
-  font-size: 2.067rem;
+  font-size: 1.618rem;
   line-height: 1.277rem;
 }
 
