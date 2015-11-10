@@ -1,4 +1,6 @@
 import Nori from '../../nori/Nori.js';
+import selected from '../../vendor/selected.js';
+import Pikaday from '../../vendor/pikaday.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
