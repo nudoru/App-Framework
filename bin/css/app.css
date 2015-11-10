@@ -4322,14 +4322,17 @@ body {
   margin: 0;
   height: 65px;
   border-radius: 0;
-  border: 1px solid transparent;
+  border: none;
+  border-bottom: 5px solid transparent;
   color: #00a9e0;
 }
 .app__header-nav button:hover {
   color: #005eb8;
+  border-bottom: 5px solid #00a9e0;
 }
 .app__header-nav button:active {
-  border: 1px solid transparent;
+  border: none;
+  border-bottom: 5px solid #005eb8;
 }
 
 .app__hero, .app__hero-small {
@@ -4360,10 +4363,11 @@ body {
 }
 
 .app__side-bar {
-  background: #6e6259;
-  overflow: hidden;
   margin-bottom: -99999px;
   padding-bottom: 99999px;
+  overflow: hidden;
+  background: #6e6259;
+  box-shadow: inset -50px -50px 50px rgba(0, 0, 0, 0.1);
 }
 .app__side-bar h1, .app__side-bar h2, .app__side-bar h3, .app__side-bar h4, .app__side-bar h5 h6, .app__side-bar p, .app__side-bar li {
   color: #fff;

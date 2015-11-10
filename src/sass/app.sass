@@ -167,12 +167,15 @@ body
     margin: 0
     height: $app-header-height
     border-radius: 0
-    border: 1px solid transparent
+    border: none
+    border-bottom: 5px solid transparent
     color: $light-blue
     &:hover
       color: $dark-blue
+      border-bottom: 5px solid $light-blue
     &:active
-      border: 1px solid transparent
+      border: none
+      border-bottom: 5px solid $dark-blue
 
 .app__hero
   background-color: $dark-warm-grey
@@ -200,9 +203,10 @@ body
 
 .app__side-bar
   @extend %small-headers
-  background: $dark-warm-grey
-  overflow: hidden
   margin-bottom: -99999px
   padding-bottom: 99999px
+  overflow: hidden
+  background: $dark-warm-grey
+  box-shadow: inset -50px -50px 50px hsla(0,0%,0%, 0.1)
   h1,h2,h3,h4,h5 h6,p,li
     color: #fff
