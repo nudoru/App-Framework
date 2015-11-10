@@ -62,19 +62,6 @@ $arrow-side-color: 5px solid
 .tooltip__danger
   +tooltip-variation($control-danger-color)
 
-.tooltip__coachmark
-  +tooltip-variation(#fff)
-  box-shadow: 0px 0px 20px rgba(0,0,0,.5), inset 1px 1px 0 rgba(255,255,255,.25)
-  .tooltip__item-content
-    h1, p
-      @extend .h5-alternate
-      margin: 5px
-      padding: 0
-      line-height: $double-base-line-height
-      color: $dark-blue
-      text-shadow: none
-
-
 .tooltip__top
   .arrow
     bottom: -$half-base-line-height
@@ -124,3 +111,15 @@ $arrow-side-color: 5px solid
     display: none
   p
     text-align: right
+
+//.tooltip__coachmark
+//  +tooltip-variation(#fff)
+//  box-shadow: 0px 0px 20px rgba(0,0,0,.5), inset 1px 1px 0 rgba(255,255,255,.25)
+//  .tooltip__item-content
+//    h1, p
+//      @extend .h5-alternate
+//      margin: 5px
+//      padding: 0
+//      line-height: $double-base-line-height
+//      color: $dark-blue
+//      text-shadow: none

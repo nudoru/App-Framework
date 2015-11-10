@@ -2360,7 +2360,6 @@ h1 {
   margin-bottom: 33px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 3.344rem;
-  font-weight: 400;
   line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
@@ -2372,7 +2371,6 @@ h2 {
   margin-bottom: 33px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.618rem;
-  font-weight: 400;
   line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
@@ -2384,7 +2382,6 @@ h2 {
   margin-bottom: 33px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.067rem;
-  font-weight: 400;
   line-height: 33px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
@@ -2396,7 +2393,6 @@ h2 {
   margin-bottom: 22px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.618rem;
-  font-weight: 400;
   line-height: 22px;
   text-rendering: optimizeLegibility;
   font-weight: 300;
@@ -2408,7 +2404,6 @@ h2 {
   margin-bottom: 22px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.277rem;
-  font-weight: 400;
   line-height: 22px;
   text-rendering: optimizeLegibility;
   font-weight: 400;
@@ -2420,7 +2415,6 @@ h2 {
   margin-bottom: 22px;
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
-  font-weight: 400;
   line-height: 22px;
   text-rendering: optimizeLegibility;
   font-weight: 700;
@@ -2444,7 +2438,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   margin-bottom: 22px;
 }
 
-.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p, .h6-alternate {
+.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
   font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-bottom: 22px;
   padding-bottom: 0;
@@ -2471,7 +2465,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   font-weight: 700;
 }
 
-.h5-alternate, .tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p {
+.h5-alternate {
   font-size: 1rem;
   font-weight: 400;
 }
@@ -2490,7 +2484,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
 html {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
-  heigth: 100%;
+  height: 100%;
   font-size: 100%;
 }
 
@@ -2526,7 +2520,6 @@ blockquote {
 pre {
   -ms-word-break: break-all;
   word-break: break-all;
-  word-break: break-word;
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   -ms-hyphens: auto;
@@ -2541,7 +2534,6 @@ a {
   -moz-transition: all 0.1s ease-out;
   -o-transition: all 0.1s ease-out;
   -webkit-transition: all 0.1s ease-out;
-  -ms-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   color: #005eb8;
   outline: none;
@@ -2558,7 +2550,6 @@ a.custom {
   -moz-transition: all 0.1s ease-out;
   -o-transition: all 0.1s ease-out;
   -webkit-transition: all 0.1s ease-out;
-  -ms-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   color: #005eb8;
   outline: none;
@@ -2595,7 +2586,7 @@ ol {
 
 li {
   margin-left: 11px;
-  margin-bottom: 0rem;
+  margin-bottom: 0;
 }
 
 ul ul, ol ol, ul ol, ol ul {
@@ -2900,83 +2891,6 @@ hr {
   margin-left: 91.66667%;
 }
 
-.divcol__container {
-  display: table;
-  table-layout: fixed;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-.divcol__half-left, .half-right, .divcol__one-third-left, .divcol__one-third-right, .divcol__two-thirds-left, .divcol__two-thirds-right, .divcol__one-fourth-left, .divcol__one-fourth-right, .divcol__three-fourths-left, .divcol__three-fourths-right, .divcol__one-sixth-left, .divcol__one-sixth-right, .divcol__one-eighth-left, .divcol__one-eighth-right {
-  display: table-cell;
-  position: relative;
-  overflow: hidden;
-  vertical-align: top;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-.divcol__half-left {
-  width: 50%;
-}
-
-.half-right {
-  width: 50%;
-}
-
-.divcol__one-third-left {
-  width: 33.33333%;
-}
-
-.divcol__one-third-right {
-  width: 33.33333%;
-}
-
-.divcol__two-thirds-left {
-  width: 66.66667%;
-}
-
-.divcol__two-thirds-right {
-  width: 66.66667%;
-}
-
-.divcol__one-fourth-left {
-  width: 25%;
-}
-
-.divcol__one-fourth-right {
-  width: 25%;
-}
-
-.divcol__three-fourths-left {
-  width: 75%;
-}
-
-.divcol__three-fourths-right {
-  width: 75%;
-}
-
-.divcol__one-sixth-left {
-  width: 16.66666%;
-}
-
-.divcol__one-sixth-right {
-  width: 16.66666%;
-}
-
-.divcol__one-eighth-left {
-  width: 12.5%;
-}
-
-.divcol__one-eighth-right {
-  width: 12.5%;
-}
-
 .label, .label-small, .label-big, button, .button-important, input[type="radio"],
 input[type="checkbox"], .messagebox__default .header h1, .selected-light ul.selected-options li, .selected-light ul.selected-active li, label, input[type="text"],
 input[type="password"],
@@ -3097,7 +3011,6 @@ button, .button-important {
   -moz-transition: all 0.1s ease-out;
   -o-transition: all 0.1s ease-out;
   -webkit-transition: all 0.1s ease-out;
-  -ms-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
   padding: 5.5px 33px;
@@ -3264,7 +3177,6 @@ select, textarea {
   -moz-transition: all 0.1s ease-out;
   -o-transition: all 0.1s ease-out;
   -webkit-transition: all 0.1s ease-out;
-  -ms-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   height: 38px;
   min-height: 38px;
@@ -3528,7 +3440,6 @@ textarea {
   -moz-transition: all 0.1s ease-out;
   -o-transition: all 0.1s ease-out;
   -webkit-transition: all 0.1s ease-out;
-  -ms-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   background-color: rgba(0, 0, 0, 0.02);
   height: 44px;
@@ -3614,7 +3525,6 @@ textarea {
 
 .messagebox__warning {
   border: 1px solid #ffc107;
-  border-width: 2px;
 }
 .messagebox__warning .header {
   background-color: #ffc107;
@@ -3626,7 +3536,6 @@ textarea {
 
 .messagebox__danger {
   border: 1px solid #ff3d00;
-  border-width: 2px;
 }
 .messagebox__danger .header {
   background-color: #ff3d00;
@@ -3649,7 +3558,6 @@ textarea {
   padding: 0;
   border: 1px solid #eae8e6;
   border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: #fff;
   display: table;
   position: absolute;
@@ -3811,22 +3719,6 @@ textarea {
 .tooltip__danger .tooltip__item-content h1, .tooltip__danger .tooltip__item-content p {
   color: #fff;
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
-}
-
-.tooltip__coachmark {
-  background-color: #fff;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5), inset 1px 1px 0 rgba(255, 255, 255, 0.25);
-}
-.tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p {
-  color: #fff;
-  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
-}
-.tooltip__coachmark .tooltip__item-content h1, .tooltip__coachmark .tooltip__item-content p {
-  margin: 5px;
-  padding: 0;
-  line-height: 22px;
-  color: #005eb8;
-  text-shadow: none;
 }
 
 .tooltip__top .arrow {
@@ -4150,7 +4042,6 @@ textarea {
   -moz-transition: all 0.1s ease-out;
   -o-transition: all 0.1s ease-out;
   -webkit-transition: all 0.1s ease-out;
-  -ms-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   display: block;
   border-radius: 0;
@@ -4163,7 +4054,6 @@ textarea {
   -moz-transition: all 0.1s ease-out;
   -o-transition: all 0.1s ease-out;
   -webkit-transition: all 0.1s ease-out;
-  -ms-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   border: 1px solid #968c83;
   padding: 1px;
@@ -4253,7 +4143,7 @@ body {
   overflow: hidden;
   text-align: center;
   width: 300px;
-  heigth: 50px;
+  height: 50px;
   margin: auto;
   top: 200px;
   padding: 22px;
