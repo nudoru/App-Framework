@@ -2633,13 +2633,13 @@ hr {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.list-plain, .list-plain-horizontal, .list-comma-separated, .app__header-nav {
+.list-plain, .list-plain-horizontal, .list-comma-separated {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.list-plain-horizontal li, .list-comma-separated li, .app__header-nav li {
+.list-plain-horizontal li, .list-comma-separated li {
   display: inline;
 }
 
@@ -3018,7 +3018,7 @@ legend, .table caption {
   letter-spacing: 0.05rem;
 }
 
-.icon-left i.fa {
+.icon-left i.fa, .app__header-nav button i.fa {
   margin-right: 11px;
 }
 
@@ -3189,22 +3189,22 @@ button:hover, .button-important:hover, button:focus, .button-important:focus {
   background-color: #cc3100;
 }
 
-.button-neutral, .button-neutral-light, .button-neutral-light-negative, .button-disabled, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .messagebox__default .footer .footer-buttons .button button, .toast__item-controls button {
+.button-neutral, .button-neutral-light, .button-neutral-light-negative, .button-disabled, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .messagebox__default .footer .footer-buttons .button button, .toast__item-controls button, .app__header-nav button {
   color: #fff;
   background-color: #968c83;
 }
-.button-neutral:active, .button-neutral-light:active, .button-neutral-light-negative:active, .button-disabled:active, .messagebox__default .footer .footer-buttons .button button:active, .toast__item-controls button:active {
+.button-neutral:active, .button-neutral-light:active, .button-neutral-light-negative:active, .button-disabled:active, .messagebox__default .footer .footer-buttons .button button:active, .toast__item-controls button:active, .app__header-nav button:active {
   background-color: #6e6259;
 }
 
-.button-neutral-light, .button-neutral-light-negative, .button-disabled, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .messagebox__default .footer .footer-buttons .button button, .toast__item-controls button {
+.button-neutral-light, .button-neutral-light-negative, .button-disabled, .toast__information .toast__item-controls button, .toast__success .toast__item-controls button, .toast__warning .toast__item-controls button, .toast__danger .toast__item-controls button, .messagebox__default .footer .footer-buttons .button button, .toast__item-controls button, .app__header-nav button {
   background-color: rgba(255, 255, 255, 0.25);
   color: #968c83;
   border: 1px solid #968c83;
   box-shadow: none;
   text-shadow: none;
 }
-.button-neutral-light:active, .button-neutral-light-negative:active, .button-disabled:active, .messagebox__default .footer .footer-buttons .button button:active, .toast__item-controls button:active {
+.button-neutral-light:active, .button-neutral-light-negative:active, .button-disabled:active, .messagebox__default .footer .footer-buttons .button button:active, .toast__item-controls button:active, .app__header-nav button:active {
   color: #005eb8;
   border: 1px solid #00a9e0;
   background-color: rgba(0, 0, 0, 0.1);
@@ -4281,45 +4281,54 @@ body {
   padding: 22px;
 }
 
-.app__padded-content {
+.app__padded-content, .app__header h1, .app__header-logo {
   padding: 22px;
 }
 
 .app__header {
   display: block;
   width: 100%;
+  height: 65px;
   overflow: hidden;
-  background-color: #eee;
+  background-color: #fff;
+  margin-bottom: 33px;
+  color: #005eb8;
 }
 .app__header h1 {
   margin: 0;
-  padding: 0;
-  font-size: 1.277rem;
+  font-size: 1.618rem;
   line-height: 1.277rem;
 }
 
 .app__header-logo {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
   float: left;
   margin-right: 11px;
+  height: 65px;
+  background: #005eb8;
+  color: #fff;
 }
 .app__header-logo i.fa {
-  color: #968c83;
-  font-size: 1.277rem;
+  font-size: 2.067rem;
   line-height: 1.277rem;
 }
 
 .app__header-nav {
-  float: right;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
 }
-.app__header-nav li {
-  margin-right: 22px;
+.app__header-nav button {
+  float: left;
+  margin: 0;
+  height: 65px;
+  border-radius: 0;
+  border: 1px solid transparent;
+  color: #00a9e0;
 }
-.app__header-nav li:last-of-type {
-  margin-right: 0;
-}
-.app__header-nav li a {
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-decoration: none;
+.app__header-nav button:hover {
+  color: #005eb8;
 }
 
 .app__hero, .app__hero-small {
@@ -4346,7 +4355,7 @@ body {
 
 .app__content {
   margin: 0;
-  background-color: #fff;
+  background-color: #eee;
 }
 
 .app__side-bar {

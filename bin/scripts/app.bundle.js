@@ -294,7 +294,7 @@ module.exports = exports['default'];
 
 },{"../../nori/Nori.js":12,"../../nori/action/ActionConstants.js":13,"../../nudoru/core/ArrayUtils.js":40,"../../nudoru/core/NumberUtils.js":41,"../../nudoru/core/StringUtils.js":43,"../../vendor/lodash.min.js":45,"../action/ActionConstants.js":3}],6:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
-    value: true
+  value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -338,67 +338,67 @@ var vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('s
  */
 var AppViewModule = _noriNoriJs2['default'].createView({
 
-    mixins: [(0, _nudoruComponentsMixinNudoruControlsJs2['default'])()],
+  mixins: [(0, _nudoruComponentsMixinNudoruControlsJs2['default'])()],
 
-    initialize: function initialize() {
-        this.defineTemplates();
+  initialize: function initialize() {
+    this.defineTemplates();
 
-        this.attachTemplatesToEl('body', ['applicationscaffold']);
+    this.attachTemplatesToEl('body', ['applicationscaffold']);
 
-        this.initializeRouteViews();
-        this.initializeNudoruControls();
+    this.initializeRouteViews();
+    this.initializeNudoruControls();
 
-        this.mapRoutes();
-    },
+    this.mapRoutes();
+  },
 
-    defineTemplates: function defineTemplates() {
-        _noriViewTemplatingJs2['default'].addTemplate('applicationscaffold', '<div>\n      <div id="app__container">\n          <div id="app__contents">\n              <header class="app__header">\n                  <div class="app__padded-content">\n                      <div class="app__header-logo"><i class="fa fa-cogs"></i></div>\n                      <h1>Appliation</h1>\n                  </div>\n              </header>\n              <section class="app__content">\n                  <div class="app__padded-content">\n                      <section id="contents"></section>\n                  </div>\n              </section>\n          </div>\n      </div>\n      <div id="app__components">\n          <div id="initialization__cover">\n              <div class="initialization__message">\n                  <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">\n              </div>\n          </div>\n          <div id="tooltip__container"></div>\n          <div id="modal__container"></div>\n          <div id="messagebox__container"></div>\n          <div id="toast__container"></div>\n      </div>\n    </div>');
-    },
+  defineTemplates: function defineTemplates() {
+    _noriViewTemplatingJs2['default'].addTemplate('applicationscaffold', '<div>\n      <div id="app__container">\n          <div id="app__contents">\n              <header class="app__header">\n                  <div class="app__header-logo"><i class="fa fa-dashboard"></i></div>\n                  <h1>Application</h1>\n                  <nav class="app__header-nav">\n                    <button><i class="fa fa-table"></i>Projects</button>\n                    <button><i class="fa fa-users"></i>People</button>\n                    <button><i class="fa fa-life-bouy"></i>How Do I?</button>\n                  </nav>\n              </header>\n              <section class="app__content">\n                  <div class="app__padded-content">\n                      <section id="contents"></section>\n                  </div>\n              </section>\n          </div>\n      </div>\n      <div id="app__components">\n          <div id="initialization__cover">\n              <div class="initialization__message">\n                  <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">\n              </div>\n          </div>\n          <div id="tooltip__container"></div>\n          <div id="modal__container"></div>\n          <div id="messagebox__container"></div>\n          <div id="toast__container"></div>\n      </div>\n    </div>');
+  },
 
-    mapRoutes: function mapRoutes() {
-        var vcDefault = (0, _TemplateViewComponentJs2['default'])('default'),
-            vcComponents = (0, _ComponentsTestingJs2['default'])('components'),
-            vcControls = (0, _ControlsTestingJs2['default'])('controls');
+  mapRoutes: function mapRoutes() {
+    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default'),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components'),
+        vcControls = (0, _ControlsTestingJs2['default'])('controls');
 
-        // map id's with instances and mount location selector
-        this.set('default', vcDefault, '#contents');
-        this.set('styles', vcStyles, '#contents');
-        this.set('controls', vcControls, '#contents');
-        this.set('components', vcComponents, '#contents');
+    // map id's with instances and mount location selector
+    this.set('default', vcDefault, '#contents');
+    this.set('styles', vcStyles, '#contents');
+    this.set('controls', vcControls, '#contents');
+    this.set('components', vcComponents, '#contents');
 
-        // condition, component ID
-        this.route('/', 'default');
-        this.route('/styles', 'styles');
-        this.route('/controls', 'controls');
-        this.route('/comps', 'components');
-    },
+    // condition, component ID
+    this.route('/', 'default');
+    this.route('/styles', 'styles');
+    this.route('/controls', 'controls');
+    this.route('/comps', 'components');
+  },
 
-    /**
-     * Attach app HTML structure
-     * @param templates
-     */
-    attachTemplatesToEl: function attachTemplatesToEl(mountSelector, templateArray) {
-        var mountEl = document.querySelector(mountSelector);
+  /**
+   * Attach app HTML structure
+   * @param templates
+   */
+  attachTemplatesToEl: function attachTemplatesToEl(mountSelector, templateArray) {
+    var mountEl = document.querySelector(mountSelector);
 
-        if (!templateArray) {
-            return;
-        }
-
-        templateArray.forEach(function (templ) {
-            mountEl.appendChild(_nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(_noriViewTemplatingJs2['default'].getSource(templ, {})));
-        });
-    },
-
-    /**
-     * After app initialization, remove the loading message
-     */
-    removeLoadingMessage: function removeLoadingMessage() {
-        var cover = document.querySelector('#initialization__cover'),
-            message = document.querySelector('.initialization__message');
-
-        cover.parentNode.removeChild(cover);
-        cover.removeChild(message);
+    if (!templateArray) {
+      return;
     }
+
+    templateArray.forEach(function (templ) {
+      mountEl.appendChild(_nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(_noriViewTemplatingJs2['default'].getSource(templ, {})));
+    });
+  },
+
+  /**
+   * After app initialization, remove the loading message
+   */
+  removeLoadingMessage: function removeLoadingMessage() {
+    var cover = document.querySelector('#initialization__cover'),
+        message = document.querySelector('.initialization__message');
+
+    cover.parentNode.removeChild(cover);
+    cover.removeChild(message);
+  }
 
 });
 
