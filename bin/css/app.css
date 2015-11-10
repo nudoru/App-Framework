@@ -3926,7 +3926,7 @@ textarea {
 
 .pika-lendar {
   float: left;
-  width: 240px;
+  width: 280px;
   margin: 8px;
 }
 
@@ -4041,7 +4041,6 @@ textarea {
 }
 .pika-table abbr {
   border-bottom: none;
-  cursor: help;
 }
 
 .pika-button {
