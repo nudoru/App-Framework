@@ -2358,7 +2358,7 @@ h1 {
   margin: 0;
   padding: 0;
   margin-bottom: 33px;
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Oxygen", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 3.344rem;
   line-height: 33px;
   text-rendering: optimizeLegibility;
@@ -2369,7 +2369,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 33px;
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Oxygen", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.618rem;
   line-height: 33px;
   text-rendering: optimizeLegibility;
@@ -2380,7 +2380,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 33px;
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Oxygen", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 2.067rem;
   line-height: 33px;
   text-rendering: optimizeLegibility;
@@ -2391,7 +2391,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Oxygen", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.618rem;
   line-height: 22px;
   text-rendering: optimizeLegibility;
@@ -2402,7 +2402,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Oxygen", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.277rem;
   line-height: 22px;
   text-rendering: optimizeLegibility;
@@ -2413,7 +2413,7 @@ h2 {
   margin: 0;
   padding: 0;
   margin-bottom: 22px;
-  font-family: "Titillium Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Oxygen", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   line-height: 22px;
   text-rendering: optimizeLegibility;
@@ -2421,7 +2421,7 @@ h2 {
 }
 
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   line-height: 27.5px;
   font-weight: 400;
@@ -2430,7 +2430,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
 }
 
 .initialization__message {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.618rem;
   line-height: 33px;
   font-weight: 400;
@@ -2439,7 +2439,7 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
 }
 
 .h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-bottom: 22px;
   padding-bottom: 0;
   padding-top: 5.5px;
@@ -2493,7 +2493,7 @@ body {
   padding: 0;
   min-height: 100%;
   -webkit-text-size-adjust: none;
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #6e6259;
 }
 
@@ -2910,7 +2910,7 @@ input[type="file"],
 select, textarea, .table th, .table td {
   padding: 0;
   margin: 0;
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   line-height: 22px;
   color: #6e6259;
@@ -3174,19 +3174,19 @@ input[type="tel"],
 input[type="color"],
 input[type="file"],
 select, textarea {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
-  transition: all 0.1s ease-out;
+  -moz-transition: all 0.25s ease-out;
+  -o-transition: all 0.25s ease-out;
+  -webkit-transition: all 0.25s ease-out;
+  transition: all 0.25s ease-out;
   height: 38px;
-  min-height: 38px;
-  line-height: 38px;
   padding: 6px 11px;
   border: 1px solid #968c83;
   border-radius: 5px;
-  background-color: #fff;
+  background-color: #faf9f9;
   color: #005eb8;
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
+  line-height: 1;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
+  text-shadow: 1px 1px 0 #fff;
 }
 input[type="text"]:focus,
 input[type="password"]:focus,
@@ -3204,6 +3204,7 @@ input[type="tel"]:focus,
 input[type="color"]:focus,
 input[type="file"]:focus,
 select:focus, textarea:focus {
+  background-color: #fff;
   border: 1px solid #005eb8;
   box-shadow: 0 0 10px #00a9e0;
   outline: 0;
@@ -3588,7 +3589,7 @@ textarea {
   font-size: 0.8rem;
   margin-bottom: 5.5px;
   color: #6e6259;
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .toast__item-controls {
@@ -3680,7 +3681,7 @@ textarea {
   padding: 0;
   margin: 0;
   line-height: 22px;
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
   color: #005eb8;
 }
@@ -4205,7 +4206,6 @@ body {
   position: absolute;
   top: 0;
   right: 0;
-  height: 100%;
 }
 .app__header-nav button {
   float: left;

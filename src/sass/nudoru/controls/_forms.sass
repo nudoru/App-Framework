@@ -11,18 +11,19 @@ label
   margin: 0 $base-line-height $half-base-line-height 0
 
 %base-form-element
-  +transition-all()
+  +transition-all(.25s)
   @extend %control-text-base
   height: $control-form-element-height
-  min-height: $control-form-element-height
-  line-height: $control-form-element-height
   padding: 6px $base-line-height
   border: $control-border-dark
   border-radius: $control-border-radius
-  background-color: #fff
+  background-color: $color-white-grey-fill
   color: $control-primary-color-dark
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .05)
+  line-height: 1
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .1), inset -2px -2px 0 #fff
+  text-shadow: 1px 1px 0 #fff
   &:focus
+    background-color: #fff
     border: 1px solid $control-primary-color-dark
     box-shadow: 0 0 10px $control-primary-color
     outline: 0
