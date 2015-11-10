@@ -7,7 +7,7 @@ import ControlsTesting from './ControlsTesting.js';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-let vcStyles   = Nori.createComponent('debug-styletest', {})('styles');
+let vcStyles = Nori.createComponent('debug-styletest', {})('styles');
 
 /**
  * View for an application.
@@ -30,55 +30,40 @@ let AppViewModule = Nori.createView({
   },
 
   defineTemplates() {
-    Template.addTemplate('applicationscaffold', `<div id="app__container">
-        <div id="app__contents">
-            <header class="app__header">
-                <div class="app__padded-content">
-                    <div class="app__header-logo"><i class="fa fa-cogs"></i></div>
-                    <h1>Appliation</h1>
-                </div>
-            </header>
-            <section class="app__content">
-                <div class="app__padded-content">
-                    <section id="contents"></section>
-                </div>
-            </section>
-        </div>
-    </div>
-    <div id="initialization__cover">
-            <div class="initialization__message">
-                <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">
-            </div>
-        </div>
-        <div id="tooltip__container"></div>
-        <div id="modal__cover">
-            <div class="modal__background"></div>
-            <div class="modal__close-button"><i class="fa fa-remove"></i></div>
-        </div>
-        <div id="messagebox__container"></div>
-        <div id="toast__container"></div>
+    Template.addTemplate('applicationscaffold', `<div>
+      <div id="app__container">
+          <div id="app__contents">
+              <header class="app__header">
+                  <div class="app__padded-content">
+                      <div class="app__header-logo"><i class="fa fa-cogs"></i></div>
+                      <h1>Appliation</h1>
+                  </div>
+              </header>
+              <section class="app__content">
+                  <div class="app__padded-content">
+                      <section id="contents"></section>
+                  </div>
+              </section>
+          </div>
+      </div>
+      <div id="app__components">
+          <div id="initialization__cover">
+              <div class="initialization__message">
+                  <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">
+              </div>
+          </div>
+          <div id="tooltip__container"></div>
+          <div id="modal__container"></div>
+          <div id="messagebox__container"></div>
+          <div id="toast__container"></div>
+      </div>
     </div>`);
-
-    //Template.addTemplate('applicationcomponentsscaffold', `<div id="app__components">
-  //      <div id="initialization__cover">
-  //          <div class="initialization__message">
-  //              <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">
-  //          </div>
-  //      </div>
-  //      <div id="tooltip__container"></div>
-  //      <div id="modal__cover">
-  //          <div class="modal__background"></div>
-  //          <div class="modal__close-button"><i class="fa fa-remove"></i></div>
-  //      </div>
-  //      <div id="messagebox__container"></div>
-  //      <div id="toast__container"></div>
-  //  </div>`);
-  //},
+  },
 
   mapRoutes() {
     let vcDefault    = TemplateViewFactory('default'),
         vcComponents = ComponentTesting('components'),
-        vcControls = ControlsTesting('controls');
+        vcControls   = ControlsTesting('controls');
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault, '#contents');

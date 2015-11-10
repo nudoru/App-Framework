@@ -343,7 +343,7 @@ var AppViewModule = _noriNoriJs2['default'].createView({
     initialize: function initialize() {
         this.defineTemplates();
 
-        this.attachTemplatesToEl('body', ['applicationscaffold', 'applicationcomponentsscaffold']);
+        this.attachTemplatesToEl('body', ['applicationscaffold']);
 
         this.initializeRouteViews();
         this.initializeNudoruControls();
@@ -352,9 +352,7 @@ var AppViewModule = _noriNoriJs2['default'].createView({
     },
 
     defineTemplates: function defineTemplates() {
-        _noriViewTemplatingJs2['default'].addTemplate('applicationscaffold', '<div id="app__container">\n        <div id="app__contents">\n            <header class="app__header">\n                <div class="app__padded-content">\n                    <div class="app__header-logo"><i class="fa fa-cogs"></i></div>\n                    <h1>Appliation</h1>\n                </div>\n            </header>\n            <section class="app__content">\n                <div class="app__padded-content">\n                    <section id="contents"></section>\n                </div>\n            </section>\n        </div>\n    </div>');
-
-        _noriViewTemplatingJs2['default'].addTemplate('applicationcomponentsscaffold', '<div id="app__components">\n        <div id="initialization__cover">\n            <div class="initialization__message">\n                <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">\n            </div>\n        </div>\n        <div id="tooltip__container"></div>\n        <div id="modal__cover">\n            <div class="modal__background"></div>\n            <div class="modal__close-button"><i class="fa fa-remove"></i></div>\n        </div>\n        <div id="messagebox__container"></div>\n        <div id="toast__container"></div>\n    </div>');
+        _noriViewTemplatingJs2['default'].addTemplate('applicationscaffold', '<div>\n      <div id="app__container">\n          <div id="app__contents">\n              <header class="app__header">\n                  <div class="app__padded-content">\n                      <div class="app__header-logo"><i class="fa fa-cogs"></i></div>\n                      <h1>Appliation</h1>\n                  </div>\n              </header>\n              <section class="app__content">\n                  <div class="app__padded-content">\n                      <section id="contents"></section>\n                  </div>\n              </section>\n          </div>\n      </div>\n      <div id="app__components">\n          <div id="initialization__cover">\n              <div class="initialization__message">\n                  <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">\n              </div>\n          </div>\n          <div id="tooltip__container"></div>\n          <div id="modal__container"></div>\n          <div id="messagebox__container"></div>\n          <div id="toast__container"></div>\n      </div>\n    </div>');
     },
 
     mapRoutes: function mapRoutes() {
@@ -3936,7 +3934,7 @@ var MixinNudoruControls = function MixinNudoruControls() {
     _nudoruComponentsToolTipViewJs2['default'].initialize('tooltip__container');
     _nudoruComponentsToastViewJs2['default'].initialize('toast__container');
     _nudoruComponentsMessageBoxViewJs2['default'].initialize('messagebox__container');
-    _nudoruComponentsModalCoverViewJs2['default'].initialize();
+    _nudoruComponentsModalCoverViewJs2['default'].initialize('modal__container');
   }
 
   function mbCreator() {
@@ -4031,9 +4029,13 @@ var _nudoruBrowserBrowserInfoJs = require('../../nudoru/browser/BrowserInfo.js')
 
 var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
 
+var _noriViewTemplatingJs = require('../../nori/view/Templating.js');
+
+var _noriViewTemplatingJs2 = _interopRequireDefault(_noriViewTemplatingJs);
+
 var ModalCoverViewModule = function ModalCoverViewModule() {
 
-  var _mountPoint = document,
+  var _mountPoint = undefined,
       _modalCoverEl = undefined,
       _modalBackgroundEl = undefined,
       _modalCloseButtonEl = undefined,
@@ -4041,11 +4043,15 @@ var ModalCoverViewModule = function ModalCoverViewModule() {
       _isVisible = undefined,
       _notDismissible = undefined;
 
-  function initialize() {
+  function initialize(elID) {
+
+    _mountPoint = document.getElementById(elID);
+    defineTemplates();
+    _mountPoint.appendChild(_noriViewTemplatingJs2['default'].asElement('modal--container', {}));
 
     _isVisible = true;
 
-    _modalCoverEl = _mountPoint.getElementById('modal__cover');
+    _modalCoverEl = _mountPoint.querySelector('#modal__cover');
     _modalBackgroundEl = _mountPoint.querySelector('.modal__background');
     _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
 
@@ -4057,6 +4063,10 @@ var ModalCoverViewModule = function ModalCoverViewModule() {
     });
 
     hide(false);
+  }
+
+  function defineTemplates() {
+    _noriViewTemplatingJs2['default'].addTemplate('modal--container', '<div id="modal__cover">\n              <div class="modal__background"></div>\n              <div class="modal__close-button"><i class="fa fa-remove"></i></div>\n          </div>');
   }
 
   function getIsVisible() {
@@ -4171,7 +4181,7 @@ var ModalCoverView = ModalCoverViewModule();
 exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":30,"../../vendor/rxjs/rx.lite.min.js":46}],38:[function(require,module,exports){
+},{"../../nori/view/Templating.js":27,"../../nudoru/browser/BrowserInfo.js":30,"../../vendor/rxjs/rx.lite.min.js":46}],38:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });

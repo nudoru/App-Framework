@@ -14,7 +14,7 @@ let MixinNudoruControls = function () {
     _toolTipView.initialize('tooltip__container');
     _notificationView.initialize('toast__container');
     _messageBoxView.initialize('messagebox__container');
-    _modalCoverView.initialize();
+    _modalCoverView.initialize('modal__container');
   }
 
   function mbCreator() {

@@ -1,10 +1,10 @@
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import BrowserInfo  from '../../nudoru/browser/BrowserInfo.js';
-
+import Template from '../../nori/view/Templating.js';
 
 let ModalCoverViewModule = function () {
 
-  let _mountPoint = document,
+  let _mountPoint,
       _modalCoverEl,
       _modalBackgroundEl,
       _modalCloseButtonEl,
@@ -12,11 +12,15 @@ let ModalCoverViewModule = function () {
       _isVisible,
       _notDismissible;
 
-  function initialize() {
+  function initialize(elID) {
+
+    _mountPoint = document.getElementById(elID);
+    defineTemplates();
+    _mountPoint.appendChild(Template.asElement('modal--container', {}));
 
     _isVisible = true;
 
-    _modalCoverEl       = _mountPoint.getElementById('modal__cover');
+    _modalCoverEl       = _mountPoint.querySelector('#modal__cover');
     _modalBackgroundEl  = _mountPoint.querySelector('.modal__background');
     _modalCloseButtonEl = _mountPoint.querySelector('.modal__close-button');
 
@@ -29,6 +33,13 @@ let ModalCoverViewModule = function () {
       });
 
     hide(false);
+  }
+
+  function defineTemplates() {
+    Template.addTemplate('modal--container', `<div id="modal__cover">
+              <div class="modal__background"></div>
+              <div class="modal__close-button"><i class="fa fa-remove"></i></div>
+          </div>`);
   }
 
   function getIsVisible() {
