@@ -9,7 +9,8 @@
     position: relative;
     color: #333;
     background: #fff;
-    border: 1px solid rgb(0,115,119);
+    border: $control-border-dark;
+    border-radius: $control-border-radius;
 
     &.is-hidden {
         display: none;
@@ -17,7 +18,7 @@
 
     &.is-bound {
         position: absolute;
-        box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
+        @include shadow__one-edge-faint;
     }
 }
 
@@ -44,7 +45,7 @@
 .pika-title {
     position: relative;
     text-align: center;
-    color: rgb(0,115,119) !important;
+    color: $control-primary-color-dark;
     select {
         cursor: pointer;
         position: absolute;
@@ -52,7 +53,6 @@
         margin: 0;
         left: 0;
         top: 5px;
-        filter: alpha(opacity=0);
         opacity: 0;
     }
 }
@@ -133,6 +133,14 @@
     border-spacing: 0;
     border: 0;
 
+    tr {
+        border-bottom: $control-border;
+
+        &:last-of-type {
+            border-bottom: none;
+        }
+    }
+
     th,
     td {
         width: 14.285714285714286%;
@@ -156,33 +164,30 @@
 .pika-button {
     cursor: pointer;
     display: block;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
     outline: none;
     border: 0 !important;
     margin: 0 !important;
     width: 100%;
-    padding: 5px !important;
+    padding: 2px 10px;
     color: #666;
-    font-size: 12px !important;
-    line-height: 15px !important;
-    text-align: right !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-    background: #f5f5f5;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    border-radius: 0;
+    box-shadow: none;
+    text-shadow: none;
+    background: $color-white-grey-fill;
 
     .is-today & {
-        color: rgb(0,115,119);
+        color: $clr-orange-900;
         font-weight: bold;
     }
 
     .is-selected & {
         color: #fff;
         font-weight: bold;
-        background: rgb(0,94,184);
-        box-shadow: inset 0 1px 3px rgb(0,169,224) !important;
-        border-radius: 3px !important;
+        background: $clr-orange-900;
+        border-radius: 50px;
     }
 
     .is-disabled & {
@@ -194,9 +199,8 @@
 
     &:hover {
         color: #fff;
-        background: rgb(0,156,166);
-        box-shadow: none;
-        border-radius: 3px !important;
+        background: $control-primary-color;
+        border-radius: $control-border-radius;
     }
 }
 

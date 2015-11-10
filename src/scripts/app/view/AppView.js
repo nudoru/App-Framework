@@ -21,7 +21,7 @@ let AppViewModule = Nori.createView({
   initialize: function () {
     this.defineTemplates();
 
-    this.attachTemplatesToEl('body', ['applicationscaffold', 'applicationcomponentsscaffold']);
+    this.attachTemplatesToEl('body', ['applicationscaffold']);
 
     this.initializeRouteViews();
     this.initializeNudoruControls();
@@ -44,10 +44,8 @@ let AppViewModule = Nori.createView({
                 </div>
             </section>
         </div>
-    </div>`);
-
-    Template.addTemplate('applicationcomponentsscaffold', `<div id="app__components">
-        <div id="initialization__cover">
+    </div>
+    <div id="initialization__cover">
             <div class="initialization__message">
                 <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">
             </div>
@@ -60,7 +58,22 @@ let AppViewModule = Nori.createView({
         <div id="messagebox__container"></div>
         <div id="toast__container"></div>
     </div>`);
-  },
+
+    //Template.addTemplate('applicationcomponentsscaffold', `<div id="app__components">
+  //      <div id="initialization__cover">
+  //          <div class="initialization__message">
+  //              <h1>Please Wait ...</h1><img src="img/loading_squares_g.gif" alt="Loading" class="loader">
+  //          </div>
+  //      </div>
+  //      <div id="tooltip__container"></div>
+  //      <div id="modal__cover">
+  //          <div class="modal__background"></div>
+  //          <div class="modal__close-button"><i class="fa fa-remove"></i></div>
+  //      </div>
+  //      <div id="messagebox__container"></div>
+  //      <div id="toast__container"></div>
+  //  </div>`);
+  //},
 
   mapRoutes() {
     let vcDefault    = TemplateViewFactory('default'),

@@ -61,41 +61,51 @@
 }
 
 .selected-light {
+
   input {
-    font-size: $ms-0;
+    height: 1px;
+    width: 1px;
+    font-size: 1px;
   }
 
   ul {
+    // drop down
     &.selected-options {
-      border: $control-border;
-      border-radius: 0;
+      @include shadow__one-edge-faint;
+      border: $control-border-dark;
+      border-top: none;
       background-color: #fff;
       color: $control-primary-color-dark;
+      border-radius: 0 0 $control-border-radius $control-border-radius;
 
       li {
-        padding: $half-base-line-height;
-        border-radius: $control-border-radius;
+        @include transition-all();
+        @extend .label;
+        display: block;
+        border-radius: 0;
 
         &:hover {
-          background: #F7F7F7;
+          background: $control-primary-color;
+          color: #fff;
         }
       }
     }
 
+    // options box
     &.selected-active {
+      @include transition-all();
       border: $control-border-dark;
-      padding: $half-base-line-height;
+      padding: 1px;
       border-radius: $control-border-radius;
       box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .05);
 
       &.focus {
-        border-radius: 2px 2px 0 0;
+        border-radius: $control-border-radius $control-border-radius 0 0;
+        border-bottom: $control-border;
       }
 
       li {
-        margin: 2px;
-        padding: $half-base-line-height;
-
+        @extend .label;
       }
     }
   }
@@ -103,16 +113,19 @@
   &.selected-multiple {
     ul.selected-active {
       li {
-        background: #F7F7F7;
+        @extend .label-information;
 
         &:hover {
-          background: #F1F1F1;
+          background: $control-primary-color-dark;
         }
 
         &:after {
-          content: 'x';
-          color: red;
-          padding-left: 10px;
+          position: relative;
+          top: -1px;
+          content: '\f00d';
+          font-family: 'FontAwesome';
+          color: #fff;
+          padding-left: $base-line-height;
         }
       }
     }
@@ -121,7 +134,8 @@
   &.selected-single {
     ul.selected-options {
       li.active {
-        background: #F7F7F7;
+        color: #fff;
+        background: $control-primary-color;
       }
 
       input {
