@@ -58,6 +58,7 @@
 $z-index-initialization: 1100
 $app-column-width: 100%
 $app-header-height: 65px
+$app-drawer-width: 200px
 //------------------------------------------------------------------------------
 //  Scaffold
 //------------------------------------------------------------------------------
@@ -81,9 +82,20 @@ body
   bottom: 100%
   min-height: 100%
   top: 0
-  left: 0
+  left: $app-drawer-width
   right: 0
   overflow-y: auto
+
+.app__drawer
+  @extend %small-headers
+  width: $app-drawer-width
+  margin-bottom: -99999px
+  padding-bottom: 99999px
+  overflow: hidden
+  background: $dark-warm-grey
+  box-shadow: inset -50px -50px 50px hsla(0,0%,0%, 0.1)
+  h1,h2,h3,h4,h5 h6,p,li
+    color: #fff
 
 //------------------------------------------------------------------------------
 //  Elements
@@ -130,12 +142,12 @@ body
 .app__padded-content
   padding: $double-base-line-height
   
-.app__header
+.app__header, .app__drawer-header
   display: block
   width: 100%
   height: $app-header-height
   overflow: hidden
-  background-color: #fff
+  background: #fff
   color: $dark-blue
   border-bottom: 1px solid $color-white-grey-line
   h1
@@ -176,6 +188,13 @@ body
       border: none
       border-bottom: 5px solid $dark-blue
 
+.app__drawer-header
+  background: hsla(0, 0%, 0%, 0.2)
+  border: 1px solid hsla(0, 0%, 0%, 0.2)
+  h1
+    font-size: $ms-0
+    font-weight: 700
+
 .app__hero
   background-color: $dark-warm-grey
   display: block
@@ -200,12 +219,4 @@ body
   margin: 0
   background-color: $color-white-grey-fill
 
-.app__side-bar
-  @extend %small-headers
-  margin-bottom: -99999px
-  padding-bottom: 99999px
-  overflow: hidden
-  background: $dark-warm-grey
-  box-shadow: inset -50px -50px 50px hsla(0,0%,0%, 0.1)
-  h1,h2,h3,h4,h5 h6,p,li
-    color: #fff
+

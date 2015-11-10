@@ -43,22 +43,18 @@ let AppViewModule = Nori.createView({
                   </nav>
               </header>
               <section class="app__content">
-                <div class="grid__12-container">
-                  <div class="row-grid">
-                    <div class="grid__col-3 app__side-bar">
-                      <div class="app__padded-content">
-                        <h1>Sidebar</h1>
-                        <p>Woot</p>
-                      </div>
-                    </div>
-                    <div class="grid__col-9">
-                      <div class="app__padded-content">
-                        <section id="contents"></section>
-                      </div>
-                    </div>
-                  </div>
+                <div class="app__padded-content">
+                  <section id="contents"></section>
                 </div>
               </section>
+          </div>
+          <div class="app__drawer">
+            <header class="app__drawer-header">
+                <h1>Sidebar</h1>
+            </header>
+            <div class="app__padded-content">
+              <p>Woot</p>
+            </div>
           </div>
       </div>
       <div id="app__components">
