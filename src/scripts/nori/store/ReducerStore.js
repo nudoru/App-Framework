@@ -8,6 +8,7 @@ import Is from '../../nudoru/util/is.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import _ from '../../vendor/lodash.min.js';
 import Invariant from '../utils/Invariant.js';
+import isPlainObject from '../../vendor/is-plain-object.min.js';
 
 const STORE_INITIALIZE_TYPE = '$$$initstore$$$';
 
@@ -65,7 +66,7 @@ export default function () {
   }
 
   function isValidAction(action) {
-    if(!Is.object(action)) {
+    if(!isPlainObject(action)) {
       console.warn('ReducerStore, action must be plain JS object', action);
       return false;
     }

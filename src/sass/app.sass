@@ -137,6 +137,7 @@ body
   overflow: hidden
   background-color: #fff
   color: $dark-blue
+  border-bottom: 1px solid $color-white-grey-line
   h1
     @extend .app__padded-content
     margin: 0
@@ -170,6 +171,8 @@ body
     color: $light-blue
     &:hover
       color: $dark-blue
+    &:active
+      border: 1px solid transparent
 
 .app__hero
   background-color: $dark-warm-grey
@@ -193,7 +196,7 @@ body
 
 .app__content
   margin: 0
-  background-color: #eee
+  background-color: $color-white-grey-fill
 
 .app__side-bar
   @extend %small-headers

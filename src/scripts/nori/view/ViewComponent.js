@@ -15,6 +15,7 @@
  */
 
 import _ from '../../vendor/lodash.min.js';
+import isPlainObject from '../../vendor/is-plain-object.min.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import Template from './Templating.js';
 import Renderer from './Renderer.js';
@@ -110,11 +111,8 @@ export default function () {
       return;
     }
 
+    // Set default state
     nextState = nextState || this.getDefaultState();
-
-    if (!_element.shouldUpdate(null, nextState)) {
-      return;
-    }
 
     this.$updatePropsAndState(null, nextState);
   }
@@ -124,6 +122,11 @@ export default function () {
    * @param nextProps
    */
   function setProps(nextProps) {
+    if(!isPlainObject(nextProps)) {
+      console.warn('Must call setProps with an object');
+      return;
+    }
+
     if (_lifecycleState === LS_RENDERING) {
       console.warn('Can\'t update props during rendering', this.id());
       return;
@@ -134,16 +137,16 @@ export default function () {
       this.componentWillReceiveProps(nextProps);
     }
 
-    if (!_element.shouldUpdate(nextProps, null)) {
-      return;
-    }
-
     this.$updatePropsAndState(nextProps, null);
   }
 
   function $updatePropsAndState(nextProps, nextState) {
     nextProps = nextProps || _element.props;
     nextState = nextState || _element.state;
+
+    if (!_element.shouldUpdate(nextProps, nextState)) {
+      return;
+    }
 
     if (typeof this.componentWillUpdate === 'function' && _lifecycleState > LS_INITED) {
       this.componentWillUpdate(nextProps, nextState);
@@ -164,6 +167,10 @@ export default function () {
   //----------------------------------------------------------------------------
   //  Rendering HTML
   //----------------------------------------------------------------------------
+
+  function forceUpdate() {
+    this.$renderAfterPropsOrStateChange();
+  }
 
   /**
    * Handle rendering after props or state change
@@ -477,6 +484,7 @@ export default function () {
     dom,
     isMounted,
     tmpl,
+    forceUpdate,
     $renderAfterPropsOrStateChange,
     $renderComponent,
     render,

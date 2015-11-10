@@ -4291,6 +4291,7 @@ body {
   overflow: hidden;
   background-color: #fff;
   color: #005eb8;
+  border-bottom: 1px solid #eae8e6;
 }
 .app__header h1 {
   margin: 0;
@@ -4327,6 +4328,9 @@ body {
 .app__header-nav button:hover {
   color: #005eb8;
 }
+.app__header-nav button:active {
+  border: 1px solid transparent;
+}
 
 .app__hero, .app__hero-small {
   background-color: #6e6259;
@@ -4352,7 +4356,7 @@ body {
 
 .app__content {
   margin: 0;
-  background-color: #eee;
+  background-color: #faf9f9;
 }
 
 .app__side-bar {
