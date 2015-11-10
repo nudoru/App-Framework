@@ -98,6 +98,7 @@
       padding: 1px;
       border-radius: $control-border-radius*1.5;
       box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .05);
+      min-height: 45px;
 
       &.focus {
         border-radius: $control-border-radius $control-border-radius 0 0;
