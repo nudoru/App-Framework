@@ -202,11 +202,11 @@ export default Nori.createComponent('debug-components', {
   ChildTest('append1', {
     mount      : '#debug-child',
     mountMethod: 'append',
-    label      : 'Appened1'
+    label      : 'aaAppened1'
   }),
   ChildTest('append2', {
     mount      : '#debug-child',
     mountMethod: 'append',
-    label      : 'Appened2'
+    label      : 'aaAppened2'
   })
 );

@@ -6,6 +6,7 @@ import ComponentTesting from './ComponentsTesting.js';
 import ControlsTesting from './ControlsTesting.js';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import ChildTest from './ChildTest.js';
 
 /**
  * View for an application.
@@ -71,7 +72,17 @@ let AppViewModule = Nori.createView({
 
   mapRoutes() {
     let vcDefault    = TemplateViewFactory('default', {mount: '#contents'}),
-        vcComponents = ComponentTesting('components', {mount: '#contents'}),
+        vcComponents = ComponentTesting('components', {mount: '#contents'},
+          ChildTest('append1', {
+            mount      : '#debug-child',
+            mountMethod: 'append',
+            label      : 'bbAppened1'
+          }),
+          ChildTest('append2', {
+            mount      : '#debug-child',
+            mountMethod: 'append',
+            label      : 'bbAppened2'
+          })),
         vcControls   = ControlsTesting('controls', {mount: '#contents'}),
         vcStyles     = Nori.createComponent('debug-styletest', {})('styles', {mount: '#contents'});
 

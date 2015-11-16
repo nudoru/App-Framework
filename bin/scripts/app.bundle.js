@@ -3527,6 +3527,10 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
+var _ChildTestJs = require('./ChildTest.js');
+
+var _ChildTestJs2 = _interopRequireDefault(_ChildTestJs);
+
 /**
  * View for an application.
  */
@@ -3551,7 +3555,15 @@ var AppViewModule = _noriNoriJs2['default'].createView({
 
   mapRoutes: function mapRoutes() {
     var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { mount: '#contents' }),
-        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }, (0, _ChildTestJs2['default'])('append1', {
+      mount: '#debug-child',
+      mountMethod: 'append',
+      label: 'bbAppened1'
+    }), (0, _ChildTestJs2['default'])('append2', {
+      mount: '#debug-child',
+      mountMethod: 'append',
+      label: 'bbAppened2'
+    })),
         vcControls = (0, _ControlsTestingJs2['default'])('controls', { mount: '#contents' }),
         vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('styles', { mount: '#contents' });
 
@@ -3602,7 +3614,7 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":13,"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":32,"../../nudoru/components/MixinNudoruControls.js":37,"../store/AppStore.js":6,"./ComponentsTesting.js":9,"./ControlsTesting.js":10,"./TemplateViewComponent.js":11}],8:[function(require,module,exports){
+},{"../../nori/Nori.js":13,"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":32,"../../nudoru/components/MixinNudoruControls.js":37,"../store/AppStore.js":6,"./ChildTest.js":8,"./ComponentsTesting.js":9,"./ControlsTesting.js":10,"./TemplateViewComponent.js":11}],8:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3861,11 +3873,11 @@ exports['default'] = _noriNoriJs2['default'].createComponent('debug-components',
 }), (0, _ChildTestJs2['default'])('append1', {
   mount: '#debug-child',
   mountMethod: 'append',
-  label: 'Appened1'
+  label: 'aaAppened1'
 }), (0, _ChildTestJs2['default'])('append2', {
   mount: '#debug-child',
   mountMethod: 'append',
-  label: 'Appened2'
+  label: 'aaAppened2'
 }));
 module.exports = exports['default'];
 
@@ -4866,8 +4878,8 @@ exports['default'] = function () {
    * @returns {*}
    */
   function createComponent(type, source) {
-    for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-      children[_key - 2] = arguments[_key];
+    for (var _len = arguments.length, achildren = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      achildren[_key - 2] = arguments[_key];
     }
 
     return function (id, props) {
@@ -4886,7 +4898,12 @@ exports['default'] = function () {
       template.__index__ = _viewIDIndex++;
       template.__id__ = id || 'norivc' + _viewIDIndex;
       template.__type__ = type;
-      template.__children__ = children;
+
+      for (var _len2 = arguments.length, bchildren = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        bchildren[_key2 - 2] = arguments[_key2];
+      }
+
+      template.__children__ = achildren || bchildren;
 
       previousInitialize = template.constructor;
       previousGetDefaultProps = template.getDefaultProps;
@@ -4952,10 +4969,8 @@ exports['default'] = function () {
 
   /**
    * Show a mapped view
-   * @param componentID
-   * @param dataObj
    */
-  function showView(componentID, mountPoint) {
+  function showView(componentID) {
     var view = _viewMap[componentID];
 
     if (!view) {
@@ -5690,7 +5705,7 @@ var LS_NO_INIT = 0,
 
 exports['default'] = function () {
 
-  var _element = undefined,
+  var _stateElement = undefined,
       _events = undefined,
       _lifecycleState = undefined,
       _templateCache = undefined,
@@ -5706,7 +5721,7 @@ exports['default'] = function () {
   function componentConstructor() {
     var _this = this;
 
-    _element = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
+    _stateElement = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
     _events = (0, _RxEventDelegatorJs2['default'])();
     _lifecycleState = LS_NO_INIT;
     state = {};
@@ -5800,10 +5815,10 @@ exports['default'] = function () {
   }
 
   function $updatePropsAndState(nextProps, nextState) {
-    nextProps = nextProps || _element.props;
-    nextState = nextState || _element.state;
+    nextProps = nextProps || _stateElement.props;
+    nextState = nextState || _stateElement.state;
 
-    if (!_element.shouldUpdate(nextProps, nextState)) {
+    if (!_stateElement.shouldUpdate(nextProps, nextState)) {
       return;
     }
 
@@ -5811,15 +5826,15 @@ exports['default'] = function () {
       this.componentWillUpdate(nextProps, nextState);
     }
 
-    _element.setProps(nextProps);
-    _element.setState(nextState);
-    props = _vendorLodashMinJs2['default'].assign(props, _element.props);
-    state = _vendorLodashMinJs2['default'].assign(state, _element.state);
+    _stateElement.setProps(nextProps);
+    _stateElement.setState(nextState);
+    props = _vendorLodashMinJs2['default'].assign(props, _stateElement.props);
+    state = _vendorLodashMinJs2['default'].assign(state, _stateElement.state);
 
     this.$renderAfterPropsOrStateChange();
 
     if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
-      this.componentDidUpdate(_element.lastProps, _element.lastState);
+      this.componentDidUpdate(_stateElement.lastProps, _stateElement.lastState);
     }
   }
 
@@ -5829,6 +5844,7 @@ exports['default'] = function () {
 
   function forceUpdate() {
     this.$renderAfterPropsOrStateChange(true);
+    this.$forceUpdateChildren();
   }
 
   /**
@@ -5854,7 +5870,7 @@ exports['default'] = function () {
     _lifecycleState = LS_RENDERING;
 
     if (!_templateCache) {
-      _templateCache = this.template(_element.props, _element.state);
+      _templateCache = this.template(_stateElement.props, _stateElement.state);
     }
 
     this.$renderChildren();
@@ -5868,7 +5884,7 @@ exports['default'] = function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template() {
-    var templateId = _element.props.type || this.id();
+    var templateId = _stateElement.props.type || this.id();
     return _TemplatingJs2['default'].getTemplate(templateId);
   }
 
@@ -5877,7 +5893,7 @@ exports['default'] = function () {
    * Should return HTML
    */
   function render() {
-    var combined = _vendorLodashMinJs2['default'].merge({}, _element.props, _element.state),
+    var combined = _vendorLodashMinJs2['default'].merge({}, _stateElement.props, _stateElement.state),
         templateFunc = _templateCache || this.template();
 
     return templateFunc(combined);
@@ -5915,14 +5931,14 @@ exports['default'] = function () {
 
     _domElementCache = (0, _RendererJs2['default'])({
       uniqueCls: this.className(),
-      method: _element.props.mountMethod,
+      method: _stateElement.props.mountMethod,
       lastAdjacent: lastAdjacentNode,
-      targetSelector: _element.props.mount,
+      targetSelector: _stateElement.props.mount,
       html: html
     });
 
     if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
-      _events.delegateEvents(this.dom(), this.getDOMEvents(), _element.props.autoFormEvents);
+      _events.delegateEvents(this.dom(), this.getDOMEvents(), _stateElement.props.autoFormEvents);
     }
 
     _lifecycleState = LS_MOUNTED;
@@ -5947,10 +5963,12 @@ exports['default'] = function () {
       _events.undelegateEvents(this.getDOMEvents());
     }
 
-    if (!_element.props.mountMethod || _element.props.mountMethod === MNT_REPLACE) {
-      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_element.props.mount));
+    if (!_stateElement.props.mountMethod || _stateElement.props.mountMethod === MNT_REPLACE) {
+      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_stateElement.props.mount));
     } else {
-      _nudoruBrowserDOMUtilsJs2['default'].removeElement(this.dom());
+      if (this.dom()) {
+        _nudoruBrowserDOMUtilsJs2['default'].removeElement(this.dom());
+      }
     }
 
     _domElementCache = null;
@@ -5986,12 +6004,12 @@ exports['default'] = function () {
       });
       $forceUpdateChildren.bind(this)();
     } else {
-      _element.children = {};
+      _stateElement.children = {};
     }
   }
 
   function addChild(id, child, update) {
-    _element.addChild(id, child);
+    _stateElement.addChild(id, child);
 
     if (update) {
       $forceUpdateChildren.bind(this)();
@@ -6004,7 +6022,7 @@ exports['default'] = function () {
    */
   function $forceUpdateChildren() {
     if (_lifecycleState === LS_MOUNTED) {
-      _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
+      _vendorLodashMinJs2['default'].forOwn(_stateElement.children, function (child) {
         if (!child.isMounted()) {
           child.$renderComponent();
           child.mount();
@@ -6013,54 +6031,54 @@ exports['default'] = function () {
     }
   }
 
-  function disposeChild(id) {
-    if (_element.children.hasOwnProperty(id)) {
-      _element.children[id].dispose();
-      delete _element.children[id];
-    } else {
-      console.warn('Cannot remove child. ', id, 'not found');
-    }
-  }
-
   function child(id) {
-    if (_element.children.hasOwnProperty(id)) {
-      return _element.children[id];
+    if (_stateElement.children.hasOwnProperty(id)) {
+      return _stateElement.children[id];
     }
     console.warn(this.id(), 'Child not found', id);
     return null;
   }
 
   function $renderChildren() {
-    _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
+    _vendorLodashMinJs2['default'].forOwn(_stateElement.children, function (child) {
       child.$renderComponent();
     });
   }
 
   function $getChildHTMLObject() {
-    return _vendorLodashMinJs2['default'].reduce(_element.children, function (htmlObj, current, key) {
+    return _vendorLodashMinJs2['default'].reduce(_stateElement.children, function (htmlObj, current, key) {
       htmlObj[key] = current.getHTML();
       return htmlObj;
     }, {});
   }
 
   function $mountChildren() {
-    _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
+    _vendorLodashMinJs2['default'].forOwn(_stateElement.children, function (child) {
       child.$mountComponent();
     });
   }
 
   function $unmountChildren() {
-    _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
+    _vendorLodashMinJs2['default'].forOwn(_stateElement.children, function (child) {
       child.unmount();
     });
   }
 
   function $disposeChildren() {
-    _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
+    _vendorLodashMinJs2['default'].forOwn(_stateElement.children, function (child) {
       child.dispose();
-      _element.removeChild(child.id());
+      //_stateElement.removeChild(child.id());
     });
-    _element.children = {};
+    //_stateElement.children = {};
+  }
+
+  function disposeChild(id) {
+    if (_stateElement.children.hasOwnProperty(id)) {
+      _stateElement.children[id].dispose();
+      //delete _stateElement.children[id];
+    } else {
+        console.warn('Cannot remove child. ', id, 'not found');
+      }
   }
 
   //----------------------------------------------------------------------------
@@ -6085,7 +6103,7 @@ exports['default'] = function () {
   }
 
   function id() {
-    return _element.props.id;
+    return _stateElement.props.id;
   }
 
   function dom() {
@@ -6096,7 +6114,7 @@ exports['default'] = function () {
   }
 
   function className() {
-    return CLASS_PREFIX + _element.props.index;
+    return CLASS_PREFIX + _stateElement.props.index;
   }
 
   //----------------------------------------------------------------------------
@@ -6153,6 +6171,7 @@ exports['default'] = function () {
     addChildren: addChildren,
     disposeChild: disposeChild,
     child: child,
+    $forceUpdateChildren: $forceUpdateChildren,
     $renderChildren: $renderChildren,
     $mountChildren: $mountChildren,
     $unmountChildren: $unmountChildren,

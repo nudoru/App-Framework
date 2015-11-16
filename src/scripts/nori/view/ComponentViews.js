@@ -26,8 +26,8 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(type, source, ...children) {
-    return function (id, props) {
+  function createComponent(type, source, ...achildren) {
+    return function (id, props, ...bchildren) {
       let customizer,
           template,
           final,
@@ -43,7 +43,7 @@ export default function () {
       template.__index__    = _viewIDIndex++;
       template.__id__       = id || 'norivc' + _viewIDIndex;
       template.__type__     = type;
-      template.__children__ = children;
+      template.__children__ = achildren || bchildren;
 
       previousInitialize      = template.constructor;
       previousGetDefaultProps = template.getDefaultProps;
@@ -109,10 +109,8 @@ export default function () {
 
   /**
    * Show a mapped view
-   * @param componentID
-   * @param dataObj
    */
-  function showView(componentID, mountPoint) {
+  function showView(componentID) {
     let view = _viewMap[componentID];
 
     if (!view) {
