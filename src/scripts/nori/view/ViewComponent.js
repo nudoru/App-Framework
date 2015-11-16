@@ -46,19 +46,19 @@ export default function () {
    * Initialization
    * @param initProps
    */
-  function initializeComponent(initProps) {
-    _element        = ComponentElement(this.__type__, this.getDefaultProps(), this.getDefaultState(), initProps.parent, {});
+  function initializeComponent() {
+    _element        = ComponentElement(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
     _events         = EventDelegator();
     _lifecycleState = LS_NO_INIT;
     state           = {};
     props           = {};
     html            = '';
 
-    this.setProps(_.assign({}, initProps, {
-      id            : initProps.id || this.__id__,
+    this.setProps(_.assign({}, {
+      id            : this.__id__,
       index         : this.__index__,
       type          : this.__type__,
-      mountMethod   : initProps.mountMethod || MNT_APPEND, // TODO should be replace?
+      mountMethod   : MNT_APPEND, // TODO should be replace?
       autoFormEvents: true
     }));
 
@@ -73,7 +73,7 @@ export default function () {
     }
 
     this.$updatePropsAndState();
-    this.$initializeChildren();
+
     _lifecycleState = LS_INITED;
   }
 
@@ -307,7 +307,7 @@ export default function () {
 
     _templateCache = null;
 
-    _lifecycleState = LS_NO_INIT;
+    _lifecycleState = LS_INITED;
   }
 
 
@@ -367,12 +367,6 @@ export default function () {
     }
     console.warn(this.id(), 'Child not found', id);
     return null;
-  }
-
-  function $initializeChildren() {
-    _.forOwn(_element.children, child => {
-      child.initialize({parent: this});
-    });
   }
 
   function $renderChildren() {
@@ -498,7 +492,6 @@ export default function () {
     addChildren,
     disposeChild,
     child,
-    $initializeChildren,
     $renderChildren,
     $mountChildren,
     $unmountChildren,

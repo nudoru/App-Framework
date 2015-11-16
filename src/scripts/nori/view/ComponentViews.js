@@ -30,6 +30,7 @@ export default function () {
     return function (id, initProps) {
       let customizer,
           template,
+          final,
           previousInitialize,
           previousGetDefaultProps;
 
@@ -60,7 +61,11 @@ export default function () {
         };
       }
 
-      return _.assign({}, template);
+      final = _.assign({}, template);
+
+      final.initialize.call(final, {});
+
+      return final;
     };
   }
 
@@ -112,15 +117,6 @@ export default function () {
     if (!view) {
       console.warn('No view mapped for id: ' + componentID);
       return;
-    }
-
-    if (!view.controller.isInitialized()) {
-      // Not initialized, set props
-      mountPoint = mountPoint || view.mount;
-      view.controller.initialize({
-        id   : componentID,
-        mount: mountPoint
-      });
     }
 
     view.controller.forceUpdate();

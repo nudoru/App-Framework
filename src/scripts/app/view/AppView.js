@@ -7,8 +7,6 @@ import ControlsTesting from './ControlsTesting.js';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-let vcStyles = Nori.createComponent('debug-styletest', {})('styles');
-
 /**
  * View for an application.
  */
@@ -72,9 +70,10 @@ let AppViewModule = Nori.createView({
   },
 
   mapRoutes() {
-    let vcDefault    = TemplateViewFactory('default'),
-        vcComponents = ComponentTesting('components'),
-        vcControls   = ControlsTesting('controls');
+    let vcDefault    = TemplateViewFactory('default', {mount: '#contents'}),
+        vcComponents = ComponentTesting('components', {mount: '#contents'}),
+        vcControls   = ControlsTesting('controls', {mount: '#contents'}),
+        vcStyles = Nori.createComponent('debug-styletest', {})('styles', {mount: '#contents'});
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault, '#contents');

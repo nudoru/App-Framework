@@ -4134,13 +4134,13 @@ body {
   bottom: 100%;
   min-height: 100%;
   top: 0;
-  left: 125px;
+  left: 0px;
   right: 0;
   overflow-y: auto;
 }
 
 .app__drawer {
-  width: 125px;
+  width: 0px;
   margin-bottom: -99999px;
   padding-bottom: 99999px;
   overflow: hidden;

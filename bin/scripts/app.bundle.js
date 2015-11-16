@@ -3527,8 +3527,6 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('styles');
-
 /**
  * View for an application.
  */
@@ -3552,9 +3550,10 @@ var AppViewModule = _noriNoriJs2['default'].createView({
   },
 
   mapRoutes: function mapRoutes() {
-    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default'),
-        vcComponents = (0, _ComponentsTestingJs2['default'])('components'),
-        vcControls = (0, _ControlsTestingJs2['default'])('controls');
+    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { mount: '#contents' }),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }),
+        vcControls = (0, _ControlsTestingJs2['default'])('controls', { mount: '#contents' }),
+        vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('styles', { mount: '#contents' });
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault, '#contents');
@@ -4874,6 +4873,7 @@ exports['default'] = function () {
     return function (id, initProps) {
       var customizer = undefined,
           template = undefined,
+          final = undefined,
           previousInitialize = undefined,
           previousGetDefaultProps = undefined;
 
@@ -4904,7 +4904,11 @@ exports['default'] = function () {
         };
       }
 
-      return _vendorLodashMinJs2['default'].assign({}, template);
+      final = _vendorLodashMinJs2['default'].assign({}, template);
+
+      final.initialize.call(final, {});
+
+      return final;
     };
   }
 
@@ -4956,15 +4960,6 @@ exports['default'] = function () {
     if (!view) {
       console.warn('No view mapped for id: ' + componentID);
       return;
-    }
-
-    if (!view.controller.isInitialized()) {
-      // Not initialized, set props
-      mountPoint = mountPoint || view.mount;
-      view.controller.initialize({
-        id: componentID,
-        mount: mountPoint
-      });
     }
 
     view.controller.forceUpdate();
@@ -5707,21 +5702,21 @@ exports['default'] = function () {
    * Initialization
    * @param initProps
    */
-  function initializeComponent(initProps) {
+  function initializeComponent() {
     var _this = this;
 
-    _element = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), initProps.parent, {});
+    _element = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
     _events = (0, _RxEventDelegatorJs2['default'])();
     _lifecycleState = LS_NO_INIT;
     state = {};
     props = {};
     html = '';
 
-    this.setProps(_vendorLodashMinJs2['default'].assign({}, initProps, {
-      id: initProps.id || this.__id__,
+    this.setProps(_vendorLodashMinJs2['default'].assign({}, {
+      id: this.__id__,
       index: this.__index__,
       type: this.__type__,
-      mountMethod: initProps.mountMethod || MNT_APPEND, // TODO should be replace?
+      mountMethod: MNT_APPEND, // TODO should be replace?
       autoFormEvents: true
     }));
 
@@ -5736,7 +5731,7 @@ exports['default'] = function () {
     }
 
     this.$updatePropsAndState();
-    this.$initializeChildren();
+
     _lifecycleState = LS_INITED;
   }
 
@@ -5972,7 +5967,7 @@ exports['default'] = function () {
 
     _templateCache = null;
 
-    _lifecycleState = LS_NO_INIT;
+    _lifecycleState = LS_INITED;
   }
 
   //----------------------------------------------------------------------------
@@ -6035,14 +6030,6 @@ exports['default'] = function () {
     }
     console.warn(this.id(), 'Child not found', id);
     return null;
-  }
-
-  function $initializeChildren() {
-    var _this4 = this;
-
-    _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
-      child.initialize({ parent: _this4 });
-    });
   }
 
   function $renderChildren() {
@@ -6168,7 +6155,6 @@ exports['default'] = function () {
     addChildren: addChildren,
     disposeChild: disposeChild,
     child: child,
-    $initializeChildren: $initializeChildren,
     $renderChildren: $renderChildren,
     $mountChildren: $mountChildren,
     $unmountChildren: $unmountChildren,
