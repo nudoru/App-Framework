@@ -3707,7 +3707,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('debug-components',
    * initialized from app view
    * @param initProps
    */
-  constructor: function constructor() {
+  init: function init() {
     _lIpsum.initialize();
     _this = this;
   },
@@ -3962,7 +3962,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('default', {
 
   mixins: [],
 
-  //constructor() {
+  //init() {
   //},
 
   getDefaultState: function getDefaultState() {
@@ -3988,7 +3988,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('default', {
 
   // Return a _.template object
   template: function template() {
-    return this.tmpl('\n      <div class="padded">\n        <h1>{{ greeting }}</h1>\n        <p>Default subview template.</p>\n      </div>\n    ');
+    return this.tmpl('\n      <div class="padded">\n        <h1>Hola</h1>\n        <p>Default subview template.</p>\n      </div>\n    ');
   }
 
 });
@@ -4905,8 +4905,11 @@ exports['default'] = function () {
       }
 
       final = _vendorLodashMinJs2['default'].assign({}, template);
-      final.$componentConstructor.call(final);
-      final.constructor.call(final);
+      final.$componentInit.call(final);
+
+      if (typeof final.init === 'function') {
+        final.init.call(final);
+      }
 
       return final;
     };
@@ -5327,6 +5330,7 @@ var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
 // Switch Lodash to use Mustache style templates
 _vendorLodashMinJs2['default'].templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+_vendorLodashMinJs2['default'].templateSettings.evaluate = /{{\=([\s\S]+?)}}/g;
 
 var TemplatingModule = function TemplatingModule() {
 
@@ -5701,7 +5705,7 @@ exports['default'] = function () {
    * Initialization
    * @param initProps
    */
-  function $componentConstructor() {
+  function $componentInit() {
     var _this = this;
 
     _stateElement = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
@@ -6063,7 +6067,7 @@ exports['default'] = function () {
   }
 
   /**
-   * Will error if called before $componentConstructor called
+   * Will error if called before $componentInit called
    */
   function isMounted() {
     var hasDomEl = undefined;
@@ -6144,7 +6148,7 @@ exports['default'] = function () {
     child: child,
 
     // private api
-    $componentConstructor: $componentConstructor,
+    $componentInit: $componentInit,
     $updatePropsAndState: $updatePropsAndState,
     $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
     $renderComponent: $renderComponent,

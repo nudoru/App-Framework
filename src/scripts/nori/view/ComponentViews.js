@@ -53,8 +53,11 @@ export default function () {
       }
 
       final = _.assign({}, template);
-      final.$componentConstructor.call(final);
-      final.constructor.call(final);
+      final.$componentInit.call(final);
+
+      if(typeof  final.init === 'function') {
+        final.init.call(final);
+      }
 
       return final;
     };

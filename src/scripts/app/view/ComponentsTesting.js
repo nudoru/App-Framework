@@ -36,7 +36,7 @@ export default Nori.createComponent('debug-components', {
      * initialized from app view
      * @param initProps
      */
-    constructor() {
+    init() {
       _lIpsum.initialize();
       _this = this;
     },

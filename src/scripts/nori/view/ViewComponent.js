@@ -46,7 +46,7 @@ export default function () {
    * Initialization
    * @param initProps
    */
-  function $componentConstructor() {
+  function $componentInit() {
     _stateElement = ComponentElement(this.__type__, this.getDefaultProps(),
       this.getDefaultState(), null, {});
 
@@ -404,7 +404,7 @@ export default function () {
   }
 
   /**
-   * Will error if called before $componentConstructor called
+   * Will error if called before $componentInit called
    */
   function isMounted() {
     let hasDomEl;
@@ -485,7 +485,7 @@ export default function () {
     child,
 
     // private api
-    $componentConstructor,
+    $componentInit,
     $updatePropsAndState,
     $renderAfterPropsOrStateChange,
     $renderComponent,

@@ -11,6 +11,7 @@ import _ from '../../vendor/lodash.min.js';
 
 // Switch Lodash to use Mustache style templates
 _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+_.templateSettings.evaluate = /{{\=([\s\S]+?)}}/g;
 
 let TemplatingModule = function () {
 

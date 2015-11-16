@@ -13,7 +13,7 @@ export default Nori.createComponent('default', {
 
   mixins: [],
 
-  //constructor() {
+  //init() {
   //},
 
   getDefaultState() {
@@ -41,7 +41,7 @@ export default Nori.createComponent('default', {
   template() {
     return this.tmpl(`
       <div class="padded">
-        <h1>{{ greeting }}</h1>
+        <h1>Hola</h1>
         <p>Default subview template.</p>
       </div>
     `);
