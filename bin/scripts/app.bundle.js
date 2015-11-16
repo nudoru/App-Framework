@@ -3556,10 +3556,10 @@ var AppViewModule = _noriNoriJs2['default'].createView({
         vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('styles', { mount: '#contents' });
 
     // map id's with instances and mount location selector
-    this.set('default', vcDefault, '#contents');
-    this.set('styles', vcStyles, '#contents');
-    this.set('controls', vcControls, '#contents');
-    this.set('components', vcComponents, '#contents');
+    this.set('default', vcDefault);
+    this.set('styles', vcStyles);
+    this.set('controls', vcControls);
+    this.set('components', vcComponents);
 
     // condition, component ID
     this.route('/', 'default');
@@ -3703,7 +3703,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('debug-components',
    * initialized from app view
    * @param initProps
    */
-  initialize: function initialize(initProps) {
+  constructor: function constructor() {
     _lIpsum.initialize();
     _this = this;
   },
@@ -3958,7 +3958,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('default', {
 
   mixins: [],
 
-  //initialize(initProps) {
+  //constructor() {
   //},
 
   getDefaultState: function getDefaultState() {
@@ -4870,7 +4870,7 @@ exports['default'] = function () {
       children[_key - 2] = arguments[_key];
     }
 
-    return function (id, initProps) {
+    return function (id, props) {
       var customizer = undefined,
           template = undefined,
           final = undefined,
@@ -4888,34 +4888,33 @@ exports['default'] = function () {
       template.__type__ = type;
       template.__children__ = children;
 
-      previousInitialize = template.initialize;
+      previousInitialize = template.constructor;
       previousGetDefaultProps = template.getDefaultProps;
 
-      template.initialize = function initialize(props) {
-        template.initializeComponent.bind(template)(props);
+      template.constructor = function constructor() {
+        template.componentConstructor.bind(template)();
         if (previousInitialize) {
-          previousInitialize.call(template, props);
+          previousInitialize.call(template);
         }
       };
 
-      if (initProps) {
+      if (props) {
         template.getDefaultProps = function () {
-          return _vendorLodashMinJs2['default'].merge({}, previousGetDefaultProps.call(template), initProps);
+          return _vendorLodashMinJs2['default'].merge({}, previousGetDefaultProps.call(template), props);
         };
       }
 
       final = _vendorLodashMinJs2['default'].assign({}, template);
 
-      final.initialize.call(final, {});
+      final.constructor.call(final, {});
 
       return final;
     };
   }
 
-  function set(id, controller, mountSelector) {
+  function set(id, controller) {
     _viewMap[id] = {
-      controller: controller,
-      mount: mountSelector
+      controller: controller
     };
   }
 
@@ -4939,6 +4938,7 @@ exports['default'] = function () {
    */
   function showViewForCondition(condition) {
     var componentID = _routeViewMap[condition];
+
     if (!componentID) {
       console.warn("No view mapped for route: " + condition);
       return;
@@ -4957,6 +4957,7 @@ exports['default'] = function () {
    */
   function showView(componentID, mountPoint) {
     var view = _viewMap[componentID];
+
     if (!view) {
       console.warn('No view mapped for id: ' + componentID);
       return;
@@ -5702,7 +5703,7 @@ exports['default'] = function () {
    * Initialization
    * @param initProps
    */
-  function initializeComponent() {
+  function componentConstructor() {
     var _this = this;
 
     _element = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
@@ -5716,7 +5717,7 @@ exports['default'] = function () {
       id: this.__id__,
       index: this.__index__,
       type: this.__type__,
-      mountMethod: MNT_APPEND, // TODO should be replace?
+      mountMethod: MNT_APPEND,
       autoFormEvents: true
     }));
 
@@ -5983,7 +5984,7 @@ exports['default'] = function () {
           _this2.addChild(id, child, false);
         }
       });
-      $forceChildren.bind(this)();
+      $forceUpdateChildren.bind(this)();
     } else {
       _element.children = {};
     }
@@ -5993,7 +5994,7 @@ exports['default'] = function () {
     _element.addChild(id, child);
 
     if (update) {
-      $forceChildren.bind(this)();
+      $forceUpdateChildren.bind(this)();
     }
   }
 
@@ -6001,13 +6002,10 @@ exports['default'] = function () {
    * Force init, render and mount of all children. Called after a new child is added
    * IF the current view is mounted and the children aren't
    */
-  function $forceChildren() {
-    var _this3 = this;
-
+  function $forceUpdateChildren() {
     if (_lifecycleState === LS_MOUNTED) {
       _vendorLodashMinJs2['default'].forOwn(_element.children, function (child) {
         if (!child.isMounted()) {
-          child.initialize({ parent: _this3 });
           child.$renderComponent();
           child.mount();
         }
@@ -6074,7 +6072,7 @@ exports['default'] = function () {
   }
 
   /**
-   * Will error if called before initializeComponent called
+   * Will error if called before componentConstructor called
    */
   function isMounted() {
     var hasDomEl = undefined;
@@ -6129,7 +6127,7 @@ exports['default'] = function () {
     state: state,
     props: props,
     html: html,
-    initializeComponent: initializeComponent,
+    componentConstructor: componentConstructor,
     setProps: setProps,
     getDefaultState: getDefaultState,
     setState: setState,

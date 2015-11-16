@@ -13,7 +13,7 @@ export default Nori.createComponent('default', {
 
   mixins: [],
 
-  //initialize(initProps) {
+  //constructor() {
   //},
 
   getDefaultState() {

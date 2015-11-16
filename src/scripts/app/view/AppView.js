@@ -73,13 +73,13 @@ let AppViewModule = Nori.createView({
     let vcDefault    = TemplateViewFactory('default', {mount: '#contents'}),
         vcComponents = ComponentTesting('components', {mount: '#contents'}),
         vcControls   = ControlsTesting('controls', {mount: '#contents'}),
-        vcStyles = Nori.createComponent('debug-styletest', {})('styles', {mount: '#contents'});
+        vcStyles     = Nori.createComponent('debug-styletest', {})('styles', {mount: '#contents'});
 
     // map id's with instances and mount location selector
-    this.set('default', vcDefault, '#contents');
-    this.set('styles', vcStyles, '#contents');
-    this.set('controls', vcControls, '#contents');
-    this.set('components', vcComponents, '#contents');
+    this.set('default', vcDefault);
+    this.set('styles', vcStyles);
+    this.set('controls', vcControls);
+    this.set('components', vcComponents);
 
     // condition, component ID
     this.route('/', 'default');

@@ -27,7 +27,7 @@ export default function () {
    * @returns {*}
    */
   function createComponent(type, source, ...children) {
-    return function (id, initProps) {
+    return function (id, props) {
       let customizer,
           template,
           final,
@@ -45,34 +45,33 @@ export default function () {
       template.__type__     = type;
       template.__children__ = children;
 
-      previousInitialize      = template.initialize;
+      previousInitialize      = template.constructor;
       previousGetDefaultProps = template.getDefaultProps;
 
-      template.initialize = function initialize(props) {
-        template.initializeComponent.bind(template)(props);
+      template.constructor = function constructor() {
+        template.componentConstructor.bind(template)();
         if (previousInitialize) {
-          previousInitialize.call(template, props);
+          previousInitialize.call(template);
         }
       };
 
-      if (initProps) {
+      if (props) {
         template.getDefaultProps = function () {
-          return _.merge({}, previousGetDefaultProps.call(template), initProps);
+          return _.merge({}, previousGetDefaultProps.call(template), props);
         };
       }
 
       final = _.assign({}, template);
 
-      final.initialize.call(final, {});
+      final.constructor.call(final, {});
 
       return final;
     };
   }
 
-  function set(id, controller, mountSelector) {
+  function set(id, controller) {
     _viewMap[id] = {
-      controller: controller,
-      mount     : mountSelector
+      controller: controller
     };
   }
 
@@ -96,6 +95,7 @@ export default function () {
    */
   function showViewForCondition(condition) {
     let componentID = _routeViewMap[condition];
+
     if (!componentID) {
       console.warn("No view mapped for route: " + condition);
       return;
@@ -114,6 +114,7 @@ export default function () {
    */
   function showView(componentID, mountPoint) {
     let view = _viewMap[componentID];
+
     if (!view) {
       console.warn('No view mapped for id: ' + componentID);
       return;

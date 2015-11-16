@@ -46,8 +46,9 @@ export default function () {
    * Initialization
    * @param initProps
    */
-  function initializeComponent() {
-    _element        = ComponentElement(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
+  function componentConstructor() {
+    _element        = ComponentElement(this.__type__, this.getDefaultProps(),
+      this.getDefaultState(), null, {});
     _events         = EventDelegator();
     _lifecycleState = LS_NO_INIT;
     state           = {};
@@ -58,7 +59,7 @@ export default function () {
       id            : this.__id__,
       index         : this.__index__,
       type          : this.__type__,
-      mountMethod   : MNT_APPEND, // TODO should be replace?
+      mountMethod   : MNT_APPEND,
       autoFormEvents: true
     }));
 
@@ -322,7 +323,7 @@ export default function () {
           this.addChild(id, child, false);
         }
       });
-      $forceChildren.bind(this)();
+      $forceUpdateChildren.bind(this)();
     } else {
       _element.children = {};
     }
@@ -332,7 +333,7 @@ export default function () {
     _element.addChild(id, child);
 
     if (update) {
-      $forceChildren.bind(this)();
+      $forceUpdateChildren.bind(this)();
     }
   }
 
@@ -340,11 +341,10 @@ export default function () {
    * Force init, render and mount of all children. Called after a new child is added
    * IF the current view is mounted and the children aren't
    */
-  function $forceChildren() {
+  function $forceUpdateChildren() {
     if (_lifecycleState === LS_MOUNTED) {
       _.forOwn(_element.children, child => {
         if (!child.isMounted()) {
-          child.initialize({parent: this});
           child.$renderComponent();
           child.mount();
         }
@@ -411,7 +411,7 @@ export default function () {
   }
 
   /**
-   * Will error if called before initializeComponent called
+   * Will error if called before componentConstructor called
    */
   function isMounted() {
     let hasDomEl;
@@ -466,7 +466,7 @@ export default function () {
     state: state,
     props: props,
     html : html,
-    initializeComponent,
+    componentConstructor,
     setProps,
     getDefaultState,
     setState,
