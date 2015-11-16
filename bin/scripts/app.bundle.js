@@ -3555,9 +3555,17 @@ var AppViewModule = _noriNoriJs2['default'].createView({
 
   mapRoutes: function mapRoutes() {
     var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { mount: '#contents' }),
-        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }, (0, _ChildTestJs2['default'])('append1', {
+      mount: '#debug-child',
+      mountMethod: 'append',
+      label: 'aaAppened1'
+    }), (0, _ChildTestJs2['default'])('append2', {
+      mount: '#debug-child',
+      mountMethod: 'append',
+      label: 'aaAppened2'
+    })),
         vcControls = (0, _ControlsTestingJs2['default'])('controls', { mount: '#contents' }),
-        vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('styles', { mount: '#contents' });
+        vcStyles = _noriNoriJs2['default'].createComponent({})('styles', { mount: '#contents' });
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault);
@@ -3617,7 +3625,7 @@ var _noriNoriJs = require('../../nori/Nori.js');
 
 var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
-exports['default'] = _noriNoriJs2['default'].createComponent('', {
+exports['default'] = _noriNoriJs2['default'].createComponent({
 
   counter: 0,
 
@@ -3695,7 +3703,7 @@ var _lIpsum = require('../../nudoru/browser/Lorem.js'),
     _actionSixEl = undefined,
     _this = undefined;
 
-exports['default'] = _noriNoriJs2['default'].createComponent('debug-components', {
+exports['default'] = _noriNoriJs2['default'].createComponent({
   /**
    * Mixins are other modules/objects that multiple components share, provides
    * common functionality between then.
@@ -3836,41 +3844,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent('debug-components',
 
   componentWillUnmount: function componentWillUnmount() {}
 
-}, _noriNoriJs2['default'].createComponent('apped123', {
-
-  counter: 0,
-
-  getDefaultProps: function getDefaultProps() {
-    return {
-      mount: '#debug-child',
-      mountMethod: 'append',
-      label: 'Factory1'
-    };
-  },
-
-  getDOMEvents: function getDOMEvents() {
-    var _this2 = this;
-
-    return {
-      'click button.button-neutral-light': function clickButtonButtonNeutralLight() {
-        return _this2.setProps({ label: 'Clicked ' + ++_this2.counter + ' times' });
-      }
-    };
-  },
-
-  template: function template() {
-    return this.tmpl('\n      <div>\n        <button class="button-neutral-light">{{id}}, {{label}}</button>\n        <div class="test__subchild"></div>\n      </div>\n    ');
-  }
-
-}), (0, _ChildTestJs2['default'])('append1', {
-  mount: '#debug-child',
-  mountMethod: 'append',
-  label: 'aaAppened1'
-}), (0, _ChildTestJs2['default'])('append2', {
-  mount: '#debug-child',
-  mountMethod: 'append',
-  label: 'aaAppened2'
-}));
+});
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":28,"../../nori/view/Tweens.js":29,"../../nudoru/browser/DOMUtils.js":32,"../../nudoru/browser/Lorem.js":33,"../../nudoru/components/ToolTipView.js":40,"../../vendor/lodash.min.js":47,"../store/AppStore":6,"./AppView":7,"./ChildTest.js":8}],10:[function(require,module,exports){
@@ -3898,7 +3872,7 @@ var _vendorPikadayJs2 = _interopRequireDefault(_vendorPikadayJs);
 
 var datePicker = undefined;
 
-exports['default'] = _noriNoriJs2['default'].createComponent('debug-controls', {
+exports['default'] = _noriNoriJs2['default'].createComponent({
 
   componentDidMount: function componentDidMount() {
     var dateField = this.dom().querySelector('#dateField');
@@ -3958,7 +3932,7 @@ var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs)
  * Module for a dynamic application view for a route or a persistent view
  */
 
-exports['default'] = _noriNoriJs2['default'].createComponent('default', {
+exports['default'] = _noriNoriJs2['default'].createComponent({
 
   mixins: [],
 
@@ -4869,11 +4843,7 @@ exports['default'] = function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(type, source) {
-    for (var _len = arguments.length, achildren = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-      achildren[_key - 2] = arguments[_key];
-    }
-
+  function createComponent(source) {
     return function (id, props) {
       var customizer = undefined,
           template = undefined,
@@ -4888,13 +4858,12 @@ exports['default'] = function () {
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
       template.__index__ = _viewIDIndex++;
       template.__id__ = id || 'norivc' + _viewIDIndex;
-      template.__type__ = type;
 
-      for (var _len2 = arguments.length, bchildren = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        bchildren[_key2 - 2] = arguments[_key2];
+      for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        children[_key - 2] = arguments[_key];
       }
 
-      template.__children__ = achildren || bchildren;
+      template.__children__ = children;
 
       // Merges passed props with default props
       if (props) {
@@ -5713,7 +5682,6 @@ exports['default'] = function () {
     this.setProps({
       id: this.__id__,
       index: this.__index__,
-      type: this.__type__,
       mountMethod: MNT_APPEND,
       autoFormEvents: true
     });
@@ -5864,7 +5832,7 @@ exports['default'] = function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template() {
-    var templateId = _stateElement.props.type || this.id();
+    var templateId = this.id();
     return _TemplatingJs2['default'].getTemplate(templateId);
   }
 

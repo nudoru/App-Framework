@@ -8,7 +8,7 @@ import Pikaday from '../../vendor/pikaday.js';
 
 let datePicker;
 
-export default Nori.createComponent('debug-controls', {
+export default Nori.createComponent({
 
   componentDidMount() {
     var dateField  = this.dom().querySelector('#dateField');

@@ -1,6 +1,6 @@
 import Nori from '../../nori/Nori.js';
 
-export default Nori.createComponent('', {
+export default Nori.createComponent({
 
   counter: 0,
 

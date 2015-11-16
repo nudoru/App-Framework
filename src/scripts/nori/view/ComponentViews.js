@@ -26,8 +26,8 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(type, source, ...achildren) {
-    return function (id, props, ...bchildren) {
+  function createComponent(source) {
+    return function (id, props, ...children) {
       let customizer,
           template,
           final,
@@ -41,8 +41,7 @@ export default function () {
       template              = BuildFromMixins(customizer);
       template.__index__    = _viewIDIndex++;
       template.__id__       = id || 'norivc' + _viewIDIndex;
-      template.__type__     = type;
-      template.__children__ = achildren || bchildren;
+      template.__children__ = children;
 
       // Merges passed props with default props
       if (props) {

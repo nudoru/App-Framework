@@ -72,9 +72,19 @@ let AppViewModule = Nori.createView({
 
   mapRoutes() {
     let vcDefault    = TemplateViewFactory('default', {mount: '#contents'}),
-        vcComponents = ComponentTesting('components', {mount: '#contents'}),
+        vcComponents = ComponentTesting('components', {mount: '#contents'},
+          ChildTest('append1', {
+            mount      : '#debug-child',
+            mountMethod: 'append',
+            label      : 'aaAppened1'
+          }),
+          ChildTest('append2', {
+            mount      : '#debug-child',
+            mountMethod: 'append',
+            label      : 'aaAppened2'
+          })),
         vcControls   = ControlsTesting('controls', {mount: '#contents'}),
-        vcStyles     = Nori.createComponent('debug-styletest', {})('styles', {mount: '#contents'});
+        vcStyles     = Nori.createComponent({})('styles', {mount: '#contents'});
 
     // map id's with instances and mount location selector
     this.set('default', vcDefault);

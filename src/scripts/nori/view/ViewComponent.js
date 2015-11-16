@@ -53,7 +53,6 @@ export default function () {
     this.setProps({
       id            : this.__id__,
       index         : this.__index__,
-      type          : this.__type__,
       mountMethod   : MNT_APPEND,
       autoFormEvents: true
     });
@@ -202,7 +201,7 @@ export default function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template() {
-    let templateId = _stateElement.props.type || this.id();
+    let templateId = this.id();
     return Template.getTemplate(templateId);
   }
 
@@ -213,7 +212,7 @@ export default function () {
   function render() {
     let combined     = _.merge({}, _stateElement.props, _stateElement.state),
         templateFunc = _templateCache || this.template();
-
+    
     return templateFunc(combined);
   }
 

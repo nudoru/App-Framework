@@ -22,7 +22,7 @@ let _lIpsum  = require('../../nudoru/browser/Lorem.js'),
     _actionSixEl,
     _this;
 
-export default Nori.createComponent('debug-components', {
+export default Nori.createComponent({
     /**
      * Mixins are other modules/objects that multiple components share, provides
      * common functionality between then.
@@ -40,6 +40,8 @@ export default Nori.createComponent('debug-components', {
       _lIpsum.initialize();
       _this = this;
     },
+
+
 
     /**
      * Component HTML was attached to the DOM
@@ -171,42 +173,4 @@ export default Nori.createComponent('debug-components', {
     componentWillUnmount() {
     }
 
-  }, Nori.createComponent('apped123', {
-
-    counter: 0,
-
-    getDefaultProps() {
-      return {
-        mount      : '#debug-child',
-        mountMethod: 'append',
-        label      : 'Factory1'
-      };
-    },
-
-    getDOMEvents() {
-      return {
-        'click button.button-neutral-light': () => this.setProps({label: 'Clicked ' + (++this.counter) + ' times'})
-      };
-    },
-
-    template() {
-      return this.tmpl(`
-      <div>
-        <button class="button-neutral-light">{{id}}, {{label}}</button>
-        <div class="test__subchild"></div>
-      </div>
-    `);
-    }
-
-  }),
-  ChildTest('append1', {
-    mount      : '#debug-child',
-    mountMethod: 'append',
-    label      : 'aaAppened1'
-  }),
-  ChildTest('append2', {
-    mount      : '#debug-child',
-    mountMethod: 'append',
-    label      : 'aaAppened2'
-  })
-);
+  });
