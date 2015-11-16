@@ -47,7 +47,7 @@ let AppStoreModule = Nori.createStore({
     switch (action.type) {
 
       case NoriActionConstants.CHANGE_STORE_STATE:
-        return _.assign({}, state, action.payload.data);
+        return _.merge({}, state, action.payload);
 
       default:
         return state;

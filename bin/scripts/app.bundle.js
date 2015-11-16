@@ -3474,7 +3474,7 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
     switch (action.type) {
 
       case _noriActionActionConstantsJs2['default'].CHANGE_STORE_STATE:
-        return _vendorLodashMinJs2['default'].assign({}, state, action.payload.data);
+        return _vendorLodashMinJs2['default'].merge({}, state, action.payload);
 
       default:
         return state;
@@ -4224,7 +4224,7 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   function getState() {
-    return _vendorLodashMinJs2['default'].assign({}, _internalState);
+    return _vendorLodashMinJs2['default'].cloneDeep(_internalState);
   }
 
   function setReducers(reducerArray) {

@@ -22,7 +22,7 @@ export default function () {
   //----------------------------------------------------------------------------
 
   function getState() {
-    return _.assign({}, _internalState);
+    return _.cloneDeep(_internalState);
   }
 
   function setReducers(reducerArray) {
