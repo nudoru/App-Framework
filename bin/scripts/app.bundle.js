@@ -3555,15 +3555,7 @@ var AppViewModule = _noriNoriJs2['default'].createView({
 
   mapRoutes: function mapRoutes() {
     var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { mount: '#contents' }),
-        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }, (0, _ChildTestJs2['default'])('append1', {
-      mount: '#debug-child',
-      mountMethod: 'append',
-      label: 'bbAppened1'
-    }), (0, _ChildTestJs2['default'])('append2', {
-      mount: '#debug-child',
-      mountMethod: 'append',
-      label: 'bbAppened2'
-    })),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }),
         vcControls = (0, _ControlsTestingJs2['default'])('controls', { mount: '#contents' }),
         vcStyles = _noriNoriJs2['default'].createComponent('debug-styletest', {})('styles', { mount: '#contents' });
 
@@ -4886,8 +4878,7 @@ exports['default'] = function () {
       var customizer = undefined,
           template = undefined,
           final = undefined,
-          previousInitialize = undefined,
-          previousGetDefaultProps = undefined;
+          pDefaultProps = undefined;
 
       customizer = _vendorLodashMinJs2['default'].cloneDeep(source);
 
@@ -4905,25 +4896,17 @@ exports['default'] = function () {
 
       template.__children__ = achildren || bchildren;
 
-      previousInitialize = template.constructor;
-      previousGetDefaultProps = template.getDefaultProps;
-
-      template.constructor = function constructor() {
-        template.componentConstructor.bind(template)();
-        if (previousInitialize) {
-          previousInitialize.call(template);
-        }
-      };
-
+      // Merges passed props with default props
       if (props) {
+        pDefaultProps = template.getDefaultProps;
         template.getDefaultProps = function () {
-          return _vendorLodashMinJs2['default'].merge({}, previousGetDefaultProps.call(template), props);
+          return _vendorLodashMinJs2['default'].merge({}, pDefaultProps.call(template), props);
         };
       }
 
       final = _vendorLodashMinJs2['default'].assign({}, template);
-
-      final.constructor.call(final, {});
+      final.$componentConstructor.call(final);
+      final.constructor.call(final);
 
       return final;
     };
@@ -5706,35 +5689,30 @@ var LS_NO_INIT = 0,
 exports['default'] = function () {
 
   var _stateElement = undefined,
-      _events = undefined,
-      _lifecycleState = undefined,
+      _events = (0, _RxEventDelegatorJs2['default'])(),
+      _lifecycleState = LS_NO_INIT,
+      state = {},
+      props = {},
+      html = '',
       _templateCache = undefined,
-      _domElementCache = undefined,
-      state = undefined,
-      props = undefined,
-      html = undefined;
+      _domElementCache = undefined;
 
   /**
    * Initialization
    * @param initProps
    */
-  function componentConstructor() {
+  function $componentConstructor() {
     var _this = this;
 
     _stateElement = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
-    _events = (0, _RxEventDelegatorJs2['default'])();
-    _lifecycleState = LS_NO_INIT;
-    state = {};
-    props = {};
-    html = '';
 
-    this.setProps(_vendorLodashMinJs2['default'].assign({}, {
+    this.setProps({
       id: this.__id__,
       index: this.__index__,
       type: this.__type__,
       mountMethod: MNT_APPEND,
       autoFormEvents: true
-    }));
+    });
 
     if (this.__children__) {
       this.__children__.forEach(function (child) {
@@ -5745,8 +5723,6 @@ exports['default'] = function () {
         _this.addChild(childObj.__id__, childObj);
       });
     }
-
-    this.$updatePropsAndState();
 
     _lifecycleState = LS_INITED;
   }
@@ -6067,18 +6043,15 @@ exports['default'] = function () {
   function $disposeChildren() {
     _vendorLodashMinJs2['default'].forOwn(_stateElement.children, function (child) {
       child.dispose();
-      //_stateElement.removeChild(child.id());
     });
-    //_stateElement.children = {};
   }
 
   function disposeChild(id) {
     if (_stateElement.children.hasOwnProperty(id)) {
       _stateElement.children[id].dispose();
-      //delete _stateElement.children[id];
     } else {
-        console.warn('Cannot remove child. ', id, 'not found');
-      }
+      console.warn('Cannot remove child. ', id, 'not found');
+    }
   }
 
   //----------------------------------------------------------------------------
@@ -6090,7 +6063,7 @@ exports['default'] = function () {
   }
 
   /**
-   * Will error if called before componentConstructor called
+   * Will error if called before $componentConstructor called
    */
   function isMounted() {
     var hasDomEl = undefined;
@@ -6142,15 +6115,16 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   return {
+    // Direct obj access
     state: state,
     props: props,
     html: html,
-    componentConstructor: componentConstructor,
+
+    // public api
     setProps: setProps,
     getDefaultState: getDefaultState,
     setState: setState,
     getDefaultProps: getDefaultProps,
-    $updatePropsAndState: $updatePropsAndState,
     isInitialized: isInitialized,
     id: id,
     template: template,
@@ -6158,10 +6132,7 @@ exports['default'] = function () {
     isMounted: isMounted,
     tmpl: tmpl,
     forceUpdate: forceUpdate,
-    $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
-    $renderComponent: $renderComponent,
     render: render,
-    $mountComponent: $mountComponent,
     mount: mount,
     className: className,
     shouldDelegateEvents: shouldDelegateEvents,
@@ -6171,6 +6142,13 @@ exports['default'] = function () {
     addChildren: addChildren,
     disposeChild: disposeChild,
     child: child,
+
+    // private api
+    $componentConstructor: $componentConstructor,
+    $updatePropsAndState: $updatePropsAndState,
+    $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
+    $renderComponent: $renderComponent,
+    $mountComponent: $mountComponent,
     $forceUpdateChildren: $forceUpdateChildren,
     $renderChildren: $renderChildren,
     $mountChildren: $mountChildren,

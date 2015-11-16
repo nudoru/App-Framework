@@ -34,34 +34,29 @@ const LS_NO_INIT   = 0,
 export default function () {
 
   let _stateElement,
-      _events,
-      _lifecycleState,
+      _events         = EventDelegator(),
+      _lifecycleState = LS_NO_INIT,
+      state           = {},
+      props           = {},
+      html            = '',
       _templateCache,
-      _domElementCache,
-      state,
-      props,
-      html;
+      _domElementCache;
 
   /**
    * Initialization
    * @param initProps
    */
-  function componentConstructor() {
-    _stateElement   = ComponentElement(this.__type__, this.getDefaultProps(),
+  function $componentConstructor() {
+    _stateElement = ComponentElement(this.__type__, this.getDefaultProps(),
       this.getDefaultState(), null, {});
-    _events         = EventDelegator();
-    _lifecycleState = LS_NO_INIT;
-    state           = {};
-    props           = {};
-    html            = '';
 
-    this.setProps(_.assign({}, {
+    this.setProps({
       id            : this.__id__,
       index         : this.__index__,
       type          : this.__type__,
       mountMethod   : MNT_APPEND,
       autoFormEvents: true
-    }));
+    });
 
     if (this.__children__) {
       this.__children__.forEach(child => {
@@ -72,8 +67,6 @@ export default function () {
         this.addChild(childObj.__id__, childObj);
       });
     }
-
-    this.$updatePropsAndState();
 
     _lifecycleState = LS_INITED;
   }
@@ -391,15 +384,12 @@ export default function () {
   function $disposeChildren() {
     _.forOwn(_stateElement.children, child => {
       child.dispose();
-      //_stateElement.removeChild(child.id());
     });
-    //_stateElement.children = {};
   }
 
   function disposeChild(id) {
     if (_stateElement.children.hasOwnProperty(id)) {
       _stateElement.children[id].dispose();
-      //delete _stateElement.children[id];
     } else {
       console.warn('Cannot remove child. ', id, 'not found');
     }
@@ -414,7 +404,7 @@ export default function () {
   }
 
   /**
-   * Will error if called before componentConstructor called
+   * Will error if called before $componentConstructor called
    */
   function isMounted() {
     let hasDomEl;
@@ -466,15 +456,16 @@ export default function () {
   //----------------------------------------------------------------------------
 
   return {
+    // Direct obj access
     state: state,
     props: props,
     html : html,
-    componentConstructor,
+
+    // public api
     setProps,
     getDefaultState,
     setState,
     getDefaultProps,
-    $updatePropsAndState,
     isInitialized,
     id,
     template,
@@ -482,10 +473,7 @@ export default function () {
     isMounted,
     tmpl,
     forceUpdate,
-    $renderAfterPropsOrStateChange,
-    $renderComponent,
     render,
-    $mountComponent,
     mount,
     className,
     shouldDelegateEvents,
@@ -495,6 +483,13 @@ export default function () {
     addChildren,
     disposeChild,
     child,
+
+    // private api
+    $componentConstructor,
+    $updatePropsAndState,
+    $renderAfterPropsOrStateChange,
+    $renderComponent,
+    $mountComponent,
     $forceUpdateChildren,
     $renderChildren,
     $mountChildren,

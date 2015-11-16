@@ -31,8 +31,7 @@ export default function () {
       let customizer,
           template,
           final,
-          previousInitialize,
-          previousGetDefaultProps;
+          pDefaultProps;
 
       customizer = _.cloneDeep(source);
 
@@ -45,25 +44,17 @@ export default function () {
       template.__type__     = type;
       template.__children__ = achildren || bchildren;
 
-      previousInitialize      = template.constructor;
-      previousGetDefaultProps = template.getDefaultProps;
-
-      template.constructor = function constructor() {
-        template.componentConstructor.bind(template)();
-        if (previousInitialize) {
-          previousInitialize.call(template);
-        }
-      };
-
+      // Merges passed props with default props
       if (props) {
+        pDefaultProps = template.getDefaultProps;
         template.getDefaultProps = function () {
-          return _.merge({}, previousGetDefaultProps.call(template), props);
+          return _.merge({}, pDefaultProps.call(template), props);
         };
       }
 
       final = _.assign({}, template);
-
-      final.constructor.call(final, {});
+      final.$componentConstructor.call(final);
+      final.constructor.call(final);
 
       return final;
     };
