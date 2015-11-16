@@ -3555,6 +3555,8 @@ var AppViewModule = _noriNoriJs2['default'].createView({
 
   mapRoutes: function mapRoutes() {
     var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { mount: '#contents' }),
+        vcControls = (0, _ControlsTestingJs2['default'])('controls', { mount: '#contents' }),
+        vcStyles = _noriNoriJs2['default'].createComponent({})('styles', { mount: '#contents' }),
         vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }, (0, _ChildTestJs2['default'])('append1', {
       mount: '#debug-child',
       mountMethod: 'append',
@@ -3563,21 +3565,13 @@ var AppViewModule = _noriNoriJs2['default'].createView({
       mount: '#debug-child',
       mountMethod: 'append',
       label: 'aaAppened2'
-    })),
-        vcControls = (0, _ControlsTestingJs2['default'])('controls', { mount: '#contents' }),
-        vcStyles = _noriNoriJs2['default'].createComponent({})('styles', { mount: '#contents' });
-
-    // map id's with instances and mount location selector
-    this.set('default', vcDefault);
-    this.set('styles', vcStyles);
-    this.set('controls', vcControls);
-    this.set('components', vcComponents);
+    }));
 
     // condition, component ID
-    this.route('/', 'default');
-    this.route('/styles', 'styles');
-    this.route('/controls', 'controls');
-    this.route('/comps', 'components');
+    this.route('/', vcDefault);
+    this.route('/styles', vcStyles);
+    this.route('/controls', vcControls);
+    this.route('/comps', vcComponents);
   },
 
   /**
@@ -4829,12 +4823,11 @@ var _utilsRouterJs2 = _interopRequireDefault(_utilsRouterJs);
 
 exports['default'] = function () {
 
-  var _viewMap = {},
-      _routeViewMap = {},
+  var _routeViewMap = {},
       _viewIDIndex = 0,
       _routeOnURL = false,
       _routeOnState = false,
-      _currentViewID = undefined,
+      _currentViewComponent = undefined,
       _observedStore = undefined,
       _currentStoreState = undefined;
 
@@ -4857,7 +4850,7 @@ exports['default'] = function () {
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
       template.__index__ = _viewIDIndex++;
-      template.__id__ = id || 'norivc' + _viewIDIndex;
+      template.__id__ = id || 'vc' + _viewIDIndex;
 
       for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
         children[_key - 2] = arguments[_key];
@@ -4884,12 +4877,6 @@ exports['default'] = function () {
     };
   }
 
-  function set(id, controller) {
-    _viewMap[id] = {
-      controller: controller
-    };
-  }
-
   //----------------------------------------------------------------------------
   //  Conditional view such as routes or states
   //  Must be augmented with mixins for state and route change monitoring
@@ -4897,11 +4884,11 @@ exports['default'] = function () {
 
   /**
    * Map a route to a module view controller
-   * @param componentID
+   * @param component
    * @param component
    */
-  function route(condition, componentID) {
-    _routeViewMap[condition] = componentID;
+  function route(condition, component) {
+    _routeViewMap[condition] = component;
   }
 
   /**
@@ -4909,43 +4896,37 @@ exports['default'] = function () {
    * @param condition
    */
   function showViewForCondition(condition) {
-    var componentID = _routeViewMap[condition];
+    var view = _routeViewMap[condition];
 
-    if (!componentID) {
+    if (!view) {
       console.warn("No view mapped for route: " + condition);
       return;
     }
 
-    $removeCurrentView();
-
-    _currentViewID = componentID;
-    showView(_currentViewID);
+    showView(view);
   }
 
   /**
    * Show a mapped view
    */
-  function showView(componentID) {
-    var view = _viewMap[componentID];
-
-    if (!view) {
-      console.warn('No view mapped for id: ' + componentID);
+  function showView(viewComponent) {
+    if (viewComponent === _currentViewComponent) {
       return;
     }
 
-    view.controller.forceUpdate();
-
-    //ComponentMount.mount(view.controller);
+    $removeCurrentView();
+    _currentViewComponent = viewComponent;
+    viewComponent.forceUpdate();
   }
 
   /**
    * Remove the currently displayed view
    */
   function $removeCurrentView() {
-    if (_currentViewID) {
-      _viewMap[_currentViewID].controller.dispose();
+    if (_currentViewComponent) {
+      _currentViewComponent.dispose();
     }
-    _currentViewID = '';
+    _currentViewComponent = null;
   }
 
   //----------------------------------------------------------------------------
@@ -5020,7 +5001,6 @@ exports['default'] = function () {
 
   return {
     createComponent: createComponent,
-    set: set,
     showView: showView,
     showViewForCondition: showViewForCondition,
     route: route,

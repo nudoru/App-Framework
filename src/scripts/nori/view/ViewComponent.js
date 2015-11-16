@@ -212,7 +212,7 @@ export default function () {
   function render() {
     let combined     = _.merge({}, _stateElement.props, _stateElement.state),
         templateFunc = _templateCache || this.template();
-    
+
     return templateFunc(combined);
   }
 

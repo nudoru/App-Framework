@@ -12,12 +12,11 @@ import Router from '../utils/Router.js';
 
 export default function () {
 
-  let _viewMap      = {},
-      _routeViewMap = {},
+  let _routeViewMap = {},
       _viewIDIndex  = 0,
       _routeOnURL   = false,
       _routeOnState = false,
-      _currentViewID,
+      _currentViewComponent,
       _observedStore,
       _currentStoreState;
 
@@ -40,7 +39,7 @@ export default function () {
 
       template              = BuildFromMixins(customizer);
       template.__index__    = _viewIDIndex++;
-      template.__id__       = id || 'norivc' + _viewIDIndex;
+      template.__id__       = id || 'vc' + _viewIDIndex;
       template.__children__ = children;
 
       // Merges passed props with default props
@@ -62,12 +61,6 @@ export default function () {
     };
   }
 
-  function set(id, controller) {
-    _viewMap[id] = {
-      controller: controller
-    };
-  }
-
   //----------------------------------------------------------------------------
   //  Conditional view such as routes or states
   //  Must be augmented with mixins for state and route change monitoring
@@ -75,11 +68,11 @@ export default function () {
 
   /**
    * Map a route to a module view controller
-   * @param componentID
+   * @param component
    * @param component
    */
-  function route(condition, componentID) {
-    _routeViewMap[condition] = componentID;
+  function route(condition, component) {
+    _routeViewMap[condition] = component;
   }
 
   /**
@@ -87,43 +80,37 @@ export default function () {
    * @param condition
    */
   function showViewForCondition(condition) {
-    let componentID = _routeViewMap[condition];
+    let view = _routeViewMap[condition];
 
-    if (!componentID) {
+    if (!view) {
       console.warn("No view mapped for route: " + condition);
       return;
     }
 
-    $removeCurrentView();
-
-    _currentViewID = componentID;
-    showView(_currentViewID);
+    showView(view);
   }
 
   /**
    * Show a mapped view
    */
-  function showView(componentID) {
-    let view = _viewMap[componentID];
-
-    if (!view) {
-      console.warn('No view mapped for id: ' + componentID);
+  function showView(viewComponent) {
+    if(viewComponent === _currentViewComponent) {
       return;
     }
 
-    view.controller.forceUpdate();
-
-    //ComponentMount.mount(view.controller);
+    $removeCurrentView();
+    _currentViewComponent = viewComponent;
+    viewComponent.forceUpdate();
   }
 
   /**
    * Remove the currently displayed view
    */
   function $removeCurrentView() {
-    if (_currentViewID) {
-      _viewMap[_currentViewID].controller.dispose();
+    if (_currentViewComponent) {
+      _currentViewComponent.dispose();
     }
-    _currentViewID = '';
+    _currentViewComponent = null;
   }
 
   //----------------------------------------------------------------------------
@@ -198,7 +185,6 @@ export default function () {
 
   return {
     createComponent,
-    set,
     showView,
     showViewForCondition,
     route,

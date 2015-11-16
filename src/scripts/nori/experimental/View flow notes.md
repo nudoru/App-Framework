@@ -11,9 +11,11 @@
     
     
 # From React
+http://jamesknelson.com/learn-raw-react-no-jsx-flux-es6-webpack/
+
 ReactClass = React.createClass({functs});
 React.createElement(ReactClass, {props}, ...children);
 
 # Nori
-var factory = Nori.createComponent(type, {functs});
+var factory = Nori.createComponent({functs});
 var element = factory('id',{props}, ...children);
