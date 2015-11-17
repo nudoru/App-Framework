@@ -1,13 +1,11 @@
 import _ from '../../vendor/lodash.min.js';
 
-export default function element(type, props, state, parent, children) {
+export default function (props, state, children) {
   return {
-    type     : type,
     props    : props,
     state    : state,
     lastProps: null,
     lastState: null,
-    parent   : null,
     children : children || {},
 
     getProps() {
@@ -48,6 +46,6 @@ export default function element(type, props, state, parent, children) {
       if (this.children.hasOwnProperty(id)) {
         delete this.children[id];
       }
-    },
+    }
   };
 }

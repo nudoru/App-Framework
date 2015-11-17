@@ -37,23 +37,25 @@ export default function () {
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.unshift(ViewComponentFactory());
 
-      template              = BuildFromMixins(customizer);
-      template.__index__    = _viewIDIndex++;
-      template.__id__       = id || 'vc' + _viewIDIndex;
-      template.__children__ = children;
+      template            = BuildFromMixins(customizer);
+      template.__children = children;
 
-      // Merges passed props with default props
-      if (props) {
-        pDefaultProps = template.getDefaultProps;
-        template.getDefaultProps = function () {
-          return _.merge({}, pDefaultProps.call(template), props);
+      pDefaultProps = template.getDefaultProps;
+
+      template.getDefaultProps = function () {
+        let specs = {
+          id            : id || 'vc' + _viewIDIndex,
+          index         : _viewIDIndex++,
+          mountMethod   : 'append',
+          autoFormEvents: true
         };
-      }
+        return _.merge({}, pDefaultProps.call(template), specs, props);
+      };
 
       final = _.assign({}, template);
       final.$componentInit.call(final);
 
-      if(typeof  final.init === 'function') {
+      if (typeof final.init === 'function') {
         final.init.call(final);
       }
 
@@ -94,7 +96,7 @@ export default function () {
    * Show a mapped view
    */
   function showView(viewComponent) {
-    if(viewComponent === _currentViewComponent) {
+    if (viewComponent === _currentViewComponent) {
       return;
     }
 

@@ -4608,7 +4608,6 @@ module.exports = exports["default"];
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-exports['default'] = element;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -4616,14 +4615,12 @@ var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-function element(type, props, state, parent, children) {
+exports['default'] = function (props, state, children) {
   return {
-    type: type,
     props: props,
     state: state,
     lastProps: null,
     lastState: null,
-    parent: null,
     children: children || {},
 
     getProps: function getProps() {
@@ -4666,7 +4663,7 @@ function element(type, props, state, parent, children) {
       }
     }
   };
-}
+};
 
 module.exports = exports['default'];
 
@@ -4729,22 +4726,24 @@ exports['default'] = function () {
       customizer.mixins.unshift((0, _ViewComponentJs2['default'])());
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-      template.__index__ = _viewIDIndex++;
-      template.__id__ = id || 'vc' + _viewIDIndex;
 
       for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
         children[_key - 2] = arguments[_key];
       }
 
-      template.__children__ = children;
+      template.__children = children;
 
-      // Merges passed props with default props
-      if (props) {
-        pDefaultProps = template.getDefaultProps;
-        template.getDefaultProps = function () {
-          return _vendorLodashMinJs2['default'].merge({}, pDefaultProps.call(template), props);
+      pDefaultProps = template.getDefaultProps;
+
+      template.getDefaultProps = function () {
+        var specs = {
+          id: id || 'vc' + _viewIDIndex,
+          index: _viewIDIndex++,
+          mountMethod: 'append',
+          autoFormEvents: true
         };
-      }
+        return _vendorLodashMinJs2['default'].merge({}, pDefaultProps.call(template), specs, props);
+      };
 
       final = _vendorLodashMinJs2['default'].assign({}, template);
       final.$componentInit.call(final);
@@ -5552,28 +5551,25 @@ exports['default'] = function () {
    * @param initProps
    */
   function $componentInit() {
+    _stateElement = (0, _ComponentElementJs2['default'])(this.getDefaultProps(), this.getDefaultState(), {});
+    this.$processChildren();
+    // Assign this.props and this.state
+    this.$updatePropsAndState();
+    _lifecycleState = LS_INITED;
+  }
+
+  function $processChildren() {
     var _this = this;
 
-    _stateElement = (0, _ComponentElementJs2['default'])(this.__type__, this.getDefaultProps(), this.getDefaultState(), null, {});
-
-    this.setProps({
-      id: this.__id__,
-      index: this.__index__,
-      mountMethod: MNT_APPEND,
-      autoFormEvents: true
-    });
-
-    if (this.__children__) {
-      this.__children__.forEach(function (child) {
+    if (this.__children) {
+      this.__children.forEach(function (child) {
         var childObj = child;
         if (typeof child === 'function') {
           childObj = child();
         }
-        _this.addChild(childObj.__id__, childObj);
+        _this.addChild(childObj.id(), childObj);
       });
     }
-
-    _lifecycleState = LS_INITED;
   }
 
   //----------------------------------------------------------------------------
@@ -5797,7 +5793,6 @@ exports['default'] = function () {
     }
 
     _domElementCache = null;
-
     _lifecycleState = LS_UNMOUNTED;
   }
 
@@ -5808,9 +5803,7 @@ exports['default'] = function () {
 
     this.$disposeChildren();
     this.unmount();
-
     _templateCache = null;
-
     _lifecycleState = LS_INITED;
   }
 
@@ -5911,17 +5904,8 @@ exports['default'] = function () {
     return _lifecycleState > LS_NO_INIT;
   }
 
-  /**
-   * Will error if called before $componentInit called
-   */
   function isMounted() {
-    var hasDomEl = undefined;
-    try {
-      hasDomEl = !!this.dom();
-    } catch (e) {
-      hasDomEl = false;
-    }
-    return hasDomEl;
+    return !!this.dom();
   }
 
   function id() {
@@ -5994,6 +5978,7 @@ exports['default'] = function () {
 
     // private api
     $componentInit: $componentInit,
+    $processChildren: $processChildren,
     $updatePropsAndState: $updatePropsAndState,
     $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
     $renderComponent: $renderComponent,

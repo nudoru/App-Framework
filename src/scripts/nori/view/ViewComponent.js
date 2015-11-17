@@ -47,27 +47,23 @@ export default function () {
    * @param initProps
    */
   function $componentInit() {
-    _stateElement = ComponentElement(this.__type__, this.getDefaultProps(),
-      this.getDefaultState(), null, {});
+    _stateElement = ComponentElement(this.getDefaultProps(), this.getDefaultState(), {});
+    this.$processChildren();
+    // Assign this.props and this.state
+    this.$updatePropsAndState();
+    _lifecycleState = LS_INITED;
+  }
 
-    this.setProps({
-      id            : this.__id__,
-      index         : this.__index__,
-      mountMethod   : MNT_APPEND,
-      autoFormEvents: true
-    });
-
-    if (this.__children__) {
-      this.__children__.forEach(child => {
+  function $processChildren() {
+    if (this.__children) {
+      this.__children.forEach(child => {
         let childObj = child;
         if (typeof child === 'function') {
           childObj = child();
         }
-        this.addChild(childObj.__id__, childObj);
+        this.addChild(childObj.id(), childObj);
       });
     }
-
-    _lifecycleState = LS_INITED;
   }
 
   //----------------------------------------------------------------------------
@@ -289,7 +285,6 @@ export default function () {
     }
 
     _domElementCache = null;
-
     _lifecycleState = LS_UNMOUNTED;
   }
 
@@ -300,9 +295,7 @@ export default function () {
 
     this.$disposeChildren();
     this.unmount();
-
     _templateCache = null;
-
     _lifecycleState = LS_INITED;
   }
 
@@ -402,17 +395,8 @@ export default function () {
     return _lifecycleState > LS_NO_INIT;
   }
 
-  /**
-   * Will error if called before $componentInit called
-   */
   function isMounted() {
-    let hasDomEl;
-    try {
-      hasDomEl = !!this.dom();
-    } catch (e) {
-      hasDomEl = false;
-    }
-    return hasDomEl;
+    return !!this.dom();
   }
 
   function id() {
@@ -485,6 +469,7 @@ export default function () {
 
     // private api
     $componentInit,
+    $processChildren,
     $updatePropsAndState,
     $renderAfterPropsOrStateChange,
     $renderComponent,
