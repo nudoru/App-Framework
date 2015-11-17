@@ -153,10 +153,10 @@ export default function () {
     props = _.assign(props, _stateElement.props);
     state = _.assign(state, _stateElement.state);
 
-    if(Object.freeze) {
-      Object.freeze(props);
-      Object.freeze(state);
-    }
+    //if(Object.freeze) {
+    //  Object.freeze(props);
+    //  Object.freeze(state);
+    //}
   }
 
   //----------------------------------------------------------------------------

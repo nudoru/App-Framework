@@ -7,7 +7,7 @@ export default {
    * @param obj
    * @returns {boolean}
    */
-  isNull: function (obj) {
+  isNull(obj) {
     var isnull = false;
 
     if (is.falsey(obj)) {
@@ -24,13 +24,13 @@ export default {
     return isnull;
   },
 
-  dynamicSort: function (property) {
+  dynamicSort(property) {
     return function (a, b) {
       return a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
     };
   },
 
-  searchObjects: function (obj, key, val) {
+  searchObjects(obj, key, val) {
     var objects = [];
     for (var i in obj) {
       if (typeof obj[i] === 'object') {
@@ -42,7 +42,7 @@ export default {
     return objects;
   },
 
-  getObjectFromString: function (obj, str) {
+  getObjectFromString(obj, str) {
     var i    = 0,
         path = str.split('.'),
         len  = path.length;
@@ -53,7 +53,7 @@ export default {
     return obj;
   },
 
-  getObjectIndexFromId: function (obj, id) {
+  getObjectIndexFromId(obj, id) {
     if (typeof obj === "object") {
       for (var i = 0; i < obj.length; i++) {
         if (typeof obj[i] !== "undefined" && typeof obj[i].id !== "undefined" && obj[i].id === id) {
@@ -65,7 +65,7 @@ export default {
   },
 
   // extend and deep extend from http://youmightnotneedjquery.com/
-  extend: function (out) {
+  extend(out) {
     out = out || {};
 
     for (var i = 1; i < arguments.length; i++) {
@@ -83,7 +83,7 @@ export default {
     return out;
   },
 
-  deepExtend: function (out) {
+  deepExtend(out) {
     out = out || {};
 
     for (var i = 1; i < arguments.length; i++) {
@@ -116,7 +116,7 @@ export default {
    * @param prototype
    * @returns New object using prototype.methods as source
    */
-  basicFactory: function (prototype) {
+  basicFactory(prototype) {
     var proto = prototype,
         obj   = Object.create(proto.methods);
 
@@ -135,54 +135,24 @@ export default {
     return obj;
   },
 
-  /**
-   * Copyright 2013-2014 Facebook, Inc.
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   */
-  /**
-   * Constructs an enumeration with keys equal to their value.
-   *
-   * https://github.com/STRML/keymirror
-   *
-   * For example:
-   *
-   *   var COLORS = keyMirror({blue: null, red: null});
-   *   var myColor = COLORS.blue;
-   *   var isColorValid = !!COLORS[myColor];
-   *
-   * The last line could not be performed if the values of the generated enum were
-   * not equal to their keys.
-   *
-   *   Input:  {key1: val1, key2: val2}
-   *   Output: {key1: key1, key2: key2}
-   *
-   * @param {object} obj
-   * @return {object}
-   */
-  keyMirror: function (obj) {
-    var ret = {};
-    var key;
-    if (!(obj instanceof Object && !Array.isArray(obj))) {
-      throw new Error('keyMirror(...): Argument must be an object.');
-    }
-    for (key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        ret[key] = key;
+  //http://stackoverflow.com/questions/19293321/opposite-of-object-freeze-or-object-seal-in-javascript
+  unfreeze(o) {
+    var oo = undefined;
+    if (o instanceof Array) {
+      oo = [];
+      var clone = function (v) {
+        oo.push(v)
+      };
+      o.forEach(clone);
+    } else if (o instanceof String) {
+      oo = new String(o).toString();
+    } else if (typeof o == 'object') {
+      oo = {};
+      for (var property in o) {
+        oo[property] = o[property];
       }
     }
-    return ret;
+    return oo;
   }
 
 };
