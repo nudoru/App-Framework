@@ -3635,7 +3635,7 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":13,"../../nori/view/Templating.js":27,"../../nudoru/browser/DOMUtils.js":31,"../../nudoru/components/MixinNudoruControls.js":36,"../store/AppStore.js":6,"./ChildTest.js":8,"./ComponentsTesting.js":9,"./ControlsTesting.js":10,"./TemplateViewComponent.js":11}],8:[function(require,module,exports){
+},{"../../nori/Nori.js":13,"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":31,"../../nudoru/components/MixinNudoruControls.js":36,"../store/AppStore.js":6,"./ChildTest.js":8,"./ComponentsTesting.js":9,"./ControlsTesting.js":10,"./TemplateViewComponent.js":11}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3872,7 +3872,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":27,"../../nori/view/Tweens.js":28,"../../nudoru/browser/DOMUtils.js":31,"../../nudoru/browser/Lorem.js":32,"../../nudoru/components/ToolTipView.js":39,"../../vendor/lodash.min.js":46,"../store/AppStore":6,"./AppView":7,"./ChildTest.js":8}],10:[function(require,module,exports){
+},{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":28,"../../nori/view/Tweens.js":29,"../../nudoru/browser/DOMUtils.js":31,"../../nudoru/browser/Lorem.js":32,"../../nudoru/components/ToolTipView.js":39,"../../vendor/lodash.min.js":46,"../store/AppStore":6,"./AppView":7,"./ChildTest.js":8}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4011,7 +4011,7 @@ module.exports = exports['default'];
 //componentWillDispose() {
 //},
 
-},{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":27,"../../nudoru/browser/DOMUtils.js":31,"../store/AppStore":6,"./AppView":7}],12:[function(require,module,exports){
+},{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":31,"../store/AppStore":6,"./AppView":7}],12:[function(require,module,exports){
 /**
  * Initial file for the Application
  */
@@ -4138,7 +4138,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../vendor/lodash.min.js":46,"./store/ReducerStore.js":16,"./utils/AssignArray.js":17,"./utils/BuildFromMixins.js":18,"./utils/CreateClass.js":19,"./view/ComponentViews.js":25}],14:[function(require,module,exports){
+},{"../vendor/lodash.min.js":46,"./store/ReducerStore.js":16,"./utils/AssignArray.js":17,"./utils/BuildFromMixins.js":18,"./utils/CreateClass.js":19,"./view/ComponentViews.js":26}],14:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -4669,889 +4669,6 @@ exports["default"] = function () {
 module.exports = exports["default"];
 
 },{}],23:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
-
-var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
-
-exports['default'] = function (props, state, children) {
-  return {
-    props: props,
-    state: state,
-    lastProps: null,
-    lastState: null,
-    children: children || {},
-
-    getProps: function getProps() {
-      return _vendorLodashMinJs2['default'].assign({}, this.props);
-    },
-
-    getState: function getState() {
-      return _vendorLodashMinJs2['default'].assign({}, this.state);
-    },
-
-    shouldUpdate: function shouldUpdate(nextProps, nextState) {
-      nextProps = nextProps || this.props;
-      nextState = nextState || this.state;
-
-      var isStateEq = _vendorLodashMinJs2['default'].isEqual(nextState, this.state),
-          isPropsEq = _vendorLodashMinJs2['default'].isEqual(nextProps, this.props);
-
-      return !isStateEq || !isPropsEq;
-    },
-
-    setProps: function setProps(nextProps) {
-      this.lastProps = _vendorLodashMinJs2['default'].assign({}, this.props);
-      this.props = _vendorLodashMinJs2['default'].assign({}, this.props, nextProps);
-    },
-
-    setState: function setState(nextState) {
-      this.lastState = _vendorLodashMinJs2['default'].assign({}, this.state);
-      this.state = _vendorLodashMinJs2['default'].assign({}, this.state, nextState);
-    },
-
-    addChild: function addChild(id, newChild) {
-      if (!this.children.hasOwnProperty(id)) {
-        this.children[id] = newChild;
-      }
-    },
-
-    removeChild: function removeChild(id) {
-      if (this.children.hasOwnProperty(id)) {
-        delete this.children[id];
-      }
-    }
-  };
-};
-
-module.exports = exports['default'];
-
-},{"../../vendor/lodash.min.js":46}],24:[function(require,module,exports){
-/*  weak */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
-
-exports['default'] = function (component, lastAdjacent) {
-
-  var domEl = undefined,
-      currentHTML = undefined,
-      html = component.html(),
-      mountPoint = document.querySelector(component.props.target);
-
-  // For a child component that has no mount set, append to the end of the parent
-  if (!mountPoint && component.parent()) {
-    mountPoint = document.querySelector('.' + component.parent().className());
-  }
-
-  if (!mountPoint) {
-    console.warn('Component', component.id(), 'invalid mount', component.props.target);
-    return;
-  }
-
-  domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
-  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, component.className());
-
-  if (component.props.attach === 'replace') {
-    currentHTML = mountPoint.innerHTML;
-    if (html !== currentHTML) {
-      mountPoint.innerHTML = '';
-      mountPoint.appendChild(domEl);
-    }
-  } else {
-    mountPoint.insertBefore(domEl, lastAdjacent);
-  }
-
-  return domEl;
-};
-
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/DOMUtils.js":31}],25:[function(require,module,exports){
-/*  weak */
-
-/**
- * Mixin view that allows for component views
- */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
-
-var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
-
-var _ViewComponentJs = require('./ViewComponent.js');
-
-var _ViewComponentJs2 = _interopRequireDefault(_ViewComponentJs);
-
-var _utilsBuildFromMixinsJs = require('../utils/BuildFromMixins.js');
-
-var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
-
-var _utilsRouterJs = require('../utils/Router.js');
-
-var _utilsRouterJs2 = _interopRequireDefault(_utilsRouterJs);
-
-//import ComponentMount from '../experimental/ComponentMount.js';
-
-exports['default'] = function () {
-
-  var _routeViewMap = {},
-      _viewIDIndex = 0,
-      _routeOnURL = false,
-      _routeOnState = false,
-      _currentViewComponent = undefined,
-      _observedStore = undefined,
-      _currentStoreState = undefined;
-
-  /**
-   * Factory to create component view modules by concating multiple source objects
-   * @param customizer Custom module source
-   * @returns {*}
-   */
-  function createComponent(source) {
-    source = source || {};
-    return function (id, props) {
-      var customizer = undefined,
-          template = undefined,
-          final = undefined,
-          pDefaultProps = undefined;
-
-      customizer = _vendorLodashMinJs2['default'].cloneDeep(source);
-
-      customizer.mixins = customizer.mixins || [];
-      customizer.mixins.unshift((0, _ViewComponentJs2['default'])());
-
-      template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-
-      for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        children[_key - 2] = arguments[_key];
-      }
-
-      template.__children = children;
-
-      pDefaultProps = template.getDefaultProps;
-
-      template.getDefaultProps = function () {
-        var specs = {
-          id: id || 'vc' + _viewIDIndex,
-          index: _viewIDIndex++,
-          attach: 'append',
-          autoFormEvents: true,
-          elInner: '',
-          elID: '',
-          elClass: ''
-        };
-        return _vendorLodashMinJs2['default'].merge({}, pDefaultProps.call(template), specs, props);
-      };
-
-      final = _vendorLodashMinJs2['default'].assign({}, template);
-      final.$componentInit.call(final);
-
-      if (typeof final.init === 'function') {
-        final.init.call(final);
-      }
-
-      return final;
-    };
-  }
-
-  //----------------------------------------------------------------------------
-  //  Conditional view such as routes or states
-  //  Must be augmented with mixins for state and route change monitoring
-  //----------------------------------------------------------------------------
-
-  /**
-   * Map a route to a module view controller
-   * @param component
-   * @param component
-   */
-  function route(condition, component) {
-    _routeViewMap[condition] = component;
-  }
-
-  /**
-   * Show a view (in response to a route change)
-   * @param condition
-   */
-  function showViewForCondition(condition) {
-    var view = _routeViewMap[condition];
-
-    if (!view) {
-      console.warn("No view mapped for route: " + condition);
-      return;
-    }
-
-    showView(view);
-  }
-
-  /**
-   * Show a mapped view
-   */
-  function showView(viewComponent) {
-    if (viewComponent === _currentViewComponent) {
-      return;
-    }
-
-    $removeCurrentView();
-    _currentViewComponent = viewComponent;
-    viewComponent.forceUpdate();
-  }
-
-  /**
-   * Remove the currently displayed view
-   */
-  function $removeCurrentView() {
-    if (_currentViewComponent) {
-      _currentViewComponent.dispose();
-    }
-    _currentViewComponent = null;
-  }
-
-  //----------------------------------------------------------------------------
-  //  Routing
-  //----------------------------------------------------------------------------
-
-  function showViewForChangedCondition(options) {
-    if (_routeOnURL) {
-      showViewForChangedURL(options);
-    } else if (_routeOnState) {
-      showViewForChangedState(options);
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //  URL Fragment Route
-  //----------------------------------------------------------------------------
-
-  function initializeRouteViews() {
-    _routeOnURL = true;
-    _routeOnState = false;
-
-    _utilsRouterJs2['default'].subscribe($onRouteChange.bind(this));
-  }
-
-  function $onRouteChange(payload) {
-    showViewForCondition(payload.routeObj.route);
-  }
-
-  /**
-   * Typically on app startup, show the view assigned to the current URL hash
-   *
-   * @param silent If true, will not notify subscribers of the change, prevents
-   * double showing on initial load
-   */
-  function showViewForChangedURL(silent) {
-    showViewForCondition(_utilsRouterJs2['default'].getCurrentRoute().route);
-    if (!silent) {
-      _utilsRouterJs2['default'].notifySubscribers();
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //  Store State Route
-  //----------------------------------------------------------------------------
-
-  function initializeStateViews(store) {
-    _routeOnURL = false;
-    _routeOnState = true;
-
-    _observedStore = store;
-    _observedStore.subscribe($onStateChange.bind(this));
-  }
-
-  function $onStateChange() {
-    showViewForChangedState.bind(this)();
-  }
-
-  function showViewForChangedState() {
-    var state = _observedStore.getState().currentState;
-    if (state) {
-      if (state !== _currentStoreState) {
-        _currentStoreState = state;
-        showViewForCondition(_currentStoreState);
-      }
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //  API
-  //----------------------------------------------------------------------------
-
-  return {
-    createComponent: createComponent,
-    showView: showView,
-    showViewForCondition: showViewForCondition,
-    route: route,
-    showViewForChangedCondition: showViewForChangedCondition,
-    initializeRouteViews: initializeRouteViews,
-    showViewForChangedURL: showViewForChangedURL,
-    initializeStateViews: initializeStateViews,
-    showViewForChangedState: showViewForChangedState
-  };
-};
-
-module.exports = exports['default'];
-
-},{"../../vendor/lodash.min.js":46,"../utils/BuildFromMixins.js":18,"../utils/Router.js":21,"./ViewComponent.js":29}],26:[function(require,module,exports){
-/*  weak */
-
-/**
- * Convenience mixin that makes events easier for views
- *
- * Based on Backbone
- * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
- *
- * Example:
- * this.setEvents({
- *        'click #btn_main_projects': handleProjectsButton,
- *        'click #btn_foo, click #btn_bar': handleFooBarButtons
- *      });
- * this.delegateEvents();
- *
- */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
-
-var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
-
-var _nudoruBrowserBrowserInfoJs = require('../../nudoru/browser/BrowserInfo.js');
-
-var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
-
-var _nudoruBrowserMouseToTouchEventsJs = require('../../nudoru/browser/MouseToTouchEvents.js');
-
-var _nudoruBrowserMouseToTouchEventsJs2 = _interopRequireDefault(_nudoruBrowserMouseToTouchEventsJs);
-
-var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
-
-var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
-exports['default'] = function () {
-
-  var _eventSubscribers = undefined;
-
-  /**
-   * Automates setting events on DOM elements.
-   * 'evtStr selector':callback
-   * 'evtStr selector, evtStr selector': sharedCallback
-   */
-  function delegateEvents(context, eventObj, autoForm) {
-    if (!eventObj) {
-      return;
-    }
-
-    _eventSubscribers = Object.create(null);
-
-    context = context || document;
-
-    for (var evtStrings in eventObj) {
-      if (eventObj.hasOwnProperty(evtStrings)) {
-        var _ret = (function () {
-
-          var mappings = evtStrings.split(','),
-              eventHandler = eventObj[evtStrings];
-
-          if (!_nudoruUtilIsJs2['default'].func(eventHandler)) {
-            console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
-            return {
-              v: undefined
-            };
-          }
-
-          /* jshint -W083 */
-          // https://jslinterrors.com/dont-make-functions-within-a-loop
-          mappings.forEach(function (evtMap) {
-            evtMap = evtMap.trim();
-
-            var eventStr = evtMap.split(' ')[0].trim(),
-                selector = evtMap.split(' ')[1].trim();
-
-            if (_nudoruBrowserBrowserInfoJs2['default'].mobile.any()) {
-              eventStr = (0, _nudoruBrowserMouseToTouchEventsJs2['default'])(eventStr);
-            }
-
-            _eventSubscribers[evtMap] = $createSubscriber(context, selector, eventStr, eventHandler, autoForm);
-          });
-          /* jshint +W083 */
-        })();
-
-        if (typeof _ret === 'object') return _ret.v;
-      }
-    }
-  }
-
-  /**
-   * Returns an observable subscription
-   * @param selector DOM element
-   * @param eventStr Event to watch
-   * @param handler Subscriber to handle the event
-   * @param autoForm True to automatically pass common form element data to the handler
-   * @returns {*}
-   */
-  function $createSubscriber(context, selector, eventStr, handler, autoForm) {
-    var el = context.querySelector(selector),
-        observable = undefined,
-        tag = undefined,
-        type = undefined;
-
-    if (!el) {
-      console.warn('MixinEventDelegator, $createSubscriber, Element not found:', selector);
-      return;
-    }
-
-    observable = getObservableFromDOM(el, eventStr);
-
-    tag = el.tagName.toLowerCase();
-    type = el.getAttribute('type');
-
-    /**
-     * Convencince for form element handlers
-     */
-    if (autoForm) {
-      if (tag === 'input' || tag === 'textarea') {
-        if (!type || type === 'text') {
-          if (eventStr === 'blur' || eventStr === 'focus') {
-            return observable.map(function (evt) {
-              return evt.target.value;
-            }).subscribe(handler);
-          } else if (eventStr === 'keyup' || eventStr === 'keydown') {
-            return observable.throttle(100).map(function (evt) {
-              return evt.target.value;
-            }).subscribe(handler);
-          }
-        } else if (type === 'radio' || type === 'checkbox') {
-          if (eventStr === 'click') {
-            return observable.map(function (evt) {
-              return evt.target.checked;
-            }).subscribe(handler);
-          }
-        }
-      } else if (tag === 'select') {
-        if (eventStr === 'change') {
-          return observable.map(function (evt) {
-            return evt.target.value;
-          }).subscribe(handler);
-        }
-      }
-    }
-
-    return observable.subscribe(handler);
-  }
-
-  /**
-   * Cleanly remove events
-   */
-  function undelegateEvents(eventObj) {
-
-    if (!eventObj) {
-      return;
-    }
-
-    for (var event in _eventSubscribers) {
-      if (_eventSubscribers[event]) {
-        _eventSubscribers[event].dispose();
-      } else {
-        console.warn('MixinEventDelegator, undelegateEvents, not a valid observable: ', event);
-      }
-      delete _eventSubscribers[event];
-    }
-
-    _eventSubscribers = Object.create(null);
-  }
-
-  /**
-   * Get observable from a dom selector for the given event
-   */
-  function getObservableFromDOM(selector, event) {
-    var el = selector;
-
-    if (_nudoruUtilIsJs2['default'].string(selector)) {
-      el = document.querySelector(selector);
-    }
-
-    if (!el) {
-      console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
-      return;
-    }
-    return _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(el, event.trim());
-  }
-
-  return {
-    undelegateEvents: undelegateEvents,
-    delegateEvents: delegateEvents
-  };
-};
-
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/MouseToTouchEvents.js":33,"../../nudoru/util/is.js":44,"../../vendor/rxjs/rx.lite.min.js":48}],27:[function(require,module,exports){
-/*  weak */
-
-/*
- Simple wrapper for Underscore / HTML templates
- Matt Perkins
- 4/7/15
- */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _utilsIsDOMElementJs = require('../utils/IsDOMElement.js');
-
-var _utilsIsDOMElementJs2 = _interopRequireDefault(_utilsIsDOMElementJs);
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
-
-var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
-
-var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
-
-// Switch Lodash to use Mustache style templates
-_vendorLodashMinJs2['default'].templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-_vendorLodashMinJs2['default'].templateSettings.evaluate = /{{\=([\s\S]+?)}}/g;
-
-var TemplatingModule = function TemplatingModule() {
-
-  var _templateMap = Object.create(null),
-      _templateHTMLCache = Object.create(null),
-      _templateCache = Object.create(null);
-
-  function addTemplate(id, html) {
-    _templateMap[id] = html;
-  }
-
-  function getSourceFromTemplateMap(id) {
-    var source = _templateMap[id];
-    if (source) {
-      return cleanTemplateHTML(source);
-    }
-    return;
-  }
-
-  function getSourceFromHTML(id) {
-    var src = document.getElementById(id),
-        srchtml = undefined;
-
-    if (src) {
-      srchtml = src.innerHTML;
-    } else if ((0, _utilsIsDOMElementJs2['default'])(id)) {
-      srchtml = '<' + id + ' id="{{elID}}" class="{{elClass}}">{{elInner}}</' + id + '>';
-    } else {
-      console.warn('nudoru/core/Templating, template not found: "' + id + '"');
-      srchtml = '<div>Template not found: ' + id + '</div>';
-    }
-
-    return cleanTemplateHTML(srchtml);
-  }
-
-  /**
-   * Get the template html from the script tag with id
-   * @param id
-   * @returns {*}
-   */
-  function getSource(id) {
-    if (_templateHTMLCache[id]) {
-      return _templateHTMLCache[id];
-    }
-
-    var sourcehtml = getSourceFromTemplateMap(id);
-
-    if (!sourcehtml) {
-      sourcehtml = getSourceFromHTML(id);
-    }
-
-    _templateHTMLCache[id] = sourcehtml;
-    return sourcehtml;
-  }
-
-  /**
-   * Returns all IDs belonging to text/template type script tags
-   * @returns {Array}
-   */
-  function getAllTemplateIDs() {
-    var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
-
-    return scriptTags.filter(function (tag) {
-      return tag.getAttribute('type') === 'text/template';
-    }).map(function (tag) {
-      return tag.getAttribute('id');
-    });
-  }
-
-  /**
-   * Returns an underscore template
-   * @param id
-   * @returns {*}
-   */
-  function getTemplate(id) {
-    if (_templateCache[id]) {
-      return _templateCache[id];
-    }
-    var templ = _vendorLodashMinJs2['default'].template(getSource(id));
-    _templateCache[id] = templ;
-    return templ;
-  }
-
-  /**
-   * Returns an underscore template
-   * @param id
-   * @returns {*}
-   */
-  function getTemplateFromHTML(html) {
-    return _vendorLodashMinJs2['default'].template(cleanTemplateHTML(html));
-  }
-
-  /**
-   * Processes the template and returns HTML
-   * @param id
-   * @param obj
-   * @returns {*}
-   */
-  function asHTML(id, obj) {
-    var temp = getTemplate(id);
-    return temp(obj);
-  }
-
-  /**
-   * Processes the template and returns an HTML Element
-   * @param id
-   * @param obj
-   * @returns {*}
-   */
-  function asElement(id, obj) {
-    return _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(asHTML(id, obj));
-  }
-
-  /**
-   * Cleans template HTML
-   */
-  function cleanTemplateHTML(str) {
-    return str.trim();
-  }
-
-  /**
-   * Remove returns, spaces and tabs
-   * @param str
-   * @returns {XML|string}
-   */
-  function removeWhiteSpace(str) {
-    return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
-  }
-
-  /**
-   * Iterate over all templates, clean them up and log
-   * Util for SharePoint projects, <script> blocks aren't allowed
-   * So this helps create the blocks for insertion in to the DOM
-   */
-  //function processForDOMInsertion() {
-  //  let ids = getAllTemplateIDs();
-  //  ids.forEach(id => {
-  //    var src = removeWhiteSpace(getSource(id));
-  //  });
-  //}
-
-  /**
-   * Add a template script tag to the DOM
-   * Util for SharePoint projects, <script> blocks aren't allowed
-   * @param id
-   * @param html
-   */
-  //function addClientSideTemplateToDOM(id, html) {
-  //  var s       = document.createElement('script');
-  //  s.type      = 'text/template';
-  //  s.id        = id;
-  //  s.innerHTML = html;
-  //  document.getElementsByTagName('head')[0].appendChild(s);
-  //}
-
-  return {
-    addTemplate: addTemplate,
-    getSource: getSource,
-    getAllTemplateIDs: getAllTemplateIDs,
-    getTemplate: getTemplate,
-    getTemplateFromHTML: getTemplateFromHTML,
-    asHTML: asHTML,
-    asElement: asElement
-  };
-};
-
-var Templating = TemplatingModule();
-
-exports['default'] = Templating;
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/DOMUtils.js":31,"../../vendor/lodash.min.js":46,"../utils/IsDOMElement.js":20}],28:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
-
-var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
-/**
- * DOM manipulation and animation helpers for ViewComponents
- */
-
-exports['default'] = function () {
-
-  var _tweenedEls = [],
-      _zIndex = 1000;
-
-  /**
-   * Returns the element. If passed a string will query DOM and return.
-   * @param selector
-   * @returns {*}
-   */
-  function getElement(selector) {
-    var el = undefined;
-
-    if (_nudoruUtilIsJs2['default'].string(selector)) {
-      el = document.querySelector(selector);
-    } else {
-      el = selector;
-    }
-
-    if (!el) {
-      console.warn('MixinDOMManipulation, selector not found ' + selector);
-    }
-
-    return el;
-  }
-
-  function toTop(selector) {
-    var el = document.querySelector(selector);
-    if (el) {
-      el.style.zIndex = _zIndex++;
-    }
-    console.warn('MixinDOMManipulation, to top, selector not found ' + selector);
-  }
-
-  function addTweenedElement(selector) {
-    var el = getElement(selector);
-
-    if (el) {
-      _tweenedEls.push(el);
-      return el;
-    }
-
-    return null;
-  }
-
-  function tweenTo(selector, dur, props) {
-    var el = addTweenedElement(selector);
-
-    if (!el) {
-      return;
-    }
-    return TweenLite.to(el, dur, props);
-  }
-
-  function tweenFrom(selector, dur, props) {
-    var el = addTweenedElement(selector);
-
-    if (!el) {
-      return;
-    }
-    return TweenLite.from(el, dur, props);
-  }
-
-  function tweenFromTo(selector, dur, startprops, endprops) {
-    var el = addTweenedElement(selector);
-
-    if (!el) {
-      return;
-    }
-    return TweenLite.fromTo(el, dur, startprops, endprops);
-  }
-
-  function killTweens() {
-    _tweenedEls.forEach(function (el) {
-      TweenLite.killTweensOf(el);
-    });
-
-    _tweenedEls = [];
-  }
-
-  function hideEl(selector) {
-    tweenSet(selector, {
-      alpha: 0,
-      display: 'none'
-    });
-  }
-
-  function showEl(selector) {
-    tweenSet(selector, {
-      alpha: 1,
-      display: 'block'
-    });
-  }
-
-  function tweenSet(selector, props) {
-    var el = getElement(selector);
-    if (el) {
-      TweenLite.set(el, props);
-    }
-  }
-
-  return {
-    toTop: toTop,
-    showEl: showEl,
-    hideEl: hideEl,
-    tweenSet: tweenSet,
-    tweenTo: tweenTo,
-    tweenFrom: tweenFrom,
-    tweenFromTo: tweenFromTo,
-    killTweens: killTweens
-  };
-};
-
-module.exports = exports['default'];
-
-},{"../../nudoru/util/is.js":44}],29:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -6088,7 +5205,894 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":31,"../../vendor/is-plain-object.min.js":45,"../../vendor/lodash.min.js":46,"./ComponentElement.js":23,"./ComponentRenderer.js":24,"./RxEventDelegator.js":26,"./Templating.js":27}],30:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":31,"../../vendor/is-plain-object.min.js":45,"../../vendor/lodash.min.js":46,"./ComponentElement.js":24,"./ComponentRenderer.js":25,"./RxEventDelegator.js":27,"./Templating.js":28}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
+exports['default'] = function (props, state, children) {
+  return {
+    props: props,
+    state: state,
+    lastProps: null,
+    lastState: null,
+    children: children || {},
+
+    getProps: function getProps() {
+      return _vendorLodashMinJs2['default'].assign({}, this.props);
+    },
+
+    getState: function getState() {
+      return _vendorLodashMinJs2['default'].assign({}, this.state);
+    },
+
+    shouldUpdate: function shouldUpdate(nextProps, nextState) {
+      nextProps = nextProps || this.props;
+      nextState = nextState || this.state;
+
+      var isStateEq = _vendorLodashMinJs2['default'].isEqual(nextState, this.state),
+          isPropsEq = _vendorLodashMinJs2['default'].isEqual(nextProps, this.props);
+
+      return !isStateEq || !isPropsEq;
+    },
+
+    setProps: function setProps(nextProps) {
+      this.lastProps = _vendorLodashMinJs2['default'].assign({}, this.props);
+      this.props = _vendorLodashMinJs2['default'].assign({}, this.props, nextProps);
+    },
+
+    setState: function setState(nextState) {
+      this.lastState = _vendorLodashMinJs2['default'].assign({}, this.state);
+      this.state = _vendorLodashMinJs2['default'].assign({}, this.state, nextState);
+    },
+
+    addChild: function addChild(id, newChild) {
+      if (!this.children.hasOwnProperty(id)) {
+        this.children[id] = newChild;
+      }
+    },
+
+    removeChild: function removeChild(id) {
+      if (this.children.hasOwnProperty(id)) {
+        delete this.children[id];
+      }
+    }
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../vendor/lodash.min.js":46}],25:[function(require,module,exports){
+/*  weak */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+exports['default'] = function (component, lastAdjacent) {
+
+  var domEl = undefined,
+      currentHTML = undefined,
+      html = component.html(),
+      mountPoint = document.querySelector(component.props.target);
+
+  // For a child component that has no mount set, append to the end of the parent
+  if (!mountPoint && component.parent()) {
+    mountPoint = document.querySelector('.' + component.parent().className());
+  }
+
+  if (!mountPoint) {
+    console.warn('Component', component.id(), 'invalid mount', component.props.target);
+    return;
+  }
+
+  domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
+  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
+  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, component.className());
+
+  if (component.props.attach === 'replace') {
+    currentHTML = mountPoint.innerHTML;
+    if (html !== currentHTML) {
+      mountPoint.innerHTML = '';
+      mountPoint.appendChild(domEl);
+    }
+  } else {
+    mountPoint.insertBefore(domEl, lastAdjacent);
+  }
+
+  return domEl;
+};
+
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/DOMUtils.js":31}],26:[function(require,module,exports){
+/*  weak */
+
+/**
+ * Mixin view that allows for component views
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
+var _ComponentJs = require('./Component.js');
+
+var _ComponentJs2 = _interopRequireDefault(_ComponentJs);
+
+var _utilsBuildFromMixinsJs = require('../utils/BuildFromMixins.js');
+
+var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
+
+var _utilsRouterJs = require('../utils/Router.js');
+
+var _utilsRouterJs2 = _interopRequireDefault(_utilsRouterJs);
+
+//import ComponentMount from '../experimental/ComponentMount.js';
+
+exports['default'] = function () {
+
+  var _routeViewMap = {},
+      _viewIDIndex = 0,
+      _routeOnURL = false,
+      _routeOnState = false,
+      _currentViewComponent = undefined,
+      _observedStore = undefined,
+      _currentStoreState = undefined;
+
+  /**
+   * Factory to create component view modules by concating multiple source objects
+   * @param customizer Custom module source
+   * @returns {*}
+   */
+  function createComponent(source) {
+    source = source || {};
+
+    return function vcConstructor(id, props) {
+      var customizer = undefined,
+          template = undefined,
+          final = undefined,
+          pDefaultProps = undefined;
+
+      customizer = _vendorLodashMinJs2['default'].cloneDeep(source);
+
+      customizer.mixins = customizer.mixins || [];
+      customizer.mixins.unshift((0, _ComponentJs2['default'])());
+
+      template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
+
+      for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        children[_key - 2] = arguments[_key];
+      }
+
+      template.__children = children;
+
+      pDefaultProps = template.getDefaultProps;
+
+      template.getDefaultProps = function () {
+        // TODO test props for reserved names?
+        var specs = {
+          id: id || 'vc' + _viewIDIndex,
+          index: _viewIDIndex++,
+          attach: 'append',
+          // In vc RxEventDelegator, will pass values from form elements to subscribers
+          autoFormEvents: true,
+          // Defaults for DOM el components
+          elInner: '',
+          elID: '',
+          elClass: ''
+        };
+        return _vendorLodashMinJs2['default'].merge({}, pDefaultProps.call(template), specs, props);
+      };
+
+      final = _vendorLodashMinJs2['default'].assign({}, template);
+      final.$componentInit.call(final);
+
+      if (typeof final.init === 'function') {
+        final.init.call(final);
+      }
+
+      return final;
+    };
+  }
+
+  //----------------------------------------------------------------------------
+  //  Conditional view such as routes or states
+  //  Must be augmented with mixins for state and route change monitoring
+  //----------------------------------------------------------------------------
+
+  /**
+   * Map a route to a module view controller
+   * @param component
+   * @param component
+   */
+  function route(condition, component) {
+    _routeViewMap[condition] = component;
+  }
+
+  /**
+   * Show a view (in response to a route change)
+   * @param condition
+   */
+  function showViewForCondition(condition) {
+    var view = _routeViewMap[condition];
+
+    if (!view) {
+      console.warn("No view mapped for route: " + condition);
+      return;
+    }
+
+    showView(view);
+  }
+
+  /**
+   * Show a mapped view
+   */
+  function showView(viewComponent) {
+    if (viewComponent === _currentViewComponent) {
+      return;
+    }
+
+    $removeCurrentView();
+    _currentViewComponent = viewComponent;
+    viewComponent.forceUpdate();
+  }
+
+  /**
+   * Remove the currently displayed view
+   */
+  function $removeCurrentView() {
+    if (_currentViewComponent) {
+      _currentViewComponent.dispose();
+    }
+    _currentViewComponent = null;
+  }
+
+  //----------------------------------------------------------------------------
+  //  Routing
+  //----------------------------------------------------------------------------
+
+  function showViewForChangedCondition(options) {
+    if (_routeOnURL) {
+      showViewForChangedURL(options);
+    } else if (_routeOnState) {
+      showViewForChangedState(options);
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  //  URL Fragment Route
+  //----------------------------------------------------------------------------
+
+  function initializeRouteViews() {
+    _routeOnURL = true;
+    _routeOnState = false;
+
+    _utilsRouterJs2['default'].subscribe($onRouteChange.bind(this));
+  }
+
+  function $onRouteChange(payload) {
+    showViewForCondition(payload.routeObj.route);
+  }
+
+  /**
+   * Typically on app startup, show the view assigned to the current URL hash
+   *
+   * @param silent If true, will not notify subscribers of the change, prevents
+   * double showing on initial load
+   */
+  function showViewForChangedURL(silent) {
+    showViewForCondition(_utilsRouterJs2['default'].getCurrentRoute().route);
+    if (!silent) {
+      _utilsRouterJs2['default'].notifySubscribers();
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  //  Store State Route
+  //----------------------------------------------------------------------------
+
+  function initializeStateViews(store) {
+    _routeOnURL = false;
+    _routeOnState = true;
+
+    _observedStore = store;
+    _observedStore.subscribe($onStateChange.bind(this));
+  }
+
+  function $onStateChange() {
+    showViewForChangedState.bind(this)();
+  }
+
+  function showViewForChangedState() {
+    var state = _observedStore.getState().currentState;
+    if (state) {
+      if (state !== _currentStoreState) {
+        _currentStoreState = state;
+        showViewForCondition(_currentStoreState);
+      }
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  //  API
+  //----------------------------------------------------------------------------
+
+  return {
+    createComponent: createComponent,
+    showView: showView,
+    showViewForCondition: showViewForCondition,
+    route: route,
+    showViewForChangedCondition: showViewForChangedCondition,
+    initializeRouteViews: initializeRouteViews,
+    showViewForChangedURL: showViewForChangedURL,
+    initializeStateViews: initializeStateViews,
+    showViewForChangedState: showViewForChangedState
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../vendor/lodash.min.js":46,"../utils/BuildFromMixins.js":18,"../utils/Router.js":21,"./Component.js":23}],27:[function(require,module,exports){
+/*  weak */
+
+/**
+ * Convenience mixin that makes events easier for views
+ *
+ * Based on Backbone
+ * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
+ *
+ * Example:
+ * this.setEvents({
+ *        'click #btn_main_projects': handleProjectsButton,
+ *        'click #btn_foo, click #btn_bar': handleFooBarButtons
+ *      });
+ * this.delegateEvents();
+ *
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
+
+var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
+
+var _nudoruBrowserBrowserInfoJs = require('../../nudoru/browser/BrowserInfo.js');
+
+var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
+
+var _nudoruBrowserMouseToTouchEventsJs = require('../../nudoru/browser/MouseToTouchEvents.js');
+
+var _nudoruBrowserMouseToTouchEventsJs2 = _interopRequireDefault(_nudoruBrowserMouseToTouchEventsJs);
+
+var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
+
+var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
+
+exports['default'] = function () {
+
+  var _eventSubscribers = undefined;
+
+  /**
+   * Automates setting events on DOM elements.
+   * 'evtStr selector':callback
+   * 'evtStr selector, evtStr selector': sharedCallback
+   */
+  function delegateEvents(context, eventObj, autoForm) {
+    if (!eventObj) {
+      return;
+    }
+
+    _eventSubscribers = Object.create(null);
+
+    context = context || document;
+
+    for (var evtStrings in eventObj) {
+      if (eventObj.hasOwnProperty(evtStrings)) {
+        var _ret = (function () {
+
+          var mappings = evtStrings.split(','),
+              eventHandler = eventObj[evtStrings];
+
+          if (!_nudoruUtilIsJs2['default'].func(eventHandler)) {
+            console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
+            return {
+              v: undefined
+            };
+          }
+
+          /* jshint -W083 */
+          // https://jslinterrors.com/dont-make-functions-within-a-loop
+          mappings.forEach(function (evtMap) {
+            evtMap = evtMap.trim();
+
+            var eventStr = evtMap.split(' ')[0].trim(),
+                selector = evtMap.split(' ')[1].trim();
+
+            if (_nudoruBrowserBrowserInfoJs2['default'].mobile.any()) {
+              eventStr = (0, _nudoruBrowserMouseToTouchEventsJs2['default'])(eventStr);
+            }
+
+            _eventSubscribers[evtMap] = $createSubscriber(context, selector, eventStr, eventHandler, autoForm);
+          });
+          /* jshint +W083 */
+        })();
+
+        if (typeof _ret === 'object') return _ret.v;
+      }
+    }
+  }
+
+  /**
+   * Returns an observable subscription
+   * @param selector DOM element
+   * @param eventStr Event to watch
+   * @param handler Subscriber to handle the event
+   * @param autoForm True to automatically pass common form element data to the handler
+   * @returns {*}
+   */
+  function $createSubscriber(context, selector, eventStr, handler, autoForm) {
+    var el = context.querySelector(selector),
+        observable = undefined,
+        tag = undefined,
+        type = undefined;
+
+    if (!el) {
+      console.warn('MixinEventDelegator, $createSubscriber, Element not found:', selector);
+      return;
+    }
+
+    observable = getObservableFromDOM(el, eventStr);
+
+    tag = el.tagName.toLowerCase();
+    type = el.getAttribute('type');
+
+    /**
+     * Convencince for form element handlers
+     */
+    if (autoForm) {
+      if (tag === 'input' || tag === 'textarea') {
+        if (!type || type === 'text') {
+          if (eventStr === 'blur' || eventStr === 'focus') {
+            return observable.map(function (evt) {
+              return evt.target.value;
+            }).subscribe(handler);
+          } else if (eventStr === 'keyup' || eventStr === 'keydown') {
+            return observable.throttle(100).map(function (evt) {
+              return evt.target.value;
+            }).subscribe(handler);
+          }
+        } else if (type === 'radio' || type === 'checkbox') {
+          if (eventStr === 'click') {
+            return observable.map(function (evt) {
+              return evt.target.checked;
+            }).subscribe(handler);
+          }
+        }
+      } else if (tag === 'select') {
+        if (eventStr === 'change') {
+          return observable.map(function (evt) {
+            return evt.target.value;
+          }).subscribe(handler);
+        }
+      }
+    }
+
+    return observable.subscribe(handler);
+  }
+
+  /**
+   * Cleanly remove events
+   */
+  function undelegateEvents(eventObj) {
+
+    if (!eventObj) {
+      return;
+    }
+
+    for (var event in _eventSubscribers) {
+      if (_eventSubscribers[event]) {
+        _eventSubscribers[event].dispose();
+      } else {
+        console.warn('MixinEventDelegator, undelegateEvents, not a valid observable: ', event);
+      }
+      delete _eventSubscribers[event];
+    }
+
+    _eventSubscribers = Object.create(null);
+  }
+
+  /**
+   * Get observable from a dom selector for the given event
+   */
+  function getObservableFromDOM(selector, event) {
+    var el = selector;
+
+    if (_nudoruUtilIsJs2['default'].string(selector)) {
+      el = document.querySelector(selector);
+    }
+
+    if (!el) {
+      console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
+      return;
+    }
+    return _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(el, event.trim());
+  }
+
+  return {
+    undelegateEvents: undelegateEvents,
+    delegateEvents: delegateEvents
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/MouseToTouchEvents.js":33,"../../nudoru/util/is.js":44,"../../vendor/rxjs/rx.lite.min.js":48}],28:[function(require,module,exports){
+/*  weak */
+
+/*
+ Simple wrapper for Underscore / HTML templates
+ Matt Perkins
+ 4/7/15
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _utilsIsDOMElementJs = require('../utils/IsDOMElement.js');
+
+var _utilsIsDOMElementJs2 = _interopRequireDefault(_utilsIsDOMElementJs);
+
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
+// Switch Lodash to use Mustache style templates
+_vendorLodashMinJs2['default'].templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+_vendorLodashMinJs2['default'].templateSettings.evaluate = /{{\=([\s\S]+?)}}/g;
+
+var TemplatingModule = function TemplatingModule() {
+
+  var _templateMap = Object.create(null),
+      _templateHTMLCache = Object.create(null),
+      _templateCache = Object.create(null);
+
+  function addTemplate(id, html) {
+    _templateMap[id] = html;
+  }
+
+  function getSourceFromTemplateMap(id) {
+    var source = _templateMap[id];
+    if (source) {
+      return cleanTemplateHTML(source);
+    }
+    return;
+  }
+
+  function getSourceFromHTML(id) {
+    var src = document.getElementById(id),
+        srchtml = undefined;
+
+    if (src) {
+      srchtml = src.innerHTML;
+    } else if ((0, _utilsIsDOMElementJs2['default'])(id)) {
+      srchtml = '<' + id + ' id="{{elID}}" class="{{elClass}}">{{elInner}}</' + id + '>';
+    } else {
+      console.warn('nudoru/core/Templating, template not found: "' + id + '"');
+      srchtml = '<div>Template not found: ' + id + '</div>';
+    }
+
+    return cleanTemplateHTML(srchtml);
+  }
+
+  /**
+   * Get the template html from the script tag with id
+   * @param id
+   * @returns {*}
+   */
+  function getSource(id) {
+    if (_templateHTMLCache[id]) {
+      return _templateHTMLCache[id];
+    }
+
+    var sourcehtml = getSourceFromTemplateMap(id);
+
+    if (!sourcehtml) {
+      sourcehtml = getSourceFromHTML(id);
+    }
+
+    _templateHTMLCache[id] = sourcehtml;
+    return sourcehtml;
+  }
+
+  /**
+   * Returns all IDs belonging to text/template type script tags
+   * @returns {Array}
+   */
+  function getAllTemplateIDs() {
+    var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
+
+    return scriptTags.filter(function (tag) {
+      return tag.getAttribute('type') === 'text/template';
+    }).map(function (tag) {
+      return tag.getAttribute('id');
+    });
+  }
+
+  /**
+   * Returns an underscore template
+   * @param id
+   * @returns {*}
+   */
+  function getTemplate(id) {
+    if (_templateCache[id]) {
+      return _templateCache[id];
+    }
+    var templ = _vendorLodashMinJs2['default'].template(getSource(id));
+    _templateCache[id] = templ;
+    return templ;
+  }
+
+  /**
+   * Returns an underscore template
+   * @param id
+   * @returns {*}
+   */
+  function getTemplateFromHTML(html) {
+    return _vendorLodashMinJs2['default'].template(cleanTemplateHTML(html));
+  }
+
+  /**
+   * Processes the template and returns HTML
+   * @param id
+   * @param obj
+   * @returns {*}
+   */
+  function asHTML(id, obj) {
+    var temp = getTemplate(id);
+    return temp(obj);
+  }
+
+  /**
+   * Processes the template and returns an HTML Element
+   * @param id
+   * @param obj
+   * @returns {*}
+   */
+  function asElement(id, obj) {
+    return _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(asHTML(id, obj));
+  }
+
+  /**
+   * Cleans template HTML
+   */
+  function cleanTemplateHTML(str) {
+    return str.trim();
+  }
+
+  /**
+   * Remove returns, spaces and tabs
+   * @param str
+   * @returns {XML|string}
+   */
+  function removeWhiteSpace(str) {
+    return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
+  }
+
+  /**
+   * Iterate over all templates, clean them up and log
+   * Util for SharePoint projects, <script> blocks aren't allowed
+   * So this helps create the blocks for insertion in to the DOM
+   */
+  //function processForDOMInsertion() {
+  //  let ids = getAllTemplateIDs();
+  //  ids.forEach(id => {
+  //    var src = removeWhiteSpace(getSource(id));
+  //  });
+  //}
+
+  /**
+   * Add a template script tag to the DOM
+   * Util for SharePoint projects, <script> blocks aren't allowed
+   * @param id
+   * @param html
+   */
+  //function addClientSideTemplateToDOM(id, html) {
+  //  var s       = document.createElement('script');
+  //  s.type      = 'text/template';
+  //  s.id        = id;
+  //  s.innerHTML = html;
+  //  document.getElementsByTagName('head')[0].appendChild(s);
+  //}
+
+  return {
+    addTemplate: addTemplate,
+    getSource: getSource,
+    getAllTemplateIDs: getAllTemplateIDs,
+    getTemplate: getTemplate,
+    getTemplateFromHTML: getTemplateFromHTML,
+    asHTML: asHTML,
+    asElement: asElement
+  };
+};
+
+var Templating = TemplatingModule();
+
+exports['default'] = Templating;
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/DOMUtils.js":31,"../../vendor/lodash.min.js":46,"../utils/IsDOMElement.js":20}],29:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
+
+var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
+
+/**
+ * DOM manipulation and animation helpers for ViewComponents
+ */
+
+exports['default'] = function () {
+
+  var _tweenedEls = [],
+      _zIndex = 1000;
+
+  /**
+   * Returns the element. If passed a string will query DOM and return.
+   * @param selector
+   * @returns {*}
+   */
+  function getElement(selector) {
+    var el = undefined;
+
+    if (_nudoruUtilIsJs2['default'].string(selector)) {
+      el = document.querySelector(selector);
+    } else {
+      el = selector;
+    }
+
+    if (!el) {
+      console.warn('MixinDOMManipulation, selector not found ' + selector);
+    }
+
+    return el;
+  }
+
+  function toTop(selector) {
+    var el = document.querySelector(selector);
+    if (el) {
+      el.style.zIndex = _zIndex++;
+    }
+    console.warn('MixinDOMManipulation, to top, selector not found ' + selector);
+  }
+
+  function addTweenedElement(selector) {
+    var el = getElement(selector);
+
+    if (el) {
+      _tweenedEls.push(el);
+      return el;
+    }
+
+    return null;
+  }
+
+  function tweenTo(selector, dur, props) {
+    var el = addTweenedElement(selector);
+
+    if (!el) {
+      return;
+    }
+    return TweenLite.to(el, dur, props);
+  }
+
+  function tweenFrom(selector, dur, props) {
+    var el = addTweenedElement(selector);
+
+    if (!el) {
+      return;
+    }
+    return TweenLite.from(el, dur, props);
+  }
+
+  function tweenFromTo(selector, dur, startprops, endprops) {
+    var el = addTweenedElement(selector);
+
+    if (!el) {
+      return;
+    }
+    return TweenLite.fromTo(el, dur, startprops, endprops);
+  }
+
+  function killTweens() {
+    _tweenedEls.forEach(function (el) {
+      TweenLite.killTweensOf(el);
+    });
+
+    _tweenedEls = [];
+  }
+
+  function hideEl(selector) {
+    tweenSet(selector, {
+      alpha: 0,
+      display: 'none'
+    });
+  }
+
+  function showEl(selector) {
+    tweenSet(selector, {
+      alpha: 1,
+      display: 'block'
+    });
+  }
+
+  function tweenSet(selector, props) {
+    var el = getElement(selector);
+    if (el) {
+      TweenLite.set(el, props);
+    }
+  }
+
+  return {
+    toTop: toTop,
+    showEl: showEl,
+    hideEl: hideEl,
+    tweenSet: tweenSet,
+    tweenTo: tweenTo,
+    tweenFrom: tweenFrom,
+    tweenFromTo: tweenFromTo,
+    killTweens: killTweens
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../nudoru/util/is.js":44}],30:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7036,7 +7040,7 @@ var MessageBoxView = MessageBoxViewModule();
 exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":27,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48,"./ModalCoverView.js":37}],36:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48,"./ModalCoverView.js":37}],36:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -7324,7 +7328,7 @@ var ModalCoverView = ModalCoverViewModule();
 exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":27,"../../nudoru/browser/BrowserInfo.js":30,"../../vendor/rxjs/rx.lite.min.js":48}],38:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../vendor/rxjs/rx.lite.min.js":48}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7501,7 +7505,7 @@ var ToastView = ToastViewModule();
 exports['default'] = ToastView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":27,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48}],39:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7798,7 +7802,7 @@ var ToolTipView = ToolTipViewModule();
 exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":27,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48}],40:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

@@ -5,7 +5,7 @@
  */
 
 import _ from '../../vendor/lodash.min.js';
-import ViewComponentFactory from './ViewComponent.js';
+import ViewComponentFactory from './Component.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
 import Router from '../utils/Router.js';
 //import ComponentMount from '../experimental/ComponentMount.js';
@@ -27,7 +27,8 @@ export default function () {
    */
   function createComponent(source) {
     source = source || {};
-    return function (id, props, ...children) {
+
+    return function vcConstructor(id, props, ...children) {
       let customizer,
           template,
           final,
@@ -44,14 +45,17 @@ export default function () {
       pDefaultProps = template.getDefaultProps;
 
       template.getDefaultProps = function () {
+        // TODO test props for reserved names?
         let specs = {
           id            : id || 'vc' + _viewIDIndex,
           index         : _viewIDIndex++,
           attach        : 'append',
+          // In vc RxEventDelegator, will pass values from form elements to subscribers
           autoFormEvents: true,
+          // Defaults for DOM el components
           elInner         : '',
           elID          : '',
-          elClass       : '',
+          elClass       : ''
         };
         return _.merge({}, pDefaultProps.call(template), specs, props);
       };
