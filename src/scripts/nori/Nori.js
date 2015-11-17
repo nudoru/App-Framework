@@ -61,10 +61,10 @@ export default {
     return CreateClass({}, customizer);
   },
 
-  createComponent(type, source, ...children) {
+  createComponent(source) {
     if(!this._componentViews) {
       this._componentViews = ComponentViews();
     }
-    return this._componentViews.createComponent(type, source, ...children);
+    return this._componentViews.createComponent(source);
   }
 };

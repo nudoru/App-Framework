@@ -89,13 +89,15 @@ let AppViewModule = Nori.createView({
           },
           ChildTest('append1', {
             target    : '#debug-child',
-            attach: 'append',
             label     : 'aaAppened1'
           }),
           ChildTest('append2', {
             target    : '#debug-child',
-            attach: 'append',
             label     : 'aaAppened2'
+          }),
+          Nori.createComponent()('div', {
+            target    : '#debug-child',
+            inner: 'testing dom el temp'
           }));
 
     // condition, component ID

@@ -26,6 +26,7 @@ export default function () {
    * @returns {*}
    */
   function createComponent(source) {
+    source = source || {};
     return function (id, props, ...children) {
       let customizer,
           template,
@@ -47,7 +48,8 @@ export default function () {
           id            : id || 'vc' + _viewIDIndex,
           index         : _viewIDIndex++,
           attach        : 'append',
-          autoFormEvents: true
+          autoFormEvents: true,
+          inner         : ''
         };
         return _.merge({}, pDefaultProps.call(template), specs, props);
       };

@@ -189,7 +189,7 @@ export default function () {
     _lifecycleState = LS_RENDERING;
 
     if (!_templateCache) {
-      _templateCache = this.template(_stateElement.props, _stateElement.state);
+      _templateCache = this.template();
     }
 
     this.$renderChildren();
@@ -203,8 +203,7 @@ export default function () {
    * specify the custom HTML to use here. Mustache style delimiters used.
    */
   function template() {
-    let templateId = this.id();
-    return Template.getTemplate(templateId);
+    return Template.getTemplate(this.id());
   }
 
   /**
