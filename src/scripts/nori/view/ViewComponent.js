@@ -18,7 +18,7 @@ import _ from '../../vendor/lodash.min.js';
 import isPlainObject from '../../vendor/is-plain-object.min.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import Template from './Templating.js';
-import Renderer from './Renderer.js';
+import ComponentRenderer from './ComponentRenderer.js';
 import EventDelegator from './RxEventDelegator.js';
 import ComponentElement from './ComponentElement.js';
 
@@ -27,8 +27,6 @@ const LS_NO_INIT   = 0,
       LS_RENDERING = 2,
       LS_MOUNTED   = 3,
       LS_UNMOUNTED = 4,
-      MNT_REPLACE  = 'replace',
-      MNT_APPEND   = 'append',
       CLASS_PREFIX = 'js__vc';
 
 export default function () {
@@ -38,7 +36,7 @@ export default function () {
       _lifecycleState = LS_NO_INIT,
       state           = {},
       props           = {},
-      html            = '',
+      _html,
       _templateCache,
       _domElementCache;
 
@@ -49,8 +47,7 @@ export default function () {
   function $componentInit() {
     _stateElement = ComponentElement(this.getDefaultProps(), this.getDefaultState(), {});
     this.$processChildren();
-    // Assign this.props and this.state
-    this.$updatePropsAndState();
+    this.$setPublicPropsAndState();
     _lifecycleState = LS_INITED;
   }
 
@@ -132,7 +129,6 @@ export default function () {
   function $updatePropsAndState(nextProps, nextState) {
     nextProps = nextProps || _stateElement.props;
     nextState = nextState || _stateElement.state;
-
     if (!_stateElement.shouldUpdate(nextProps, nextState)) {
       return;
     }
@@ -143,14 +139,19 @@ export default function () {
 
     _stateElement.setProps(nextProps);
     _stateElement.setState(nextState);
-    props = _.assign(props, _stateElement.props);
-    state = _.assign(state, _stateElement.state);
+
+    this.$setPublicPropsAndState();
 
     this.$renderAfterPropsOrStateChange();
 
     if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
       this.componentDidUpdate(_stateElement.lastProps, _stateElement.lastState);
     }
+  }
+
+  function $setPublicPropsAndState() {
+    props = _.assign(props, _stateElement.props);
+    state = _.assign(state, _stateElement.state);
   }
 
   //----------------------------------------------------------------------------
@@ -188,7 +189,7 @@ export default function () {
 
     this.$renderChildren();
 
-    html = this.render();
+    _html = this.render();
   }
 
   /**
@@ -217,7 +218,7 @@ export default function () {
   //----------------------------------------------------------------------------
 
   function $mountComponent() {
-    if (!html || html.length === 0) {
+    if (!_html || _html.length === 0) {
       console.warn('Component ' + this.id() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
@@ -238,17 +239,12 @@ export default function () {
     let lastAdjacentNode;
 
     if (this.isMounted()) {
+      // Capture where it was in the tree before removing so it can be replaced
       lastAdjacentNode = this.dom().nextSibling;
       this.unmount();
     }
 
-    _domElementCache = Renderer({
-      uniqueCls     : this.className(),
-      method        : _stateElement.props.mountMethod,
-      lastAdjacent  : lastAdjacentNode,
-      targetSelector: _stateElement.props.mount,
-      html          : html
-    });
+    _domElementCache = ComponentRenderer(this, lastAdjacentNode);
 
     if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
       _events.delegateEvents(this.dom(), this.getDOMEvents(), _stateElement.props.autoFormEvents);
@@ -276,7 +272,7 @@ export default function () {
       _events.undelegateEvents(this.getDOMEvents());
     }
 
-    if (!_stateElement.props.mountMethod || _stateElement.props.mountMethod === MNT_REPLACE) {
+    if (!_stateElement.props.mountMethod || _stateElement.props.mountMethod === 'replace') {
       DOMUtils.removeAllElements(document.querySelector(_stateElement.props.mount));
     } else {
       if (this.dom()) {
@@ -410,6 +406,10 @@ export default function () {
     return _domElementCache;
   }
 
+  function html() {
+    return _html;
+  }
+
   function className() {
     return CLASS_PREFIX + _stateElement.props.index;
   }
@@ -442,7 +442,6 @@ export default function () {
     // Direct obj access
     state: state,
     props: props,
-    html : html,
 
     // public api
     setProps,
@@ -453,6 +452,7 @@ export default function () {
     id,
     template,
     dom,
+    html,
     isMounted,
     tmpl,
     forceUpdate,
@@ -470,6 +470,7 @@ export default function () {
     // private api
     $componentInit,
     $processChildren,
+    $setPublicPropsAndState,
     $updatePropsAndState,
     $renderAfterPropsOrStateChange,
     $renderComponent,

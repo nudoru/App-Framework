@@ -3554,10 +3554,22 @@ var AppViewModule = _noriNoriJs2['default'].createView({
   },
 
   mapRoutes: function mapRoutes() {
-    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', { mount: '#contents' }),
-        vcControls = (0, _ControlsTestingJs2['default'])('controls', { mount: '#contents' }),
-        vcStyles = _noriNoriJs2['default'].createComponent({})('styles', { mount: '#contents' }),
-        vcComponents = (0, _ComponentsTestingJs2['default'])('components', { mount: '#contents' }, (0, _ChildTestJs2['default'])('append1', {
+    var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', {
+      mount: '#contents',
+      mountMethod: 'replace'
+    }),
+        vcControls = (0, _ControlsTestingJs2['default'])('controls', {
+      mount: '#contents',
+      mountMethod: 'replace'
+    }),
+        vcStyles = _noriNoriJs2['default'].createComponent({})('styles', {
+      mount: '#contents',
+      mountMethod: 'replace'
+    }),
+        vcComponents = (0, _ComponentsTestingJs2['default'])('components', {
+      mount: '#contents',
+      mountMethod: 'replace'
+    }, (0, _ChildTestJs2['default'])('append1', {
       mount: '#debug-child',
       mountMethod: 'append',
       label: 'aaAppened1'
@@ -4106,7 +4118,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../vendor/lodash.min.js":45,"./store/ReducerStore.js":16,"./utils/AssignArray.js":17,"./utils/BuildFromMixins.js":18,"./utils/CreateClass.js":19,"./view/ComponentViews.js":23}],14:[function(require,module,exports){
+},{"../vendor/lodash.min.js":45,"./store/ReducerStore.js":16,"./utils/AssignArray.js":17,"./utils/BuildFromMixins.js":18,"./utils/CreateClass.js":19,"./view/ComponentViews.js":24}],14:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4676,6 +4688,50 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 /*  weak */
 
+var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
+
+var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
+
+exports['default'] = function (component, lastAdjacent) {
+
+  var domEl = undefined,
+      currentHTML = undefined,
+      html = component.html(),
+      mountPoint = document.querySelector(component.props.mount);
+
+  if (!mountPoint) {
+    console.warn('Component', component.id(), 'invalid mount', component.props.mount);
+    return;
+  }
+
+  domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
+  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
+  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, component.className());
+
+  if (component.props.mountMethod === 'replace') {
+    currentHTML = mountPoint.innerHTML;
+    if (html !== currentHTML) {
+      mountPoint.innerHTML = '';
+      mountPoint.appendChild(domEl);
+    }
+  } else {
+    mountPoint.insertBefore(domEl, lastAdjacent);
+  }
+
+  return domEl;
+};
+
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/DOMUtils.js":30}],24:[function(require,module,exports){
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/*  weak */
+
 /**
  * Mixin view that allows for component views
  */
@@ -4893,66 +4949,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../vendor/lodash.min.js":45,"../utils/BuildFromMixins.js":18,"../utils/Router.js":20,"./ViewComponent.js":28}],24:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
-
-/**
- * Utility to handle all view DOM attachment tasks
- */
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
-
-var MNT_REPLACE = 'replace',
-    MNT_APPEND = 'append';
-
-exports['default'] = function (_ref) {
-  var uniqueCls = _ref.uniqueCls;
-  var method = _ref.method;
-  var lastAdjacent = _ref.lastAdjacent;
-  var targetSelector = _ref.targetSelector;
-  var html = _ref.html;
-
-  var domEl = undefined,
-      currentHTML = undefined,
-      mountPoint = document.querySelector(targetSelector);
-
-  if (!mountPoint) {
-    console.warn('Render, target selector not found', targetSelector);
-    return;
-  }
-
-  method = method || MNT_REPLACE;
-  uniqueCls = uniqueCls || '';
-  html = html || '<div></div>';
-
-  domEl = _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(html);
-  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
-  _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, uniqueCls);
-
-  if (method === MNT_REPLACE) {
-    currentHTML = mountPoint.innerHTML;
-    if (html !== currentHTML) {
-      mountPoint.innerHTML = '';
-      mountPoint.appendChild(domEl);
-    }
-  } else {
-    mountPoint.insertBefore(domEl, lastAdjacent);
-  }
-
-  return domEl;
-};
-
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/DOMUtils.js":30}],25:[function(require,module,exports){
+},{"../../vendor/lodash.min.js":45,"../utils/BuildFromMixins.js":18,"../utils/Router.js":20,"./ViewComponent.js":28}],25:[function(require,module,exports){
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -5514,9 +5511,9 @@ var _TemplatingJs = require('./Templating.js');
 
 var _TemplatingJs2 = _interopRequireDefault(_TemplatingJs);
 
-var _RendererJs = require('./Renderer.js');
+var _ComponentRendererJs = require('./ComponentRenderer.js');
 
-var _RendererJs2 = _interopRequireDefault(_RendererJs);
+var _ComponentRendererJs2 = _interopRequireDefault(_ComponentRendererJs);
 
 var _RxEventDelegatorJs = require('./RxEventDelegator.js');
 
@@ -5531,8 +5528,6 @@ var LS_NO_INIT = 0,
     LS_RENDERING = 2,
     LS_MOUNTED = 3,
     LS_UNMOUNTED = 4,
-    MNT_REPLACE = 'replace',
-    MNT_APPEND = 'append',
     CLASS_PREFIX = 'js__vc';
 
 exports['default'] = function () {
@@ -5542,7 +5537,7 @@ exports['default'] = function () {
       _lifecycleState = LS_NO_INIT,
       state = {},
       props = {},
-      html = '',
+      _html = undefined,
       _templateCache = undefined,
       _domElementCache = undefined;
 
@@ -5553,8 +5548,7 @@ exports['default'] = function () {
   function $componentInit() {
     _stateElement = (0, _ComponentElementJs2['default'])(this.getDefaultProps(), this.getDefaultState(), {});
     this.$processChildren();
-    // Assign this.props and this.state
-    this.$updatePropsAndState();
+    this.$setPublicPropsAndState();
     _lifecycleState = LS_INITED;
   }
 
@@ -5638,7 +5632,6 @@ exports['default'] = function () {
   function $updatePropsAndState(nextProps, nextState) {
     nextProps = nextProps || _stateElement.props;
     nextState = nextState || _stateElement.state;
-
     if (!_stateElement.shouldUpdate(nextProps, nextState)) {
       return;
     }
@@ -5649,14 +5642,19 @@ exports['default'] = function () {
 
     _stateElement.setProps(nextProps);
     _stateElement.setState(nextState);
-    props = _vendorLodashMinJs2['default'].assign(props, _stateElement.props);
-    state = _vendorLodashMinJs2['default'].assign(state, _stateElement.state);
+
+    this.$setPublicPropsAndState();
 
     this.$renderAfterPropsOrStateChange();
 
     if (typeof this.componentDidUpdate === 'function' && _lifecycleState > LS_INITED) {
       this.componentDidUpdate(_stateElement.lastProps, _stateElement.lastState);
     }
+  }
+
+  function $setPublicPropsAndState() {
+    props = _vendorLodashMinJs2['default'].assign(props, _stateElement.props);
+    state = _vendorLodashMinJs2['default'].assign(state, _stateElement.state);
   }
 
   //----------------------------------------------------------------------------
@@ -5696,7 +5694,7 @@ exports['default'] = function () {
 
     this.$renderChildren();
 
-    html = this.render();
+    _html = this.render();
   }
 
   /**
@@ -5725,7 +5723,7 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   function $mountComponent() {
-    if (!html || html.length === 0) {
+    if (!_html || _html.length === 0) {
       console.warn('Component ' + this.id() + ' cannot mount with no HTML. Call render() first?');
       return;
     }
@@ -5746,17 +5744,12 @@ exports['default'] = function () {
     var lastAdjacentNode = undefined;
 
     if (this.isMounted()) {
+      // Capture where it was in the tree before removing so it can be replaced
       lastAdjacentNode = this.dom().nextSibling;
       this.unmount();
     }
 
-    _domElementCache = (0, _RendererJs2['default'])({
-      uniqueCls: this.className(),
-      method: _stateElement.props.mountMethod,
-      lastAdjacent: lastAdjacentNode,
-      targetSelector: _stateElement.props.mount,
-      html: html
-    });
+    _domElementCache = (0, _ComponentRendererJs2['default'])(this, lastAdjacentNode);
 
     if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
       _events.delegateEvents(this.dom(), this.getDOMEvents(), _stateElement.props.autoFormEvents);
@@ -5784,7 +5777,7 @@ exports['default'] = function () {
       _events.undelegateEvents(this.getDOMEvents());
     }
 
-    if (!_stateElement.props.mountMethod || _stateElement.props.mountMethod === MNT_REPLACE) {
+    if (!_stateElement.props.mountMethod || _stateElement.props.mountMethod === 'replace') {
       _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_stateElement.props.mount));
     } else {
       if (this.dom()) {
@@ -5919,6 +5912,10 @@ exports['default'] = function () {
     return _domElementCache;
   }
 
+  function html() {
+    return _html;
+  }
+
   function className() {
     return CLASS_PREFIX + _stateElement.props.index;
   }
@@ -5951,7 +5948,6 @@ exports['default'] = function () {
     // Direct obj access
     state: state,
     props: props,
-    html: html,
 
     // public api
     setProps: setProps,
@@ -5962,6 +5958,7 @@ exports['default'] = function () {
     id: id,
     template: template,
     dom: dom,
+    html: html,
     isMounted: isMounted,
     tmpl: tmpl,
     forceUpdate: forceUpdate,
@@ -5979,6 +5976,7 @@ exports['default'] = function () {
     // private api
     $componentInit: $componentInit,
     $processChildren: $processChildren,
+    $setPublicPropsAndState: $setPublicPropsAndState,
     $updatePropsAndState: $updatePropsAndState,
     $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
     $renderComponent: $renderComponent,
@@ -5993,7 +5991,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":30,"../../vendor/is-plain-object.min.js":44,"../../vendor/lodash.min.js":45,"./ComponentElement.js":22,"./Renderer.js":24,"./RxEventDelegator.js":25,"./Templating.js":26}],29:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":30,"../../vendor/is-plain-object.min.js":44,"../../vendor/lodash.min.js":45,"./ComponentElement.js":22,"./ComponentRenderer.js":23,"./RxEventDelegator.js":25,"./Templating.js":26}],29:[function(require,module,exports){
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
