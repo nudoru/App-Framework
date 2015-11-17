@@ -8,8 +8,13 @@ export default function (component, lastAdjacent) {
       html = component.html(),
       mountPoint = document.querySelector(component.props.target);
 
+  // For a child component that has no mount set, append to the end of the parent
+  if(!mountPoint && component.parent()) {
+    mountPoint = document.querySelector('.'+component.parent().className());
+  }
+
   if (!mountPoint) {
-    console.warn('Component',component.id(),'invalid mount', component.props.target);
+    console.warn('Component', component.id(), 'invalid mount', component.props.target);
     return;
   }
 

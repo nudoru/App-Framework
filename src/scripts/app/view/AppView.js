@@ -72,33 +72,37 @@ let AppViewModule = Nori.createView({
 
   mapRoutes() {
     let vcDefault    = TemplateViewFactory('default', {
-          target    : '#contents',
+          target: '#contents',
           attach: 'replace'
         }),
         vcControls   = ControlsTesting('controls', {
-          target    : '#contents',
+          target: '#contents',
           attach: 'replace'
         }),
         vcStyles     = Nori.createComponent({})('styles', {
-          target    : '#contents',
+          target: '#contents',
           attach: 'replace'
         }),
         vcComponents = ComponentTesting('components', {
-            target    : '#contents',
+            target: '#contents',
             attach: 'replace'
           },
           ChildTest('append1', {
-            target    : '#debug-child',
-            label     : 'aaAppened1'
+            target: '#debug-child',
+            label : 'aaAppened1'
           }),
           ChildTest('append2', {
-            target    : '#debug-child',
-            label     : 'aaAppened2'
+            target: '#debug-child',
+            label : 'aaAppened2'
           }),
           Nori.createComponent()('div', {
-            target    : '#debug-child',
-            inner: 'testing dom el temp'
-          }));
+            target: '#debug-child',
+            elInner: 'testing dom el temp',
+            elID: 'my-el',
+            elClass: 'h3-alternate'
+          },ChildTest('append5', {
+            label : 'On dom el'
+          })));
 
     // condition, component ID
     this.route('/', vcDefault);

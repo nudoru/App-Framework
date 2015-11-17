@@ -36,6 +36,7 @@ export default function () {
       _lifecycleState = LS_NO_INIT,
       state           = {},
       props           = {},
+      _parent,
       _html,
       _templateCache,
       _domElementCache;
@@ -58,6 +59,7 @@ export default function () {
         if (typeof child === 'function') {
           childObj = child();
         }
+        childObj.setParent(this);
         this.addChild(childObj.id(), childObj);
       });
     }
@@ -418,6 +420,14 @@ export default function () {
     return CLASS_PREFIX + _stateElement.props.index;
   }
 
+  function setParent(parent) {
+    _parent = parent;
+  }
+
+  function parent() {
+    return _parent;
+  }
+
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -457,6 +467,8 @@ export default function () {
     template,
     dom,
     html,
+    setParent,
+    parent,
     isMounted,
     tmpl,
     forceUpdate,

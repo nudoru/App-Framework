@@ -39,7 +39,7 @@ let TemplatingModule = function () {
         if (src) {
           srchtml = src.innerHTML;
         } else if (IsDOMElement(id)) {
-          srchtml = '<' + id + '>{{inner}}</' + id + '>';
+          srchtml = '<' + id + ' id="{{elID}}" class="{{elClass}}">{{elInner}}</' + id + '>';
         } else {
           console.warn('nudoru/core/Templating, template not found: "' + id + '"');
           srchtml = '<div>Template not found: ' + id + '</div>';

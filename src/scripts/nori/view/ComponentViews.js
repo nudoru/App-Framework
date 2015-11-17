@@ -49,7 +49,9 @@ export default function () {
           index         : _viewIDIndex++,
           attach        : 'append',
           autoFormEvents: true,
-          inner         : ''
+          elInner         : '',
+          elID          : '',
+          elClass       : '',
         };
         return _.merge({}, pDefaultProps.call(template), specs, props);
       };

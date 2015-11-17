@@ -3587,8 +3587,12 @@ var AppViewModule = _noriNoriJs2['default'].createView({
       label: 'aaAppened2'
     }), _noriNoriJs2['default'].createComponent()('div', {
       target: '#debug-child',
-      inner: 'testing dom el temp'
-    }));
+      elInner: 'testing dom el temp',
+      elID: 'my-el',
+      elClass: 'h3-alternate'
+    }, (0, _ChildTestJs2['default'])('append5', {
+      label: 'On dom el'
+    })));
 
     // condition, component ID
     this.route('/', vcDefault);
@@ -4751,6 +4755,11 @@ exports['default'] = function (component, lastAdjacent) {
       html = component.html(),
       mountPoint = document.querySelector(component.props.target);
 
+  // For a child component that has no mount set, append to the end of the parent
+  if (!mountPoint && component.parent()) {
+    mountPoint = document.querySelector('.' + component.parent().className());
+  }
+
   if (!mountPoint) {
     console.warn('Component', component.id(), 'invalid mount', component.props.target);
     return;
@@ -4852,7 +4861,9 @@ exports['default'] = function () {
           index: _viewIDIndex++,
           attach: 'append',
           autoFormEvents: true,
-          inner: ''
+          elInner: '',
+          elID: '',
+          elClass: ''
         };
         return _vendorLodashMinJs2['default'].merge({}, pDefaultProps.call(template), specs, props);
       };
@@ -5263,7 +5274,7 @@ var TemplatingModule = function TemplatingModule() {
     if (src) {
       srchtml = src.innerHTML;
     } else if ((0, _utilsIsDOMElementJs2['default'])(id)) {
-      srchtml = '<' + id + '>{{inner}}</' + id + '>';
+      srchtml = '<' + id + ' id="{{elID}}" class="{{elClass}}">{{elInner}}</' + id + '>';
     } else {
       console.warn('nudoru/core/Templating, template not found: "' + id + '"');
       srchtml = '<div>Template not found: ' + id + '</div>';
@@ -5607,6 +5618,7 @@ exports['default'] = function () {
       _lifecycleState = LS_NO_INIT,
       state = {},
       props = {},
+      _parent = undefined,
       _html = undefined,
       _templateCache = undefined,
       _domElementCache = undefined;
@@ -5631,6 +5643,7 @@ exports['default'] = function () {
         if (typeof child === 'function') {
           childObj = child();
         }
+        childObj.setParent(_this);
         _this.addChild(childObj.id(), childObj);
       });
     }
@@ -5994,6 +6007,14 @@ exports['default'] = function () {
     return CLASS_PREFIX + _stateElement.props.index;
   }
 
+  function setParent(parent) {
+    _parent = parent;
+  }
+
+  function parent() {
+    return _parent;
+  }
+
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -6033,6 +6054,8 @@ exports['default'] = function () {
     template: template,
     dom: dom,
     html: html,
+    setParent: setParent,
+    parent: parent,
     isMounted: isMounted,
     tmpl: tmpl,
     forceUpdate: forceUpdate,
