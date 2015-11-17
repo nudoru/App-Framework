@@ -4955,16 +4955,19 @@ exports['default'] = function () {
 
     _domElementCache = (0, _ComponentRendererJs2['default'])(this, lastAdjacentNode);
 
-    if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
-      _events.delegateEvents(this.dom(), this.getDOMEvents(), _stateElement.props.autoFormEvents);
-    }
+    this.$addEvents();
 
     _lifecycleState = LS_MOUNTED;
   }
 
+  function $addEvents() {
+    if (this.shouldDelegateEvents() && typeof this.getDOMEvents === 'function') {
+      _events.delegateEvents(this.dom(), this.getDOMEvents(), _stateElement.props.autoFormEvents);
+    }
+  }
+
   /**
    * Override to delegate events or not based on some state trigger
-   * @returns {boolean}
    */
   function shouldDelegateEvents() {
     return true;
@@ -4976,12 +4979,9 @@ exports['default'] = function () {
     }
 
     this.$unmountChildren();
+    this.$removeEvents();
 
-    if (typeof this.getDOMEvents === 'function') {
-      _events.undelegateEvents(this.getDOMEvents());
-    }
-
-    if (!_stateElement.props.attach || _stateElement.props.attach === 'replace') {
+    if (_stateElement.props.attach === 'replace') {
       _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_stateElement.props.target));
     } else {
       if (this.dom()) {
@@ -4991,6 +4991,12 @@ exports['default'] = function () {
 
     _domElementCache = null;
     _lifecycleState = LS_UNMOUNTED;
+  }
+
+  function $removeEvents() {
+    if (typeof this.getDOMEvents === 'function') {
+      _events.undelegateEvents(this.getDOMEvents());
+    }
   }
 
   function dispose() {
@@ -5195,6 +5201,8 @@ exports['default'] = function () {
     $renderAfterPropsOrStateChange: $renderAfterPropsOrStateChange,
     $renderComponent: $renderComponent,
     $mountComponent: $mountComponent,
+    $addEvents: $addEvents,
+    $removeEvents: $removeEvents,
     $forceUpdateChildren: $forceUpdateChildren,
     $renderChildren: $renderChildren,
     $mountChildren: $mountChildren,
