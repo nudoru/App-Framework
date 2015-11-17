@@ -53,8 +53,8 @@ export default Nori.createComponent({
       _.range(0, 3).forEach(id => {
         id      = 'dynamic' + String(id);
         dyn[id] = ChildTest('dBtn' + id, {
-          mount      : '#debug-child',
-          mountMethod: 'append',
+          target      : '#debug-child',
+          attach: 'append',
           label      : 'Dynamic! ' + id
         });
       });

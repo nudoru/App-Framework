@@ -46,7 +46,7 @@ export default function () {
         let specs = {
           id            : id || 'vc' + _viewIDIndex,
           index         : _viewIDIndex++,
-          mountMethod   : 'append',
+          attach        : 'append',
           autoFormEvents: true
         };
         return _.merge({}, pDefaultProps.call(template), specs, props);

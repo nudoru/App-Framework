@@ -277,8 +277,8 @@ export default function () {
       _events.undelegateEvents(this.getDOMEvents());
     }
 
-    if (!_stateElement.props.mountMethod || _stateElement.props.mountMethod === 'replace') {
-      DOMUtils.removeAllElements(document.querySelector(_stateElement.props.mount));
+    if (!_stateElement.props.attach || _stateElement.props.attach === 'replace') {
+      DOMUtils.removeAllElements(document.querySelector(_stateElement.props.target));
     } else {
       if (this.dom()) {
         DOMUtils.removeElement(this.dom());

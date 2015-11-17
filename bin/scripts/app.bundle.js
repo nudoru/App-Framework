@@ -3555,27 +3555,27 @@ var AppViewModule = _noriNoriJs2['default'].createView({
 
   mapRoutes: function mapRoutes() {
     var vcDefault = (0, _TemplateViewComponentJs2['default'])('default', {
-      mount: '#contents',
-      mountMethod: 'replace'
+      target: '#contents',
+      attach: 'replace'
     }),
         vcControls = (0, _ControlsTestingJs2['default'])('controls', {
-      mount: '#contents',
-      mountMethod: 'replace'
+      target: '#contents',
+      attach: 'replace'
     }),
         vcStyles = _noriNoriJs2['default'].createComponent({})('styles', {
-      mount: '#contents',
-      mountMethod: 'replace'
+      target: '#contents',
+      attach: 'replace'
     }),
         vcComponents = (0, _ComponentsTestingJs2['default'])('components', {
-      mount: '#contents',
-      mountMethod: 'replace'
+      target: '#contents',
+      attach: 'replace'
     }, (0, _ChildTestJs2['default'])('append1', {
-      mount: '#debug-child',
-      mountMethod: 'append',
+      target: '#debug-child',
+      attach: 'append',
       label: 'aaAppened1'
     }), (0, _ChildTestJs2['default'])('append2', {
-      mount: '#debug-child',
-      mountMethod: 'append',
+      target: '#debug-child',
+      attach: 'append',
       label: 'aaAppened2'
     }));
 
@@ -3736,8 +3736,8 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
     _vendorLodashMinJs2['default'].range(0, 3).forEach(function (id) {
       id = 'dynamic' + String(id);
       dyn[id] = (0, _ChildTestJs2['default'])('dBtn' + id, {
-        mount: '#debug-child',
-        mountMethod: 'append',
+        target: '#debug-child',
+        attach: 'append',
         label: 'Dynamic! ' + id
       });
     });
@@ -4697,10 +4697,10 @@ exports['default'] = function (component, lastAdjacent) {
   var domEl = undefined,
       currentHTML = undefined,
       html = component.html(),
-      mountPoint = document.querySelector(component.props.mount);
+      mountPoint = document.querySelector(component.props.target);
 
   if (!mountPoint) {
-    console.warn('Component', component.id(), 'invalid mount', component.props.mount);
+    console.warn('Component', component.id(), 'invalid mount', component.props.target);
     return;
   }
 
@@ -4708,7 +4708,7 @@ exports['default'] = function (component, lastAdjacent) {
   _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, 'nori__vc');
   _nudoruBrowserDOMUtilsJs2['default'].addClass(domEl, component.className());
 
-  if (component.props.mountMethod === 'replace') {
+  if (component.props.attach === 'replace') {
     currentHTML = mountPoint.innerHTML;
     if (html !== currentHTML) {
       mountPoint.innerHTML = '';
@@ -4795,7 +4795,7 @@ exports['default'] = function () {
         var specs = {
           id: id || 'vc' + _viewIDIndex,
           index: _viewIDIndex++,
-          mountMethod: 'append',
+          attach: 'append',
           autoFormEvents: true
         };
         return _vendorLodashMinJs2['default'].merge({}, pDefaultProps.call(template), specs, props);
@@ -5782,8 +5782,8 @@ exports['default'] = function () {
       _events.undelegateEvents(this.getDOMEvents());
     }
 
-    if (!_stateElement.props.mountMethod || _stateElement.props.mountMethod === 'replace') {
-      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_stateElement.props.mount));
+    if (!_stateElement.props.attach || _stateElement.props.attach === 'replace') {
+      _nudoruBrowserDOMUtilsJs2['default'].removeAllElements(document.querySelector(_stateElement.props.target));
     } else {
       if (this.dom()) {
         _nudoruBrowserDOMUtilsJs2['default'].removeElement(this.dom());
