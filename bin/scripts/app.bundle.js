@@ -4697,9 +4697,9 @@ var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
 
-var _vendorIsPlainObjectMinJs = require('../../vendor/is-plain-object.min.js');
+var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
-var _vendorIsPlainObjectMinJs2 = _interopRequireDefault(_vendorIsPlainObjectMinJs);
+var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 
 var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
@@ -4776,7 +4776,6 @@ exports['default'] = function () {
    * For a region, which is instantiated from the factory with props, this function
    * will be overwritten by the code in ComponentView to return the passed
    * initProps object
-   * @returns {undefined}
    */
   function getDefaultProps() {
     return {};
@@ -4784,7 +4783,6 @@ exports['default'] = function () {
 
   /**
    * Get the initial state of the component
-   * @returns {{}}
    */
   function getDefaultState() {
     return {};
@@ -4792,11 +4790,15 @@ exports['default'] = function () {
 
   /**
    * Sets the next state and trigger a rerender
-   * @param nextState
    */
   function setState(nextState) {
     if (_lifecycleState === LS_RENDERING) {
       console.warn('Can\'t update state during rendering', this.id());
+      return;
+    }
+
+    if (!_nudoruUtilIsJs2['default'].object(nextState)) {
+      console.warn('Must call setState with an object');
       return;
     }
 
@@ -4808,10 +4810,9 @@ exports['default'] = function () {
 
   /**
    * Set new props and trigger rerender
-   * @param nextProps
    */
   function setProps(nextProps) {
-    if (!(0, _vendorIsPlainObjectMinJs2['default'])(nextProps)) {
+    if (!_nudoruUtilIsJs2['default'].object(nextProps)) {
       console.warn('Must call setProps with an object');
       return;
     }
@@ -4933,7 +4934,6 @@ exports['default'] = function () {
     }
 
     this.mount();
-
     this.$mountChildren();
 
     if (typeof this.componentDidMount === 'function') {
@@ -5213,7 +5213,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":31,"../../vendor/is-plain-object.min.js":45,"../../vendor/lodash.min.js":46,"./ComponentElement.js":24,"./ComponentRenderer.js":25,"./RxEventDelegator.js":27,"./Templating.js":28}],24:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":31,"../../nudoru/util/is.js":44,"../../vendor/lodash.min.js":46,"./ComponentElement.js":24,"./ComponentRenderer.js":25,"./RxEventDelegator.js":27,"./Templating.js":28}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5225,6 +5225,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
 var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
+/**
+ * Holds state for an Component
+ */
 
 exports['default'] = function (props, state, children) {
   return {

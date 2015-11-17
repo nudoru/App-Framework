@@ -1,5 +1,9 @@
 import _ from '../../vendor/lodash.min.js';
 
+/**
+ * Holds state for an Component
+ */
+
 export default function (props, state, children) {
   return {
     props    : props,

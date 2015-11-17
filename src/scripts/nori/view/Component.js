@@ -15,7 +15,7 @@
  */
 
 import _ from '../../vendor/lodash.min.js';
-import isPlainObject from '../../vendor/is-plain-object.min.js';
+import Is from '../../nudoru/util/is.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import Template from './Templating.js';
 import ComponentRenderer from './ComponentRenderer.js';
@@ -75,7 +75,6 @@ export default function () {
    * For a region, which is instantiated from the factory with props, this function
    * will be overwritten by the code in ComponentView to return the passed
    * initProps object
-   * @returns {undefined}
    */
   function getDefaultProps() {
     return {};
@@ -83,7 +82,6 @@ export default function () {
 
   /**
    * Get the initial state of the component
-   * @returns {{}}
    */
   function getDefaultState() {
     return {};
@@ -91,11 +89,15 @@ export default function () {
 
   /**
    * Sets the next state and trigger a rerender
-   * @param nextState
    */
   function setState(nextState) {
     if (_lifecycleState === LS_RENDERING) {
       console.warn('Can\'t update state during rendering', this.id());
+      return;
+    }
+
+    if (!Is.object(nextState)) {
+      console.warn('Must call setState with an object');
       return;
     }
 
@@ -107,10 +109,9 @@ export default function () {
 
   /**
    * Set new props and trigger rerender
-   * @param nextProps
    */
   function setProps(nextProps) {
-    if (!isPlainObject(nextProps)) {
+    if (!Is.object(nextProps)) {
       console.warn('Must call setProps with an object');
       return;
     }
@@ -230,7 +231,6 @@ export default function () {
     }
 
     this.mount();
-
     this.$mountChildren();
 
     if (typeof this.componentDidMount === 'function') {
