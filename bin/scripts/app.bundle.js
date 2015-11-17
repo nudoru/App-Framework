@@ -3287,6 +3287,8 @@ process.umask = function() { return 0; };
 
 }));
 },{}],3:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3357,6 +3359,8 @@ exports['default'] = App;
 module.exports = exports['default'];
 
 },{"../nori/Nori.js":13,"../nori/action/ActionCreator.js":15,"../nori/utils/StoreWatcher.js":21,"./action/ActionConstants.js":4,"./action/ActionCreator.js":5,"./store/AppStore.js":6,"./view/AppView.js":7}],4:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3366,6 +3370,8 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{}],5:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3399,6 +3405,8 @@ exports['default'] = ActionCreator;
 module.exports = exports['default'];
 
 },{"./ActionConstants.js":4}],6:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3489,6 +3497,8 @@ exports['default'] = AppStore;
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":13,"../../nori/action/ActionConstants.js":14,"../../nudoru/core/ArrayUtils.js":39,"../../nudoru/core/NumberUtils.js":40,"../../nudoru/core/StringUtils.js":42,"../../vendor/lodash.min.js":45,"../action/ActionConstants.js":4}],7:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3621,6 +3631,8 @@ exports['default'] = AppView;
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":13,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":30,"../../nudoru/components/MixinNudoruControls.js":35,"../store/AppStore.js":6,"./ChildTest.js":8,"./ComponentsTesting.js":9,"./ControlsTesting.js":10,"./TemplateViewComponent.js":11}],8:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3653,6 +3665,8 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":13}],9:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3854,6 +3868,8 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":26,"../../nori/view/Tweens.js":27,"../../nudoru/browser/DOMUtils.js":30,"../../nudoru/browser/Lorem.js":31,"../../nudoru/components/ToolTipView.js":38,"../../vendor/lodash.min.js":45,"../store/AppStore":6,"./AppView":7,"./ChildTest.js":8}],10:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3904,6 +3920,8 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":13,"../../vendor/pikaday.js":46,"../../vendor/selected.js":48}],11:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -3989,11 +4007,13 @@ module.exports = exports['default'];
 //},
 
 },{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":30,"../store/AppStore":6,"./AppView":7}],12:[function(require,module,exports){
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /**
  * Initial file for the Application
  */
+
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _nudoruBrowserBrowserInfoJs = require('./nudoru/browser/BrowserInfo.js');
 
@@ -4016,13 +4036,15 @@ var _appAppJs2 = _interopRequireDefault(_appAppJs);
 })();
 
 },{"./app/App.js":3,"./nudoru/browser/BrowserInfo.js":29}],13:[function(require,module,exports){
+/*  weak */
+
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
 
 var _storeReducerStoreJs = require('./store/ReducerStore.js');
 
@@ -4119,23 +4141,19 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{"../vendor/lodash.min.js":45,"./store/ReducerStore.js":16,"./utils/AssignArray.js":17,"./utils/BuildFromMixins.js":18,"./utils/CreateClass.js":19,"./view/ComponentViews.js":24}],14:[function(require,module,exports){
+/*  weak */
+
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-/*  weak */
-
 exports['default'] = {
   CHANGE_STORE_STATE: 'CHANGE_STORE_STATE'
 };
 module.exports = exports['default'];
 
 },{}],15:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 /**
@@ -4143,6 +4161,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * Based on Flux Actions
  * For more information and guidelines: https://github.com/acdlite/flux-standard-action
  */
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _ActionConstantsJs = require('./ActionConstants.js');
 
@@ -4163,17 +4188,19 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{"./ActionConstants.js":14}],16:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 /**
  * Store modeled after Redux
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
@@ -4348,18 +4375,20 @@ exports['default'] = function () {
 module.exports = exports['default'];
 
 },{"../../nudoru/util/is.js":43,"../../vendor/is-plain-object.min.js":44,"../../vendor/lodash.min.js":45,"../../vendor/rxjs/rx.lite.min.js":47}],17:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /**
  * Merges a collection of objects
  * @param target
  * @param sourceArray
  * @returns {*}
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
@@ -4374,17 +4403,19 @@ exports['default'] = function (target, sourceArray) {
 module.exports = exports['default'];
 
 },{"../../vendor/lodash.min.js":45}],18:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /**
  * Mixes in the modules specified in the custom application object
  * @param customizer
  * @returns {*}
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _AssignArrayJs = require('./AssignArray.js');
 
@@ -4399,18 +4430,20 @@ exports['default'] = function (customizer) {
 module.exports = exports['default'];
 
 },{"./AssignArray.js":17}],19:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /**
  * Return a new Nori class by combining a template and customizer with mixins
  * @param template
  * @param customizer
  * @returns {Function}
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _BuildFromMixinsJs = require('./BuildFromMixins.js');
 
@@ -4430,18 +4463,20 @@ exports['default'] = function (template, customizer) {
 module.exports = exports['default'];
 
 },{"../../vendor/lodash.min.js":45,"./BuildFromMixins.js":18}],20:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 /**
  * Simple router
  * Supporting IE9 so using hashes instead of the history API for now
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _nudoruCoreObjectUtilsJs = require('../../nudoru/core/ObjectUtils.js');
 
@@ -4569,6 +4604,8 @@ exports['default'] = r;
 module.exports = exports['default'];
 
 },{"../../nudoru/core/ObjectUtils.js":41,"../../vendor/rxjs/rx.lite.min.js":47}],21:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -4617,6 +4654,8 @@ exports["default"] = function () {
 module.exports = exports["default"];
 
 },{}],22:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -4680,13 +4719,15 @@ exports['default'] = function (props, state, children) {
 module.exports = exports['default'];
 
 },{"../../vendor/lodash.min.js":45}],23:[function(require,module,exports){
+/*  weak */
+
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
 
 var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
@@ -4724,17 +4765,19 @@ exports['default'] = function (component, lastAdjacent) {
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/DOMUtils.js":30}],24:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 /**
  * Mixin view that allows for component views
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
@@ -4950,12 +4993,6 @@ exports['default'] = function () {
 module.exports = exports['default'];
 
 },{"../../vendor/lodash.min.js":45,"../utils/BuildFromMixins.js":18,"../utils/Router.js":20,"./ViewComponent.js":28}],25:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 /**
@@ -4972,6 +5009,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * this.delegateEvents();
  *
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
 
@@ -5148,12 +5193,6 @@ exports['default'] = function () {
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/BrowserInfo.js":29,"../../nudoru/browser/MouseToTouchEvents.js":32,"../../nudoru/util/is.js":43,"../../vendor/rxjs/rx.lite.min.js":47}],26:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 /*
@@ -5161,6 +5200,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  Matt Perkins
  4/7/15
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
@@ -5343,6 +5390,8 @@ exports['default'] = Templating;
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/DOMUtils.js":30,"../../vendor/lodash.min.js":45}],27:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -5473,12 +5522,6 @@ exports['default'] = function () {
 module.exports = exports['default'];
 
 },{"../../nudoru/util/is.js":43}],28:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 /*  weak */
 
 /**
@@ -5494,6 +5537,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * State change: shouldComponentUpdate, componentWillUpdate, (render), componentDidUpdate
  * Unmount: componentWillUnmount
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
 
@@ -5997,25 +6048,26 @@ exports['default'] = function () {
 module.exports = exports['default'];
 
 },{"../../nudoru/browser/DOMUtils.js":30,"../../vendor/is-plain-object.min.js":44,"../../vendor/lodash.min.js":45,"./ComponentElement.js":22,"./ComponentRenderer.js":23,"./RxEventDelegator.js":25,"./Templating.js":26}],29:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var browserInfo = {
+exports["default"] = {
 
   appVersion: navigator.appVersion,
   userAgent: navigator.userAgent,
   isIE: -1 < navigator.userAgent.indexOf("MSIE "),
-  isIE6: this.isIE && -1 < navigator.appVersion.indexOf("MSIE 6"),
-  isIE7: this.isIE && -1 < navigator.appVersion.indexOf("MSIE 7"),
-  isIE8: this.isIE && -1 < navigator.appVersion.indexOf("MSIE 8"),
-  isIE9: this.isIE && -1 < navigator.appVersion.indexOf("MSIE 9"),
+  isIE6: -1 < navigator.appVersion.indexOf("MSIE 6"),
+  isIE7: -1 < navigator.appVersion.indexOf("MSIE 7"),
+  isIE8: -1 < navigator.appVersion.indexOf("MSIE 8"),
+  isIE9: -1 < navigator.appVersion.indexOf("MSIE 9"),
   isFF: -1 < navigator.userAgent.indexOf("Firefox/"),
   isChrome: -1 < navigator.userAgent.indexOf("Chrome/"),
   isMac: -1 < navigator.userAgent.indexOf("Macintosh,"),
   isMacSafari: -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome"),
 
   hasTouch: 'ontouchstart' in document.documentElement,
-  notSupported: this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9,
 
   mobile: {
     Android: function Android() {
@@ -6061,11 +6113,11 @@ var browserInfo = {
   }
 
 };
-
-exports["default"] = browserInfo;
 module.exports = exports["default"];
 
 },{}],30:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -6320,6 +6372,8 @@ exports["default"] = {
 module.exports = exports["default"];
 
 },{}],31:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -6474,14 +6528,17 @@ exports['default'] = Lorem();
 module.exports = exports['default'];
 
 },{"../core/ArrayUtils.js":39,"../core/NumberUtils.js":40,"../core/StringUtils.js":42}],32:[function(require,module,exports){
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
 /**
  * Converts mouse event strings to touch based equivalents
  * @param eventStr
  * @returns {*}
  */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
 exports['default'] = function (eventStr) {
   switch (eventStr) {
@@ -6501,6 +6558,8 @@ exports['default'] = function (eventStr) {
 module.exports = exports['default'];
 
 },{}],33:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -6618,6 +6677,8 @@ exports['default'] = MessageBoxCreator;
 module.exports = exports['default'];
 
 },{"./MessageBoxView":34}],34:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -6935,13 +6996,15 @@ exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
 },{"../../nori/view/Templating.js":26,"../../nudoru/browser/BrowserInfo.js":29,"../../nudoru/browser/DOMUtils.js":30,"../../vendor/rxjs/rx.lite.min.js":47,"./ModalCoverView.js":36}],35:[function(require,module,exports){
+/*  weak */
+
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/*  weak */
 
 var _nudoruComponentsToastViewJs = require('../../nudoru/components/ToastView.js');
 
@@ -7052,6 +7115,8 @@ exports['default'] = MixinNudoruControls;
 module.exports = exports['default'];
 
 },{"../../nudoru/components/MessageBoxCreator.js":33,"../../nudoru/components/MessageBoxView.js":34,"../../nudoru/components/ModalCoverView.js":36,"../../nudoru/components/ToastView.js":37,"../../nudoru/components/ToolTipView.js":38}],36:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -7219,6 +7284,8 @@ exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
 },{"../../nori/view/Templating.js":26,"../../nudoru/browser/BrowserInfo.js":29,"../../vendor/rxjs/rx.lite.min.js":47}],37:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -7394,6 +7461,8 @@ exports['default'] = ToastView;
 module.exports = exports['default'];
 
 },{"../../nori/view/Templating.js":26,"../../nudoru/browser/BrowserInfo.js":29,"../../nudoru/browser/DOMUtils.js":30,"../../vendor/rxjs/rx.lite.min.js":47}],38:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -7689,6 +7758,8 @@ exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
 },{"../../nori/view/Templating.js":26,"../../nudoru/browser/DOMUtils.js":30,"../../vendor/rxjs/rx.lite.min.js":47}],39:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -7782,6 +7853,8 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{"./NumberUtils.js":40}],40:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -7814,6 +7887,8 @@ exports["default"] = {
 module.exports = exports["default"];
 
 },{}],41:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -7996,6 +8071,8 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{}],42:[function(require,module,exports){
+'use strict';
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -8050,6 +8127,8 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{}],43:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -8101,6 +8180,8 @@ module.exports = exports["default"];
 (function (global){
 //https://github.com/jonschlinkert/is-plain-object
 
+"use strict";
+
 !(function (e) {
   if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();else if ("function" == typeof define && define.amd) define([], e);else {
     var t;t = "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this, t.isPlainObject = e();
@@ -8137,6 +8218,8 @@ module.exports = exports["default"];
  * lodash 3.10.1 (Custom Build) lodash.com/license | Underscore.js 1.8.3 underscorejs.org/LICENSE
  * Build: `lodash modern -o ./lodash.js`
  */
+"use strict";
+
 ;(function () {
   function n(n, t) {
     if (n !== t) {
@@ -9601,7 +9684,7 @@ module.exports = exports["default"];
       Yn = m();typeof define == "function" && typeof define.amd == "object" && define.amd ? (Zn._ = Yn, define(function () {
     return Yn;
   })) : Mn && qn ? Vn ? (qn.exports = Yn)._ = Yn : Mn._ = Yn : Zn._ = Yn;
-}).call(this);
+}).call(undefined);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],46:[function(require,module,exports){
@@ -9610,6 +9693,8 @@ module.exports = exports["default"];
  *
  * Copyright © 2014 David Bushell | BSD & MIT license | https://github.com/dbushell/Pikaday
  */
+
+'use strict';
 
 (function (root, factory) {
     'use strict';
@@ -9635,7 +9720,7 @@ module.exports = exports["default"];
     } else {
         root.Pikaday = factory(root.moment);
     }
-})(this, function (moment) {
+})(undefined, function (moment) {
     'use strict';
 
     /**
@@ -10581,6 +10666,8 @@ module.exports = exports["default"];
 },{"moment":2}],47:[function(require,module,exports){
 (function (process,global){
 /* Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.*/
+"use strict";
+
 (function (a) {
   function b(a) {
     for (var b = a.length, c = new Array(b), d = 0; b > d; d++) c[d] = a[d];return c;
@@ -12820,11 +12907,13 @@ module.exports = exports["default"];
   })(_c), "function" == typeof define && "object" == typeof define.amd && define.amd ? (ia.Rx = ja, define(function () {
     return ja;
   })) : ca && fa ? ga ? (fa.exports = ja).Rx = ja : ca.Rx = ja : ia.Rx = ja;var ed = i();
-}).call(this);
+}).call(undefined);
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"_process":1}],48:[function(require,module,exports){
 //https://raw.githubusercontent.com/Fizzadar/selected.js/develop/selected/selected.js
+
+'use strict';
 
 (function () {
   'use strict';

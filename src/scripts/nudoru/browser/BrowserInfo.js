@@ -1,19 +1,18 @@
-var browserInfo = {
+export default {
 
   appVersion : navigator.appVersion,
   userAgent  : navigator.userAgent,
   isIE       : -1 < navigator.userAgent.indexOf("MSIE "),
-  isIE6      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 6"),
-  isIE7      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 7"),
-  isIE8      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 8"),
-  isIE9      : this.isIE && -1 < navigator.appVersion.indexOf("MSIE 9"),
+  isIE6      : -1 < navigator.appVersion.indexOf("MSIE 6"),
+  isIE7      : -1 < navigator.appVersion.indexOf("MSIE 7"),
+  isIE8      : -1 < navigator.appVersion.indexOf("MSIE 8"),
+  isIE9      : -1 < navigator.appVersion.indexOf("MSIE 9"),
   isFF       : -1 < navigator.userAgent.indexOf("Firefox/"),
   isChrome   : -1 < navigator.userAgent.indexOf("Chrome/"),
   isMac      : -1 < navigator.userAgent.indexOf("Macintosh,"),
   isMacSafari: -1 < navigator.userAgent.indexOf("Safari") && -1 < navigator.userAgent.indexOf("Mac") && -1 === navigator.userAgent.indexOf("Chrome"),
 
   hasTouch    : 'ontouchstart' in document.documentElement,
-  notSupported: (this.isIE6 || this.isIE7 || this.isIE8 || this.isIE9),
 
   mobile: {
     Android   : function () {
@@ -59,5 +58,3 @@ var browserInfo = {
   }
 
 };
-
-export default browserInfo;

@@ -108,10 +108,9 @@ gulp.task('jshint', function () {
     .pipe(jshint.reporter(stylish));
 });
 
-// disable strict to prevent 'this' in modules from becoming 'undefined'
 gulp.task('browserify', function () {
   return browserify('src/scripts/main.js', {debug: false})
-    .transform(babelify.configure({blacklist: ["strict"], modules: "common"}))
+    .transform(babelify.configure({modules: "common"}))
     .on('error', errorLog)
     .bundle()
     .on('error', errorLog)
@@ -119,20 +118,6 @@ gulp.task('browserify', function () {
     //.pipe(buffer())
     //.pipe(uglify({mangle: false, compress: false}))
     //.on('error', errorLog)
-    .pipe(gulp.dest('bin/scripts'))
-    .pipe(livereload());
-});
-
-gulp.task('makeindex', function () {
-  return browserify('src/scripts/nori/index.js', {debug: false})
-    .transform(babelify.configure({blacklist: ["strict"], modules: "common"}))
-    .on('error', errorLog)
-    .bundle()
-    .on('error', errorLog)
-    .pipe(source('index.js'))
-    .pipe(buffer())
-    .pipe(uglify({mangle: false, compress: true}))
-    .on('error', errorLog)
     .pipe(gulp.dest('bin/scripts'))
     .pipe(livereload());
 });
