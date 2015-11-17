@@ -5655,6 +5655,11 @@ exports['default'] = function () {
   function $setPublicPropsAndState() {
     props = _vendorLodashMinJs2['default'].assign(props, _stateElement.props);
     state = _vendorLodashMinJs2['default'].assign(state, _stateElement.state);
+
+    if (Object.freeze) {
+      Object.freeze(props);
+      Object.freeze(state);
+    }
   }
 
   //----------------------------------------------------------------------------
