@@ -1,4 +1,3 @@
-'use strict';
 var hasOwnProperty   = Object.prototype.hasOwnProperty;
 var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -10,10 +9,8 @@ function toObject(val) {
   return Object(val);
 }
 
-//https://github.com/sindresorhus/is-plain-obj/blob/master/index.js
 function isObj(o) {
-  var prototype;
-  return toString.call(x) === '[object Object]' && (prototype = Object.getPrototypeOf(x), prototype === null || prototype === Object.getPrototypeOf({}));
+  Object.prototype.toString.call(o) === "[object Object]";
 }
 
 function assignKey(to, from, key) {
@@ -62,7 +59,7 @@ function assign(to, from) {
   return to;
 }
 
-module.exports = function deepAssign(target) {
+export default function deepAssign(target) {
   target = toObject(target);
 
   for (var s = 1; s < arguments.length; s++) {
@@ -70,4 +67,4 @@ module.exports = function deepAssign(target) {
   }
 
   return target;
-};
+}

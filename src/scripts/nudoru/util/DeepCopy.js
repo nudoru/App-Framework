@@ -1,8 +1,230 @@
 //https://github.com/sasaplus1/deepcopy.js
-
 /*!
  * @license deepcopy.js Copyright(c) 2013 sasa+1
  * https://github.com/sasaplus1/deepcopy.js
  * Released under the MIT license.
  */
-!function(t,e){"use strict";"function"==typeof define&&define.amd?define(e):"object"==typeof exports?module.exports=e():t.deepcopy=e()}(this,function(){"use strict";function t(e,u,c,y){var p,s,a,l,b,j,d,g,O,A,h;if(null===e||"object"!=typeof e)return e;if(r.isDate(e))return new Date(+e);if(r.isRegExp(e))return p=String(e),s=p.lastIndexOf("/"),new RegExp(p.slice(1,s),p.slice(s+1));if(n(e))return a=new Buffer(e.length),e.copy(a),a;for(l=o(e).concat(i(e)),b=0,j=l.length;j>b;++b)d=l[b],g=e[d],null!==g&&"object"==typeof g&&(O=f(c,g),-1===O?(A=r.isArray(g)?[]:{},c.push(g),y.push(A)):h=y[O]),u[d]=h||t(g,A,c,y);return u}function deepcopy(e){var n=r.isArray(e)?[]:{},o=[e],i=[n];return t(e,n,o,i)}var e,r,n,o,i,f;return e="undefined"!=typeof process&&"undefined"!=typeof require,r=e?require("util"):function(){function t(t){return"object"==typeof t&&"[object Array]"===Object.prototype.toString.call(t)}function e(t){return"object"==typeof t&&"[object Date]"===Object.prototype.toString.call(t)}function r(t){return"object"==typeof t&&"[object RegExp]"===Object.prototype.toString.call(t)}function n(t){return"symbol"==typeof t}return{isArray:"function"==typeof Array.isArray?function(t){return Array.isArray(t)}:t,isDate:e,isRegExp:r,isSymbol:"function"==typeof Symbol?n:function(){return!1}}}(),n=e?function(t){return Buffer.isBuffer(t)}:function(){return!1},o="function"==typeof Object.keys?function(t){return Object.keys(t)}:function(t){var e,r=[];if(null===t||"object"!=typeof t)throw new TypeError("obj is not an Object");for(e in t)t.hasOwnProperty(e)&&r.push(e);return r},i="function"==typeof Symbol?function(t){return Object.getOwnPropertySymbols(t)}:function(){return[]},f="function"==typeof Array.prototype.indexOf?function(t,e){return t.indexOf(e)}:function(t,e){var n,o;if(!r.isArray(t))throw new TypeError("array is not an Array");for(n=0,o=t.length;o>n;++n)if(t[n]===e)return n;return-1},deepcopy});
+
+
+/**
+ * export to AMD/CommonJS/global.
+ *
+ * @param {Object} global global object.
+ * @param {Function} factory factory method.
+ */
+(function(global, factory) {
+  'use strict';
+
+  if (typeof define === 'function' && !!define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    global.deepcopy = factory();
+  }
+}(this, function() {
+  'use strict';
+
+  var isNode, util, isBuffer, getKeys, getSymbols, indexOfArray;
+
+  // is node.js/io.js?
+  isNode = (typeof process !== 'undefined' && typeof require !== 'undefined');
+
+  // fallback util module for browser.
+  util = (isNode) ? require('util') : (function() {
+    function isArray(value) {
+      return (typeof value === 'object' &&
+      Object.prototype.toString.call(value) === '[object Array]');
+    }
+
+    function isDate(value) {
+      return (typeof value === 'object' &&
+      Object.prototype.toString.call(value) === '[object Date]');
+    }
+
+    function isRegExp(value) {
+      return (typeof value === 'object' &&
+      Object.prototype.toString.call(value) === '[object RegExp]');
+    }
+
+    function isSymbol(value) {
+      return (typeof value === 'symbol');
+    }
+
+    return {
+      isArray: (typeof Array.isArray === 'function') ?
+        function(obj) {
+          return Array.isArray(obj);
+        } : isArray,
+      isDate: isDate,
+      isRegExp: isRegExp,
+      isSymbol: (typeof Symbol === 'function') ?
+        isSymbol :
+        function() {
+          // always return false when Symbol is not supported.
+          return false;
+        }
+    };
+  }());
+
+  // fallback Buffer.isBuffer
+  isBuffer = (isNode) ?
+    function(obj) {
+      return Buffer.isBuffer(obj);
+    } :
+    function() {
+      // if browser, always return false
+      return false;
+    };
+
+  // fallback Object.keys for old browsers.
+  getKeys = (typeof Object.keys === 'function') ?
+    function(obj) {
+      return Object.keys(obj);
+    } :
+    function(obj) {
+      var keys = [],
+          key;
+
+      if (obj === null || typeof obj !== 'object') {
+        throw new TypeError('obj is not an Object');
+      }
+
+      for (key in obj) {
+        obj.hasOwnProperty(key) && keys.push(key);
+      }
+
+      return keys;
+    };
+
+  // get symbols in object.
+  getSymbols = (typeof Symbol === 'function') ?
+    function(obj) {
+      return Object.getOwnPropertySymbols(obj);
+    } :
+    function() {
+      // always return empty array when Symbol is not supported.
+      return [];
+    };
+
+  // fallback Array#indexOf for old browsers.
+  indexOfArray = (typeof Array.prototype.indexOf === 'function') ?
+    function(array, searchElement) {
+      return array.indexOf(searchElement);
+    } :
+    function(array, searchElement) {
+      var i, len;
+
+      if (!util.isArray(array)) {
+        throw new TypeError('array is not an Array');
+      }
+
+      for (i = 0, len = array.length; i < len; ++i) {
+        if (array[i] === searchElement) {
+          return i;
+        }
+      }
+
+      return -1;
+    };
+
+  /**
+   * recursive deep copy for value.
+   *
+   * @private
+   * @param {*} value copy target.
+   * @param {*} clone
+   * @param {Array} visited
+   * @param {Array} reference
+   * @return {*} copied value.
+   */
+  function copyValue_(value, clone, visited, reference) {
+    var str, pos, buf, keys, i, len, key, val, idx, obj, ref;
+
+    // number, string, boolean, null, undefined, function and symbol.
+    if (value === null || typeof value !== 'object') {
+      return value;
+    }
+
+    // Date.
+    if (util.isDate(value)) {
+      // Firefox need to convert to Number
+      //
+      // Firefox:
+      //   var date = new Date;
+      //   +date;            // 1420909365967
+      //   +new Date(date);  // 1420909365000
+      //   +new Date(+date); // 1420909365967
+      // Chrome:
+      //   var date = new Date;
+      //   +date;            // 1420909757913
+      //   +new Date(date);  // 1420909757913
+      //   +new Date(+date); // 1420909757913
+      return new Date(+value);
+    }
+
+    // RegExp.
+    if (util.isRegExp(value)) {
+      // Chrome, Safari:
+      //   (new RegExp).source => "(?:)"
+      // Firefox:
+      //   (new RegExp).source => ""
+      // Chrome, Safari, Firefox
+      //   String(new RegExp) => "/(?:)/"
+      str = String(value);
+      pos = str.lastIndexOf('/');
+
+      return new RegExp(str.slice(1, pos), str.slice(pos + 1));
+    }
+
+    // Buffer, node.js only.
+    if (isBuffer(value)) {
+      buf = new Buffer(value.length);
+      value.copy(buf);
+
+      return buf;
+    }
+
+    // Object or Array.
+    keys = getKeys(value).concat(getSymbols(value));
+
+    for (i = 0, len = keys.length; i < len; ++i) {
+      key = keys[i];
+      val = value[key];
+
+      if (val !== null && typeof val === 'object') {
+        idx = indexOfArray(visited, val);
+
+        if (idx === -1) {
+          // not circular reference
+          obj = (util.isArray(val)) ? [] : {};
+
+          visited.push(val);
+          reference.push(obj);
+        } else {
+          // circular reference
+          ref = reference[idx];
+        }
+      }
+
+      clone[key] = ref || copyValue_(val, obj, visited, reference);
+    }
+
+    return clone;
+  }
+
+  /**
+   * deep copy for value.
+   *
+   * @param {*} value copy target.
+   */
+  function deepcopy(value) {
+    var clone = (util.isArray(value)) ? [] : {},
+        visited = [value],
+        reference = [clone];
+
+    return copyValue_(value, clone, visited, reference);
+  }
+
+  return deepcopy;
+}));

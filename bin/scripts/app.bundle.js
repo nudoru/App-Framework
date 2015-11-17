@@ -5656,10 +5656,10 @@ exports['default'] = function () {
     props = _vendorLodashMinJs2['default'].assign(props, _stateElement.props);
     state = _vendorLodashMinJs2['default'].assign(state, _stateElement.state);
 
-    if (Object.freeze) {
-      Object.freeze(props);
-      Object.freeze(state);
-    }
+    //if(Object.freeze) {
+    //  Object.freeze(props);
+    //  Object.freeze(state);
+    //}
   }
 
   //----------------------------------------------------------------------------
@@ -6152,8 +6152,7 @@ exports["default"] = {
     var match = /<\s*\w.*?>/g.exec(html);
     if (match != null) {
       var tag = match[0].replace(/</g, '').replace(/>/g, '');
-      var map = wrapMap[tag] || wrapMap._default,
-          element;
+      var map = wrapMap[tag] || wrapMap._default;
       html = map[1] + html + map[2];
       element.innerHTML = html;
       // Descend through wrappers to the right content
@@ -7975,54 +7974,22 @@ exports['default'] = {
     return obj;
   },
 
-  /**
-   * Copyright 2013-2014 Facebook, Inc.
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   */
-  /**
-   * Constructs an enumeration with keys equal to their value.
-   *
-   * https://github.com/STRML/keymirror
-   *
-   * For example:
-   *
-   *   var COLORS = keyMirror({blue: null, red: null});
-   *   var myColor = COLORS.blue;
-   *   var isColorValid = !!COLORS[myColor];
-   *
-   * The last line could not be performed if the values of the generated enum were
-   * not equal to their keys.
-   *
-   *   Input:  {key1: val1, key2: val2}
-   *   Output: {key1: key1, key2: key2}
-   *
-   * @param {object} obj
-   * @return {object}
-   */
-  keyMirror: function keyMirror(obj) {
-    var ret = {};
-    var key;
-    if (!(obj instanceof Object && !Array.isArray(obj))) {
-      throw new Error('keyMirror(...): Argument must be an object.');
-    }
-    for (key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        ret[key] = key;
+  //http://stackoverflow.com/questions/19293321/opposite-of-object-freeze-or-object-seal-in-javascript
+  unfreeze: function unfreeze(o) {
+    var oo;
+    if (o instanceof Array) {
+      oo = [];
+      var clone = function clone(v) {
+        oo.push(v);
+      };
+      o.forEach(clone);
+    } else if (typeof o == 'object') {
+      oo = {};
+      for (var property in o) {
+        oo[property] = o[property];
       }
     }
-    return ret;
+    return oo;
   }
 
 };

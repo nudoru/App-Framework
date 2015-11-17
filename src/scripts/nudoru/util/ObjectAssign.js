@@ -1,7 +1,6 @@
 //http://stackoverflow.com/questions/27104549/how-can-i-use-the-built-in-object-assign-in-react
 
 /* eslint-disable no-unused-vars */
-'use strict';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -13,7 +12,7 @@ function toObject(val) {
   return Object(val);
 }
 
-module.exports = Object.assign || function (target, source) {
+export default Object.assign || function (target, source) {
     var from;
     var to = toObject(target);
     var symbols;

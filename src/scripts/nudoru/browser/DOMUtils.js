@@ -89,7 +89,7 @@ export default {
     var match   = /<\s*\w.*?>/g.exec(html);
     if (match != null) {
       var tag           = match[0].replace(/</g, '').replace(/>/g, '');
-      var map           = wrapMap[tag] || wrapMap._default, element;
+      var map           = wrapMap[tag] || wrapMap._default;
       html              = map[1] + html + map[2];
       element.innerHTML = html;
       // Descend through wrappers to the right content

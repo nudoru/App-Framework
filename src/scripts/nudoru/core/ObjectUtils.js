@@ -137,15 +137,13 @@ export default {
 
   //http://stackoverflow.com/questions/19293321/opposite-of-object-freeze-or-object-seal-in-javascript
   unfreeze(o) {
-    var oo = undefined;
+    var oo;
     if (o instanceof Array) {
       oo = [];
       var clone = function (v) {
-        oo.push(v)
+        oo.push(v);
       };
       o.forEach(clone);
-    } else if (o instanceof String) {
-      oo = new String(o).toString();
     } else if (typeof o == 'object') {
       oo = {};
       for (var property in o) {

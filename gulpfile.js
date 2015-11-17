@@ -123,6 +123,20 @@ gulp.task('browserify', function () {
     .pipe(livereload());
 });
 
+gulp.task('makeindex', function () {
+  return browserify('src/scripts/nori/index.js', {debug: false})
+    .transform(babelify.configure({blacklist: ["strict"], modules: "common"}))
+    .on('error', errorLog)
+    .bundle()
+    .on('error', errorLog)
+    .pipe(source('index.js'))
+    .pipe(buffer())
+    .pipe(uglify({mangle: false, compress: true}))
+    .on('error', errorLog)
+    .pipe(gulp.dest('bin/scripts'))
+    .pipe(livereload());
+});
+
 gulp.task('watch', function () {
   livereload.listen();
   gulp.watch(paths.srcImages, ['images']);
