@@ -15,7 +15,7 @@
  *
  */
 
-import Rx from '../utils/Rx.js';
+import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import BrowserInfo from '../../nudoru/browser/BrowserInfo.js';
 import MouseToTouchEventStr from '../../nudoru/browser/MouseToTouchEvents.js';
 import Is from '../../nudoru/util/is.js';
@@ -86,7 +86,7 @@ export default function () {
       return;
     }
 
-    observable = Rx.dom(el, eventStr);
+    observable = getObservableFromDOM(el, eventStr);
 
     tag  = el.tagName.toLowerCase();
     type = el.getAttribute('type');
@@ -136,6 +136,23 @@ export default function () {
     }
 
     _eventSubscribers = Object.create(null);
+  }
+
+  /**
+   * Get observable from a dom selector for the given event
+   */
+  function getObservableFromDOM(selector, event) {
+    let el = selector;
+
+    if(Is.string(selector)) {
+      el = document.querySelector(selector);
+    }
+
+    if (!el) {
+      console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
+      return;
+    }
+    return Rxjs.Observable.fromEvent(el, event.trim());
   }
 
   return {

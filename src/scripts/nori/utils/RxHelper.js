@@ -23,19 +23,19 @@ export default {
     return Rxjs.Observable.fromEvent(el, event.trim());
   },
 
+  doEvery (ms, ...args) {
+    if(Is.func(args[0])) {
+      return this.interval(ms).subscribe(args[0]);
+    }
+    return this.interval(ms).take(args[0]).subscribe(args[1]);
+  },
+
   from (ittr) {
     return Rxjs.Observable.from(ittr);
   },
 
   interval (ms) {
     return Rxjs.Observable.interval(ms);
-  },
-
-  doEvery (ms, ...args) {
-    if(Is.func(args[0])) {
-      return this.interval(ms).subscribe(args[0]);
-    }
-    return this.interval(ms).take(args[0]).subscribe(args[1]);
   },
 
   just (value) {
