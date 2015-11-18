@@ -5727,6 +5727,10 @@ var _viewAppViewJs = require('./view/AppView.js');
 
 var _viewAppViewJs2 = _interopRequireDefault(_viewAppViewJs);
 
+var _nudoruUtilForOwnJs = require('../nudoru/util/ForOwn.js');
+
+var _nudoruUtilForOwnJs2 = _interopRequireDefault(_nudoruUtilForOwnJs);
+
 /**
  * "Controller" for a Nori application. The controller is responsible for
  * bootstrapping the app and possibly handling socket/server interaction.
@@ -5762,7 +5766,7 @@ var App = _noriNoriJs2['default'].createClass({
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"../nori/Nori.js":20,"../nori/action/ActionCreator.js":22,"../nori/utils/StoreWatcher.js":29,"./action/ActionConstants.js":11,"./action/ActionCreator.js":12,"./store/AppStore.js":13,"./view/AppView.js":14}],11:[function(require,module,exports){
+},{"../nori/Nori.js":20,"../nori/action/ActionCreator.js":22,"../nori/utils/StoreWatcher.js":29,"../nudoru/util/ForOwn.js":53,"./action/ActionConstants.js":11,"./action/ActionCreator.js":12,"./store/AppStore.js":13,"./view/AppView.js":14}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10901,6 +10905,7 @@ function objEquiv(a, b, opts) {
 },{}],53:[function(require,module,exports){
 // Simple replacement for Lodash ForOwn method
 // https://lodash.com/docs#forOwn
+// https://github.com/lodash/lodash/blob/master/lodash.js#L3831 createBaseFor
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10908,9 +10913,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports["default"] = function (object, fn) {
-  Object.keys(object).forEach(function (key) {
+  // almost 2x faster than above iterating over keys w/ forEach
+  var keys = Object.keys(object),
+      len = keys.length,
+      i = -1;
+  while (++i < len) {
+    var key = keys[i];
     fn.call(null, object[key], key);
-  });
+  }
 };
 
 module.exports = exports["default"];
