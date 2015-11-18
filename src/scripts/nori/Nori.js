@@ -5,7 +5,7 @@ import ComponentViews from './view/ComponentViews.js';
 import AssignArray from './utils/AssignArray.js';
 import BuildFromMixins from './utils/BuildFromMixins.js';
 import CreateClass from './utils/CreateClass.js';
-import _ from '../vendor/lodash.min.js';
+import ObjectAssign from '../nudoru/util/ObjectAssign.js';
 
 export default {
 
@@ -17,7 +17,7 @@ export default {
    * @returns {void|*}
    */
   config() {
-    return _.assign({}, (window.APP_CONFIG_DATA || {}));
+    return ObjectAssign({}, (window.APP_CONFIG_DATA || {}));
   },
 
   //----------------------------------------------------------------------------

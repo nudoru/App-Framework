@@ -17,7 +17,7 @@
  */
 
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 
 export default function () {
 
@@ -149,7 +149,7 @@ export default function () {
    * @returns {void|*}
    */
   function getKeyCodes() {
-    return _.assign({}, _keyCodes);
+    return ObjectAssign({}, _keyCodes);
   }
 
   /**

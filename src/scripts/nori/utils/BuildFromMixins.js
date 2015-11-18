@@ -4,10 +4,10 @@
  * @returns {*}
  */
 
-import assignArray from './AssignArray.js';
+import AssignArray from './AssignArray.js';
 
 export default function(customizer) {
   let mixins = customizer.mixins || [];
   mixins.push(customizer);
-  return assignArray({}, mixins);
+  return AssignArray({}, mixins);
 }

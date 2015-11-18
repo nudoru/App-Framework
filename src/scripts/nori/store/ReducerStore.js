@@ -6,7 +6,9 @@
 
 import Is from '../../nudoru/util/is.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
+import DeepEqual from '../../nudoru/util/DeepEqual.js';
+import DeepCopy from '../../nudoru/util/DeepCopy.js';
 import isPlainObject from '../../vendor/is-plain-object.min.js';
 
 const STORE_INITIALIZE_TYPE = '$$$initstore$$$';
@@ -21,7 +23,7 @@ export default function () {
   //----------------------------------------------------------------------------
 
   function getState() {
-    return _.cloneDeep(_internalState);
+    return DeepCopy(_internalState);
   }
 
   function setReducers(reducerArray) {
@@ -86,7 +88,7 @@ export default function () {
     let nextState = this.reduceToNextState(action, state);
 
     // Don't update the state if it's the same
-    if (!_.isEqual(_internalState, nextState)) {
+    if (!DeepEqual(_internalState, nextState)) {
       _internalState = nextState;
       this.notify(action.type, this.getState());
     }
@@ -120,8 +122,8 @@ export default function () {
         switch (event.type) {
           case _noriActionConstants.MODEL_DATA_CHANGED:
             // can compose other reducers
-            // return _.assign({}, state, otherStateTransformer(state));
-            return _.assign({}, state, {prop: event.payload.value});
+            // return ObjectAssign({}, state, otherStateTransformer(state));
+            return ObjectAssign({}, state, {prop: event.payload.value});
           case undefined:
             return state;
           default:

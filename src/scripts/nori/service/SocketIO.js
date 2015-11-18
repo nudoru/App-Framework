@@ -2,7 +2,7 @@
 
 import SocketIOEvents from './SocketIOEvents.js';
 import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 
 let SocketIOConnectorModule = function () {
 
@@ -81,7 +81,7 @@ let SocketIOConnectorModule = function () {
 
 
   function events() {
-    return _.assign({}, SocketIOEvents);
+    return ObjectAssign({}, SocketIOEvents);
   }
 
   return {

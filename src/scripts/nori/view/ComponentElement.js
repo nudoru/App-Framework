@@ -1,4 +1,5 @@
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
+import DeepEqual from '../../nudoru/util/DeepEqual.js';
 
 /**
  * Holds state for an Component
@@ -13,31 +14,31 @@ export default function (props, state, children) {
     children : children || {},
 
     getProps() {
-      return _.assign({}, this.props);
+      return ObjectAssign({}, this.props);
     },
 
     getState() {
-      return _.assign({}, this.state);
+      return ObjectAssign({}, this.state);
     },
 
     shouldUpdate(nextProps, nextState) {
       nextProps = nextProps || this.props;
       nextState = nextState || this.state;
 
-      let isStateEq = _.isEqual(nextState, this.state),
-          isPropsEq = _.isEqual(nextProps, this.props);
+      let isStateEq = DeepEqual(nextState, this.state),
+          isPropsEq = DeepEqual(nextProps, this.props);
 
       return !(isStateEq) || !(isPropsEq);
     },
 
     setProps(nextProps) {
-      this.lastProps = _.assign({}, this.props);
-      this.props     = _.assign({}, this.props, nextProps);
+      this.lastProps = ObjectAssign({}, this.props);
+      this.props     = ObjectAssign({}, this.props, nextProps);
     },
 
     setState(nextState) {
-      this.lastState = _.assign({}, this.state);
-      this.state     = _.assign({}, this.state, nextState);
+      this.lastState = ObjectAssign({}, this.state);
+      this.state     = ObjectAssign({}, this.state, nextState);
     },
 
     addChild(id, newChild) {

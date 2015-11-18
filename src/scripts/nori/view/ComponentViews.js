@@ -8,6 +8,8 @@ import _ from '../../vendor/lodash.min.js';
 import ViewComponentFactory from './Component.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
 import Router from '../utils/Router.js';
+import DeepCopy from '../../nudoru/util/DeepCopy.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js'
 //import ComponentMount from '../experimental/ComponentMount.js';
 
 export default function () {
@@ -34,7 +36,7 @@ export default function () {
           final,
           pDefaultProps;
 
-      customizer = _.cloneDeep(source);
+      customizer = DeepCopy(source);
 
       customizer.mixins = customizer.mixins || [];
       customizer.mixins.unshift(ViewComponentFactory());
@@ -57,10 +59,10 @@ export default function () {
           elID          : '',
           elClass       : ''
         };
-        return _.merge({}, pDefaultProps.call(template), specs, props);
+        return ObjectAssign({}, pDefaultProps.call(template), specs, props);
       };
 
-      final = _.assign({}, template);
+      final = ObjectAssign({}, template);
       final.$componentInit.call(final);
 
       if (typeof final.init === 'function') {

@@ -5,10 +5,10 @@
  * @returns {*}
  */
 
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 
 export default function (target, sourceArray) {
   return sourceArray.reduce((tgt, mixin) => {
-    return _.assign(tgt, mixin);
+    return ObjectAssign(tgt, mixin);
   }, target);
 }

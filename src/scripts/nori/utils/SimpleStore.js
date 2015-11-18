@@ -1,6 +1,6 @@
 /* @flow weak */
 
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 
 export default function () {
   let _internalState = Object.create(null);
@@ -10,7 +10,7 @@ export default function () {
    * @returns {void|*}
    */
   function getState() {
-    return _.assign({}, _internalState);
+    return ObjectAssign({}, _internalState);
   }
 
   /**
@@ -18,7 +18,7 @@ export default function () {
    * @param nextState
    */
   function setState(nextState) {
-    _internalState = _.assign({}, _internalState, nextState);
+    _internalState = ObjectAssign({}, _internalState, nextState);
   }
 
   function toJSON() {

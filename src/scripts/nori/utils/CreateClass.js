@@ -6,11 +6,11 @@
  */
 
 import buildFromMixins from './BuildFromMixins.js';
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 
 export default function(template, customizer) {
   template = template || {};
   return function factory() {
-    return _.assign({}, template, buildFromMixins(customizer));
+    return ObjectAssign({}, template, buildFromMixins(customizer));
   };
 }
