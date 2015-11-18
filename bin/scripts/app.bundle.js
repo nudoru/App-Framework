@@ -10905,7 +10905,6 @@ function objEquiv(a, b, opts) {
 },{}],53:[function(require,module,exports){
 // Simple replacement for Lodash ForOwn method
 // https://lodash.com/docs#forOwn
-// https://github.com/lodash/lodash/blob/master/lodash.js#L3831 createBaseFor
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10913,18 +10912,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports["default"] = function (object, fn) {
-  // almost 2x faster than above iterating over keys w/ forEach
   var keys = Object.keys(object),
-      len = keys.length,
-      i = -1;
-  while (++i < len) {
-    var key = keys[i];
+      key = undefined;
+  // FowOwnRight while (key = keys.pop()) {
+  while (key = keys.shift()) {
     fn.call(null, object[key], key);
   }
 };
 
 module.exports = exports["default"];
-// Matt Perkins 11/18/14
+// http://jsperf.com/loop-for-in-vs-object-keys-foreach/21
 
 },{}],54:[function(require,module,exports){
 //http://stackoverflow.com/questions/27104549/how-can-i-use-the-built-in-object-assign-in-react
