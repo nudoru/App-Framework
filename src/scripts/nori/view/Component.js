@@ -21,6 +21,8 @@ import Template from './Templating.js';
 import ComponentRenderer from './ComponentRenderer.js';
 import EventDelegator from './RxEventDelegator.js';
 import ComponentElement from './ComponentElement.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
+import ForOwn from '../../nudoru/util/ForOwn.js';
 
 const LS_NO_INIT   = 0,
       LS_INITED    = 1,
@@ -38,7 +40,6 @@ export default function () {
       props           = {},
       _parent,
       _html,
-      //_templateCache,
       _domElementCache;
 
   /**
@@ -153,13 +154,8 @@ export default function () {
   }
 
   function $setPublicPropsAndState() {
-    props = _.assign(props, _stateElement.props);
-    state = _.assign(state, _stateElement.state);
-
-    //if(Object.freeze) {
-    //  Object.freeze(props);
-    //  Object.freeze(state);
-    //}
+    props = ObjectAssign(props, _stateElement.props);
+    state = ObjectAssign(state, _stateElement.state);
   }
 
   //----------------------------------------------------------------------------
@@ -199,7 +195,7 @@ export default function () {
    * Should return HTML
    */
   function render() {
-    let combined     = _.merge({}, _stateElement.props, _stateElement.state),
+    let combined     = ObjectAssign({}, _stateElement.props, _stateElement.state),
         templateFunc = Template.getTemplate(this.id());
 
     return templateFunc(combined);
@@ -323,7 +319,7 @@ export default function () {
    */
   function $forceUpdateChildren() {
     if (_lifecycleState === LS_MOUNTED) {
-      _.forOwn(_stateElement.children, child => {
+      ForOwn(_stateElement.children, child => {
         if (!child.isMounted()) {
           child.$renderComponent();
           child.mount();
@@ -341,7 +337,7 @@ export default function () {
   }
 
   function $renderChildren() {
-    _.forOwn(_stateElement.children, child => {
+    ForOwn(_stateElement.children, child => {
       child.$renderComponent();
     });
   }
@@ -354,19 +350,19 @@ export default function () {
   }
 
   function $mountChildren() {
-    _.forOwn(_stateElement.children, child => {
+    ForOwn(_stateElement.children, child => {
       child.$mountComponent();
     });
   }
 
   function $unmountChildren() {
-    _.forOwn(_stateElement.children, child => {
+    ForOwn(_stateElement.children, child => {
       child.unmount();
     });
   }
 
   function $disposeChildren() {
-    _.forOwn(_stateElement.children, child => {
+    ForOwn(_stateElement.children, child => {
       child.dispose();
     });
   }

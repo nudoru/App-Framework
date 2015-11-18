@@ -1,4 +1,3 @@
-import _ from '../../vendor/lodash.min.js';
 import Template from './Templating.js';
 import Renderer from './Renderer.js';
 import EventDelegator from './RxEventDelegator.js';

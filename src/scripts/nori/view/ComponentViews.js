@@ -4,7 +4,6 @@
  * Mixin view that allows for component views
  */
 
-import _ from '../../vendor/lodash.min.js';
 import ViewComponentFactory from './Component.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
 import Router from '../utils/Router.js';
