@@ -3930,7 +3930,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":13,"../../vendor/pikaday.js":47,"../../vendor/selected.js":49}],11:[function(require,module,exports){
+},{"../../nori/Nori.js":13,"../../vendor/pikaday.js":48,"../../vendor/selected.js":50}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4381,7 +4381,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":44,"../../vendor/is-plain-object.min.js":45,"../../vendor/lodash.min.js":46,"../../vendor/rxjs/rx.lite.min.js":48}],17:[function(require,module,exports){
+},{"../../nudoru/util/is.js":44,"../../vendor/is-plain-object.min.js":45,"../../vendor/lodash.min.js":46,"../../vendor/rxjs/rx.lite.min.js":49}],17:[function(require,module,exports){
 /**
  * Merges a collection of objects
  * @param target
@@ -4627,7 +4627,7 @@ var r = Router();
 exports['default'] = r;
 module.exports = exports['default'];
 
-},{"../../nudoru/core/ObjectUtils.js":42,"../../vendor/rxjs/rx.lite.min.js":48}],22:[function(require,module,exports){
+},{"../../nudoru/core/ObjectUtils.js":42,"../../vendor/rxjs/rx.lite.min.js":49}],22:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5763,13 +5763,14 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/MouseToTouchEvents.js":33,"../../nudoru/util/is.js":44,"../../vendor/rxjs/rx.lite.min.js":48}],28:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/MouseToTouchEvents.js":33,"../../nudoru/util/is.js":44,"../../vendor/rxjs/rx.lite.min.js":49}],28:[function(require,module,exports){
 /*  weak */
 
 /*
- Simple wrapper for Underscore / HTML templates
+ Facade for HTML templating
  Matt Perkins
  4/7/15
+ Updated 11/18/15 to use Mustache
  */
 
 'use strict';
@@ -5788,13 +5789,9 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+var _vendorMustacheMinJs = require('../../vendor/mustache.min.js');
 
-var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
-
-// Switch Lodash to use Mustache style templates
-_vendorLodashMinJs2['default'].templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-_vendorLodashMinJs2['default'].templateSettings.evaluate = /{{\=([\s\S]+?)}}/g;
+var _vendorMustacheMinJs2 = _interopRequireDefault(_vendorMustacheMinJs);
 
 var TemplatingModule = function TemplatingModule() {
 
@@ -5852,7 +5849,6 @@ var TemplatingModule = function TemplatingModule() {
 
   /**
    * Returns all IDs belonging to text/template type script tags
-   * @returns {Array}
    */
   function getAllTemplateIDs() {
     var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
@@ -5866,32 +5862,37 @@ var TemplatingModule = function TemplatingModule() {
 
   /**
    * Returns an underscore template
-   * @param id
-   * @returns {*}
    */
   function getTemplate(id) {
     if (_templateCache[id]) {
       return _templateCache[id];
     }
-    var templ = _vendorLodashMinJs2['default'].template(getSource(id));
+
+    var templ = getTemplateFromHTML(getSource(id));
     _templateCache[id] = templ;
     return templ;
   }
 
   /**
-   * Returns an underscore template
-   * @param id
-   * @returns {*}
+   * Returns an template
    */
   function getTemplateFromHTML(html) {
-    return _vendorLodashMinJs2['default'].template(cleanTemplateHTML(html));
+    html = cleanTemplateHTML(html);
+    _vendorMustacheMinJs2['default'].parse(html);
+    return createRenderingFunction(html);
+  }
+
+  /**
+   * Curry the Mustache rendering function
+   */
+  function createRenderingFunction(source) {
+    return function (obj) {
+      return _vendorMustacheMinJs2['default'].render(source, obj);
+    };
   }
 
   /**
    * Processes the template and returns HTML
-   * @param id
-   * @param obj
-   * @returns {*}
    */
   function asHTML(id, obj) {
     var temp = getTemplate(id);
@@ -5900,9 +5901,6 @@ var TemplatingModule = function TemplatingModule() {
 
   /**
    * Processes the template and returns an HTML Element
-   * @param id
-   * @param obj
-   * @returns {*}
    */
   function asElement(id, obj) {
     return _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(asHTML(id, obj));
@@ -5917,38 +5915,10 @@ var TemplatingModule = function TemplatingModule() {
 
   /**
    * Remove returns, spaces and tabs
-   * @param str
-   * @returns {XML|string}
    */
-  function removeWhiteSpace(str) {
+  function removeAllWhiteSpace(str) {
     return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
   }
-
-  /**
-   * Iterate over all templates, clean them up and log
-   * Util for SharePoint projects, <script> blocks aren't allowed
-   * So this helps create the blocks for insertion in to the DOM
-   */
-  //function processForDOMInsertion() {
-  //  let ids = getAllTemplateIDs();
-  //  ids.forEach(id => {
-  //    var src = removeWhiteSpace(getSource(id));
-  //  });
-  //}
-
-  /**
-   * Add a template script tag to the DOM
-   * Util for SharePoint projects, <script> blocks aren't allowed
-   * @param id
-   * @param html
-   */
-  //function addClientSideTemplateToDOM(id, html) {
-  //  var s       = document.createElement('script');
-  //  s.type      = 'text/template';
-  //  s.id        = id;
-  //  s.innerHTML = html;
-  //  document.getElementsByTagName('head')[0].appendChild(s);
-  //}
 
   return {
     addTemplate: addTemplate,
@@ -5966,7 +5936,7 @@ var Templating = TemplatingModule();
 exports['default'] = Templating;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":31,"../../vendor/lodash.min.js":46,"../utils/IsDOMElement.js":20}],29:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":31,"../../vendor/mustache.min.js":47,"../utils/IsDOMElement.js":20}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7046,7 +7016,7 @@ var MessageBoxView = MessageBoxViewModule();
 exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48,"./ModalCoverView.js":37}],36:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":49,"./ModalCoverView.js":37}],36:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -7334,7 +7304,7 @@ var ModalCoverView = ModalCoverViewModule();
 exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../vendor/rxjs/rx.lite.min.js":48}],38:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../vendor/rxjs/rx.lite.min.js":49}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7511,7 +7481,7 @@ var ToastView = ToastViewModule();
 exports['default'] = ToastView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48}],39:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/BrowserInfo.js":30,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":49}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7808,7 +7778,7 @@ var ToolTipView = ToolTipViewModule();
 exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":48}],40:[function(require,module,exports){
+},{"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/rxjs/rx.lite.min.js":49}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9739,6 +9709,173 @@ module.exports = exports["default"];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],47:[function(require,module,exports){
+"use strict";
+
+(function defineMustache(global, factory) {
+  if (typeof exports === "object" && exports && typeof exports.nodeName !== "string") {
+    factory(exports);
+  } else if (typeof define === "function" && define.amd) {
+    define(["exports"], factory);
+  } else {
+    global.Mustache = {};factory(Mustache);
+  }
+})(undefined, function mustacheFactory(mustache) {
+  var objectToString = Object.prototype.toString;var isArray = Array.isArray || function isArrayPolyfill(object) {
+    return objectToString.call(object) === "[object Array]";
+  };function isFunction(object) {
+    return typeof object === "function";
+  }function typeStr(obj) {
+    return isArray(obj) ? "array" : typeof obj;
+  }function escapeRegExp(string) {
+    return string.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+  }function hasProperty(obj, propName) {
+    return obj != null && typeof obj === "object" && propName in obj;
+  }var regExpTest = RegExp.prototype.test;function testRegExp(re, string) {
+    return regExpTest.call(re, string);
+  }var nonSpaceRe = /\S/;function isWhitespace(string) {
+    return !testRegExp(nonSpaceRe, string);
+  }var entityMap = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "/": "&#x2F;" };function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function fromEntityMap(s) {
+      return entityMap[s];
+    });
+  }var whiteRe = /\s*/;var spaceRe = /\s+/;var equalsRe = /\s*=/;var curlyRe = /\s*\}/;var tagRe = /#|\^|\/|>|\{|&|=|!/;function parseTemplate(template, tags) {
+    if (!template) return [];var sections = [];var tokens = [];var spaces = [];var hasTag = false;var nonSpace = false;function stripSpace() {
+      if (hasTag && !nonSpace) {
+        while (spaces.length) delete tokens[spaces.pop()];
+      } else {
+        spaces = [];
+      }hasTag = false;nonSpace = false;
+    }var openingTagRe, closingTagRe, closingCurlyRe;function compileTags(tagsToCompile) {
+      if (typeof tagsToCompile === "string") tagsToCompile = tagsToCompile.split(spaceRe, 2);if (!isArray(tagsToCompile) || tagsToCompile.length !== 2) throw new Error("Invalid tags: " + tagsToCompile);openingTagRe = new RegExp(escapeRegExp(tagsToCompile[0]) + "\\s*");closingTagRe = new RegExp("\\s*" + escapeRegExp(tagsToCompile[1]));closingCurlyRe = new RegExp("\\s*" + escapeRegExp("}" + tagsToCompile[1]));
+    }compileTags(tags || mustache.tags);var scanner = new Scanner(template);var start, type, value, chr, token, openSection;while (!scanner.eos()) {
+      start = scanner.pos;value = scanner.scanUntil(openingTagRe);if (value) {
+        for (var i = 0, valueLength = value.length; i < valueLength; ++i) {
+          chr = value.charAt(i);if (isWhitespace(chr)) {
+            spaces.push(tokens.length);
+          } else {
+            nonSpace = true;
+          }tokens.push(["text", chr, start, start + 1]);start += 1;if (chr === "\n") stripSpace();
+        }
+      }if (!scanner.scan(openingTagRe)) break;hasTag = true;type = scanner.scan(tagRe) || "name";scanner.scan(whiteRe);if (type === "=") {
+        value = scanner.scanUntil(equalsRe);scanner.scan(equalsRe);scanner.scanUntil(closingTagRe);
+      } else if (type === "{") {
+        value = scanner.scanUntil(closingCurlyRe);scanner.scan(curlyRe);scanner.scanUntil(closingTagRe);type = "&";
+      } else {
+        value = scanner.scanUntil(closingTagRe);
+      }if (!scanner.scan(closingTagRe)) throw new Error("Unclosed tag at " + scanner.pos);token = [type, value, start, scanner.pos];tokens.push(token);if (type === "#" || type === "^") {
+        sections.push(token);
+      } else if (type === "/") {
+        openSection = sections.pop();if (!openSection) throw new Error('Unopened section "' + value + '" at ' + start);if (openSection[1] !== value) throw new Error('Unclosed section "' + openSection[1] + '" at ' + start);
+      } else if (type === "name" || type === "{" || type === "&") {
+        nonSpace = true;
+      } else if (type === "=") {
+        compileTags(value);
+      }
+    }openSection = sections.pop();if (openSection) throw new Error('Unclosed section "' + openSection[1] + '" at ' + scanner.pos);return nestTokens(squashTokens(tokens));
+  }function squashTokens(tokens) {
+    var squashedTokens = [];var token, lastToken;for (var i = 0, numTokens = tokens.length; i < numTokens; ++i) {
+      token = tokens[i];if (token) {
+        if (token[0] === "text" && lastToken && lastToken[0] === "text") {
+          lastToken[1] += token[1];lastToken[3] = token[3];
+        } else {
+          squashedTokens.push(token);lastToken = token;
+        }
+      }
+    }return squashedTokens;
+  }function nestTokens(tokens) {
+    var nestedTokens = [];var collector = nestedTokens;var sections = [];var token, section;for (var i = 0, numTokens = tokens.length; i < numTokens; ++i) {
+      token = tokens[i];switch (token[0]) {case "#":case "^":
+          collector.push(token);sections.push(token);collector = token[4] = [];break;case "/":
+          section = sections.pop();section[5] = token[2];collector = sections.length > 0 ? sections[sections.length - 1][4] : nestedTokens;break;default:
+          collector.push(token);}
+    }return nestedTokens;
+  }function Scanner(string) {
+    this.string = string;this.tail = string;this.pos = 0;
+  }Scanner.prototype.eos = function eos() {
+    return this.tail === "";
+  };Scanner.prototype.scan = function scan(re) {
+    var match = this.tail.match(re);if (!match || match.index !== 0) return "";var string = match[0];this.tail = this.tail.substring(string.length);this.pos += string.length;return string;
+  };Scanner.prototype.scanUntil = function scanUntil(re) {
+    var index = this.tail.search(re),
+        match;switch (index) {case -1:
+        match = this.tail;this.tail = "";break;case 0:
+        match = "";break;default:
+        match = this.tail.substring(0, index);this.tail = this.tail.substring(index);}this.pos += match.length;return match;
+  };function Context(view, parentContext) {
+    this.view = view;this.cache = { ".": this.view };this.parent = parentContext;
+  }Context.prototype.push = function push(view) {
+    return new Context(view, this);
+  };Context.prototype.lookup = function lookup(name) {
+    var cache = this.cache;var value;if (cache.hasOwnProperty(name)) {
+      value = cache[name];
+    } else {
+      var context = this,
+          names,
+          index,
+          lookupHit = false;while (context) {
+        if (name.indexOf(".") > 0) {
+          value = context.view;names = name.split(".");index = 0;while (value != null && index < names.length) {
+            if (index === names.length - 1) lookupHit = hasProperty(value, names[index]);value = value[names[index++]];
+          }
+        } else {
+          value = context.view[name];lookupHit = hasProperty(context.view, name);
+        }if (lookupHit) break;context = context.parent;
+      }cache[name] = value;
+    }if (isFunction(value)) value = value.call(this.view);return value;
+  };function Writer() {
+    this.cache = {};
+  }Writer.prototype.clearCache = function clearCache() {
+    this.cache = {};
+  };Writer.prototype.parse = function parse(template, tags) {
+    var cache = this.cache;var tokens = cache[template];if (tokens == null) tokens = cache[template] = parseTemplate(template, tags);return tokens;
+  };Writer.prototype.render = function render(template, view, partials) {
+    var tokens = this.parse(template);var context = view instanceof Context ? view : new Context(view);return this.renderTokens(tokens, context, partials, template);
+  };Writer.prototype.renderTokens = function renderTokens(tokens, context, partials, originalTemplate) {
+    var buffer = "";var token, symbol, value;for (var i = 0, numTokens = tokens.length; i < numTokens; ++i) {
+      value = undefined;token = tokens[i];symbol = token[0];if (symbol === "#") value = this.renderSection(token, context, partials, originalTemplate);else if (symbol === "^") value = this.renderInverted(token, context, partials, originalTemplate);else if (symbol === ">") value = this.renderPartial(token, context, partials, originalTemplate);else if (symbol === "&") value = this.unescapedValue(token, context);else if (symbol === "name") value = this.escapedValue(token, context);else if (symbol === "text") value = this.rawValue(token);if (value !== undefined) buffer += value;
+    }return buffer;
+  };Writer.prototype.renderSection = function renderSection(token, context, partials, originalTemplate) {
+    var self = this;var buffer = "";var value = context.lookup(token[1]);function subRender(template) {
+      return self.render(template, context, partials);
+    }if (!value) return;if (isArray(value)) {
+      for (var j = 0, valueLength = value.length; j < valueLength; ++j) {
+        buffer += this.renderTokens(token[4], context.push(value[j]), partials, originalTemplate);
+      }
+    } else if (typeof value === "object" || typeof value === "string" || typeof value === "number") {
+      buffer += this.renderTokens(token[4], context.push(value), partials, originalTemplate);
+    } else if (isFunction(value)) {
+      if (typeof originalTemplate !== "string") throw new Error("Cannot use higher-order sections without the original template");value = value.call(context.view, originalTemplate.slice(token[3], token[5]), subRender);if (value != null) buffer += value;
+    } else {
+      buffer += this.renderTokens(token[4], context, partials, originalTemplate);
+    }return buffer;
+  };Writer.prototype.renderInverted = function renderInverted(token, context, partials, originalTemplate) {
+    var value = context.lookup(token[1]);if (!value || isArray(value) && value.length === 0) return this.renderTokens(token[4], context, partials, originalTemplate);
+  };Writer.prototype.renderPartial = function renderPartial(token, context, partials) {
+    if (!partials) return;var value = isFunction(partials) ? partials(token[1]) : partials[token[1]];if (value != null) return this.renderTokens(this.parse(value), context, partials, value);
+  };Writer.prototype.unescapedValue = function unescapedValue(token, context) {
+    var value = context.lookup(token[1]);if (value != null) return value;
+  };Writer.prototype.escapedValue = function escapedValue(token, context) {
+    var value = context.lookup(token[1]);if (value != null) return mustache.escape(value);
+  };Writer.prototype.rawValue = function rawValue(token) {
+    return token[1];
+  };mustache.name = "mustache.js";mustache.version = "2.2.0";mustache.tags = ["{{", "}}"];var defaultWriter = new Writer();mustache.clearCache = function clearCache() {
+    return defaultWriter.clearCache();
+  };mustache.parse = function parse(template, tags) {
+    return defaultWriter.parse(template, tags);
+  };mustache.render = function render(template, view, partials) {
+    if (typeof template !== "string") {
+      throw new TypeError('Invalid template! Template should be a "string" ' + 'but "' + typeStr(template) + '" was given as the first ' + "argument for mustache#render(template, view, partials)");
+    }return defaultWriter.render(template, view, partials);
+  };mustache.to_html = function to_html(template, view, partials, send) {
+    var result = mustache.render(template, view, partials);if (isFunction(send)) {
+      send(result);
+    } else {
+      return result;
+    }
+  };mustache.escape = escapeHtml;mustache.Scanner = Scanner;mustache.Context = Context;mustache.Writer = Writer;
+});
+
+},{}],48:[function(require,module,exports){
 /*!
  * Pikaday
  *
@@ -10714,7 +10851,7 @@ module.exports = exports["default"];
     return Pikaday;
 });
 
-},{"moment":2}],48:[function(require,module,exports){
+},{"moment":2}],49:[function(require,module,exports){
 (function (process,global){
 /* Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.*/
 "use strict";
@@ -12961,7 +13098,7 @@ module.exports = exports["default"];
 }).call(undefined);
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}],49:[function(require,module,exports){
+},{"_process":1}],50:[function(require,module,exports){
 //https://raw.githubusercontent.com/Fizzadar/selected.js/develop/selected/selected.js
 
 'use strict';
