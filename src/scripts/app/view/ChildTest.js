@@ -1,4 +1,5 @@
 import Nori from '../../nori/Nori.js';
+import _ from '../../vendor/lodash.min.js';
 
 export default Nori.createComponent({
 
@@ -10,13 +11,13 @@ export default Nori.createComponent({
     };
   },
 
-  template() {
-    return this.tmpl(`
-      <div>
-        <button class="button-neutral-light">{{id}}, {{label}}</button>
-        <div class="test__subchild"></div>
-      </div>
-    `);
+  render() {
+    let combined     = _.merge({}, this.props, this.state),
+        templateFunc = this.tmpl(`<div>
+            <button class="button-neutral-light">{{id}}, {{label}}</button>
+            <div class="test__subchild"></div>
+          </div>`);
+    return templateFunc(combined);
   }
 
 });

@@ -38,7 +38,7 @@ export default function () {
       props           = {},
       _parent,
       _html,
-      _templateCache,
+      //_templateCache,
       _domElementCache;
 
   /**
@@ -190,23 +190,8 @@ export default function () {
    */
   function $renderComponent() {
     _lifecycleState = LS_RENDERING;
-
-    if (!_templateCache) {
-      _templateCache = this.template();
-    }
-
     this.$renderChildren();
-
     _html = this.render();
-  }
-
-  /**
-   * Returns a Lodash client side template function by getting the HTML source from
-   * the matching <script type='text/template'> tag in the document. OR you may
-   * specify the custom HTML to use here. Mustache style delimiters used.
-   */
-  function template() {
-    return Template.getTemplate(this.id());
   }
 
   /**
@@ -215,7 +200,7 @@ export default function () {
    */
   function render() {
     let combined     = _.merge({}, _stateElement.props, _stateElement.state),
-        templateFunc = _templateCache || this.template();
+        templateFunc = Template.getTemplate(this.id());
 
     return templateFunc(combined);
   }
@@ -303,7 +288,6 @@ export default function () {
 
     this.$disposeChildren();
     this.unmount();
-    _templateCache = null;
     _lifecycleState = LS_INITED;
   }
 
@@ -470,7 +454,7 @@ export default function () {
     getDefaultProps,
     isInitialized,
     id,
-    template,
+    //template,
     dom,
     html,
     setParent,

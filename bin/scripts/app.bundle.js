@@ -3648,6 +3648,10 @@ var _noriNoriJs = require('../../nori/Nori.js');
 
 var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
 exports['default'] = _noriNoriJs2['default'].createComponent({
 
   counter: 0,
@@ -3662,14 +3666,16 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
     };
   },
 
-  template: function template() {
-    return this.tmpl('\n      <div>\n        <button class="button-neutral-light">{{id}}, {{label}}</button>\n        <div class="test__subchild"></div>\n      </div>\n    ');
+  render: function render() {
+    var combined = _vendorLodashMinJs2['default'].merge({}, this.props, this.state),
+        templateFunc = this.tmpl('<div>\n            <button class="button-neutral-light">{{id}}, {{label}}</button>\n            <div class="test__subchild"></div>\n          </div>');
+    return templateFunc(combined);
   }
 
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":13}],9:[function(require,module,exports){
+},{"../../nori/Nori.js":13,"../../vendor/lodash.min.js":46}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3957,6 +3963,10 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
+var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
+
+var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
+
 /**
  * Module for a dynamic application view for a route or a persistent view
  */
@@ -3989,18 +3999,17 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
   //componentDidUpdate(lastProps, lastState) {
   //},
 
-  // Return a _.template object
-  template: function template() {
-    return this.tmpl('\n      <div class="padded">\n        <h1>Hola</h1>\n        <p>Default subview template.</p>\n      </div>\n    ');
+  // Return HTML
+  // Cache the template function for improved performance
+  render: function render() {
+    var combined = _vendorLodashMinJs2['default'].merge({}, this.props, this.state),
+        templateFunc = this.tmpl('\n          <div class="padded">\n            <h1>Hola</h1>\n            <p>Default subview template.</p>\n          </div>\n        ');
+
+    return templateFunc(combined);
   }
 
 });
 module.exports = exports['default'];
-// Return HTML
-//render() {
-//  let combined = _.merge({}, this.props, this.state);
-//},
-
 //componentDidMount() {
 //  let el = this.dom();
 //},
@@ -4011,7 +4020,7 @@ module.exports = exports['default'];
 //componentWillDispose() {
 //},
 
-},{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":31,"../store/AppStore":6,"./AppView":7}],12:[function(require,module,exports){
+},{"../../nori/Nori.js":13,"../../nori/action/ActionCreator":15,"../../nori/view/Templating.js":28,"../../nudoru/browser/DOMUtils.js":31,"../../vendor/lodash.min.js":46,"../store/AppStore":6,"./AppView":7}],12:[function(require,module,exports){
 /**
  * Initial file for the Application
  */
@@ -4737,8 +4746,9 @@ exports['default'] = function () {
       props = {},
       _parent = undefined,
       _html = undefined,
-      _templateCache = undefined,
-      _domElementCache = undefined;
+
+  //_templateCache,
+  _domElementCache = undefined;
 
   /**
    * Initialization
@@ -4893,23 +4903,8 @@ exports['default'] = function () {
    */
   function $renderComponent() {
     _lifecycleState = LS_RENDERING;
-
-    if (!_templateCache) {
-      _templateCache = this.template();
-    }
-
     this.$renderChildren();
-
     _html = this.render();
-  }
-
-  /**
-   * Returns a Lodash client side template function by getting the HTML source from
-   * the matching <script type='text/template'> tag in the document. OR you may
-   * specify the custom HTML to use here. Mustache style delimiters used.
-   */
-  function template() {
-    return _TemplatingJs2['default'].getTemplate(this.id());
   }
 
   /**
@@ -4918,7 +4913,7 @@ exports['default'] = function () {
    */
   function render() {
     var combined = _vendorLodashMinJs2['default'].merge({}, _stateElement.props, _stateElement.state),
-        templateFunc = _templateCache || this.template();
+        templateFunc = _TemplatingJs2['default'].getTemplate(this.id());
 
     return templateFunc(combined);
   }
@@ -5006,7 +5001,6 @@ exports['default'] = function () {
 
     this.$disposeChildren();
     this.unmount();
-    _templateCache = null;
     _lifecycleState = LS_INITED;
   }
 
@@ -5174,7 +5168,7 @@ exports['default'] = function () {
     getDefaultProps: getDefaultProps,
     isInitialized: isInitialized,
     id: id,
-    template: template,
+    //template,
     dom: dom,
     html: html,
     setParent: setParent,

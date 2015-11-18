@@ -4,6 +4,7 @@ import AppView from './AppView';
 import AppStore from '../store/AppStore';
 import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
+import _ from '../../vendor/lodash.min.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -37,20 +38,19 @@ export default Nori.createComponent({
   //componentDidUpdate(lastProps, lastState) {
   //},
 
-  // Return a _.template object
-  template() {
-    return this.tmpl(`
-      <div class="padded">
-        <h1>Hola</h1>
-        <p>Default subview template.</p>
-      </div>
-    `);
-  },
-
   // Return HTML
-  //render() {
-  //  let combined = _.merge({}, this.props, this.state);
-  //},
+  // Cache the template function for improved performance
+  render() {
+    let combined     = _.merge({}, this.props, this.state),
+        templateFunc = this.tmpl(`
+          <div class="padded">
+            <h1>Hola</h1>
+            <p>Default subview template.</p>
+          </div>
+        `);
+
+    return templateFunc(combined);
+  },
 
   //componentDidMount() {
   //  let el = this.dom();
