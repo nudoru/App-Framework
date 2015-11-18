@@ -14,7 +14,6 @@
  * Unmount: componentWillUnmount
  */
 
-import _ from '../../vendor/lodash.min.js';
 import Is from '../../nudoru/util/is.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import Template from './Templating.js';
@@ -294,7 +293,7 @@ export default function () {
 
   function addChildren(childObjs) {
     if (childObjs) {
-      _.forOwn(childObjs, (child, id) => {
+      ForOwn(childObjs, (child, id) => {
         if (childObjs.hasOwnProperty(id)) {
           this.addChild(id, child, false);
         }

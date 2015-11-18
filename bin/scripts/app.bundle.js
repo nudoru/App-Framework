@@ -7114,10 +7114,6 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _vendorLodashMinJs = require('../../vendor/lodash.min.js');
-
-var _vendorLodashMinJs2 = _interopRequireDefault(_vendorLodashMinJs);
-
 var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 
 var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
@@ -7425,7 +7421,7 @@ exports['default'] = function () {
     var _this2 = this;
 
     if (childObjs) {
-      _vendorLodashMinJs2['default'].forOwn(childObjs, function (child, id) {
+      (0, _nudoruUtilForOwnJs2['default'])(childObjs, function (child, id) {
         if (childObjs.hasOwnProperty(id)) {
           _this2.addChild(id, child, false);
         }
@@ -7474,7 +7470,7 @@ exports['default'] = function () {
   }
 
   function $getChildHTMLObject() {
-    return _vendorLodashMinJs2['default'].reduce(_stateElement.children, function (htmlObj, current, key) {
+    return _.reduce(_stateElement.children, function (htmlObj, current, key) {
       htmlObj[key] = current.getHTML();
       return htmlObj;
     }, {});
@@ -7620,7 +7616,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":55,"../../vendor/lodash.min.js":57,"./ComponentElement.js":31,"./ComponentRenderer.js":32,"./RxEventDelegator.js":34,"./Templating.js":35}],31:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":55,"./ComponentElement.js":31,"./ComponentRenderer.js":32,"./RxEventDelegator.js":34,"./Templating.js":35}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
