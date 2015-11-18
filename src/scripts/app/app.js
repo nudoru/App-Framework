@@ -20,7 +20,7 @@ let App = Nori.createClass({
    * Initialize
    * Called when App is required in main.js
    */
-  initialize: function () {
+  initialize() {
     AppView.initialize();
     AppStore.initialize();
 
@@ -32,7 +32,7 @@ let App = Nori.createClass({
   /**
    * Remove the "Please wait" cover and start the app
    */
-  runApplication: function () {
+  runApplication() {
     AppView.removeLoadingMessage();
     AppView.showViewForChangedCondition(true); // Start with the route in the current URL
   }

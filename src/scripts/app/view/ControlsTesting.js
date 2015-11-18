@@ -17,7 +17,7 @@ export default Nori.createComponent({
       format         : 'l',
       disableWeekends: true,
       minDate        : new Date(2014, 0, 1), // Jan 1, 2014
-      onSelect       : function () {
+      onSelect       () {
         console.log(datePicker.getMoment().format('l'));
       }
     });

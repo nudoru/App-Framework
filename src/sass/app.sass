@@ -104,26 +104,24 @@ body
 #initialization__cover
   @extend %full-background-coverage
   z-index: $z-index-initialization
-  background-color: #eee
+  background-color: $color-white-grey-fill
 
 .initialization__message
-  @extend %body-text-big
   position: relative
-  overflow: hidden
-  text-align: center
-  width: 300px
-  height: 50px
-  margin: auto
   top: 200px
+  margin: auto
   padding: $double-base-line-height
+  width: 300px
+  text-align: center
   background-color: #fff
-  +shadow__one-edge-large
+  border-radius: $border-radius
+  +shadow__card-large
   h1
     padding: 0
     margin: 0
-    margin-bottom: $base-line-height
+    margin-bottom: $double-base-line-height
     color: $dark-blue
-    font-size: 1.2em
+    font-size: $ms-3
   .loader
     display: inline-block
     width: 25px

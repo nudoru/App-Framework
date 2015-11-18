@@ -123,7 +123,7 @@ export default Nori.createComponent({
               id   : 'yes',
               type : 'default',
               icon : 'check',
-              onClick: function () {
+              onClick() {
                 console.log('yes');
               }
             },
@@ -132,7 +132,7 @@ export default Nori.createComponent({
               id   : 'maybe',
               type : 'positive',
               icon : 'cog',
-              onClick: function () {
+              onClick() {
                 console.log('maybe');
               }
             },

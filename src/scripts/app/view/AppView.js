@@ -17,7 +17,7 @@ let AppViewModule = Nori.createView({
     MixinNudoruControls()
   ],
 
-  initialize: function () {
+  initialize() {
     this.defineTemplates();
 
     this.attachTemplatesToEl('body', ['applicationscaffold']);

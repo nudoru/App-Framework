@@ -7,10 +7,23 @@ export default function () {
 
   /**
    * Return a copy of the state
-   * @returns {void|*}
    */
   function getState() {
     return ObjectAssign({}, _internalState);
+  }
+
+  /**
+   * Returns the full state object
+   */
+  function dangerousGetState() {
+    return _internalState;
+  }
+
+  /**
+   * Prevent future changes to state
+   */
+  function freezeState() {
+    Object.freeze(_internalState);
   }
 
   /**
@@ -37,6 +50,8 @@ export default function () {
   return {
     getState,
     setState,
+    dangerousGetState,
+    freezeState,
     toJSON,
     fromJSON
   };
