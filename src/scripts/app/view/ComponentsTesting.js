@@ -6,7 +6,6 @@ import Template from '../../nori/view/Templating.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import MixinDOMManipulation from '../../nori/view/Tweens.js';
 import ChildTest from './ChildTest.js';
-import _ from '../../vendor/lodash.min.js';
 
 /**
  * Module for a dynamic application view for a route or a persistent view
@@ -50,7 +49,7 @@ export default Nori.createComponent({
 
       let dyn = {};
 
-      _.range(0, 3).forEach(id => {
+      [1,2,3].forEach(id => {
         id      = 'dynamic' + String(id);
         dyn[id] = ChildTest('dBtn' + id, {
           target      : '#debug-child',

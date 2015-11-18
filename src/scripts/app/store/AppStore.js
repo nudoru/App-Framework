@@ -4,7 +4,7 @@ import AppActionConstants from '../action/ActionConstants.js';
 import StringUtils from '../../nudoru/core/StringUtils.js';
 import NumUtils from '../../nudoru/core/NumberUtils.js';
 import ArrayUtils from '../../nudoru/core/ArrayUtils.js';
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 
 /**
  * This application store contains "reducer store" functionality based on Redux.
@@ -47,7 +47,7 @@ let AppStoreModule = Nori.createStore({
     switch (action.type) {
 
       case NoriActionConstants.CHANGE_STORE_STATE:
-        return _.merge({}, state, action.payload);
+        return ObjectAssign({}, state, action.payload);
 
       default:
         return state;

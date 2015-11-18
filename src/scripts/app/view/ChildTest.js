@@ -1,5 +1,6 @@
 import Nori from '../../nori/Nori.js';
-import _ from '../../vendor/lodash.min.js';
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
+
 
 export default Nori.createComponent({
 
@@ -12,7 +13,7 @@ export default Nori.createComponent({
   },
 
   render() {
-    let combined     = _.merge({}, this.props, this.state),
+    let combined     = ObjectAssign({}, this.props, this.state),
         templateFunc = this.tmpl(`<div>
             <button class="button-neutral-light">{{id}}, {{label}}</button>
             <div class="test__subchild"></div>
