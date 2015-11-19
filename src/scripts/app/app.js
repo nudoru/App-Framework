@@ -1,5 +1,6 @@
 import Nori from '../nori/Nori.js';
 import StoreWatcher from '../nori/utils/StoreWatcher.js';
+import ObservableSubject from '../nori/utils/ObservableSubject.js';
 import AppActions from './action/ActionCreator.js';
 import AppActionConstants from './action/ActionConstants.js';
 import NoriActions from '../nori/action/ActionCreator.js';
@@ -14,7 +15,8 @@ import ForOwn from '../nudoru/util/ForOwn.js';
  */
 let App = Nori.createClass({
 
-  mixins: [StoreWatcher()],
+  // Add ability to watch store mutations and act as a dispatcher
+  mixins: [StoreWatcher(), ObservableSubject()],
 
   /**
    * Initialize

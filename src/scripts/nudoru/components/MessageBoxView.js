@@ -43,7 +43,7 @@ let MessageBoxViewModule = function () {
              <h1>{{ title }}</h1>
         </div>
         <div class="content">
-             {{ content }}
+             {{{ content }}}
         </div>
         <div class="footer">
             <div class="footer-buttons">

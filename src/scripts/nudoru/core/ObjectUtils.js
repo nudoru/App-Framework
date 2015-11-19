@@ -1,3 +1,5 @@
+import Is from '../util/is.js';
+
 export default {
 
   /**
@@ -10,7 +12,7 @@ export default {
   isNull(obj) {
     var isnull = false;
 
-    if (is.falsey(obj)) {
+    if (Is.falsey(obj)) {
       return true;
     }
 
