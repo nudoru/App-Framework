@@ -30,6 +30,23 @@ $table-cell-padding: $base-line-height
       color: $control-primary-color-dark
       border-bottom: 1px solid $control-primary-color
       vertical-align: bottom
+      i.fa
+        padding-left: $base-line-height
+    .th-sortable
+      +transition-all()
+      cursor: pointer
+      border-radius: $control-border-radius-large $control-border-radius-large 0 0
+      &:hover
+        background-color: $color-white-grey-line
+    .th-selected
+      color: #fff
+      background-color: $control-primary-color
+      //border-radius: $control-border-radius-large $control-border-radius-large 0 0
+      +letter_press
+      i.fa
+        color: #fff
+      &:hover
+        background-color: $control-primary-color-dark
 
   tfoot
     th
