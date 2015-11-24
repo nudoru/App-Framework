@@ -4,6 +4,8 @@ import AppView from './AppView';
 import AppStore from '../store/AppStore';
 import ForOwn from '../../nudoru/util/ForOwn.js';
 import ObjectUtils from '../../nudoru/core/ObjectUtils.js';
+import ExportToCSV from '../../nori/utils/ExportToCSV.js';
+//import jsPDF from '../../vendor/jspdf.js';
 /**
  * Module for a dynamic application view for a route or a persistent view
  */
@@ -14,8 +16,8 @@ export default Nori.createComponent({
 
   getDefaultProps() {
     return {
-      source       : null,
-      sortHeader   : '',
+      source:        null,
+      sortHeader:    '',
       sortDirection: 1
     };
   },
@@ -31,14 +33,48 @@ export default Nori.createComponent({
 
   getDOMEvents() {
     return {
-      'click thead': this._onTableHeaderPress.bind(this)
+      'click thead':           this._onTableHeaderPress.bind(this),
+      //'click #exportTableCSV': this._onExportToCSVPress.bind(this),
+      //'click #exportTablePDF': this._onExportToPDFPress.bind(this)
     }
   },
+
+  _onExportToCSVPress() {
+    if (!this._hasTableData()) {
+      console.warn('No data to export!');
+      return;
+    }
+    let fn = this.props.source.caption ? this.props.source.caption + '.csv' : 'export.csv';
+
+    ExportToCSV({filename: fn, source: this.props.source.data});
+  },
+
+  //_onExportToPDFPress() {
+  //  console.log('Export! pdf');
+  //  if (!this._hasTableData()) {
+  //    console.warn('No data to export!');
+  //    return;
+  //  }
+  //  let doc = new jsPDF(),
+  //      fn  = this.props.source.caption ? this.props.source.caption + '.pdf' : 'export.pdf';
+  //
+  //  console.log(jsPDF);
+  //  console.log(doc);
+  //
+  //  // All units are in the set measurement for the document
+  //  // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
+  //  doc.fromHTML(this.dom().querySelector('table'), 15, 15, {
+  //    'width': 170
+  //  });
+  //
+  //  doc.save(fn);
+  //
+  //},
 
   _onTableHeaderPress(evt) {
     let tgt = evt.target;
     // Click on header (span) or icon (i), need to go to parent
-    if(tgt.nodeName.toLowerCase() !== 'th') {
+    if (tgt.nodeName.toLowerCase() !== 'th') {
       tgt = tgt.parentNode;
     }
     this._changeSortProps(tgt.querySelector('span').innerHTML);
@@ -55,8 +91,8 @@ export default Nori.createComponent({
     }
     sourceCopy.data = this._sortSource(sourceCopy.data, newHeader, newDirection);
     this.setProps({
-      source       : sourceCopy,
-      sortHeader   : newHeader,
+      source:        sourceCopy,
+      sortHeader:    newHeader,
       sortDirection: newDirection
     });
   },
@@ -66,11 +102,11 @@ export default Nori.createComponent({
       let aKey = a[key],
           bKey = b[key];
 
-      if(!isNaN(parseFloat(aKey)) && !isNaN(parseFloat(bKey))) {
+      if (!isNaN(parseFloat(aKey)) && !isNaN(parseFloat(bKey))) {
         // Keep numbers from being compared as strings
         aKey = parseFloat(aKey);
         bKey = parseFloat(bKey);
-      } else if(!isNaN(Date.parse(aKey) && !isNaN(Date.parse(bKey)))) {
+      } else if (!isNaN(Date.parse(aKey) && !isNaN(Date.parse(bKey)))) {
         // Treat dates as dates
         aKey = Date.parse(aKey);
         bKey = Date.parse(bKey);
@@ -93,12 +129,19 @@ export default Nori.createComponent({
         html;
 
     if (!this._hasTableData()) {
-      return '<div></div>';
+      return '<div><p>No information to display.</p></div>';
     }
 
     tableSource = this.props.source.data;
 
-    html = `<div><table class="table table-rows-zebra table-cols-zebra">`;
+    //      <button class="button-neutral-light button-small" id="exportTablePDF">Download as PDF</button>
+
+
+    html = `<div>
+    <div class="pull-right">
+      <a class="" id="exportTableCSV">Download as CSV</a>
+    </div>
+    <table class="table table-rows-zebra table-cols-zebra">`;
 
     if (this.props.source.caption) {
       html += '<caption>' + this.props.source.caption + '</caption>';
@@ -133,9 +176,14 @@ export default Nori.createComponent({
     return html;
   },
 
-  //componentDidMount() {
-  //  let el = this.dom();
-  //},
+  componentDidMount() {
+    //let el = this.dom();
+    if(this._hasTableData()) {
+      let fn = this.props.source.caption ? this.props.source.caption + '.csv' : 'export.csv';
+
+      ExportToCSV({filename: fn, source: this.props.source.data, element:this.dom().querySelector('#exportTableCSV')});
+    }
+  },
 
   //componentWillUnmount() {
   //},
@@ -144,36 +192,3 @@ export default Nori.createComponent({
   //},
 
 });
-
-//_template() {
-//  return null;
-//
-//  /*
-//   Code below SHOULD be working but gives an error. Render pieces together HTML str
-//   */
-//
-//  //return this.tmpl(`
-//  //<p>{{ JSON.stringify(data[0]) }}</p>
-//  //{{ _.forOwn(data, function(val,k  }}
-//  //<p>{{JSON.stringify(val)}}</p>
-//  //{{ }) }}
-//  //`);
-//  //return this.tmpl(`
-//  //  <div>
-//  //    <table class="table table-rows-zebra table-cols-zebra">
-//  //      <thead>
-//  //        <tr> {{ _.forEach(data[0], function(val, key) { }}<th scope="col">{{ key }}</th>{{ }); }} </tr>
-//  //      </thead>
-//  //      <tbody>
-//  //        {{_.forEach(data, function(row) { }}
-//  //        <tr>
-//  //        {{ _.forEach(row, function(val, key) { }}
-//  //        <td>{{ val }}</td>
-//  //        {{ }); }}
-//  //        </tr>
-//  //        {{ }); }}
-//  //      </tbody>
-//  //    </table>
-//  //  </div>
-//  //`);
-//},
