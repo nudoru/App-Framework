@@ -35,7 +35,9 @@ function convertArrayOfObjectsToCSV(args) {
   data.forEach(item => {
     ctr = 0;
     keys.forEach(function (key) {
-      if (ctr > 0) result += columnDelimiter;
+      if (ctr > 0) {
+        result += columnDelimiter;
+      }
       result += item[key];
       ctr++;
     });
@@ -51,7 +53,9 @@ window.downloadCSV = function ({filename, source, element}) {
   var csv = convertArrayOfObjectsToCSV({
     data: source
   });
-  if (csv == null) return;
+  if (csv == null) {
+    return;
+  }
 
   filename = filename || 'export.csv';
 

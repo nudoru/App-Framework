@@ -1,32 +1,32 @@
 //https://github.com/substack/node-deep-equal
 
 /*
-Combined dependances to keep it to one file - MBP 11/18/15
+ Combined dependances to keep it to one file - MBP 11/18/15
+ Cleaned to remove lint issues 11/25/15
  */
 
 var pSlice = Array.prototype.slice;
 
-var supportsArgumentsClass = (function(){
-    return Object.prototype.toString.call(arguments)
+var supportsArgumentsClass = (function () {
+    return Object.prototype.toString.call(arguments);
   })() == '[object Arguments]';
 
 function supported(object) {
   return Object.prototype.toString.call(object) == '[object Arguments]';
 }
 
-function unsupported(object){
+function unsupported(object) {
   return object &&
     typeof object == 'object' &&
     typeof object.length == 'number' &&
-    Object.prototype.hasOwnProperty.call(object, 'callee') &&
-    !Object.prototype.propertyIsEnumerable.call(object, 'callee') ||
+    Object.prototype.hasOwnProperty.call(object, 'callee') && !Object.prototype.propertyIsEnumerable.call(object, 'callee') ||
     false;
 }
 
 var isArguments = supportsArgumentsClass ? supported : unsupported;
 
 var deepEqual = module.exports = function (actual, expected, opts) {
-  if (!opts) opts = {};
+  opts = opts || {};
   // 7.1. All identical values are equivalent, as determined by ===.
   if (actual === expected) {
     return true;
@@ -36,7 +36,7 @@ var deepEqual = module.exports = function (actual, expected, opts) {
 
     // 7.3. Other pairs that do not both pass typeof value == 'object',
     // equivalence is determined by ==.
-  } else if (!actual || !expected || typeof actual != 'object' && typeof expected != 'object') {
+  } else if (!actual || !expected || typeof actual !== 'object' && typeof expected !== 'object') {
     return opts.strict ? actual === expected : actual == expected;
 
     // 7.4. For all other Object pairs, including Array objects, equivalence is
@@ -48,27 +48,34 @@ var deepEqual = module.exports = function (actual, expected, opts) {
   } else {
     return objEquiv(actual, expected, opts);
   }
-}
+};
 
 function isUndefinedOrNull(value) {
   return value === null || value === undefined;
 }
 
-function isBuffer (x) {
-  if (!x || typeof x !== 'object' || typeof x.length !== 'number') return false;
+function isBuffer(x) {
+  if (!x || typeof x !== 'object' || typeof x.length !== 'number') {
+    return false;
+  }
   if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
     return false;
   }
-  if (x.length > 0 && typeof x[0] !== 'number') return false;
+  if (x.length > 0 && typeof x[0] !== 'number') {
+    return false;
+  }
   return true;
 }
 
 function objEquiv(a, b, opts) {
-  var i, key;
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
+  var i, key, ka, kb, len;
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) {
     return false;
+  }
   // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) return false;
+  if (a.prototype !== b.prototype) {
+    return false;
+  }
   //~~~I've managed to break Object.keys through screwy arguments passing.
   //   Converting to array solves the problem.
   if (isArguments(a)) {
@@ -83,35 +90,43 @@ function objEquiv(a, b, opts) {
     if (!isBuffer(b)) {
       return false;
     }
-    if (a.length !== b.length) return false;
+    if (a.length !== b.length) {
+      return false;
+    }
     for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
+      if (a[i] !== b[i]) {
+        return false;
+      }
     }
     return true;
   }
   try {
-    var ka = Object.keys(a),
-        kb = Object.keys(b);
+    ka = Object.keys(a);
+    kb = Object.keys(b);
   } catch (e) {//happens when one is a string literal and the other isn't
     return false;
   }
   // having the same number of owned properties (keys incorporates
   // hasOwnProperty)
-  if (ka.length != kb.length)
+  if (ka.length !== kb.length) {
     return false;
+  }
   //the same set of keys (although not necessarily the same order),
   ka.sort();
   kb.sort();
   //~~~cheap key test
   for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i])
+    if (ka[i] !== kb[i]) {
       return false;
+    }
   }
   //equivalent values for every corresponding key, and
   //~~~possibly expensive deep test
   for (i = ka.length - 1; i >= 0; i--) {
     key = ka[i];
-    if (!deepEqual(a[key], b[key], opts)) return false;
+    if (!deepEqual(a[key], b[key], opts)) {
+      return false;
+    }
   }
   return typeof a === typeof b;
 }

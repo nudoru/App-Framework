@@ -5707,6 +5707,10 @@ var _noriUtilsStoreWatcherJs = require('../nori/utils/StoreWatcher.js');
 
 var _noriUtilsStoreWatcherJs2 = _interopRequireDefault(_noriUtilsStoreWatcherJs);
 
+var _noriUtilsObservableSubjectJs = require('../nori/utils/ObservableSubject.js');
+
+var _noriUtilsObservableSubjectJs2 = _interopRequireDefault(_noriUtilsObservableSubjectJs);
+
 var _actionActionCreatorJs = require('./action/ActionCreator.js');
 
 var _actionActionCreatorJs2 = _interopRequireDefault(_actionActionCreatorJs);
@@ -5738,7 +5742,8 @@ var _nudoruUtilForOwnJs2 = _interopRequireDefault(_nudoruUtilForOwnJs);
  */
 var App = _noriNoriJs2['default'].createClass({
 
-  mixins: [(0, _noriUtilsStoreWatcherJs2['default'])()],
+  // Add ability to watch store mutations and act as a dispatcher
+  mixins: [(0, _noriUtilsStoreWatcherJs2['default'])(), (0, _noriUtilsObservableSubjectJs2['default'])()],
 
   /**
    * Initialize
@@ -5766,7 +5771,7 @@ var App = _noriNoriJs2['default'].createClass({
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"../nori/Nori.js":20,"../nori/action/ActionCreator.js":22,"../nori/utils/StoreWatcher.js":29,"../nudoru/util/ForOwn.js":53,"./action/ActionConstants.js":11,"./action/ActionCreator.js":12,"./store/AppStore.js":13,"./view/AppView.js":14}],11:[function(require,module,exports){
+},{"../nori/Nori.js":20,"../nori/action/ActionCreator.js":22,"../nori/utils/ObservableSubject.js":28,"../nori/utils/StoreWatcher.js":30,"../nudoru/util/ForOwn.js":54,"./action/ActionConstants.js":11,"./action/ActionCreator.js":12,"./store/AppStore.js":13,"./view/AppView.js":14}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5845,9 +5850,9 @@ var _nudoruCoreArrayUtilsJs = require('../../nudoru/core/ArrayUtils.js');
 
 var _nudoruCoreArrayUtilsJs2 = _interopRequireDefault(_nudoruCoreArrayUtilsJs);
 
-var _nudoruUtilObjectAssignJs = require('../../nudoru/util/ObjectAssign.js');
+var _nudoruUtilObjectMergeDeepJs = require('../../nudoru/util/ObjectMergeDeep.js');
 
-var _nudoruUtilObjectAssignJs2 = _interopRequireDefault(_nudoruUtilObjectAssignJs);
+var _nudoruUtilObjectMergeDeepJs2 = _interopRequireDefault(_nudoruUtilObjectMergeDeepJs);
 
 /**
  * This application store contains "reducer store" functionality based on Redux.
@@ -5861,21 +5866,9 @@ var _nudoruUtilObjectAssignJs2 = _interopRequireDefault(_nudoruUtilObjectAssignJ
  */
 var AppStoreModule = _noriNoriJs2['default'].createStore({
 
-  mixins: [],
-
   initialize: function initialize() {
-    this.addReducer(this.appStateReducerFunction);
+    this.addReducer(this.appStateReducerFunction.bind(this));
     this.initializeReducerStore();
-  },
-
-  /**
-   * Starting application state
-   */
-  getDefaultState: function getDefaultState() {
-    return {
-      currentState: 'chillin',
-      greeting: 'Hello world!'
-    };
   },
 
   /**
@@ -5886,12 +5879,15 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
    */
   appStateReducerFunction: function appStateReducerFunction(state, action) {
     state = state || {};
-
     switch (action.type) {
-
+      case undefined:
+        // Return default state
+        return {
+          currentState: 'chillin',
+          greeting: 'Hello world!'
+        };
       case _noriActionActionConstantsJs2['default'].CHANGE_STORE_STATE:
-        return (0, _nudoruUtilObjectAssignJs2['default'])({}, state, action.payload);
-
+        return (0, _nudoruUtilObjectMergeDeepJs2['default'])({}, state, action.payload);
       default:
         return state;
     }
@@ -5904,7 +5900,7 @@ var AppStore = AppStoreModule();
 exports['default'] = AppStore;
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/action/ActionConstants.js":21,"../../nudoru/core/ArrayUtils.js":47,"../../nudoru/core/NumberUtils.js":48,"../../nudoru/core/StringUtils.js":50,"../../nudoru/util/ObjectAssign.js":54,"../action/ActionConstants.js":11}],14:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/action/ActionConstants.js":21,"../../nudoru/core/ArrayUtils.js":48,"../../nudoru/core/NumberUtils.js":49,"../../nudoru/core/StringUtils.js":51,"../../nudoru/util/ObjectMergeDeep.js":56,"../action/ActionConstants.js":11}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6043,7 +6039,7 @@ var AppView = AppViewModule();
 exports['default'] = AppView;
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/view/Templating.js":35,"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/components/MixinNudoruControls.js":43,"../store/AppStore.js":13,"./ChildTest.js":15,"./ComponentsTesting.js":16,"./ControlsTesting.js":17,"./TemplateViewComponent.js":18}],15:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/view/Templating.js":36,"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/components/MixinNudoruControls.js":44,"../store/AppStore.js":13,"./ChildTest.js":15,"./ComponentsTesting.js":16,"./ControlsTesting.js":17,"./TemplateViewComponent.js":18}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6083,7 +6079,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nudoru/util/ObjectAssign.js":54}],16:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nudoru/util/ObjectAssign.js":55}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6282,7 +6278,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nori/view/Templating.js":35,"../../nori/view/Tweens.js":36,"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/browser/Lorem.js":39,"../../nudoru/components/ToolTipView.js":46,"../store/AppStore":13,"./AppView":14,"./ChildTest.js":15}],17:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nori/view/Templating.js":36,"../../nori/view/Tweens.js":37,"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/browser/Lorem.js":40,"../../nudoru/components/ToolTipView.js":47,"../store/AppStore":13,"./AppView":14,"./ChildTest.js":15}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6334,7 +6330,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../vendor/pikaday.js":58,"../../vendor/selected.js":60}],18:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../vendor/pikaday.js":60,"../../vendor/selected.js":62}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6358,14 +6354,6 @@ var _AppView2 = _interopRequireDefault(_AppView);
 var _storeAppStore = require('../store/AppStore');
 
 var _storeAppStore2 = _interopRequireDefault(_storeAppStore);
-
-var _noriViewTemplatingJs = require('../../nori/view/Templating.js');
-
-var _noriViewTemplatingJs2 = _interopRequireDefault(_noriViewTemplatingJs);
-
-var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
-
-var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
 var _nudoruUtilObjectAssignJs = require('../../nudoru/util/ObjectAssign.js');
 
@@ -6424,7 +6412,7 @@ module.exports = exports['default'];
 //componentWillDispose() {
 //},
 
-},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nori/view/Templating.js":35,"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/util/ObjectAssign.js":54,"../store/AppStore":13,"./AppView":14}],19:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nudoru/util/ObjectAssign.js":55,"../store/AppStore":13,"./AppView":14}],19:[function(require,module,exports){
 /**
  * Initial file for the Application
  */
@@ -6453,7 +6441,7 @@ var _appAppJs2 = _interopRequireDefault(_appAppJs);
   }
 })();
 
-},{"./app/App.js":10,"./nudoru/browser/BrowserInfo.js":37}],20:[function(require,module,exports){
+},{"./app/App.js":10,"./nudoru/browser/BrowserInfo.js":38}],20:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -6551,7 +6539,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../nudoru/util/ObjectAssign.js":54,"./store/ReducerStore.js":23,"./utils/AssignArray.js":24,"./utils/BuildFromMixins.js":25,"./utils/CreateClass.js":26,"./view/ComponentViews.js":33}],21:[function(require,module,exports){
+},{"../nudoru/util/ObjectAssign.js":55,"./store/ReducerStore.js":23,"./utils/AssignArray.js":24,"./utils/BuildFromMixins.js":25,"./utils/CreateClass.js":26,"./view/ComponentViews.js":34}],21:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -6640,7 +6628,7 @@ var _vendorIsPlainObjectMinJs2 = _interopRequireDefault(_vendorIsPlainObjectMinJ
 var STORE_INITIALIZE_TYPE = '$$$initstore$$$';
 
 exports['default'] = function () {
-  var _internalState = undefined,
+  var _internalState = {},
       _stateReducers = [],
       _subject = new _vendorRxjsRxLiteMinJs2['default'].Subject();
 
@@ -6648,17 +6636,17 @@ exports['default'] = function () {
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getState() {
+  var getState = function getState() {
     return (0, _nudoruUtilDeepCopyJs2['default'])(_internalState);
-  }
+  };
 
-  function setReducers(reducerArray) {
+  var setReducers = function setReducers(reducerArray) {
     _stateReducers = reducerArray;
-  }
+  };
 
-  function addReducer(reducer) {
+  var addReducer = function addReducer(reducer) {
     _stateReducers.push(reducer);
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Init
@@ -6667,67 +6655,46 @@ exports['default'] = function () {
   /**
    * Run the the reducers with the default state
    */
-  function initializeReducerStore() {
-    this.apply({ type: STORE_INITIALIZE_TYPE });
-  }
-
-  /**
-   * Returns the default state "shape"
-   */
-  function getDefaultState() {
-    return {};
-  }
+  var initializeReducerStore = function initializeReducerStore() {
+    Object.freeze(_internalState);
+    apply({});
+  };
 
   /**
    * Apply the action object to the reducers to change state
    * are sent to all reducers to update the state
    */
-  function apply(action) {
+  var apply = function apply(action) {
     if (!_stateReducers.length) {
       throw new Error('ReducerStore must have at least one reducer set');
     }
 
-    if (isValidAction(action)) {
-      // Apply called as the result of an event/subscription. Fix context back to
-      // correct scope
-      applyReducers.bind(this)(action, _internalState);
-    }
-  }
-
-  function isValidAction(action) {
-    if (!(0, _vendorIsPlainObjectMinJs2['default'])(action)) {
+    if ((0, _vendorIsPlainObjectMinJs2['default'])(action)) {
+      applyReducers(action, _internalState);
+    } else {
       console.warn('ReducerStore, action must be plain JS object', action);
-      return false;
     }
+  };
 
-    if (typeof action.type === 'undefined') {
-      console.warn('Reducer store, cannot apply undefined action type');
-      return false;
-    }
+  var applyReducers = function applyReducers(action) {
+    var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    return true;
-  }
+    var nextState = reduceToNextState(action, state);
 
-  function applyReducers(action, state) {
-    state = state || this.getDefaultState();
-
-    var nextState = this.reduceToNextState(action, state);
-
-    // Don't update the state if it's the same
     if (!(0, _nudoruUtilDeepEqualJs2['default'])(_internalState, nextState)) {
       _internalState = nextState;
-      this.notify(action.type, this.getState());
+      notify(action.type, getState());
     }
-  }
+  };
 
   /**
-   * Creates a new state from the combined reduces and action object
+   * Creates a new state from the combined reducers and action object
    * Store state isn't modified, current state is passed in and mutated state returned
    * @param state
    * @param action
    * @returns {*|{}}
    */
-  function reduceToNextState(action, state) {
+  var reduceToNextState = function reduceToNextState(action, state) {
     var nextState = undefined;
 
     try {
@@ -6740,38 +6707,37 @@ exports['default'] = function () {
     }
 
     return nextState;
-  }
+  };
 
-  /**
-   * Template reducer function
-   * Store state isn't modified, current state is passed in and mutated state returned
-   function templateReducerFunction(state, event) {
-        state = state || {};
-        switch (event.type) {
-          case _noriActionConstants.MODEL_DATA_CHANGED:
-            // can compose other reducers
-            // return ObjectAssign({}, state, otherStateTransformer(state));
-            return ObjectAssign({}, state, {prop: event.payload.value});
-          case undefined:
-            return state;
-          default:
-            console.warn('Reducer store, unhandled event type: '+event.type);
-            return state;
-        }
-      }
-   */
+  //Template reducer function
+  //function templateReducerFunction(state, event) {
+  //  state = state || {};
+  //  switch (event.type) {
+  //    case undefined:
+  //      return {}; // Return default state state
+  //    case _noriActionConstants.MODEL_DATA_CHANGED:
+  //      // can compose other reducers
+  //      // return ObjectAssign({}, state, otherStateTransformer(state));
+  //      return ObjectAssign({}, state, {prop: event.payload.value});
+  //    case undefined:
+  //      return state;
+  //    default:
+  //      console.warn('Reducer store, unhandled event type: ' + event.type);
+  //      return state;
+  //  }
+  //}
 
   //----------------------------------------------------------------------------
   //  Update events
   //----------------------------------------------------------------------------
 
-  function subscribe(handler) {
+  var subscribe = function subscribe(handler) {
     return _subject.subscribe(handler);
-  }
+  };
 
-  function notify(type, state) {
+  var notify = function notify(type, state) {
     _subject.onNext({ type: type, state: state });
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  API
@@ -6779,7 +6745,6 @@ exports['default'] = function () {
 
   return {
     initializeReducerStore: initializeReducerStore,
-    getDefaultState: getDefaultState,
     getState: getState,
     apply: apply,
     setReducers: setReducers,
@@ -6793,7 +6758,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":55,"../../vendor/is-plain-object.min.js":56,"../../vendor/rxjs/rx.lite.min.js":59}],24:[function(require,module,exports){
+},{"../../nudoru/util/DeepCopy.js":52,"../../nudoru/util/DeepEqual.js":53,"../../nudoru/util/ObjectAssign.js":55,"../../nudoru/util/is.js":57,"../../vendor/is-plain-object.min.js":58,"../../vendor/rxjs/rx.lite.min.js":61}],24:[function(require,module,exports){
 /**
  * Merges a collection of objects
  * @param target
@@ -6821,7 +6786,7 @@ exports['default'] = function (target, sourceArray) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/ObjectAssign.js":54}],25:[function(require,module,exports){
+},{"../../nudoru/util/ObjectAssign.js":55}],25:[function(require,module,exports){
 /**
  * Mixes in the modules specified in the custom application object
  * @param customizer
@@ -6881,7 +6846,7 @@ exports['default'] = function (template, customizer) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/ObjectAssign.js":54,"./BuildFromMixins.js":25}],27:[function(require,module,exports){
+},{"../../nudoru/util/ObjectAssign.js":55,"./BuildFromMixins.js":25}],27:[function(require,module,exports){
 
 // Tag listing from React ReactDOMFactories module
 'use strict';
@@ -6899,6 +6864,66 @@ exports['default'] = function (elStr) {
 module.exports = exports['default'];
 
 },{}],28:[function(require,module,exports){
+/*  weak */
+
+/**
+ * Add RxJS Subject to a module.
+ *
+ * Add one simple observable subject or more complex ability to create others for
+ * more complex eventing needs.
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
+
+var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
+
+exports['default'] = function () {
+
+  var _subjectMap = {};
+
+  /**
+   * Subscribe handler to updates. If the handler is a string, the new subject
+   * will be created.
+   * @param handler
+   * @returns {*}
+   */
+  function subscribe(name, handler) {
+    if (!_subjectMap.hasOwnProperty(name)) {
+      _subjectMap[name] = new _vendorRxjsRxLiteMinJs2['default'].Subject();
+    }
+    return _subjectMap[name].subscribe(handler);
+  }
+
+  /**
+   * Dispatch updated to named subscribers
+   * @param name
+   * @param payload
+   */
+  function notify(name, payload) {
+    if (_subjectMap.hasOwnProperty(name)) {
+      _subjectMap[name].onNext(payload);
+    } else {
+      console.warn('MixinObservableSubject, no subscribers of ' + name);
+    }
+  }
+
+  return {
+    subscribe: subscribe,
+    notify: notify
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../vendor/rxjs/rx.lite.min.js":61}],29:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7039,7 +7064,7 @@ var r = Router();
 exports['default'] = r;
 module.exports = exports['default'];
 
-},{"../../nudoru/core/ObjectUtils.js":49,"../../vendor/rxjs/rx.lite.min.js":59}],29:[function(require,module,exports){
+},{"../../nudoru/core/ObjectUtils.js":50,"../../vendor/rxjs/rx.lite.min.js":61}],30:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7089,7 +7114,7 @@ exports["default"] = function () {
 
 module.exports = exports["default"];
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7616,7 +7641,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":55,"./ComponentElement.js":31,"./ComponentRenderer.js":32,"./RxEventDelegator.js":34,"./Templating.js":35}],31:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/util/ForOwn.js":54,"../../nudoru/util/ObjectAssign.js":55,"../../nudoru/util/is.js":57,"./ComponentElement.js":32,"./ComponentRenderer.js":33,"./RxEventDelegator.js":35,"./Templating.js":36}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7637,7 +7662,11 @@ var _nudoruUtilDeepEqualJs2 = _interopRequireDefault(_nudoruUtilDeepEqualJs);
  * Holds state for an Component
  */
 
-exports['default'] = function (props, state, children) {
+exports['default'] = function () {
+  var props = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+  var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var children = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
   return {
     props: props,
     state: state,
@@ -7689,7 +7718,7 @@ exports['default'] = function (props, state, children) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54}],32:[function(require,module,exports){
+},{"../../nudoru/util/DeepEqual.js":53,"../../nudoru/util/ObjectAssign.js":55}],33:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -7704,7 +7733,8 @@ var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
 var _nudoruBrowserDOMUtilsJs2 = _interopRequireDefault(_nudoruBrowserDOMUtilsJs);
 
-exports['default'] = function (component, lastAdjacent) {
+exports['default'] = function (component) {
+  var lastAdjacent = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
   var domEl = undefined,
       currentHTML = undefined,
@@ -7740,7 +7770,7 @@ exports['default'] = function (component, lastAdjacent) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":38}],33:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":39}],34:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7778,6 +7808,7 @@ var _nudoruUtilObjectAssignJs2 = _interopRequireDefault(_nudoruUtilObjectAssignJ
 //import ComponentMount from '../experimental/ComponentMount.js';
 
 exports['default'] = function () {
+  var _this = this;
 
   var _routeViewMap = {},
       _viewIDIndex = 0,
@@ -7792,10 +7823,14 @@ exports['default'] = function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(source) {
-    source = source || {};
+  var createComponent = function createComponent() {
+    var source = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-    return function vcConstructor(id, props) {
+    return function (id, props) {
+      for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        children[_key - 2] = arguments[_key];
+      }
+
       var customizer = undefined,
           template = undefined,
           final = undefined,
@@ -7807,11 +7842,6 @@ exports['default'] = function () {
       customizer.mixins.unshift((0, _ComponentJs2['default'])());
 
       template = (0, _utilsBuildFromMixinsJs2['default'])(customizer);
-
-      for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-        children[_key - 2] = arguments[_key];
-      }
-
       template.__children = children;
 
       pDefaultProps = template.getDefaultProps;
@@ -7841,7 +7871,7 @@ exports['default'] = function () {
 
       return final;
     };
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Conditional view such as routes or states
@@ -7853,15 +7883,15 @@ exports['default'] = function () {
    * @param component
    * @param component
    */
-  function route(condition, component) {
+  var route = function route(condition, component) {
     _routeViewMap[condition] = component;
-  }
+  };
 
   /**
    * Show a view (in response to a route change)
    * @param condition
    */
-  function showViewForCondition(condition) {
+  var showViewForCondition = function showViewForCondition(condition) {
     var view = _routeViewMap[condition];
 
     if (!view) {
@@ -7870,12 +7900,12 @@ exports['default'] = function () {
     }
 
     showView(view);
-  }
+  };
 
   /**
    * Show a mapped view
    */
-  function showView(viewComponent) {
+  var showView = function showView(viewComponent) {
     if (viewComponent === _currentViewComponent) {
       return;
     }
@@ -7883,44 +7913,44 @@ exports['default'] = function () {
     $removeCurrentView();
     _currentViewComponent = viewComponent;
     viewComponent.forceUpdate();
-  }
+  };
 
   /**
    * Remove the currently displayed view
    */
-  function $removeCurrentView() {
+  var $removeCurrentView = function $removeCurrentView() {
     if (_currentViewComponent) {
       _currentViewComponent.dispose();
     }
     _currentViewComponent = null;
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Routing
   //----------------------------------------------------------------------------
 
-  function showViewForChangedCondition(options) {
+  var showViewForChangedCondition = function showViewForChangedCondition(options) {
     if (_routeOnURL) {
       showViewForChangedURL(options);
     } else if (_routeOnState) {
       showViewForChangedState(options);
     }
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  URL Fragment Route
   //----------------------------------------------------------------------------
 
-  function initializeRouteViews() {
+  var initializeRouteViews = function initializeRouteViews() {
     _routeOnURL = true;
     _routeOnState = false;
 
-    _utilsRouterJs2['default'].subscribe($onRouteChange.bind(this));
-  }
+    _utilsRouterJs2['default'].subscribe($onRouteChange);
+  };
 
-  function $onRouteChange(payload) {
+  var $onRouteChange = function $onRouteChange(payload) {
     showViewForCondition(payload.routeObj.route);
-  }
+  };
 
   /**
    * Typically on app startup, show the view assigned to the current URL hash
@@ -7928,30 +7958,32 @@ exports['default'] = function () {
    * @param silent If true, will not notify subscribers of the change, prevents
    * double showing on initial load
    */
-  function showViewForChangedURL(silent) {
+  var showViewForChangedURL = function showViewForChangedURL() {
+    var silent = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
     showViewForCondition(_utilsRouterJs2['default'].getCurrentRoute().route);
     if (!silent) {
       _utilsRouterJs2['default'].notifySubscribers();
     }
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Store State Route
   //----------------------------------------------------------------------------
 
-  function initializeStateViews(store) {
+  var initializeStateViews = function initializeStateViews(store) {
     _routeOnURL = false;
     _routeOnState = true;
 
     _observedStore = store;
-    _observedStore.subscribe($onStateChange.bind(this));
-  }
+    _observedStore.subscribe($onStateChange.bind(_this));
+  };
 
-  function $onStateChange() {
-    showViewForChangedState.bind(this)();
-  }
+  var $onStateChange = function $onStateChange() {
+    showViewForChangedState.bind(_this)();
+  };
 
-  function showViewForChangedState() {
+  var showViewForChangedState = function showViewForChangedState() {
     var state = _observedStore.getState().currentState;
     if (state) {
       if (state !== _currentStoreState) {
@@ -7959,7 +7991,7 @@ exports['default'] = function () {
         showViewForCondition(_currentStoreState);
       }
     }
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  API
@@ -7980,7 +8012,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/ObjectAssign.js":54,"../utils/BuildFromMixins.js":25,"../utils/Router.js":28,"./Component.js":30}],34:[function(require,module,exports){
+},{"../../nudoru/util/DeepCopy.js":52,"../../nudoru/util/ObjectAssign.js":55,"../utils/BuildFromMixins.js":25,"../utils/Router.js":29,"./Component.js":31}],35:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7990,11 +8022,15 @@ module.exports = exports['default'];
  * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
  *
  * Example:
- * this.setEvents({
+ * delegateEvents({
  *        'click #btn_main_projects': handleProjectsButton,
  *        'click #btn_foo, click #btn_bar': handleFooBarButtons
  *      });
- * this.delegateEvents();
+ * // later
+ * undelegateEvents({
+ *        'click #btn_main_projects': handleProjectsButton,
+ *        'click #btn_foo, click #btn_bar': handleFooBarButtons
+ *      });
  *
  */
 
@@ -8031,7 +8067,7 @@ exports['default'] = function () {
    * 'evtStr selector':callback
    * 'evtStr selector, evtStr selector': sharedCallback
    */
-  function delegateEvents(context, eventObj, autoForm) {
+  var delegateEvents = function delegateEvents(context, eventObj, autoForm) {
     if (!eventObj) {
       return;
     }
@@ -8074,7 +8110,7 @@ exports['default'] = function () {
         if (typeof _ret === 'object') return _ret.v;
       }
     }
-  }
+  };
 
   /**
    * Returns an observable subscription
@@ -8084,7 +8120,7 @@ exports['default'] = function () {
    * @param autoForm True to automatically pass common form element data to the handler
    * @returns {*}
    */
-  function $createSubscriber(context, selector, eventStr, handler, autoForm) {
+  var $createSubscriber = function $createSubscriber(context, selector, eventStr, handler, autoForm) {
     var el = context.querySelector(selector),
         observable = undefined,
         tag = undefined,
@@ -8132,12 +8168,12 @@ exports['default'] = function () {
     }
 
     return observable.subscribe(handler);
-  }
+  };
 
   /**
    * Cleanly remove events
    */
-  function undelegateEvents(eventObj) {
+  var undelegateEvents = function undelegateEvents(eventObj) {
 
     if (!eventObj) {
       return;
@@ -8153,12 +8189,12 @@ exports['default'] = function () {
     }
 
     _eventSubscribers = Object.create(null);
-  }
+  };
 
   /**
    * Get observable from a dom selector for the given event
    */
-  function getObservableFromDOM(selector, event) {
+  var getObservableFromDOM = function getObservableFromDOM(selector, event) {
     var el = selector;
 
     if (_nudoruUtilIsJs2['default'].string(selector)) {
@@ -8170,7 +8206,7 @@ exports['default'] = function () {
       return;
     }
     return _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(el, event.trim());
-  }
+  };
 
   return {
     undelegateEvents: undelegateEvents,
@@ -8180,7 +8216,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/MouseToTouchEvents.js":40,"../../nudoru/util/is.js":55,"../../vendor/rxjs/rx.lite.min.js":59}],35:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/MouseToTouchEvents.js":41,"../../nudoru/util/is.js":57,"../../vendor/rxjs/rx.lite.min.js":61}],36:[function(require,module,exports){
 /*  weak */
 
 /*
@@ -8353,7 +8389,7 @@ var Templating = TemplatingModule();
 exports['default'] = Templating;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":38,"../../vendor/mustache.min.js":57,"../utils/IsDOMElement.js":27}],36:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":39,"../../vendor/mustache.min.js":59,"../utils/IsDOMElement.js":27}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8485,7 +8521,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":55}],37:[function(require,module,exports){
+},{"../../nudoru/util/is.js":57}],38:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8553,7 +8589,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8809,7 +8845,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8965,7 +9001,7 @@ var Lorem = function Lorem() {
 exports['default'] = Lorem();
 module.exports = exports['default'];
 
-},{"../core/ArrayUtils.js":47,"../core/NumberUtils.js":48,"../core/StringUtils.js":50}],40:[function(require,module,exports){
+},{"../core/ArrayUtils.js":48,"../core/NumberUtils.js":49,"../core/StringUtils.js":51}],41:[function(require,module,exports){
 /**
  * Converts mouse event strings to touch based equivalents
  * @param eventStr
@@ -8995,7 +9031,7 @@ exports['default'] = function (eventStr) {
 
 module.exports = exports['default'];
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9114,7 +9150,7 @@ var MessageBoxCreator = MessageBoxCreatorModule();
 exports['default'] = MessageBoxCreator;
 module.exports = exports['default'];
 
-},{"./MessageBoxView":42}],42:[function(require,module,exports){
+},{"./MessageBoxView":43}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9177,7 +9213,7 @@ var MessageBoxViewModule = function MessageBoxViewModule() {
   }
 
   function defineTemplates() {
-    _noriViewTemplatingJs2['default'].addTemplate('messagebox--default', '<div class="messagebox__default" id="{{ id }}">\n        <div class="header" id="{{ id }}-header">\n             <h1>{{ title }}</h1>\n        </div>\n        <div class="content">\n             {{ content }}\n        </div>\n        <div class="footer">\n            <div class="footer-buttons">\n                <div class="button" id="{{ id }}-button-close">\n                    <button>Close</button>\n                </div>\n            </div>\n        </div>\n    </div>');
+    _noriViewTemplatingJs2['default'].addTemplate('messagebox--default', '<div class="messagebox__default" id="{{ id }}">\n        <div class="header" id="{{ id }}-header">\n             <h1>{{ title }}</h1>\n        </div>\n        <div class="content">\n             {{{ content }}}\n        </div>\n        <div class="footer">\n            <div class="footer-buttons">\n                <div class="button" id="{{ id }}-button-close">\n                    <button>Close</button>\n                </div>\n            </div>\n        </div>\n    </div>');
     _noriViewTemplatingJs2['default'].addTemplate('messagebox--button-noicon', '<div class="button {{ type }}" id="{{ id }}">\n        <button>{{ label }}</button>\n    </div>');
     _noriViewTemplatingJs2['default'].addTemplate('messagebox--button-icon', '<div class="button icon-left {{ type }}" id="{{ id }}">\n        <button><i class="fa fa-{{ icon }}"></i>{{ label }}</button>\n    </div>');
   }
@@ -9433,7 +9469,7 @@ var MessageBoxView = MessageBoxViewModule();
 exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":35,"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":59,"./ModalCoverView.js":44}],43:[function(require,module,exports){
+},{"../../nori/view/Templating.js":36,"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/DOMUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":61,"./ModalCoverView.js":45}],44:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -9552,7 +9588,7 @@ var MixinNudoruControls = function MixinNudoruControls() {
 exports['default'] = MixinNudoruControls;
 module.exports = exports['default'];
 
-},{"../../nudoru/components/MessageBoxCreator.js":41,"../../nudoru/components/MessageBoxView.js":42,"../../nudoru/components/ModalCoverView.js":44,"../../nudoru/components/ToastView.js":45,"../../nudoru/components/ToolTipView.js":46}],44:[function(require,module,exports){
+},{"../../nudoru/components/MessageBoxCreator.js":42,"../../nudoru/components/MessageBoxView.js":43,"../../nudoru/components/ModalCoverView.js":45,"../../nudoru/components/ToastView.js":46,"../../nudoru/components/ToolTipView.js":47}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9721,7 +9757,7 @@ var ModalCoverView = ModalCoverViewModule();
 exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":35,"../../nudoru/browser/BrowserInfo.js":37,"../../vendor/rxjs/rx.lite.min.js":59}],45:[function(require,module,exports){
+},{"../../nori/view/Templating.js":36,"../../nudoru/browser/BrowserInfo.js":38,"../../vendor/rxjs/rx.lite.min.js":61}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9898,7 +9934,7 @@ var ToastView = ToastViewModule();
 exports['default'] = ToastView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":35,"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":59}],46:[function(require,module,exports){
+},{"../../nori/view/Templating.js":36,"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/DOMUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":61}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10195,7 +10231,7 @@ var ToolTipView = ToolTipViewModule();
 exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":35,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":59}],47:[function(require,module,exports){
+},{"../../nori/view/Templating.js":36,"../../nudoru/browser/DOMUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":61}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10290,7 +10326,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./NumberUtils.js":48}],48:[function(require,module,exports){
+},{"./NumberUtils.js":49}],49:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10324,12 +10360,19 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _utilIsJs = require('../util/is.js');
+
+var _utilIsJs2 = _interopRequireDefault(_utilIsJs);
+
 exports['default'] = {
 
   /**
@@ -10342,7 +10385,7 @@ exports['default'] = {
   isNull: function isNull(obj) {
     var isnull = false;
 
-    if (is.falsey(obj)) {
+    if (_utilIsJs2['default'].falsey(obj)) {
       return true;
     }
 
@@ -10508,7 +10551,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],50:[function(require,module,exports){
+},{"../util/is.js":57}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10564,7 +10607,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function (process,Buffer){
 //https://github.com/sasaplus1/deepcopy.js
 /*!
@@ -10785,11 +10828,12 @@ module.exports = exports['default'];
  */
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":6,"buffer":1,"util":8}],52:[function(require,module,exports){
+},{"_process":6,"buffer":1,"util":8}],53:[function(require,module,exports){
 //https://github.com/substack/node-deep-equal
 
 /*
-Combined dependances to keep it to one file - MBP 11/18/15
+ Combined dependances to keep it to one file - MBP 11/18/15
+ Cleaned to remove lint issues 11/25/15
  */
 
 'use strict';
@@ -10811,7 +10855,7 @@ function unsupported(object) {
 var isArguments = supportsArgumentsClass ? supported : unsupported;
 
 var deepEqual = module.exports = function (actual, expected, opts) {
-  if (!opts) opts = {};
+  opts = opts || {};
   // 7.1. All identical values are equivalent, as determined by ===.
   if (actual === expected) {
     return true;
@@ -10820,7 +10864,7 @@ var deepEqual = module.exports = function (actual, expected, opts) {
 
     // 7.3. Other pairs that do not both pass typeof value == 'object',
     // equivalence is determined by ==.
-  } else if (!actual || !expected || typeof actual != 'object' && typeof expected != 'object') {
+  } else if (!actual || !expected || typeof actual !== 'object' && typeof expected !== 'object') {
       return opts.strict ? actual === expected : actual == expected;
 
       // 7.4. For all other Object pairs, including Array objects, equivalence is
@@ -10839,19 +10883,27 @@ function isUndefinedOrNull(value) {
 }
 
 function isBuffer(x) {
-  if (!x || typeof x !== 'object' || typeof x.length !== 'number') return false;
+  if (!x || typeof x !== 'object' || typeof x.length !== 'number') {
+    return false;
+  }
   if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
     return false;
   }
-  if (x.length > 0 && typeof x[0] !== 'number') return false;
+  if (x.length > 0 && typeof x[0] !== 'number') {
+    return false;
+  }
   return true;
 }
 
 function objEquiv(a, b, opts) {
-  var i, key;
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) return false;
+  var i, key, ka, kb, len;
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) {
+    return false;
+  }
   // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) return false;
+  if (a.prototype !== b.prototype) {
+    return false;
+  }
   //~~~I've managed to break Object.keys through screwy arguments passing.
   //   Converting to array solves the problem.
   if (isArguments(a)) {
@@ -10866,39 +10918,49 @@ function objEquiv(a, b, opts) {
     if (!isBuffer(b)) {
       return false;
     }
-    if (a.length !== b.length) return false;
+    if (a.length !== b.length) {
+      return false;
+    }
     for (i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
+      if (a[i] !== b[i]) {
+        return false;
+      }
     }
     return true;
   }
   try {
-    var ka = Object.keys(a),
-        kb = Object.keys(b);
+    ka = Object.keys(a);
+    kb = Object.keys(b);
   } catch (e) {
     //happens when one is a string literal and the other isn't
     return false;
   }
   // having the same number of owned properties (keys incorporates
   // hasOwnProperty)
-  if (ka.length != kb.length) return false;
+  if (ka.length !== kb.length) {
+    return false;
+  }
   //the same set of keys (although not necessarily the same order),
   ka.sort();
   kb.sort();
   //~~~cheap key test
   for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i]) return false;
+    if (ka[i] !== kb[i]) {
+      return false;
+    }
   }
   //equivalent values for every corresponding key, and
   //~~~possibly expensive deep test
   for (i = ka.length - 1; i >= 0; i--) {
     key = ka[i];
-    if (!deepEqual(a[key], b[key], opts)) return false;
+    if (!deepEqual(a[key], b[key], opts)) {
+      return false;
+    }
   }
   return typeof a === typeof b;
 }
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 // Simple replacement for Lodash ForOwn method
 // https://lodash.com/docs#forOwn
 "use strict";
@@ -10910,7 +10972,6 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = function (object, fn) {
   var keys = Object.keys(object),
       key = undefined;
-  // FowOwnRight while (key = keys.pop()) {
   while (key = keys.shift()) {
     fn.call(null, object[key], key);
   }
@@ -10919,7 +10980,7 @@ exports["default"] = function (object, fn) {
 module.exports = exports["default"];
 // http://jsperf.com/loop-for-in-vs-object-keys-foreach/21
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 //http://stackoverflow.com/questions/27104549/how-can-i-use-the-built-in-object-assign-in-react
 
 /* eslint-disable no-unused-vars */
@@ -10968,7 +11029,63 @@ exports['default'] = Object.assign || function (target, source) {
 
 module.exports = exports['default'];
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
+//https://github.com/KyleAMathews/deepmerge
+
+'use strict';
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.deepmerge = factory();
+  }
+})(undefined, function () {
+
+  return function deepmerge(target, src) {
+    var array = Array.isArray(src);
+    var dst = array && [] || {};
+
+    if (array) {
+      target = target || [];
+      dst = dst.concat(target);
+      src.forEach(function (e, i) {
+        if (typeof dst[i] === 'undefined') {
+          dst[i] = e;
+        } else if (typeof e === 'object') {
+          dst[i] = deepmerge(target[i], e);
+        } else {
+          if (target.indexOf(e) === -1) {
+            dst.push(e);
+          }
+        }
+      });
+    } else {
+      if (target && typeof target === 'object') {
+        Object.keys(target).forEach(function (key) {
+          dst[key] = target[key];
+        });
+      }
+      Object.keys(src).forEach(function (key) {
+        if (typeof src[key] !== 'object' || !src[key]) {
+          dst[key] = src[key];
+        } else {
+          if (!target[key]) {
+            dst[key] = src[key];
+          } else {
+            dst[key] = deepmerge(target[key], src[key]);
+          }
+        }
+      });
+    }
+
+    return dst;
+  };
+});
+
+},{}],57:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11018,7 +11135,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 (function (global){
 //https://github.com/jonschlinkert/is-plain-object
 
@@ -11053,7 +11170,7 @@ module.exports = exports["default"];
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],57:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 "use strict";
 
 (function defineMustache(global, factory) {
@@ -11220,7 +11337,7 @@ module.exports = exports["default"];
   };mustache.escape = escapeHtml;mustache.Scanner = Scanner;mustache.Context = Context;mustache.Writer = Writer;
 });
 
-},{}],58:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /*!
  * Pikaday
  *
@@ -12196,7 +12313,7 @@ module.exports = exports["default"];
     return Pikaday;
 });
 
-},{"moment":9}],59:[function(require,module,exports){
+},{"moment":9}],61:[function(require,module,exports){
 (function (process,global){
 /* Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.*/
 "use strict";
@@ -14443,7 +14560,7 @@ module.exports = exports["default"];
 }).call(undefined);
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":6}],60:[function(require,module,exports){
+},{"_process":6}],62:[function(require,module,exports){
 //https://raw.githubusercontent.com/Fizzadar/selected.js/develop/selected/selected.js
 
 'use strict';

@@ -18,21 +18,9 @@ import ObjectMergeDeep from '../../nudoru/util/ObjectMergeDeep.js';
  */
 let AppStoreModule = Nori.createStore({
 
-  mixins: [],
-
   initialize() {
-    this.addReducer(this.appStateReducerFunction);
+    this.addReducer(this.appStateReducerFunction.bind(this));
     this.initializeReducerStore();
-  },
-
-  /**
-   * Starting application state
-   */
-  getDefaultState() {
-    return {
-      currentState: 'chillin',
-      greeting: 'Hello world!'
-    };
   },
 
   /**
@@ -43,12 +31,15 @@ let AppStoreModule = Nori.createStore({
    */
   appStateReducerFunction(state, action) {
     state = state || {};
-
     switch (action.type) {
-
+      case undefined:
+        // Return default state
+        return {
+          currentState: 'chillin',
+          greeting: 'Hello world!'
+        };
       case NoriActionConstants.CHANGE_STORE_STATE:
         return ObjectMergeDeep({}, state, action.payload);
-
       default:
         return state;
     }

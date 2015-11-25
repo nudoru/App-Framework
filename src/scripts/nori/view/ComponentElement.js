@@ -5,7 +5,7 @@ import DeepEqual from '../../nudoru/util/DeepEqual.js';
  * Holds state for an Component
  */
 
-export default function (props, state, children) {
+export default (props = {}, state = {}, children = null) => {
   return {
     props    : props,
     state    : state,

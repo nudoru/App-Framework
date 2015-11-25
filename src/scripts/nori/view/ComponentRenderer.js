@@ -2,7 +2,7 @@
 
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 
-export default function (component, lastAdjacent) {
+export default (component, lastAdjacent = null) => {
 
   let domEl, currentHTML,
       html = component.html(),

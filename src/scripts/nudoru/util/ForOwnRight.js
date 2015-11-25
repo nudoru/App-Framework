@@ -4,7 +4,7 @@
 
 export default function (object, fn) {
   let keys = Object.keys(object), key;
-  while (key = keys.shift()) {
+  while (key = keys.pop()) {
     fn.call(null, object[key], key);
   }
 }

@@ -14,7 +14,7 @@ import isPlainObject from '../../vendor/is-plain-object.min.js';
 const STORE_INITIALIZE_TYPE = '$$$initstore$$$';
 
 export default function () {
-  let _internalState,
+  let _internalState = {},
       _stateReducers = [],
       _subject       = new Rxjs.Subject();
 
@@ -22,17 +22,17 @@ export default function () {
   //  Accessors
   //----------------------------------------------------------------------------
 
-  function getState() {
+  const getState = () => {
     return DeepCopy(_internalState);
-  }
+  };
 
-  function setReducers(reducerArray) {
+  const setReducers = (reducerArray) => {
     _stateReducers = reducerArray;
-  }
+  };
 
-  function addReducer(reducer) {
+  const addReducer = (reducer) => {
     _stateReducers.push(reducer);
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Init
@@ -41,67 +41,44 @@ export default function () {
   /**
    * Run the the reducers with the default state
    */
-  function initializeReducerStore() {
-    this.apply({type: STORE_INITIALIZE_TYPE});
-  }
-
-  /**
-   * Returns the default state "shape"
-   */
-  function getDefaultState() {
-    return {};
-  }
+  const initializeReducerStore = () => {
+    Object.freeze(_internalState);
+    apply({});
+  };
 
   /**
    * Apply the action object to the reducers to change state
    * are sent to all reducers to update the state
    */
-  function apply(action) {
-    if(!_stateReducers.length) {
+  const apply = (action) => {
+    if (!_stateReducers.length) {
       throw new Error('ReducerStore must have at least one reducer set');
     }
 
-    if(isValidAction(action)) {
-      // Apply called as the result of an event/subscription. Fix context back to
-      // correct scope
-      applyReducers.bind(this)(action, _internalState);
-    }
-  }
-
-  function isValidAction(action) {
-    if(!isPlainObject(action)) {
+    if (isPlainObject(action)) {
+      applyReducers(action, _internalState);
+    } else {
       console.warn('ReducerStore, action must be plain JS object', action);
-      return false;
     }
+  };
 
-    if (typeof action.type === 'undefined') {
-      console.warn('Reducer store, cannot apply undefined action type');
-      return false;
-    }
+  const applyReducers = (action, state = {}) => {
+    let nextState = reduceToNextState(action, state);
 
-    return true;
-  }
-
-  function applyReducers(action, state) {
-    state = state || this.getDefaultState();
-
-    let nextState = this.reduceToNextState(action, state);
-
-    // Don't update the state if it's the same
     if (!DeepEqual(_internalState, nextState)) {
       _internalState = nextState;
-      this.notify(action.type, this.getState());
+      notify(action.type, getState());
     }
-  }
+  };
 
   /**
-   * Creates a new state from the combined reduces and action object
+   * Creates a new state from the combined reducers and action object
    * Store state isn't modified, current state is passed in and mutated state returned
    * @param state
    * @param action
    * @returns {*|{}}
    */
-  function reduceToNextState(action, state) {
+  const reduceToNextState = (action, state) => {
     let nextState;
 
     try {
@@ -112,38 +89,37 @@ export default function () {
     }
 
     return nextState;
-  }
+  };
 
-  /**
-   * Template reducer function
-   * Store state isn't modified, current state is passed in and mutated state returned
-   function templateReducerFunction(state, event) {
-        state = state || {};
-        switch (event.type) {
-          case _noriActionConstants.MODEL_DATA_CHANGED:
-            // can compose other reducers
-            // return ObjectAssign({}, state, otherStateTransformer(state));
-            return ObjectAssign({}, state, {prop: event.payload.value});
-          case undefined:
-            return state;
-          default:
-            console.warn('Reducer store, unhandled event type: '+event.type);
-            return state;
-        }
-      }
-   */
+  //Template reducer function
+  //function templateReducerFunction(state, event) {
+  //  state = state || {};
+  //  switch (event.type) {
+  //    case undefined:
+  //      return {}; // Return default state state
+  //    case _noriActionConstants.MODEL_DATA_CHANGED:
+  //      // can compose other reducers
+  //      // return ObjectAssign({}, state, otherStateTransformer(state));
+  //      return ObjectAssign({}, state, {prop: event.payload.value});
+  //    case undefined:
+  //      return state;
+  //    default:
+  //      console.warn('Reducer store, unhandled event type: ' + event.type);
+  //      return state;
+  //  }
+  //}
 
   //----------------------------------------------------------------------------
   //  Update events
   //----------------------------------------------------------------------------
 
-  function subscribe(handler) {
+  const subscribe = (handler) => {
     return _subject.subscribe(handler);
-  }
+  };
 
-  function notify(type, state) {
-    _subject.onNext({type: type, state:state});
-  }
+  const notify = (type, state) => {
+    _subject.onNext({type: type, state: state});
+  };
 
   //----------------------------------------------------------------------------
   //  API
@@ -151,7 +127,6 @@ export default function () {
 
   return {
     initializeReducerStore,
-    getDefaultState,
     getState,
     apply,
     setReducers,

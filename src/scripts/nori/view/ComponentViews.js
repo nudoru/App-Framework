@@ -8,7 +8,7 @@ import ViewComponentFactory from './Component.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
 import Router from '../utils/Router.js';
 import DeepCopy from '../../nudoru/util/DeepCopy.js';
-import ObjectAssign from '../../nudoru/util/ObjectAssign.js'
+import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 //import ComponentMount from '../experimental/ComponentMount.js';
 
 export default function () {
@@ -26,10 +26,8 @@ export default function () {
    * @param customizer Custom module source
    * @returns {*}
    */
-  function createComponent(source) {
-    source = source || {};
-
-    return function vcConstructor(id, props, ...children) {
+  const createComponent = (source = {}) => {
+    return (id, props, ...children) => {
       let customizer,
           template,
           final,
@@ -45,7 +43,7 @@ export default function () {
 
       pDefaultProps = template.getDefaultProps;
 
-      template.getDefaultProps = function () {
+      template.getDefaultProps = () => {
         // TODO test props for reserved names?
         let specs = {
           id            : id || 'vc' + _viewIDIndex,
@@ -70,7 +68,7 @@ export default function () {
 
       return final;
     };
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Conditional view such as routes or states
@@ -82,15 +80,15 @@ export default function () {
    * @param component
    * @param component
    */
-  function route(condition, component) {
+  const route = (condition, component) => {
     _routeViewMap[condition] = component;
-  }
+  };
 
   /**
    * Show a view (in response to a route change)
    * @param condition
    */
-  function showViewForCondition(condition) {
+  const showViewForCondition = (condition) => {
     let view = _routeViewMap[condition];
 
     if (!view) {
@@ -99,12 +97,12 @@ export default function () {
     }
 
     showView(view);
-  }
+  };
 
   /**
    * Show a mapped view
    */
-  function showView(viewComponent) {
+  const showView = (viewComponent) => {
     if (viewComponent === _currentViewComponent) {
       return;
     }
@@ -112,44 +110,44 @@ export default function () {
     $removeCurrentView();
     _currentViewComponent = viewComponent;
     viewComponent.forceUpdate();
-  }
+  };
 
   /**
    * Remove the currently displayed view
    */
-  function $removeCurrentView() {
+  const $removeCurrentView = () => {
     if (_currentViewComponent) {
       _currentViewComponent.dispose();
     }
     _currentViewComponent = null;
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Routing
   //----------------------------------------------------------------------------
 
-  function showViewForChangedCondition(options) {
+  const showViewForChangedCondition = (options) => {
     if (_routeOnURL) {
       showViewForChangedURL(options);
     } else if (_routeOnState) {
       showViewForChangedState(options);
     }
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  URL Fragment Route
   //----------------------------------------------------------------------------
 
-  function initializeRouteViews() {
+  const initializeRouteViews = () => {
     _routeOnURL   = true;
     _routeOnState = false;
 
-    Router.subscribe($onRouteChange.bind(this));
-  }
+    Router.subscribe($onRouteChange);
+  };
 
-  function $onRouteChange(payload) {
+  const $onRouteChange = (payload) => {
     showViewForCondition(payload.routeObj.route);
-  }
+  };
 
   /**
    * Typically on app startup, show the view assigned to the current URL hash
@@ -157,30 +155,30 @@ export default function () {
    * @param silent If true, will not notify subscribers of the change, prevents
    * double showing on initial load
    */
-  function showViewForChangedURL(silent) {
+  const showViewForChangedURL = (silent = false) => {
     showViewForCondition(Router.getCurrentRoute().route);
     if (!silent) {
       Router.notifySubscribers();
     }
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  Store State Route
   //----------------------------------------------------------------------------
 
-  function initializeStateViews(store) {
+  const initializeStateViews = (store) => {
     _routeOnURL   = false;
     _routeOnState = true;
 
     _observedStore = store;
     _observedStore.subscribe($onStateChange.bind(this));
-  }
+  };
 
-  function $onStateChange() {
+  const $onStateChange= () => {
     showViewForChangedState.bind(this)();
-  }
+  };
 
-  function showViewForChangedState() {
+  const showViewForChangedState = () => {
     let state = _observedStore.getState().currentState;
     if (state) {
       if (state !== _currentStoreState) {
@@ -188,7 +186,7 @@ export default function () {
         showViewForCondition(_currentStoreState);
       }
     }
-  }
+  };
 
   //----------------------------------------------------------------------------
   //  API

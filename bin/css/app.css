@@ -2429,15 +2429,6 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   margin-bottom: 22px;
 }
 
-.initialization__message {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1.618rem;
-  line-height: 33px;
-  font-weight: 400;
-  margin-top: 0;
-  margin-bottom: 22px;
-}
-
 .h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-bottom: 22px;
@@ -3298,6 +3289,31 @@ textarea {
   border-bottom: 1px solid #00a9e0;
   vertical-align: bottom;
 }
+.table thead th i.fa {
+  padding-left: 11px;
+}
+.table thead .th-sortable {
+  -moz-transition: all 0.1s ease-out;
+  -o-transition: all 0.1s ease-out;
+  -webkit-transition: all 0.1s ease-out;
+  transition: all 0.1s ease-out;
+  cursor: pointer;
+  border-radius: 10px 10px 0 0;
+}
+.table thead .th-sortable:hover {
+  background-color: #eae8e6;
+}
+.table thead .th-selected {
+  color: #fff;
+  background-color: #00a9e0;
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+}
+.table thead .th-selected i.fa {
+  color: #fff;
+}
+.table thead .th-selected:hover {
+  background-color: #005eb8;
+}
 .table tfoot th {
   border-bottom: none;
   border-top: 1px solid #6e6259;
@@ -4157,27 +4173,26 @@ body {
 
 #initialization__cover {
   z-index: 1100;
-  background-color: #eee;
+  background-color: #faf9f9;
 }
 
 .initialization__message {
   position: relative;
-  overflow: hidden;
-  text-align: center;
-  width: 300px;
-  height: 50px;
-  margin: auto;
   top: 200px;
+  margin: auto;
   padding: 22px;
+  width: 300px;
+  text-align: center;
   background-color: #fff;
-  box-shadow: 0 20px 15px -3px rgba(0, 0, 0, 0.25);
+  border-radius: 5.5px;
+  box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.2);
 }
 .initialization__message h1 {
   padding: 0;
   margin: 0;
-  margin-bottom: 11px;
+  margin-bottom: 22px;
   color: #005eb8;
-  font-size: 1.2em;
+  font-size: 2.067rem;
 }
 .initialization__message .loader {
   display: inline-block;

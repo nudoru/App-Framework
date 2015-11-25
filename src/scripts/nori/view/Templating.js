@@ -106,7 +106,7 @@ let TemplatingModule = function () {
   function createRenderingFunction(source) {
     return function (obj) {
       return Mustache.render(source, obj);
-    }
+    };
   }
 
   /**

@@ -7,11 +7,15 @@
  * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
  *
  * Example:
- * this.setEvents({
+ * delegateEvents({
  *        'click #btn_main_projects': handleProjectsButton,
  *        'click #btn_foo, click #btn_bar': handleFooBarButtons
  *      });
- * this.delegateEvents();
+ * // later
+ * undelegateEvents({
+ *        'click #btn_main_projects': handleProjectsButton,
+ *        'click #btn_foo, click #btn_bar': handleFooBarButtons
+ *      });
  *
  */
 
@@ -29,7 +33,7 @@ export default function () {
    * 'evtStr selector':callback
    * 'evtStr selector, evtStr selector': sharedCallback
    */
-  function delegateEvents(context, eventObj, autoForm) {
+  const delegateEvents = (context, eventObj, autoForm) => {
     if (!eventObj) {
       return;
     }
@@ -66,7 +70,7 @@ export default function () {
         /* jshint +W083 */
       }
     }
-  }
+  };
 
   /**
    * Returns an observable subscription
@@ -76,7 +80,7 @@ export default function () {
    * @param autoForm True to automatically pass common form element data to the handler
    * @returns {*}
    */
-  function $createSubscriber(context, selector, eventStr, handler, autoForm) {
+  const $createSubscriber = (context, selector, eventStr, handler, autoForm) => {
     let el         = context.querySelector(selector),
         observable,
         tag, type;
@@ -115,12 +119,12 @@ export default function () {
     }
 
     return observable.subscribe(handler);
-  }
+  };
 
   /**
    * Cleanly remove events
    */
-  function undelegateEvents(eventObj) {
+  const undelegateEvents = (eventObj) => {
 
     if (!eventObj) {
       return;
@@ -136,12 +140,12 @@ export default function () {
     }
 
     _eventSubscribers = Object.create(null);
-  }
+  };
 
   /**
    * Get observable from a dom selector for the given event
    */
-  function getObservableFromDOM(selector, event) {
+  const getObservableFromDOM = (selector, event) => {
     let el = selector;
 
     if(Is.string(selector)) {
@@ -153,7 +157,7 @@ export default function () {
       return;
     }
     return Rxjs.Observable.fromEvent(el, event.trim());
-  }
+  };
 
   return {
     undelegateEvents,

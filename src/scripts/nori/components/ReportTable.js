@@ -33,10 +33,9 @@ export default Nori.createComponent({
 
   getDOMEvents() {
     return {
-      'click thead':           this._onTableHeaderPress.bind(this),
-      //'click #exportTableCSV': this._onExportToCSVPress.bind(this),
+      'click thead':           this._onTableHeaderPress.bind(this)
       //'click #exportTablePDF': this._onExportToPDFPress.bind(this)
-    }
+    };
   },
 
   _onExportToCSVPress() {
@@ -113,11 +112,19 @@ export default Nori.createComponent({
       }
 
       if (direction) {
-        if (aKey < bKey) return -1;
-        if (aKey > bKey) return 1;
+        if (aKey < bKey) {
+          return -1;
+        }
+        if (aKey > bKey) {
+          return 1;
+        }
       } else {
-        if (aKey < bKey) return 1;
-        if (aKey > bKey) return -1;
+        if (aKey < bKey) {
+          return 1;
+        }
+        if (aKey > bKey) {
+          return -1;
+        }
       }
       return 0;
     });
