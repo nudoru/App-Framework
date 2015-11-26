@@ -1,19 +1,20 @@
 import Is from '../../nudoru/util/is.js';
 
 /**
- * DOM manipulation and animation helpers for ViewComponents
+ * DOM manipulation and animation helpers
  */
-export default function () {
 
-  let _tweenedEls = [],
-      _zIndex     = 1000;
+let _tweenedEls = [],
+    _zIndex     = 1000;
 
+export default {
+  
   /**
    * Returns the element. If passed a string will query DOM and return.
    * @param selector
    * @returns {*}
    */
-  function getElement(selector) {
+  getElement(selector) {
     let el;
 
     if (Is.string(selector)) {
@@ -23,22 +24,22 @@ export default function () {
     }
 
     if (!el) {
-      console.warn('MixinDOMManipulation, selector not found ' + selector);
+      console.warn('Tweens, selector not found ' + selector);
     }
 
     return el;
-  }
+  },
 
-  function toTop(selector) {
-    let el = document.querySelector(selector);
+  toTop(selector) {
+    let el = this.getElement(selector);
     if (el) {
       el.style.zIndex = _zIndex++;
     }
-    console.warn('MixinDOMManipulation, to top, selector not found ' + selector);
-  }
+    console.warn('Tweens, to top, selector not found ' + selector);
+  },
 
-  function addTweenedElement(selector) {
-    let el = getElement(selector);
+  addTweenedElement(selector) {
+    let el = this.getElement(selector);
 
     if (el) {
       _tweenedEls.push(el);
@@ -46,73 +47,62 @@ export default function () {
     }
 
     return null;
-  }
+  },
 
-  function tweenTo(selector, dur, props) {
-    let el = addTweenedElement(selector);
+  tweenTo(selector, dur, props) {
+    let el = this.addTweenedElement(selector);
 
     if (!el) {
       return;
     }
     return TweenLite.to(el, dur, props);
-  }
+  },
 
-  function tweenFrom(selector, dur, props) {
-    let el = addTweenedElement(selector);
+  tweenFrom(selector, dur, props) {
+    let el = this.addTweenedElement(selector);
 
     if (!el) {
       return;
     }
     return TweenLite.from(el, dur, props);
-  }
+  },
 
-  function tweenFromTo(selector, dur, startprops, endprops) {
-    let el = addTweenedElement(selector);
+  tweenFromTo(selector, dur, startprops, endprops) {
+    let el = this.addTweenedElement(selector);
 
     if (!el) {
       return;
     }
     return TweenLite.fromTo(el, dur, startprops, endprops);
-  }
+  },
 
-  function killTweens() {
+  killTweens() {
     _tweenedEls.forEach(el => {
       TweenLite.killTweensOf(el);
     });
 
     _tweenedEls = [];
-  }
+  },
 
-  function hideEl(selector) {
-    tweenSet(selector, {
+  hideEl(selector) {
+    this.tweenSet(selector, {
       alpha  : 0,
       display: 'none'
     });
-  }
+  },
 
-  function showEl(selector) {
-    tweenSet(selector, {
+  showEl(selector) {
+    this.tweenSet(selector, {
       alpha  : 1,
       display: 'block'
     });
-  }
+  },
 
-  function tweenSet(selector, props) {
-    let el = getElement(selector);
+  tweenSet(selector, props) {
+    let el = this.getElement(selector);
     if (el) {
       TweenLite.set(el, props);
     }
   }
-
-  return {
-    toTop,
-    showEl,
-    hideEl,
-    tweenSet,
-    tweenTo,
-    tweenFrom,
-    tweenFromTo,
-    killTweens
-  };
 
 }

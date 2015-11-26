@@ -8403,20 +8403,20 @@ var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
 var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
 
 /**
- * DOM manipulation and animation helpers for ViewComponents
+ * DOM manipulation and animation helpers
  */
 
-exports['default'] = function () {
+var _tweenedEls = [],
+    _zIndex = 1000;
 
-  var _tweenedEls = [],
-      _zIndex = 1000;
+exports['default'] = {
 
   /**
    * Returns the element. If passed a string will query DOM and return.
    * @param selector
    * @returns {*}
    */
-  function getElement(selector) {
+  getElement: function getElement(selector) {
     var el = undefined;
 
     if (_nudoruUtilIsJs2['default'].string(selector)) {
@@ -8426,22 +8426,22 @@ exports['default'] = function () {
     }
 
     if (!el) {
-      console.warn('MixinDOMManipulation, selector not found ' + selector);
+      console.warn('Tweens, selector not found ' + selector);
     }
 
     return el;
-  }
+  },
 
-  function toTop(selector) {
-    var el = document.querySelector(selector);
+  toTop: function toTop(selector) {
+    var el = this.getElement(selector);
     if (el) {
       el.style.zIndex = _zIndex++;
     }
-    console.warn('MixinDOMManipulation, to top, selector not found ' + selector);
-  }
+    console.warn('Tweens, to top, selector not found ' + selector);
+  },
 
-  function addTweenedElement(selector) {
-    var el = getElement(selector);
+  addTweenedElement: function addTweenedElement(selector) {
+    var el = this.getElement(selector);
 
     if (el) {
       _tweenedEls.push(el);
@@ -8449,76 +8449,65 @@ exports['default'] = function () {
     }
 
     return null;
-  }
+  },
 
-  function tweenTo(selector, dur, props) {
-    var el = addTweenedElement(selector);
+  tweenTo: function tweenTo(selector, dur, props) {
+    var el = this.addTweenedElement(selector);
 
     if (!el) {
       return;
     }
     return TweenLite.to(el, dur, props);
-  }
+  },
 
-  function tweenFrom(selector, dur, props) {
-    var el = addTweenedElement(selector);
+  tweenFrom: function tweenFrom(selector, dur, props) {
+    var el = this.addTweenedElement(selector);
 
     if (!el) {
       return;
     }
     return TweenLite.from(el, dur, props);
-  }
+  },
 
-  function tweenFromTo(selector, dur, startprops, endprops) {
-    var el = addTweenedElement(selector);
+  tweenFromTo: function tweenFromTo(selector, dur, startprops, endprops) {
+    var el = this.addTweenedElement(selector);
 
     if (!el) {
       return;
     }
     return TweenLite.fromTo(el, dur, startprops, endprops);
-  }
+  },
 
-  function killTweens() {
+  killTweens: function killTweens() {
     _tweenedEls.forEach(function (el) {
       TweenLite.killTweensOf(el);
     });
 
     _tweenedEls = [];
-  }
+  },
 
-  function hideEl(selector) {
-    tweenSet(selector, {
+  hideEl: function hideEl(selector) {
+    this.tweenSet(selector, {
       alpha: 0,
       display: 'none'
     });
-  }
+  },
 
-  function showEl(selector) {
-    tweenSet(selector, {
+  showEl: function showEl(selector) {
+    this.tweenSet(selector, {
       alpha: 1,
       display: 'block'
     });
-  }
+  },
 
-  function tweenSet(selector, props) {
-    var el = getElement(selector);
+  tweenSet: function tweenSet(selector, props) {
+    var el = this.getElement(selector);
     if (el) {
       TweenLite.set(el, props);
     }
   }
 
-  return {
-    toTop: toTop,
-    showEl: showEl,
-    hideEl: hideEl,
-    tweenSet: tweenSet,
-    tweenTo: tweenTo,
-    tweenFrom: tweenFrom,
-    tweenFromTo: tweenFromTo,
-    killTweens: killTweens
-  };
 };
-
 module.exports = exports['default'];
 
 },{"../../nudoru/util/is.js":57}],38:[function(require,module,exports){
