@@ -17,19 +17,23 @@ let TemplatingModule = function () {
       _templateHTMLCache = Object.create(null),
       _templateCache     = Object.create(null);
 
-  function addTemplate(id, html) {
+  const addTemplate = (id, html) => {
+    if(!id || !html) {
+      console.warn('Templating, must provide ID and source HTML.');
+      return;
+    }
     _templateMap[id] = html;
-  }
+  };
 
-  function getSourceFromTemplateMap(id) {
+  const getSourceFromTemplateMap = (id) => {
     let source = _templateMap[id];
     if (source) {
       return cleanTemplateHTML(source);
     }
     return;
-  }
+  };
 
-  function getSourceFromHTML(id) {
+  const getSourceFromHTML = (id) => {
     let src = document.getElementById(id),
         srchtml;
 
@@ -38,19 +42,19 @@ let TemplatingModule = function () {
     } else if (IsDOMElement(id)) {
       srchtml = '<' + id + ' id="{{elID}}" class="{{elClass}}">{{elInner}}</' + id + '>';
     } else {
-      console.warn('nudoru/core/Templating, template not found: "' + id + '"');
+      console.warn('Templating, template not found: "' + id + '"');
       srchtml = '<div>Template not found: ' + id + '</div>';
     }
 
     return cleanTemplateHTML(srchtml);
-  }
+  };
 
   /**
    * Get the template html from the script tag with id
    * @param id
    * @returns {*}
    */
-  function getSource(id) {
+  const getSource = (id) => {
     if (_templateHTMLCache[id]) {
       return _templateHTMLCache[id];
     }
@@ -63,25 +67,25 @@ let TemplatingModule = function () {
 
     _templateHTMLCache[id] = sourcehtml;
     return sourcehtml;
-  }
+  };
 
   /**
    * Returns all IDs belonging to text/template type script tags
    */
-  function getAllTemplateIDs() {
+  const getAllTemplateIDs = () => {
     let scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
 
-    return scriptTags.filter(function (tag) {
+    return scriptTags.filter((tag) => {
       return tag.getAttribute('type') === 'text/template';
-    }).map(function (tag) {
+    }).map((tag) => {
       return tag.getAttribute('id');
     });
-  }
+  };
 
   /**
    * Returns an underscore template
    */
-  function getTemplate(id) {
+  const getTemplate = (id) => {
     if (_templateCache[id]) {
       return _templateCache[id];
     }
@@ -89,54 +93,54 @@ let TemplatingModule = function () {
     let templ          = getTemplateFromHTML(getSource(id));
     _templateCache[id] = templ;
     return templ;
-  }
+  };
 
   /**
    * Returns an template
    */
-  function getTemplateFromHTML(html) {
+  const getTemplateFromHTML = (html) => {
     html = cleanTemplateHTML(html);
     Mustache.parse(html);
     return createRenderingFunction(html);
-  }
+  };
 
   /**
    * Curry the Mustache rendering function
    */
-  function createRenderingFunction(source) {
-    return function (obj) {
+  const createRenderingFunction = (source) => {
+    return (obj) => {
       return Mustache.render(source, obj);
     };
-  }
+  };
 
   /**
    * Processes the template and returns HTML
    */
-  function asHTML(id, obj) {
+  const asHTML = (id, obj) => {
     let temp = getTemplate(id);
     return temp(obj);
-  }
+  };
 
   /**
    * Processes the template and returns an HTML Element
    */
-  function asElement(id, obj) {
+  const asElement = (id, obj) => {
     return DOMUtils.HTMLStrToNode(asHTML(id, obj));
-  }
+  };
 
   /**
    * Cleans template HTML
    */
-  function cleanTemplateHTML(str) {
+  const cleanTemplateHTML = (str) => {
     return str.trim();
-  }
+  };
 
   /**
    * Remove returns, spaces and tabs
    */
-  function removeAllWhiteSpace(str) {
+  const removeAllWhiteSpace = (str) => {
     return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
-  }
+  };
 
   return {
     addTemplate,

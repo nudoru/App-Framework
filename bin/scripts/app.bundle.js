@@ -8252,19 +8252,23 @@ var TemplatingModule = function TemplatingModule() {
       _templateHTMLCache = Object.create(null),
       _templateCache = Object.create(null);
 
-  function addTemplate(id, html) {
+  var addTemplate = function addTemplate(id, html) {
+    if (!id || !html) {
+      console.warn('Templating, must provide ID and source HTML.');
+      return;
+    }
     _templateMap[id] = html;
-  }
+  };
 
-  function getSourceFromTemplateMap(id) {
+  var getSourceFromTemplateMap = function getSourceFromTemplateMap(id) {
     var source = _templateMap[id];
     if (source) {
       return cleanTemplateHTML(source);
     }
     return;
-  }
+  };
 
-  function getSourceFromHTML(id) {
+  var getSourceFromHTML = function getSourceFromHTML(id) {
     var src = document.getElementById(id),
         srchtml = undefined;
 
@@ -8273,19 +8277,19 @@ var TemplatingModule = function TemplatingModule() {
     } else if ((0, _utilsIsDOMElementJs2['default'])(id)) {
       srchtml = '<' + id + ' id="{{elID}}" class="{{elClass}}">{{elInner}}</' + id + '>';
     } else {
-      console.warn('nudoru/core/Templating, template not found: "' + id + '"');
+      console.warn('Templating, template not found: "' + id + '"');
       srchtml = '<div>Template not found: ' + id + '</div>';
     }
 
     return cleanTemplateHTML(srchtml);
-  }
+  };
 
   /**
    * Get the template html from the script tag with id
    * @param id
    * @returns {*}
    */
-  function getSource(id) {
+  var getSource = function getSource(id) {
     if (_templateHTMLCache[id]) {
       return _templateHTMLCache[id];
     }
@@ -8298,12 +8302,12 @@ var TemplatingModule = function TemplatingModule() {
 
     _templateHTMLCache[id] = sourcehtml;
     return sourcehtml;
-  }
+  };
 
   /**
    * Returns all IDs belonging to text/template type script tags
    */
-  function getAllTemplateIDs() {
+  var getAllTemplateIDs = function getAllTemplateIDs() {
     var scriptTags = Array.prototype.slice.call(document.getElementsByTagName('script'), 0);
 
     return scriptTags.filter(function (tag) {
@@ -8311,12 +8315,12 @@ var TemplatingModule = function TemplatingModule() {
     }).map(function (tag) {
       return tag.getAttribute('id');
     });
-  }
+  };
 
   /**
    * Returns an underscore template
    */
-  function getTemplate(id) {
+  var getTemplate = function getTemplate(id) {
     if (_templateCache[id]) {
       return _templateCache[id];
     }
@@ -8324,54 +8328,54 @@ var TemplatingModule = function TemplatingModule() {
     var templ = getTemplateFromHTML(getSource(id));
     _templateCache[id] = templ;
     return templ;
-  }
+  };
 
   /**
    * Returns an template
    */
-  function getTemplateFromHTML(html) {
+  var getTemplateFromHTML = function getTemplateFromHTML(html) {
     html = cleanTemplateHTML(html);
     _vendorMustacheMinJs2['default'].parse(html);
     return createRenderingFunction(html);
-  }
+  };
 
   /**
    * Curry the Mustache rendering function
    */
-  function createRenderingFunction(source) {
+  var createRenderingFunction = function createRenderingFunction(source) {
     return function (obj) {
       return _vendorMustacheMinJs2['default'].render(source, obj);
     };
-  }
+  };
 
   /**
    * Processes the template and returns HTML
    */
-  function asHTML(id, obj) {
+  var asHTML = function asHTML(id, obj) {
     var temp = getTemplate(id);
     return temp(obj);
-  }
+  };
 
   /**
    * Processes the template and returns an HTML Element
    */
-  function asElement(id, obj) {
+  var asElement = function asElement(id, obj) {
     return _nudoruBrowserDOMUtilsJs2['default'].HTMLStrToNode(asHTML(id, obj));
-  }
+  };
 
   /**
    * Cleans template HTML
    */
-  function cleanTemplateHTML(str) {
+  var cleanTemplateHTML = function cleanTemplateHTML(str) {
     return str.trim();
-  }
+  };
 
   /**
    * Remove returns, spaces and tabs
    */
-  function removeAllWhiteSpace(str) {
+  var removeAllWhiteSpace = function removeAllWhiteSpace(str) {
     return str.replace(/(\r\n|\n|\r|\t)/gm, '').replace(/>\s+</g, '><');
-  }
+  };
 
   return {
     addTemplate: addTemplate,
