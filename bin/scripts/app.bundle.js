@@ -5867,8 +5867,12 @@ var _nudoruUtilObjectMergeDeepJs2 = _interopRequireDefault(_nudoruUtilObjectMerg
 var AppStoreModule = _noriNoriJs2['default'].createStore({
 
   initialize: function initialize() {
-    this.addReducer(this.appStateReducerFunction.bind(this));
-    this.initializeReducerStore();
+    this.addReducer(this.appStateReducerFunction);
+    this.addReducer(this.testReducer1);
+    this.addReducer(this.testReducer2);
+
+    // Will set default state
+    this.apply({});
   },
 
   /**
@@ -5878,7 +5882,9 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
    * return _.assign({}, state, otherStateTransformer(state));
    */
   appStateReducerFunction: function appStateReducerFunction(state, action) {
-    state = state || {};
+    if (state === undefined) state = {};
+
+    console.log('app state reducer', state, action);
     switch (action.type) {
       case undefined:
         // Return default state
@@ -5891,6 +5897,20 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
       default:
         return state;
     }
+  },
+
+  testReducer1: function testReducer1(state, action) {
+    if (state === undefined) state = {};
+
+    console.log('test 1', state, action);
+    return state;
+  },
+
+  testReducer2: function testReducer2(state, action) {
+    if (state === undefined) state = {};
+
+    console.log('test 2', state, action);
+    return state;
   }
 
 });
@@ -6653,14 +6673,6 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Run the the reducers with the default state
-   */
-  var initializeReducerStore = function initializeReducerStore() {
-    Object.freeze(_internalState);
-    apply({});
-  };
-
-  /**
    * Apply the action object to the reducers to change state
    * are sent to all reducers to update the state
    */
@@ -6744,7 +6756,6 @@ exports['default'] = function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeReducerStore: initializeReducerStore,
     getState: getState,
     apply: apply,
     setReducers: setReducers,

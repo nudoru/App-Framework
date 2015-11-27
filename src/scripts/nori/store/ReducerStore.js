@@ -39,14 +39,6 @@ export default function () {
   //----------------------------------------------------------------------------
 
   /**
-   * Run the the reducers with the default state
-   */
-  const initializeReducerStore = () => {
-    Object.freeze(_internalState);
-    apply({});
-  };
-
-  /**
    * Apply the action object to the reducers to change state
    * are sent to all reducers to update the state
    */
@@ -126,7 +118,6 @@ export default function () {
   //----------------------------------------------------------------------------
 
   return {
-    initializeReducerStore,
     getState,
     apply,
     setReducers,
