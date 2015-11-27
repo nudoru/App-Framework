@@ -8,13 +8,7 @@ import ObjectMergeDeep from '../../nudoru/util/ObjectMergeDeep.js';
 
 /**
  * This application store contains "reducer store" functionality based on Redux.
- * The store state may only be changed from events as applied in reducer functions.
- * The store received all events from the event bus and forwards them to all
- * reducer functions to modify state as needed. Once they have run, the
- * handleStateMutation function is called to dispatch an event to the bus, or
- * notify subscribers via an observable.
- *
- * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
+ * The store state may only be changed from actions as applied in reducer functions.
  */
 let AppStoreModule = Nori.createStore({
 
@@ -63,8 +57,6 @@ let AppStoreModule = Nori.createStore({
     return state;
   },
 
-});
+})();
 
-let AppStore = AppStoreModule();
-
-export default AppStore;
+export default AppStoreModule;

@@ -5856,13 +5856,7 @@ var _nudoruUtilObjectMergeDeepJs2 = _interopRequireDefault(_nudoruUtilObjectMerg
 
 /**
  * This application store contains "reducer store" functionality based on Redux.
- * The store state may only be changed from events as applied in reducer functions.
- * The store received all events from the event bus and forwards them to all
- * reducer functions to modify state as needed. Once they have run, the
- * handleStateMutation function is called to dispatch an event to the bus, or
- * notify subscribers via an observable.
- *
- * Events => handleApplicationEvents => applyReducers => handleStateMutation => Notify
+ * The store state may only be changed from actions as applied in reducer functions.
  */
 var AppStoreModule = _noriNoriJs2['default'].createStore({
 
@@ -5917,11 +5911,9 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
     return state;
   }
 
-});
+})();
 
-var AppStore = AppStoreModule();
-
-exports['default'] = AppStore;
+exports['default'] = AppStoreModule;
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":20,"../../nori/action/ActionConstants.js":21,"../../nudoru/core/ArrayUtils.js":48,"../../nudoru/core/NumberUtils.js":49,"../../nudoru/core/StringUtils.js":51,"../../nudoru/util/ObjectMergeDeep.js":56,"../action/ActionConstants.js":11}],14:[function(require,module,exports){
