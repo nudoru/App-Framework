@@ -25,6 +25,8 @@ let AppStoreModule = Nori.createStore({
 
     // Will set default state
     this.apply({});
+
+    console.log(this.getState());
   },
 
   /**
@@ -51,11 +53,13 @@ let AppStoreModule = Nori.createStore({
 
   testReducer1: (state={}, action) => {
     console.log('test 1', state, action);
+    state.test1 = 'hello from test 1';
     return state;
   },
 
   testReducer2: (state={}, action) => {
     console.log('test 2', state, action);
+    state.test2 = 'hello from test 2';
     return state;
   },
 

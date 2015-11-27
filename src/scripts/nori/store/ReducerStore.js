@@ -11,11 +11,9 @@ import DeepEqual from '../../nudoru/util/DeepEqual.js';
 import DeepCopy from '../../nudoru/util/DeepCopy.js';
 import isPlainObject from '../../vendor/is-plain-object.min.js';
 
-const STORE_INITIALIZE_TYPE = '$$$initstore$$$';
-
 export default function () {
   let _internalState = {},
-      _stateReducers = [],
+      _reducers      = [],
       _subject       = new Rxjs.Subject();
 
   //----------------------------------------------------------------------------
@@ -26,12 +24,11 @@ export default function () {
     return DeepCopy(_internalState);
   };
 
-  const setReducers = (reducerArray) => {
-    _stateReducers = reducerArray;
-  };
-
   const addReducer = (reducer) => {
-    _stateReducers.push(reducer);
+    if (typeof reducer !== 'function') {
+      throw new Error('Reducer must be a function.')
+    }
+    _reducers.push(reducer);
   };
 
   //----------------------------------------------------------------------------
@@ -43,44 +40,29 @@ export default function () {
    * are sent to all reducers to update the state
    */
   const apply = (action) => {
-    if (!_stateReducers.length) {
+    if (!_reducers.length) {
       throw new Error('ReducerStore must have at least one reducer set');
     }
 
     if (isPlainObject(action)) {
-      applyReducers(action, _internalState);
+      $applyReducers(action, _internalState);
     } else {
       console.warn('ReducerStore, action must be plain JS object', action);
-    }
-  };
-
-  const applyReducers = (action, state = {}) => {
-    let nextState = reduceToNextState(action, state);
-
-    if (!DeepEqual(_internalState, nextState)) {
-      _internalState = nextState;
-      notify(action.type, getState());
     }
   };
 
   /**
    * Creates a new state from the combined reducers and action object
    * Store state isn't modified, current state is passed in and mutated state returned
-   * @param state
-   * @param action
-   * @returns {*|{}}
    */
-  const reduceToNextState = (action, state) => {
-    let nextState;
+  const $applyReducers = (action, state = {}) => {
+    let nextState= _reducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
 
-    try {
-      nextState = _stateReducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
-    } catch (e) {
-      console.warn('Reducer store, error applying reducers', e);
-      nextState = state;
+    if (!DeepEqual(_internalState, nextState)) {
+      // Mutate/reassign internal state
+      _internalState = nextState;
+      notify(action.type, getState());
     }
-
-    return nextState;
   };
 
   //Template reducer function
@@ -120,10 +102,7 @@ export default function () {
   return {
     getState,
     apply,
-    setReducers,
     addReducer,
-    applyReducers,
-    reduceToNextState,
     subscribe,
     notify
   };

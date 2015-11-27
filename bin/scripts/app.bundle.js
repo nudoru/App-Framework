@@ -5873,6 +5873,8 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
 
     // Will set default state
     this.apply({});
+
+    console.log(this.getState());
   },
 
   /**
@@ -5903,6 +5905,7 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
     if (state === undefined) state = {};
 
     console.log('test 1', state, action);
+    state.test1 = 'hello from test 1';
     return state;
   },
 
@@ -5910,6 +5913,7 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
     if (state === undefined) state = {};
 
     console.log('test 2', state, action);
+    state.test2 = 'hello from test 2';
     return state;
   }
 
@@ -6645,11 +6649,9 @@ var _vendorIsPlainObjectMinJs = require('../../vendor/is-plain-object.min.js');
 
 var _vendorIsPlainObjectMinJs2 = _interopRequireDefault(_vendorIsPlainObjectMinJs);
 
-var STORE_INITIALIZE_TYPE = '$$$initstore$$$';
-
 exports['default'] = function () {
   var _internalState = {},
-      _stateReducers = [],
+      _reducers = [],
       _subject = new _vendorRxjsRxLiteMinJs2['default'].Subject();
 
   //----------------------------------------------------------------------------
@@ -6660,12 +6662,11 @@ exports['default'] = function () {
     return (0, _nudoruUtilDeepCopyJs2['default'])(_internalState);
   };
 
-  var setReducers = function setReducers(reducerArray) {
-    _stateReducers = reducerArray;
-  };
-
   var addReducer = function addReducer(reducer) {
-    _stateReducers.push(reducer);
+    if (typeof reducer !== 'function') {
+      throw new Error('Reducer must be a function.');
+    }
+    _reducers.push(reducer);
   };
 
   //----------------------------------------------------------------------------
@@ -6677,48 +6678,33 @@ exports['default'] = function () {
    * are sent to all reducers to update the state
    */
   var apply = function apply(action) {
-    if (!_stateReducers.length) {
+    if (!_reducers.length) {
       throw new Error('ReducerStore must have at least one reducer set');
     }
 
     if ((0, _vendorIsPlainObjectMinJs2['default'])(action)) {
-      applyReducers(action, _internalState);
+      $applyReducers(action, _internalState);
     } else {
       console.warn('ReducerStore, action must be plain JS object', action);
-    }
-  };
-
-  var applyReducers = function applyReducers(action) {
-    var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-    var nextState = reduceToNextState(action, state);
-
-    if (!(0, _nudoruUtilDeepEqualJs2['default'])(_internalState, nextState)) {
-      _internalState = nextState;
-      notify(action.type, getState());
     }
   };
 
   /**
    * Creates a new state from the combined reducers and action object
    * Store state isn't modified, current state is passed in and mutated state returned
-   * @param state
-   * @param action
-   * @returns {*|{}}
    */
-  var reduceToNextState = function reduceToNextState(action, state) {
-    var nextState = undefined;
+  var $applyReducers = function $applyReducers(action) {
+    var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    try {
-      nextState = _stateReducers.reduce(function (nextState, reducerFunc) {
-        return reducerFunc(nextState, action);
-      }, state);
-    } catch (e) {
-      console.warn('Reducer store, error applying reducers', e);
-      nextState = state;
+    var nextState = _reducers.reduce(function (nextState, reducerFunc) {
+      return reducerFunc(nextState, action);
+    }, state);
+
+    if (!(0, _nudoruUtilDeepEqualJs2['default'])(_internalState, nextState)) {
+      // Mutate/reassign internal state
+      _internalState = nextState;
+      notify(action.type, getState());
     }
-
-    return nextState;
   };
 
   //Template reducer function
@@ -6758,10 +6744,7 @@ exports['default'] = function () {
   return {
     getState: getState,
     apply: apply,
-    setReducers: setReducers,
     addReducer: addReducer,
-    applyReducers: applyReducers,
-    reduceToNextState: reduceToNextState,
     subscribe: subscribe,
     notify: notify
   };
