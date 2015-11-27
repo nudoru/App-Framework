@@ -7659,9 +7659,9 @@ exports['default'] = function () {
   return {
     props: props,
     state: state,
+    children: children,
     lastProps: null,
     lastState: null,
-    children: children || {},
 
     getProps: function getProps() {
       return (0, _nudoruUtilObjectAssignJs2['default'])({}, this.props);
@@ -7674,10 +7674,8 @@ exports['default'] = function () {
     shouldUpdate: function shouldUpdate(nextProps, nextState) {
       nextProps = nextProps || this.props;
       nextState = nextState || this.state;
-
       var isStateEq = (0, _nudoruUtilDeepEqualJs2['default'])(nextState, this.state),
           isPropsEq = (0, _nudoruUtilDeepEqualJs2['default'])(nextProps, this.props);
-
       return !isStateEq || !isPropsEq;
     },
 

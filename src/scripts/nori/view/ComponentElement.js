@@ -7,11 +7,11 @@ import DeepEqual from '../../nudoru/util/DeepEqual.js';
 
 export default (props = {}, state = {}, children = null) => {
   return {
-    props    : props,
-    state    : state,
+    props,
+    state,
+    children,
     lastProps: null,
     lastState: null,
-    children : children || {},
 
     getProps() {
       return ObjectAssign({}, this.props);
@@ -24,10 +24,8 @@ export default (props = {}, state = {}, children = null) => {
     shouldUpdate(nextProps, nextState) {
       nextProps = nextProps || this.props;
       nextState = nextState || this.state;
-
       let isStateEq = DeepEqual(nextState, this.state),
           isPropsEq = DeepEqual(nextProps, this.props);
-
       return !(isStateEq) || !(isPropsEq);
     },
 
