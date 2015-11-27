@@ -138,8 +138,6 @@ let AppViewModule = Nori.createView({
     cover.removeChild(message);
   }
 
-});
+})();
 
-let AppView = AppViewModule();
-
-export default AppView;
+export default AppViewModule;

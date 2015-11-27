@@ -6048,11 +6048,9 @@ var AppViewModule = _noriNoriJs2['default'].createView({
     cover.removeChild(message);
   }
 
-});
+})();
 
-var AppView = AppViewModule();
-
-exports['default'] = AppView;
+exports['default'] = AppViewModule;
 module.exports = exports['default'];
 
 },{"../../nori/Nori.js":20,"../../nori/view/Templating.js":36,"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/components/MixinNudoruControls.js":44,"../store/AppStore.js":13,"./ChildTest.js":15,"./ComponentsTesting.js":16,"./ControlsTesting.js":17,"./TemplateViewComponent.js":18}],15:[function(require,module,exports){
@@ -8075,7 +8073,7 @@ exports['default'] = function () {
               eventHandler = eventObj[evtStrings];
 
           if (!_nudoruUtilIsJs2['default'].func(eventHandler)) {
-            console.warn('EventDelegator, handler for ' + evtStrings + ' is not a function');
+            console.warn('RxEventDelegator, handler for ' + evtStrings + ' is not a function');
             return {
               v: undefined
             };
@@ -8118,7 +8116,7 @@ exports['default'] = function () {
         type = undefined;
 
     if (!el) {
-      console.warn('MixinEventDelegator, $createSubscriber, Element not found:', selector);
+      console.warn('RxEventDelegator, $createSubscriber, Element not found:', selector);
       return;
     }
 
@@ -8174,7 +8172,7 @@ exports['default'] = function () {
       if (_eventSubscribers[event]) {
         _eventSubscribers[event].dispose();
       } else {
-        console.warn('MixinEventDelegator, undelegateEvents, not a valid observable: ', event);
+        console.warn('RxEventDelegator, undelegateEvents, not a valid observable: ', event);
       }
       delete _eventSubscribers[event];
     }
@@ -8193,7 +8191,7 @@ exports['default'] = function () {
     }
 
     if (!el) {
-      console.warn('nori/utils/Rx, dom, invalid DOM selector: ' + selector);
+      console.warn('RxEventDelegator, invalid DOM selector: ' + selector);
       return;
     }
     return _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(el, event.trim());
