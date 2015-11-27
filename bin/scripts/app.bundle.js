@@ -6696,13 +6696,18 @@ exports['default'] = function () {
   var $applyReducers = function $applyReducers(action) {
     var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-    var nextState = _reducers.reduce(function (nextState, reducerFunc) {
-      return reducerFunc(nextState, action);
+    var newState = _reducers.reduce(function (nextState, reducerFunc) {
+      var next = reducerFunc(nextState, action);
+      if (next === undefined) {
+        throw new Error('ReducerStore, reducers cannot return undefined.');
+      }
+      return next;
     }, state);
 
-    if (!(0, _nudoruUtilDeepEqualJs2['default'])(_internalState, nextState)) {
+    // Check to see if the state changed
+    if (!(0, _nudoruUtilDeepEqualJs2['default'])(_internalState, newState)) {
       // Mutate/reassign internal state
-      _internalState = nextState;
+      _internalState = newState;
       notify(action.type, getState());
     }
   };

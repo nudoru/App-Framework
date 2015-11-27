@@ -56,11 +56,18 @@ export default function () {
    * Store state isn't modified, current state is passed in and mutated state returned
    */
   const $applyReducers = (action, state = {}) => {
-    let nextState= _reducers.reduce((nextState, reducerFunc) => reducerFunc(nextState, action), state);
+    let newState = _reducers.reduce((nextState, reducerFunc) => {
+      let next = reducerFunc(nextState, action);
+      if (next === undefined) {
+        throw new Error('ReducerStore, reducers cannot return undefined.');
+      }
+      return next;
+    }, state);
 
-    if (!DeepEqual(_internalState, nextState)) {
+    // Check to see if the state changed
+    if (!DeepEqual(_internalState, newState)) {
       // Mutate/reassign internal state
-      _internalState = nextState;
+      _internalState = newState;
       notify(action.type, getState());
     }
   };
