@@ -5703,13 +5703,9 @@ var _noriNoriJs = require('../nori/Nori.js');
 
 var _noriNoriJs2 = _interopRequireDefault(_noriNoriJs);
 
-var _noriUtilsStoreWatcherJs = require('../nori/utils/StoreWatcher.js');
+var _noriExtraStoreWatcherJs = require('../nori/extra/StoreWatcher.js');
 
-var _noriUtilsStoreWatcherJs2 = _interopRequireDefault(_noriUtilsStoreWatcherJs);
-
-var _noriUtilsObservableSubjectJs = require('../nori/utils/ObservableSubject.js');
-
-var _noriUtilsObservableSubjectJs2 = _interopRequireDefault(_noriUtilsObservableSubjectJs);
+var _noriExtraStoreWatcherJs2 = _interopRequireDefault(_noriExtraStoreWatcherJs);
 
 var _actionActionCreatorJs = require('./action/ActionCreator.js');
 
@@ -5743,7 +5739,7 @@ var _nudoruUtilForOwnJs2 = _interopRequireDefault(_nudoruUtilForOwnJs);
 var App = _noriNoriJs2['default'].createClass({
 
   // Add ability to watch store mutations and act as a dispatcher
-  mixins: [(0, _noriUtilsStoreWatcherJs2['default'])(), (0, _noriUtilsObservableSubjectJs2['default'])()],
+  mixins: [(0, _noriExtraStoreWatcherJs2['default'])()],
 
   /**
    * Initialize
@@ -5771,7 +5767,7 @@ var App = _noriNoriJs2['default'].createClass({
 exports['default'] = App;
 module.exports = exports['default'];
 
-},{"../nori/Nori.js":20,"../nori/action/ActionCreator.js":22,"../nori/utils/ObservableSubject.js":28,"../nori/utils/StoreWatcher.js":30,"../nudoru/util/ForOwn.js":54,"./action/ActionConstants.js":11,"./action/ActionCreator.js":12,"./store/AppStore.js":13,"./view/AppView.js":14}],11:[function(require,module,exports){
+},{"../nori/Nori.js":20,"../nori/action/ActionCreator.js":22,"../nori/extra/StoreWatcher.js":23,"../nudoru/util/ForOwn.js":53,"./action/ActionConstants.js":11,"./action/ActionCreator.js":12,"./store/AppStore.js":13,"./view/AppView.js":14}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5916,7 +5912,7 @@ var AppStoreModule = _noriNoriJs2['default'].createStore({
 exports['default'] = AppStoreModule;
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/action/ActionConstants.js":21,"../../nudoru/core/ArrayUtils.js":48,"../../nudoru/core/NumberUtils.js":49,"../../nudoru/core/StringUtils.js":51,"../../nudoru/util/ObjectMergeDeep.js":56,"../action/ActionConstants.js":11}],14:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/action/ActionConstants.js":21,"../../nudoru/core/ArrayUtils.js":47,"../../nudoru/core/NumberUtils.js":48,"../../nudoru/core/StringUtils.js":50,"../../nudoru/util/ObjectMergeDeep.js":55,"../action/ActionConstants.js":11}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6053,7 +6049,7 @@ var AppViewModule = _noriNoriJs2['default'].createView({
 exports['default'] = AppViewModule;
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/view/Templating.js":36,"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/components/MixinNudoruControls.js":44,"../store/AppStore.js":13,"./ChildTest.js":15,"./ComponentsTesting.js":16,"./ControlsTesting.js":17,"./TemplateViewComponent.js":18}],15:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/view/Templating.js":34,"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/components/MixinNudoruControls.js":43,"../store/AppStore.js":13,"./ChildTest.js":15,"./ComponentsTesting.js":16,"./ControlsTesting.js":17,"./TemplateViewComponent.js":18}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6093,7 +6089,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nudoru/util/ObjectAssign.js":55}],16:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nudoru/util/ObjectAssign.js":54}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6292,7 +6288,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nori/view/Templating.js":36,"../../nori/view/Tweens.js":37,"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/browser/Lorem.js":40,"../../nudoru/components/ToolTipView.js":47,"../store/AppStore":13,"./AppView":14,"./ChildTest.js":15}],17:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nori/view/Templating.js":34,"../../nori/view/Tweens.js":35,"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/browser/Lorem.js":39,"../../nudoru/components/ToolTipView.js":46,"../store/AppStore":13,"./AppView":14,"./ChildTest.js":15}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6344,7 +6340,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../vendor/pikaday.js":60,"../../vendor/selected.js":62}],18:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../vendor/pikaday.js":59,"../../vendor/selected.js":61}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6426,7 +6422,7 @@ module.exports = exports['default'];
 //componentWillDispose() {
 //},
 
-},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nudoru/util/ObjectAssign.js":55,"../store/AppStore":13,"./AppView":14}],19:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nudoru/util/ObjectAssign.js":54,"../store/AppStore":13,"./AppView":14}],19:[function(require,module,exports){
 /**
  * Initial file for the Application
  */
@@ -6455,7 +6451,7 @@ var _appAppJs2 = _interopRequireDefault(_appAppJs);
   }
 })();
 
-},{"./app/App.js":10,"./nudoru/browser/BrowserInfo.js":38}],20:[function(require,module,exports){
+},{"./app/App.js":10,"./nudoru/browser/BrowserInfo.js":37}],20:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -6553,7 +6549,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../nudoru/util/ObjectAssign.js":55,"./store/ReducerStore.js":23,"./utils/AssignArray.js":24,"./utils/BuildFromMixins.js":25,"./utils/CreateClass.js":26,"./view/ComponentViews.js":35}],21:[function(require,module,exports){
+},{"../nudoru/util/ObjectAssign.js":54,"./store/ReducerStore.js":24,"./utils/AssignArray.js":25,"./utils/BuildFromMixins.js":26,"./utils/CreateClass.js":27,"./view/ComponentViews.js":33}],21:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -6601,6 +6597,56 @@ exports['default'] = {
 module.exports = exports['default'];
 
 },{"./ActionConstants.js":21}],23:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports["default"] = function () {
+
+  var _observedStore = undefined,
+      _actionMap = {};
+
+  function watchStore(store) {
+    _observedStore = store;
+    _observedStore.subscribe(onStateMutation.bind(this));
+  }
+
+  function mapActionType(type, handler) {
+    if (_actionMap.hasOwnProperty(type)) {
+      unmapActionType(type);
+    }
+
+    _actionMap[type] = handler;
+  }
+
+  function unmapActionType(type) {
+    if (_actionMap.hasOwnProperty(type)) {
+      _actionMap[type] = null;
+      delete _actionMap[type];
+    }
+  }
+
+  function onStateMutation(_ref) {
+    var type = _ref.type;
+    var state = _ref.state;
+
+    if (_actionMap.hasOwnProperty(type)) {
+      _actionMap[type].call(state);
+    }
+  }
+
+  return {
+    watchStore: watchStore,
+    mapActionType: mapActionType,
+    unmapActionType: unmapActionType
+  };
+};
+
+module.exports = exports["default"];
+
+},{}],24:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -6747,7 +6793,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepCopy.js":52,"../../nudoru/util/DeepEqual.js":53,"../../nudoru/util/ObjectAssign.js":55,"../../nudoru/util/is.js":57,"../../vendor/is-plain-object.min.js":58,"../../vendor/rxjs/rx.lite.min.js":61}],24:[function(require,module,exports){
+},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":56,"../../vendor/is-plain-object.min.js":57,"../../vendor/rxjs/rx.lite.min.js":60}],25:[function(require,module,exports){
 /**
  * Merges a collection of objects
  * @param target
@@ -6775,7 +6821,7 @@ exports['default'] = function (target, sourceArray) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/ObjectAssign.js":55}],25:[function(require,module,exports){
+},{"../../nudoru/util/ObjectAssign.js":54}],26:[function(require,module,exports){
 /**
  * Mixes in the modules specified in the custom application object
  * @param customizer
@@ -6802,7 +6848,7 @@ exports['default'] = function (customizer) {
 
 module.exports = exports['default'];
 
-},{"./AssignArray.js":24}],26:[function(require,module,exports){
+},{"./AssignArray.js":25}],27:[function(require,module,exports){
 /**
  * Return a new Nori class by combining a template and customizer with mixins
  * @param template
@@ -6835,7 +6881,7 @@ exports['default'] = function (template, customizer) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/ObjectAssign.js":55,"./BuildFromMixins.js":25}],27:[function(require,module,exports){
+},{"../../nudoru/util/ObjectAssign.js":54,"./BuildFromMixins.js":26}],28:[function(require,module,exports){
 
 // Tag listing from React ReactDOMFactories module
 'use strict';
@@ -6852,258 +6898,7 @@ exports['default'] = function (elStr) {
 
 module.exports = exports['default'];
 
-},{}],28:[function(require,module,exports){
-/*  weak */
-
-/**
- * Add RxJS Subject to a module.
- *
- * Add one simple observable subject or more complex ability to create others for
- * more complex eventing needs.
- */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
-
-var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
-
-exports['default'] = function () {
-
-  var _subjectMap = {};
-
-  /**
-   * Subscribe handler to updates. If the handler is a string, the new subject
-   * will be created.
-   * @param handler
-   * @returns {*}
-   */
-  function subscribe(name, handler) {
-    if (!_subjectMap.hasOwnProperty(name)) {
-      _subjectMap[name] = new _vendorRxjsRxLiteMinJs2['default'].Subject();
-    }
-    return _subjectMap[name].subscribe(handler);
-  }
-
-  /**
-   * Dispatch updated to named subscribers
-   * @param name
-   * @param payload
-   */
-  function notify(name, payload) {
-    if (_subjectMap.hasOwnProperty(name)) {
-      _subjectMap[name].onNext(payload);
-    } else {
-      console.warn('MixinObservableSubject, no subscribers of ' + name);
-    }
-  }
-
-  return {
-    subscribe: subscribe,
-    notify: notify
-  };
-};
-
-module.exports = exports['default'];
-
-},{"../../vendor/rxjs/rx.lite.min.js":61}],29:[function(require,module,exports){
-/*  weak */
-
-/**
- * Simple router
- * Supporting IE9 so using hashes instead of the history API for now
- */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _nudoruCoreObjectUtilsJs = require('../../nudoru/core/ObjectUtils.js');
-
-var _nudoruCoreObjectUtilsJs2 = _interopRequireDefault(_nudoruCoreObjectUtilsJs);
-
-var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
-
-var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
-
-var Router = function Router() {
-
-  var _subject = new _vendorRxjsRxLiteMinJs2['default'].Subject(),
-      _hashChangeObservable = undefined;
-
-  /**
-   * subscribe a handler to the url change events
-   * @param handler
-   * @returns {*}
-   */
-  function subscribe(handler) {
-    return _subject.subscribe(handler);
-  }
-
-  /**
-   * Notify of a change in route
-   * @param fromApp True if the route was caused by an app event not URL or history change
-   */
-  function notify() {
-    var eventPayload = {
-      routeObj: getCurrentRoute(), // { route:, data: }
-      fragment: $getURLFragment()
-    };
-
-    _subject.onNext(eventPayload);
-  }
-
-  /**
-   * Parses the route and query string from the current URL fragment
-   * @returns {{route: string, query: {}}}
-   */
-  function getCurrentRoute() {
-    var fragment = $getURLFragment(),
-        parts = fragment.split('?'),
-        route = '/' + parts[0],
-        queryStr = decodeURIComponent(parts[1]),
-        queryStrObj = $parseQueryStr(queryStr);
-
-    if (queryStr === '=undefined') {
-      queryStrObj = {};
-    }
-
-    return { route: route, data: queryStrObj };
-  }
-
-  /**
-   * Parses a query string into key/value pairs
-   * @param queryStr
-   * @returns {{}}
-   */
-  function $parseQueryStr(queryStr) {
-    var obj = {},
-        parts = queryStr.split('&');
-
-    // TODO refactor with Array.reduce
-    parts.forEach(function (pairStr) {
-      var pairArr = pairStr.split('=');
-      obj[pairArr[0]] = pairArr[1];
-    });
-
-    return obj;
-  }
-
-  /**
-   * Combines a route and data object into a proper URL hash fragment
-   * @param route
-   * @param dataObj
-   */
-  function set(route, dataObj) {
-    var path = route,
-        data = [];
-    if (!_nudoruCoreObjectUtilsJs2['default'].isNull(dataObj)) {
-      path += "?";
-      for (var prop in dataObj) {
-        if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
-          data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
-        }
-      }
-      path += data.join('&');
-    }
-
-    $updateURLFragment(path);
-  }
-
-  /**
-   * Returns everything after the 'whatever.html#' in the URL
-   * Leading and trailing slashes are removed
-   * @returns {string}
-   */
-  function $getURLFragment() {
-    var fragment = location.hash.slice(1);
-    return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
-  }
-
-  /**
-   * Set the URL hash fragment
-   * @param path
-   */
-  function $updateURLFragment(path) {
-    window.location.hash = path;
-  }
-
-  _hashChangeObservable = _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(window, 'hashchange').subscribe(notify);
-
-  return {
-    subscribe: subscribe,
-    notify: notify,
-    getCurrentRoute: getCurrentRoute,
-    set: set
-  };
-};
-
-var r = Router();
-
-exports['default'] = r;
-module.exports = exports['default'];
-
-},{"../../nudoru/core/ObjectUtils.js":50,"../../vendor/rxjs/rx.lite.min.js":61}],30:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports["default"] = function () {
-
-  var _observedStore = undefined,
-      _actionMap = {};
-
-  function watchStore(store) {
-    _observedStore = store;
-    _observedStore.subscribe(onStateMutation.bind(this));
-  }
-
-  function mapActionType(type, handler) {
-    if (_actionMap.hasOwnProperty(type)) {
-      unmapActionType(type);
-    }
-
-    _actionMap[type] = handler;
-  }
-
-  function unmapActionType(type) {
-    if (_actionMap.hasOwnProperty(type)) {
-      _actionMap[type] = null;
-      delete _actionMap[type];
-    }
-  }
-
-  function onStateMutation(_ref) {
-    var type = _ref.type;
-    var state = _ref.state;
-
-    if (_actionMap.hasOwnProperty(type)) {
-      _actionMap[type].call(state);
-    }
-  }
-
-  return {
-    watchStore: watchStore,
-    mapActionType: mapActionType,
-    unmapActionType: unmapActionType
-  };
-};
-
-module.exports = exports["default"];
-
-},{}],31:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7630,7 +7425,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/util/ForOwn.js":54,"../../nudoru/util/ObjectAssign.js":55,"../../nudoru/util/is.js":57,"./ComponentElement.js":32,"./ComponentEventDelegator.js":33,"./ComponentRenderer.js":34,"./Templating.js":36}],32:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":56,"./ComponentElement.js":30,"./ComponentEventDelegator.js":31,"./ComponentRenderer.js":32,"./Templating.js":34}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7705,7 +7500,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepEqual.js":53,"../../nudoru/util/ObjectAssign.js":55}],33:[function(require,module,exports){
+},{"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54}],31:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7909,7 +7704,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/MouseToTouchEvents.js":41,"../../nudoru/util/is.js":57,"../../vendor/rxjs/rx.lite.min.js":61}],34:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/MouseToTouchEvents.js":40,"../../nudoru/util/is.js":56,"../../vendor/rxjs/rx.lite.min.js":60}],32:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -7961,7 +7756,7 @@ exports['default'] = function (component) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":39}],35:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":38}],33:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7984,9 +7779,9 @@ var _utilsBuildFromMixinsJs = require('../utils/BuildFromMixins.js');
 
 var _utilsBuildFromMixinsJs2 = _interopRequireDefault(_utilsBuildFromMixinsJs);
 
-var _utilsRouterJs = require('../utils/Router.js');
+var _URLRouterJs = require('./URLRouter.js');
 
-var _utilsRouterJs2 = _interopRequireDefault(_utilsRouterJs);
+var _URLRouterJs2 = _interopRequireDefault(_URLRouterJs);
 
 var _nudoruUtilDeepCopyJs = require('../../nudoru/util/DeepCopy.js');
 
@@ -8136,7 +7931,7 @@ exports['default'] = function () {
     _routeOnURL = true;
     _routeOnState = false;
 
-    _utilsRouterJs2['default'].subscribe($onRouteChange);
+    _URLRouterJs2['default'].subscribe($onRouteChange);
   };
 
   var $onRouteChange = function $onRouteChange(payload) {
@@ -8152,9 +7947,9 @@ exports['default'] = function () {
   var showViewForChangedURL = function showViewForChangedURL() {
     var silent = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
-    showViewForCondition(_utilsRouterJs2['default'].getCurrentRoute().route);
+    showViewForCondition(_URLRouterJs2['default'].getCurrentRoute().route);
     if (!silent) {
-      _utilsRouterJs2['default'].notifySubscribers();
+      _URLRouterJs2['default'].notifySubscribers();
     }
   };
 
@@ -8203,7 +7998,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepCopy.js":52,"../../nudoru/util/ObjectAssign.js":55,"../utils/BuildFromMixins.js":25,"../utils/Router.js":29,"./Component.js":31}],36:[function(require,module,exports){
+},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/ObjectAssign.js":54,"../utils/BuildFromMixins.js":26,"./Component.js":29,"./URLRouter.js":36}],34:[function(require,module,exports){
 /*  weak */
 
 /*
@@ -8380,7 +8175,7 @@ var Templating = TemplatingModule();
 exports['default'] = Templating;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":39,"../../vendor/mustache.min.js":59,"../utils/IsDOMElement.js":27}],37:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":38,"../../vendor/mustache.min.js":58,"../utils/IsDOMElement.js":28}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8501,7 +8296,148 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":57}],38:[function(require,module,exports){
+},{"../../nudoru/util/is.js":56}],36:[function(require,module,exports){
+/*  weak */
+
+/**
+ * Simple router
+ * Supporting IE9 so using hashes instead of the history API for now
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _nudoruCoreObjectUtilsJs = require('../../nudoru/core/ObjectUtils.js');
+
+var _nudoruCoreObjectUtilsJs2 = _interopRequireDefault(_nudoruCoreObjectUtilsJs);
+
+var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
+
+var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
+
+var Router = function Router() {
+
+  var _subject = new _vendorRxjsRxLiteMinJs2['default'].Subject(),
+      _hashChangeObservable = undefined;
+
+  /**
+   * subscribe a handler to the url change events
+   * @param handler
+   * @returns {*}
+   */
+  function subscribe(handler) {
+    return _subject.subscribe(handler);
+  }
+
+  /**
+   * Notify of a change in route
+   * @param fromApp True if the route was caused by an app event not URL or history change
+   */
+  function notify() {
+    var eventPayload = {
+      routeObj: getCurrentRoute(), // { route:, data: }
+      fragment: $getURLFragment()
+    };
+
+    _subject.onNext(eventPayload);
+  }
+
+  /**
+   * Parses the route and query string from the current URL fragment
+   * @returns {{route: string, query: {}}}
+   */
+  function getCurrentRoute() {
+    var fragment = $getURLFragment(),
+        parts = fragment.split('?'),
+        route = '/' + parts[0],
+        queryStr = decodeURIComponent(parts[1]),
+        queryStrObj = $parseQueryStr(queryStr);
+
+    if (queryStr === '=undefined') {
+      queryStrObj = {};
+    }
+
+    return { route: route, data: queryStrObj };
+  }
+
+  /**
+   * Parses a query string into key/value pairs
+   * @param queryStr
+   * @returns {{}}
+   */
+  function $parseQueryStr(queryStr) {
+    var obj = {},
+        parts = queryStr.split('&');
+
+    // TODO refactor with Array.reduce
+    parts.forEach(function (pairStr) {
+      var pairArr = pairStr.split('=');
+      obj[pairArr[0]] = pairArr[1];
+    });
+
+    return obj;
+  }
+
+  /**
+   * Combines a route and data object into a proper URL hash fragment
+   * @param route
+   * @param dataObj
+   */
+  function set(route, dataObj) {
+    var path = route,
+        data = [];
+    if (!_nudoruCoreObjectUtilsJs2['default'].isNull(dataObj)) {
+      path += "?";
+      for (var prop in dataObj) {
+        if (prop !== 'undefined' && dataObj.hasOwnProperty(prop)) {
+          data.push(prop + '=' + encodeURIComponent(dataObj[prop]));
+        }
+      }
+      path += data.join('&');
+    }
+
+    $updateURLFragment(path);
+  }
+
+  /**
+   * Returns everything after the 'whatever.html#' in the URL
+   * Leading and trailing slashes are removed
+   * @returns {string}
+   */
+  function $getURLFragment() {
+    var fragment = location.hash.slice(1);
+    return fragment.toString().replace(/\/$/, '').replace(/^\//, '');
+  }
+
+  /**
+   * Set the URL hash fragment
+   * @param path
+   */
+  function $updateURLFragment(path) {
+    window.location.hash = path;
+  }
+
+  _hashChangeObservable = _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(window, 'hashchange').subscribe(notify);
+
+  return {
+    subscribe: subscribe,
+    notify: notify,
+    getCurrentRoute: getCurrentRoute,
+    set: set
+  };
+};
+
+var r = Router();
+
+exports['default'] = r;
+module.exports = exports['default'];
+
+},{"../../nudoru/core/ObjectUtils.js":49,"../../vendor/rxjs/rx.lite.min.js":60}],37:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8569,7 +8505,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8825,7 +8761,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8981,7 +8917,7 @@ var Lorem = function Lorem() {
 exports['default'] = Lorem();
 module.exports = exports['default'];
 
-},{"../core/ArrayUtils.js":48,"../core/NumberUtils.js":49,"../core/StringUtils.js":51}],41:[function(require,module,exports){
+},{"../core/ArrayUtils.js":47,"../core/NumberUtils.js":48,"../core/StringUtils.js":50}],40:[function(require,module,exports){
 /**
  * Converts mouse event strings to touch based equivalents
  * @param eventStr
@@ -9011,7 +8947,7 @@ exports['default'] = function (eventStr) {
 
 module.exports = exports['default'];
 
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9130,7 +9066,7 @@ var MessageBoxCreator = MessageBoxCreatorModule();
 exports['default'] = MessageBoxCreator;
 module.exports = exports['default'];
 
-},{"./MessageBoxView":43}],43:[function(require,module,exports){
+},{"./MessageBoxView":42}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9449,7 +9385,7 @@ var MessageBoxView = MessageBoxViewModule();
 exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":36,"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/DOMUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":61,"./ModalCoverView.js":45}],44:[function(require,module,exports){
+},{"../../nori/view/Templating.js":34,"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":60,"./ModalCoverView.js":44}],43:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -9568,7 +9504,7 @@ var MixinNudoruControls = function MixinNudoruControls() {
 exports['default'] = MixinNudoruControls;
 module.exports = exports['default'];
 
-},{"../../nudoru/components/MessageBoxCreator.js":42,"../../nudoru/components/MessageBoxView.js":43,"../../nudoru/components/ModalCoverView.js":45,"../../nudoru/components/ToastView.js":46,"../../nudoru/components/ToolTipView.js":47}],45:[function(require,module,exports){
+},{"../../nudoru/components/MessageBoxCreator.js":41,"../../nudoru/components/MessageBoxView.js":42,"../../nudoru/components/ModalCoverView.js":44,"../../nudoru/components/ToastView.js":45,"../../nudoru/components/ToolTipView.js":46}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9737,7 +9673,7 @@ var ModalCoverView = ModalCoverViewModule();
 exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":36,"../../nudoru/browser/BrowserInfo.js":38,"../../vendor/rxjs/rx.lite.min.js":61}],46:[function(require,module,exports){
+},{"../../nori/view/Templating.js":34,"../../nudoru/browser/BrowserInfo.js":37,"../../vendor/rxjs/rx.lite.min.js":60}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9914,7 +9850,7 @@ var ToastView = ToastViewModule();
 exports['default'] = ToastView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":36,"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/DOMUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":61}],47:[function(require,module,exports){
+},{"../../nori/view/Templating.js":34,"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":60}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10211,7 +10147,7 @@ var ToolTipView = ToolTipViewModule();
 exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":36,"../../nudoru/browser/DOMUtils.js":39,"../../vendor/rxjs/rx.lite.min.js":61}],48:[function(require,module,exports){
+},{"../../nori/view/Templating.js":34,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":60}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10306,7 +10242,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./NumberUtils.js":49}],49:[function(require,module,exports){
+},{"./NumberUtils.js":48}],48:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10340,7 +10276,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10531,7 +10467,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../util/is.js":57}],51:[function(require,module,exports){
+},{"../util/is.js":56}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10587,7 +10523,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 (function (process,Buffer){
 //https://github.com/sasaplus1/deepcopy.js
 /*!
@@ -10808,7 +10744,7 @@ module.exports = exports['default'];
  */
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":6,"buffer":1,"util":8}],53:[function(require,module,exports){
+},{"_process":6,"buffer":1,"util":8}],52:[function(require,module,exports){
 //https://github.com/substack/node-deep-equal
 
 /*
@@ -10940,7 +10876,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{}],54:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 // Simple replacement for Lodash ForOwn method
 // https://lodash.com/docs#forOwn
 "use strict";
@@ -10960,7 +10896,7 @@ exports["default"] = function (object, fn) {
 module.exports = exports["default"];
 // http://jsperf.com/loop-for-in-vs-object-keys-foreach/21
 
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 //http://stackoverflow.com/questions/27104549/how-can-i-use-the-built-in-object-assign-in-react
 
 /* eslint-disable no-unused-vars */
@@ -11009,7 +10945,7 @@ exports['default'] = Object.assign || function (target, source) {
 
 module.exports = exports['default'];
 
-},{}],56:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 //https://github.com/KyleAMathews/deepmerge
 
 'use strict';
@@ -11065,7 +11001,7 @@ module.exports = exports['default'];
   };
 });
 
-},{}],57:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11115,7 +11051,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],58:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 (function (global){
 //https://github.com/jonschlinkert/is-plain-object
 
@@ -11150,7 +11086,7 @@ module.exports = exports["default"];
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],59:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 "use strict";
 
 (function defineMustache(global, factory) {
@@ -11317,7 +11253,7 @@ module.exports = exports["default"];
   };mustache.escape = escapeHtml;mustache.Scanner = Scanner;mustache.Context = Context;mustache.Writer = Writer;
 });
 
-},{}],60:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /*!
  * Pikaday
  *
@@ -12293,7 +12229,7 @@ module.exports = exports["default"];
     return Pikaday;
 });
 
-},{"moment":9}],61:[function(require,module,exports){
+},{"moment":9}],60:[function(require,module,exports){
 (function (process,global){
 /* Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.*/
 "use strict";
@@ -14540,7 +14476,7 @@ module.exports = exports["default"];
 }).call(undefined);
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":6}],62:[function(require,module,exports){
+},{"_process":6}],61:[function(require,module,exports){
 //https://raw.githubusercontent.com/Fizzadar/selected.js/develop/selected/selected.js
 
 'use strict';

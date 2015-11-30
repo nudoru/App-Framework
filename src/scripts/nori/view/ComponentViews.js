@@ -6,7 +6,7 @@
 
 import ViewComponentFactory from './Component.js';
 import BuildFromMixins from '../utils/BuildFromMixins.js';
-import Router from '../utils/Router.js';
+import Router from './URLRouter.js';
 import DeepCopy from '../../nudoru/util/DeepCopy.js';
 import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 //import ComponentMount from '../experimental/ComponentMount.js';
