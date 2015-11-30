@@ -7,7 +7,7 @@
  Updated 11/18/15 to use Mustache
  */
 
-import IsDOMElement from '../utils/IsDOMElement.js';
+import IsDOMElement from '../../nudoru/browser/IsDOMElement.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import Mustache from '../../vendor/mustache.min.js';
 

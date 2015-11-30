@@ -6049,7 +6049,7 @@ var AppViewModule = _noriNoriJs2['default'].createView({
 exports['default'] = AppViewModule;
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/view/Templating.js":34,"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/components/MixinNudoruControls.js":43,"../store/AppStore.js":13,"./ChildTest.js":15,"./ComponentsTesting.js":16,"./ControlsTesting.js":17,"./TemplateViewComponent.js":18}],15:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/view/Templating.js":33,"../../nudoru/browser/DOMUtils.js":37,"../../nudoru/components/MixinNudoruControls.js":43,"../store/AppStore.js":13,"./ChildTest.js":15,"./ComponentsTesting.js":16,"./ControlsTesting.js":17,"./TemplateViewComponent.js":18}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6288,7 +6288,7 @@ exports['default'] = _noriNoriJs2['default'].createComponent({
 });
 module.exports = exports['default'];
 
-},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nori/view/Templating.js":34,"../../nori/view/Tweens.js":35,"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/browser/Lorem.js":39,"../../nudoru/components/ToolTipView.js":46,"../store/AppStore":13,"./AppView":14,"./ChildTest.js":15}],17:[function(require,module,exports){
+},{"../../nori/Nori.js":20,"../../nori/action/ActionCreator":22,"../../nori/view/Templating.js":33,"../../nori/view/Tweens.js":34,"../../nudoru/browser/DOMUtils.js":37,"../../nudoru/browser/Lorem.js":39,"../../nudoru/components/ToolTipView.js":46,"../store/AppStore":13,"./AppView":14,"./ChildTest.js":15}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6451,7 +6451,7 @@ var _appAppJs2 = _interopRequireDefault(_appAppJs);
   }
 })();
 
-},{"./app/App.js":10,"./nudoru/browser/BrowserInfo.js":37}],20:[function(require,module,exports){
+},{"./app/App.js":10,"./nudoru/browser/BrowserInfo.js":36}],20:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -6549,7 +6549,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../nudoru/util/ObjectAssign.js":54,"./store/ReducerStore.js":24,"./utils/AssignArray.js":25,"./utils/BuildFromMixins.js":26,"./utils/CreateClass.js":27,"./view/ComponentViews.js":33}],21:[function(require,module,exports){
+},{"../nudoru/util/ObjectAssign.js":54,"./store/ReducerStore.js":24,"./utils/AssignArray.js":25,"./utils/BuildFromMixins.js":26,"./utils/CreateClass.js":27,"./view/ComponentViews.js":32}],21:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -6882,23 +6882,6 @@ exports['default'] = function (template, customizer) {
 module.exports = exports['default'];
 
 },{"../../nudoru/util/ObjectAssign.js":54,"./BuildFromMixins.js":26}],28:[function(require,module,exports){
-
-// Tag listing from React ReactDOMFactories module
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-var TAGS = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr', 'circle', 'clipPath', 'defs', 'ellipse', 'g', 'image', 'line', 'linearGradient', 'mask', 'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect', 'stop', 'svg', 'text', 'tspan'];
-
-exports['default'] = function (elStr) {
-  elStr = elStr.trim().toLowerCase();
-  return TAGS.indexOf(elStr) >= 0;
-};
-
-module.exports = exports['default'];
-
-},{}],29:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7425,7 +7408,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":38,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":56,"./ComponentElement.js":30,"./ComponentEventDelegator.js":31,"./ComponentRenderer.js":32,"./Templating.js":34}],30:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":37,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":56,"./ComponentElement.js":29,"./ComponentEventDelegator.js":30,"./ComponentRenderer.js":31,"./Templating.js":33}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7500,7 +7483,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54}],31:[function(require,module,exports){
+},{"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54}],30:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7704,7 +7687,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/MouseToTouchEvents.js":40,"../../nudoru/util/is.js":56,"../../vendor/rxjs/rx.lite.min.js":60}],32:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":36,"../../nudoru/browser/MouseToTouchEvents.js":40,"../../nudoru/util/is.js":56,"../../vendor/rxjs/rx.lite.min.js":60}],31:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -7756,7 +7739,7 @@ exports['default'] = function (component) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":38}],33:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":37}],32:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7998,7 +7981,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/ObjectAssign.js":54,"../utils/BuildFromMixins.js":26,"./Component.js":29,"./URLRouter.js":36}],34:[function(require,module,exports){
+},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/ObjectAssign.js":54,"../utils/BuildFromMixins.js":26,"./Component.js":28,"./URLRouter.js":35}],33:[function(require,module,exports){
 /*  weak */
 
 /*
@@ -8016,9 +7999,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _utilsIsDOMElementJs = require('../utils/IsDOMElement.js');
+var _nudoruBrowserIsDOMElementJs = require('../../nudoru/browser/IsDOMElement.js');
 
-var _utilsIsDOMElementJs2 = _interopRequireDefault(_utilsIsDOMElementJs);
+var _nudoruBrowserIsDOMElementJs2 = _interopRequireDefault(_nudoruBrowserIsDOMElementJs);
 
 var _nudoruBrowserDOMUtilsJs = require('../../nudoru/browser/DOMUtils.js');
 
@@ -8056,7 +8039,7 @@ var TemplatingModule = function TemplatingModule() {
 
     if (src) {
       srchtml = src.innerHTML;
-    } else if ((0, _utilsIsDOMElementJs2['default'])(id)) {
+    } else if ((0, _nudoruBrowserIsDOMElementJs2['default'])(id)) {
       srchtml = '<' + id + ' id="{{elID}}" class="{{elClass}}">{{elInner}}</' + id + '>';
     } else {
       console.warn('Templating, template not found: "' + id + '"');
@@ -8175,7 +8158,7 @@ var Templating = TemplatingModule();
 exports['default'] = Templating;
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":38,"../../vendor/mustache.min.js":58,"../utils/IsDOMElement.js":28}],35:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":37,"../../nudoru/browser/IsDOMElement.js":38,"../../vendor/mustache.min.js":58}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8296,7 +8279,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":56}],36:[function(require,module,exports){
+},{"../../nudoru/util/is.js":56}],35:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -8437,7 +8420,7 @@ var r = Router();
 exports['default'] = r;
 module.exports = exports['default'];
 
-},{"../../nudoru/core/ObjectUtils.js":49,"../../vendor/rxjs/rx.lite.min.js":60}],37:[function(require,module,exports){
+},{"../../nudoru/core/ObjectUtils.js":49,"../../vendor/rxjs/rx.lite.min.js":60}],36:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8505,7 +8488,7 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8760,6 +8743,23 @@ exports["default"] = {
 
 };
 module.exports = exports["default"];
+
+},{}],38:[function(require,module,exports){
+
+// Tag listing from React ReactDOMFactories module
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var TAGS = ['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col', 'colgroup', 'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meta', 'meter', 'nav', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr', 'circle', 'clipPath', 'defs', 'ellipse', 'g', 'image', 'line', 'linearGradient', 'mask', 'path', 'pattern', 'polygon', 'polyline', 'radialGradient', 'rect', 'stop', 'svg', 'text', 'tspan'];
+
+exports['default'] = function (elStr) {
+  elStr = elStr.trim().toLowerCase();
+  return TAGS.indexOf(elStr) >= 0;
+};
+
+module.exports = exports['default'];
 
 },{}],39:[function(require,module,exports){
 'use strict';
@@ -9385,7 +9385,7 @@ var MessageBoxView = MessageBoxViewModule();
 exports['default'] = MessageBoxView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":34,"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":60,"./ModalCoverView.js":44}],43:[function(require,module,exports){
+},{"../../nori/view/Templating.js":33,"../../nudoru/browser/BrowserInfo.js":36,"../../nudoru/browser/DOMUtils.js":37,"../../vendor/rxjs/rx.lite.min.js":60,"./ModalCoverView.js":44}],43:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -9673,7 +9673,7 @@ var ModalCoverView = ModalCoverViewModule();
 exports['default'] = ModalCoverView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":34,"../../nudoru/browser/BrowserInfo.js":37,"../../vendor/rxjs/rx.lite.min.js":60}],45:[function(require,module,exports){
+},{"../../nori/view/Templating.js":33,"../../nudoru/browser/BrowserInfo.js":36,"../../vendor/rxjs/rx.lite.min.js":60}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9850,7 +9850,7 @@ var ToastView = ToastViewModule();
 exports['default'] = ToastView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":34,"../../nudoru/browser/BrowserInfo.js":37,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":60}],46:[function(require,module,exports){
+},{"../../nori/view/Templating.js":33,"../../nudoru/browser/BrowserInfo.js":36,"../../nudoru/browser/DOMUtils.js":37,"../../vendor/rxjs/rx.lite.min.js":60}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10147,7 +10147,7 @@ var ToolTipView = ToolTipViewModule();
 exports['default'] = ToolTipView;
 module.exports = exports['default'];
 
-},{"../../nori/view/Templating.js":34,"../../nudoru/browser/DOMUtils.js":38,"../../vendor/rxjs/rx.lite.min.js":60}],47:[function(require,module,exports){
+},{"../../nori/view/Templating.js":33,"../../nudoru/browser/DOMUtils.js":37,"../../vendor/rxjs/rx.lite.min.js":60}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
