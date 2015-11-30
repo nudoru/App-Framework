@@ -9,7 +9,7 @@ import Rxjs from '../../vendor/rxjs/rx.lite.min.js';
 import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 import DeepEqual from '../../nudoru/util/DeepEqual.js';
 import DeepCopy from '../../nudoru/util/DeepCopy.js';
-import isPlainObject from '../../vendor/is-plain-object.min.js';
+import isPlainObject from '../../nudoru/util/is-plain-object.min.js';
 
 export default function () {
   let _internalState = {},

@@ -6681,9 +6681,9 @@ var _nudoruUtilDeepCopyJs = require('../../nudoru/util/DeepCopy.js');
 
 var _nudoruUtilDeepCopyJs2 = _interopRequireDefault(_nudoruUtilDeepCopyJs);
 
-var _vendorIsPlainObjectMinJs = require('../../vendor/is-plain-object.min.js');
+var _nudoruUtilIsPlainObjectMinJs = require('../../nudoru/util/is-plain-object.min.js');
 
-var _vendorIsPlainObjectMinJs2 = _interopRequireDefault(_vendorIsPlainObjectMinJs);
+var _nudoruUtilIsPlainObjectMinJs2 = _interopRequireDefault(_nudoruUtilIsPlainObjectMinJs);
 
 exports['default'] = function () {
   var _internalState = {},
@@ -6718,7 +6718,7 @@ exports['default'] = function () {
       throw new Error('ReducerStore must have at least one reducer set');
     }
 
-    if ((0, _vendorIsPlainObjectMinJs2['default'])(action)) {
+    if ((0, _nudoruUtilIsPlainObjectMinJs2['default'])(action)) {
       $applyReducers(action, _internalState);
     } else {
       console.warn('ReducerStore, action must be plain JS object', action);
@@ -6793,7 +6793,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":56,"../../vendor/is-plain-object.min.js":57,"../../vendor/rxjs/rx.lite.min.js":60}],25:[function(require,module,exports){
+},{"../../nudoru/util/DeepCopy.js":51,"../../nudoru/util/DeepEqual.js":52,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is-plain-object.min.js":56,"../../nudoru/util/is.js":57,"../../vendor/rxjs/rx.lite.min.js":60}],25:[function(require,module,exports){
 /**
  * Merges a collection of objects
  * @param target
@@ -7408,7 +7408,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":37,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":56,"./ComponentElement.js":29,"./ComponentEventDelegator.js":30,"./ComponentRenderer.js":31,"./Templating.js":33}],29:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":37,"../../nudoru/util/ForOwn.js":53,"../../nudoru/util/ObjectAssign.js":54,"../../nudoru/util/is.js":57,"./ComponentElement.js":29,"./ComponentEventDelegator.js":30,"./ComponentRenderer.js":31,"./Templating.js":33}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7687,7 +7687,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/BrowserInfo.js":36,"../../nudoru/browser/MouseToTouchEvents.js":40,"../../nudoru/util/is.js":56,"../../vendor/rxjs/rx.lite.min.js":60}],31:[function(require,module,exports){
+},{"../../nudoru/browser/BrowserInfo.js":36,"../../nudoru/browser/MouseToTouchEvents.js":40,"../../nudoru/util/is.js":57,"../../vendor/rxjs/rx.lite.min.js":60}],31:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -8279,7 +8279,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../../nudoru/util/is.js":56}],35:[function(require,module,exports){
+},{"../../nudoru/util/is.js":57}],35:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -10467,7 +10467,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../util/is.js":56}],50:[function(require,module,exports){
+},{"../util/is.js":57}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -11002,6 +11002,41 @@ module.exports = exports['default'];
 });
 
 },{}],56:[function(require,module,exports){
+(function (global){
+//https://github.com/jonschlinkert/is-plain-object
+
+"use strict";
+
+!(function (e) {
+  if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();else if ("function" == typeof define && define.amd) define([], e);else {
+    var t;t = "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this, t.isPlainObject = e();
+  }
+})(function () {
+  return (function e(t, r, n) {
+    function o(f, u) {
+      if (!r[f]) {
+        if (!t[f]) {
+          var c = "function" == typeof require && require;if (!u && c) return c(f, !0);if (i) return i(f, !0);var p = new Error("Cannot find module '" + f + "'");throw (p.code = "MODULE_NOT_FOUND", p);
+        }var s = r[f] = { exports: {} };t[f][0].call(s.exports, function (e) {
+          var r = t[f][1][e];return o(r ? r : e);
+        }, s, s.exports, e, t, r, n);
+      }return r[f].exports;
+    }for (var i = "function" == typeof require && require, f = 0; f < n.length; f++) o(n[f]);return o;
+  })({ 1: [function (e, t, r) {
+      "use strict";function n(e) {
+        return o(e) === !0 && "[object Object]" === Object.prototype.toString.call(e);
+      }var o = e("isobject");t.exports = function (e) {
+        var t, r;return n(e) === !1 ? !1 : (t = e.constructor, "function" != typeof t ? !1 : (r = t.prototype, n(r) === !1 ? !1 : r.hasOwnProperty("isPrototypeOf") === !1 ? !1 : !0));
+      };
+    }, { isobject: 2 }], 2: [function (e, t, r) {
+      "use strict";t.exports = function (e) {
+        return null != e && "object" == typeof e && !Array.isArray(e);
+      };
+    }, {}] }, {}, [1])(1);
+});
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],57:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11051,41 +11086,6 @@ exports["default"] = {
 };
 module.exports = exports["default"];
 
-},{}],57:[function(require,module,exports){
-(function (global){
-//https://github.com/jonschlinkert/is-plain-object
-
-"use strict";
-
-!(function (e) {
-  if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();else if ("function" == typeof define && define.amd) define([], e);else {
-    var t;t = "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this, t.isPlainObject = e();
-  }
-})(function () {
-  return (function e(t, r, n) {
-    function o(f, u) {
-      if (!r[f]) {
-        if (!t[f]) {
-          var c = "function" == typeof require && require;if (!u && c) return c(f, !0);if (i) return i(f, !0);var p = new Error("Cannot find module '" + f + "'");throw (p.code = "MODULE_NOT_FOUND", p);
-        }var s = r[f] = { exports: {} };t[f][0].call(s.exports, function (e) {
-          var r = t[f][1][e];return o(r ? r : e);
-        }, s, s.exports, e, t, r, n);
-      }return r[f].exports;
-    }for (var i = "function" == typeof require && require, f = 0; f < n.length; f++) o(n[f]);return o;
-  })({ 1: [function (e, t, r) {
-      "use strict";function n(e) {
-        return o(e) === !0 && "[object Object]" === Object.prototype.toString.call(e);
-      }var o = e("isobject");t.exports = function (e) {
-        var t, r;return n(e) === !1 ? !1 : (t = e.constructor, "function" != typeof t ? !1 : (r = t.prototype, n(r) === !1 ? !1 : r.hasOwnProperty("isPrototypeOf") === !1 ? !1 : !0));
-      };
-    }, { isobject: 2 }], 2: [function (e, t, r) {
-      "use strict";t.exports = function (e) {
-        return null != e && "object" == typeof e && !Array.isArray(e);
-      };
-    }, {}] }, {}, [1])(1);
-});
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],58:[function(require,module,exports){
 "use strict";
 
