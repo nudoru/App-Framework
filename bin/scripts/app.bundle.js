@@ -6553,7 +6553,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"../nudoru/util/ObjectAssign.js":55,"./store/ReducerStore.js":23,"./utils/AssignArray.js":24,"./utils/BuildFromMixins.js":25,"./utils/CreateClass.js":26,"./view/ComponentViews.js":34}],21:[function(require,module,exports){
+},{"../nudoru/util/ObjectAssign.js":55,"./store/ReducerStore.js":23,"./utils/AssignArray.js":24,"./utils/BuildFromMixins.js":25,"./utils/CreateClass.js":26,"./view/ComponentViews.js":35}],21:[function(require,module,exports){
 /*  weak */
 
 'use strict';
@@ -7144,9 +7144,9 @@ var _ComponentRendererJs = require('./ComponentRenderer.js');
 
 var _ComponentRendererJs2 = _interopRequireDefault(_ComponentRendererJs);
 
-var _RxEventDelegatorJs = require('./RxEventDelegator.js');
+var _ComponentEventDelegatorJs = require('./ComponentEventDelegator.js');
 
-var _RxEventDelegatorJs2 = _interopRequireDefault(_RxEventDelegatorJs);
+var _ComponentEventDelegatorJs2 = _interopRequireDefault(_ComponentEventDelegatorJs);
 
 var _ComponentElementJs = require('./ComponentElement.js');
 
@@ -7170,7 +7170,7 @@ var LS_NO_INIT = 0,
 exports['default'] = function () {
 
   var _stateElement = undefined,
-      _events = (0, _RxEventDelegatorJs2['default'])(),
+      _events = (0, _ComponentEventDelegatorJs2['default'])(),
       _lifecycleState = LS_NO_INIT,
       state = {},
       props = {},
@@ -7630,7 +7630,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/util/ForOwn.js":54,"../../nudoru/util/ObjectAssign.js":55,"../../nudoru/util/is.js":57,"./ComponentElement.js":32,"./ComponentRenderer.js":33,"./RxEventDelegator.js":35,"./Templating.js":36}],32:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":39,"../../nudoru/util/ForOwn.js":54,"../../nudoru/util/ObjectAssign.js":55,"../../nudoru/util/is.js":57,"./ComponentElement.js":32,"./ComponentEventDelegator.js":33,"./ComponentRenderer.js":34,"./Templating.js":36}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7708,6 +7708,210 @@ module.exports = exports['default'];
 },{"../../nudoru/util/DeepEqual.js":53,"../../nudoru/util/ObjectAssign.js":55}],33:[function(require,module,exports){
 /*  weak */
 
+/**
+ * Convenience mixin that makes events easier for views
+ *
+ * Based on Backbone
+ * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
+ *
+ * Example:
+ * delegateEvents({
+ *        'click #btn_main_projects': handleProjectsButton,
+ *        'click #btn_foo, click #btn_bar': handleFooBarButtons
+ *      });
+ * // later
+ * undelegateEvents({
+ *        'click #btn_main_projects': handleProjectsButton,
+ *        'click #btn_foo, click #btn_bar': handleFooBarButtons
+ *      });
+ *
+ */
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
+
+var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
+
+var _nudoruBrowserBrowserInfoJs = require('../../nudoru/browser/BrowserInfo.js');
+
+var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
+
+var _nudoruBrowserMouseToTouchEventsJs = require('../../nudoru/browser/MouseToTouchEvents.js');
+
+var _nudoruBrowserMouseToTouchEventsJs2 = _interopRequireDefault(_nudoruBrowserMouseToTouchEventsJs);
+
+var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
+
+var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
+
+exports['default'] = function () {
+
+  var _eventSubscribers = undefined;
+
+  /**
+   * Automates setting events on DOM elements.
+   * 'evtStr selector':callback
+   * 'evtStr selector, evtStr selector': sharedCallback
+   */
+  var delegateEvents = function delegateEvents(context, eventObj, autoForm) {
+    if (!eventObj) {
+      return;
+    }
+
+    _eventSubscribers = Object.create(null);
+
+    context = context || document;
+
+    for (var evtStrings in eventObj) {
+      if (eventObj.hasOwnProperty(evtStrings)) {
+        var _ret = (function () {
+
+          var mappings = evtStrings.split(','),
+              eventHandler = eventObj[evtStrings];
+
+          if (!_nudoruUtilIsJs2['default'].func(eventHandler)) {
+            console.warn('RxEventDelegator, handler for ' + evtStrings + ' is not a function');
+            return {
+              v: undefined
+            };
+          }
+
+          /* jshint -W083 */
+          // https://jslinterrors.com/dont-make-functions-within-a-loop
+          mappings.forEach(function (evtMap) {
+            evtMap = evtMap.trim();
+
+            var eventStr = evtMap.split(' ')[0].trim(),
+                selector = evtMap.split(' ')[1].trim();
+
+            if (_nudoruBrowserBrowserInfoJs2['default'].mobile.any()) {
+              eventStr = (0, _nudoruBrowserMouseToTouchEventsJs2['default'])(eventStr);
+            }
+
+            _eventSubscribers[evtMap] = $createSubscriber(context, selector, eventStr, eventHandler, autoForm);
+          });
+          /* jshint +W083 */
+        })();
+
+        if (typeof _ret === 'object') return _ret.v;
+      }
+    }
+  };
+
+  /**
+   * Returns an observable subscription
+   * @param selector DOM element
+   * @param eventStr Event to watch
+   * @param handler Subscriber to handle the event
+   * @param autoForm True to automatically pass common form element data to the handler
+   * @returns {*}
+   */
+  var $createSubscriber = function $createSubscriber(context, selector, eventStr, handler, autoForm) {
+    var el = context.querySelector(selector),
+        observable = undefined,
+        tag = undefined,
+        type = undefined;
+
+    if (!el) {
+      console.warn('RxEventDelegator, $createSubscriber, Element not found:', selector);
+      return;
+    }
+
+    observable = getObservableFromDOM(el, eventStr);
+
+    tag = el.tagName.toLowerCase();
+    type = el.getAttribute('type');
+
+    /**
+     * Convencince for form element handlers
+     */
+    if (autoForm) {
+      if (tag === 'input' || tag === 'textarea') {
+        if (!type || type === 'text') {
+          if (eventStr === 'blur' || eventStr === 'focus') {
+            return observable.map(function (evt) {
+              return evt.target.value;
+            }).subscribe(handler);
+          } else if (eventStr === 'keyup' || eventStr === 'keydown') {
+            return observable.throttle(100).map(function (evt) {
+              return evt.target.value;
+            }).subscribe(handler);
+          }
+        } else if (type === 'radio' || type === 'checkbox') {
+          if (eventStr === 'click') {
+            return observable.map(function (evt) {
+              return evt.target.checked;
+            }).subscribe(handler);
+          }
+        }
+      } else if (tag === 'select') {
+        if (eventStr === 'change') {
+          return observable.map(function (evt) {
+            return evt.target.value;
+          }).subscribe(handler);
+        }
+      }
+    }
+
+    return observable.subscribe(handler);
+  };
+
+  /**
+   * Cleanly remove events
+   */
+  var undelegateEvents = function undelegateEvents(eventObj) {
+
+    if (!eventObj) {
+      return;
+    }
+
+    for (var event in _eventSubscribers) {
+      if (_eventSubscribers[event]) {
+        _eventSubscribers[event].dispose();
+      } else {
+        console.warn('RxEventDelegator, undelegateEvents, not a valid observable: ', event);
+      }
+      delete _eventSubscribers[event];
+    }
+
+    _eventSubscribers = Object.create(null);
+  };
+
+  /**
+   * Get observable from a dom selector for the given event
+   */
+  var getObservableFromDOM = function getObservableFromDOM(selector, event) {
+    var el = selector;
+
+    if (_nudoruUtilIsJs2['default'].string(selector)) {
+      el = document.querySelector(selector);
+    }
+
+    if (!el) {
+      console.warn('RxEventDelegator, invalid DOM selector: ' + selector);
+      return;
+    }
+    return _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(el, event.trim());
+  };
+
+  return {
+    undelegateEvents: undelegateEvents,
+    delegateEvents: delegateEvents
+  };
+};
+
+module.exports = exports['default'];
+
+},{"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/MouseToTouchEvents.js":41,"../../nudoru/util/is.js":57,"../../vendor/rxjs/rx.lite.min.js":61}],34:[function(require,module,exports){
+/*  weak */
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7757,7 +7961,7 @@ exports['default'] = function (component) {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/browser/DOMUtils.js":39}],34:[function(require,module,exports){
+},{"../../nudoru/browser/DOMUtils.js":39}],35:[function(require,module,exports){
 /*  weak */
 
 /**
@@ -7999,211 +8203,7 @@ exports['default'] = function () {
 
 module.exports = exports['default'];
 
-},{"../../nudoru/util/DeepCopy.js":52,"../../nudoru/util/ObjectAssign.js":55,"../utils/BuildFromMixins.js":25,"../utils/Router.js":29,"./Component.js":31}],35:[function(require,module,exports){
-/*  weak */
-
-/**
- * Convenience mixin that makes events easier for views
- *
- * Based on Backbone
- * Review this http://blog.marionettejs.com/2015/02/12/understanding-the-event-hash/index.html
- *
- * Example:
- * delegateEvents({
- *        'click #btn_main_projects': handleProjectsButton,
- *        'click #btn_foo, click #btn_bar': handleFooBarButtons
- *      });
- * // later
- * undelegateEvents({
- *        'click #btn_main_projects': handleProjectsButton,
- *        'click #btn_foo, click #btn_bar': handleFooBarButtons
- *      });
- *
- */
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _vendorRxjsRxLiteMinJs = require('../../vendor/rxjs/rx.lite.min.js');
-
-var _vendorRxjsRxLiteMinJs2 = _interopRequireDefault(_vendorRxjsRxLiteMinJs);
-
-var _nudoruBrowserBrowserInfoJs = require('../../nudoru/browser/BrowserInfo.js');
-
-var _nudoruBrowserBrowserInfoJs2 = _interopRequireDefault(_nudoruBrowserBrowserInfoJs);
-
-var _nudoruBrowserMouseToTouchEventsJs = require('../../nudoru/browser/MouseToTouchEvents.js');
-
-var _nudoruBrowserMouseToTouchEventsJs2 = _interopRequireDefault(_nudoruBrowserMouseToTouchEventsJs);
-
-var _nudoruUtilIsJs = require('../../nudoru/util/is.js');
-
-var _nudoruUtilIsJs2 = _interopRequireDefault(_nudoruUtilIsJs);
-
-exports['default'] = function () {
-
-  var _eventSubscribers = undefined;
-
-  /**
-   * Automates setting events on DOM elements.
-   * 'evtStr selector':callback
-   * 'evtStr selector, evtStr selector': sharedCallback
-   */
-  var delegateEvents = function delegateEvents(context, eventObj, autoForm) {
-    if (!eventObj) {
-      return;
-    }
-
-    _eventSubscribers = Object.create(null);
-
-    context = context || document;
-
-    for (var evtStrings in eventObj) {
-      if (eventObj.hasOwnProperty(evtStrings)) {
-        var _ret = (function () {
-
-          var mappings = evtStrings.split(','),
-              eventHandler = eventObj[evtStrings];
-
-          if (!_nudoruUtilIsJs2['default'].func(eventHandler)) {
-            console.warn('RxEventDelegator, handler for ' + evtStrings + ' is not a function');
-            return {
-              v: undefined
-            };
-          }
-
-          /* jshint -W083 */
-          // https://jslinterrors.com/dont-make-functions-within-a-loop
-          mappings.forEach(function (evtMap) {
-            evtMap = evtMap.trim();
-
-            var eventStr = evtMap.split(' ')[0].trim(),
-                selector = evtMap.split(' ')[1].trim();
-
-            if (_nudoruBrowserBrowserInfoJs2['default'].mobile.any()) {
-              eventStr = (0, _nudoruBrowserMouseToTouchEventsJs2['default'])(eventStr);
-            }
-
-            _eventSubscribers[evtMap] = $createSubscriber(context, selector, eventStr, eventHandler, autoForm);
-          });
-          /* jshint +W083 */
-        })();
-
-        if (typeof _ret === 'object') return _ret.v;
-      }
-    }
-  };
-
-  /**
-   * Returns an observable subscription
-   * @param selector DOM element
-   * @param eventStr Event to watch
-   * @param handler Subscriber to handle the event
-   * @param autoForm True to automatically pass common form element data to the handler
-   * @returns {*}
-   */
-  var $createSubscriber = function $createSubscriber(context, selector, eventStr, handler, autoForm) {
-    var el = context.querySelector(selector),
-        observable = undefined,
-        tag = undefined,
-        type = undefined;
-
-    if (!el) {
-      console.warn('RxEventDelegator, $createSubscriber, Element not found:', selector);
-      return;
-    }
-
-    observable = getObservableFromDOM(el, eventStr);
-
-    tag = el.tagName.toLowerCase();
-    type = el.getAttribute('type');
-
-    /**
-     * Convencince for form element handlers
-     */
-    if (autoForm) {
-      if (tag === 'input' || tag === 'textarea') {
-        if (!type || type === 'text') {
-          if (eventStr === 'blur' || eventStr === 'focus') {
-            return observable.map(function (evt) {
-              return evt.target.value;
-            }).subscribe(handler);
-          } else if (eventStr === 'keyup' || eventStr === 'keydown') {
-            return observable.throttle(100).map(function (evt) {
-              return evt.target.value;
-            }).subscribe(handler);
-          }
-        } else if (type === 'radio' || type === 'checkbox') {
-          if (eventStr === 'click') {
-            return observable.map(function (evt) {
-              return evt.target.checked;
-            }).subscribe(handler);
-          }
-        }
-      } else if (tag === 'select') {
-        if (eventStr === 'change') {
-          return observable.map(function (evt) {
-            return evt.target.value;
-          }).subscribe(handler);
-        }
-      }
-    }
-
-    return observable.subscribe(handler);
-  };
-
-  /**
-   * Cleanly remove events
-   */
-  var undelegateEvents = function undelegateEvents(eventObj) {
-
-    if (!eventObj) {
-      return;
-    }
-
-    for (var event in _eventSubscribers) {
-      if (_eventSubscribers[event]) {
-        _eventSubscribers[event].dispose();
-      } else {
-        console.warn('RxEventDelegator, undelegateEvents, not a valid observable: ', event);
-      }
-      delete _eventSubscribers[event];
-    }
-
-    _eventSubscribers = Object.create(null);
-  };
-
-  /**
-   * Get observable from a dom selector for the given event
-   */
-  var getObservableFromDOM = function getObservableFromDOM(selector, event) {
-    var el = selector;
-
-    if (_nudoruUtilIsJs2['default'].string(selector)) {
-      el = document.querySelector(selector);
-    }
-
-    if (!el) {
-      console.warn('RxEventDelegator, invalid DOM selector: ' + selector);
-      return;
-    }
-    return _vendorRxjsRxLiteMinJs2['default'].Observable.fromEvent(el, event.trim());
-  };
-
-  return {
-    undelegateEvents: undelegateEvents,
-    delegateEvents: delegateEvents
-  };
-};
-
-module.exports = exports['default'];
-
-},{"../../nudoru/browser/BrowserInfo.js":38,"../../nudoru/browser/MouseToTouchEvents.js":41,"../../nudoru/util/is.js":57,"../../vendor/rxjs/rx.lite.min.js":61}],36:[function(require,module,exports){
+},{"../../nudoru/util/DeepCopy.js":52,"../../nudoru/util/ObjectAssign.js":55,"../utils/BuildFromMixins.js":25,"../utils/Router.js":29,"./Component.js":31}],36:[function(require,module,exports){
 /*  weak */
 
 /*

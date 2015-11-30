@@ -18,7 +18,7 @@ import Is from '../../nudoru/util/is.js';
 import DOMUtils from '../../nudoru/browser/DOMUtils.js';
 import Template from './Templating.js';
 import ComponentRenderer from './ComponentRenderer.js';
-import EventDelegator from './RxEventDelegator.js';
+import EventDelegator from './ComponentEventDelegator.js';
 import ComponentElement from './ComponentElement.js';
 import ObjectAssign from '../../nudoru/util/ObjectAssign.js';
 import ForOwn from '../../nudoru/util/ForOwn.js';
@@ -439,8 +439,8 @@ export default function () {
 
   return {
     // Direct obj access
-    state: state,
-    props: props,
+    state,
+    props,
 
     // public api
     setProps,
