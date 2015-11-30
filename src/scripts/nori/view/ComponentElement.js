@@ -10,6 +10,7 @@ export default (props = {}, state = {}, children = null) => {
     props,
     state,
     children,
+    parent,
     lastProps: null,
     lastState: null,
 
@@ -22,8 +23,8 @@ export default (props = {}, state = {}, children = null) => {
     },
 
     shouldUpdate(nextProps, nextState) {
-      nextProps = nextProps || this.props;
-      nextState = nextState || this.state;
+      nextProps     = nextProps || this.props;
+      nextState     = nextState || this.state;
       let isStateEq = DeepEqual(nextState, this.state),
           isPropsEq = DeepEqual(nextProps, this.props);
       return !(isStateEq) || !(isPropsEq);
@@ -37,6 +38,14 @@ export default (props = {}, state = {}, children = null) => {
     setState(nextState) {
       this.lastState = ObjectAssign({}, this.state);
       this.state     = ObjectAssign({}, this.state, nextState);
+    },
+
+    setParent(parent) {
+      this.parent = parent;
+    },
+
+    getParent() {
+      return this.parent;
     },
 
     addChild(id, newChild) {

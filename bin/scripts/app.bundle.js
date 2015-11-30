@@ -6952,7 +6952,6 @@ exports['default'] = function () {
       _lifecycleState = LS_NO_INIT,
       state = {},
       props = {},
-      _parent = undefined,
       _html = undefined,
       _domElementCache = undefined;
 
@@ -6976,7 +6975,6 @@ exports['default'] = function () {
         if (typeof child === 'function') {
           childObj = child();
         }
-        childObj.setParent(_this);
         _this.addChild(childObj.id(), childObj);
       });
     }
@@ -7227,9 +7225,19 @@ exports['default'] = function () {
   function addChild(id, child, update) {
     _stateElement.addChild(id, child);
 
+    child.setParent(this);
+
     if (update) {
       $forceUpdateChildren.bind(this)();
     }
+  }
+
+  function setParent(parent) {
+    _stateElement.setParent(parent);
+  }
+
+  function getParent() {
+    return _stateElement.getParent();
   }
 
   /**
@@ -7325,14 +7333,6 @@ exports['default'] = function () {
     return CLASS_PREFIX + _stateElement.props.index;
   }
 
-  function setParent(parent) {
-    _parent = parent;
-  }
-
-  function parent() {
-    return _parent;
-  }
-
   //----------------------------------------------------------------------------
   //  Utility
   //----------------------------------------------------------------------------
@@ -7372,8 +7372,6 @@ exports['default'] = function () {
     //template,
     dom: dom,
     html: html,
-    setParent: setParent,
-    parent: parent,
     isMounted: isMounted,
     tmpl: tmpl,
     forceUpdate: forceUpdate,
@@ -7387,6 +7385,8 @@ exports['default'] = function () {
     addChildren: addChildren,
     disposeChild: disposeChild,
     child: child,
+    setParent: setParent,
+    getParent: getParent,
 
     // private api
     $componentInit: $componentInit,
@@ -7438,6 +7438,7 @@ exports['default'] = function () {
     props: props,
     state: state,
     children: children,
+    parent: parent,
     lastProps: null,
     lastState: null,
 
@@ -7465,6 +7466,14 @@ exports['default'] = function () {
     setState: function setState(nextState) {
       this.lastState = (0, _nudoruUtilObjectAssignJs2['default'])({}, this.state);
       this.state = (0, _nudoruUtilObjectAssignJs2['default'])({}, this.state, nextState);
+    },
+
+    setParent: function setParent(parent) {
+      this.parent = parent;
+    },
+
+    getParent: function getParent() {
+      return this.parent;
     },
 
     addChild: function addChild(id, newChild) {
@@ -7711,8 +7720,9 @@ exports['default'] = function (component) {
       mountPoint = document.querySelector(component.props.target);
 
   // For a child component that has no mount set, append to the end of the parent
-  if (!mountPoint && component.parent()) {
-    mountPoint = document.querySelector('.' + component.parent().className());
+  if (!mountPoint && component.getParent()) {
+    console.warn(component.id() + 'has no mount point defined, attaching to parent');
+    mountPoint = document.querySelector('.' + component.getParent().className());
   }
 
   if (!mountPoint) {

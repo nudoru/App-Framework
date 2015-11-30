@@ -37,7 +37,6 @@ export default function () {
       _lifecycleState = LS_NO_INIT,
       state           = {},
       props           = {},
-      _parent,
       _html,
       _domElementCache;
 
@@ -59,7 +58,6 @@ export default function () {
         if (typeof child === 'function') {
           childObj = child();
         }
-        childObj.setParent(this);
         this.addChild(childObj.id(), childObj);
       });
     }
@@ -267,7 +265,7 @@ export default function () {
     }
 
     _domElementCache = null;
-    _lifecycleState = LS_UNMOUNTED;
+    _lifecycleState  = LS_UNMOUNTED;
   }
 
   function $removeEvents() {
@@ -307,9 +305,19 @@ export default function () {
   function addChild(id, child, update) {
     _stateElement.addChild(id, child);
 
+    child.setParent(this);
+
     if (update) {
       $forceUpdateChildren.bind(this)();
     }
+  }
+
+  function setParent(parent) {
+    _stateElement.setParent(parent);
+  }
+
+  function getParent() {
+    return _stateElement.getParent();
   }
 
   /**
@@ -405,13 +413,6 @@ export default function () {
     return CLASS_PREFIX + _stateElement.props.index;
   }
 
-  function setParent(parent) {
-    _parent = parent;
-  }
-
-  function parent() {
-    return _parent;
-  }
 
   //----------------------------------------------------------------------------
   //  Utility
@@ -452,8 +453,6 @@ export default function () {
     //template,
     dom,
     html,
-    setParent,
-    parent,
     isMounted,
     tmpl,
     forceUpdate,
@@ -467,6 +466,8 @@ export default function () {
     addChildren,
     disposeChild,
     child,
+    setParent,
+    getParent,
 
     // private api
     $componentInit,

@@ -9,8 +9,9 @@ export default (component, lastAdjacent = null) => {
       mountPoint = document.querySelector(component.props.target);
 
   // For a child component that has no mount set, append to the end of the parent
-  if(!mountPoint && component.parent()) {
-    mountPoint = document.querySelector('.'+component.parent().className());
+  if(!mountPoint && component.getParent()) {
+    console.warn(component.id() + 'has no mount point defined, attaching to parent');
+    mountPoint = document.querySelector('.'+component.getParent().className());
   }
 
   if (!mountPoint) {
