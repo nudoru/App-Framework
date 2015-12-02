@@ -5,6 +5,10 @@
 $font-header: 'Oxygen', 'Helvetica Neue', Helvetica, Arial, sans-serif !default
 $font-content: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !default
 
+// Measure test line
+// Lorem ipsum dolor sit amet, consectetuer adipiscing elit accumsan
+// http://modularscale.com/scale/?px1=16&px2=11&ra1=1.618&ra2=0
+
 //Modular scale http://www.modularscale.com/?16,960&px&1.618&sass&text
 $ms-10: 11.089rem
 $ms-9: 8.755rem
@@ -58,20 +62,16 @@ $dark-beige: rgb(155,148,95)
 $color-nocolor: transparent
 $color-base-light: $light-warm-grey
 $color-base-dark: $dark-warm-grey
-
 $color-text: $color-base-dark
 $color-text-header: $color-text
 $color-text-content: $color-text
-
 $color-link: $dark-blue
 $color-link-hover: $light-blue
 $color-link-active: $light-blue
 $color-link-visited: scale-lightness($dark-blue, -25%)
-
 $color-shaded: scale-lightness($color-base-light, 85%)
 $color-white-grey-fill: scale-lightness($color-base-light, 95%)
 $color-white-grey-line: scale-lightness($color-base-light, 80%)
-
 $color-pop: $clr-orange-600
 
 //------------------------------------------------------------------------------
@@ -85,10 +85,12 @@ $column-gap-two: $double-base-line-height
 //  Responsive
 //------------------------------------------------------------------------------
 
-$mqbp-desktop-large: 1200px !default
-$mqbp-desktop-medium: 1000px !default
-$mqbp-tablet-mobile: 750px !default
-$mqbp-phone-mobile: 475px !default
+// Ideas for media queries https://gist.github.com/bobbygrace/9e961e8982f42eb91b80?utm_source=html5weekly&utm_medium=email#media-queries
+
+$mqbp-huge: 1200px !default
+$mqbp-large: 1000px !default
+$mqbp-small: 750px !default
+$mqbp-tiny: 475px !default
 
 // Media query variables from Trello style guide
 $mq-highdensity: "only screen and (-webkit-min-device-pixel-ratio: 1.5)", "only screen and (min--moz-device-pixel-ratio: 1.5)","only screen and (-o-min-device-pixel-ratio: 3/2)", "only screen and (min-device-pixel-ratio: 1.5)"
@@ -103,20 +105,17 @@ $mq-print: "print"
 //------------------------------------------------------------------------------
 
 $control-font: $font-content
-
 $control-padding: $base-line-height
 $control-padding-small: $half-base-line-height
 $control-margin: $base-line-height
-
+$control-card-margin: $double-base-line-height
+$table-cell-padding: $base-line-height
 $control-form-element-height: 38px
-
 $control-border: 1px solid $color-white-grey-line
 $control-border-dark: 1px solid $light-warm-grey
-
 $control-border-radius: 5px
 $control-border-radius-large: 10px
 $control-border-radius-small: 3px
-
 $control-panel-border-radius: $control-border-radius
 $control-button-border-radius: 50px
 
@@ -129,7 +128,6 @@ $control-primary-color-dark: $dark-blue
 $control-container-color: rgb(255,255,255)
 $control-header-color: $color-white-grey-fill
 $control-footer-color: $color-white-grey-fill
-
 $control-success-color: rgba(76, 175, 80, 1.0)
 $control-success-color-dark: scale-lightness($control-success-color, -20%)
 $control-warning-color: rgba(255, 193, 7, 1.0)
@@ -140,7 +138,6 @@ $control-info-color: $light-blue
 $control-info-color-dark: scale-lightness($control-info-color, -20%)
 $control-neutral-color: $light-warm-grey
 $control-neutral-color-dark: scale-lightness($control-neutral-color, -20%)
-
 $control-font-color: rgb(100,100,100)
 $control-font-neg-color: rgb(255,255,255)
 $control-table-zebra-color: hsla(0, 0%, 0%, .03)
@@ -152,7 +149,3 @@ $control-table-zebra-color: hsla(0, 0%, 0%, .03)
 $control-font-text-shadow: 0 1px 0 rgba(0,0,0,.25)
 $control-font-neg-text-shadow: 0 1px 0 rgba(0,0,0,.45)
 $control-shadow: 0 5px 5px -4px rgba(0,0,0,.25)
-
-$control-card-margin: $double-base-line-height
-
-$table-cell-padding: $base-line-height

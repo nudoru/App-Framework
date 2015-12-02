@@ -1,0 +1,166 @@
+//------------------------------------------------------------------------------
+//  Variables
+//------------------------------------------------------------------------------
+
+$z-index-initialization: 1100
+$app-column-width: 100%
+$app-header-height: 65px
+$app-drawer-width: 0px
+
+//------------------------------------------------------------------------------
+//  Scaffold
+//------------------------------------------------------------------------------
+
+// Some options to support the mobile app / drawer structure
+
+body
+  overflow: hidden
+  background-color: #eee
+
+#app__container
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  overflow: hidden
+
+#app__contents
+  position: absolute
+  bottom: 100%
+  min-height: 100%
+  top: 0
+  left: $app-drawer-width
+  right: 0
+  overflow-y: auto
+
+.app__drawer
+  @extend %small-headers
+  width: $app-drawer-width
+  margin-bottom: -99999px
+  padding-bottom: 99999px
+  overflow: hidden
+  background: $dark-warm-grey
+  box-shadow: inset -50px -50px 50px hsla(0,0%,0%, 0.1)
+  h1,h2,h3,h4,h5 h6,p,li
+    color: #fff
+
+//------------------------------------------------------------------------------
+//  Elements
+//------------------------------------------------------------------------------
+
+#initialization__cover
+  @extend %full-background-coverage
+  z-index: $z-index-initialization
+  background-color: $color-white-grey-fill
+
+.initialization__message
+  position: relative
+  top: 200px
+  margin: auto
+  padding: $double-base-line-height
+  width: 300px
+  text-align: center
+  background-color: #fff
+  border-radius: $border-radius
+  +shadow__card-large
+  h1
+    padding: 0
+    margin: 0
+    margin-bottom: $double-base-line-height
+    color: $dark-blue
+    font-size: $ms-3
+  .loader
+    display: inline-block
+    width: 25px
+    height: 25px
+
+//------------------------------------------------------------------------------
+//  App Stuff
+//------------------------------------------------------------------------------
+
+.app__column
+  display: block
+  width: $app-column-width
+  margin: 0 auto
+  padding: $double-base-line-height
+
+.app__padded-content
+  padding: $double-base-line-height
+
+.app__header, .app__drawer-header
+  display: block
+  width: 100%
+  height: $app-header-height
+  overflow: hidden
+  background: #fff
+  color: $dark-blue
+  border-bottom: 1px solid $color-white-grey-line
+  h1
+    @extend .app__padded-content
+    margin: 0
+    font-size: $ms-1
+    line-height: $ms-1
+
+.app__header-logo
+  @extend .app__padded-content
+  float: left
+  margin-right: $double-base-line-height
+  height: $app-header-height
+  background: $color-white-grey-fill
+  color: $color-pop
+  i.fa
+    font-size: $ms-2
+    line-height: $ms-1
+
+.app__header-nav
+  position: absolute
+  top: 0
+  right: 0
+  button
+    @extend .icon-left
+    @extend .button-neutral-light
+    float: left
+    margin: 0
+    height: $app-header-height
+    border-radius: 0
+    border: none
+    border-bottom: 5px solid transparent
+    color: $light-blue
+    &:hover
+      color: $dark-blue
+      border-bottom: 5px solid $light-blue
+    &:active
+      border: none
+      border-bottom: 5px solid $dark-blue
+
+.app__drawer-header
+  background: hsla(0, 0%, 0%, 0.2)
+  border: 1px solid hsla(0, 0%, 0%, 0.2)
+  h1
+    font-size: $ms-0
+    font-weight: 700
+
+.app__hero
+  background-color: $dark-warm-grey
+  display: block
+  width: 100%
+  overflow: hidden
+  padding-top: $triple-base-line-height
+  padding-bottom: $triple-base-line-height
+  h1,h2,h3,h4,h5 h6,p,li
+    color: #fff
+    text-align: center
+    text-shadow: 0 2px 0 rgba(0,0,0,.25)
+  h1
+    margin: 0
+    padding: 0
+
+.app__hero-small
+  @extend .app__hero
+  @extend %small-headers
+  padding: $base-line-height 0
+
+.app__content
+  margin: 0
+  background-color: $color-white-grey-fill

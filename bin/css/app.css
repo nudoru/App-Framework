@@ -2174,6 +2174,14 @@
   content: "";
 }
 
+#modal__cover, .modal__background, #initialization__cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 /**
  * 1. Set default font family to sans-serif.
@@ -2567,14 +2575,6 @@ table {
 td,
 th {
   padding: 0;
-}
-
-#modal__cover, .modal__background, #initialization__cover {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
 }
 
 .h1-alternate {
