@@ -85,3 +85,74 @@ $column-gap-two: $double-base-line-height
 //  Responsive
 //------------------------------------------------------------------------------
 
+$mqbp-desktop-large: 1200px !default
+$mqbp-desktop-medium: 1000px !default
+$mqbp-tablet-mobile: 750px !default
+$mqbp-phone-mobile: 475px !default
+
+// Media query variables from Trello style guide
+$mq-highdensity: "only screen and (-webkit-min-device-pixel-ratio: 1.5)", "only screen and (min--moz-device-pixel-ratio: 1.5)","only screen and (-o-min-device-pixel-ratio: 3/2)", "only screen and (min-device-pixel-ratio: 1.5)"
+$mq-small: "only screen and (max-width: 750px)"
+$mq-medium: "only screen and (min-width: 751px) and (max-width: 900px)"
+$mq-large: "only screen and (min-width: 901px) and (max-width: 1280px)"
+$mq-extra-large: "only screen and (min-width: 1281px)"
+$mq-print: "print"
+
+//------------------------------------------------------------------------------
+//  Controls
+//------------------------------------------------------------------------------
+
+$control-font: $font-content
+
+$control-padding: $base-line-height
+$control-padding-small: $half-base-line-height
+$control-margin: $base-line-height
+
+$control-form-element-height: 38px
+
+$control-border: 1px solid $color-white-grey-line
+$control-border-dark: 1px solid $light-warm-grey
+
+$control-border-radius: 5px
+$control-border-radius-large: 10px
+$control-border-radius-small: 3px
+
+$control-panel-border-radius: $control-border-radius
+$control-button-border-radius: 50px
+
+//------------------------------------------------------------------------------
+//  Colors
+//------------------------------------------------------------------------------
+
+$control-primary-color: $light-blue
+$control-primary-color-dark: $dark-blue
+$control-container-color: rgb(255,255,255)
+$control-header-color: $color-white-grey-fill
+$control-footer-color: $color-white-grey-fill
+
+$control-success-color: rgba(76, 175, 80, 1.0)
+$control-success-color-dark: scale-lightness($control-success-color, -20%)
+$control-warning-color: rgba(255, 193, 7, 1.0)
+$control-warning-color-dark: scale-lightness($control-warning-color, -20%)
+$control-danger-color: rgba(255, 61, 0, 1.0)
+$control-danger-color-dark: scale-lightness($control-danger-color, -20%)
+$control-info-color: $light-blue
+$control-info-color-dark: scale-lightness($control-info-color, -20%)
+$control-neutral-color: $light-warm-grey
+$control-neutral-color-dark: scale-lightness($control-neutral-color, -20%)
+
+$control-font-color: rgb(100,100,100)
+$control-font-neg-color: rgb(255,255,255)
+$control-table-zebra-color: hsla(0, 0%, 0%, .03)
+
+//------------------------------------------------------------------------------
+//  Properties
+//------------------------------------------------------------------------------
+
+$control-font-text-shadow: 0 1px 0 rgba(0,0,0,.25)
+$control-font-neg-text-shadow: 0 1px 0 rgba(0,0,0,.45)
+$control-shadow: 0 5px 5px -4px rgba(0,0,0,.25)
+
+$control-card-margin: $double-base-line-height
+
+$table-cell-padding: $base-line-height
