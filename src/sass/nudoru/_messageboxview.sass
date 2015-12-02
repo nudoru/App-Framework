@@ -6,7 +6,7 @@ $message-box-footer-height: $base-line-height * 4
 
 =messagebox-button-varient($upcolor, $downcolor)
   button
-    +control-emboss-shadow
+    +letter_press
     color: #fff
     background-color: $upcolor
     &:focus, &:hover, &:active
@@ -94,7 +94,7 @@ $message-box-footer-height: $base-line-height * 4
     background-color: $color
     h1
       color: #fff
-      +control-emboss-shadow
+      +letter_press
 
 .messagebox__information
   +messagebox-variant($control-info-color)
