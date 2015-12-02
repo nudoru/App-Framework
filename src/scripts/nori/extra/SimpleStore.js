@@ -22,7 +22,7 @@ export default function () {
   /**
    * Prevent future changes to state
    */
-  function freezeState() {
+  function freeze() {
     Object.freeze(_internalState);
   }
 
@@ -42,7 +42,7 @@ export default function () {
     try {
       setState(JSON.parse(data));
     } catch (e) {
-      console.warn('Nori, SimpleStore, could not parse JSON');
+      console.warn('SimpleStore, could not parse JSON');
       setState({});
     }
   }
@@ -51,7 +51,7 @@ export default function () {
     getState,
     setState,
     dangerousGetState,
-    freezeState,
+    freeze,
     toJSON,
     fromJSON
   };
