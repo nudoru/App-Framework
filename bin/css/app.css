@@ -2719,7 +2719,7 @@ th {
   overflow: visible !important;
 }
 
-.card__header, button, .button-important, .table th, .messagebox__default .header h1, .toast__item-content h1 {
+button, .button-important, .table th, .card__header, .messagebox__default .header h1, .toast__item-content h1 {
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
@@ -3219,8 +3219,7 @@ hr {
   margin-left: 91.66667%;
 }
 
-.label, .label-small, .label-big, button, .button-important, input[type="radio"],
-input[type="checkbox"], .messagebox__default .header h1, .selected-light ul.selected-options li, .selected-light ul.selected-active li, label, input[type="text"],
+label, input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="url"],
@@ -3235,7 +3234,8 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 input[type="file"],
-select, textarea, .table th, .table td {
+select, textarea, .label, input[type="radio"],
+input[type="checkbox"], .label-small, .label-big, button, .button-important, .messagebox__default .header h1, .selected-light ul.selected-options li, .selected-light ul.selected-active li, .table th, .table td {
   padding: 0;
   margin: 0;
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -3255,8 +3255,137 @@ legend, .table caption {
   color: #005eb8;
 }
 
-.label, .label-small, .label-big, button, .button-important, input[type="radio"],
-input[type="checkbox"], .messagebox__default .header h1, .selected-light ul.selected-options li, .selected-light ul.selected-active li {
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+label {
+  height: 38px;
+  line-height: 38px;
+  padding: 6px 0;
+  display: block;
+  font-weight: 400;
+  margin: 0 11px 5.5px 0;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+input[type="file"],
+select, textarea {
+  transition: all 0.25s ease-out;
+  height: 38px;
+  padding: 6px 11px;
+  border: 1px solid #968c83;
+  border-radius: 5px;
+  background-color: #faf9f9;
+  color: #005eb8;
+  line-height: 1;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
+  text-shadow: 1px 1px 0 #fff;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+input[type="file"]:focus,
+select:focus, textarea:focus {
+  background-color: #fff;
+  border: 1px solid #005eb8;
+  box-shadow: 0 0 10px #00a9e0;
+  outline: 0;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 5.5px;
+}
+
+textarea {
+  min-height: 57px;
+  line-height: 1.2;
+}
+
+.form-stacked label {
+  display: block;
+}
+.form-stacked input, .form-stacked select, .form-stacked textarea {
+  display: block;
+  margin: 11px 0 22px 0;
+}
+.form-stacked input[type=radio], .form-stacked input[type=checkbox] {
+  display: inline;
+  margin-right: 5.5px;
+}
+
+.form-inline label {
+  display: inline;
+}
+.form-inline button {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+input.form-input-error {
+  border: 2px solid #ff3d00;
+}
+
+input.form-input-disabled {
+  background-color: #efeeec;
+  color: #6e6259;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  cursor: default;
+}
+input.form-input-disabled:focus {
+  background-color: #efeeec;
+  color: #6e6259;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  cursor: default;
+}
+
+/* Removes awkward default styles on some inputs for iOS */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.label, input[type="radio"],
+input[type="checkbox"], .label-small, .label-big, button, .button-important, .messagebox__default .header h1, .selected-light ul.selected-options li, .selected-light ul.selected-active li {
   height: 38px;
   padding: 5.5px;
   display: inline-block;
@@ -3293,33 +3422,6 @@ input[type="checkbox"], .messagebox__default .header h1, .selected-light ul.sele
 
 .label-danger {
   background-color: #ff3d00;
-}
-
-.card, .card-dark {
-  box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  margin: 22px 0;
-  padding: 22px;
-  border-radius: 5px;
-  background: #fff linear-gradient(transparent, rgba(0, 0, 0, 0.01));
-}
-
-.card__header {
-  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
-  margin: -22px;
-  margin-bottom: 22px;
-  padding: 22px;
-  padding-bottom: 11px;
-  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.1), transparent);
-  color: #fff;
-}
-.card__header h1, .card__header h2, .card__header h3, .card__header h4, .card__header h5, .card__header h6 {
-  margin: 0;
-  padding: 0;
-}
-
-.card-dark {
-  background-color: #faf9f9;
 }
 
 button, .button-important {
@@ -3461,135 +3563,6 @@ button:hover, .button-important:hover, button:focus, .button-important:focus {
   cursor: default;
 }
 
-fieldset {
-  border: none;
-  margin: 0;
-  padding: 0;
-}
-
-label {
-  height: 38px;
-  line-height: 38px;
-  padding: 6px 0;
-  display: block;
-  font-weight: 400;
-  margin: 0 11px 5.5px 0;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea {
-  transition: all 0.25s ease-out;
-  height: 38px;
-  padding: 6px 11px;
-  border: 1px solid #968c83;
-  border-radius: 5px;
-  background-color: #faf9f9;
-  color: #005eb8;
-  line-height: 1;
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
-  text-shadow: 1px 1px 0 #fff;
-}
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-input[type="url"]:focus,
-input[type="date"]:focus,
-input[type="month"]:focus,
-input[type="time"]:focus,
-input[type="datetime"]:focus,
-input[type="datetime-local"]:focus,
-input[type="week"]:focus,
-input[type="number"]:focus,
-input[type="search"]:focus,
-input[type="tel"]:focus,
-input[type="color"]:focus,
-input[type="file"]:focus,
-select:focus, textarea:focus {
-  background-color: #fff;
-  border: 1px solid #005eb8;
-  box-shadow: 0 0 10px #00a9e0;
-  outline: 0;
-}
-
-input[type="radio"],
-input[type="checkbox"] {
-  margin-right: 5.5px;
-}
-
-textarea {
-  min-height: 57px;
-  line-height: 1.2;
-}
-
-.form-stacked label {
-  display: block;
-}
-.form-stacked input, .form-stacked select, .form-stacked textarea {
-  display: block;
-  margin: 11px 0 22px 0;
-}
-.form-stacked input[type=radio], .form-stacked input[type=checkbox] {
-  display: inline;
-  margin-right: 5.5px;
-}
-
-.form-inline label {
-  display: inline;
-}
-.form-inline button {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-input.form-input-error {
-  border: 2px solid #ff3d00;
-}
-
-input.form-input-disabled {
-  background-color: #efeeec;
-  color: #6e6259;
-  border: none;
-  box-shadow: none;
-  text-shadow: none;
-  cursor: default;
-}
-input.form-input-disabled:focus {
-  background-color: #efeeec;
-  color: #6e6259;
-  border: none;
-  box-shadow: none;
-  text-shadow: none;
-  cursor: default;
-}
-
-/* Removes awkward default styles on some inputs for iOS */
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="text"],
-input[type="tel"],
-input[type="url"],
-input[type="password"],
-textarea {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
 .table {
   margin: 0;
   margin-bottom: 11px;
@@ -3705,6 +3678,33 @@ textarea {
 }
 .table-cols-zebra tbody tr th:nth-child(odd), .table-cols-zebra tbody tr td:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.03);
+}
+
+.card, .card-dark {
+  box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  margin: 22px 0;
+  padding: 22px;
+  border-radius: 5px;
+  background: #fff linear-gradient(transparent, rgba(0, 0, 0, 0.01));
+}
+
+.card__header {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+  margin: -22px;
+  margin-bottom: 22px;
+  padding: 22px;
+  padding-bottom: 11px;
+  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.1), transparent);
+  color: #fff;
+}
+.card__header h1, .card__header h2, .card__header h3, .card__header h4, .card__header h5, .card__header h6 {
+  margin: 0;
+  padding: 0;
+}
+
+.card-dark {
+  background-color: #faf9f9;
 }
 
 #modal__cover {
