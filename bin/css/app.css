@@ -2856,34 +2856,39 @@ a:active, a:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
 a:focus {
-  outline: thin-dotted;
+  outline: dotted 1px;
 }
 
-a.custom {
+a.fancy {
   transition: all 0.1s ease-out;
   color: #005eb8;
   outline: none;
   text-decoration: none;
   text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
-  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #005eb8 2px, #005eb8 3px, rgba(0, 0, 0, 0) 3px);
+  background-image: linear-gradient(bottom, transparent, transparent 2px, #005eb8 2px, #005eb8 3px, transparent 3px);
 }
 @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx) {
-  a.custom {
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #005eb8 2px, #005eb8 2.5px, rgba(0, 0, 0, 0) 2.5px);
+  a.fancy {
+    background-image: linear-gradient(bottom, transparent, transparent 2px, #005eb8 2px, #005eb8 2.5px, transparent 2.5px);
   }
 }
-a.custom:active, a.custom:hover {
+a.fancy:active, a.fancy:hover {
   color: #00a9e0;
-  background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #00a9e0 2px, #00a9e0 3px, rgba(0, 0, 0, 0) 3px);
+  background-image: linear-gradient(bottom, transparent, transparent 2px, #00a9e0 2px, #00a9e0 3px, transparent 3px);
   outline: none;
 }
 @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx) {
-  a.custom:active, a.custom:hover {
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0) 2px, #00a9e0 2px, #00a9e0 2.5px, rgba(0, 0, 0, 0) 2.5px);
+  a.fancy:active, a.fancy:hover {
+    background-image: linear-gradient(bottom, transparent, transparent 2px, #00a9e0 2px, #00a9e0 2.5px, transparent 2.5px);
   }
 }
-a.custom:focus {
-  outline: thin-dotted;
+a.fancy:focus {
+  outline: dotted 1px;
+}
+
+ul, ol {
+  padding-left: 0;
+  margin-left: 0;
 }
 
 ul {
@@ -3296,7 +3301,7 @@ input[type="checkbox"], .messagebox__default .header h1, .selected-light ul.sele
   margin: 22px 0;
   padding: 22px;
   border-radius: 5px;
-  background: #fff linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.01));
+  background: #fff linear-gradient(transparent, rgba(0, 0, 0, 0.01));
 }
 
 .card__header {
@@ -3305,7 +3310,7 @@ input[type="checkbox"], .messagebox__default .header h1, .selected-light ul.sele
   margin-bottom: 22px;
   padding: 22px;
   padding-bottom: 11px;
-  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0));
+  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.1), transparent);
   color: #fff;
 }
 .card__header h1, .card__header h2, .card__header h3, .card__header h4, .card__header h5, .card__header h6 {
@@ -3322,7 +3327,7 @@ button, .button-important {
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
   padding: 5.5px 33px;
   margin: 5.5px;
-  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0));
+  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.25), transparent);
   border-radius: 50px;
   border: 1px solid rgba(0, 0, 0, 0.15);
   font-size: 0.8rem;

@@ -69,9 +69,9 @@ a
     color: $color-link-active
     background-color: hsla(0,0%,0%,.05)
   &:focus
-    outline: thin-dotted
+    outline: dotted 1px
 
-a.custom
+a.fancy
   +transition-all
   color: $color-link
   outline: none
@@ -87,7 +87,11 @@ a.custom
     @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dppx)
       +underline($color-link-active, 0.5)
   &:focus
-    outline: thin-dotted
+    outline: dotted 1px
+
+ul, ol
+  padding-left: 0
+  margin-left: 0
 
 ul
   list-style: disc inside
