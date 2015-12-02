@@ -2647,6 +2647,14 @@ th {
   width: auto;
 }
 
+.icon-left i.fa, .app__header-nav button i.fa {
+  margin-right: 11px;
+}
+
+.icon-right i.fa {
+  margin-left: 11px;
+}
+
 .text-left {
   text-align: left !important;
 }
@@ -2709,6 +2717,11 @@ th {
 
 .overflow-visible {
   overflow: visible !important;
+}
+
+.card__header, button, .button-important, .table th, .messagebox__default .header h1, .toast__item-content h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
 }
 
 h1 {
@@ -3240,19 +3253,6 @@ legend, .table caption {
   font-size: 1rem;
   font-weight: 700;
   color: #005eb8;
-}
-
-.card__header, button, .button-important, .table th, .messagebox__default .header h1, .toast__item-content h1 {
-  text-transform: uppercase;
-  letter-spacing: 0.05rem;
-}
-
-.icon-left i.fa, .app__header-nav button i.fa {
-  margin-right: 11px;
-}
-
-.icon-right i.fa {
-  margin-left: 11px;
 }
 
 .label, .label-small, .label-big, button, .button-important, input[type="radio"],

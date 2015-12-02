@@ -32,41 +32,19 @@
 
 @import "layout/grid"
 
+@import "components/controls-base"
+@import "components/labels"
+@import "components/cards"
+@import "components/buttons"
+@import "components/forms"
+@import "components/tables"
 
-
-@import "components/controls"
 @import "nudoru/nudoru"
 
 @import "vendor/pikaday"
 @import "vendor/selected"
 
-//------------------------------------------------------------------------------
-//  Nori Specific
-//------------------------------------------------------------------------------
-
-.nori__vc
-  .error
-    border: 1px solid #f00
-
-.nori__block
-  display: inline-block
-  position: relative
-  width: 100px
-  height: 100px
-  background-color: #eee
-  border: 1px solid #ddd
-  overflow: hidden
-  padding: 5px
-  margin: 0 5px 5px 0
-  user-select: none
-  p
-    font-size: 12px
-    padding: 0
-    margin: 0
-    text-align: center
-    line-height: $ms-0
-    cursor: pointer
-    user-select: none
+@import "nori-app"
 
 //------------------------------------------------------------------------------
 //  Variables
@@ -76,6 +54,7 @@ $z-index-initialization: 1100
 $app-column-width: 100%
 $app-header-height: 65px
 $app-drawer-width: 0px
+
 //------------------------------------------------------------------------------
 //  Scaffold
 //------------------------------------------------------------------------------
