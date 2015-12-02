@@ -1,0 +1,18 @@
+=transition-all($duration:.1s)
+  //-moz-transition: all $duration ease-out
+  //-o-transition: all $duration ease-out
+  //-webkit-transition: all $duration ease-out
+  transition: all $duration ease-out
+
+=transition-prop($prop, $duration:.25s, $ease:ease-out)
+  //-webkit-transition: $prop $duration $ease
+  //-moz-transition: $prop $duration $ease
+  //-o-transition: $prop $duration $ease
+  transition: $prop $duration $ease
+
+=transition-transform($transition)
+  //-webkit-transition: -webkit-transform $transition
+  //-moz-transition: -moz-transform $transition
+  //-o-transition: -o-transform $transition
+  transition: transform $transition
+

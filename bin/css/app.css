@@ -2522,9 +2522,6 @@ pre {
 }
 
 a {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   color: #005eb8;
   outline: none;
@@ -2538,9 +2535,6 @@ a:focus {
 }
 
 a.custom {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   color: #005eb8;
   outline: none;
@@ -2999,9 +2993,6 @@ input[type="checkbox"], .messagebox__default .header h1, .selected-light ul.sele
 }
 
 button, .button-important {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
   padding: 5.5px 33px;
@@ -3165,9 +3156,6 @@ input[type="tel"],
 input[type="color"],
 input[type="file"],
 select, textarea {
-  -moz-transition: all 0.25s ease-out;
-  -o-transition: all 0.25s ease-out;
-  -webkit-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
   height: 38px;
   padding: 6px 11px;
@@ -3293,9 +3281,6 @@ textarea {
   padding-left: 11px;
 }
 .table thead .th-sortable {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   cursor: pointer;
   border-radius: 10px 10px 0 0;
@@ -3462,9 +3447,6 @@ textarea {
   display: table-cell;
 }
 .messagebox__default .footer .footer-buttons .button button {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   background-color: rgba(0, 0, 0, 0.02);
   height: 44px;
@@ -4064,9 +4046,6 @@ textarea {
   border-radius: 0 0 5px 5px;
 }
 .selected-light ul.selected-options li {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   display: block;
   border-radius: 0;
@@ -4076,9 +4055,6 @@ textarea {
   color: #fff;
 }
 .selected-light ul.selected-active {
-  -moz-transition: all 0.1s ease-out;
-  -o-transition: all 0.1s ease-out;
-  -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
   border: 1px solid #968c83;
   padding: 1px;
