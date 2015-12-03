@@ -1,0 +1,47 @@
+@import "../utils/variables"
+
+.app__header
+  display: block
+  width: 100%
+  height: $app-header-height
+  overflow: hidden
+  background: #fff
+  color: $dark-blue
+  border-bottom: 1px solid $color-white-grey-line
+  h1
+    @extend .app__padded-content
+    margin: 0
+    font-size: $ms-1
+    line-height: $ms-1
+
+.app__header-logo
+  @extend .app__padded-content
+  float: left
+  margin-right: $double-base-line-height
+  height: $app-header-height
+  background: $color-white-grey-fill
+  color: $color-pop
+  i.fa
+    font-size: $ms-2
+    line-height: $ms-1
+
+.app__header-nav
+  position: absolute
+  top: 0
+  right: 0
+  button
+    @extend .icon-left
+    @extend .button-neutral-light
+    float: left
+    margin: 0
+    height: $app-header-height
+    border-radius: 0
+    border: none
+    border-bottom: 5px solid transparent
+    color: $light-blue
+    &:hover
+      color: $dark-blue
+      border-bottom: 5px solid $light-blue
+    &:active
+      border: none
+      border-bottom: 5px solid $dark-blue

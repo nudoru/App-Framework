@@ -1,0 +1,27 @@
+@import "../utils/variables"
+
+.app__drawer
+  @extend %small-headers
+  width: $app-drawer-width
+  margin-bottom: -99999px
+  padding-bottom: 99999px
+  overflow: hidden
+  background: $dark-warm-grey
+  box-shadow: inset -50px -50px 50px hsla(0,0%,0%, 0.1)
+  h1,h2,h3,h4,h5 h6,p,li
+    color: #fff
+
+.app__drawer-header
+  display: block
+  width: 100%
+  height: $app-header-height
+  overflow: hidden
+  background: hsla(0, 0%, 0%, 0.2)
+  color: $dark-blue
+  border: 1px solid hsla(0, 0%, 0%, 0.2)
+  h1
+    @extend .app__padded-content
+    margin: 0
+    font-size: $ms-0
+    line-height: $ms-1
+    font-weight: 700

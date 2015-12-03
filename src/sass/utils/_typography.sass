@@ -1,6 +1,6 @@
-%emphasis-title
-  text-transform: uppercase
-  letter-spacing: 0.05rem
+//------------------------------------------------------------------------------
+//  Headers
+//------------------------------------------------------------------------------
 
 =header-base($fontSize, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
   margin: 0
@@ -35,6 +35,26 @@
   +header-base($ms-0)
   font-weight: 700
 
+%small-headers
+  h1
+    @extend %header-3
+  h2
+    @extend %header-4
+  h3
+    @extend %header-5
+  h4, h5, h6
+    @extend %header-6
+
+%header-alternate
+  font-family: $font-content
+  margin-bottom: $double-base-line-height
+  padding-bottom: 0
+  padding-top: $half-base-line-height
+
+//------------------------------------------------------------------------------
+//  Paragraph
+//------------------------------------------------------------------------------
+
 =paragraph-base($size: $ms-1, $lineHeight: $double-base-line-height, $marginBottom: $double-base-line-height)
   font-family: $font-content
   font-size: $size
@@ -52,22 +72,6 @@
 %body-text-big
   +paragraph-base($ms-2, $triple-base-line-height, $double-base-line-height)
 
-%small-headers
-  h1
-    @extend %header-3
-  h2
-    @extend %header-4
-  h3
-    @extend %header-5
-  h4, h5, h6
-    @extend %header-6
-
-%header-alternate
-  font-family: $font-content
-  margin-bottom: $double-base-line-height
-  padding-bottom: 0
-  padding-top: $half-base-line-height
-
 %compressed-paragraph
   display: inline
   &:before
@@ -79,20 +83,14 @@
     &:before
       margin-left: 0
 
-%control-text-base
-  padding: 0
-  margin: 0
-  font-family: $font-content
-  font-size: $ms-0
-  line-height: $double-base-line-height
-  color: $color-text-content
-  font-weight: 400
-  display: inline-block
-  vertical-align: middle
+
+
+//------------------------------------------------------------------------------
+//  Misc
+//------------------------------------------------------------------------------
 
 // Based on Medium https://medium.com/designing-medium/crafting-link-underlines-on-medium-7c03a9274f9
 // http://codepen.io/ghepting/pen/tLnHK/
-
 //$background-color: #fff !default
 //$link-color: #333 !default
 //$link-color-active: #55abad !default
@@ -163,15 +161,6 @@ $breaking-underlines: true !default
   overflow: hidden
   text-overflow: ellipsis
   white-space: nowrap
-
-// CSS image replacement
-// Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
-=hide-text()
-  font: "0/0" a
-  color: transparent
-  text-shadow: none
-  background-color: transparent
-  border: 0
 
 =text-size-100pct
   -webkit-text-size-adjust: 100%
