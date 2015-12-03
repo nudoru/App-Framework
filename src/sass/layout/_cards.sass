@@ -2,27 +2,22 @@
 @import "../utils/variables-controls"
 @import "../utils/shadows"
 
-.card
+.nuCard
   +shadow__card-large
   overflow: hidden
   margin: $control-card-margin 0
   padding: $control-card-margin
   border-radius: $control-border-radius
   background: #fff linear-gradient(transparent, hsla(0,0%, 0, .01))
-
-.card__header
-  +letter_press
-  @extend %emphasis-title
-  margin: -$control-card-margin
-  margin-bottom: $control-card-margin
-  padding: $control-card-margin
-  padding-bottom: $base-line-height
-  background: $control-primary-color linear-gradient(hsla(0,0%, 255, .1), transparent)
-  color: #fff
-  h1, h2, h3, h4, h5, h6
-    margin: 0
-    padding: 0
-
-.card-dark
-  @extend .card
-  background-color: $color-white-grey-fill
+  .header
+    +letter_press
+    @extend %emphasis-title
+    margin: -$control-card-margin
+    margin-bottom: $control-card-margin
+    padding: $control-card-margin
+    padding-bottom: $base-line-height
+    background: $control-primary-color linear-gradient(hsla(0,0%, 255, .1), transparent)
+    color: #fff
+    h1, h2, h3, h4, h5, h6
+      margin: 0
+      padding: 0

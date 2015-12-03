@@ -2636,13 +2636,6 @@ h2 {
   font-weight: 700;
 }
 
-.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin-bottom: 22px;
-  padding-bottom: 0;
-  padding-top: 5.5px;
-}
-
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
@@ -2650,36 +2643,6 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   font-weight: 400;
   margin-top: 0;
   margin-bottom: 22px;
-}
-
-.h1-alternate {
-  font-size: 2.067rem;
-  font-weight: 300;
-}
-
-.h2-alternate {
-  font-size: 1.618rem;
-  font-weight: 300;
-}
-
-.h3-alternate {
-  font-size: 1.277rem;
-  font-weight: 300;
-}
-
-.h4-alternate {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.h5-alternate {
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.h6-alternate {
-  font-size: 0.618rem;
-  font-weight: 700;
 }
 
 .ignore-pointer-events {
@@ -2860,13 +2823,6 @@ h2 {
   font-weight: 700;
 }
 
-.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin-bottom: 22px;
-  padding-bottom: 0;
-  padding-top: 5.5px;
-}
-
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
@@ -3039,41 +2995,127 @@ hr {
   content: "";
 }
 
-.label, .label-small, .label-big, input[type="radio"],
-input[type="checkbox"], label, input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea, .nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"], .nuForm label {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   display: inline-block;
   vertical-align: middle;
 }
 
-button, .button-important, .table th, .card__header {
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button, .nuTable th, .nuCard .header {
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
 
-legend, .table caption {
+.nuForm legend, .nuTable caption {
   margin-bottom: 22px;
   width: 100%;
   font-size: 1rem;
   font-weight: 700;
   color: #005eb8;
   text-align: left;
+}
+
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea {
+  transition: all 0.25s ease-out;
+  height: 38px;
+  padding: 6px 11px;
+  border: 1px solid #968c83;
+  border-radius: 5px;
+  background-color: #faf9f9;
+  color: #005eb8;
+  line-height: 1;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
+  text-shadow: 1px 1px 0 #fff;
+}
+.nuForm input[type="text"]:focus,
+.nuForm input[type="password"]:focus,
+.nuForm input[type="email"]:focus,
+.nuForm input[type="url"]:focus,
+.nuForm input[type="date"]:focus,
+.nuForm input[type="month"]:focus,
+.nuForm input[type="time"]:focus,
+.nuForm input[type="datetime"]:focus,
+.nuForm input[type="datetime-local"]:focus,
+.nuForm input[type="week"]:focus,
+.nuForm input[type="number"]:focus,
+.nuForm input[type="search"]:focus,
+.nuForm input[type="tel"]:focus,
+.nuForm input[type="color"]:focus,
+.nuForm input[type="file"]:focus,
+.nuForm select:focus, .nuForm textarea:focus {
+  background-color: #fff;
+  border: 1px solid #005eb8;
+  box-shadow: 0 0 10px #00a9e0;
+  outline: 0;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"] {
+  padding: 5.5px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+  padding: 11px;
+  line-height: 1.2;
+  border-radius: 5px;
+  color: white !important;
+}
+
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
+  transition: all 0.1s ease-out;
+  margin: 5.5px;
+  border-radius: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.nuButton i.fa, .nuButton-small i.fa, .nuButton-important i.fa, .nuButton-round i.fa, .nuButton-success i.fa, .nuButton-warning i.fa, .nuButton-danger i.fa, .nuButton-neutral i.fa, .nuButton-neutral-light i.fa, .nuButton-neutral-light-negative i.fa, .nuButton-disabled i.fa, .app__header-nav button i.fa {
+  position: relative;
+  font-weight: 400;
+}
+.nuButton:active, .nuButton-small:active, .nuButton-important:active, .nuButton-round:active, .nuButton-success:active, .nuButton-warning:active, .nuButton-danger:active, .nuButton-neutral:active, .nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.nuButton:hover, .nuButton-small:hover, .nuButton-important:hover, .nuButton-round:hover, .nuButton-success:hover, .nuButton-warning:hover, .nuButton-danger:hover, .nuButton-neutral:hover, .nuButton-neutral-light:hover, .nuButton-neutral-light-negative:hover, .nuButton-disabled:hover, .app__header-nav button:hover, .nuButton:focus, .nuButton-small:focus, .nuButton-important:focus, .nuButton-round:focus, .nuButton-success:focus, .nuButton-warning:focus, .nuButton-danger:focus, .nuButton-neutral:focus, .nuButton-neutral-light:focus, .nuButton-neutral-light-negative:focus, .nuButton-disabled:focus, .app__header-nav button:focus {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 h1 {
@@ -3142,13 +3184,6 @@ h2 {
   font-weight: 700;
 }
 
-.h1-alternate, .h2-alternate, .h3-alternate, .h4-alternate, .h5-alternate, .h6-alternate {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin-bottom: 22px;
-  padding-bottom: 0;
-  padding-top: 5.5px;
-}
-
 p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
@@ -3158,74 +3193,59 @@ p, a, ul, ol, li, blockquote, pre, td, th, dl, dd, dt {
   margin-bottom: 22px;
 }
 
-.label, .label-small, .label-big, input[type="radio"],
-input[type="checkbox"] {
-  padding: 5.5px;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.label-small {
+.nuLabel-small {
   font-size: 0.618rem;
 }
 
-.label-big {
+.nuLabel-big {
   font-size: 1.277rem;
 }
 
-.label-information, .label-success, .label-warning, .label-danger {
-  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
-  padding: 11px;
-  line-height: 1.2;
-  border-radius: 5px;
-  color: white !important;
-}
-
-.label-information {
+.nuLabel-information {
   background-color: #00a9e0;
 }
 
-.label-success {
+.nuLabel-success {
   background-color: #4caf50;
 }
 
-.label-warning {
+.nuLabel-warning {
   background-color: #ffc107;
 }
 
-.label-danger {
+.nuLabel-danger {
   background-color: #ff3d00;
 }
 
-.label, .label-small, .label-big, input[type="radio"],
-input[type="checkbox"], label, input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea, .nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"], .nuForm label {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   display: inline-block;
   vertical-align: middle;
 }
 
-button, .button-important, .table th, .card__header {
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button, .nuTable th, .nuCard .header {
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
 
-legend, .table caption {
+.nuForm legend, .nuTable caption {
   margin-bottom: 22px;
   width: 100%;
   font-size: 1rem;
@@ -3234,37 +3254,22 @@ legend, .table caption {
   text-align: left;
 }
 
-fieldset {
-  border: none;
-  margin: 0;
-  padding: 0;
-}
-
-label {
-  height: 38px;
-  line-height: 38px;
-  padding: 6px 0;
-  display: block;
-  font-weight: 400;
-  margin: 0 11px 5.5px 0;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea {
   transition: all 0.25s ease-out;
   height: 38px;
   padding: 6px 11px;
@@ -3276,63 +3281,114 @@ select, textarea {
   box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
   text-shadow: 1px 1px 0 #fff;
 }
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-input[type="url"]:focus,
-input[type="date"]:focus,
-input[type="month"]:focus,
-input[type="time"]:focus,
-input[type="datetime"]:focus,
-input[type="datetime-local"]:focus,
-input[type="week"]:focus,
-input[type="number"]:focus,
-input[type="search"]:focus,
-input[type="tel"]:focus,
-input[type="color"]:focus,
-input[type="file"]:focus,
-select:focus, textarea:focus {
+.nuForm input[type="text"]:focus,
+.nuForm input[type="password"]:focus,
+.nuForm input[type="email"]:focus,
+.nuForm input[type="url"]:focus,
+.nuForm input[type="date"]:focus,
+.nuForm input[type="month"]:focus,
+.nuForm input[type="time"]:focus,
+.nuForm input[type="datetime"]:focus,
+.nuForm input[type="datetime-local"]:focus,
+.nuForm input[type="week"]:focus,
+.nuForm input[type="number"]:focus,
+.nuForm input[type="search"]:focus,
+.nuForm input[type="tel"]:focus,
+.nuForm input[type="color"]:focus,
+.nuForm input[type="file"]:focus,
+.nuForm select:focus, .nuForm textarea:focus {
   background-color: #fff;
   border: 1px solid #005eb8;
   box-shadow: 0 0 10px #00a9e0;
   outline: 0;
 }
 
-input[type="radio"],
-input[type="checkbox"] {
-  margin-right: 5.5px;
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"] {
+  padding: 5.5px;
+  display: inline-block;
+  white-space: nowrap;
 }
 
-textarea {
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+  padding: 11px;
+  line-height: 1.2;
+  border-radius: 5px;
+  color: white !important;
+}
+
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
+  transition: all 0.1s ease-out;
+  margin: 5.5px;
+  border-radius: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.nuButton i.fa, .nuButton-small i.fa, .nuButton-important i.fa, .nuButton-round i.fa, .nuButton-success i.fa, .nuButton-warning i.fa, .nuButton-danger i.fa, .nuButton-neutral i.fa, .nuButton-neutral-light i.fa, .nuButton-neutral-light-negative i.fa, .nuButton-disabled i.fa, .app__header-nav button i.fa {
+  position: relative;
+  font-weight: 400;
+}
+.nuButton:active, .nuButton-small:active, .nuButton-important:active, .nuButton-round:active, .nuButton-success:active, .nuButton-warning:active, .nuButton-danger:active, .nuButton-neutral:active, .nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.nuButton:hover, .nuButton-small:hover, .nuButton-important:hover, .nuButton-round:hover, .nuButton-success:hover, .nuButton-warning:hover, .nuButton-danger:hover, .nuButton-neutral:hover, .nuButton-neutral-light:hover, .nuButton-neutral-light-negative:hover, .nuButton-disabled:hover, .app__header-nav button:hover, .nuButton:focus, .nuButton-small:focus, .nuButton-important:focus, .nuButton-round:focus, .nuButton-success:focus, .nuButton-warning:focus, .nuButton-danger:focus, .nuButton-neutral:focus, .nuButton-neutral-light:focus, .nuButton-neutral-light-negative:focus, .nuButton-disabled:focus, .app__header-nav button:focus {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.nuForm {
+  border: none;
+  margin: 0;
+  padding: 0;
+  /* Removes awkward default styles on some inputs for iOS */
+}
+.nuForm fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+.nuForm label {
+  height: 38px;
+  line-height: 38px;
+  padding: 6px 0;
+  display: block;
+  font-weight: 400;
+  margin: 0 11px 5.5px 0;
+}
+.nuForm input[type="radio"],
+.nuForm input[type="checkbox"] {
+  margin-right: 5.5px;
+}
+.nuForm textarea {
   min-height: 57px;
   line-height: 1.2;
 }
-
-.form-stacked label {
+.nuForm .form-stacked label {
   display: block;
 }
-.form-stacked input, .form-stacked select, .form-stacked textarea {
+.nuForm .form-stacked input, .nuForm .form-stacked select, .nuForm .form-stacked textarea {
   display: block;
   margin: 11px 0 22px 0;
 }
-.form-stacked input[type=radio], .form-stacked input[type=checkbox] {
+.nuForm .form-stacked input[type=radio], .nuForm .form-stacked input[type=checkbox] {
   display: inline;
   margin-right: 5.5px;
 }
-
-.form-inline label {
+.nuForm .form-inline label {
   display: inline;
 }
-.form-inline button {
+.nuForm .form-inline button {
   margin-top: 0;
   margin-bottom: 0;
 }
-
-input.form-input-error {
+.nuForm input.form-input-error {
   border: 2px solid #ff3d00;
 }
-
-input.form-input-disabled {
+.nuForm input.form-input-disabled {
   background-color: #efeeec;
   color: #6e6259;
   border: none;
@@ -3340,7 +3396,7 @@ input.form-input-disabled {
   text-shadow: none;
   cursor: default;
 }
-input.form-input-disabled:focus {
+.nuForm input.form-input-disabled:focus {
   background-color: #efeeec;
   color: #6e6259;
   border: none;
@@ -3348,50 +3404,48 @@ input.form-input-disabled:focus {
   text-shadow: none;
   cursor: default;
 }
-
-/* Removes awkward default styles on some inputs for iOS */
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="text"],
-input[type="tel"],
-input[type="url"],
-input[type="password"],
-textarea {
+.nuForm input[type="email"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="text"],
+.nuForm input[type="tel"],
+.nuForm input[type="url"],
+.nuForm input[type="password"],
+.nuForm textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
-.label, .label-small, .label-big, input[type="radio"],
-input[type="checkbox"], label, input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea, .nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"], .nuForm label {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   display: inline-block;
   vertical-align: middle;
 }
 
-button, .button-important, .table th, .card__header {
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button, .nuTable th, .nuCard .header {
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
 
-legend, .table caption {
+.nuForm legend, .nuTable caption {
   margin-bottom: 22px;
   width: 100%;
   font-size: 1rem;
@@ -3400,57 +3454,126 @@ legend, .table caption {
   text-align: left;
 }
 
-button, .button-important {
-  transition: all 0.1s ease-out;
-  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea {
+  transition: all 0.25s ease-out;
   height: 38px;
-  padding: 5.5px 33px;
+  padding: 6px 11px;
+  border: 1px solid #968c83;
+  border-radius: 5px;
+  background-color: #faf9f9;
+  color: #005eb8;
+  line-height: 1;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
+  text-shadow: 1px 1px 0 #fff;
+}
+.nuForm input[type="text"]:focus,
+.nuForm input[type="password"]:focus,
+.nuForm input[type="email"]:focus,
+.nuForm input[type="url"]:focus,
+.nuForm input[type="date"]:focus,
+.nuForm input[type="month"]:focus,
+.nuForm input[type="time"]:focus,
+.nuForm input[type="datetime"]:focus,
+.nuForm input[type="datetime-local"]:focus,
+.nuForm input[type="week"]:focus,
+.nuForm input[type="number"]:focus,
+.nuForm input[type="search"]:focus,
+.nuForm input[type="tel"]:focus,
+.nuForm input[type="color"]:focus,
+.nuForm input[type="file"]:focus,
+.nuForm select:focus, .nuForm textarea:focus {
+  background-color: #fff;
+  border: 1px solid #005eb8;
+  box-shadow: 0 0 10px #00a9e0;
+  outline: 0;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"] {
+  padding: 5.5px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+  padding: 11px;
+  line-height: 1.2;
+  border-radius: 5px;
+  color: white !important;
+}
+
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
+  transition: all 0.1s ease-out;
   margin: 5.5px;
-  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.25), transparent);
   border-radius: 50px;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  font-size: 0.8rem;
   line-height: 1.2;
   text-align: center;
-  color: #fff;
   cursor: pointer;
 }
-button i.fa, .button-important i.fa {
+.nuButton i.fa, .nuButton-small i.fa, .nuButton-important i.fa, .nuButton-round i.fa, .nuButton-success i.fa, .nuButton-warning i.fa, .nuButton-danger i.fa, .nuButton-neutral i.fa, .nuButton-neutral-light i.fa, .nuButton-neutral-light-negative i.fa, .nuButton-disabled i.fa, .app__header-nav button i.fa {
   position: relative;
   font-weight: 400;
 }
-button:active, .button-important:active {
-  background-color: #005eb8;
+.nuButton:active, .nuButton-small:active, .nuButton-important:active, .nuButton-round:active, .nuButton-success:active, .nuButton-warning:active, .nuButton-danger:active, .nuButton-neutral:active, .nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
   border: 1px solid rgba(0, 0, 0, 0.25);
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
 }
-button:hover, .button-important:hover, button:focus, .button-important:focus {
+.nuButton:hover, .nuButton-small:hover, .nuButton-important:hover, .nuButton-round:hover, .nuButton-success:hover, .nuButton-warning:hover, .nuButton-danger:hover, .nuButton-neutral:hover, .nuButton-neutral-light:hover, .nuButton-neutral-light-negative:hover, .nuButton-disabled:hover, .app__header-nav button:hover, .nuButton:focus, .nuButton-small:focus, .nuButton-important:focus, .nuButton-round:focus, .nuButton-success:focus, .nuButton-warning:focus, .nuButton-danger:focus, .nuButton-neutral:focus, .nuButton-neutral-light:focus, .nuButton-neutral-light-negative:focus, .nuButton-disabled:focus, .app__header-nav button:focus {
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
-.button__icon-left {
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+  height: 38px;
+  padding: 5.5px 33px;
+  background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.25), transparent);
+  font-size: 0.8rem;
+  color: #fff;
+}
+.nuButton:active, .nuButton-small:active, .nuButton-important:active, .nuButton-round:active, .nuButton-success:active, .nuButton-warning:active, .nuButton-danger:active, .nuButton-neutral:active, .nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
+  background-color: #005eb8;
+}
+
+.nuButton__icon-left {
   padding-left: 11px;
 }
-.button__icon-left i.fa {
+.nuButton__icon-left i.fa {
   margin-right: 11px;
 }
 
-.button__icon-right {
+.nuButton__icon-right {
   padding-right: 11px;
 }
-.button__icon-right i.fa {
+.nuButton__icon-right i.fa {
   margin-left: 11px;
 }
 
-.button-block {
+.nuButton-block {
   display: block;
   width: 100%;
   margin-left: 0;
   margin-right: 0;
 }
 
-.button-small {
+.nuButton-small {
   font-size: 0.7rem;
   padding: 0 11px;
   height: 25px;
@@ -3458,72 +3581,72 @@ button:hover, .button-important:hover, button:focus, .button-important:focus {
   margin-right: 2px;
 }
 
-.button-important {
+.nuButton-important {
   font-size: 1.2rem;
   text-transform: none;
   letter-spacing: 0;
   padding: 5.5px 44px;
 }
 
-.button-round {
+.nuButton-round {
   padding: 0;
   border-radius: 50px;
   height: 38px;
   width: 38px;
 }
 
-.button-success {
-  background-color: #4caf50;
+.nuButton-success {
+  background: #4caf50;
 }
-.button-success:active {
+.nuButton-success:active {
   background-color: #3d8c40;
 }
 
-.button-warning {
+.nuButton-warning {
   background-color: #ffc107;
 }
-.button-warning:active {
+.nuButton-warning:active {
   background-color: #d29d00;
 }
 
-.button-danger {
+.nuButton-danger {
   background-color: #ff3d00;
 }
-.button-danger:active {
+.nuButton-danger:active {
   background-color: #cc3100;
 }
 
-.button-neutral, .button-neutral-light, .button-neutral-light-negative, .button-disabled, .app__header-nav button {
+.nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
   color: #fff;
   background-color: #968c83;
 }
-.button-neutral:active, .button-neutral-light:active, .button-neutral-light-negative:active, .button-disabled:active, .app__header-nav button:active {
+.nuButton-neutral:active, .nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
   background-color: #6e6259;
 }
 
-.button-neutral-light, .button-neutral-light-negative, .button-disabled, .app__header-nav button {
+.nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
   background-color: rgba(255, 255, 255, 0.25);
   color: #968c83;
   border: 1px solid #968c83;
   box-shadow: none;
   text-shadow: none;
 }
-.button-neutral-light:active, .button-neutral-light-negative:active, .button-disabled:active, .app__header-nav button:active {
+.nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
   color: #005eb8;
   border: 1px solid #00a9e0;
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.button-neutral-light-negative, .button-disabled {
+.nuButton-neutral-light-negative, .nuButton-disabled {
   color: #fff;
 }
-.button-neutral-light-negative:active, .button-disabled:active {
+.nuButton-neutral-light-negative:active, .nuButton-disabled:active {
   color: #fff;
   border: 1px solid #fff;
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.button-disabled {
+.nuButton-disabled {
   background-color: #efeeec;
   color: #6e6259;
   border: none;
@@ -3531,7 +3654,7 @@ button:hover, .button-important:hover, button:focus, .button-important:focus {
   text-shadow: none;
   cursor: default;
 }
-.button-disabled:focus, .button-disabled:hover, .button-disabled:active {
+.nuButton-disabled:focus, .nuButton-disabled:hover, .nuButton-disabled:active {
   background-color: #efeeec;
   color: #6e6259;
   border: none;
@@ -3790,35 +3913,35 @@ button:hover, .button-important:hover, button:focus, .button-important:focus {
   margin-left: 91.66667%;
 }
 
-.label, .label-small, .label-big, input[type="radio"],
-input[type="checkbox"], label, input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea, .nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"], .nuForm label {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   display: inline-block;
   vertical-align: middle;
 }
 
-button, .button-important, .table th, .card__header {
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button, .nuTable th, .nuCard .header {
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
 
-legend, .table caption {
+.nuForm legend, .nuTable caption {
   margin-bottom: 22px;
   width: 100%;
   font-size: 1rem;
@@ -3827,7 +3950,93 @@ legend, .table caption {
   text-align: left;
 }
 
-.table {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea {
+  transition: all 0.25s ease-out;
+  height: 38px;
+  padding: 6px 11px;
+  border: 1px solid #968c83;
+  border-radius: 5px;
+  background-color: #faf9f9;
+  color: #005eb8;
+  line-height: 1;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
+  text-shadow: 1px 1px 0 #fff;
+}
+.nuForm input[type="text"]:focus,
+.nuForm input[type="password"]:focus,
+.nuForm input[type="email"]:focus,
+.nuForm input[type="url"]:focus,
+.nuForm input[type="date"]:focus,
+.nuForm input[type="month"]:focus,
+.nuForm input[type="time"]:focus,
+.nuForm input[type="datetime"]:focus,
+.nuForm input[type="datetime-local"]:focus,
+.nuForm input[type="week"]:focus,
+.nuForm input[type="number"]:focus,
+.nuForm input[type="search"]:focus,
+.nuForm input[type="tel"]:focus,
+.nuForm input[type="color"]:focus,
+.nuForm input[type="file"]:focus,
+.nuForm select:focus, .nuForm textarea:focus {
+  background-color: #fff;
+  border: 1px solid #005eb8;
+  box-shadow: 0 0 10px #00a9e0;
+  outline: 0;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"] {
+  padding: 5.5px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+  padding: 11px;
+  line-height: 1.2;
+  border-radius: 5px;
+  color: white !important;
+}
+
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
+  transition: all 0.1s ease-out;
+  margin: 5.5px;
+  border-radius: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.nuButton i.fa, .nuButton-small i.fa, .nuButton-important i.fa, .nuButton-round i.fa, .nuButton-success i.fa, .nuButton-warning i.fa, .nuButton-danger i.fa, .nuButton-neutral i.fa, .nuButton-neutral-light i.fa, .nuButton-neutral-light-negative i.fa, .nuButton-disabled i.fa, .app__header-nav button i.fa {
+  position: relative;
+  font-weight: 400;
+}
+.nuButton:active, .nuButton-small:active, .nuButton-important:active, .nuButton-round:active, .nuButton-success:active, .nuButton-warning:active, .nuButton-danger:active, .nuButton-neutral:active, .nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.nuButton:hover, .nuButton-small:hover, .nuButton-important:hover, .nuButton-round:hover, .nuButton-success:hover, .nuButton-warning:hover, .nuButton-danger:hover, .nuButton-neutral:hover, .nuButton-neutral-light:hover, .nuButton-neutral-light-negative:hover, .nuButton-disabled:hover, .app__header-nav button:hover, .nuButton:focus, .nuButton-small:focus, .nuButton-important:focus, .nuButton-round:focus, .nuButton-success:focus, .nuButton-warning:focus, .nuButton-danger:focus, .nuButton-neutral:focus, .nuButton-neutral-light:focus, .nuButton-neutral-light-negative:focus, .nuButton-disabled:focus, .app__header-nav button:focus {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.nuTable {
   margin: 0;
   margin-bottom: 11px;
   padding: 0;
@@ -3836,143 +4045,143 @@ legend, .table caption {
   border-spacing: 0;
   border-collapse: collapse;
 }
-.table th, .table td {
+.nuTable th, .nuTable td {
   display: table-cell;
   padding: 11px;
   border: none;
   vertical-align: middle;
 }
-.table th {
+.nuTable th {
   font-size: 0.8rem;
   text-align: left;
 }
-.table thead th {
+.nuTable thead th {
   color: #005eb8;
   border-bottom: 1px solid #00a9e0;
   vertical-align: bottom;
 }
-.table thead th i.fa {
+.nuTable thead th i.fa {
   padding-left: 11px;
 }
-.table thead .th-sortable {
+.nuTable thead .th-sortable {
   transition: all 0.1s ease-out;
   cursor: pointer;
   border-radius: 10px 10px 0 0;
 }
-.table thead .th-sortable:hover {
+.nuTable thead .th-sortable:hover {
   background-color: #eae8e6;
 }
-.table thead .th-selected {
+.nuTable thead .th-selected {
   color: #fff;
   background-color: #00a9e0;
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
 }
-.table thead .th-selected i.fa {
+.nuTable thead .th-selected i.fa {
   color: #fff;
 }
-.table thead .th-selected:hover {
+.nuTable thead .th-selected:hover {
   background-color: #005eb8;
 }
-.table tfoot th {
+.nuTable tfoot th {
   border-bottom: none;
   border-top: 1px solid #6e6259;
   vertical-align: top;
   color: #6e6259;
 }
-.table tbody tr {
+.nuTable tbody tr {
   border-bottom: 1px solid #eae8e6;
 }
-.table tbody tr:last-child {
+.nuTable tbody tr:last-child {
   border-bottom: none;
 }
-.table .column-50px {
+.nuTable .column-50px {
   width: 50px;
 }
-.table .column-100px {
+.nuTable .column-100px {
   width: 100px;
 }
-.table .column-200px {
+.nuTable .column-200px {
   width: 200px;
 }
-.table .column-300px {
+.nuTable .column-300px {
   width: 300px;
 }
-.table .column-10pct {
+.nuTable .column-10pct {
   width: 10%;
 }
-.table .column-15pct {
+.nuTable .column-15pct {
   width: 15%;
 }
-.table .column-20pct {
+.nuTable .column-20pct {
   width: 20%;
 }
-.table .column-25pct {
+.nuTable .column-25pct {
   width: 25%;
 }
-.table .column-50pct {
+.nuTable .column-50pct {
   width: 50%;
 }
-.table .middle-align {
+.nuTable .middle-align {
   vertical-align: middle;
 }
-.table .left-column {
+.nuTable .left-column {
   text-align: left;
 }
-.table .center-column {
+.nuTable .center-column {
   text-align: center;
 }
-.table .right-column {
+.nuTable .right-column {
   text-align: right;
 }
-.table .cell-danger {
+.nuTable .cell-danger {
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
   background-color: #ff3d00;
   color: #fff;
 }
 
-.table-rows-zebra tbody th, .table-rows-zebra tbody td {
+.nuTable-rows-zebra tbody th, .nuTable-rows-zebra tbody td {
   border-bottom: none;
 }
-.table-rows-zebra tbody tr:nth-child(odd) {
+.nuTable-rows-zebra tbody tr:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.03);
 }
 
-.table-cols-zebra tbody tr {
+.nuTable-cols-zebra tbody tr {
   border-bottom: none;
 }
-.table-cols-zebra tbody tr th:nth-child(odd), .table-cols-zebra tbody tr td:nth-child(odd) {
+.nuTable-cols-zebra tbody tr th:nth-child(odd), .nuTable-cols-zebra tbody tr td:nth-child(odd) {
   background-color: rgba(0, 0, 0, 0.03);
 }
 
-.label, .label-small, .label-big, input[type="radio"],
-input[type="checkbox"], label, input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea, .nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"], .nuForm label {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   display: inline-block;
   vertical-align: middle;
 }
 
-button, .button-important, .table th, .card__header {
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button, .nuTable th, .nuCard .header {
   text-transform: uppercase;
   letter-spacing: 0.05rem;
 }
 
-legend, .table caption {
+.nuForm legend, .nuTable caption {
   margin-bottom: 22px;
   width: 100%;
   font-size: 1rem;
@@ -3981,7 +4190,93 @@ legend, .table caption {
   text-align: left;
 }
 
-.card, .card-dark {
+.nuForm input[type="text"],
+.nuForm input[type="password"],
+.nuForm input[type="email"],
+.nuForm input[type="url"],
+.nuForm input[type="date"],
+.nuForm input[type="month"],
+.nuForm input[type="time"],
+.nuForm input[type="datetime"],
+.nuForm input[type="datetime-local"],
+.nuForm input[type="week"],
+.nuForm input[type="number"],
+.nuForm input[type="search"],
+.nuForm input[type="tel"],
+.nuForm input[type="color"],
+.nuForm input[type="file"],
+.nuForm select, .nuForm textarea {
+  transition: all 0.25s ease-out;
+  height: 38px;
+  padding: 6px 11px;
+  border: 1px solid #968c83;
+  border-radius: 5px;
+  background-color: #faf9f9;
+  color: #005eb8;
+  line-height: 1;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), inset -2px -2px 0 #fff;
+  text-shadow: 1px 1px 0 #fff;
+}
+.nuForm input[type="text"]:focus,
+.nuForm input[type="password"]:focus,
+.nuForm input[type="email"]:focus,
+.nuForm input[type="url"]:focus,
+.nuForm input[type="date"]:focus,
+.nuForm input[type="month"]:focus,
+.nuForm input[type="time"]:focus,
+.nuForm input[type="datetime"]:focus,
+.nuForm input[type="datetime-local"]:focus,
+.nuForm input[type="week"]:focus,
+.nuForm input[type="number"]:focus,
+.nuForm input[type="search"]:focus,
+.nuForm input[type="tel"]:focus,
+.nuForm input[type="color"]:focus,
+.nuForm input[type="file"]:focus,
+.nuForm select:focus, .nuForm textarea:focus {
+  background-color: #fff;
+  border: 1px solid #005eb8;
+  box-shadow: 0 0 10px #00a9e0;
+  outline: 0;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger, .nuLabel, .nuLabel-small, .nuLabel-big, .nuForm input[type="radio"],
+.nuForm input[type="checkbox"] {
+  padding: 5.5px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.nuLabel-information, .nuLabel-success, .nuLabel-warning, .nuLabel-danger {
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
+  padding: 11px;
+  line-height: 1.2;
+  border-radius: 5px;
+  color: white !important;
+}
+
+.nuButton, .nuButton-small, .nuButton-important, .nuButton-round, .nuButton-success, .nuButton-warning, .nuButton-danger, .nuButton-neutral, .nuButton-neutral-light, .nuButton-neutral-light-negative, .nuButton-disabled, .app__header-nav button {
+  transition: all 0.1s ease-out;
+  margin: 5.5px;
+  border-radius: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.nuButton i.fa, .nuButton-small i.fa, .nuButton-important i.fa, .nuButton-round i.fa, .nuButton-success i.fa, .nuButton-warning i.fa, .nuButton-danger i.fa, .nuButton-neutral i.fa, .nuButton-neutral-light i.fa, .nuButton-neutral-light-negative i.fa, .nuButton-disabled i.fa, .app__header-nav button i.fa {
+  position: relative;
+  font-weight: 400;
+}
+.nuButton:active, .nuButton-small:active, .nuButton-important:active, .nuButton-round:active, .nuButton-success:active, .nuButton-warning:active, .nuButton-danger:active, .nuButton-neutral:active, .nuButton-neutral-light:active, .nuButton-neutral-light-negative:active, .nuButton-disabled:active, .app__header-nav button:active {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.nuButton:hover, .nuButton-small:hover, .nuButton-important:hover, .nuButton-round:hover, .nuButton-success:hover, .nuButton-warning:hover, .nuButton-danger:hover, .nuButton-neutral:hover, .nuButton-neutral-light:hover, .nuButton-neutral-light-negative:hover, .nuButton-disabled:hover, .app__header-nav button:hover, .nuButton:focus, .nuButton-small:focus, .nuButton-important:focus, .nuButton-round:focus, .nuButton-success:focus, .nuButton-warning:focus, .nuButton-danger:focus, .nuButton-neutral:focus, .nuButton-neutral-light:focus, .nuButton-neutral-light-negative:focus, .nuButton-disabled:focus, .app__header-nav button:focus {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.nuCard {
   box-shadow: 5px 10px 30px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   margin: 22px 0;
@@ -3989,8 +4284,7 @@ legend, .table caption {
   border-radius: 5px;
   background: #fff linear-gradient(transparent, rgba(0, 0, 0, 0.01));
 }
-
-.card__header {
+.nuCard .header {
   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(255, 255, 255, 0.4);
   margin: -22px;
   margin-bottom: 22px;
@@ -3999,13 +4293,9 @@ legend, .table caption {
   background: #00a9e0 linear-gradient(rgba(255, 255, 255, 0.1), transparent);
   color: #fff;
 }
-.card__header h1, .card__header h2, .card__header h3, .card__header h4, .card__header h5, .card__header h6 {
+.nuCard .header h1, .nuCard .header h2, .nuCard .header h3, .nuCard .header h4, .nuCard .header h5, .nuCard .header h6 {
   margin: 0;
   padding: 0;
-}
-
-.card-dark {
-  background-color: #faf9f9;
 }
 
 .app__column {

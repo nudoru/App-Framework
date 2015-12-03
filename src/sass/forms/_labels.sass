@@ -3,40 +3,31 @@
 @import "../utils/typography"
 @import "../utils/shadows"
 
-.label
-  @extend %control-text-base
-  //height: $control-form-element-height
-  padding: $control-padding-small
-  display: inline-block
-  white-space: nowrap
 
-.label-small
-  @extend .label
+
+.nuLabel
+  @extend %label
+
+.nuLabel-small
+  @extend %label
   font-size: $ms--1
 
-.label-big
-  @extend .label
+.nuLabel-big
+  @extend %label
   font-size: $ms-1
 
-%label-shaded
-  +letter_press
-  padding: $base-line-height
-  line-height: 1.2
-  border-radius: $control-border-radius
-  color: $control-font-neg-color !important
-
-.label-information
+.nuLabel-information
   @extend %label-shaded
   background-color: $control-info-color
 
-.label-success
+.nuLabel-success
   @extend %label-shaded
   background-color: $control-success-color
 
-.label-warning
+.nuLabel-warning
   @extend %label-shaded
   background-color: $control-warning-color
 
-.label-danger
+.nuLabel-danger
   @extend %label-shaded
   background-color: $control-danger-color

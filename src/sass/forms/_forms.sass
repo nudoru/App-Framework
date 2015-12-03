@@ -2,102 +2,89 @@
 @import "../utils/variables-controls"
 @import "../utils/css-animation"
 
-fieldset
+.nuForm
   border: none
   margin: 0
   padding: 0
 
-legend
-  @extend %legend
+  fieldset
+    border: none
+    margin: 0
+    padding: 0
 
-label
-  @extend %control-text-base
-  height: $control-form-element-height
-  line-height: $control-form-element-height
-  padding: 6px 0
-  display: block
-  font-weight: 400
-  margin: 0 $base-line-height $half-base-line-height 0
+  legend
+    @extend %legend
 
-%base-form-element
-  +transition-all(.25s)
-  @extend %control-text-base
-  height: $control-form-element-height
-  padding: 6px $base-line-height
-  border: $control-border-dark
-  border-radius: $control-border-radius
-  background-color: $color-white-grey-fill
-  color: $control-primary-color-dark
-  line-height: 1
-  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, .1), inset -2px -2px 0 #fff
-  text-shadow: 1px 1px 0 #fff
-  &:focus
-    background-color: #fff
-    border: 1px solid $control-primary-color-dark
-    box-shadow: 0 0 10px $control-primary-color
-    outline: 0
-
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="week"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-input[type="file"],
-select, textarea
-  @extend %base-form-element
-
-input[type="radio"],
-input[type="checkbox"]
-  @extend .label
-  margin-right: $half-base-line-height
-
-textarea
-  min-height: $control-form-element-height*1.5
-  line-height: 1.2
-
-.form-stacked
   label
+    @extend %control-text-base
+    height: $control-form-element-height
+    line-height: $control-form-element-height
+    padding: 6px 0
     display: block
-  input, select, textarea
-    display: block
-    margin: $base-line-height 0 $double-base-line-height 0
-  input[type=radio], input[type=checkbox]
-    display: inline
+    font-weight: 400
+    margin: 0 $base-line-height $half-base-line-height 0
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="url"],
+  input[type="date"],
+  input[type="month"],
+  input[type="time"],
+  input[type="datetime"],
+  input[type="datetime-local"],
+  input[type="week"],
+  input[type="number"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="color"],
+  input[type="file"],
+  select, textarea
+    @extend %base-form-element
+
+  input[type="radio"],
+  input[type="checkbox"]
+    @extend %label
     margin-right: $half-base-line-height
 
-.form-inline
-  label
-    display: inline
-  button
-    margin-top: 0
-    margin-bottom: 0
+  textarea
+    min-height: $control-form-element-height*1.5
+    line-height: 1.2
 
-input.form-input-error
-  border: 2px solid $control-danger-color
+  .form-stacked
+    label
+      display: block
+    input, select, textarea
+      display: block
+      margin: $base-line-height 0 $double-base-line-height 0
+    input[type=radio], input[type=checkbox]
+      display: inline
+      margin-right: $half-base-line-height
 
-input.form-input-disabled
-  +control-disabled
-  &:focus
+  .form-inline
+    label
+      display: inline
+    button
+      margin-top: 0
+      margin-bottom: 0
+
+  input.form-input-error
+    border: 2px solid $control-danger-color
+
+  input.form-input-disabled
     +control-disabled
+    &:focus
+      +control-disabled
 
-/* Removes awkward default styles on some inputs for iOS */
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="text"],
-input[type="tel"],
-input[type="url"],
-input[type="password"],
-textarea
-  -webkit-appearance: none
-  -moz-appearance: none
-  appearance: none
+  /* Removes awkward default styles on some inputs for iOS */
+  input[type="email"],
+  input[type="number"],
+  input[type="search"],
+  input[type="text"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="password"],
+  textarea
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none

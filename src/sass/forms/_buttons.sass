@@ -3,95 +3,82 @@
 @import "../utils/shadows"
 @import "../utils/css-animation"
 
-%button
-  +transition-all()
+.nuButton
+  @extend %button
   +letter_press
-  //@extend .label
-  @extend %emphasis-title
   height: $control-form-element-height
   padding: $half-base-line-height $triple-base-line-height
-  margin: $half-base-line-height
   background: $control-primary-color linear-gradient(hsla(0, 0%, 100%, .25), transparent)
-  border-radius: $control-button-border-radius
-  border: 1px solid rgba(0,0,0,.15)
   font-size: 0.8rem
-  line-height: 1.2
-  text-align: center
   color: #fff
-  cursor: pointer
-  i.fa
-    position: relative
-    font-weight: 400
   &:active
     background-color: $control-primary-color-dark
-    border: 1px solid rgba(0,0,0,.25)
-    box-shadow: inset 0 0 5px hsla(0, 0%, 0%, .5)
-  &:hover, &:focus
-    box-shadow: inset 0 0 5px hsla(0, 0%, 0%, .25)
-    border: 1px solid rgba(0,0,0,.5)
 
-button
-  @extend %button
-
-.button__icon-left
+.nuButton__icon-left
   padding-left: $base-line-height
   i.fa
     margin-right: $base-line-height
 
-.button__icon-right
+.nuButton__icon-right
   padding-right: $base-line-height
   i.fa
     margin-left: $base-line-height
 
-.button-block
+.nuButton-block
   display: block
   width: 100%
   margin-left: 0
   margin-right: 0
 
-.button-small
+.nuButton-small
+  @extend .nuButton
   font-size: 0.7rem
   padding: 0 $base-line-height
   height: 25px
   margin-left: 2px
   margin-right: 2px
 
-.button-important
-  @extend %button
+.nuButton-important
+  @extend .nuButton
   font-size: 1.2rem
   text-transform: none
   letter-spacing: 0
   padding: $half-base-line-height $base-line-height*4
 
-.button-round
+.nuButton-round
+  @extend .nuButton
   padding: 0
   border-radius: 50px
   height: $control-form-element-height
   width: $control-form-element-height
 
-.button-success
-  background-color: $control-success-color
+.nuButton-success
+  @extend .nuButton
+  background: $control-success-color
   &:active
     background-color: $control-success-color-dark
   
-.button-warning
+.nuButton-warning
+  @extend .nuButton
   background-color: $control-warning-color
   &:active
     background-color: $control-warning-color-dark
     
-.button-danger
+.nuButton-danger
+  @extend .nuButton
   background-color: $control-danger-color
   &:active
     background-color: $control-danger-color-dark
 
-.button-neutral
+.nuButton-neutral
+  @extend .nuButton
   color: #fff
   background-color: $color-base-light
   &:active
     background-color: $color-base-dark
 
-.button-neutral-light
-  @extend .button-neutral
+.nuButton-neutral-light
+  @extend .nuButton-neutral
   background-color: rgba(255,255,255,.25)
   color: $light-warm-grey
   border: 1px solid $light-warm-grey
@@ -102,16 +89,16 @@ button
     border: 1px solid $control-primary-color
     background-color: hsla(0,0%,0%,.1)
 
-.button-neutral-light-negative
-  @extend .button-neutral-light
+.nuButton-neutral-light-negative
+  @extend .nuButton-neutral-light
   color: #fff
   &:active
     color: #fff
     border: 1px solid #fff
     background-color: rgba(255, 255, 255, .1)
 
-.button-disabled
-  @extend .button-neutral-light-negative
+.nuButton-disabled
+  @extend .nuButton-neutral-light-negative
   +control-disabled
   &:focus, &:hover, &:active
     +control-disabled
