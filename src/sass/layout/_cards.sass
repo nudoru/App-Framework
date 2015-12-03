@@ -1,3 +1,8 @@
+@import "../utils/variables"
+@import "../utils/variables-controls"
+@import "../utils/typography"
+@import "../utils/shadows"
+
 .card
   @extend %small-headers
   +shadow__card-large
@@ -5,7 +10,6 @@
   margin: $control-card-margin 0
   padding: $control-card-margin
   border-radius: $control-border-radius
-  //border: $control-border
   background: #fff linear-gradient(transparent, hsla(0,0%, 0, .01))
 
 .card__header
